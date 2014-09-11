@@ -1,0 +1,891 @@
+#!/bin/sh -f
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+#       Prints the setup commands, trace arguments, prefix, skip size, 
+#       check commands, and cleanup commmands for the benchmark using 
+#	the inputs that IMPACT uses for papers.
+#       Used by profiling and simulation scripts.
+#
+#	When this breaks, contact: John C.Gyllenhaal
+#
+#  	usage (one of the following): 
+#          print_trace_info SETUP "benchmark" 
+#          print_trace_info PREFIX "benchmark" 
+#          print_trace_info ARGS "benchmark" 
+#          print_trace_info SKIP "benchmark" 
+#          print_trace_info CHECK "benchmark" "result_file"
+#          print_trace_info CLEANUP "benchmark" 
+#          print_trace_info LIBS "benchmark" 
+#          print_trace_info LIBDIRS "benchmark" 
+#
+#       where:
+#
+#	ARGS, PREFIX, SKIP, and CHECK are keywords.
+#       "benchmark" is benchmark name (ie. wc, 008.espresso)
+#	"result_file" - screen output dump file (ie. prof.out)
+#
+#       IMPORTANT NOTE:  If the setup command is not "", the command MUST
+#                        end with a ';'.  The profiling scripts do not require
+#                        the ';' but the simulation scripts do!
+#
+#
+
+BATCH_NAME="print_trace_info";
+SPEC95_PATH="/home/romulus/hank/benchspec"
+INPUT_DIR="${IMPACT_REL_PATH}/exper/inputs"
+MEDIABENCH_INPUT_DIR="/home/triton/dconnors/media/inputs";
+MEDIABENCH_OUTPUT_DIR="/home/triton/dconnors/media/outputs";
+REF_DIR="${IMPACT_REL_PATH}/exper/outputs"
+VALID="N"
+ARCH=`host_arch`
+if test "$?" != 0; then echo "Terminating: error in arch ($ARCH)"; exit 1;fi
+
+RESULT_FILE="NO_RESULT_FILE"
+SETUP="echo NO SETUP SPECIFIED;";
+SKIP="WHO KNOWS";
+CLEANUP="echo NO CLEANUP SPECIFIED;";
+LIBS="";
+LIBDIRS="";
+
+if [ $# -eq 2 ]; then
+  if [ $1 = "ARGS" -o $1 = "PREFIX" -o $1 = "SKIP" -o $1 = "SETUP" -o $1 = "CLEANUP" -o $1 = "LIBS" -o $1 = "LIBDIRS" ]; then
+ 	TYPE="$1"	
+	BENCHMARK="$2";
+	VALID="Y";
+  fi
+elif [ $# -eq 3 ]; then
+  if [ $1 = "CHECK" ]; then
+ 	TYPE="$1"	
+	BENCHMARK="$2";
+	RESULT_FILE="$3";
+	VALID="Y";
+  fi
+fi
+
+if [ $VALID = "N" ]; then 
+	echo ' ';
+	echo 'Prints the trace setup commands, prefix, arguments, skip size,';
+	echo 'check commands or cleanup commands for the benchmark using the';
+	echo 'inputs that IMPACT uses for its papers.';
+	echo ' ';
+	echo '> Usage (one of the following):';
+	echo '   print_trace_info SETUP "benchmark"';
+	echo '   print_trace_info PREFIX "benchmark"';
+	echo '   print_trace_info ARGS "benchmark"';
+	echo '   print_trace_info SKIP "benchmark"';
+	echo '   print_trace_info CHECK "benchmark" "result_file"';
+	echo '   print_trace_info CLEANUP "benchmark"';
+	echo '   print_trace_info LIBS "benchmark"';
+	echo '   print_trace_info LIBDIRS "benchmark"';
+	echo ' ';
+	echo '   where:';
+	echo ' ';
+	echo '     SETUP, PREFIX, ARGS, SKIP, CHECK, CLEANUP, LIBS, and LIBDIRS are keywords';
+	echo '     "benchmark" is benchmark name (ie. wc, 008.espresso)';
+        echo '     "result_file" - screen output dump file (ie. prof.out)';
+	echo ' ';
+	echo ' ';	
+	exit 0200;
+fi
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+#Switch on benchmark name and set ARGS to proper trace arguments 
+if [ $BENCHMARK = "022.li" -o $BENCHMARK = "li" ]; then
+	SETUP="/bin/rm -f li-input.lsp6; ${LN_COMMAND} ${INPUT_DIR}/li-input.lsp6 .; ";
+        PREFIX="";
+	ARGS="li-input.lsp6"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/022.li.OUT6 | head -100"
+	CLEANUP="/bin/rm -f li-input.lsp6";
+# around    35,000,000 instructions
+        SKIP="500000";
+
+#Switch on benchmark name and set ARGS to proper trace arguments 
+elif [ $BENCHMARK = "SPEC_022.li" -o $BENCHMARK = "SPEC_li" ]; then
+	SETUP="/bin/rm -f li-input.lsp9; ${LN_COMMAND} ${INPUT_DIR}/li-input.lsp9 .; ";
+        PREFIX="";
+	ARGS="li-input.lsp9"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/022.li.OUT9 | head -100"
+	CLEANUP="/bin/rm -f li-input.lsp9";
+# around    4,000,000,000 instructions
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "134.perl" -o $BENCHMARK = "perl" ]; then
+        SETUP="/bin/rm -f jumble.dict; ${LN_COMMAND} ${INPUT_DIR}/jumble.dict .; ";
+        PREFIX="";
+        ARGS="${INPUT_DIR}/jumble.pl < ${INPUT_DIR}/jumble.pl.in"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/jumble.pl.out | head -100"
+        CLEANUP="/bin/rm -f jumble.dict";
+# around    1,000,000,000 instructions in .O
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "perl2" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="${INPUT_DIR}/primes.pl < ${INPUT_DIR}/primes.pl.in"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/primes.pl.out | head -100"
+	CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "132.ijpeg" -o $BENCHMARK = "ijpeg" ]; then
+        SETUP="/bin/rm -f vigo.ppm; ${LN_COMMAND} ${SPEC95_PATH}/CINT95/132.ijpeg/data/train/input/vigo.ppm .;";
+        PREFIX="";
+        ARGS="-image_file vigo.ppm -compression.quality 90 -compression.optimize_coding 0 -compression.smoothing_factor 90 -difference.image 1 -difference.x_stride 10 -difference.y_stride 10 -verbose 1 -GO.findoptcomp"
+        CHECK="diff ${RESULT_FILE} ${SPEC95_PATH}/CINT95/132.ijpeg/data/train/output/vigo.out | head -100"
+        CLEANUP="/bin/rm -f vigo.ppm";
+# around    1,000,000,000 instructions in .O
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "099.go" -o $BENCHMARK = "go" ]; then
+        SETUP="/bin/rm -f 2stone9.in; ${LN_COMMAND} ${SPEC95_PATH}/CINT95/099.go/data/train/input/2stone9.in .;";
+        PREFIX="";
+        ARGS="50 9 2stone9.in"
+        CHECK="diff ${RESULT_FILE} ${SPEC95_PATH}/CINT95/099.go/data/train/output/2stone9.out | head -100"
+        CLEANUP="/bin/rm -f 2stone9.in";
+# around    440,000,000 instructions in .O 
+        SKIP="8650000";
+
+elif [ $BENCHMARK = "124.m88ksim" -o $BENCHMARK = "m88ksim" ]; then
+        SETUP="/bin/rm -f dcrand.big; ${LN_COMMAND} ${SPEC95_PATH}/CINT95/124.m88ksim/data/train/input/dcrand.big .;";
+        PREFIX="";
+        ARGS="-c < ${INPUT_DIR}/ctl.in"
+        CHECK="diff ${RESULT_FILE} ${SPEC95_PATH}/CINT95/124.m88ksim/data/train/output/train.out | head -100"
+        CLEANUP="/bin/rm -f dcrand.big";
+# around    70,000,000 instructions  in .O
+        SKIP="1200000";
+
+#elif [ $BENCHMARK = "126.gcc" -o $BENCHMARK = "gcc" ]; then
+elif [ $BENCHMARK = "126.gcc" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="-quiet -funroll-loops -fforce-mem -fcse-follow-jumps -fcse-skip-blocks -fexpensive-optimizations -fstrength-reduce -fpeephole -fschedule-insns -finline-functions -fschedule-insns2 -O ${SPEC95_PATH}/CINT95/126.gcc/data/train/input/amptjp.i -o amptjp.s"
+        CHECK="diff amptjp.s ${SPEC95_PATH}/CINT95/126.gcc/data/train/output/amptjp.s | head -100"
+        CLEANUP="/bin/rm -f amptjp.s";
+# around    750,000,000 instructions in .O
+        SKIP="14800000";
+
+#elif [ $BENCHMARK = "129.compress" -o $BENCHMARK = "compress" ]; then
+elif [ $BENCHMARK = "129.compress" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CINT95/129.compress/data/train/input/test.in"
+        CHECK="diff ${RESULT_FILE} ${SPEC95_PATH}/CINT95/129.compress/data/train/output/test.out | head -100"
+        CLEANUP="";
+# around    25,000,000 instructions in .O
+        SKIP="300000";
+
+elif [ $BENCHMARK = "130.li" ]; then
+        SETUP="/bin/rm -f train.lsp; ${LN_COMMAND} ${SPEC95_PATH}/CINT95/130.li/data/train/input/train.lsp .;";
+        PREFIX="";
+        ARGS="train.lsp"
+        CHECK="diff ${RESULT_FILE} ${SPEC95_PATH}/CINT95/130.li/data/train/output/train.out | head -100"
+        CLEANUP="/bin/rm -f train.lsp";
+# around 150,000,000 instructions, but want to simulate 25% for accuracy
+# From past testing, at least 20% of li need to be simulated for < 1% error
+        SKIP="600000";
+
+elif [ $BENCHMARK = "147.vortex" -o $BENCHMARK = "vortex" ]; then
+        SETUP="/bin/rm -f /tmp/bendian.rnv /tmp/bendian.wnv /tmp/persons.250 bendian.rnv bendian.wnv persons.250; /bin/cp ${SPEC95_PATH}/CINT95/147.vortex/data/train/input/bendian.rnv /tmp; /bin/cp ${SPEC95_PATH}/CINT95/147.vortex/data/train/input/bendian.wnv /tmp; /bin/cp ${SPEC95_PATH}/CINT95/147.vortex/data/train/input/persons.250 /tmp; ${LN_COMMAND} /tmp/bendian.rnv /tmp/bendian.wnv /tmp/persons.250 .; ";
+        PREFIX="";
+        ARGS="${INPUT_DIR}/vortex.in"
+        CHECK="head -30 ${RESULT_FILE}; diff vortex.out ${SPEC95_PATH}/CINT95/147.vortex/data/train/output/vortex.out | head -100"
+        CLEANUP="/bin/rm -f bendian.rnv bendian.wnv persons.250 /tmp/bendian.rnv /tmp/bendian.wnv /tmp/persons.250";
+# around    1,300,000,000 instructions in .O
+        SKIP="19800000";
+
+#elif [ $BENCHMARK = "101.tomcatv" -o $BENCHMARK = "tomcatv" ]; then
+elif [ $BENCHMARK = "101.tomcatv" ]; then
+        SETUP="/bin/rm -f TOMCATV.MODEL; ${LN_COMMAND} ${SPEC95_PATH}/CFP95/101.tomcatv/data/train/input/TOMCATV.MODEL .;";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/101.tomcatv/data/train/input/tomcatv.in"
+        CHECK="spiff -q -r 0.001 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/101.tomcatv/data/train/output/tomcatv.out"
+        CLEANUP="/bin/rm -f TOMCATV.MODEL";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "102.swim" -o $BENCHMARK = "swim" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/102.swim/data/train/input/swim.in"
+        CHECK="spiff -q -r 0.2 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/102.swim/data/train/output/swim.out"
+        CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+#elif [ $BENCHMARK = "103.su2cor" -o $BENCHMARK = "su2cor" ]; then
+elif [ $BENCHMARK = "103.su2cor" ]; then
+        SETUP="/bin/rm -f SU2COR.MODEL; ${LN_COMMAND} ${SPEC95_PATH}/CFP95/103.su2cor/data/train/input/SU2COR.MODEL .;";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/103.su2cor/data/train/input/su2cor.in"
+        CHECK="spiff -q -r 0.01 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/103.su2cor/data/train/output/su2cor.out"
+        CLEANUP="/bin/rm -f SU2COR.MODEL";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+#elif [ $BENCHMARK = "104.hydro2d" -o $BENCHMARK = "hydro2d" ]; then
+elif [ $BENCHMARK = "104.hydro2d" ]; then
+        SETUP="/bin/rm -f HYDRO2D.MODEL; ${LN_COMMAND} ${SPEC95_PATH}/CFP95/104.hydro2d/data/train/input/HYDRO2D.MODEL .;";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/104.hydro2d/data/train/input/hydro2d.in"
+        CHECK="spiff -q -r 0.01 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/104.hydro2d/data/train/output/hydro2d.out"
+        CLEANUP="/bin/rm -f HYDRO2D.MODEL";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "107.mgrid" -o $BENCHMARK = "mgrid" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/107.mgrid/data/train/input/mgrid.in"
+        CHECK="spiff -q -r 0.001 -a 0.00000001 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/107.mgrid/data/train/output/mgrid.out"
+        CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "110.applu" -o $BENCHMARK = "applu" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/110.applu/data/train/input/applu.in"
+        CHECK="spiff -q -r 0.0001 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/110.applu/data/train/output/applu.out"
+        CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "125.turb3d" -o $BENCHMARK = "turb3d" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/125.turb3d/data/train/input/turb3d.in"
+        CHECK="spiff -q -r 0.0001 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/125.turb3d/data/train/output/turb3d.out"
+        CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "141.apsi" -o $BENCHMARK = "apsi" ]; then
+        SETUP="/bin/rm -f apsi.in APO10 APO11 APO6 APO8 APV; ${LN_COMMAND} ${SPEC95_PATH}/CFP95/141.apsi/data/train/input/apsi.in .;";
+        PREFIX="";
+        ARGS=""
+        CHECK="spiff -q -r 0.08 APO10 ${SPEC95_PATH}/CFP95/141.apsi/data/train/output/APO10; spiff -q -r 0.08 APO11 ${SPEC95_PATH}/CFP95/141.apsi/data/train/output/APO11; spiff -q -r 0.08 APO6 ${SPEC95_PATH}/CFP95/141.apsi/data/train/output/APO6; spiff -q -r 0.08 APO8 ${SPEC95_PATH}/CFP95/141.apsi/data/train/output/APO8; spiff -q -r 0.08 APV ${SPEC95_PATH}/CFP95/141.apsi/data/train/output/APV"
+        CLEANUP="/bin/rm -f apsi.in APO10 APO11 APO6 APO8 APV";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+#elif [ $BENCHMARK = "145.fpppp" -o $BENCHMARK = "fpppp" ]; then
+elif [ $BENCHMARK = "145.fpppp" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS="< ${SPEC95_PATH}/CFP95/145.fpppp/data/train/input/natoms.in"
+        CHECK="spiff -q -r 0.0550 ${RESULT_FILE} ${SPEC95_PATH}/CFP95/145.fpppp/data/train/output/natoms.out"
+        CLEANUP="";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+#elif [ $BENCHMARK = "146.wave5" -o $BENCHMARK = "wave5" ]; then
+elif [ $BENCHMARK = "146.wave5" ]; then
+        SETUP="";
+        PREFIX=""
+        ARGS="< ${SPEC95_PATH}/CFP95/146.wave5/data/train/input/wave5.in"
+        CHECK="spiff -q -r 0.0001 WAVE.OUT ${SPEC95_PATH}/CFP95/146.wave5/data/train/output/WAVE.OUT"
+        CLEANUP="/bin/rm -f WAVE.OUT";
+# around    1,200,000,000 instructions (?)
+        SKIP="19800000";
+
+# Microbenchmarks -See John Gyllenhaal
+elif [ $BENCHMARK = "pcompress" -o $BENCHMARK = "xly" -o \
+       $BENCHMARK = "queen6" -o $BENCHMARK = "push2" -o \
+       $BENCHMARK = "siev" -o $BENCHMARK = "push20" ]; then
+        SETUP="";
+        PREFIX="";
+        ARGS=""
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/${BENCHMARK}.out | head -100"
+        CLEANUP="";
+# Simulate entire benchmark
+        SKIP="0";
+
+elif [ $BENCHMARK = "matrix10" -o $BENCHMARK = "matrix2" -o \
+       $BENCHMARK = "matrix100" -o $BENCHMARK = "matrix300" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS=""
+        CHECK="cat ${RESULT_FILE}; cat MATRIX.OUT"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="0";
+
+elif [ $BENCHMARK = "013.spice2g6" -o $BENCHMARK = "013.spice" -o \
+       $BENCHMARK = "spice2g6" -o $BENCHMARK = "spice" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/013.spice2g6.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/013.spice2g6.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "015.doduc" -o $BENCHMARK = "doduc" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/015.doduc.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/015.doduc.OUT"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "034.mdljdp2" -o $BENCHMARK = "mdljdp2" ]; then
+#need ncform in directory, link into dir.  Make sure ln is not aliased.
+	SETUP="/bin/rm -f mdlj2.dat; ${LN_COMMAND} ${INPUT_DIR}/mdlj2.dat .; ";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/034.mdljdp2.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/034.mdljdp2.OUT | head -100"
+	CLEANUP="/bin/rm -f mdlj2.dat";
+# Who knows how many instructions, need to set sample size
+        SKIP=20000000;
+
+elif [ $BENCHMARK = "039.wave5" -o $BENCHMARK = "wave5" ]; then
+	SETUP="/bin/rm -f WAVE.OUT;";
+        PREFIX="";
+        ARGS=""
+        CHECK="diff WAVE.OUT ${REF_DIR}/039.wave5.OUT | head -100"
+	CLEANUP="/bin/rm -f WAVE.OUT;";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "047.tomcatv" -o $BENCHMARK = "tomcatv" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS=""
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/047.tomcatv.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "048.ora" -o $BENCHMARK = "ora" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/048.ora.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/048.ora.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "052.alvinn" -o $BENCHMARK = "alvinn" ]; then
+	SETUP="/bin/rm -f h_o_w.txt i_h_w.txt in_pats.txt out_pats.txt; ${LN_COMMAND} ${INPUT_DIR}/h_o_w.txt ${INPUT_DIR}/i_h_w.txt ${INPUT_DIR}/in_pats.txt ${INPUT_DIR}/out_pats.txt .; ";
+        PREFIX="";
+        ARGS=""
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/052.alvinn.OUT | head -100"
+	CLEANUP="/bin/rm -f h_o_w.txt i_h_w.txt in_pats.txt out_pats.txt";
+# around 4,100,000,000 instructions, set skip size to get 1% sim 
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "056.ear" -o $BENCHMARK = "ear" ]; then
+	SETUP="/bin/rm -f /tmp/cochlea.pic cochlea.pic err.out ref.m22; ${LN_COMMAND} ${INPUT_DIR}/ref.m22 .; ${LN_COMMAND} /tmp/cochlea.pic .;";
+        PREFIX="";
+        ARGS="`cat ${INPUT_DIR}/056.ear.IN`"
+        CHECK="diff err.out ${REF_DIR}/056.ear.OUT; diff cochlea.pic ${REF_DIR}/impact_cochlea.pic | head -100"
+	CLEANUP="/bin/rm -f /tmp/cochlea.pic cochlea.pic err.out ref.m22;";
+# around 11,000,000,000 instructions, set skip size to get 1% sim (550 samples)
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "077.mdljsp2" -o $BENCHMARK = "mdljsp2" ]; then
+#need ncform in directory, link into dir.  Make sure ln is not aliased.
+	SETUP="/bin/rm -f mdlj2.dat; ${LN_COMMAND} ${INPUT_DIR}/mdlj2.dat .; ";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/077.mdljsp2.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/077.mdljsp2.OUT | head -100"
+	CLEANUP="/bin/rm -f mdlj2.dat";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "078.swm256" -o $BENCHMARK = "swm256" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/078.swm256.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/078.swm256.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "089.su2cor" -o $BENCHMARK = "su2cor" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/089.su2cor.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/089.su2cor.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "090.hydro2d" -o $BENCHMARK = "hydro2d" ]; then
+	SETUP="/bin/rm -f HYDRO.DET;";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/090.hydro2d.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/090.hydro2d.OUT; diff HYDRO.DET ${REF_DIR}/IMPACT_HYDRO.DET2 | head -100"
+	CLEANUP="/bin/rm -f HYDRO.DET;";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "093.nasa7" -o $BENCHMARK = "nasa7" ]; then
+	SETUP="/bin/rm -f NASA7.OUT NASA7.OUT2 NASA7.CHK; ${LN_COMMAND} ${INPUT_DIR}/NASA7.CHK .; ";
+        PREFIX="";
+        ARGS=""
+        CHECK="diff NASA7.OUT ${REF_DIR}/IMPACT_NASA7.OUT | head -100; diff NASA7.OUT2 ${REF_DIR}/IMPACT_NASA7.OUT2 | head -100"
+	CLEANUP="/bin/rm -f NASA7.OUT NASA7.OUT2 NASA7.CHK;";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "094.fpppp" -o $BENCHMARK = "fpppp" ]; then
+	SETUP="";
+        PREFIX="";
+        ARGS="< ${INPUT_DIR}/094.fpppp.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/094.fpppp.OUT | head -100"
+	CLEANUP="";
+# Who knows how many instructions, need to set sample size
+        SKIP="WHO KNOWS";
+
+elif [ $BENCHMARK = "023.eqntott" -o $BENCHMARK = "eqntott" ]; then
+	SETUP="/bin/rm -f int_pri_3.eqn; ${LN_COMMAND} ${INPUT_DIR}/int_pri_3.eqn .; ";
+        PREFIX="";
+	ARGS="-s -.ioplte int_pri_3.eqn"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/023.eqntott.OUT | head -100"
+	CLEANUP="/bin/rm -f int_pri_3.eqn";
+# around 1,000,000,000 instructions, set skip size to get 1% sim
+        SKIP="19800000";
+
+elif [ $BENCHMARK = "026.compress" -o $BENCHMARK = "compress" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="< ${INPUT_DIR}/compress.IN"
+        CHECK="cmp ${RESULT_FILE} ${REF_DIR}/026.compress.OUT | head -100"
+	CLEANUP="";
+# around   140,600,000 instructions
+        SKIP="2612000";
+
+elif [ $BENCHMARK = "cmp" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="${INPUT_DIR}/cccp.c ${INPUT_DIR}/cccp.c"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/cmp.OUT | head -100"
+	CLEANUP="";
+# around     3,000,000 instructions
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "lex" ]; then
+#need ncform in directory, link into dir.  Make sure ln is not aliased.
+	SETUP="/bin/rm -f ncform; ${LN_COMMAND} ${INPUT_DIR}/ncform .; ";
+        PREFIX="";
+	ARGS="-t -v ${INPUT_DIR}/lex.l"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/lex.OUT | head -100"
+	CLEANUP="/bin/rm -f ncform";
+# around    51,900,000 instructions
+        SKIP="838000";
+
+
+elif [ $BENCHMARK = "wc" ]; then
+	SETUP="/bin/rm -f cccp.c; ${LN_COMMAND} ${INPUT_DIR}/cccp.c .; ";
+        PREFIX="";
+	ARGS="cccp.c";
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/wc.OUT"
+	CLEANUP="/bin/rm -f cccp.c";
+# around     1,900,000 instructions
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "085.cc1" -o $BENCHMARK = "cc1" -o \
+       $BENCHMARK = "085.gcc" -o  $BENCHMARK = "gcc" ]; then
+	SETUP="/bin/rm -f out.s;";
+        PREFIX="";
+	ARGS="${INPUT_DIR}/insn-recog.i -quiet -O -o out.s"
+        CHECK="cat ${RESULT_FILE}; diff out.s ${REF_DIR}/085.cc1.OUT | head -100"
+	CLEANUP="/bin/rm -f out.s;";
+# around   158,300,000 instructions
+        SKIP="2966000";
+
+elif [ $BENCHMARK = "008.espresso" -o $BENCHMARK = "espresso" ]; then
+	SETUP="/bin/rm -f bca.in; ${LN_COMMAND} ${INPUT_DIR}/bca.in .; ";
+        PREFIX="";
+	ARGS="-t bca.in"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/008.espresso.OUT | head -100"
+	CLEANUP="/bin/rm -f bca.in";
+# around   465,700,000 instructions
+        SKIP="9114000";
+
+elif [ $BENCHMARK = "072.sc" -o $BENCHMARK = "sc" ]; then
+	SETUP="/bin/rm -f loada2.out test.start; ${LN_COMMAND} ${INPUT_DIR}/test.start .; ";
+# Need to set up environment before profiling,
+        PREFIX="setenv TERM vt220; setenv LINES 24; setenv COLUMNS 80; ";
+	ARGS="test.start < ${INPUT_DIR}/072.sc.IN"
+        CHECK="diff loada2.out ${REF_DIR}/loada2.out | head -100"
+	CLEANUP="/bin/rm -f loada2.out test.start;";
+# around 77,300,000 instructions
+        SKIP="1346055";
+
+elif [ $BENCHMARK = "cccp" ]; then
+	SETUP="/bin/rm -f cccp.c; ${LN_COMMAND} ${INPUT_DIR}/cccp.c .; ";
+        PREFIX="";
+	ARGS="cccp.c"
+        if test $ARCH = "sun4";then
+            CHECK="diff ${RESULT_FILE} ${REF_DIR}/cccp_sun4.OUT | head -100"
+        else
+            CHECK="diff ${RESULT_FILE} ${REF_DIR}/cccp.OUT | head -100"
+        fi
+	CLEANUP="/bin/rm -f cccp.c";
+# around     4,700,000 instructions
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "eqn" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="${INPUT_DIR}/eqn.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/eqn.OUT | head -100"
+	CLEANUP="";
+# around    36,200,000 instructions
+        SKIP="524000";
+
+
+elif [ $BENCHMARK = "grep" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="while ${INPUT_DIR}/cccp.c"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/grep.OUT | head -100"
+	CLEANUP="";
+# around     1,900,000 instructions
+        SKIP="0";
+	
+
+elif [ $BENCHMARK = "qsort" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS=""
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/qsort.OUT | head -100"
+	CLEANUP="";
+# around    71,000,000 instructions
+        SKIP="1220000";
+
+
+elif [ $BENCHMARK = "tbl" ]; then
+	SETUP="/bin/rm -f tbl.IN; ${LN_COMMAND} ${INPUT_DIR}/tbl.IN .; ";
+        PREFIX="";
+	ARGS="tbl.IN"
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/tbl.OUT | head -100"
+	CLEANUP="/bin/rm -f tbl.IN";
+# around     3,200,000 instructions
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "yacc" ]; then
+# need yaccpar, link into dir. Make sure ln is not aliased
+	SETUP="/bin/rm -f y.tab.c yaccpar c-parse.y; ${LN_COMMAND} ${INPUT_DIR}/yaccpar .; ${LN_COMMAND} ${INPUT_DIR}/c-parse.y .; ";
+        PREFIX="";
+	ARGS="c-parse.y";
+        CHECK="diff ${RESULT_FILE} ${REF_DIR}/yacc.OUT | head -100; diff y.tab.c ${REF_DIR}/y.tab.c.OUT | head -100"
+	CLEANUP="/bin/rm -f y.tab.c yaccpar c-parse.y;";
+# around    50,000,000 instructions
+        SKIP="800000";
+
+
+elif [ $BENCHMARK = "cjpeg" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-dct int -progressive -opt -outfile test.jpg ${MEDIABENCH_INPUT_DIR}/cjpeg/testing.ppm"
+        CHECK="";
+	CLEANUP="rm -f test.jpg";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "djpeg" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-dct int -ppm -outfile test.ppm ${MEDIABENCH_INPUT_DIR}/djpeg/testimg.jpg";
+        CHECK="diff test.ppm  ${MEDIABENCH_OUTPUT_DIR}/djpeg/test.ppm";
+	CLEANUP="rm -f test.ppm";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "decode" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-4 -l < ${MEDIABENCH_INPUT_DIR}/decode/clinton.adpcm";
+        CHECK="diff ${RESULT_FILE} ${MEDIABENCH_OUTPUT_DIR}/decode/result.out";
+	CLEANUP="";
+        SKIP="4000000";
+
+
+elif [ $BENCHMARK = "encode" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-4 -l < ${MEDIABENCH_INPUT_DIR}/encode/clinton.pcm";
+        CHECK="diff ${RESULT_FILE} ${MEDIABENCH_OUTPUT_DIR}/encode/result.out";
+	CLEANUP="";
+        SKIP="5000000";
+
+
+elif [ $BENCHMARK = "gsmdecode" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-pdlc ${MEDIABENCH_INPUT_DIR}/gsmdecode/clinton.pcm.gsm";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/gsmdecode/result.out result.out";
+	CLEANUP="";
+        SKIP="1400000";
+
+
+elif [ $BENCHMARK = "gsmencode" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-plc ${MEDIABENCH_INPUT_DIR}/gsmencode/clinton.pcm";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/gsmencode/result.out result.out";
+	CLEANUP="";
+        SKIP="4300000";
+
+
+elif [ $BENCHMARK = "mpeg2dec" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-b ${MEDIABENCH_INPUT_DIR}/mpeg2dec/mei16v2.m2v -r -f -oO rec%d";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec0.Y rec0.Y ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec0.U rec0.U ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec0.V rec0.V ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec1.Y rec1.Y ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec1.U rec1.U ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec1.V rec1.V ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec2.Y rec2.Y ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec2.U rec2.U ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec2.V rec2.V ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec3.Y rec3.Y ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec3.U rec3.U ; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2dec/rec3.V rec3.V ";
+	CLEANUP="rm -f rec?.?";
+        SKIP="2100000";
+
+
+elif [ $BENCHMARK = "mpeg2enc" ]; then
+	SETUP="rm -f *.U *.V *.Y *.par; cp ${MEDIABENCH_INPUT_DIR}/mpeg2enc/*.{U,V,Y,par} .;";
+        PREFIX="";
+	ARGS="options.par out.m2v";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2enc/out.m2v out.m2v ; \
+		diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2enc/stat.out stat.out ; \
+		diff ${MEDIABENCH_OUTPUT_DIR}/mpeg2enc/result.out result.out ";
+	CLEANUP="rm -f *.U *.V *.Y *.par out.m2v;";
+        SKIP="19000000";
+
+
+elif [ $BENCHMARK = "pegwitdec" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-d ${MEDIABENCH_INPUT_DIR}/pegwitdec/pegwit.enc pegwit.dec < ${MEDIABENCH_INPUT_DIR}/pegwitdec/my.sec";
+	CHECK="diff  ${MEDIABENCH_OUTPUT_DIR}/pegwitenc/pegwit.dec pegwit.dec";
+	CLEANUP="rm -f pegwit.dec";
+        SKIP="179000";
+
+
+elif [ $BENCHMARK = "pegwitenc" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-e ${MEDIABENCH_INPUT_DIR}/pegwitenc/my.pub ${MEDIABENCH_INPUT_DIR}/pegwitenc/pgptest.plain pegwit.enc < ${MEDIABENCH_INPUT_DIR}/pegwitenc/encryption_junk";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/pegwitenc/pegwit.enc pegwit.enc";
+	CLEANUP="rm -f pegwit.enc";
+        SKIP="430000";
+
+
+elif [ $BENCHMARK = "pgpdecode" ]; then
+	SETUP="rm -f pgptemp.sig;";
+        PREFIX="";
+	ARGS="-fdb -zbillms < ${MEDIABENCH_INPUT_DIR}/pgpdecode/pgptext.pgp";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/pgpdecode/result.out result.out";
+	CLEANUP="rm -f pgptemp.sig";
+        SKIP="8800000";
+
+
+elif [ $BENCHMARK = "pgpencode" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-fes Bill -u Bill -zbillms < ${MEDIABENCH_INPUT_DIR}/pgpencode/pgptest.plain";
+        CHECK="echo 'RESULT CHECK not available'; \
+	       diff ${MEDIABENCH_OUTPUT_DIR}/pgpencode/result.out result.out";
+	CLEANUP="";
+        SKIP="9000000";
+
+
+elif [ $BENCHMARK = "rasta" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-z -A -J -S 8000 -n 12 -f ${MEDIABENCH_INPUT_DIR}/rasta/map_weights.dat < ${MEDIABENCH_INPUT_DIR}/rasta/ex5_c1.wav";
+        CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/rasta/result.out result.out";
+	CLEANUP="";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "rawcaudio" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="< ${MEDIABENCH_INPUT_DIR}/rawcaudio/clinton.pcm";
+	CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/rawcaudio/result.out result.out";
+        CLEANUP="";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "rawdaudio" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="< ${MEDIABENCH_INPUT_DIR}/rawdaudio/clinton.adpcm";
+	CHECK="diff ${MEDIABENCH_OUTPUT_DIR}/rawdaudio/result.out result.out";
+        CLEANUP="";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "epic" ]; then
+        SETUP="cp ${MEDIABENCH_INPUT_DIR}/epic/test_image test_image;";
+        PREFIX="";
+        ARGS="test_image -b 25";
+        CHECK="diff ${RESULT_FILE} ${MEDIABENCH_OUTPUT_DIR}/epic/result.out ; cmp ${MEDIABENCH_OUTPUT_DIR}/epic/test_image.E test_image.E";
+        CLEANUP="rm -f test_image.E; rm -r -f test_image";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "unepic" ]; then
+	SETUP="cp ${MEDIABENCH_INPUT_DIR}/unepic/test_decode_image.E .";
+        PREFIX="";
+	ARGS="test_decode_image.E";
+        CHECK="diff ${RESULT_FILE} ${MEDIABENCH_OUTPUT_DIR}/unepic/result.out ; cmp ${MEDIABENCH_OUTPUT_DIR}/unepic/test_decode_image.E.U test_decode_image.E.U";
+	CLEANUP="rm -r -f test_decode_image.E ; rm -f test_decode_image.E.U";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "gs" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="-sDEVICE=ppm -sOutputFile=test.ppm -dNOPAUSE -q -- ${MEDIABENCH_INPUT_DIR}/gs/tiger.ps";
+        CHECK="diff test.ppm ${MEDIABENCH_OUTPUT_DIR}/gs/test.ppm";
+	CLEANUP="rm -f test.ppm";
+        SKIP="1600000";
+
+
+elif [ $BENCHMARK = "mipmap" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="mipmap.out";
+        CHECK="";
+	CLEANUP="rm -f mipmap.out";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "osdemo" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="osdemo.out";
+        CHECK="diff osdemo.out ${MEDIABENCH_OUTPUT_DIR}/osdemo/osdemo.out";
+	CLEANUP="rm -f osdemo.out";
+        SKIP="0";
+
+
+elif [ $BENCHMARK = "texgen" ]; then
+	SETUP="";
+        PREFIX="";
+	ARGS="texgen.out";
+        CHECK="";
+	CLEANUP="rm -f texgen.out";
+        SKIP="0";
+
+
+else
+	echo "> $BATCH_NAME: unknown benchmark '$BENCHMARK'";
+	exit 0200;
+fi
+
+if [ $TYPE = "ARGS" ]; then
+  #print out the command to trace the benchmark
+  echo "${ARGS}";
+
+elif [ $TYPE = "PREFIX" ]; then
+  #print out the command to check benchmark output 
+  echo "${PREFIX}";
+
+elif [ $TYPE = "SKIP" ]; then
+
+  #Make sure know how many to skip 
+  if [ "$SKIP" = "WHO KNOWS" ]; then
+     echo "> $BATCH_NAME: sample size needs to be calculated for '$BENCHMARK'" 
+     exit 0200;
+  fi
+
+  #print out the skip size for simulating the benchmark  
+  echo "${SKIP}";
+
+elif [ $TYPE = "SETUP" ]; then
+  #print out the command to setup benchmark  
+  echo "${SETUP}";
+
+elif [ $TYPE = "CHECK" ]; then
+  #print out the command to check benchmark output 
+  echo "${CHECK}";
+
+elif [ $TYPE = "CLEANUP" ]; then
+  #print out the command to cleanup benchmark directory 
+  echo "${CLEANUP}";
+
+elif [ $TYPE = "LIBS" ]; then
+  #print out the additional libraries to link with the executable
+  echo "${LIBS}";
+
+elif [ $TYPE = "LIBDIRS" ]; then
+  #print out the search paths to find the additional libraries
+  echo "${LIBDIRS}";
+
+else
+  echo "> Error in $BATCH_NAME: never should have got here";
+  exit 0200;
+fi
+

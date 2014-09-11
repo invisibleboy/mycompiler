@@ -1,0 +1,132 @@
+#!/bin/sh -f
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#        Takes *.S_new, creates a profile directory, makes a probed executable
+#        for profiling in it, runs the profile with the first argument
+#        to this batchfile, then remerges the profile data
+#
+# Usage: profile_oldS 'profile_exec_arguments' <step>
+#
+# step may be omitted, but it indicates what step to restart the
+# batch file from
+
+ARCH=`arch`
+
+if [ "$ARCH" != "hppa" ]; then
+   echo 'This should be run on a snake (ie Regulus, Alderaan, or Scorpius)';
+   exit 1; 
+fi
+
+if [ $# -eq 0 ]; then
+	echo "> Usage: profile_oldS 'profile_exec_arguments' <step>";
+	echo "> Step may be omitted, or used 1-whatever, to start at the";
+	echo "> specified step"
+	exit 1;
+fi
+if [ $# -eq 1 ]; then
+	echo "> Will profile using '$1'";
+	echo '> Starting from beginning of batch file';
+	PARGS=$1
+	STEP=1;
+fi
+if [ $# -eq 2 ]; then
+	echo "> Will profile using '$1'";
+	echo "> Starting from step $2";
+	PARGS=$1
+	STEP=$2;
+fi
+if [ $# -gt 2 ]; then
+	echo "> Usage: profile_oldS 'profile_exec_arguments' <step>";
+	echo "> Step may be omitted, or use 1 - 5, to start at the";
+	echo "> specified step"
+	exit 1;
+fi
+
+if [ $STEP -le 1 ]; then
+echo "> step 1: Making profile directory and linking *.S_new there";
+/bin/sh -c "mkdir profile "
+/bin/sh -c "cd profile; ln -s ../*.S_new .; \ls *.S_new > list"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+
+if [ $STEP -le 2 ]; then
+echo "> step 2: Generating probed executable for profiling";
+/bin/sh -c "cd profile;gen_Lprobe . profiling < list"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+
+if [ $STEP -le 3 ]; then
+echo "> step 3: Generating profile using '$PARGS'";
+/bin/sh -c "Lprofile profile/prof_exec.encoded profile/prof_exec.profile profile/prof_exec 'profile/prof_exec $PARGS'"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -le 4 ]; then
+echo "> step 4: Merging profile info into old lcode *.S";
+/bin/sh -c "ls *.S > list"
+/bin/sh -c "gen_Lget_old . profile/prof_exec.profile < list"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -le 5 ]; then
+echo "> step 5: Converting profiled old lcode *.S.p to new lcode *.S.p_new";
+/bin/sh -c "ls *.S.p > list"
+/bin/sh -c "gen_Loldtonew . < list";
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -gt 5 ]; then
+echo "> There is no such step $STEP";
+exit 1;
+fi
+
+echo "> done with profile_oldS"
+exit 0;

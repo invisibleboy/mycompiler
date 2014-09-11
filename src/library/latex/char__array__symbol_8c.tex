@@ -1,0 +1,153 @@
+\section{char\_\-array\_\-symbol.c File Reference}
+\label{char__array__symbol_8c}\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}char\_\-array\_\-symbol.h\char`\"{}}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ \bf{CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table} (char $\ast$\bf{name}, int expected\_\-size)
+\item 
+void \bf{CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table} (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table, void($\ast$free\_\-routine)(void $\ast$))
+\item 
+void \bf{CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table} (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table)
+\item 
+static unsigned int \bf{CHAR\_\-ARRAY\_\-hash\_\-char\_\-array} (char $\ast$char\_\-array, int array\_\-length)
+\item 
+\bf{CHAR\_\-ARRAY\_\-Symbol} $\ast$ \bf{CHAR\_\-ARRAY\_\-add\_\-symbol} (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table, char $\ast$char\_\-array, int array\_\-length, void $\ast$data)
+\item 
+\bf{CHAR\_\-ARRAY\_\-Symbol} $\ast$ \bf{CHAR\_\-ARRAY\_\-find\_\-symbol} (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table, char $\ast$char\_\-array, int array\_\-length)
+\item 
+void $\ast$ \bf{CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data} (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table, char $\ast$char\_\-array, int array\_\-length)
+\item 
+void \bf{CHAR\_\-ARRAY\_\-delete\_\-symbol} (\bf{CHAR\_\-ARRAY\_\-Symbol} $\ast$symbol, void($\ast$free\_\-routine)(void $\ast$))
+\item 
+void \bf{CHAR\_\-ARRAY\_\-print\_\-symbol\_\-table\_\-hash} (FILE $\ast$out, \bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{CHAR\_\-ARRAY\_\-Symbol\_\-pool} = NULL
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_add_symbol@{CHAR\_\-ARRAY\_\-add\_\-symbol}}
+\index{CHAR_ARRAY_add_symbol@{CHAR\_\-ARRAY\_\-add\_\-symbol}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CHAR\_\-ARRAY\_\-Symbol}$\ast$ CHAR\_\-ARRAY\_\-add\_\-symbol (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em char\_\-array}, int {\em array\_\-length}, void $\ast$ {\em data})}\label{char__array__symbol_8c_66efa3e6d08af925d3d14d8b870fb6b4}
+
+
+
+
+Definition at line 278 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::array\_\-length, CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-hash\_\-char\_\-array(), CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table(), CHAR\_\-ARRAY\_\-Symbol\_\-pool, CHAR\_\-ARRAY\_\-Symbol::data, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-mask, CHAR\_\-ARRAY\_\-Symbol::hash\_\-val, CHAR\_\-ARRAY\_\-Symbol\_\-Table::head\_\-symbol, I\_\-punt(), L\_\-alloc(), CHAR\_\-ARRAY\_\-Symbol\_\-Table::name, CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, CHAR\_\-ARRAY\_\-Symbol::next\_\-symbol, NULL, CHAR\_\-ARRAY\_\-Symbol::prev\_\-symbol, CHAR\_\-ARRAY\_\-Symbol\_\-Table::resize\_\-size, CHAR\_\-ARRAY\_\-Symbol\_\-Table::symbol\_\-count, CHAR\_\-ARRAY\_\-Symbol::table, and CHAR\_\-ARRAY\_\-Symbol\_\-Table::tail\_\-symbol.
+
+Referenced by new\_\-Func\_\-Name\_\-List().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_delete_symbol@{CHAR\_\-ARRAY\_\-delete\_\-symbol}}
+\index{CHAR_ARRAY_delete_symbol@{CHAR\_\-ARRAY\_\-delete\_\-symbol}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CHAR\_\-ARRAY\_\-delete\_\-symbol (\bf{CHAR\_\-ARRAY\_\-Symbol} $\ast$ {\em symbol}, void($\ast$)(void $\ast$) {\em free\_\-routine})}\label{char__array__symbol_8c_8da46d556f8ea7dadcc01519f27ff54d}
+
+
+
+
+Definition at line 509 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-Symbol\_\-pool, CHAR\_\-ARRAY\_\-Symbol::data, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-mask, CHAR\_\-ARRAY\_\-Symbol::hash\_\-val, CHAR\_\-ARRAY\_\-Symbol\_\-Table::head\_\-symbol, L\_\-free(), CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, CHAR\_\-ARRAY\_\-Symbol::next\_\-symbol, NULL, CHAR\_\-ARRAY\_\-Symbol::prev\_\-hash, CHAR\_\-ARRAY\_\-Symbol::prev\_\-symbol, CHAR\_\-ARRAY\_\-Symbol\_\-Table::symbol\_\-count, CHAR\_\-ARRAY\_\-Symbol::table, and CHAR\_\-ARRAY\_\-Symbol\_\-Table::tail\_\-symbol.\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_delete_symbol_table@{CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table}}
+\index{CHAR_ARRAY_delete_symbol_table@{CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table}, void($\ast$)(void $\ast$) {\em free\_\-routine})}\label{char__array__symbol_8c_623f7b33cd712a2c04b56b2eea7787e4}
+
+
+
+
+Definition at line 156 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-Symbol\_\-pool, CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool, CHAR\_\-ARRAY\_\-Symbol::data, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::head\_\-symbol, L\_\-free(), CHAR\_\-ARRAY\_\-Symbol\_\-Table::name, CHAR\_\-ARRAY\_\-Symbol::next\_\-symbol, and NULL.
+
+Referenced by delete\_\-Func\_\-Name\_\-List().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_find_symbol@{CHAR\_\-ARRAY\_\-find\_\-symbol}}
+\index{CHAR_ARRAY_find_symbol@{CHAR\_\-ARRAY\_\-find\_\-symbol}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CHAR\_\-ARRAY\_\-Symbol}$\ast$ CHAR\_\-ARRAY\_\-find\_\-symbol (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em char\_\-array}, int {\em array\_\-length})}\label{char__array__symbol_8c_c71b29cfaaab8587714941d516de2424}
+
+
+
+
+Definition at line 402 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::array\_\-length, CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-hash\_\-char\_\-array(), CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-mask, CHAR\_\-ARRAY\_\-Symbol::hash\_\-val, I\_\-punt(), CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, and NULL.
+
+Referenced by is\_\-in\_\-Func\_\-Name\_\-List(), and new\_\-Func\_\-Name\_\-List().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_find_symbol_data@{CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data}}
+\index{CHAR_ARRAY_find_symbol_data@{CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em char\_\-array}, int {\em array\_\-length})}\label{char__array__symbol_8c_b546ec2032db6c4b254c1ab5c507d294}
+
+
+
+
+Definition at line 457 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::array\_\-length, CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-hash\_\-char\_\-array(), CHAR\_\-ARRAY\_\-Symbol::data, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-mask, CHAR\_\-ARRAY\_\-Symbol::hash\_\-val, I\_\-punt(), CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, and NULL.\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_hash_char_array@{CHAR\_\-ARRAY\_\-hash\_\-char\_\-array}}
+\index{CHAR_ARRAY_hash_char_array@{CHAR\_\-ARRAY\_\-hash\_\-char\_\-array}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static unsigned int CHAR\_\-ARRAY\_\-hash\_\-char\_\-array (char $\ast$ {\em char\_\-array}, int {\em array\_\-length})\hspace{0.3cm}{\tt  [static]}}\label{char__array__symbol_8c_b0bf626c112e061c6b390372e10a1923}
+
+
+
+
+Definition at line 243 of file char\_\-array\_\-symbol.c.
+
+Referenced by CHAR\_\-ARRAY\_\-add\_\-symbol(), CHAR\_\-ARRAY\_\-find\_\-symbol(), and CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_new_symbol_table@{CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table}}
+\index{CHAR_ARRAY_new_symbol_table@{CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table}$\ast$ CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table (char $\ast$ {\em name}, int {\em expected\_\-size})}\label{char__array__symbol_8c_092b50cb132d4edfa42c9fdbd1496444}
+
+
+
+
+Definition at line 81 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol\_\-pool, CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-mask, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-size, CHAR\_\-ARRAY\_\-Symbol\_\-Table::head\_\-symbol, I\_\-punt(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), CHAR\_\-ARRAY\_\-Symbol\_\-Table::name, NULL, CHAR\_\-ARRAY\_\-Symbol\_\-Table::resize\_\-size, CHAR\_\-ARRAY\_\-Symbol\_\-Table::symbol\_\-count, and CHAR\_\-ARRAY\_\-Symbol\_\-Table::tail\_\-symbol.
+
+Referenced by new\_\-Func\_\-Name\_\-List().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_print_symbol_table_hash@{CHAR\_\-ARRAY\_\-print\_\-symbol\_\-table\_\-hash}}
+\index{CHAR_ARRAY_print_symbol_table_hash@{CHAR\_\-ARRAY\_\-print\_\-symbol\_\-table\_\-hash}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CHAR\_\-ARRAY\_\-print\_\-symbol\_\-table\_\-hash (FILE $\ast$ {\em out}, \bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table})}\label{char__array__symbol_8c_5a537deea026b3c1ae109bacd5c7b349}
+
+
+
+
+Definition at line 563 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol::array\_\-length, CHAR\_\-ARRAY\_\-Symbol::char\_\-array, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash, CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-size, CHAR\_\-ARRAY\_\-Symbol\_\-Table::name, CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, NULL, and CHAR\_\-ARRAY\_\-Symbol\_\-Table::symbol\_\-count.\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_resize_symbol_table@{CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table}}
+\index{CHAR_ARRAY_resize_symbol_table@{CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table (\bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table} $\ast$ {\em table})}\label{char__array__symbol_8c_a82e108e94e034614ccbc8bd3d983e0d}
+
+
+
+
+Definition at line 186 of file char\_\-array\_\-symbol.c.
+
+References CHAR\_\-ARRAY\_\-Symbol\_\-Table::hash\_\-size, CHAR\_\-ARRAY\_\-Symbol::hash\_\-val, CHAR\_\-ARRAY\_\-Symbol\_\-Table::head\_\-symbol, I\_\-punt(), CHAR\_\-ARRAY\_\-Symbol::next\_\-hash, CHAR\_\-ARRAY\_\-Symbol::next\_\-symbol, NULL, and CHAR\_\-ARRAY\_\-Symbol::prev\_\-hash.
+
+Referenced by CHAR\_\-ARRAY\_\-add\_\-symbol().
+
+\subsection{Variable Documentation}
+\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_Symbol_pool@{CHAR\_\-ARRAY\_\-Symbol\_\-pool}}
+\index{CHAR_ARRAY_Symbol_pool@{CHAR\_\-ARRAY\_\-Symbol\_\-pool}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{CHAR\_\-ARRAY\_\-Symbol\_\-pool} = NULL}\label{char__array__symbol_8c_50e60edb595076c762b08b6adc3de827}
+
+
+
+
+Definition at line 68 of file char\_\-array\_\-symbol.c.
+
+Referenced by CHAR\_\-ARRAY\_\-add\_\-symbol(), CHAR\_\-ARRAY\_\-delete\_\-symbol(), CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table(), and CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table().\index{char_array_symbol.c@{char\_\-array\_\-symbol.c}!CHAR_ARRAY_Symbol_Table_pool@{CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool}}
+\index{CHAR_ARRAY_Symbol_Table_pool@{CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool}!char_array_symbol.c@{char\_\-array\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{CHAR\_\-ARRAY\_\-Symbol\_\-Table\_\-pool} = NULL}\label{char__array__symbol_8c_a97438175e305a99515e4018dad2d1d2}
+
+
+
+
+Definition at line 67 of file char\_\-array\_\-symbol.c.
+
+Referenced by CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table(), and CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table().

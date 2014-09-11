@@ -1,0 +1,125 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+#
+# SplitAll <ext>
+#
+# John W. Sias
+# IMPACT - University of Illinois at Urbana-Champaign
+# 27 August 98
+#
+# Lsplit driver to correctly split multiple Lcode files.
+# ----------------------------------------------------------------------------
+# Splits all files having extension <ext> into files of the form f_(\d+).<ext>
+#
+# flag -d deletes original file
+#
+
+$farg = shift || die "Usage: SplitAll {-d} <ext>\n";
+
+if ( $farg eq "-d" ) {
+    $delete_orig = 1;
+    $in_ext = shift || die "Usage: SplitAll {-d} <ext>\n";
+} else {
+  (-f "data.$in_ext") && die "Move data.$in_ext out of the way!\n";
+  $delete_orig = 0;
+  $in_ext = $farg;
+}
+
+$out_ext = $in_ext . "~" . $$;
+
+$i = 0;
+
+while (<*>) {
+    if (/^f_(\d+).$in_ext$/) {
+	die "SplitAll failed: ",
+	"Remove files f_*.$in_ext before running SplitAll.\n";
+    }
+}
+
+while(<*.$in_ext>) {
+    $retval = system "Lsplit","-i","$_","-Foutput_file_extension=$i.$out_ext";
+    if ($retval) {
+	unlink <*.$out_ext>;
+	die "SplitAll failed: Lsplit error.\n";
+    }    
+    if ($delete_orig) {
+	unlink($_);
+    }
+    $i++;
+}
+
+#remove empty files, rename others
+
+$i = 0;
+
+(-f "data.$in_ext") && unlink "data.$in_ext";
+
+while(<data.*.$out_ext>) {
+  system "cat $_ >> data.${in_ext}";
+  unlink "$_";
+}
+
+while(<*.$out_ext>) {
+    if ((stat("$_"))[7] == 0) {
+	unlink($_);
+    }
+    else {
+	$new = sprintf ("f_%06d.%s", $i, $in_ext);
+	$i++;
+	rename($_,$new);
+    }
+}
+
+__END__

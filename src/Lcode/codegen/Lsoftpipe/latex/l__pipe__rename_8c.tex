@@ -1,0 +1,164 @@
+\section{l\_\-pipe\_\-rename.c File Reference}
+\label{l__pipe__rename_8c}\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$alloca.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-rename.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-util.h\char`\"{}}\par
+{\tt \#include $<$Lcode/r\_\-regalloc.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-opti.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Lpipe\-Live\-Range}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-Lpipe\-Live\-Range} \bf{Lpipe\-Live\-Range}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int \bf{L\_\-fix\_\-exposed\_\-pred\_\-wrt} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$pipe\_\-cb, int vreg)
+\item 
+void \bf{R\_\-print\_\-Lpipe\-Live\-Range} (\bf{Lpipe\-Live\-Range} $\ast$lr)
+\item 
+static void \bf{Lpipe\_\-create\_\-rename\_\-comp\_\-code\_\-block} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$pipe\_\-cb, L\_\-Oper $\ast$exit\_\-branch)
+\item 
+void \bf{Lpipe\_\-create\_\-comp\_\-code\_\-blocks} (L\_\-Func $\ast$fn, L\_\-Inner\_\-Loop $\ast$loop)
+\item 
+static void \bf{Lpipe\_\-rename\_\-mac} (L\_\-Func $\ast$fn, L\_\-Operand $\ast$mopd, L\_\-Inner\_\-Loop $\ast$inl)
+\item 
+int \bf{Lpipe\_\-rename\_\-defined\_\-macros} (L\_\-Func $\ast$fn, L\_\-Inner\_\-Loop $\ast$inl)
+\item 
+int \bf{Lpipe\_\-fix\_\-infinite\_\-lifetimes} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop} (L\_\-Func $\ast$fn, L\_\-Inner\_\-Loop $\ast$loop)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{Lpipe\-Live\-Range} $\ast$$\ast$ \bf{Lpipe\-Live\-Ranges}
+\item 
+static int \bf{num\-Lpipe\-Live\-Range}
+\end{CompactItemize}
+
+
+\subsection{Typedef Documentation}
+\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!LpipeLiveRange@{LpipeLiveRange}}
+\index{LpipeLiveRange@{LpipeLiveRange}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Lpipe\-Live\-Range}  \bf{Lpipe\-Live\-Range}}\label{l__pipe__rename_8c_97ac298743960bdda8547bdccb09b0df}
+
+
+
+
+\subsection{Function Documentation}
+\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!L_fix_exposed_pred_wrt@{L\_\-fix\_\-exposed\_\-pred\_\-wrt}}
+\index{L_fix_exposed_pred_wrt@{L\_\-fix\_\-exposed\_\-pred\_\-wrt}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-fix\_\-exposed\_\-pred\_\-wrt (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em pipe\_\-cb}, int {\em vreg})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__rename_8c_98c8a789b7d50b4785825a65dfecb6e7}
+
+
+
+
+Definition at line 292 of file l\_\-pipe\_\-rename.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-debug, and Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands().
+
+Referenced by Lpipe\_\-fix\_\-infinite\_\-lifetimes().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_create_comp_code_blocks@{Lpipe\_\-create\_\-comp\_\-code\_\-blocks}}
+\index{Lpipe_create_comp_code_blocks@{Lpipe\_\-create\_\-comp\_\-code\_\-blocks}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-create\_\-comp\_\-code\_\-blocks (L\_\-Func $\ast$ {\em fn}, L\_\-Inner\_\-Loop $\ast$ {\em loop})}\label{l__pipe__rename_8c_fffde84a48fda4a4a865640c272c2220}
+
+
+
+
+Definition at line 152 of file l\_\-pipe\_\-rename.c.
+
+References L\_\-split\_\-arc(), and Lpipe\_\-create\_\-rename\_\-comp\_\-code\_\-block().
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_create_rename_comp_code_block@{Lpipe\_\-create\_\-rename\_\-comp\_\-code\_\-block}}
+\index{Lpipe_create_rename_comp_code_block@{Lpipe\_\-create\_\-rename\_\-comp\_\-code\_\-block}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-create\_\-rename\_\-comp\_\-code\_\-block (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em pipe\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__rename_8c_1b33fd0f1447aaf5a66338f282158a1e}
+
+
+
+
+Definition at line 117 of file l\_\-pipe\_\-rename.c.
+
+References exit\_\-cb, L\_\-annotate\_\-oper(), and L\_\-split\_\-arc().
+
+Referenced by Lpipe\_\-create\_\-comp\_\-code\_\-blocks().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_fix_infinite_lifetimes@{Lpipe\_\-fix\_\-infinite\_\-lifetimes}}
+\index{Lpipe_fix_infinite_lifetimes@{Lpipe\_\-fix\_\-infinite\_\-lifetimes}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-fix\_\-infinite\_\-lifetimes (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb})}\label{l__pipe__rename_8c_7dc8d4655a2ef52a3198fafa93d3ab1a}
+
+
+
+
+Definition at line 335 of file l\_\-pipe\_\-rename.c.
+
+References L\_\-fix\_\-exposed\_\-pred\_\-wrt().
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_rename_defined_macros@{Lpipe\_\-rename\_\-defined\_\-macros}}
+\index{Lpipe_rename_defined_macros@{Lpipe\_\-rename\_\-defined\_\-macros}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-rename\_\-defined\_\-macros (L\_\-Func $\ast$ {\em fn}, L\_\-Inner\_\-Loop $\ast$ {\em inl})}\label{l__pipe__rename_8c_f87757396ae9cd301b0f54e3871e342a}
+
+
+
+
+Definition at line 242 of file l\_\-pipe\_\-rename.c.
+
+References Lpipe\_\-rename\_\-mac().
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_rename_disj_vregs_in_loop@{Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop}}
+\index{Lpipe_rename_disj_vregs_in_loop@{Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop (L\_\-Func $\ast$ {\em fn}, L\_\-Inner\_\-Loop $\ast$ {\em loop})}\label{l__pipe__rename_8c_c5fcbc92b251c0f8652e1aef2f1ea203}
+
+
+
+
+Definition at line 353 of file l\_\-pipe\_\-rename.c.
+
+References Lpipe\-Live\-Ranges, M\_\-arch, M\_\-TI, M\_\-X86, and num\-Lpipe\-Live\-Range.
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!Lpipe_rename_mac@{Lpipe\_\-rename\_\-mac}}
+\index{Lpipe_rename_mac@{Lpipe\_\-rename\_\-mac}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-rename\_\-mac (L\_\-Func $\ast$ {\em fn}, L\_\-Operand $\ast$ {\em mopd}, L\_\-Inner\_\-Loop $\ast$ {\em inl})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__rename_8c_fb7141767cb6ee389d450b56f31cc41c}
+
+
+
+
+Definition at line 180 of file l\_\-pipe\_\-rename.c.
+
+References L\_\-annotate\_\-oper(), and Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands().
+
+Referenced by Lpipe\_\-rename\_\-defined\_\-macros().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!R_print_LpipeLiveRange@{R\_\-print\_\-LpipeLiveRange}}
+\index{R_print_LpipeLiveRange@{R\_\-print\_\-LpipeLiveRange}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-print\_\-Lpipe\-Live\-Range (\bf{Lpipe\-Live\-Range} $\ast$ {\em lr})}\label{l__pipe__rename_8c_cc5acf4c525363e77a2c0e38dbe31139}
+
+
+
+
+Definition at line 102 of file l\_\-pipe\_\-rename.c.
+
+References \_\-Lpipe\-Live\-Range::def\_\-op, \_\-Lpipe\-Live\-Range::def\_\-oper, \_\-Lpipe\-Live\-Range::live\_\-out\_\-op, \_\-Lpipe\-Live\-Range::op, \_\-Lpipe\-Live\-Range::ref\_\-op, and \_\-Lpipe\-Live\-Range::vreg.
+
+\subsection{Variable Documentation}
+\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!LpipeLiveRanges@{LpipeLiveRanges}}
+\index{LpipeLiveRanges@{LpipeLiveRanges}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Lpipe\-Live\-Range}$\ast$$\ast$ \bf{Lpipe\-Live\-Ranges}\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__rename_8c_32c2b4ca644c1642c0d5681fcb3ab0a1}
+
+
+
+
+Definition at line 88 of file l\_\-pipe\_\-rename.c.
+
+Referenced by Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop().\index{l_pipe_rename.c@{l\_\-pipe\_\-rename.c}!numLpipeLiveRange@{numLpipeLiveRange}}
+\index{numLpipeLiveRange@{numLpipeLiveRange}!l_pipe_rename.c@{l\_\-pipe\_\-rename.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{num\-Lpipe\-Live\-Range}\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__rename_8c_653b8519151fd1e1c24fe18695b3c87f}
+
+
+
+
+Definition at line 89 of file l\_\-pipe\_\-rename.c.
+
+Referenced by Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop().

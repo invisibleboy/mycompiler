@@ -1,0 +1,993 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Profiles lcode using the portable emulator.
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script rewritten by John Gyllenhaal, Wen-mei Hwu 12/94
+#   Enhanced to use new bench_info framework by John Gyllenhaal 1/99
+#   Enhanced to be portable (and renamed) by IMPACT Technologies Inc (JCG) 1/99
+
+# set up environment with default values:
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+EXT="";
+EXT_DESC="";
+STAT_DESC="_p";
+CHECK_DESC="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="user_specified";
+SHOW=0;
+CLEAN=1;
+VERBOSE=0;
+BENCHMARK="NONE";
+CPREFIX="";
+ARGS="";
+CHECK="";
+CLEANUP="";
+SAVEBIN=0;
+DOCHECK=1;  # Check even "NONE" benchmark
+DO_STATS=0;
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+PFM_ADDARGS="";
+PFSAM_FLAGS="";
+# Passed to merge_pfsam_new.pl to indicate the format of the assembly source.
+# Defaults to ias format.
+GNU_OR_IAS="-ias";
+
+# PMC based sampling -- defaults
+
+MODE="TEST";
+UKM="-u";
+UKMN="u";
+PFM_DFLT_EVENT="CPU_CYCLES";
+PFM_DFLT_RATE=1024;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    EXE="$1";
+
+    if [ ! -x $EXE ]; then
+      echo "Error: executable isn't";
+      exit -1;
+    fi
+
+    # skip the 1 set arguments
+    shift;
+else
+    VALID_ARGS=0;
+fi
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]; do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: gen_pfmon does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_pfmon expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            shift;;
+
+        -train|-eval)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: gen_profiled_lcode does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION";;
+
+        -bench)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_pfmon expects an argument after $OPTION"
+               exit 1;
+            fi
+            BENCHMARK="$1";
+            echo "> Using settings for '${BENCHMARK}'";
+            shift;;
+
+	-setup)
+	    SETUP="$1";
+	    shift;
+	    USE_USER_SETUP=1;
+	    echo "> Setup text set to '${SETUP}'";;
+	
+	-cprefix)
+	    CPREFIX="$1";
+	    shift;
+	    USE_USER_CPREFIX=1;
+	    echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+	-args)
+	    ARGS="$1";
+            DESCRIPTION="(user specified)";
+	    shift;
+	    USE_USER_ARGS=1;
+	    echo "> Args set to '${ARGS}'";;
+	
+	-check)
+	    CHECK="$1";
+	    shift;
+	    DOCHECK=1;
+	    USE_USER_CHECK=1;
+	    echo "> Check text set to '${CHECK}'";;
+
+	-cleanup)
+	    CLEANUP="$1";
+	    shift;
+	    USE_USER_CLEANUP=1;
+	    echo "> Cleanup text set to '${CLEANUP}'";;
+
+        # Silently ignore empty arguments (compile_bench generates them)
+	"")
+	    IGNORED_ARG=1;;  
+
+        -show)
+	    echo "> Show commands mode on (commands prefixed with +)"
+	    SHOW=1;;
+
+	-noclean)
+	    echo "> Will not clean up temp files"
+            PROBE_FLAGS="${PROBE_FLAGS} -noclean";
+	    CLEAN=0;;
+
+	-verbose)
+	    echo "> Verbose mode on"
+	    VERBOSE=1;;
+
+	-u)
+	    echo "> User mode measurement only"
+	    UKMN="u"
+	    UKM="-u";;
+
+	-k)
+	    echo "> Kernel mode measurement only"
+	    UKMN="k"
+	    UKM="-k";;
+
+	-uk|-ku)
+	    echo "> User and kernel mode measurement"
+	    UKMN="uk"
+	    UKM="-k -u";;
+
+	-pfsam|-pfmon|-pfcache)
+	    if [ "$MODE" != "TEST" ]; then
+	       echo "Error: options $MODE and $OPTION are incompatible";
+	       exit 1;
+	    fi;
+
+	    case $OPTION in
+               -pfsam) MODE="PFSAM";;
+               -pfmon) MODE="PFMON";;
+               -pfcache) MODE="PFCACHE"; PFM_CONF="pfcache";;
+            esac;
+
+            if [ "$MODE" == "PFMON" -o "$MODE" == "PFSAM" ]; then
+	       if [ $# -eq 0 ]; then
+                  echo "Error: gen_pfmon expects a configuration after -pfsam";
+                  exit 1;
+               fi;
+	       PFM_CONF="$1";
+      	       shift;
+            fi
+
+            if [ "$MODE" != "PFMON" ]; then
+               if [ $# -eq 0 ]; then
+                  echo "Error: gen_pfmon expects an asm file after -pfsam";
+                  exit 1;
+               fi;
+               ASM_FILE="$1";
+	       if [ ! -f $ASM_FILE ]; then
+                  echo "Error: can't open asm file $ASM_FILE";
+                  exit 1;
+               fi;
+               shift;
+	    fi;
+
+	    PFM_EVENT=${PFM_DFLT_EVENT};
+	    PFSAM_RATE=${PFM_DFLT_RATE};
+	    PFMON_FMT=iip;
+	    case ${PFM_CONF} in 
+		brp-be)
+		    PFM_EVENT="BE_BR_MISPRED_DETAIL_ANY";
+		    PFSAM_RATE="1024";;
+		brp-fe)
+		    PFM_EVENT="BR_MISPRED_DETAIL_ALL_WRONG_PATH,BR_MISPRED_DETAIL_ALL_WRONG_TARGET";
+		    PFSAM_RATE="1024,1024";;
+		brp-flush)
+		    PFM_EVENT="BE_FLUSH_BUBBLE_BRU";
+		    PFSAM_RATE="1024";;
+		brp)
+		    PFM_EVENT="BR_MISPRED_DETAIL_ALL_ALL_PRED,BR_MISPRED_DETAIL_ALL_WRONG_PATH,BR_MISPRED_DETAIL_ALL_WRONG_TARGET";
+		    PFSAM_RATE="1024,1024,1024";;
+		brp2)
+		    PFM_EVENT="BR_MISPRED_DETAIL2_ALL_ALL_UNKNOWN_PRED,BR_MISPRED_DETAIL2_ALL_UNKNOWN_PATH_WRONG_PATH";
+		    PFSAM_RATE="1024,1024";;
+	        btb)
+		    PFM_EVENT="BRANCH_EVENT";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="btb-ita2";;
+		ipc)
+		    PFSAM_FLAGS="${PFSAM_FLAGS} -ipc";
+		    PFM_EVENT="CPU_CYCLES,IA64_INST_RETIRED";
+		    PFSAM_RATE="1024,1024";;
+		ipclite)
+		    PFSAM_FLAGS="${PFSAM_FLAGS} -ipc";
+		    PFM_EVENT="CPU_CYCLES,IA64_INST_RETIRED";
+		    PFSAM_RATE="65536,65536";;
+		grstall)
+		    PFM_EVENT="BE_EXE_BUBBLE_GRALL,CPU_CYCLES";
+		    PFSAM_RATE="1024,1024";;
+		intldlat)
+		    PFSAM_FLAGS="${PFSAM_FLAGS} -tpct";
+		    PFM_EVENT="BE_EXE_BUBBLE_GRALL,BE_L1D_FPU_BUBBLE_L1D,CPU_CYCLES";
+		    PFSAM_RATE="1024,1024,1024";;
+		ripc)
+		    PFSAM_FLAGS="${PFSAM_FLAGS} -ripc";
+		    PFM_EVENT="IA64_INST_RETIRED,PREDICATE_SQUASHED_RETIRED,CPU_CYCLES,NOPS_RETIRED";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		ca1)
+		    PFM_EVENT="BACK_END_BUBBLE_ALL,BE_FLUSH_BUBBLE_BRU,BE_FLUSH_BUBBLE_XPN,BE_L1D_FPU_BUBBLE_ALL";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		ca2)
+		    PFM_EVENT="BE_EXE_BUBBLE_ALL,BE_EXE_BUBBLE_GRALL,BE_EXE_BUBBLE_GRGR";
+		    PFSAM_RATE="1024,1024,1024";;
+		ca3)
+		    PFM_EVENT="BE_RSE_BUBBLE_ALL,BACK_END_BUBBLE_FE";
+		    PFSAM_RATE="1024,1024";;
+		frall)
+		    PFM_EVENT="BE_EXE_BUBBLE_FRALL";
+		    PFSAM_RATE="1024";;
+		exest)
+		    PFM_EVENT="BE_EXE_BUBBLE_GRALL";
+		    PFSAM_RATE="1024";;
+		be_exe)
+		    PFM_EVENT="BE_EXE_BUBBLE_GRALL,BE_EXE_BUBBLE_GRGR,BE_EXE_BUBBLE_FRALL,BE_EXE_BUBBLE_ARCR_PR_CANCEL_BANK";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpu1)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_FPU,BE_L1D_FPU_BUBBLE_L1D,BE_L1D_FPU_BUBBLE_L1D_FULLSTBUF,BE_L1D_FPU_BUBBLE_L1D_DCURECIR";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpu2)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_HPW,BE_L1D_FPU_BUBBLE_L1D_FILLCONF,BE_L1D_FPU_BUBBLE_L1D_DCS,BE_L1D_FPU_BUBBLE_L1D_L2BPRESS";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpu3)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_TLB,BE_L1D_FPU_BUBBLE_L1D_LDCONF,BE_L1D_FPU_BUBBLE_L1D_LDCHK,BE_L1D_FPU_BUBBLE_L1D_NAT";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpu4)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_STBUFRECIR,BE_L1D_FPU_BUBBLE_L1D_NATCONF";
+		    PFSAM_RATE="1024,1024";;
+
+		stbrecir)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_STBUFRECIR";
+		    PFSAM_RATE="128";;
+
+		febw)
+		    PFM_EVENT="BE_LOST_BW_DUE_TO_FE_IMISS,BE_LOST_BW_DUE_TO_FE_TLBMISS,BE_LOST_BW_DUE_TO_FE_FEFLUSH,BE_LOST_BW_DUE_TO_FE_ALL";
+		    PFM_ADDARGS="--event-thresholds=1,1,1,1";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+
+		gr3dis)
+		    PFM_EVENT="CPU_CYCLES,INST_DISPERSED";
+		    PFM_ADDARGS="--event-thresholds=0,4";
+		    PFSAM_RATE="1024,1024";;
+
+		hisdis1)
+		    PFM_EVENT="CPU_CYCLES,DISP_STALLED,INST_DISPERSED,INST_DISPERSED";
+		    PFM_ADDARGS="--event-thresholds=0,0,1,2";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+
+		hisdis2)
+		    PFM_EVENT="INST_DISPERSED,INST_DISPERSED,INST_DISPERSED";
+		    PFM_ADDARGS="--event-thresholds=3,4,5";
+		    PFSAM_RATE="1024,1024,1024";;
+
+		be_starv1)
+		    PFM_EVENT="BE_LOST_BW_DUE_TO_FE_ALL,BE_LOST_BW_DUE_TO_FE_FEFLUSH,BE_LOST_BW_DUE_TO_FE_TLBMISS,BE_LOST_BW_DUE_TO_FE_IMISS";
+		    PFM_ADDARGS="--event-thresholds=1,1,1,1";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_starv2)
+		    PFM_EVENT="BE_LOST_BW_DUE_TO_FE_PLP,BE_LOST_BW_DUE_TO_FE_BR_ILOCK,BE_LOST_BW_DUE_TO_FE_BRQ,BE_LOST_BW_DUE_TO_FE_BI";
+		    PFM_ADDARGS="--event-thresholds=1,1,1,1";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_starv3)
+		    PFM_EVENT="BE_LOST_BW_DUE_TO_FE_FILL_RECIRC,BE_LOST_BW_DUE_TO_FE_BUBBLE,BE_LOST_BW_DUE_TO_FE_UNREACHED";
+		    PFM_ADDARGS="--event-thresholds=1,1,1";
+		    PFSAM_RATE="1024,1024,1024";;
+
+		be_l1d_fpu)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_HPW,BE_L1D_FPU_BUBBLE_L1D_LDCHK,BE_L1D_FPU_BUBBLE_L1D_FILLCONF,BE_L1D_FPU_BUBBLE_L1D_DCS";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpux)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_LDCHK,BE_L1D_FPU_BUBBLE_L1D_FILLCONF,BE_L1D_FPU_BUBBLE_L1D_DCS,BE_L1D_FPU_BUBBLE_L1D_STBUFRECIR";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpuy)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_FPU,BE_L1D_FPU_BUBBLE_L1D_FULLSTBUF,BE_L1D_FPU_BUBBLE_L1D_DCURECIR,BE_L1D_FPU_BUBBLE_L1D_NAT";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		be_l1d_fpu2)
+		    PFM_EVENT="BE_L1D_FPU_BUBBLE_L1D_L2BPRESS,BE_L1D_FPU_BUBBLE_L1D_TLB,BE_L1D_FPU_BUBBLE_L1D_LDCONF";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+	        fe_bub)
+		    PFM_EVENT="FE_BUBBLE_GROUP1,FE_BUBBLE_GROUP2,FE_BUBBLE_ALLBUT_IBFULL,FE_BUBBLE_FILL_RECIRC";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+		starv)
+		    PFM_EVENT="BE_LOST_BW_DUE_TO_FE_FEFLUSH,BE_LOST_BW_DUE_TO_FE_UNREACHED,BE_LOST_BW_DUE_TO_FE_IMISS,BE_LOST_BW_DUE_TO_FE_TLBMISS";
+		    PFSAM_RATE="1024,1024,1024,1024";
+		    PFM_ADDARGS="--event-thresholds=1,1,1,1";;
+		implicit)
+		    PFM_EVENT="SYLL_NOT_DISPERSED_IMPL";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="--event-thresholds=1";;
+		implfrac)
+		    PFM_EVENT="SYLL_NOT_DISPERSED_IMPL,DISP_STALLED,CPU_CYCLES";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="--event-thresholds=1,0,0";;
+		iear0)
+		    PFM_EVENT="L1I_EAR_CACHE_LAT0";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="cache-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		iear4)
+		    PFM_EVENT="L1I_EAR_CACHE_LAT4";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="cache-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		iear8)
+		    PFM_EVENT="L1I_EAR_CACHE_LAT8";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="cache-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		iearmiss)
+		    PFM_EVENT="L1I_EAR_CACHE_LAT4";
+		    PFSAM_RATE="128";
+		    PFMON_FMT="cache-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		pfcache)
+		    PFM_EVENT="DATA_EAR_CACHE_LAT4";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="cache-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		dtlbmiss)
+		    PFM_EVENT="DATA_EAR_TLB_ALL";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="dtlb-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		dtlbfault)
+		    PFM_EVENT="DATA_EAR_TLB_FAULT";
+		    PFSAM_RATE="1024";
+		    PFMON_FMT="dtlb-ita2";
+		    PFSAM_FLAGS="-bundles";
+		    PFM_ADDARGS="";;
+		itlbmiss)
+		    PFM_EVENT="ITLB_MISSES_FETCH_L2ITLB";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="";;
+		fest)
+		    PFSAM_FLAGS="${PFSAM_FLAGS} -ipc";
+		    PFM_EVENT="CPU_CYCLES,BACK_END_BUBBLE_FE";
+		    PFSAM_RATE="1024,1024";;
+		itlb)
+		    PFM_EVENT="L1I_READS,ITLB_MISSES_FETCH_L1ITLB,ITLB_MISSES_FETCH_L2ITLB,ITLB_MISSES_FETCH_ALL";
+		    PFSAM_RATE="1024,1024,1024,1024";
+		    PFM_ADDARGS="";;
+		dtlb)
+		    PFM_EVENT="DATA_REFERENCES_SET0,L2DTLB_MISSES";
+		    PFSAM_RATE="1024,1024";
+		    PFM_ADDARGS="";;
+		rse)
+		    PFM_EVENT="CPU_CYCLES,BE_RSE_BUBBLE_ALL";
+		    PFSAM_RATE="1024,1024";
+		    PFM_ADDARGS="";;
+		xpn)
+		    PFM_EVENT="BE_FLUSH_BUBBLE_XPN";
+		    PFSAM_RATE="32";;
+                xtd)
+		    PFM_EVENT="IA64_TAGGED_INST_RETIRED_IBRP0_PMC8";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="--opc-match8=0x40040001020FFFFD";;
+                cmp)
+		    PFM_EVENT="IA64_TAGGED_INST_RETIRED_IBRP2_PMC8";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="--opc-match8=0xcc0000010fffffff";;
+                cmp-off)
+		    PFM_EVENT="PREDICATE_SQUASHED_RETIRED";
+		    PFSAM_RATE="1024";
+		    PFM_ADDARGS="--opc-match8=0xcc0000010fffffff";;
+
+		om-xma-shift)
+		    PFM_EVENT="IA64_TAGGED_INST_RETIRED_IBRP2_PMC8,IA64_TAGGED_INST_RETIRED_IBRP3_PMC9";
+		    PFM_DESC="xma fixed-point multiply add, shift inst (I1~I17)";
+		    PFSAM_RATE="1024,1024";
+		    PFM_ADDARGS="--opc-match8=0x2e80000101ffffff --opc-match9=0x440000010fffffff";;
+
+		om-shift)
+		    PFM_EVENT="IA64_TAGGED_INST_RETIRED_IBRP2_PMC8";
+		    PFM_DESC_TESTB14="shift inst (I1~I17)";
+		    PFM_ADDARGS="--opc-match8=0x2e80000101ffffff";;
+
+		stores)
+		    PFM_EVENT="IA64_TAGGED_INST_RETIRED_IBRP2_PMC8,STORES_RETIRED";
+		    PFM_ADDARGS="--opc-match8=0x846000010e7fffff";
+		    PFSAM_RATE="1024,1024";;
+
+		p0stores)
+		    PFM_EVENT="PREDICATE_SQUASHED_RETIRED";
+		    PFM_ADDARGS="--opc-match8=0x846000010e7fffff";
+		    PFSAM_RATE="1024";;
+
+		ds1)
+                   PFM_EVENT="INST_CHKA_LDC_ALAT_ALL,INST_FAILED_CHKA_LDC_ALAT_ALL";;
+
+		instcache)
+		    PFM_EVENT="L1I_READS,L1I_PREFETCHES,L2_INST_PREFETCHES,L2_INST_DEMAND_READS";
+		    PFSAM_RATE="1024,1024,1024,1024";;
+
+		fpsir)
+		    PFM_EVENT="FP_TRUE_SIRSTALL,FP_FALSE_SIRSTALL";
+		    PFSAM_RATE="1024,1024";;
+
+		loads)
+		    PFM_EVENT="LOADS_RETIRED,MISALIGNED_LOADS_RETIRED";
+		    PFSAM_RATE="1048576,1048576";;
+
+		stores)
+		    PFM_EVENT="STORES_RETIRED,MISALIGNED_STORES_RETIRED";
+		    PFSAM_RATE="1024,1024";;
+	        tlb)
+		    PFM_EVENT="ITLB_MISSES_FETCH_L1ITLB,L1DTLB_TRANSFER,HPW_DATA_REFERENCES";
+		    PFSAM_RATE="1024,1024,1024";;
+		*)
+		    echo "Error: Invalid pfsam configuration ${PFM_CONF}";
+		    VALID_ARGS=0;;
+	    esac
+	    ;;
+
+	-ias)
+	    echo "> Assume ias formatted assembly source";
+	    GNU_OR_IAS="-ias";;
+
+	-gnu)
+	    echo "> Assume GNU as formatted assembly source";
+	    GNU_OR_IAS="-gnu";;
+
+	-bundles)
+	    echo "> Turn on bundle output";
+	    PFSAM_FLAGS="${PFSAM_FLAGS} -bundles";;
+
+	*)
+	    echo "Error: Unknown option '${OPTION}'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+# Add the -ias or -gnu flag to PFSAM_FLAGS
+PFSAM_FLAGS="${PFSAM_FLAGS} ${GNU_OR_IAS}"
+
+# Don't check if already in error state
+if [ $VALID_ARGS -eq 1 ]; then
+   # Make sure -stats is used only with scheduled im files
+   if [ $DO_STATS -eq 1 -a "$EXT" != "" ]; then
+      case $EXT in      
+          # Must have im file
+          *im*)
+             VALID_ARGS=1;;
+          
+          # Punt otherwise
+          *)
+             echo " "
+             echo "Error: Expect *im* ext with -stats option, not '${EXT}'";
+             echo " "
+             exit 1;
+      esac
+   fi
+fi
+
+# Don't bother with finding benchmark info if already in an error state
+if [ $VALID_ARGS -eq 1  ]; then
+    #
+    #       Find the benchmark info
+    #
+    # Find the benchmark dir if not user specified
+    if [ $FIND_BENCH_DIR -eq 1 ]; then
+      BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+      if [ "$?" != 0 ]; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+        exit 1;
+      fi
+    fi
+    echo " ";
+    echo "> Will use the execution info for ${BENCHMARK} in:"
+    echo ">   $BENCH_DIR"
+
+    # Get and verify benchmark inputs
+    INPUT_ERROR_CODE=0;
+
+    # Handle -prefix
+    if [ "$INPUT_OPTION" = "-prefix" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -input
+    elif [ "$INPUT_OPTION" = "-input" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -train
+    elif [ "$INPUT_OPTION" = "-train" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -ref
+    elif [ "$INPUT_OPTION" = "-eval" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle default cause, using eval_inputs
+    elif [ "$INPUT_OPTION" = "" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+    fi
+
+    if [ $INPUT_ERROR_CODE != 0 ]; then
+      echo " "
+      echo "> Exiting gen_pfmon, find_bench_inputs returned this error message:"
+      echo "$INPUT_LIST";
+      exit 1;
+    fi
+
+    echo " "
+    echo "> The following input(s) will be used for Lcode profiling:"
+    echo ">   $INPUT_LIST"
+fi
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: gen_pfmon executable [options]";
+    echo '> ';
+    echo '> Profiles lcode using the settings specified in the options';
+    echo '> ';
+    echo '> Zero or more of the following options may be specified';
+    echo '> ';
+    echo '> General Options (source ext, prof mode, bench_info settings, etc):';
+    echo '>   -test_only         only tests if lcode works properly (no profiling)';
+    echo ">   -ext 'ext'         uses files in dir with .ext, instead of file list";
+    echo '>   -stats             generates .stat files (Lstatic, for *im* files only!)';
+    echo ">   -bench 'name'      uses settings for 'name' instead of simple defaults";
+    echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+    echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name(s)"   run with "name(s)" instead of project'\''s EVAL_INPUTS';
+    echo '>   -prefix "prefix"   run with "prefix*" instead of project'\''s EVAL_INPUTS';
+    echo '>   -verbose           prints message at every step';
+    echo '>   -verbose_probe     turns on verbose during probing';
+    echo '>   -show              shows script commands (uses set -x)';
+    echo '>   -noclean           prevents clean up of temp files';
+    echo '>   -loop_iters        generates loop iteration info';
+    echo '>   -flush_trace       flushes trace buffer at every op (slow, for debug only)';
+    echo '>   -ver               prints info attribute contents of input Lcode';
+    echo '>   -nover             suppress version checking on input Lcode info attributes';
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -ansi              use Ansi-C compatible compilation mode';
+    echo '>   -krc               use K&R C compatible compilation mode';
+    echo '>   -static            use static libraries (default if STATIC_REQUIRED/NONE)';
+    echo '>   -shared            use shared libraries (default if SHARED_REQUIRED)';
+    echo '>   -optimize          generate optimized emulation executable';
+    echo '>   -debug             generate debugable emulation executable';
+    echo ">   -lib_dir 'dir'     also search 'dir' for libs";
+    echo ">   -Ldir              also search 'dir' for libs (cc-like version of -lib_dir)";
+    echo ">   -add_lib 'lib'     also link in 'lib'";
+    echo ">   -llibrary          also link in 'library' (cc-like version of -add_lib)";
+    echo ">   -f2c               links in f2c libs (Dont use! Compile in f2c lib source.)";
+    echo "> ";
+    echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+    echo ">   -setup 'text'      Runs 'text' to setup profile run";
+    echo ">   -cprefix 'text'    Prefixes 'text' to profile_exec_command";
+    echo ">   -args 'text'       Sets profile execution arguments to 'text'";
+    echo ">   -check 'text'      Runs 'text' to check output";
+    echo ">   -cleanup 'text'    Runs 'text' to cleanup after profile run";
+    echo ">"
+    echo "> Special Itanium Processor Family Options";
+    echo ">   -pfsam <conf> <asmfile> Counter-based sampling using specficied configuration";
+    echo ">       clocks         CPU clocks"
+
+    exit 0200;
+fi;
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+# Turn on debugging if -show used
+if [ $SHOW -eq 1 ]; then
+  set -x
+fi
+	
+if [ "$MODE" != "TEST" ]; then
+    PFM_SFILE="PFM_SMPL~$$";
+    PFM_CFILE="PFM_CNTS~$$";
+fi
+
+TEMP_DIR="impactprof~$$";
+
+# Make temp profile directory
+if [ $VERBOSE -eq 1 ]; then
+   echo "> **************************************************************";
+   echo "> Creating '${TEMP_DIR}' for use as temp diretory"
+   echo "> **************************************************************";
+   echo ">"
+fi
+
+mkdir ${TEMP_DIR}
+
+if [ $? -ne 0 ]; then echo "Unable to create temp dir ${TEMP_DIR}"; exit 1; fi;
+
+cd ${TEMP_DIR}
+
+if [ $? -ne 0 ]; then echo "Unable to cd to temp dir ${TEMP_DIR}"; exit 1; fi;
+
+ln -s ../${EXE} .
+
+if [ $? -ne 0 ]; then echo "Unable to link ${EXE}"; exit 1; fi;
+
+PFSAM_NM_FILE="${BENCHMARK}${CHECK_DESC}.nm"
+
+if [ "$MODE" = "PFSAM" -o "$MODE" = "PFCACHE" ]; then
+  echo "> Running nm to get symbols for PFSAM";
+  nm -n ${EXE} > ${PFSAM_NM_FILE}
+
+  if [ $? -ne 0 ]; then echo "nm -n ${EXE} failed"; exit 1; fi;
+
+  cp ${PFSAM_NM_FILE} ../${PFSAM_NM_FILE}
+fi
+
+# Keep track if multiple inputs
+FIRST_INPUT="";
+MULTIPLE_INPUTS=0;
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+# Determine if there are multiple inputs and what the first input is
+for INPUT_NAME in $INPUT_LIST
+do
+  if [ "${FIRST_INPUT}" = "" ]; then
+     FIRST_INPUT="$INPUT_NAME";
+  else
+     MULTIPLE_INPUTS=1;
+  fi
+done
+
+# Do all the testing/running in current directory (not ${TEMP_DIR})
+# This allows -args, -check, etc. to reference files in the current directory
+for INPUT_NAME in $INPUT_LIST
+do
+  # Generate the profile
+  if [ $VERBOSE -eq 1 ]; then
+    echo "> **************************************************************";
+  fi
+  echo "> "
+  echo "> Testing ${BENCHMARK}";
+
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.stderr"
+
+  PFMON_OUT_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.${PFM_CONF}.${UKMN}.pfcnt"
+  PFMON_SUM_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.${PFM_CONF}.${UKMN}.pfmon"
+  PFSAM_SAM_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.${PFM_CONF}.${UKMN}.pfsam"
+  PFSAM_SUM_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.${PFM_CONF}.${UKMN}.pfsum"
+  PFSAM_MRG_FILE="${BENCHMARK}${CHECK_DESC}.ALL.${PFM_CONF}.${UKMN}.pfsum"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+
+    DESCRIPTION=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -description`;
+    if test "$?" != 0; then echo "Unexpected Exit (DESCRIPTION)!: non-zero exit code";echo "$DESCRIPTION";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+    DOCHECK=1;
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo "> "
+  echo ">  Input name: '${INPUT_NAME}'"
+  echo "> Description: '${DESCRIPTION}'"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> Link PreOpt: '${LINK_PREOPTIONS}'"
+  echo ">Link PostOpt: '${LINK_POSTOPTIONS}'"
+  echo ">    Lib_dirs: '${LIB_DIR}'"
+  if [ $VERBOSE -eq 1 ]; then
+    echo "> **************************************************************";
+  fi
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+    /bin/sh -c "$SETUP"
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  COM_FILE="TRACE_COMMAND~$$";
+
+  rm -f ${COM_FILE};
+
+  echo "${CPREFIX}" >> ${COM_FILE};
+
+  TRACE_COMMAND="${EXE} $ARGS > $RESULT_FILE 2> $STDERR_FILE"
+
+  case "$MODE" in
+    PFMON)
+      PFM_COMMAND="pfmon ${UKM} -e ${PFM_EVENT} --outfile=${PFM_CFILE} ${PFM_ADDARGS}";
+      TRACE_COMMAND="${PFM_COMMAND} ${TRACE_COMMAND}";;
+
+    PFSAM)
+      PFM_COMMAND="pfmon ${UKM} -e ${PFM_EVENT} --overflow-block --long-smpl-periods ${PFSAM_RATE} --smpl-outfile ${PFM_SFILE} --outfile=${PFM_CFILE} --smpl-output-format=${PFMON_FMT} ${PFM_ADDARGS}";
+      TRACE_COMMAND="${PFM_COMMAND} ${TRACE_COMMAND}";;
+      
+    PFCACHE)
+      PFM_COMMAND="pfmon ${UKM} -e ${PFM_EVENT} --overflow-block --long-smpl-periods ${PFSAM_RATE} --smpl-outfile ${PFM_SFILE} --smpl-output-format=${PFMON_FMT} ${PFM_ADDARGS}";
+      TRACE_COMMAND="${PFM_COMMAND} ${TRACE_COMMAND}";;
+  esac;
+
+  echo "${TRACE_COMMAND}" >> ${COM_FILE};
+
+  TIME_STAMP=`date +"%a %h %d %T"`;
+  START_DATE=`date +"%T %D"`;
+  START_SECS=`date +"%s"`;
+
+  echo " "
+  echo "> Starting test run for ${BENCHMARK}/${INPUT_NAME}:" 
+  echo "> Command that will be tested (via /bin/sh) for ${BENCHMARK}/${INPUT_NAME}:"
+  echo ">   ${TRACE_COMMAND}"
+
+  /bin/sh -s < ${COM_FILE}
+
+  rm -f ${COM_FILE};
+
+  END_DATE=`date +"%T %D"`;
+  END_SECS=`date +"%s"`;
+
+  let "ELAP_SECS = END_SECS - START_SECS"
+
+  echo ">"
+  echo "> Exected ${BENCHMARK}/${INPUT_NAME}${EXT_DESC} from $START_DATE to $END_DATE";
+  echo ">  (took $ELAP_SECS wall clock seconds)";
+
+  # Check the results, if check specified
+  if [ $DOCHECK -eq 1 ]; then
+    CHECK_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.check";
+    if [ "$CHECK" != "" ]; then
+      TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+    else
+      echo "> Warning: no check specified for $BENCHMARK/$INPUT_NAME.  Using 'cat $RESULT_FILE'"
+      TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+      CHECK_WARNINGS=1;
+    fi
+    echo " "
+    echo "> Checking results (via /bin/sh):"
+    echo ">   ${TRUE_CHECK}"
+    echo ">"
+    echo "> RESULT CHECK BEGIN FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC}";
+    # Shell out to do check so expresssions evaulated properly
+    /bin/sh -c "$TRUE_CHECK"
+
+    # Print warning if CHECK_FILE not empty
+    if [ -s $CHECK_FILE ]; then
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      echo "> Warning: check failed for ${BENCHMARK}/${INPUT_NAME}"
+      echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+      echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      head -n 30 $CHECK_FILE
+      CHECK_WARNINGS=1;
+      CMESG="(MISMATCH)"
+    else
+      CMESG="(PASSED)"
+    fi
+    echo "> RESULT CHECK END FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC} $CMESG";
+    echo ">"
+  fi
+
+  # Clean up unless using -noclean option
+  if [ $CLEAN -eq 1 ]; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Leaving $CHECK_FILE around for inspection"
+      echo "> Leaving $RESULT_FILE around for inspection"
+      echo "> Leaving $STDERR_FILE around for inspection"
+    else
+      echo "> Removing $CHECK_FILE";
+      rm -f $CHECK_FILE;
+      echo "> Removing $RESULT_FILE";
+      rm -f $RESULT_FILE;
+      echo "> Removing $STDERR_FILE";
+      rm -f $STDERR_FILE;
+    fi
+
+    if [ "$CLEANUP" != "" ]; then
+      echo "> Doing rest of cleanup using (via /bin/sh):"
+      echo ">   $CLEANUP"
+      /bin/sh -c "$CLEANUP";
+    else
+      echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+    fi
+  fi
+
+  cd ..
+  case "$MODE" in
+    PFSAM|PFCACHE)
+     echo " "
+     echo "> Generating ${PFSAM_SAM_FILE}"
+     cp ${TEMP_DIR}/${PFM_SFILE} ${PFSAM_SAM_FILE}
+     echo "> Generating ${PFSAM_SUM_FILE}"
+     merge_pfsam_new.pl $PFSAM_NM_FILE -asm $ASM_FILE $PFSAM_FLAGS $PFSAM_SAM_FILE > /dev/null;
+     mv ${PFSAM_SAM_FILE}.SUM ${PFSAM_SUM_FILE} ;;
+    PFMON)
+     echo " "
+     echo "> Generating ${PFMON_OUT_FILE}"
+     cp ${TEMP_DIR}/${PFM_CFILE} ${PFMON_OUT_FILE}
+     echo "> Generating ${PFMON_SUM_FILE}"
+     merge_pfmon.pl -${PFM_CONF} < "${PFMON_OUT_FILE}" > "${PFMON_SUM_FILE}";;
+  esac;
+  cd ${TEMP_DIR}
+done;
+
+cd ..
+
+if [ "$MODE" = "PFSAM" ]; then
+  PFSAM_LIST="";
+  INPUT_COUNT=0;
+  for INPUT_NAME in $INPUT_LIST; do
+    PFSAM_LIST="${PFSAM_LIST} ${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.${PFM_CONF}.${UKMN}.pfsam"
+    let "INPUT_COUNT++";
+  done;
+
+  if [ $INPUT_COUNT -gt 1 ]; then
+    echo "> Generating ${PFSAM_MRG_FILE}"
+    merge_pfsam_new.pl $PFSAM_NM_FILE -asm $ASM_FILE $PFSAM_FLAGS $PFSAM_LIST -merge > /dev/null;
+    mv MERGE.SUM $PFSAM_MRG_FILE ;
+  fi;
+fi;
+
+
+COMBINE_WARNINGS=0;
+
+# Clean up unless using -noclean option
+if [ $CLEAN -eq 1 ]; then
+   if [ $VERBOSE -eq 1 ]; then
+     echo "> **************************************************************";
+     echo "> Removing '${TEMP_DIR}' temp directory and cleaning up"
+     echo "> **************************************************************";
+     echo ">"
+   fi
+   rm -rf ${TEMP_DIR}
+fi
+
+echo " ";
+WARNINGS_ISSUED=0;
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BENCHMARK"
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $COMBINE_WARNINGS -eq 1 ]; then
+   echo "> Warning: Only the profile data for the first input ($FIRST_INPUT) was used."
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   echo "> Done, gen_pfmon may have failed (see above warnings) for $BENCHMARK"
+else
+   echo "> Done, gen_pfmon succeeded for $BENCHMARK"
+fi

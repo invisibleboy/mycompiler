@@ -1,0 +1,412 @@
+\section{cudd\-Bdd\-Ite.c File Reference}
+\label{cuddBddIte_8c}\index{cuddBddIte.c@{cuddBddIte.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void bdd\-Var\-To\-Const \bf{ARGS} ((\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$\bf{one}))
+\item 
+static int bdd\-Var\-To\-Canonical \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$fp, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, unsigned int $\ast$topfp, unsigned int $\ast$topgp, unsigned int $\ast$tophp))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Ite} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Ite\-Constant} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Intersect} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-And} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Or} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Nand} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Nor} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Xor} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Xnor} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+int \bf{Cudd\_\-bdd\-Leq} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Ite\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Intersect\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-And\-Recur} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Xor\-Recur} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+static void \bf{bdd\-Var\-To\-Const} (\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$\bf{one})
+\item 
+static int \bf{bdd\-Var\-To\-Canonical} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$fp, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, unsigned int $\ast$topfp, unsigned int $\ast$topgp, unsigned int $\ast$tophp)
+\item 
+static int \bf{bdd\-Var\-To\-Canonical\-Simple} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$fp, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, unsigned int $\ast$topfp, unsigned int $\ast$topgp, unsigned int $\ast$tophp)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bdd\-Ite.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int bdd\-Var\-To\-Canonical\-Simple ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$fp, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, unsigned int $\ast$topfp, unsigned int $\ast$topgp, unsigned int $\ast$tophp))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_476f6fec457ac9a958f456b1fb8c1dac}
+
+
+\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void bdd\-Var\-To\-Const ARGS ((\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$\bf{one}))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_b0634b9c86f4b556e40998830f5e60d8}
+
+
+Automatic\-Start \index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!bddVarToCanonical@{bddVarToCanonical}}
+\index{bddVarToCanonical@{bddVarToCanonical}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int bdd\-Var\-To\-Canonical (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em fp}, \bf{Dd\-Node} $\ast$$\ast$ {\em gp}, \bf{Dd\-Node} $\ast$$\ast$ {\em hp}, unsigned int $\ast$ {\em topfp}, unsigned int $\ast$ {\em topgp}, unsigned int $\ast$ {\em tophp})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_f38cc8154cce663cdd84553db032aa07}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Picks unique member from equiv expressions.]
+
+Description [Reduces 2 variable expressions to canonical form.]
+
+Side\-Effects [None]
+
+See\-Also [bdd\-Var\-To\-Const bdd\-Var\-To\-Canonical\-Simple] 
+
+Definition at line 1086 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-I, Dd\-Node::index, Dd\-Manager::one, and one.
+
+Referenced by Cudd\_\-bdd\-Ite\-Constant().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!bddVarToCanonicalSimple@{bddVarToCanonicalSimple}}
+\index{bddVarToCanonicalSimple@{bddVarToCanonicalSimple}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int bdd\-Var\-To\-Canonical\-Simple (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em fp}, \bf{Dd\-Node} $\ast$$\ast$ {\em gp}, \bf{Dd\-Node} $\ast$$\ast$ {\em hp}, unsigned int $\ast$ {\em topfp}, unsigned int $\ast$ {\em topgp}, unsigned int $\ast$ {\em tophp})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_c2117fc20650ba9ab8f5f856efdf2bec}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Picks unique member from equiv expressions.]
+
+Description [Reduces 2 variable expressions to canonical form.]
+
+Side\-Effects [None]
+
+See\-Also [bdd\-Var\-To\-Const bdd\-Var\-To\-Canonical] 
+
+Definition at line 1184 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-I, Dd\-Node::index, and Dd\-Manager::perm.
+
+Referenced by cudd\-Bdd\-Ite\-Recur().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!bddVarToConst@{bddVarToConst}}
+\index{bddVarToConst@{bddVarToConst}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void bdd\-Var\-To\-Const (\bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em gp}, \bf{Dd\-Node} $\ast$$\ast$ {\em hp}, \bf{Dd\-Node} $\ast$ {\em one})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_7e4a04115909c79defdfc98ebfb72185}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Replaces variables with constants if possible.]
+
+Description [This function performs part of the transformation to standard form by replacing variables with constants if possible.]
+
+Side\-Effects [None]
+
+See\-Also [bdd\-Var\-To\-Canonical bdd\-Var\-To\-Canonical\-Simple] 
+
+Definition at line 1051 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Not, and one.
+
+Referenced by Cudd\_\-bdd\-Ite\-Constant().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddAnd@{Cudd\_\-bddAnd}}
+\index{Cudd_bddAnd@{Cudd\_\-bddAnd}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-And (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_8374b23de03000aeafb9b6deecee4b3c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the conjunction of two BDDs f and g.]
+
+Description [Computes the conjunction of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And\-Abstract Cudd\_\-bdd\-Intersect Cudd\_\-bdd\-Or Cudd\_\-bdd\-Nand Cudd\_\-bdd\-Nor Cudd\_\-bdd\-Xor Cudd\_\-bdd\-Xnor] 
+
+Definition at line 283 of file cudd\-Bdd\-Ite.c.
+
+References cudd\-Bdd\-And\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Compute\-Cube(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), Cudd\_\-bdd\-Read(), Cudd\_\-Classify\-Support(), Cudd\_\-Indices\-To\-Cube(), Cudd\_\-Priority\-Select(), Cudd\_\-Support(), Cudd\_\-Vector\-Support(), Cudd\_\-Xeqy(), Cudd\_\-Xgty(), and cudd\-Bdd\-And\-Recur().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddIntersect@{Cudd\_\-bddIntersect}}
+\index{Cudd_bddIntersect@{Cudd\_\-bddIntersect}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Intersect (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_6dc109a28a03aae73d3390dc5846a8cb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns a function included in the intersection of f and g.]
+
+Description [Computes a function included in the intersection of f and g. (That is, a witness that the intersection is not empty.) Cudd\_\-bdd\-Intersect tries to build as few new nodes as possible. If the only result of interest is whether f and g intersect, Cudd\_\-bdd\-Leq should be used instead.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Leq Cudd\_\-bdd\-Ite\-Constant] 
+
+Definition at line 251 of file cudd\-Bdd\-Ite.c.
+
+References cudd\-Bdd\-Intersect\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by cudd\-Bdd\-Intersect\-Recur().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddIte@{Cudd\_\-bddIte}}
+\index{Cudd_bddIte@{Cudd\_\-bddIte}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Ite (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddBddIte_8c_3f5761d50898785418ebcaccefb18a93}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements ITE(f,g,h).]
+
+Description [Implements ITE(f,g,h). Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Ite Cudd\_\-bdd\-Ite\-Constant Cudd\_\-bdd\-Intersect] 
+
+Definition at line 113 of file cudd\-Bdd\-Ite.c.
+
+References cudd\-Bdd\-Ite\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-add\-Hamming(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-Dxygtdxz(), Cudd\_\-Dxygtdyz(), Cudd\_\-Xeqy(), Cudd\_\-Xgty(), and cudd\-Bdd\-Ite\-Recur().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddIteConstant@{Cudd\_\-bddIteConstant}}
+\index{Cudd_bddIteConstant@{Cudd\_\-bddIteConstant}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Ite\-Constant (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddBddIte_8c_e893c6ab0472d7058bd424d02bc9420f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements ITEconstant(f,g,h).]
+
+Description [Implements ITEconstant(f,g,h). Returns a pointer to the resulting BDD (which may or may not be constant) or DD\_\-NON\_\-CONSTANT. No new nodes are created.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-bdd\-Intersect Cudd\_\-bdd\-Leq Cudd\_\-add\-Ite\-Constant] 
+
+Definition at line 144 of file cudd\-Bdd\-Ite.c.
+
+References bdd\-Var\-To\-Canonical(), bdd\-Var\-To\-Const(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Cache\-Insert(), cudd\-Constant\-Lookup(), cudd\-E, cudd\-T, DD\_\-NON\_\-CONSTANT, DD\_\-ONE, dd\-Min, one, and zero.
+
+Referenced by Cudd\_\-bdd\-Is\-Var\-Essential(), and cudd\-Subset\-Short\-Paths().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddLeq@{Cudd\_\-bddLeq}}
+\index{Cudd_bddLeq@{Cudd\_\-bddLeq}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Leq (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_89a46089e8572876a1521cdee6cb31a2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Determines whether f is less than or equal to g.]
+
+Description [Returns 1 if f is less than or equal to g; 0 otherwise. No new nodes are created.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite\-Constant Cudd\_\-add\-Eval\-Const] 
+
+Definition at line 469 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-E, cudd\-T, DD\_\-ONE, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Decreasing(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Conjuncts\-Aux(), cudd\-Remap\-Under\-Approx(), cudd\-Subset\-Heavy\-Branch(), cudd\-Under\-Approx(), and RAmark\-Nodes().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddNand@{Cudd\_\-bddNand}}
+\index{Cudd_bddNand@{Cudd\_\-bddNand}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Nand (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_98d4502750f55f79f7d21ce4674bd66f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the NAND of two BDDs f and g.]
+
+Description [Computes the NAND of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And Cudd\_\-bdd\-Or Cudd\_\-bdd\-Nor Cudd\_\-bdd\-Xor Cudd\_\-bdd\-Xnor] 
+
+Definition at line 346 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Not\-Cond, cudd\-Bdd\-And\-Recur(), and Dd\-Manager::reordered.\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddNor@{Cudd\_\-bddNor}}
+\index{Cudd_bddNor@{Cudd\_\-bddNor}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Nor (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_3bb902e010f3213ba3a0e7917e93b70e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the NOR of two BDDs f and g.]
+
+Description [Computes the NOR of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And Cudd\_\-bdd\-Or Cudd\_\-bdd\-Nand Cudd\_\-bdd\-Xor Cudd\_\-bdd\-Xnor] 
+
+Definition at line 378 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Not, cudd\-Bdd\-And\-Recur(), and Dd\-Manager::reordered.\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddOr@{Cudd\_\-bddOr}}
+\index{Cudd_bddOr@{Cudd\_\-bddOr}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Or (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_d9dd195b3599f9101ff65b57e494f445}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the disjunction of two BDDs f and g.]
+
+Description [Computes the disjunction of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And Cudd\_\-bdd\-Nand Cudd\_\-bdd\-Nor Cudd\_\-bdd\-Xor Cudd\_\-bdd\-Xnor] 
+
+Definition at line 314 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, cudd\-Bdd\-And\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Var\-Conj\-Decomp().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddXnor@{Cudd\_\-bddXnor}}
+\index{Cudd_bddXnor@{Cudd\_\-bddXnor}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Xnor (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_452caf40a12400757e44fe5a8569e20c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the exclusive NOR of two BDDs f and g.]
+
+Description [Computes the exclusive NOR of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And Cudd\_\-bdd\-Or Cudd\_\-bdd\-Nand Cudd\_\-bdd\-Nor Cudd\_\-bdd\-Xor] 
+
+Definition at line 440 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-Not, cudd\-Bdd\-Xor\-Recur(), and Dd\-Manager::reordered.\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!Cudd_bddXor@{Cudd\_\-bddXor}}
+\index{Cudd_bddXor@{Cudd\_\-bddXor}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Xor (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_d2215420b94afbcd00d011fe2787c5e7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the exclusive OR of two BDDs f and g.]
+
+Description [Computes the exclusive OR of two BDDs f and g. Returns a pointer to the resulting BDD if successful; NULL if the intermediate result blows up.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ite Cudd\_\-add\-Apply Cudd\_\-bdd\-And Cudd\_\-bdd\-Or Cudd\_\-bdd\-Nand Cudd\_\-bdd\-Nor Cudd\_\-bdd\-Xnor] 
+
+Definition at line 409 of file cudd\-Bdd\-Ite.c.
+
+References cudd\-Bdd\-Xor\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by cudd\-Bdd\-Xor\-Recur().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!cuddBddAndRecur@{cuddBddAndRecur}}
+\index{cuddBddAndRecur@{cuddBddAndRecur}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-And\-Recur (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_1766cd8bf8b2ec57ade0db1a461e352b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-bdd\-And.]
+
+Description [Implements the recursive step of Cudd\_\-bdd\-And by taking the conjunction of two BDDs. Returns a pointer to the result is successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-And] 
+
+Definition at line 814 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-bdd\-And(), Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Node::index, one, Dd\-Manager::perm, Dd\-Node::ref, and zero.
+
+Referenced by Cudd\_\-bdd\-And(), Cudd\_\-bdd\-Nand(), Cudd\_\-bdd\-Nor(), Cudd\_\-bdd\-Or(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-CProjection\-Recur(), cudd\-Split\-Set\-Recur(), cudd\-Zdd\-Isop(), dd\-Find\-Essential\-Recur(), get\_\-cube(), get\_\-path(), minterms\-From\-Universe(), and Zero\-Case().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!cuddBddIntersectRecur@{cuddBddIntersectRecur}}
+\index{cuddBddIntersectRecur@{cuddBddIntersectRecur}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Intersect\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_a43deef9cc0de026d2b4917aef1b4d62}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-bdd\-Intersect.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Intersect] 
+
+Definition at line 700 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-bdd\-Intersect(), Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Intersect().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!cuddBddIteRecur@{cuddBddIteRecur}}
+\index{cuddBddIteRecur@{cuddBddIteRecur}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Ite\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddBddIte_8c_6d52cd44b8033b3be8f23d21c46cd425}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-bdd\-Ite.]
+
+Description [Implements the recursive step of Cudd\_\-bdd\-Ite. Returns a pointer to the resulting BDD. NULL if the intermediate result blows up or if reordering occurs.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 566 of file cudd\-Bdd\-Ite.c.
+
+References bdd\-Var\-To\-Canonical\-Simple(), Cudd\_\-bdd\-Ite(), Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Cache\-Insert(), cudd\-Cache\-Lookup(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, dd\-Min, Dd\-Node::index, one, and zero.
+
+Referenced by Build\-Conjuncts(), Build\-Subset\-Bdd(), Cudd\_\-bdd\-Ite(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Permute\-Recur(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Vector\-Compose\-Recur(), cudd\-CProjection\-Recur(), cudd\-Solve\-Eqn\-Recur(), cudd\-Split\-Set\-Recur(), minterms\-From\-Universe(), and zdd\-Port\-To\-Bdd\-Step().\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!cuddBddXorRecur@{cuddBddXorRecur}}
+\index{cuddBddXorRecur@{cuddBddXorRecur}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Xor\-Recur (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddIte_8c_ed935896575aab5d56fefdd6d351b676}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-bdd\-Xor.]
+
+Description [Implements the recursive step of Cudd\_\-bdd\-Xor by taking the exclusive OR of two BDDs. Returns a pointer to the result is successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Xor] 
+
+Definition at line 931 of file cudd\-Bdd\-Ite.c.
+
+References Cudd\_\-bdd\-Xor(), Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Xnor(), Cudd\_\-bdd\-Xor(), cudd\-Bdd\-Boolean\-Diff\-Recur(), and cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur().
+
+\subsection{Variable Documentation}
+\index{cuddBddIte.c@{cudd\-Bdd\-Ite.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddBddIte.c@{cudd\-Bdd\-Ite.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bdd\-Ite.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddBddIte_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Bdd\-Ite.c}{p.}{cuddBddIte_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [BDD ITE function and satellites.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Ite()}{p.}{cuddBddIte_8c_3f5761d50898785418ebcaccefb18a93} \item \doxyref{Cudd\_\-bdd\-Ite\-Constant()}{p.}{cuddBddIte_8c_e893c6ab0472d7058bd424d02bc9420f} \item \doxyref{Cudd\_\-bdd\-Intersect()}{p.}{cuddBddIte_8c_6dc109a28a03aae73d3390dc5846a8cb} \item \doxyref{Cudd\_\-bdd\-And()}{p.}{cuddBddIte_8c_8374b23de03000aeafb9b6deecee4b3c} \item \doxyref{Cudd\_\-bdd\-Or()}{p.}{cuddBddIte_8c_d9dd195b3599f9101ff65b57e494f445} \item \doxyref{Cudd\_\-bdd\-Nand()}{p.}{cuddBddIte_8c_98d4502750f55f79f7d21ce4674bd66f} \item \doxyref{Cudd\_\-bdd\-Nor()}{p.}{cuddBddIte_8c_3bb902e010f3213ba3a0e7917e93b70e} \item \doxyref{Cudd\_\-bdd\-Xor()}{p.}{cuddBddIte_8c_d2215420b94afbcd00d011fe2787c5e7} \item \doxyref{Cudd\_\-bdd\-Xnor()}{p.}{cuddBddIte_8c_452caf40a12400757e44fe5a8569e20c} \item \doxyref{Cudd\_\-bdd\-Leq()}{p.}{cuddBddIte_8c_89a46089e8572876a1521cdee6cb31a2} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Ite\-Recur()}{p.}{cuddBddIte_8c_6d52cd44b8033b3be8f23d21c46cd425} \item \doxyref{cudd\-Bdd\-Intersect\-Recur()}{p.}{cuddBddIte_8c_a43deef9cc0de026d2b4917aef1b4d62} \item \doxyref{cudd\-Bdd\-And\-Recur()}{p.}{cuddBddIte_8c_1766cd8bf8b2ec57ade0db1a461e352b} \item \doxyref{cudd\-Bdd\-Xor\-Recur()}{p.}{cuddBddIte_8c_ed935896575aab5d56fefdd6d351b676} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{bdd\-Var\-To\-Const()}{p.}{cuddBddIte_8c_7e4a04115909c79defdfc98ebfb72185} \item \doxyref{bdd\-Var\-To\-Canonical()}{p.}{cuddBddIte_8c_f38cc8154cce663cdd84553db032aa07} \item \doxyref{bdd\-Var\-To\-Canonical\-Simple()}{p.}{cuddBddIte_8c_c2117fc20650ba9ab8f5f856efdf2bec} \end{itemize}
+
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 73 of file cudd\-Bdd\-Ite.c.

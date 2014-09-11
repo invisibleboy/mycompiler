@@ -1,0 +1,392 @@
+\section{ml\_\-starcore.c File Reference}
+\label{ml__starcore_8c}\index{ml_starcore.c@{ml\_\-starcore.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-spec.h\char`\"{}}\par
+{\tt \#include \char`\"{}m\_\-starcore.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{zero\_\-offset}(a)
+\item 
+\#define \bf{label\_\-base}(a)~(L\_\-is\_\-label((a) $\rightarrow$ src[0]))
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{M\_\-starcore\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-starcore\_\-fragile\_\-macro\_\-set} (void)
+\item 
+int \bf{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-opcode} (int proc\_\-opc)
+\item 
+int \bf{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type1} (L\_\-Oper $\ast$oper)
+\item 
+int \bf{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type2} (L\_\-Oper $\ast$oper)
+\item 
+int \bf{M\_\-starcore\_\-subroutine\_\-call} (int opc)
+\item 
+int \bf{M\_\-starcore\_\-dataflow\_\-macro} (int id)
+\item 
+void \bf{M\_\-define\_\-macros\_\-starcore} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-starcore} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-starcore} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-starcore} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-num\_\-registers\_\-starcore} (int ctype)
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-starcore} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-starcore} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-starcore} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-starcore} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$conflict\_\-array[$\,$], int len, int prepass)
+\item 
+int \bf{M\_\-opc\_\-from\_\-proc\_\-opc\_\-starcore} (int proc\_\-opc)
+\item 
+L\_\-Operand $\ast$ \bf{M\_\-starcore\_\-epilogue\_\-cntr\_\-register} ()
+\item 
+L\_\-Operand $\ast$ \bf{M\_\-starcore\_\-loop\_\-cntr\_\-register} ()
+\item 
+void \bf{M\_\-get\_\-memory\_\-operands\_\-starcore} (int $\ast$first, int $\ast$number, int proc\_\-opc)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-starcore} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-starcore} (int id)
+\item 
+int \bf{M\_\-memory\_\-access\_\-size\_\-starcore} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-get\_\-data\_\-type\_\-starcore} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-is\_\-implicit\_\-memory\_\-op\_\-starcore} (L\_\-Oper $\ast$oper)
+\item 
+int \bf{M\_\-starcore\_\-coalescing\_\-oper} (L\_\-Oper $\ast$oper)
+\item 
+void \bf{M\_\-starcore\_\-negate\_\-compare} (L\_\-Oper $\ast$oper)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{Set} \bf{Set\_\-starcore\_\-fragile\_\-macro} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_starcore.c@{ml\_\-starcore.c}!label_base@{label\_\-base}}
+\index{label_base@{label\_\-base}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define label\_\-base(a)~(L\_\-is\_\-label((a) $\rightarrow$ src[0]))}\label{ml__starcore_8c_6b16c6bbc39332330bf6c262abbf1acb}
+
+
+
+
+Definition at line 619 of file ml\_\-starcore.c.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-starcore(), and M\_\-num\_\-oper\_\-required\_\-for\_\-tahoe().\index{ml_starcore.c@{ml\_\-starcore.c}!zero_offset@{zero\_\-offset}}
+\index{zero_offset@{zero\_\-offset}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define zero\_\-offset(a)}\label{ml__starcore_8c_04722f33d5049c5277f0a9dc628ebf62}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((L_is_int_constant((a)->src[1])) && \
+                          ((a)->src[1]->value.i == 0))
+\end{verbatim}\end{Code}
+
+
+Definition at line 617 of file ml\_\-starcore.c.
+
+\subsection{Function Documentation}
+\index{ml_starcore.c@{ml\_\-starcore.c}!M_conflicting_operands_starcore@{M\_\-conflicting\_\-operands\_\-starcore}}
+\index{M_conflicting_operands_starcore@{M\_\-conflicting\_\-operands\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-starcore (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$ {\em conflict\_\-array}[$\,$], int {\em len}, int {\em prepass})}\label{ml__starcore_8c_d39fa57db343add1f56ab670702e5055}
+
+
+
+
+Definition at line 860 of file ml\_\-starcore.c.
+
+References M\_\-assert(), and STARCORE\_\-MAC\_\-SP.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_starcore.c@{ml\_\-starcore.c}!M_define_macros_starcore@{M\_\-define\_\-macros\_\-starcore}}
+\index{M_define_macros_starcore@{M\_\-define\_\-macros\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-starcore (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__starcore_8c_4895c301138a37502983278f49cd635b}
+
+
+
+
+Definition at line 387 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-add\_\-symbol, M\_\-assert(), M\_\-EM\_\-SC\_\-model, STARCORE\_\-MAC\_\-LABEL, STARCORE\_\-MAC\_\-LEAF, STARCORE\_\-MAC\_\-MEM\_\-ALLOC, STARCORE\_\-MAC\_\-SP, STARCORE\_\-MAC\_\-SR, STARCORE\_\-MAC\_\-SYNC\_\-SIZE, STARCORE\_\-MAC\_\-T\_\-BIT, STARCORE\_\-MAC\_\-T\_\-BIT\_\-INV, STARCORE\_\-MAC\_\-TEMP, and STARCORE\_\-MAC\_\-TEMPLATE.
+
+Referenced by M\_\-define\_\-macros().\index{ml_starcore.c@{ml\_\-starcore.c}!M_define_opcode_name_starcore@{M\_\-define\_\-opcode\_\-name\_\-starcore}}
+\index{M_define_opcode_name_starcore@{M\_\-define\_\-opcode\_\-name\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-starcore (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__starcore_8c_9bb5d965e6782eb55395f7349eaebd1e}
+
+
+
+
+Definition at line 1203 of file ml\_\-starcore.c.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_starcore.c@{ml\_\-starcore.c}!M_get_data_type_starcore@{M\_\-get\_\-data\_\-type\_\-starcore}}
+\index{M_get_data_type_starcore@{M\_\-get\_\-data\_\-type\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-get\_\-data\_\-type\_\-starcore (L\_\-Oper $\ast$ {\em op})}\label{ml__starcore_8c_fc2438aed4ed8dd088101be27cea86da}
+
+
+
+
+Definition at line 1220 of file ml\_\-starcore.c.
+
+Referenced by M\_\-get\_\-data\_\-type().\index{ml_starcore.c@{ml\_\-starcore.c}!M_get_macro_name_starcore@{M\_\-get\_\-macro\_\-name\_\-starcore}}
+\index{M_get_macro_name_starcore@{M\_\-get\_\-macro\_\-name\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-starcore (int {\em id})}\label{ml__starcore_8c_3ac81eae133fb08ab8ca2d6487362bd8}
+
+
+
+
+Definition at line 414 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), M\_\-EM\_\-SC\_\-model, STARCORE\_\-MAC\_\-LABEL, STARCORE\_\-MAC\_\-LEAF, STARCORE\_\-MAC\_\-MEM\_\-ALLOC, STARCORE\_\-MAC\_\-SP, STARCORE\_\-MAC\_\-SR, STARCORE\_\-MAC\_\-SYNC\_\-SIZE, STARCORE\_\-MAC\_\-T\_\-BIT, STARCORE\_\-MAC\_\-T\_\-BIT\_\-INV, STARCORE\_\-MAC\_\-TEMP, and STARCORE\_\-MAC\_\-TEMPLATE.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_starcore.c@{ml\_\-starcore.c}!M_get_memory_operands_starcore@{M\_\-get\_\-memory\_\-operands\_\-starcore}}
+\index{M_get_memory_operands_starcore@{M\_\-get\_\-memory\_\-operands\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-get\_\-memory\_\-operands\_\-starcore (int $\ast$ {\em first}, int $\ast$ {\em number}, int {\em proc\_\-opc})}\label{ml__starcore_8c_1fcf33123a5b2eb6e4729799d88eb2f1}
+
+
+
+
+Definition at line 1196 of file ml\_\-starcore.c.
+
+Referenced by M\_\-get\_\-memory\_\-operands().\index{ml_starcore.c@{ml\_\-starcore.c}!M_get_opcode_name_starcore@{M\_\-get\_\-opcode\_\-name\_\-starcore}}
+\index{M_get_opcode_name_starcore@{M\_\-get\_\-opcode\_\-name\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-starcore (int {\em id})}\label{ml__starcore_8c_d62ae2a6fdf408311f66665244f0c128}
+
+
+
+
+Definition at line 1208 of file ml\_\-starcore.c.
+
+References NULL.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_starcore.c@{ml\_\-starcore.c}!M_is_implicit_memory_op_starcore@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-starcore}}
+\index{M_is_implicit_memory_op_starcore@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-implicit\_\-memory\_\-op\_\-starcore (L\_\-Oper $\ast$ {\em oper})}\label{ml__starcore_8c_9c9bfd447830985e2116d61e5435cc5b}
+
+
+
+
+Definition at line 1226 of file ml\_\-starcore.c.
+
+Referenced by M\_\-is\_\-implicit\_\-memory\_\-op().\index{ml_starcore.c@{ml\_\-starcore.c}!M_is_stack_operand_starcore@{M\_\-is\_\-stack\_\-operand\_\-starcore}}
+\index{M_is_stack_operand_starcore@{M\_\-is\_\-stack\_\-operand\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-starcore (L\_\-Operand $\ast$ {\em operand})}\label{ml__starcore_8c_ac6b35a14f04c7cfba9694df3dcfd595}
+
+
+
+
+Definition at line 761 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), M\_\-EM\_\-SC\_\-model, and STARCORE\_\-MAC\_\-SP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_starcore.c@{ml\_\-starcore.c}!M_is_unsafe_macro_starcore@{M\_\-is\_\-unsafe\_\-macro\_\-starcore}}
+\index{M_is_unsafe_macro_starcore@{M\_\-is\_\-unsafe\_\-macro\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-starcore (L\_\-Operand $\ast$ {\em operand})}\label{ml__starcore_8c_4a9938a045c1c7f45d9f19ab6c5f6114}
+
+
+
+
+Definition at line 786 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), and M\_\-EM\_\-SC\_\-model.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_starcore.c@{ml\_\-starcore.c}!M_memory_access_size_starcore@{M\_\-memory\_\-access\_\-size\_\-starcore}}
+\index{M_memory_access_size_starcore@{M\_\-memory\_\-access\_\-size\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-memory\_\-access\_\-size\_\-starcore (L\_\-Oper $\ast$ {\em op})}\label{ml__starcore_8c_3214ba36268c4776cf9d904f6dc1dbc0}
+
+
+
+
+Definition at line 1214 of file ml\_\-starcore.c.
+
+Referenced by M\_\-memory\_\-access\_\-size().\index{ml_starcore.c@{ml\_\-starcore.c}!M_num_oper_required_for_starcore@{M\_\-num\_\-oper\_\-required\_\-for\_\-starcore}}
+\index{M_num_oper_required_for_starcore@{M\_\-num\_\-oper\_\-required\_\-for\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-starcore (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__starcore_8c_51e99e7bb8f7f26f61297f566b3faede}
+
+
+
+
+Definition at line 622 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, label\_\-base, M\_\-assert(), M\_\-EM\_\-SC\_\-model, and zero\_\-offset.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_starcore.c@{ml\_\-starcore.c}!M_num_registers_starcore@{M\_\-num\_\-registers\_\-starcore}}
+\index{M_num_registers_starcore@{M\_\-num\_\-registers\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-starcore (int {\em ctype})}\label{ml__starcore_8c_58eed033ec1c25bf3526aa3c5a607829}
+
+
+
+
+Definition at line 747 of file ml\_\-starcore.c.
+
+Referenced by M\_\-num\_\-registers().\index{ml_starcore.c@{ml\_\-starcore.c}!M_opc_from_proc_opc_starcore@{M\_\-opc\_\-from\_\-proc\_\-opc\_\-starcore}}
+\index{M_opc_from_proc_opc_starcore@{M\_\-opc\_\-from\_\-proc\_\-opc\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-opc\_\-from\_\-proc\_\-opc\_\-starcore (int {\em proc\_\-opc})}\label{ml__starcore_8c_8dcb2892a44c63d537237a3b93236df3}
+
+
+
+
+Definition at line 926 of file ml\_\-starcore.c.
+
+References M\_\-assert(), STARCOREop\_\-ABS, STARCOREop\_\-ADC, STARCOREop\_\-ADD, STARCOREop\_\-ADD2, STARCOREop\_\-ADDA\_\-1, STARCOREop\_\-ADDA\_\-2, STARCOREop\_\-ADDL1A, STARCOREop\_\-ADDL2A, STARCOREop\_\-ADDNC\_\-W, STARCOREop\_\-ADR, STARCOREop\_\-AND\_\-1, STARCOREop\_\-AND\_\-2, STARCOREop\_\-ASL, STARCOREop\_\-ASL2A, STARCOREop\_\-ASLA, STARCOREop\_\-ASLL, STARCOREop\_\-ASLW, STARCOREop\_\-ASR, STARCOREop\_\-ASRA, STARCOREop\_\-ASRR, STARCOREop\_\-ASRW, STARCOREop\_\-BF\_\-1, STARCOREop\_\-BF\_\-2, STARCOREop\_\-BFD\_\-1, STARCOREop\_\-BFD\_\-2, STARCOREop\_\-BRA\_\-1, STARCOREop\_\-BRA\_\-2, STARCOREop\_\-BRAD\_\-1, STARCOREop\_\-BRAD\_\-2, STARCOREop\_\-BSR\_\-1, STARCOREop\_\-BSR\_\-2, STARCOREop\_\-BSRD\_\-1, STARCOREop\_\-BSRD\_\-2, STARCOREop\_\-BT\_\-1, STARCOREop\_\-BT\_\-2, STARCOREop\_\-BTD\_\-1, STARCOREop\_\-BTD\_\-2, STARCOREop\_\-CMPEQ, STARCOREop\_\-CMPEQA, STARCOREop\_\-CMPGT, STARCOREop\_\-CMPGTA, STARCOREop\_\-CMPHI, STARCOREop\_\-CMPHIA, STARCOREop\_\-EOR\_\-1, STARCOREop\_\-EOR\_\-2, STARCOREop\_\-EXTRACT, STARCOREop\_\-EXTRACTU, STARCOREop\_\-IADD, STARCOREop\_\-IMAC, STARCOREop\_\-IMACLHUU, STARCOREop\_\-IMACUS, STARCOREop\_\-IMPY, STARCOREop\_\-IMPY\_\-W, STARCOREop\_\-IMPYHLUU, STARCOREop\_\-IMPYSU, STARCOREop\_\-IMPYUU, STARCOREop\_\-INSERT, STARCOREop\_\-JF\_\-1, STARCOREop\_\-JF\_\-3, STARCOREop\_\-JFD\_\-1, STARCOREop\_\-JFD\_\-3, STARCOREop\_\-JMP\_\-1, STARCOREop\_\-JMP\_\-3, STARCOREop\_\-JMPD\_\-1, STARCOREop\_\-JMPD\_\-3, STARCOREop\_\-JSR\_\-1, STARCOREop\_\-JSR\_\-3, STARCOREop\_\-JSRD\_\-1, STARCOREop\_\-JSRD\_\-3, STARCOREop\_\-JT\_\-1, STARCOREop\_\-JT\_\-3, STARCOREop\_\-JTD\_\-1, STARCOREop\_\-JTD\_\-3, STARCOREop\_\-LSLL, STARCOREop\_\-LSR, STARCOREop\_\-LSRA, STARCOREop\_\-LSRR, STARCOREop\_\-LSRW, STARCOREop\_\-MAC\_\-1, STARCOREop\_\-MAC\_\-2, STARCOREop\_\-MACR, STARCOREop\_\-MACSU, STARCOREop\_\-MACUS, STARCOREop\_\-MACUU, STARCOREop\_\-MAX, STARCOREop\_\-MAX2, STARCOREop\_\-MAX2VIT, STARCOREop\_\-MAXM, STARCOREop\_\-MIN, STARCOREop\_\-MOVE\_\-2F\_\-LD, STARCOREop\_\-MOVE\_\-2L\_\-LD, STARCOREop\_\-MOVE\_\-2L\_\-ST, STARCOREop\_\-MOVE\_\-2W\_\-LD, STARCOREop\_\-MOVE\_\-2W\_\-ST, STARCOREop\_\-MOVE\_\-4F\_\-LD, STARCOREop\_\-MOVE\_\-4W\_\-LD, STARCOREop\_\-MOVE\_\-4W\_\-ST, STARCOREop\_\-MOVE\_\-B\_\-LD\_\-1, STARCOREop\_\-MOVE\_\-B\_\-LD\_\-2, STARCOREop\_\-MOVE\_\-B\_\-ST\_\-1, STARCOREop\_\-MOVE\_\-B\_\-ST\_\-2, STARCOREop\_\-MOVE\_\-B\_\-ST\_\-3, STARCOREop\_\-MOVE\_\-F\_\-LD\_\-1, STARCOREop\_\-MOVE\_\-F\_\-LD\_\-2, STARCOREop\_\-MOVE\_\-F\_\-LD\_\-3, STARCOREop\_\-MOVE\_\-F\_\-MV\_\-2, STARCOREop\_\-MOVE\_\-F\_\-ST\_\-1, STARCOREop\_\-MOVE\_\-L\_\-LD\_\-1, STARCOREop\_\-MOVE\_\-L\_\-LD\_\-2, STARCOREop\_\-MOVE\_\-L\_\-LD\_\-3, STARCOREop\_\-MOVE\_\-L\_\-MV\_\-1, STARCOREop\_\-MOVE\_\-L\_\-MV\_\-3, STARCOREop\_\-MOVE\_\-L\_\-ST\_\-1, STARCOREop\_\-MOVE\_\-L\_\-ST\_\-2, STARCOREop\_\-MOVE\_\-L\_\-ST\_\-3, STARCOREop\_\-MOVE\_\-W\_\-LD\_\-1, STARCOREop\_\-MOVE\_\-W\_\-LD\_\-2, STARCOREop\_\-MOVE\_\-W\_\-LD\_\-3, STARCOREop\_\-MOVE\_\-W\_\-MV\_\-1, STARCOREop\_\-MOVE\_\-W\_\-MV\_\-2, STARCOREop\_\-MOVE\_\-W\_\-ST\_\-1, STARCOREop\_\-MOVE\_\-W\_\-ST\_\-2, STARCOREop\_\-MOVE\_\-W\_\-ST\_\-3, STARCOREop\_\-MOVEF, STARCOREop\_\-MOVES\_\-2F\_\-ST, STARCOREop\_\-MOVES\_\-4F\_\-ST, STARCOREop\_\-MOVES\_\-F\_\-ST\_\-1, STARCOREop\_\-MOVES\_\-F\_\-ST\_\-2, STARCOREop\_\-MOVES\_\-F\_\-ST\_\-3, STARCOREop\_\-MOVES\_\-L\_\-ST, STARCOREop\_\-MOVET, STARCOREop\_\-MOVEU\_\-B\_\-LD\_\-1, STARCOREop\_\-MOVEU\_\-B\_\-LD\_\-2, STARCOREop\_\-MOVEU\_\-B\_\-LD\_\-3, STARCOREop\_\-MOVEU\_\-L\_\-MV, STARCOREop\_\-MOVEU\_\-W\_\-LD\_\-1, STARCOREop\_\-MOVEU\_\-W\_\-LD\_\-2, STARCOREop\_\-MOVEU\_\-W\_\-LD\_\-3, STARCOREop\_\-MOVEU\_\-W\_\-MV, STARCOREop\_\-MPY, STARCOREop\_\-MPYR, STARCOREop\_\-MPYSU, STARCOREop\_\-MPYUS, STARCOREop\_\-MPYUU, STARCOREop\_\-NOP, STARCOREop\_\-OR\_\-1, STARCOREop\_\-OR\_\-2, STARCOREop\_\-RTS, STARCOREop\_\-RTSD, STARCOREop\_\-RTSTK, STARCOREop\_\-RTSTKD, STARCOREop\_\-SAT\_\-F, STARCOREop\_\-SAT\_\-L, STARCOREop\_\-SBC, STARCOREop\_\-SBR, STARCOREop\_\-SUB, STARCOREop\_\-SUB2, STARCOREop\_\-SUBA, STARCOREop\_\-SUBNC\_\-W, STARCOREop\_\-SXT\_\-B, STARCOREop\_\-SXT\_\-L, STARCOREop\_\-SXT\_\-W, STARCOREop\_\-SXTA\_\-B, STARCOREop\_\-SXTA\_\-W, STARCOREop\_\-TFR, STARCOREop\_\-TFRA, STARCOREop\_\-TFRF, STARCOREop\_\-TFRT, STARCOREop\_\-TSTEQ, STARCOREop\_\-TSTEQA\_\-L, STARCOREop\_\-TSTEQA\_\-W, STARCOREop\_\-TSTGE, STARCOREop\_\-TSTGEA, STARCOREop\_\-TSTGT, STARCOREop\_\-TSTGTA, STARCOREop\_\-ZXT\_\-B, STARCOREop\_\-ZXT\_\-L, STARCOREop\_\-ZXT\_\-W, STARCOREop\_\-ZXTA\_\-B, and STARCOREop\_\-ZXTA\_\-W.
+
+Referenced by M\_\-opc\_\-from\_\-proc\_\-opc().\index{ml_starcore.c@{ml\_\-starcore.c}!M_oper_supported_in_arch_starcore@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-starcore}}
+\index{M_oper_supported_in_arch_starcore@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-starcore (int {\em opc})}\label{ml__starcore_8c_1b9acf0e6a3c40984d67c2970758fec9}
+
+
+
+
+Definition at line 459 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), and M\_\-EM\_\-SC\_\-model.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_starcore.c@{ml\_\-starcore.c}!M_operand_type_starcore@{M\_\-operand\_\-type\_\-starcore}}
+\index{M_operand_type_starcore@{M\_\-operand\_\-type\_\-starcore}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-starcore (L\_\-Operand $\ast$ {\em operand})}\label{ml__starcore_8c_b442f0a0fc34c932c1f5ec8dd7cea303}
+
+
+
+
+Definition at line 811 of file ml\_\-starcore.c.
+
+References M\_\-assert(), MDES\_\-OPERAND\_\-addr, MDES\_\-OPERAND\_\-cntl, MDES\_\-OPERAND\_\-f, MDES\_\-OPERAND\_\-i, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-p, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_coalescing_oper@{M\_\-starcore\_\-coalescing\_\-oper}}
+\index{M_starcore_coalescing_oper@{M\_\-starcore\_\-coalescing\_\-oper}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-coalescing\_\-oper (L\_\-Oper $\ast$ {\em oper})}\label{ml__starcore_8c_244457bd3b54ee0279ff6209fda41d31}
+
+
+
+
+Definition at line 1235 of file ml\_\-starcore.c.
+
+Referenced by M\_\-coalescing\_\-oper().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_dataflow_macro@{M\_\-starcore\_\-dataflow\_\-macro}}
+\index{M_starcore_dataflow_macro@{M\_\-starcore\_\-dataflow\_\-macro}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-dataflow\_\-macro (int {\em id})}\label{ml__starcore_8c_972aabcc8b107edc48c5e85e2b1d211e}
+
+
+
+
+Definition at line 361 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, FALSE, M\_\-assert(), M\_\-EM\_\-SC\_\-model, STARCORE\_\-MAC\_\-LABEL, STARCORE\_\-MAC\_\-TEMPLATE, and TRUE.
+
+Referenced by M\_\-dataflow\_\-macro().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_epilogue_cntr_register@{M\_\-starcore\_\-epilogue\_\-cntr\_\-register}}
+\index{M_starcore_epilogue_cntr_register@{M\_\-starcore\_\-epilogue\_\-cntr\_\-register}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Operand$\ast$ M\_\-starcore\_\-epilogue\_\-cntr\_\-register ()}\label{ml__starcore_8c_922691e8e0050b73de9f008389477b18}
+
+
+
+
+Definition at line 1178 of file ml\_\-starcore.c.
+
+References NULL.
+
+Referenced by M\_\-return\_\-epilogue\_\-cntr\_\-register().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_extra_pred_define_opcode@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-opcode}}
+\index{M_starcore_extra_pred_define_opcode@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-opcode}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-extra\_\-pred\_\-define\_\-opcode (int {\em proc\_\-opc})}\label{ml__starcore_8c_970f61499ed782bf9be46107f30aa1e5}
+
+
+
+
+Definition at line 216 of file ml\_\-starcore.c.
+
+References STARCOREop\_\-BMTSTC, STARCOREop\_\-BMTSTC\_\-W\_\-2, STARCOREop\_\-BMTSTC\_\-W\_\-3, STARCOREop\_\-BMTSTS, STARCOREop\_\-BMTSTS\_\-W\_\-2, STARCOREop\_\-BMTSTS\_\-W\_\-3, STARCOREop\_\-CMPEQ, STARCOREop\_\-CMPEQA, STARCOREop\_\-CMPGT, STARCOREop\_\-CMPGTA, STARCOREop\_\-CMPHI, STARCOREop\_\-CMPHIA, STARCOREop\_\-DECEQ, STARCOREop\_\-DECEQA, STARCOREop\_\-DECGE, STARCOREop\_\-DECGEA, STARCOREop\_\-TSTEQ, STARCOREop\_\-TSTEQA\_\-L, STARCOREop\_\-TSTEQA\_\-W, STARCOREop\_\-TSTGE, STARCOREop\_\-TSTGEA, STARCOREop\_\-TSTGT, and STARCOREop\_\-TSTGTA.
+
+Referenced by M\_\-extra\_\-pred\_\-define\_\-opcode().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_extra_pred_define_type1@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type1}}
+\index{M_starcore_extra_pred_define_type1@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type1}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type1 (L\_\-Oper $\ast$ {\em oper})}\label{ml__starcore_8c_3f7559a8c16cf363026ca102dc827bf7}
+
+
+
+
+Definition at line 255 of file ml\_\-starcore.c.
+
+References STARCOREop\_\-BMTSTC, STARCOREop\_\-BMTSTC\_\-W\_\-2, STARCOREop\_\-BMTSTC\_\-W\_\-3, STARCOREop\_\-BMTSTS, STARCOREop\_\-BMTSTS\_\-W\_\-2, STARCOREop\_\-BMTSTS\_\-W\_\-3, STARCOREop\_\-CMPEQ, STARCOREop\_\-CMPEQA, STARCOREop\_\-CMPGT, STARCOREop\_\-CMPGTA, STARCOREop\_\-CMPHI, STARCOREop\_\-CMPHIA, STARCOREop\_\-TSTEQ, STARCOREop\_\-TSTEQA\_\-L, STARCOREop\_\-TSTEQA\_\-W, STARCOREop\_\-TSTGE, STARCOREop\_\-TSTGEA, STARCOREop\_\-TSTGT, and STARCOREop\_\-TSTGTA.\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_extra_pred_define_type2@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type2}}
+\index{M_starcore_extra_pred_define_type2@{M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type2}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-extra\_\-pred\_\-define\_\-type2 (L\_\-Oper $\ast$ {\em oper})}\label{ml__starcore_8c_d853c01609fc58afaf01e6828c455f7d}
+
+
+
+
+Definition at line 292 of file ml\_\-starcore.c.
+
+References STARCOREop\_\-DECEQ, STARCOREop\_\-DECEQA, STARCOREop\_\-DECGE, and STARCOREop\_\-DECGEA.\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_fragile_macro@{M\_\-starcore\_\-fragile\_\-macro}}
+\index{M_starcore_fragile_macro@{M\_\-starcore\_\-fragile\_\-macro}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__starcore_8c_747818cff5bc21edfaf0ced9c55aecd3}
+
+
+
+
+Definition at line 80 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), M\_\-EM\_\-SC\_\-model, STARCORE\_\-MAC\_\-SR, STARCORE\_\-MAC\_\-T\_\-BIT, and STARCORE\_\-MAC\_\-T\_\-BIT\_\-INV.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_fragile_macro_set@{M\_\-starcore\_\-fragile\_\-macro\_\-set}}
+\index{M_starcore_fragile_macro_set@{M\_\-starcore\_\-fragile\_\-macro\_\-set}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-starcore\_\-fragile\_\-macro\_\-set (void)}\label{ml__starcore_8c_57e8ea31a47d0989ad0afac092100a5f}
+
+
+
+
+Definition at line 148 of file ml\_\-starcore.c.
+
+References Set\_\-add(), Set\_\-starcore\_\-fragile\_\-macro, STARCORE\_\-MAC\_\-SR, STARCORE\_\-MAC\_\-T\_\-BIT, and STARCORE\_\-MAC\_\-T\_\-BIT\_\-INV.
+
+Referenced by M\_\-fragile\_\-macro\_\-set().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_loop_cntr_register@{M\_\-starcore\_\-loop\_\-cntr\_\-register}}
+\index{M_starcore_loop_cntr_register@{M\_\-starcore\_\-loop\_\-cntr\_\-register}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Operand$\ast$ M\_\-starcore\_\-loop\_\-cntr\_\-register ()}\label{ml__starcore_8c_cfeadf7a357e658163e0c73dd9637f35}
+
+
+
+
+Definition at line 1186 of file ml\_\-starcore.c.
+
+References I\_\-punt(), and NULL.
+
+Referenced by M\_\-return\_\-loop\_\-cntr\_\-register().\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_negate_compare@{M\_\-starcore\_\-negate\_\-compare}}
+\index{M_starcore_negate_compare@{M\_\-starcore\_\-negate\_\-compare}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-starcore\_\-negate\_\-compare (L\_\-Oper $\ast$ {\em oper})}\label{ml__starcore_8c_54c4df5ae7044369fdc37a27f40d89fa}
+
+
+
+
+Definition at line 1280 of file ml\_\-starcore.c.
+
+References STARCORE\_\-MAC\_\-T\_\-BIT, STARCORE\_\-MAC\_\-T\_\-BIT\_\-INV, STARCOREop\_\-JF\_\-3, and STARCOREop\_\-JT\_\-3.\index{ml_starcore.c@{ml\_\-starcore.c}!M_starcore_subroutine_call@{M\_\-starcore\_\-subroutine\_\-call}}
+\index{M_starcore_subroutine_call@{M\_\-starcore\_\-subroutine\_\-call}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-starcore\_\-subroutine\_\-call (int {\em opc})}\label{ml__starcore_8c_1e383deabdc6795fc7280a2c82df5222}
+
+
+
+
+Definition at line 313 of file ml\_\-starcore.c.
+
+References EM\_\-SC\_\-MODEL\_\-OK, M\_\-assert(), and M\_\-EM\_\-SC\_\-model.
+
+Referenced by M\_\-subroutine\_\-call().
+
+\subsection{Variable Documentation}
+\index{ml_starcore.c@{ml\_\-starcore.c}!Set_starcore_fragile_macro@{Set\_\-starcore\_\-fragile\_\-macro}}
+\index{Set_starcore_fragile_macro@{Set\_\-starcore\_\-fragile\_\-macro}!ml_starcore.c@{ml\_\-starcore.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{Set\_\-starcore\_\-fragile\_\-macro} = \bf{NULL}}\label{ml__starcore_8c_35dcf6ca67c1aa9401422c3fe4e6e74f}
+
+
+
+
+Definition at line 70 of file ml\_\-starcore.c.
+
+Referenced by M\_\-starcore\_\-fragile\_\-macro\_\-set().

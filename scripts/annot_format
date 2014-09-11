@@ -1,0 +1,180 @@
+#!/usr/local/bin/perl
+
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+# Formats annotated source code using the given formatting options.
+#
+#  annot_format [options] < infile > outfile
+#    options:
+#	-s		split annotation comments into one per line
+#	-a "attrs"	only annotate output with attributes listed in attrs
+#	-r n		only show top n dmc rankings, others will be removed
+#
+#    examples:
+#	annot_format -s < file.c.annot > file.c.annot2
+#	    Splits annotations only one per line, all attributes
+#	    in file.c.annot get copied to file.c.annot2
+#	annot_format -s -a "dmc dmr" < file.c.annot > file.c.annot2
+#	    Splits annotations only one per line, only the dmc and
+#	    dmr attributes in file.c.annot get copied to file.c.annot2
+#	annot_format -r 10 < file.c.annot > file.c.annot2
+#	    Only note rankings on top 10 dmc's, other rankings
+#	    in file.c.annot will not be copied to file.c.annot2
+
+$line_num = 0;
+$num_args = 0;
+$split = 0;
+$limit_ranking = 0;
+ 
+while ($_ = shift) {
+    if ($_ eq "-s") {
+	$split = 1;
+    }
+    elsif ($_ eq "-a") {
+	$_ = shift;
+	@attrs = split(" ");
+    }
+    elsif ($_ eq "-r") {
+	$limit_ranking = 1;
+	$max_rank = shift;
+    }
+    $num_args++;
+}
+
+if (!$num_args) {
+    write;
+}
+else {
+  while (<>) {
+    $line_num++;
+    @line1 = split("\n");
+    @line = split(/ \/\*##/,$line1[0]);
+    print "$line[0]";
+    if ($split) {
+	if (@line > 1) {
+	    print sprintf("  /*LN %d LN*/\n",$line_num);
+	}
+	else {
+	    print "\n";
+	}
+    }
+    for ($i=1;$i<@line;$i++) {
+	if (defined(@attrs)) {
+	  foreach $attr (@attrs) {
+	    $_ = $line[$i];
+	    if (/^ [^ ]+ "$attr/) {
+    		if (!$split) {
+		    print " ";
+    		}
+		if ($limit_ranking && $attr eq "dmc") {
+		    @annot = split(/ \$(\d+)\$/,$line[$i]);
+		    print "/*##$annot[0]";
+		    if (defined($annot[1]) && $annot[1] <= $max_rank) {
+			print " \$$annot[1]\$";
+		    }
+		    if (defined($annot[2])) {
+			print "$annot[2]";
+		    }
+		}
+		else {
+		    print "/*##$line[$i]";
+		}
+    		if ($split) {
+		    print "\n";
+    		}
+	    }
+	  }
+	}
+	else {
+    	  if (!$split) {
+	    print " ";
+    	  }
+	  $_ = $line[$i];
+	  /^ [^ ]+ "([^"]+)/;
+	  if ($limit_ranking && $1 eq "dmc") {
+	    @annot = split(/ \$(\d+)\$/,$line[$i]);
+	    print "/*##$annot[0]";
+	    if (defined($annot[1]) && $annot[1] <= $max_rank) {
+		print " \$$annot[1]\$";
+	    }
+	    if (defined($annot[2])) {
+		print "$annot[2]";
+	    }
+	  }
+	  else {
+	    print "/*##$line[$i]";
+	  }
+    	  if ($split) {
+	    print "\n";
+    	  }
+	}
+    }
+    if (!$split) {
+	print "\n";
+    }
+  }
+}
+
+format STDOUT = 
+annot_format [options] < infile > outfile
+    options:
+	-s		split annotation comments into one per line
+	-a "attrs"	only annotate output with attributes listed in attrs
+	-r n		only show top n dmc rankings, others will be removed
+
+    examples:
+	annot_format -s < file.c.annot > file.c.annot2
+	    Splits annotations only one per line, all attributes
+	    in file.c.annot get copied to file.c.annot2
+	annot_format -s -a "dmc dmr" < file.c.annot > file.c.annot2
+	    Splits annotations only one per line, only the dmc and
+	    dmr attributes in file.c.annot get copied to file.c.annot2
+	annot_format -r 10 < file.c.annot > file.c.annot2
+	    Only note rankings on top 10 dmc's, other rankings
+	    in file.c.annot will not be copied to file.c.annot2
+.

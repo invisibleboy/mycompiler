@@ -1,0 +1,140 @@
+\section{cudd\-Init.c File Reference}
+\label{cuddInit_8c}\index{cuddInit.c@{cuddInit.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CUDD\_\-MAIN}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Dd\-Manager} $\ast$ \bf{Cudd\_\-Init} (unsigned int num\-Vars, unsigned int num\-Vars\-Z, unsigned int num\-Slots, unsigned int cache\-Size, unsigned long max\-Memory)
+\item 
+void \bf{Cudd\_\-Quit} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+int \bf{cudd\-Zdd\-Init\-Univ} (\bf{Dd\-Manager} $\ast$zdd)
+\item 
+void \bf{cudd\-Zdd\-Free\-Univ} (\bf{Dd\-Manager} $\ast$zdd)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Init.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddInit.c@{cudd\-Init.c}!CUDD_MAIN@{CUDD\_\-MAIN}}
+\index{CUDD_MAIN@{CUDD\_\-MAIN}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-MAIN}\label{cuddInit_8c_59315a08ea452c21caf6ededd8efc4ae}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Init.c}{p.}{cuddInit_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to initialize and shut down the DD manager.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Init()}{p.}{cuddInit_8c_72894f8bc06257ab2a667acb742a3ab6} \item \doxyref{Cudd\_\-Quit()}{p.}{cuddInit_8c_2889ace3fcf7d4e00915de52554fd475} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Init\-Univ()}{p.}{cuddInit_8c_badd982c3d591b858a9a2369659e4528} \item \doxyref{cudd\-Zdd\-Free\-Univ()}{p.}{cuddInit_8c_b5e36f92c1b0f85b30c54984f6377032} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 35 of file cudd\-Init.c.
+
+\subsection{Function Documentation}
+\index{cuddInit.c@{cudd\-Init.c}!Cudd_Init@{Cudd\_\-Init}}
+\index{Cudd_Init@{Cudd\_\-Init}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Manager}$\ast$ Cudd\_\-Init (unsigned int {\em num\-Vars}, unsigned int {\em num\-Vars\-Z}, unsigned int {\em num\-Slots}, unsigned int {\em cache\-Size}, unsigned long {\em max\-Memory})}\label{cuddInit_8c_72894f8bc06257ab2a667acb742a3ab6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates a new DD manager.]
+
+Description [Creates a new DD manager, initializes the table, the basic constants and the projection functions. If max\-Memory is 0, Cudd\_\-Init decides suitable values for the maximum size of the cache and for the limit for fast unique table growth based on the available memory. Returns a pointer to the manager if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Quit] 
+
+Definition at line 98 of file cudd\-Init.c.
+
+References ALLOC, Dd\-Manager::background, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Set\-Loose\-Up\-To(), cudd\-Init\-Cache(), cudd\-Init\-Table(), cudd\-Ref, cudd\-Unique\-Const(), cudd\-Unique\-Inter(), cudd\-Zdd\-Init\-Univ(), DD\_\-MAX\_\-CACHE\_\-FRACTION, DD\_\-MAX\_\-LOOSE\_\-FRACTION, DD\_\-MINUS\_\-INF\_\-VAL, DD\_\-PLUS\_\-INF\_\-VAL, Dd\-Manager::error\-Code, get\-Soft\-Data\-Limit(), Dd\-Manager::max\-Size, Dd\-Manager::minusinfinity, Dd\-Manager::one, one, Dd\-Manager::plusinfinity, result, Dd\-Manager::size, Dd\-Manager::size\-Z, Dd\-Manager::vars, Dd\-Manager::zero, and zero.\index{cuddInit.c@{cudd\-Init.c}!Cudd_Quit@{Cudd\_\-Quit}}
+\index{Cudd_Quit@{Cudd\_\-Quit}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Quit (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddInit_8c_2889ace3fcf7d4e00915de52554fd475}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Deletes resources associated with a DD manager.]
+
+Description [Deletes resources associated with a DD manager and resets the global statistical counters. (Otherwise, another manaqger subsequently created would inherit the stats of this one.)]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Init] 
+
+Definition at line 193 of file cudd\-Init.c.
+
+References cudd\-Free\-Table().\index{cuddInit.c@{cudd\-Init.c}!cuddZddFreeUniv@{cuddZddFreeUniv}}
+\index{cuddZddFreeUniv@{cuddZddFreeUniv}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Zdd\-Free\-Univ (\bf{Dd\-Manager} $\ast$ {\em zdd})}\label{cuddInit_8c_b5e36f92c1b0f85b30c54984f6377032}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the ZDD universe.]
+
+Description [Frees the ZDD universe.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Init\-Univ] 
+
+Definition at line 275 of file cudd\-Init.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), FREE, and Dd\-Manager::univ.
+
+Referenced by cudd\-Free\-Table(), and cudd\-Resize\-Table\-Zdd().\index{cuddInit.c@{cudd\-Init.c}!cuddZddInitUniv@{cuddZddInitUniv}}
+\index{cuddZddInitUniv@{cuddZddInitUniv}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Init\-Univ (\bf{Dd\-Manager} $\ast$ {\em zdd})}\label{cuddInit_8c_badd982c3d591b858a9a2369659e4528}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes the ZDD universe.]
+
+Description [Initializes the ZDD universe. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Free\-Univ] 
+
+Definition at line 219 of file cudd\-Init.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), cudd\-Zdd\-P(), DD\_\-ONE, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm\-Z, Dd\-Manager::size\-Z, and Dd\-Manager::univ.
+
+Referenced by Cudd\_\-Init(), and cudd\-Resize\-Table\-Zdd().
+
+\subsection{Variable Documentation}
+\index{cuddInit.c@{cudd\-Init.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddInit.c@{cudd\-Init.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Init.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddInit_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 59 of file cudd\-Init.c.

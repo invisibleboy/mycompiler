@@ -1,0 +1,941 @@
+\section{ml\_\-sparc.c File Reference}
+\label{ml__sparc_8c}\index{ml_sparc.c@{ml\_\-sparc.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include $<$machine/m\_\-spec.h$>$}\par
+{\tt \#include $<$machine/m\_\-sparc.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-SPARC\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-SPARC\_\-SMALL\_\-STRUCT\_\-MAX}~128
+\item 
+\#define \bf{M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG}~6
+\item 
+\#define \bf{M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET}~(17 $\ast$ 4 $\ast$ 8)
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~((M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-SPARC\_\-SIZE\_\-INT) + M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET)
+\item 
+\#define \bf{M\_\-SPARC\_\-IN\_\-BASE}~0
+\item 
+\#define \bf{M\_\-SPARC\_\-RET\_\-IN}~0
+\item 
+\#define \bf{M\_\-SPARC\_\-OUT\_\-BASE}~6
+\item 
+\#define \bf{M\_\-SPARC\_\-RET\_\-OUT}~6
+\item 
+\#define \bf{M\_\-SPARC\_\-RET\_\-F}~12
+\item 
+\#define \bf{M\_\-SPARC\_\-ST}~14
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-sparc\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-sparc\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sparc\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sparc\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sparc\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sparc\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-sparc\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-sparc\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-sparc\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sparc\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sparc\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sparc\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-sparc\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-sparc\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-sparc\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-sparc\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-sparc\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-sparc\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-sparc\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-sparc\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-sparc\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-sparc\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-sparc\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-sparc\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-sparc\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-sparc\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-sparc\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-sparc\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-sparc\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-sparc\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-sparc\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-sparc\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-sparc\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+void \bf{M\_\-define\_\-macros\_\-sparc} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+int \bf{M\_\-sparc\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-sparc\_\-fragile\_\-macro\_\-set} ()
+\item 
+int \bf{M\_\-sparc\_\-dataflow\_\-macro} (int id)
+\item 
+int \bf{M\_\-sparc\_\-subroutine\_\-call} (int opc)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-sparc} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sparc} (int opc)
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-sparc} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-sparc} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-sparc} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-operand\_\-type\_\-sparc} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-sparc} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-sparc} (int ctype)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_BIT@{M\_\-SPARC\_\-ALIGN\_\-BIT}}
+\index{M_SPARC_ALIGN_BIT@{M\_\-SPARC\_\-ALIGN\_\-BIT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-BIT~1}\label{ml__sparc_8c_6f37e98dbe60e0087bfee462eb537764}
+
+
+
+
+Definition at line 94 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_BLOCK@{M\_\-SPARC\_\-ALIGN\_\-BLOCK}}
+\index{M_SPARC_ALIGN_BLOCK@{M\_\-SPARC\_\-ALIGN\_\-BLOCK}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-BLOCK~-1}\label{ml__sparc_8c_5c4d512d8d3a8d38520be33d88853441}
+
+
+
+
+Definition at line 104 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_CHAR@{M\_\-SPARC\_\-ALIGN\_\-CHAR}}
+\index{M_SPARC_ALIGN_CHAR@{M\_\-SPARC\_\-ALIGN\_\-CHAR}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-CHAR~8}\label{ml__sparc_8c_9d5e39477244c53246b4fd8b0cb97a01}
+
+
+
+
+Definition at line 95 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_DOUBLE@{M\_\-SPARC\_\-ALIGN\_\-DOUBLE}}
+\index{M_SPARC_ALIGN_DOUBLE@{M\_\-SPARC\_\-ALIGN\_\-DOUBLE}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-DOUBLE~64}\label{ml__sparc_8c_ed359b3e0b8120d45c6427d0b30e81fc}
+
+
+
+
+Definition at line 100 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_FLOAT@{M\_\-SPARC\_\-ALIGN\_\-FLOAT}}
+\index{M_SPARC_ALIGN_FLOAT@{M\_\-SPARC\_\-ALIGN\_\-FLOAT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-FLOAT~32}\label{ml__sparc_8c_e332220fd6707d9a2e5c2fc08a352d71}
+
+
+
+
+Definition at line 99 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_INT@{M\_\-SPARC\_\-ALIGN\_\-INT}}
+\index{M_SPARC_ALIGN_INT@{M\_\-SPARC\_\-ALIGN\_\-INT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-INT~32}\label{ml__sparc_8c_9415095206395f5752b7274f54b54d70}
+
+
+
+
+Definition at line 97 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_LONG@{M\_\-SPARC\_\-ALIGN\_\-LONG}}
+\index{M_SPARC_ALIGN_LONG@{M\_\-SPARC\_\-ALIGN\_\-LONG}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-LONG~32}\label{ml__sparc_8c_fb42d0c5f81b921d1946728eebd0991f}
+
+
+
+
+Definition at line 98 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_MAX@{M\_\-SPARC\_\-ALIGN\_\-MAX}}
+\index{M_SPARC_ALIGN_MAX@{M\_\-SPARC\_\-ALIGN\_\-MAX}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-MAX~64}\label{ml__sparc_8c_215ea536898a4336b4753081aecbf4fd}
+
+
+
+
+Definition at line 105 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_POINTER@{M\_\-SPARC\_\-ALIGN\_\-POINTER}}
+\index{M_SPARC_ALIGN_POINTER@{M\_\-SPARC\_\-ALIGN\_\-POINTER}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-POINTER~32}\label{ml__sparc_8c_1f57a3ae8aa5c4b9ef4a668987ea63f6}
+
+
+
+
+Definition at line 101 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_SHORT@{M\_\-SPARC\_\-ALIGN\_\-SHORT}}
+\index{M_SPARC_ALIGN_SHORT@{M\_\-SPARC\_\-ALIGN\_\-SHORT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-SHORT~16}\label{ml__sparc_8c_5f18f0ce191d8bbd37aba9f452eb0192}
+
+
+
+
+Definition at line 96 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_STRUCT@{M\_\-SPARC\_\-ALIGN\_\-STRUCT}}
+\index{M_SPARC_ALIGN_STRUCT@{M\_\-SPARC\_\-ALIGN\_\-STRUCT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-STRUCT~-1}\label{ml__sparc_8c_84cbd64e41b7ced35a04769ec480c0c8}
+
+
+
+
+Definition at line 103 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_UNION@{M\_\-SPARC\_\-ALIGN\_\-UNION}}
+\index{M_SPARC_ALIGN_UNION@{M\_\-SPARC\_\-ALIGN\_\-UNION}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-UNION~-1}\label{ml__sparc_8c_0bb43402a7eadf28caa07ad0ef091d05}
+
+
+
+
+Definition at line 102 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ALIGN_VOID@{M\_\-SPARC\_\-ALIGN\_\-VOID}}
+\index{M_SPARC_ALIGN_VOID@{M\_\-SPARC\_\-ALIGN\_\-VOID}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ALIGN\_\-VOID~-1}\label{ml__sparc_8c_e758d55d512c0e130c7afa0d68727a05}
+
+
+
+
+Definition at line 93 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_IN_BASE@{M\_\-SPARC\_\-IN\_\-BASE}}
+\index{M_SPARC_IN_BASE@{M\_\-SPARC\_\-IN\_\-BASE}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-IN\_\-BASE~0}\label{ml__sparc_8c_da21947a3fc35d8b77013be011157573}
+
+
+
+
+Definition at line 116 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-fnvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_MAX_FNVAR_REG@{M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_SPARC_MAX_FNVAR_REG@{M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG~6}\label{ml__sparc_8c_4f0795b9249b6c7bab937b1c9c832ad9}
+
+
+
+
+Definition at line 111 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-fnvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_OUT_BASE@{M\_\-SPARC\_\-OUT\_\-BASE}}
+\index{M_SPARC_OUT_BASE@{M\_\-SPARC\_\-OUT\_\-BASE}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-OUT\_\-BASE~6}\label{ml__sparc_8c_51274194214aa0913a3743152e7a449a}
+
+
+
+
+Definition at line 118 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-fnvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_PARAM_FP_OFFSET@{M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET}}
+\index{M_SPARC_PARAM_FP_OFFSET@{M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET~(17 $\ast$ 4 $\ast$ 8)}\label{ml__sparc_8c_637642fac1f780208a67565e7f7c387b}
+
+
+
+
+Definition at line 112 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-fnvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_RET_F@{M\_\-SPARC\_\-RET\_\-F}}
+\index{M_SPARC_RET_F@{M\_\-SPARC\_\-RET\_\-F}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-RET\_\-F~12}\label{ml__sparc_8c_dde938197f9bfd51cd0aa467a438a27d}
+
+
+
+
+Definition at line 120 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-return\_\-register().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_RET_IN@{M\_\-SPARC\_\-RET\_\-IN}}
+\index{M_SPARC_RET_IN@{M\_\-SPARC\_\-RET\_\-IN}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-RET\_\-IN~0}\label{ml__sparc_8c_f3fef7d9337f99d07e58ef2b36592244}
+
+
+
+
+Definition at line 117 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-return\_\-register().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_RET_OUT@{M\_\-SPARC\_\-RET\_\-OUT}}
+\index{M_SPARC_RET_OUT@{M\_\-SPARC\_\-RET\_\-OUT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-RET\_\-OUT~6}\label{ml__sparc_8c_034f8edf7f3577c3790e2384dde27210}
+
+
+
+
+Definition at line 119 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-return\_\-register().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_BIT@{M\_\-SPARC\_\-SIZE\_\-BIT}}
+\index{M_SPARC_SIZE_BIT@{M\_\-SPARC\_\-SIZE\_\-BIT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-BIT~1}\label{ml__sparc_8c_fd0c82eb4c0bea72f96a5d6ec1982097}
+
+
+
+
+Definition at line 80 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_BLOCK@{M\_\-SPARC\_\-SIZE\_\-BLOCK}}
+\index{M_SPARC_SIZE_BLOCK@{M\_\-SPARC\_\-SIZE\_\-BLOCK}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-BLOCK~-1}\label{ml__sparc_8c_622000ad1b37191e51842a586883f55b}
+
+
+
+
+Definition at line 90 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_CHAR@{M\_\-SPARC\_\-SIZE\_\-CHAR}}
+\index{M_SPARC_SIZE_CHAR@{M\_\-SPARC\_\-SIZE\_\-CHAR}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-CHAR~8}\label{ml__sparc_8c_6b897d6238824458ceecf4591a5b31ee}
+
+
+
+
+Definition at line 81 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_DOUBLE@{M\_\-SPARC\_\-SIZE\_\-DOUBLE}}
+\index{M_SPARC_SIZE_DOUBLE@{M\_\-SPARC\_\-SIZE\_\-DOUBLE}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-DOUBLE~64}\label{ml__sparc_8c_51c6614b9618d50e5aa8a20af752d38b}
+
+
+
+
+Definition at line 86 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_FLOAT@{M\_\-SPARC\_\-SIZE\_\-FLOAT}}
+\index{M_SPARC_SIZE_FLOAT@{M\_\-SPARC\_\-SIZE\_\-FLOAT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-FLOAT~32}\label{ml__sparc_8c_5d48e91334b36f93a981ae6b6596b680}
+
+
+
+
+Definition at line 85 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_INT@{M\_\-SPARC\_\-SIZE\_\-INT}}
+\index{M_SPARC_SIZE_INT@{M\_\-SPARC\_\-SIZE\_\-INT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-INT~32}\label{ml__sparc_8c_204a833fe7583735c82861a4b08cc894}
+
+
+
+
+Definition at line 83 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_LONG@{M\_\-SPARC\_\-SIZE\_\-LONG}}
+\index{M_SPARC_SIZE_LONG@{M\_\-SPARC\_\-SIZE\_\-LONG}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-LONG~32}\label{ml__sparc_8c_768a9923f485a31fa70c6d3cb1a48e42}
+
+
+
+
+Definition at line 84 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_MAX@{M\_\-SPARC\_\-SIZE\_\-MAX}}
+\index{M_SPARC_SIZE_MAX@{M\_\-SPARC\_\-SIZE\_\-MAX}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-MAX~64}\label{ml__sparc_8c_1ebabb382ada29ae117b17d3ef2476f0}
+
+
+
+
+Definition at line 91 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_POINTER@{M\_\-SPARC\_\-SIZE\_\-POINTER}}
+\index{M_SPARC_SIZE_POINTER@{M\_\-SPARC\_\-SIZE\_\-POINTER}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-POINTER~32}\label{ml__sparc_8c_68e861c06006b8397c6b9ed4f3db6b20}
+
+
+
+
+Definition at line 87 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_SHORT@{M\_\-SPARC\_\-SIZE\_\-SHORT}}
+\index{M_SPARC_SIZE_SHORT@{M\_\-SPARC\_\-SIZE\_\-SHORT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-SHORT~16}\label{ml__sparc_8c_d348633368ef8037e758f9153b6e9339}
+
+
+
+
+Definition at line 82 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_STRUCT@{M\_\-SPARC\_\-SIZE\_\-STRUCT}}
+\index{M_SPARC_SIZE_STRUCT@{M\_\-SPARC\_\-SIZE\_\-STRUCT}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-STRUCT~-1}\label{ml__sparc_8c_6cce3fdf74717acb30a1eae7da41f894}
+
+
+
+
+Definition at line 89 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_UNION@{M\_\-SPARC\_\-SIZE\_\-UNION}}
+\index{M_SPARC_SIZE_UNION@{M\_\-SPARC\_\-SIZE\_\-UNION}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-UNION~-1}\label{ml__sparc_8c_83075740276643bc6443a7ff06a6291e}
+
+
+
+
+Definition at line 88 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SIZE_VOID@{M\_\-SPARC\_\-SIZE\_\-VOID}}
+\index{M_SPARC_SIZE_VOID@{M\_\-SPARC\_\-SIZE\_\-VOID}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SIZE\_\-VOID~0}\label{ml__sparc_8c_60f4e4bd7112cec573144b769f6e663a}
+
+
+
+
+Definition at line 79 of file ml\_\-sparc.c.\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_SMALL_STRUCT_MAX@{M\_\-SPARC\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_SPARC_SMALL_STRUCT_MAX@{M\_\-SPARC\_\-SMALL\_\-STRUCT\_\-MAX}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-SMALL\_\-STRUCT\_\-MAX~128}\label{ml__sparc_8c_80a3cdd2936be0d768657854b4c221d9}
+
+
+
+
+Definition at line 107 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-fnvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_SPARC_ST@{M\_\-SPARC\_\-ST}}
+\index{M_SPARC_ST@{M\_\-SPARC\_\-ST}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SPARC\_\-ST~14}\label{ml__sparc_8c_63ac0596f84d4446495c4e45a1f89e8c}
+
+
+
+
+Definition at line 122 of file ml\_\-sparc.c.
+
+Referenced by M\_\-sparc\_\-structure\_\-pointer().\index{ml_sparc.c@{ml\_\-sparc.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~((M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-SPARC\_\-SIZE\_\-INT) + M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET)}\label{ml__sparc_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 113 of file ml\_\-sparc.c.
+
+\subsection{Function Documentation}
+\index{ml_sparc.c@{ml\_\-sparc.c}!M_conflicting_operands_sparc@{M\_\-conflicting\_\-operands\_\-sparc}}
+\index{M_conflicting_operands_sparc@{M\_\-conflicting\_\-operands\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-sparc (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__sparc_8c_74e8faecdc28492f0582753ab26f71c0}
+
+
+
+
+Definition at line 1496 of file ml\_\-sparc.c.
+
+References I\_\-punt(), and M\_\-assert().
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_sparc.c@{ml\_\-sparc.c}!M_define_macros_sparc@{M\_\-define\_\-macros\_\-sparc}}
+\index{M_define_macros_sparc@{M\_\-define\_\-macros\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-sparc (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__sparc_8c_e664de7899500ee62b3ce59710006d2a}
+
+
+
+
+Definition at line 1059 of file ml\_\-sparc.c.
+
+References L\_\-SPARC\_\-MAC\_\-ALLOC, L\_\-SPARC\_\-MAC\_\-CALLEE, L\_\-SPARC\_\-MAC\_\-CALLER, L\_\-SPARC\_\-MAC\_\-CARRY\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-CARRY\_\-SET, L\_\-SPARC\_\-MAC\_\-FCC, L\_\-SPARC\_\-MAC\_\-FCC0, L\_\-SPARC\_\-MAC\_\-FCC1, L\_\-SPARC\_\-MAC\_\-FCC10, L\_\-SPARC\_\-MAC\_\-FCC11, L\_\-SPARC\_\-MAC\_\-FCC12, L\_\-SPARC\_\-MAC\_\-FCC13, L\_\-SPARC\_\-MAC\_\-FCC14, L\_\-SPARC\_\-MAC\_\-FCC15, L\_\-SPARC\_\-MAC\_\-FCC2, L\_\-SPARC\_\-MAC\_\-FCC3, L\_\-SPARC\_\-MAC\_\-FCC4, L\_\-SPARC\_\-MAC\_\-FCC5, L\_\-SPARC\_\-MAC\_\-FCC6, L\_\-SPARC\_\-MAC\_\-FCC7, L\_\-SPARC\_\-MAC\_\-FCC8, L\_\-SPARC\_\-MAC\_\-FCC9, L\_\-SPARC\_\-MAC\_\-FSR, L\_\-SPARC\_\-MAC\_\-G1, L\_\-SPARC\_\-MAC\_\-ICC, L\_\-SPARC\_\-MAC\_\-ICC0, L\_\-SPARC\_\-MAC\_\-ICC1, L\_\-SPARC\_\-MAC\_\-ICC10, L\_\-SPARC\_\-MAC\_\-ICC11, L\_\-SPARC\_\-MAC\_\-ICC12, L\_\-SPARC\_\-MAC\_\-ICC13, L\_\-SPARC\_\-MAC\_\-ICC14, L\_\-SPARC\_\-MAC\_\-ICC15, L\_\-SPARC\_\-MAC\_\-ICC2, L\_\-SPARC\_\-MAC\_\-ICC3, L\_\-SPARC\_\-MAC\_\-ICC4, L\_\-SPARC\_\-MAC\_\-ICC5, L\_\-SPARC\_\-MAC\_\-ICC6, L\_\-SPARC\_\-MAC\_\-ICC7, L\_\-SPARC\_\-MAC\_\-ICC8, L\_\-SPARC\_\-MAC\_\-ICC9, L\_\-SPARC\_\-MAC\_\-LEAF, L\_\-SPARC\_\-MAC\_\-NEG\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-NEG\_\-SET, L\_\-SPARC\_\-MAC\_\-NONLEAF\_\-RETADDR, L\_\-SPARC\_\-MAC\_\-OVERFLOW\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-OVERFLOW\_\-SET, L\_\-SPARC\_\-MAC\_\-PRED\_\-BASE, L\_\-SPARC\_\-MAC\_\-RETADDR, L\_\-SPARC\_\-MAC\_\-Y, L\_\-SPARC\_\-MAC\_\-ZERO, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros(), and M\_\-define\_\-macros\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_get_macro_name_sparc@{M\_\-get\_\-macro\_\-name\_\-sparc}}
+\index{M_get_macro_name_sparc@{M\_\-get\_\-macro\_\-name\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-sparc (int {\em id})}\label{ml__sparc_8c_61872011cd25f3037443e7f3bef8625d}
+
+
+
+
+Definition at line 1196 of file ml\_\-sparc.c.
+
+References L\_\-SPARC\_\-MAC\_\-ALLOC, L\_\-SPARC\_\-MAC\_\-CALLEE, L\_\-SPARC\_\-MAC\_\-CALLER, L\_\-SPARC\_\-MAC\_\-CARRY\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-CARRY\_\-SET, L\_\-SPARC\_\-MAC\_\-FCC, L\_\-SPARC\_\-MAC\_\-FCC0, L\_\-SPARC\_\-MAC\_\-FCC1, L\_\-SPARC\_\-MAC\_\-FCC10, L\_\-SPARC\_\-MAC\_\-FCC11, L\_\-SPARC\_\-MAC\_\-FCC12, L\_\-SPARC\_\-MAC\_\-FCC13, L\_\-SPARC\_\-MAC\_\-FCC14, L\_\-SPARC\_\-MAC\_\-FCC15, L\_\-SPARC\_\-MAC\_\-FCC2, L\_\-SPARC\_\-MAC\_\-FCC3, L\_\-SPARC\_\-MAC\_\-FCC4, L\_\-SPARC\_\-MAC\_\-FCC5, L\_\-SPARC\_\-MAC\_\-FCC6, L\_\-SPARC\_\-MAC\_\-FCC7, L\_\-SPARC\_\-MAC\_\-FCC8, L\_\-SPARC\_\-MAC\_\-FCC9, L\_\-SPARC\_\-MAC\_\-FSR, L\_\-SPARC\_\-MAC\_\-G1, L\_\-SPARC\_\-MAC\_\-ICC, L\_\-SPARC\_\-MAC\_\-ICC0, L\_\-SPARC\_\-MAC\_\-ICC1, L\_\-SPARC\_\-MAC\_\-ICC10, L\_\-SPARC\_\-MAC\_\-ICC11, L\_\-SPARC\_\-MAC\_\-ICC12, L\_\-SPARC\_\-MAC\_\-ICC13, L\_\-SPARC\_\-MAC\_\-ICC14, L\_\-SPARC\_\-MAC\_\-ICC15, L\_\-SPARC\_\-MAC\_\-ICC2, L\_\-SPARC\_\-MAC\_\-ICC3, L\_\-SPARC\_\-MAC\_\-ICC4, L\_\-SPARC\_\-MAC\_\-ICC5, L\_\-SPARC\_\-MAC\_\-ICC6, L\_\-SPARC\_\-MAC\_\-ICC7, L\_\-SPARC\_\-MAC\_\-ICC8, L\_\-SPARC\_\-MAC\_\-ICC9, L\_\-SPARC\_\-MAC\_\-LEAF, L\_\-SPARC\_\-MAC\_\-NEG\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-NEG\_\-SET, L\_\-SPARC\_\-MAC\_\-NONLEAF\_\-RETADDR, L\_\-SPARC\_\-MAC\_\-OVERFLOW\_\-CLEAR, L\_\-SPARC\_\-MAC\_\-OVERFLOW\_\-SET, L\_\-SPARC\_\-MAC\_\-PRED\_\-BASE, L\_\-SPARC\_\-MAC\_\-RETADDR, L\_\-SPARC\_\-MAC\_\-Y, and L\_\-SPARC\_\-MAC\_\-ZERO.
+
+Referenced by M\_\-get\_\-macro\_\-name(), and M\_\-get\_\-macro\_\-name\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_is_stack_operand_sparc@{M\_\-is\_\-stack\_\-operand\_\-sparc}}
+\index{M_is_stack_operand_sparc@{M\_\-is\_\-stack\_\-operand\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-sparc (L\_\-Operand $\ast$ {\em operand})}\label{ml__sparc_8c_08fa05cb5089960cd58a7de1f11ecdda}
+
+
+
+
+Definition at line 1347 of file ml\_\-sparc.c.
+
+Referenced by M\_\-is\_\-stack\_\-operand(), and M\_\-is\_\-stack\_\-operand\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_is_unsafe_macro_sparc@{M\_\-is\_\-unsafe\_\-macro\_\-sparc}}
+\index{M_is_unsafe_macro_sparc@{M\_\-is\_\-unsafe\_\-macro\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-sparc (L\_\-Operand $\ast$ {\em operand})}\label{ml__sparc_8c_b2f244b133c5cd2674cce2f51cd48875}
+
+
+
+
+Definition at line 1361 of file ml\_\-sparc.c.
+
+References L\_\-SPARC\_\-MAC\_\-FCC, L\_\-SPARC\_\-MAC\_\-FCC15, L\_\-SPARC\_\-MAC\_\-ICC, and L\_\-SPARC\_\-MAC\_\-ICC15.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro(), and M\_\-is\_\-unsafe\_\-macro\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_num_oper_required_for_sparc@{M\_\-num\_\-oper\_\-required\_\-for\_\-sparc}}
+\index{M_num_oper_required_for_sparc@{M\_\-num\_\-oper\_\-required\_\-for\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-sparc (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__sparc_8c_40f5e6281463d1d5d65447e60560d81a}
+
+
+
+
+Definition at line 1410 of file ml\_\-sparc.c.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for(), and M\_\-num\_\-oper\_\-required\_\-for\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_num_registers_sparc@{M\_\-num\_\-registers\_\-sparc}}
+\index{M_num_registers_sparc@{M\_\-num\_\-registers\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-sparc (int {\em ctype})}\label{ml__sparc_8c_3ef9226a6ce2047330f0e5e3b2ce2665}
+
+
+
+
+Definition at line 1639 of file ml\_\-sparc.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SPARC\_\-ELC, and M\_\-SPARC\_\-VIKING.
+
+Referenced by M\_\-num\_\-registers().\index{ml_sparc.c@{ml\_\-sparc.c}!M_oper_supported_in_arch_sparc@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sparc}}
+\index{M_oper_supported_in_arch_sparc@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-sparc (int {\em opc})}\label{ml__sparc_8c_336abacefae249cfb08f2ba5cfbdcb19}
+
+
+
+
+Definition at line 1318 of file ml\_\-sparc.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch(), and M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact().\index{ml_sparc.c@{ml\_\-sparc.c}!M_operand_type_sparc@{M\_\-operand\_\-type\_\-sparc}}
+\index{M_operand_type_sparc@{M\_\-operand\_\-type\_\-sparc}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-sparc (L\_\-Operand $\ast$ {\em operand})}\label{ml__sparc_8c_55e4c4b4c94f930666fa641ef1e9ef2d}
+
+
+
+
+Definition at line 1454 of file ml\_\-sparc.c.
+
+References L\_\-SPARC\_\-MAC\_\-FCC, L\_\-SPARC\_\-MAC\_\-FCC15, L\_\-SPARC\_\-MAC\_\-ICC, L\_\-SPARC\_\-MAC\_\-ICC15, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, MDES\_\-OPERAND\_\-sparc\_\-fcc, MDES\_\-OPERAND\_\-sparc\_\-icc, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_array_align@{M\_\-sparc\_\-array\_\-align}}
+\index{M_sparc_array_align@{M\_\-sparc\_\-array\_\-align}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__sparc_8c_70216b50d2fd5308c7ee8c8aed9d092f}
+
+
+
+
+Definition at line 398 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align(), and M\_\-impact\_\-array\_\-align().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_array_layout@{M\_\-sparc\_\-array\_\-layout}}
+\index{M_sparc_array_layout@{M\_\-sparc\_\-array\_\-layout}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__sparc_8c_aec7f2b5b57fc133223631daab5ea784}
+
+
+
+
+Definition at line 392 of file ml\_\-sparc.c.
+
+Referenced by M\_\-array\_\-layout(), and M\_\-impact\_\-array\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_array_size@{M\_\-sparc\_\-array\_\-size}}
+\index{M_sparc_array_size@{M\_\-sparc\_\-array\_\-size}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__sparc_8c_ff791473b06c0bc0575f73d005fce6c4}
+
+
+
+
+Definition at line 404 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size(), and M\_\-impact\_\-array\_\-size().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_bit_char@{M\_\-sparc\_\-bit\_\-char}}
+\index{M_sparc_bit_char@{M\_\-sparc\_\-bit\_\-char}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sparc_8c_d4e647b1c70bb56b33aa6e6827d06068}
+
+
+
+
+Definition at line 177 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-BIT, M\_\-SPARC\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char(), and M\_\-impact\_\-bit\_\-char().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_bit_int@{M\_\-sparc\_\-bit\_\-int}}
+\index{M_sparc_bit_int@{M\_\-sparc\_\-bit\_\-int}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sparc_8c_9be4072680fa6e9bcc6e78e8e7f49023}
+
+
+
+
+Definition at line 153 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-BIT, M\_\-SPARC\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int(), and M\_\-impact\_\-bit\_\-int().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_bit_long@{M\_\-sparc\_\-bit\_\-long}}
+\index{M_sparc_bit_long@{M\_\-sparc\_\-bit\_\-long}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sparc_8c_bea824f22e6293c632bf11d5f106cb3c}
+
+
+
+
+Definition at line 141 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-BIT, M\_\-SPARC\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long(), and M\_\-impact\_\-bit\_\-long().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_bit_short@{M\_\-sparc\_\-bit\_\-short}}
+\index{M_sparc_bit_short@{M\_\-sparc\_\-bit\_\-short}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sparc_8c_77961261fa57e30daba61921c5552cda}
+
+
+
+
+Definition at line 165 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-BIT, M\_\-SPARC\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short(), and M\_\-impact\_\-bit\_\-short().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_call_type@{M\_\-sparc\_\-call\_\-type}}
+\index{M_sparc_call_type@{M\_\-sparc\_\-call\_\-type}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sparc_8c_a039a192cee4a703c159455243cadc26}
+
+
+
+
+Definition at line 297 of file ml\_\-sparc.c.
+
+References M\_\-char(), M\_\-double(), M\_\-int(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type(), M\_\-impact\_\-call\_\-type(), and M\_\-impact\_\-call\_\-type2().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_call_type2@{M\_\-sparc\_\-call\_\-type2}}
+\index{M_sparc_call_type2@{M\_\-sparc\_\-call\_\-type2}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sparc_8c_ed61a397557aa9e21962de679ee7acc8}
+
+
+
+
+Definition at line 342 of file ml\_\-sparc.c.
+
+References M\_\-char(), M\_\-double(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_cb_label_name@{M\_\-sparc\_\-cb\_\-label\_\-name}}
+\index{M_sparc_cb_label_name@{M\_\-sparc\_\-cb\_\-label\_\-name}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__sparc_8c_0e0d71293d516c0e226739b8dcd27341}
+
+
+
+
+Definition at line 955 of file ml\_\-sparc.c.
+
+Referenced by M\_\-cb\_\-label\_\-name(), and M\_\-impact\_\-cb\_\-label\_\-name().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_dataflow_macro@{M\_\-sparc\_\-dataflow\_\-macro}}
+\index{M_sparc_dataflow_macro@{M\_\-sparc\_\-dataflow\_\-macro}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-dataflow\_\-macro (int {\em id})}\label{ml__sparc_8c_88caba43c7f023b5c5ec4e5a2f842f3b}
+
+
+
+
+Definition at line 1164 of file ml\_\-sparc.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SPARC\_\-ELC, and M\_\-SPARC\_\-VIKING.
+
+Referenced by M\_\-dataflow\_\-macro(), and M\_\-impact\_\-dataflow\_\-macro().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_double@{M\_\-sparc\_\-double}}
+\index{M_sparc_double@{M\_\-sparc\_\-double}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__sparc_8c_0cd8a913d9be6dcc0756cf3d8dfb5f26}
+
+
+
+
+Definition at line 199 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SPARC\_\-ALIGN\_\-DOUBLE, M\_\-SPARC\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double(), and M\_\-impact\_\-double().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_eval_type@{M\_\-sparc\_\-eval\_\-type}}
+\index{M_sparc_eval_type@{M\_\-sparc\_\-eval\_\-type}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sparc_8c_3cca9430c46864e8d84d8cfe186ab46e}
+
+
+
+
+Definition at line 221 of file ml\_\-sparc.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type(), M\_\-impact\_\-eval\_\-type(), and M\_\-impact\_\-eval\_\-type2().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_eval_type2@{M\_\-sparc\_\-eval\_\-type2}}
+\index{M_sparc_eval_type2@{M\_\-sparc\_\-eval\_\-type2}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sparc_8c_d06c06a99f51a2b11000f60e14ec6f10}
+
+
+
+
+Definition at line 255 of file ml\_\-sparc.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_float@{M\_\-sparc\_\-float}}
+\index{M_sparc_float@{M\_\-sparc\_\-float}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__sparc_8c_00a434c2eb5c995f8b54f0893b4422f0}
+
+
+
+
+Definition at line 189 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SPARC\_\-ALIGN\_\-FLOAT, M\_\-SPARC\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float(), and M\_\-impact\_\-float().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_fn_label_name@{M\_\-sparc\_\-fn\_\-label\_\-name}}
+\index{M_sparc_fn_label_name@{M\_\-sparc\_\-fn\_\-label\_\-name}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-sparc\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__sparc_8c_880a27dd1b63d819a71b50d876b967e3}
+
+
+
+
+Definition at line 1032 of file ml\_\-sparc.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_fn_name_from_label@{M\_\-sparc\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_sparc_fn_name_from_label@{M\_\-sparc\_\-fn\_\-name\_\-from\_\-label}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-sparc\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__sparc_8c_2bdb33821bd5adb9064cac42d5dbb44a}
+
+
+
+
+Definition at line 1045 of file ml\_\-sparc.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_fnvar_layout@{M\_\-sparc\_\-fnvar\_\-layout}}
+\index{M_sparc_fnvar_layout@{M\_\-sparc\_\-fnvar\_\-layout}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__sparc_8c_c4c1c1d7d55a98254d1b4a73f7548238}
+
+
+
+
+Definition at line 730 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-SPARC\_\-ALIGN\_\-MAX, M\_\-SPARC\_\-ALIGN\_\-POINTER, M\_\-SPARC\_\-IN\_\-BASE, M\_\-SPARC\_\-MAX\_\-FNVAR\_\-REG, M\_\-SPARC\_\-OUT\_\-BASE, M\_\-SPARC\_\-PARAM\_\-FP\_\-OFFSET, M\_\-SPARC\_\-SIZE\_\-INT, M\_\-SPARC\_\-SIZE\_\-POINTER, M\_\-SPARC\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout(), M\_\-impact\_\-fnvar\_\-layout(), and M\_\-sparc\_\-layout\_\-fnvar().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_fragile_macro@{M\_\-sparc\_\-fragile\_\-macro}}
+\index{M_sparc_fragile_macro@{M\_\-sparc\_\-fragile\_\-macro}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__sparc_8c_76db0d78c52a3d7d97e43d368b8f839c}
+
+
+
+
+Definition at line 1121 of file ml\_\-sparc.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SPARC\_\-ELC, and M\_\-SPARC\_\-VIKING.
+
+Referenced by M\_\-fragile\_\-macro(), and M\_\-impact\_\-fragile\_\-macro().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_fragile_macro_set@{M\_\-sparc\_\-fragile\_\-macro\_\-set}}
+\index{M_sparc_fragile_macro_set@{M\_\-sparc\_\-fragile\_\-macro\_\-set}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-sparc\_\-fragile\_\-macro\_\-set ()}\label{ml__sparc_8c_26a0ab8e51c36857e8dbb8349e3fa370}
+
+
+
+
+Definition at line 1148 of file ml\_\-sparc.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SPARC\_\-ELC, M\_\-SPARC\_\-VIKING, and NULL.
+
+Referenced by M\_\-fragile\_\-macro\_\-set(), and M\_\-impact\_\-fragile\_\-macro\_\-set().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_is_cb_label@{M\_\-sparc\_\-is\_\-cb\_\-label}}
+\index{M_sparc_is_cb_label@{M\_\-sparc\_\-is\_\-cb\_\-label}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__sparc_8c_182aa66ec925aabc0d4718fe79941095}
+
+
+
+
+Definition at line 961 of file ml\_\-sparc.c.
+
+Referenced by M\_\-impact\_\-is\_\-cb\_\-label(), and M\_\-is\_\-cb\_\-label().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_is_jumptbl_label@{M\_\-sparc\_\-is\_\-jumptbl\_\-label}}
+\index{M_sparc_is_jumptbl_label@{M\_\-sparc\_\-is\_\-jumptbl\_\-label}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__sparc_8c_f542dde0a56d19c388a6e4562242364d}
+
+
+
+
+Definition at line 974 of file ml\_\-sparc.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-impact\_\-is\_\-jumptbl\_\-label(), and M\_\-is\_\-jumptbl\_\-label().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_jumptbl_label_name@{M\_\-sparc\_\-jumptbl\_\-label\_\-name}}
+\index{M_sparc_jumptbl_label_name@{M\_\-sparc\_\-jumptbl\_\-label\_\-name}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__sparc_8c_a8bb4786c5a281d43408eeca343f3280}
+
+
+
+
+Definition at line 967 of file ml\_\-sparc.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-impact\_\-jumptbl\_\-label\_\-name(), and M\_\-jumptbl\_\-label\_\-name().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_layout_fnvar@{M\_\-sparc\_\-layout\_\-fnvar}}
+\index{M_sparc_layout_fnvar@{M\_\-sparc\_\-layout\_\-fnvar}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__sparc_8c_e27149bd41448ad4d7b1f6d8d16e84a5}
+
+
+
+
+Definition at line 678 of file ml\_\-sparc.c.
+
+References List\_\-next(), List\_\-size(), List\_\-start(), M\_\-sparc\_\-fnvar\_\-layout(), \_\-struct\_\-M\_\-Param::mode, mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Param::su\_\-ereg, and \_\-struct\_\-M\_\-Param::su\_\-sreg.
+
+Referenced by M\_\-impact\_\-layout\_\-fnvar(), and M\_\-layout\_\-fnvar().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_lvar_layout@{M\_\-sparc\_\-lvar\_\-layout}}
+\index{M_sparc_lvar_layout@{M\_\-sparc\_\-lvar\_\-layout}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__sparc_8c_ff238cf52516106ab0e2bd5c56f374f3}
+
+
+
+
+Definition at line 907 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-MAX, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-impact\_\-lvar\_\-layout(), and M\_\-lvar\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_no_short_int@{M\_\-sparc\_\-no\_\-short\_\-int}}
+\index{M_sparc_no_short_int@{M\_\-sparc\_\-no\_\-short\_\-int}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-no\_\-short\_\-int (void)}\label{ml__sparc_8c_4dbb77ba9cecee885f6f6d61ecbe9efa}
+
+
+
+
+Definition at line 949 of file ml\_\-sparc.c.
+
+References M\_\-SPARC\_\-SIZE\_\-INT, and M\_\-SPARC\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-impact\_\-no\_\-short\_\-int(), and M\_\-no\_\-short\_\-int().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_pointer@{M\_\-sparc\_\-pointer}}
+\index{M_sparc_pointer@{M\_\-sparc\_\-pointer}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__sparc_8c_cba57ec84028af7a5dba2f293b2ee682}
+
+
+
+
+Definition at line 209 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SPARC\_\-ALIGN\_\-POINTER, M\_\-SPARC\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-pointer(), and M\_\-pointer().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_return_register@{M\_\-sparc\_\-return\_\-register}}
+\index{M_sparc_return_register@{M\_\-sparc\_\-return\_\-register}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__sparc_8c_2fcf4475e2d7e61a1ef2ae807f28d810}
+
+
+
+
+Definition at line 1008 of file ml\_\-sparc.c.
+
+References M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-SPARC\_\-RET\_\-F, M\_\-SPARC\_\-RET\_\-IN, M\_\-SPARC\_\-RET\_\-OUT, M\_\-TYPE\_\-DOUBLE, and M\_\-TYPE\_\-FLOAT.
+
+Referenced by M\_\-impact\_\-return\_\-register(), and M\_\-return\_\-register().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_struct_align@{M\_\-sparc\_\-struct\_\-align}}
+\index{M_sparc_struct_align@{M\_\-sparc\_\-struct\_\-align}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sparc_8c_c9dd4fff1abb70ca0f5e44c04bfec38b}
+
+
+
+
+Definition at line 599 of file ml\_\-sparc.c.
+
+References M\_\-SPARC\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-impact\_\-struct\_\-align(), and M\_\-struct\_\-align().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_struct_layout@{M\_\-sparc\_\-struct\_\-layout}}
+\index{M_sparc_struct_layout@{M\_\-sparc\_\-struct\_\-layout}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__sparc_8c_9ae9119fcdd7f6449761eb24d336500a}
+
+
+
+
+Definition at line 476 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-CHAR, M\_\-SPARC\_\-ALIGN\_\-INT, M\_\-SPARC\_\-SIZE\_\-CHAR, M\_\-SPARC\_\-SIZE\_\-INT, M\_\-SPARC\_\-SIZE\_\-LONG, M\_\-SPARC\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-impact\_\-struct\_\-layout(), and M\_\-struct\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_struct_size@{M\_\-sparc\_\-struct\_\-size}}
+\index{M_sparc_struct_size@{M\_\-sparc\_\-struct\_\-size}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__sparc_8c_62f8aebcd3384c1c9136d36790ce4352}
+
+
+
+
+Definition at line 618 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SPARC\_\-ALIGN\_\-CHAR, M\_\-SPARC\_\-ALIGN\_\-LONG, M\_\-SPARC\_\-ALIGN\_\-SHORT, M\_\-SPARC\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-impact\_\-struct\_\-size(), and M\_\-struct\_\-size().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_structure_pointer@{M\_\-sparc\_\-structure\_\-pointer}}
+\index{M_sparc_structure_pointer@{M\_\-sparc\_\-structure\_\-pointer}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-structure\_\-pointer (int {\em purpose})}\label{ml__sparc_8c_625b80affb153f5aede9829e5ca16d90}
+
+
+
+
+Definition at line 1002 of file ml\_\-sparc.c.
+
+References M\_\-SPARC\_\-ST.
+
+Referenced by M\_\-impact\_\-structure\_\-pointer(), and M\_\-structure\_\-pointer().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_subroutine_call@{M\_\-sparc\_\-subroutine\_\-call}}
+\index{M_sparc_subroutine_call@{M\_\-sparc\_\-subroutine\_\-call}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-subroutine\_\-call (int {\em opc})}\label{ml__sparc_8c_e82936ab4c7f9d11dd04189341ae5a42}
+
+
+
+
+Definition at line 1180 of file ml\_\-sparc.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SPARC\_\-ELC, and M\_\-SPARC\_\-VIKING.
+
+Referenced by M\_\-impact\_\-subroutine\_\-call(), and M\_\-subroutine\_\-call().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_union_align@{M\_\-sparc\_\-union\_\-align}}
+\index{M_sparc_union_align@{M\_\-sparc\_\-union\_\-align}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sparc_8c_3ce9b762400b8788a0bbb7eefe5dada8}
+
+
+
+
+Definition at line 428 of file ml\_\-sparc.c.
+
+References M\_\-SPARC\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-impact\_\-union\_\-align(), and M\_\-union\_\-align().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_union_layout@{M\_\-sparc\_\-union\_\-layout}}
+\index{M_sparc_union_layout@{M\_\-sparc\_\-union\_\-layout}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__sparc_8c_84f687dcab9c62fa0849f2b1f6b18163}
+
+
+
+
+Definition at line 417 of file ml\_\-sparc.c.
+
+Referenced by M\_\-impact\_\-union\_\-layout(), and M\_\-union\_\-layout().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_union_size@{M\_\-sparc\_\-union\_\-size}}
+\index{M_sparc_union_size@{M\_\-sparc\_\-union\_\-size}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sparc\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sparc_8c_4f771591d9066d35c1cc7e49553f4285}
+
+
+
+
+Definition at line 447 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SPARC\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-impact\_\-union\_\-size(), and M\_\-union\_\-size().\index{ml_sparc.c@{ml\_\-sparc.c}!M_sparc_void@{M\_\-sparc\_\-void}}
+\index{M_sparc_void@{M\_\-sparc\_\-void}!ml_sparc.c@{ml\_\-sparc.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sparc\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__sparc_8c_d2bd892fac17dc08374320f02bc6ebf4}
+
+
+
+
+Definition at line 131 of file ml\_\-sparc.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SPARC\_\-ALIGN\_\-VOID, M\_\-SPARC\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-void(), and M\_\-void().

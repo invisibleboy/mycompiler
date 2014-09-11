@@ -1,0 +1,261 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lx86 default parameters.
+#
+# Created by Dan Lavery, 1/11/94
+#
+# Revisions:
+#
+
+$target$ = att_Linux;	# att           :  Unix  (Unixware)
+			# att_Linux     :  Unix  (Linux)
+			# masm          :  MSDOS (Microsoft MASM)
+			# masm_PharLap  :  MSDOS (PharLap DOS-EXTENDER)
+			# masm_Win32    :  Windows95/NT (Microsoft MASM)
+
+$callee_mask$ = ;	# point to a file contain functions mask which need 
+			# callee_saved_convention regardless the main switch
+			# "use_callee_saved_convention".  The function mask
+			# can be one of the following types..
+			#	a) function_name   : to be matched exactly
+			#	b) *function_tail  : match tail
+			#	c) function_head*  : match head
+			#	d) *function_str*  : match str
+			#	e) * or **	   : match all
+			# Other than leading/tailing '*', str will be matched
+			# exactly
+(Lx86 
+    #
+    # PHASE 1
+    #
+    dead_jsr_removal = no;	    # remove dead sprintf() and strlen() call
+    float_ld_st_detection = no;     # convert memory to fp-reg to memory moves
+                                    # to memory to int-reg to memory moves
+    eliminate_unnecessary_and = no; # remove ANDs of 255 and 65,535 which are
+				    # 0-extending loads of char and char_2
+    float_copy_prop = no;	    # copy propagation of fp return value P1
+    avoid_cdq_instruction = no;     # use mov and shift instead of cdq for
+                                    # Pentium
+    use_builtin_alloca = no;        # use builtin version of function alloca 
+                                    # for gcc
+
+    #
+    # PHASE 2
+    #
+
+    # PEEPHOLE OPTIMIZATIONS PRIOR TO MOPTI
+
+    # The following two optimizations use sequence of integer instructions to 
+    # implement a floating-point branch.
+    float_fpbranch_to_intbranch = no;	# for "float" compare/branch
+    double_fpbranch_to_intbranch = no;  # for "double" compare/branch
+
+    use_builtin_strings = no;		# use built-in strlen
+    use_builtin_memory_functions = no;  # use built-in memcpy
+    use_builtin_NCR_functions    = no;  # use NCR-sybase specific built-in func
+
+    constant_multiply_optimization = no;
+                                    # convert multiplications by a constant
+                                    # into a series of shifts, adds, subtracts
+    instruction_selection = no;     # use inc and dec instructions instead
+                                    # of add/subtract 1
+    use_test_instruction = no;      # use test instruction instead of and
+                                    # for bit masking
+    incr_address_prop = no;         # eliminate copy of address associated
+                                    # with pointer post increments
+    rev_copy_prop = no;             # x86 custom reverse copy propagation
+    forward_copy_prop = no;         # x86 custom forward copy propagation
+    do_better_bit_fields = no;      # eliminate right-shifts when comparing
+                                    # a bit field to 0
+    do_x86_predication = no;        # predication using setcc instruction
+    lea_optimization = no;          # use leas to replace mov-add, mov-shift,
+                                    # and add-shift sequences
+    address_prop = no;              # fold addresses computed by lea 
+                                    # instructions into the addressing modes 
+                                    # of loads and stores
+    print_lea_stats = no;           # prints out the lea operations that are
+				    # converted back to add or shift.
+
+
+    do_cisc_to_reg = no;            # merge load of source and arithmetic
+                                    # oper which uses source into a CISC 
+                                    # arithmetic oper which gets its source 
+                                    # from memory
+    do_cisc_to_mem = no;            # merge load of dest, arithmetic oper which
+                                    # uses dest, and store of dest into a CISC
+                                    # arithmetic oper with its dest in memory
+    do_cisc_cmp = no;               # merge load of source and compare or branch
+                                    # oper which uses source into a CISC 
+                                    # oper which gets its source from memory
+    pre_opti_dead_code = no;        # local dead code removal
+    global_address_prop = no;       # do the same as address prop across cbs
+                                    # not debugged yet
+    do_cisc_jump_rg = no            # merge load of jump_rg target with jump_rg
+
+    short_operand = no;             # use subset registers instead of sign 
+                                    # extending for a computation chain
+    short_operand_leftover_movzxl_removal = no;	
+                                    # Has effect only when short_operand
+				    # is on. Avoid using movzbl/movwl for
+				    # cases where short_operand opti can't
+				    # be applied.  Instead, use xor to clear 
+                                    # register before load.
+    do_16_bit_load_optimization = no;
+				    # split 16bit load to two 8bit load
+
+    print_short_reg = 0;	    # for debugging short_operand only
+    magic_num1 =  1;		    # for debug
+    magic_num2 = -1;		    # for debug
+    magic_num3 =  0;		    # for debug
+
+
+    # REGISTER ALLOCATION
+    region_reg_alloc = no;          # use region-based register allocation
+                                    # instead of whole function
+    use_callee_saved_convention = no; 
+                                    # standard is caller saved
+    callee_saved_functions_mask_file = $callee_mask$;
+                                    # file containing mask for functions
+                                    # that must use callee saved convention
+    callee_saved_reg_arrangement = no;
+                                    # when possible replace callee saved
+                                    # registers with caller saved registers
+                                    # to reduce the number of register
+                                    # saves and restores.
+                                    # has effect only callee_saved is used
+				    # by "use_callee_saved_convention", or
+				    # by forced..
+    use_leaf_8th_reg=no;            # use static stack frame to allow use
+                                    # of esp as 8th register for functions
+                                    # which call no other functions
+        use_quasi_leaf_8th_reg=no;  # allow use of 8th register for functions
+                                    # which make a limited number of library
+                                    # function calls.
+                                    # must have use_leaf_8th_reg turned on
+                                    # to use this
+    use_marked_8th_reg=no;          # use 8th register for marked functions
+
+
+    # PEEPHOLE OPTIMIZATIONS AFTER REGISTER ALLOCATION AND ANNOTATION
+    avoid_lib_call_spills = no;     # do not save registers which are callee
+                                    # saved by library functions
+    redundant_store = no;           # remove redundant spills
+    fill_copy_prop = no;            # reverse copy propagation into fills
+    spill_copy_prop = no;           # forward copy propagation into spills
+    post_regalloc_dead_code = no;   # local and global dead code removal
+    redundant_spill_unspill = no;   # does nothing, should be removed from code
+    redundant_spill_for_IPs = no;   # remove redundant spill/unspill for
+				    # incoming parameters
+    remove_unnec_unspills = no;	    # does global memory copy prop to remove
+				    # unnecessary unspills 
+
+
+    # POSTPASS CODE SCHEDULING
+    integrate_prologue = no;        # merge prologue with next cb to increase
+                                    # scheduling opportunities
+    integrate_epilogues = no;       # merge code from epilogue with prev cb to
+                                    # increase scheduling opportunities
+
+
+    # PEEPHOLE OPTIMIZATIONS AFTER POSTPASS CODE SCHEDULING
+
+    branch_optimizations = no;      # remove unnecessary compares when flags
+                                    # are set by an arithmetic instruction
+                                    # and use test instruction for some of the
+                                    # compares that are not removed
+    do_sbb_predication = no;        # predication using sbb instruction
+    do_icache_optimizations = no;   # use xor/or instead of mov 0/-1
+    do_multiple_epilogues = no;     # replace jump to epilogue with copy
+                                    # of epilogue
+    do_remove_multiple_move_zeros = no;
+                                    # clean up after predication opti
+    do_sahf_to_test_for_fpbranch = no;
+                                    # do test to set flags instead of moving
+                                    # AH to flags
+
+    # DEBUG
+    no_split_compare_and_branch = no;
+				    # Do not split compare and branch.
+    print_fp_stack = no;
+    print_opti_stats_mask = 0xffffffff;
+    print_opti_stats = no;
+    print_spill_stats = no;
+    print_forced_callee_saved_function_name = no;
+    print_callee_saved_reg_arrangement = no;
+    print_undo_register_allocation_3_oper_format = no;
+    print_after_prepass = no;       # Exit phase 2 right after prepass
+                                    # scheduling without doing register
+                                    # allocation or further optimizations.
+                                    # Resulting .mco cannot be input to
+                                    # phase 3.
+    print_after_postpass = no;      # Exit phase 2 right after postpass
+                                    # scheduling without splitting the 
+                                    # compare-and-branch or further 
+                                    # optimizations.  Resulting .mco cannot 
+                                    # be input to phase 3.
+
+
+    #
+    # PHASE 3
+    #
+
+    # ALIGN BRANCH TARGET
+    align_branch_target = no;	      # align highly-executed branch target
+    align_branch_target_freq_lower_bound = 20;   # lower_bound to be qualified
+    align_branch_target_fall_thru_by_jump = no;  # use jump for fall_thru
+						 #  instead of default "nop"
+
+    target = $target$                 # target OS/assembler
+    minimize_labels = no;             # remove unecessary labels and reduce
+                                      # label length
+    minimize_align_labels = no;       # minimize align labels only used for
+                                      # probing
+
+end)
+

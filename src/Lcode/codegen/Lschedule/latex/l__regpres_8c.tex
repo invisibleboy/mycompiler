@@ -1,0 +1,310 @@
+\section{l\_\-regpres.c File Reference}
+\label{l__regpres_8c}\index{l_regpres.c@{l\_\-regpres.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/r\_\-regproto.h$>$}\par
+{\tt \#include \char`\"{}l\_\-schedule.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CALLEE}~0
+\item 
+\#define \bf{CALLER}~1
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{Lregpres\_\-compute\_\-benefit} (\bf{Sched\_\-Info} $\ast$sinfo)
+\item 
+int \bf{Lregpres\_\-inc\_\-current} (int ctype, int count)
+\item 
+int \bf{Lregpres\_\-dec\_\-current} (int ctype, int count)
+\item 
+void \bf{Lregpres\_\-inc\_\-set} (\bf{Regtypes} $\ast$set, int ctype)
+\item 
+void \bf{Lregpres\_\-add\_\-virt\_\-reg\_\-use} (\bf{Sched\_\-Info} $\ast$sinfo, int reg\_\-num)
+\item 
+void \bf{Lregpres\_\-init\_\-func} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lregpres\_\-deinit\_\-func} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lregpres\_\-init\_\-cb} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{L\_\-init\_\-ready\_\-queue} ()
+\item 
+\bf{Sched\_\-Info} $\ast$ \bf{L\_\-get\_\-next\_\-entry} ()
+\item 
+void \bf{L\_\-insert\_\-entry} (\bf{Sched\_\-Info} $\ast$sinfo)
+\item 
+void \bf{L\_\-update\_\-virt\_\-reg} (\bf{Sched\_\-Info} $\ast$sinfo)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{Lsched\_\-use\_\-register\_\-pressure\_\-heuristic} = 0
+\item 
+int \bf{Lsched\_\-register\_\-pressure\_\-threshhold} = 75
+\item 
+int \bf{Lsched\_\-regpres\_\-heuristic} = 0
+\item 
+int \bf{Lregpres\_\-problem} = 0
+\item 
+int \bf{num\_\-virt\_\-reg}
+\item 
+\bf{Vreg} $\ast$ \bf{virt\_\-reg} = \bf{NULL}
+\item 
+\bf{CB\_\-REG\_\-INFO} \bf{preg\_\-info}
+\item 
+\bf{CB\_\-REG\_\-INFO} \bf{ireg\_\-info}
+\item 
+\bf{CB\_\-REG\_\-INFO} \bf{freg\_\-info}
+\item 
+\bf{CB\_\-REG\_\-INFO} \bf{dreg\_\-info}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_regpres.c@{l\_\-regpres.c}!CALLEE@{CALLEE}}
+\index{CALLEE@{CALLEE}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CALLEE~0}\label{l__regpres_8c_7a2ce10cbef56fc76d9d137d04ad19cd}
+
+
+
+
+Definition at line 83 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!CALLER@{CALLER}}
+\index{CALLER@{CALLER}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CALLER~1}\label{l__regpres_8c_7bf83495c4c1a47e4b5711455b0e29a4}
+
+
+
+
+Definition at line 84 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-init\_\-func().
+
+\subsection{Function Documentation}
+\index{l_regpres.c@{l\_\-regpres.c}!L_get_next_entry@{L\_\-get\_\-next\_\-entry}}
+\index{L_get_next_entry@{L\_\-get\_\-next\_\-entry}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Sched\_\-Info}$\ast$ L\_\-get\_\-next\_\-entry ()}\label{l__regpres_8c_0c02c6c4c315bd64ecf3c512ee700d87}
+
+
+
+
+Definition at line 606 of file l\_\-regpres.c.
+
+References L\_\-get\_\-queue\_\-next\_\-entry(), L\_\-get\_\-queue\_\-size(), Lregpres\_\-problem, Lsched\_\-regpres\_\-heuristic, priority\_\-ready\_\-queue, and regpres\_\-ready\_\-queue.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_regpres.c@{l\_\-regpres.c}!L_init_ready_queue@{L\_\-init\_\-ready\_\-queue}}
+\index{L_init_ready_queue@{L\_\-init\_\-ready\_\-queue}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-init\_\-ready\_\-queue ()}\label{l__regpres_8c_ce269a612036a7f00eed18771f53b4f4}
+
+
+
+
+Definition at line 598 of file l\_\-regpres.c.
+
+References L\_\-reset\_\-queue\_\-current(), Lsched\_\-regpres\_\-heuristic, priority\_\-ready\_\-queue, and regpres\_\-ready\_\-queue.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_regpres.c@{l\_\-regpres.c}!L_insert_entry@{L\_\-insert\_\-entry}}
+\index{L_insert_entry@{L\_\-insert\_\-entry}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-insert\_\-entry (\bf{Sched\_\-Info} $\ast$ {\em sinfo})}\label{l__regpres_8c_3774dee00a536b57c57645d709df23fe}
+
+
+
+
+Definition at line 616 of file l\_\-regpres.c.
+
+References Sched\_\-Info::benefit, Sched\_\-Info::dep\_\-info, L\_\-enqueue\_\-max\_\-to\_\-min\_\-2(), L\_\-enqueue\_\-regpres(), Lsched\_\-regpres\_\-heuristic, Lsched\_\-use\_\-fan\_\-out, Dep\_\-Info::n\_\-output\_\-dep, Sched\_\-Info::priority, priority\_\-ready\_\-queue, and regpres\_\-ready\_\-queue.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_regpres.c@{l\_\-regpres.c}!L_update_virt_reg@{L\_\-update\_\-virt\_\-reg}}
+\index{L_update_virt_reg@{L\_\-update\_\-virt\_\-reg}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-update\_\-virt\_\-reg (\bf{Sched\_\-Info} $\ast$ {\em sinfo})}\label{l__regpres_8c_1027a0a1f48301f97f9abb9dbf882368}
+
+
+
+
+Definition at line 630 of file l\_\-regpres.c.
+
+References Sched\_\-Info::benefit, Sched\_\-Info::branch\_\-kill\_\-set, Sched\_\-Info::branch\_\-kill\_\-set\_\-size, Vreg::ctype, Regtypes::d, Sched\_\-Info::def\_\-set, Regtypes::f, Regtypes::i, IS\_\-BRANCH, Sched\_\-Info::kill\_\-set, L\_\-dequeue(), L\_\-enqueue\_\-regpres(), L\_\-get\_\-queue\_\-head(), L\_\-get\_\-queue\_\-size(), L\_\-in\_\-queue(), Lregpres\_\-compute\_\-benefit(), Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lsched\_\-regpres\_\-heuristic, Sched\_\-Info::oper, Regtypes::p, Sched\_\-Info::priority, Sched\_\-Info::proc\_\-opc, regpres\_\-ready\_\-queue, Vreg::use\_\-queue, and virt\_\-reg.
+
+Referenced by Lsched\_\-schedule\_\-op().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_add_virt_reg_use@{Lregpres\_\-add\_\-virt\_\-reg\_\-use}}
+\index{Lregpres_add_virt_reg_use@{Lregpres\_\-add\_\-virt\_\-reg\_\-use}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-add\_\-virt\_\-reg\_\-use (\bf{Sched\_\-Info} $\ast$ {\em sinfo}, int {\em reg\_\-num})}\label{l__regpres_8c_b3b44eca744e1ff03be0b63846341219}
+
+
+
+
+Definition at line 225 of file l\_\-regpres.c.
+
+References L\_\-enqueue(), and virt\_\-reg.
+
+Referenced by Lregpres\_\-init\_\-cb().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_compute_benefit@{Lregpres\_\-compute\_\-benefit}}
+\index{Lregpres_compute_benefit@{Lregpres\_\-compute\_\-benefit}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-compute\_\-benefit (\bf{Sched\_\-Info} $\ast$ {\em sinfo})}\label{l__regpres_8c_7525959893a5935d83a5c7a95119856a}
+
+
+
+
+Definition at line 91 of file l\_\-regpres.c.
+
+References Sched\_\-Info::benefit, Regtypes::d, Sched\_\-Info::def\_\-set, Regtypes::f, Regtypes::i, Sched\_\-Info::kill\_\-set, and Regtypes::p.
+
+Referenced by L\_\-update\_\-virt\_\-reg().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_dec_current@{Lregpres\_\-dec\_\-current}}
+\index{Lregpres_dec_current@{Lregpres\_\-dec\_\-current}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lregpres\_\-dec\_\-current (int {\em ctype}, int {\em count})}\label{l__regpres_8c_df259cc603a97e20b027bbe5f2732242}
+
+
+
+
+Definition at line 144 of file l\_\-regpres.c.
+
+References CB\_\-REG\_\-INFO::change, CB\_\-REG\_\-INFO::current\_\-reg, Regtypes::d, dreg\_\-info, Regtypes::f, freg\_\-info, Regtypes::i, ireg\_\-info, Lregpres\_\-problem, Regtypes::p, preg\_\-info, and CB\_\-REG\_\-INFO::threshhold.
+
+Referenced by L\_\-update\_\-virt\_\-reg().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_deinit_func@{Lregpres\_\-deinit\_\-func}}
+\index{Lregpres_deinit_func@{Lregpres\_\-deinit\_\-func}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-deinit\_\-func (L\_\-Func $\ast$ {\em fn})}\label{l__regpres_8c_180d90dbb20fb9775c8ce3b2301372a3}
+
+
+
+
+Definition at line 412 of file l\_\-regpres.c.
+
+References L\_\-delete\_\-queue(), Lsched\_\-regpres\_\-heuristic, NULL, num\_\-virt\_\-reg, and virt\_\-reg.\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_inc_current@{Lregpres\_\-inc\_\-current}}
+\index{Lregpres_inc_current@{Lregpres\_\-inc\_\-current}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lregpres\_\-inc\_\-current (int {\em ctype}, int {\em count})}\label{l__regpres_8c_179027718e5fae96806f8cad2c1ce5b9}
+
+
+
+
+Definition at line 100 of file l\_\-regpres.c.
+
+References CB\_\-REG\_\-INFO::change, CB\_\-REG\_\-INFO::current\_\-reg, Regtypes::d, dreg\_\-info, Regtypes::f, freg\_\-info, Regtypes::i, ireg\_\-info, Lregpres\_\-problem, Regtypes::p, preg\_\-info, and CB\_\-REG\_\-INFO::threshhold.
+
+Referenced by L\_\-update\_\-virt\_\-reg(), and Lregpres\_\-init\_\-cb().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_inc_set@{Lregpres\_\-inc\_\-set}}
+\index{Lregpres_inc_set@{Lregpres\_\-inc\_\-set}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-inc\_\-set (\bf{Regtypes} $\ast$ {\em set}, int {\em ctype})}\label{l__regpres_8c_9d3717de99e535d882ba67ab4343593a}
+
+
+
+
+Definition at line 188 of file l\_\-regpres.c.
+
+References CB\_\-REG\_\-INFO::change, Regtypes::d, dreg\_\-info, Regtypes::f, freg\_\-info, Regtypes::i, ireg\_\-info, Regtypes::p, and preg\_\-info.
+
+Referenced by L\_\-update\_\-virt\_\-reg(), and Lregpres\_\-init\_\-cb().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_init_cb@{Lregpres\_\-init\_\-cb}}
+\index{Lregpres_init_cb@{Lregpres\_\-init\_\-cb}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-init\_\-cb (L\_\-Cb $\ast$ {\em cb})}\label{l__regpres_8c_c5c7ebf3f69738f27a8c4b02f1e6cb60}
+
+
+
+
+Definition at line 429 of file l\_\-regpres.c.
+
+References Sched\_\-Info::branch\_\-kill\_\-set, Sched\_\-Info::branch\_\-kill\_\-set\_\-size, CB\_\-REG\_\-INFO::current\_\-reg, Sched\_\-Info::def\_\-set, dreg\_\-info, freg\_\-info, ireg\_\-info, IS\_\-BRANCH, IS\_\-JSR, IS\_\-UCOND\_\-BRANCH, Lregpres\_\-add\_\-virt\_\-reg\_\-use(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lregpres\_\-problem, Lsched\_\-regpres\_\-heuristic, NULL, num\_\-virt\_\-reg, Dep\_\-Info::oper, preg\_\-info, Sched\_\-Info::proc\_\-opc, SCHED\_\-INFO, Set\_\-2array(), Set\_\-size(), Set\_\-subtract(), and virt\_\-reg.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_init_func@{Lregpres\_\-init\_\-func}}
+\index{Lregpres_init_func@{Lregpres\_\-init\_\-func}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lregpres\_\-init\_\-func (L\_\-Func $\ast$ {\em fn})}\label{l__regpres_8c_9fce931a4a1c83c5e81f5f4c81cf59d3}
+
+
+
+
+Definition at line 236 of file l\_\-regpres.c.
+
+References CALLEE, CB\_\-REG\_\-INFO::callee\_\-reg, CB\_\-REG\_\-INFO::callee\_\-thresh, CALLER, CB\_\-REG\_\-INFO::caller\_\-reg, CB\_\-REG\_\-INFO::caller\_\-thresh, CB\_\-REG\_\-INFO::change, Vreg::ctype, Regtypes::d, dreg\_\-info, Regtypes::f, FALSE, freg\_\-info, Regtypes::i, ireg\_\-info, L\_\-create\_\-queue(), Lsched\_\-register\_\-pressure\_\-threshhold, Lsched\_\-regpres\_\-heuristic, Lsched\_\-use\_\-register\_\-pressure\_\-heuristic, NULL, num\_\-virt\_\-reg, Dep\_\-Info::oper, Regtypes::p, preg\_\-info, CB\_\-REG\_\-INFO::size, TRUE, and virt\_\-reg.
+
+Referenced by Lsched\_\-prepass\_\-code\_\-scheduling().
+
+\subsection{Variable Documentation}
+\index{l_regpres.c@{l\_\-regpres.c}!dreg_info@{dreg\_\-info}}
+\index{dreg_info@{dreg\_\-info}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CB\_\-REG\_\-INFO} \bf{dreg\_\-info}}\label{l__regpres_8c_3c2afab1c79a0e20251f42283e7ad216}
+
+
+
+
+Definition at line 81 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!freg_info@{freg\_\-info}}
+\index{freg_info@{freg\_\-info}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CB\_\-REG\_\-INFO} \bf{freg\_\-info}}\label{l__regpres_8c_360b283a865b12acd3078199a40caafd}
+
+
+
+
+Definition at line 80 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!ireg_info@{ireg\_\-info}}
+\index{ireg_info@{ireg\_\-info}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CB\_\-REG\_\-INFO} \bf{ireg\_\-info}}\label{l__regpres_8c_abc4d42199592ce82fbf255e14709f17}
+
+
+
+
+Definition at line 79 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!Lregpres_problem@{Lregpres\_\-problem}}
+\index{Lregpres_problem@{Lregpres\_\-problem}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lregpres\_\-problem} = 0}\label{l__regpres_8c_b96327d5a8917f9e25ef7d545d6b61b8}
+
+
+
+
+Definition at line 74 of file l\_\-regpres.c.
+
+Referenced by L\_\-get\_\-next\_\-entry(), Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), and Lregpres\_\-init\_\-cb().\index{l_regpres.c@{l\_\-regpres.c}!Lsched_register_pressure_threshhold@{Lsched\_\-register\_\-pressure\_\-threshhold}}
+\index{Lsched_register_pressure_threshhold@{Lsched\_\-register\_\-pressure\_\-threshhold}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-register\_\-pressure\_\-threshhold} = 75}\label{l__regpres_8c_d6b0405973ba10a6f980c3dcc31abeb5}
+
+
+
+
+Definition at line 72 of file l\_\-regpres.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!Lsched_regpres_heuristic@{Lsched\_\-regpres\_\-heuristic}}
+\index{Lsched_regpres_heuristic@{Lsched\_\-regpres\_\-heuristic}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-regpres\_\-heuristic} = 0}\label{l__regpres_8c_b801097b81716757db39ca58936d99d8}
+
+
+
+
+Definition at line 73 of file l\_\-regpres.c.
+
+Referenced by L\_\-get\_\-next\_\-entry(), L\_\-init\_\-ready\_\-queue(), L\_\-insert\_\-entry(), L\_\-update\_\-virt\_\-reg(), Lregpres\_\-deinit\_\-func(), Lregpres\_\-init\_\-cb(), Lregpres\_\-init\_\-func(), and Lsched\_\-schedule\_\-block().\index{l_regpres.c@{l\_\-regpres.c}!Lsched_use_register_pressure_heuristic@{Lsched\_\-use\_\-register\_\-pressure\_\-heuristic}}
+\index{Lsched_use_register_pressure_heuristic@{Lsched\_\-use\_\-register\_\-pressure\_\-heuristic}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-use\_\-register\_\-pressure\_\-heuristic} = 0}\label{l__regpres_8c_dcfe1fc65128905189f3a03d1983154d}
+
+
+
+
+Definition at line 71 of file l\_\-regpres.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!num_virt_reg@{num\_\-virt\_\-reg}}
+\index{num_virt_reg@{num\_\-virt\_\-reg}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{num\_\-virt\_\-reg}}\label{l__regpres_8c_29f2c6acf4cc9d4768a15fe331319db9}
+
+
+
+
+Definition at line 76 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-deinit\_\-func(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!preg_info@{preg\_\-info}}
+\index{preg_info@{preg\_\-info}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{CB\_\-REG\_\-INFO} \bf{preg\_\-info}}\label{l__regpres_8c_0647b4f1b08b4ccefd9a78e4a6ab1b54}
+
+
+
+
+Definition at line 78 of file l\_\-regpres.c.
+
+Referenced by Lregpres\_\-dec\_\-current(), Lregpres\_\-inc\_\-current(), Lregpres\_\-inc\_\-set(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().\index{l_regpres.c@{l\_\-regpres.c}!virt_reg@{virt\_\-reg}}
+\index{virt_reg@{virt\_\-reg}!l_regpres.c@{l\_\-regpres.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Vreg}$\ast$ \bf{virt\_\-reg} = \bf{NULL}}\label{l__regpres_8c_634254654ecb462669c4a093390bfbc3}
+
+
+
+
+Definition at line 77 of file l\_\-regpres.c.
+
+Referenced by L\_\-update\_\-virt\_\-reg(), Lregpres\_\-add\_\-virt\_\-reg\_\-use(), Lregpres\_\-deinit\_\-func(), Lregpres\_\-init\_\-cb(), and Lregpres\_\-init\_\-func().

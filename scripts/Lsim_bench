@@ -1,0 +1,232 @@
+#!/bin/sh -f
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+#       Simulates a benchmark with the benchmark's "standard" input
+#
+#  	usage: Lsim_bench "benchmark" [options]
+#
+#       Required arguments:
+#
+#       benchmark is benchmark name ie wc, 008.espresso
+#
+#       Options (zero or more of the the following may be specified):
+#		-lsim 'exec'    Use Lsim executable named 'exec'
+#		-dir 'dir'      Use files found in directory 'dir'
+#		-p 'parmsfile'  Sets Lsim parm file to 'parmsfile'
+#		-Fparm=value    Sets Lsim parm to value
+#		-Pmacro=value   Sets Lsim parm macro value
+#		-info 'name'    Sets the setting database file to use
+#		-no_skip        Force skip size to 0
+#		-skip_all       Force skipping of all instructions
+#
+
+LSIM_EXEC="Lsim"
+ARCH=`host_arch`
+BATCH_NAME="Lsim_bench"
+RESULT_FILE="result.out"
+SIM_ARGS="";
+SAMPLE=200000;
+DIR=".";
+NO_SKIP=0;
+SKIP_ALL=0;
+INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_new"
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 1 ]; then
+	BENCHMARK="$1";
+
+	# skip the 1 set argument
+	shift 1;
+else
+	VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+    # get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-dir)
+	    DIR="$1";
+	    shift;
+	    echo "> Use files in directory ${DIR}";;
+
+	-lsim )
+	    LSIM_EXEC="$1";
+	    shift;
+	    echo "> Using ${LSIM_EXEC} binary instead of Lsim";;
+
+	-p)
+	    PARMS="$1";
+	    shift;
+	    echo "> Use parameter file ${PARMS}"
+	    SIM_ARGS="-p ${PARMS} ${SIM_ARGS}";;
+
+	-F*|-P*)
+	    echo "> Passing ${OPTION} to Lsim"
+	    SIM_ARGS="${SIM_ARGS} ${OPTION}";;
+
+        -info)
+            INFO_SCRIPT="$1";
+            shift;
+            echo "> Using the setting database '${INFO_SCRIPT}'";;
+
+        -no_skip)
+            echo "> Force skip size to 0";
+            NO_SKIP=1;;
+
+        -skip_all)
+            echo "> Force skipping of all instructions";
+            SKIP_ALL=1;;
+
+        *)
+            echo "Error: Unknown option '$OPTION'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+	echo '> Usage: Lsim_bench "benchmark" [options]';
+	echo '> ';
+	echo '> "benchmark" is benchmark name (ie wc, 008.espresso)';
+	echo '> Options:' ;
+        echo ">     -lsim 'exec'    Use Lsim executable named 'exec'";
+	echo ">     -dir 'dir'      Use files found in directory 'dir'";
+	echo ">     -p 'parmsfile'  Sets Lsim parm file to 'parmsfile'";
+	echo '>     -Fparm=value    Sets Lsim parm to value';
+	echo '>     -Pmacro=value   Sets Lsim parm macro value';
+	echo ">     -info 'name'    Sets the setting database file to use";
+	echo '>     -no_skip        Force skip size to 0' ;
+	echo '>     -skip_all       Force skipping of all instructions' ;
+
+	exit 0200;
+fi
+
+#
+# Get benchmark arguments, prefix, and check commands
+#
+ARGS=`${INFO_SCRIPT} ARGS ${BENCHMARK}`
+# Test ARGS to make sure it is known how to run this benchmark
+if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$ARGS"; exit 1;fi
+
+SETUP=`${INFO_SCRIPT} SETUP ${BENCHMARK}`
+PREFIX=`${INFO_SCRIPT} PREFIX ${BENCHMARK}`
+CHECK=`${INFO_SCRIPT} CHECK ${BENCHMARK} ${RESULT_FILE}`
+CLEANUP=`${INFO_SCRIPT} CLEANUP ${BENCHMARK}`
+
+
+# Don't need to use INFO_SCRIPT for SKIP setting if set on command line
+# Should we skip everything?
+if [ $SKIP_ALL -eq 1 ]; then
+	if [ $NO_SKIP -eq 1 ]; then
+	    echo '> Cannot specify both -no_skip and -skip_all!';
+	    exit 0200;
+	fi
+
+        SAMPLE=0;
+	SKIP=19800000;
+
+# Should we skip nothing?
+elif [ $NO_SKIP -eq 1 ]; then
+        SKIP=0;
+
+# Otherwise use info script to set SKIP
+else
+    SKIP=`${INFO_SCRIPT} SKIP ${BENCHMARK}`
+    # Need to test SKIP because it may not know how much to skip
+    if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$SKIP"; exit 1;fi
+fi
+
+
+#MAKE SURE DIRECTORY EXISTS
+if [ ! -d $DIR ] ; then
+	echo "> $BATCH_NAME, directory doesn't exits: $DIR";
+	exit 0220;
+fi
+
+# Print out exactly what we are doing
+# Using csh echo allows printing out \rm and \cp properly, otherwise
+# get inproper output (treated as newlines, etc)
+# But should really use /bin/rm and /bin/cp instead of \cp anyways
+echo "> Simulating ${BENCHMARK} in directory '${DIR}'"
+echo " "
+echo "    Setup: '${SETUP}'"
+echo "   Prefix: '${PREFIX}'"
+echo " Sim Args: '${ARGS} >& result.out'"
+echo "     Skip: '${SKIP}'"
+echo "    Check: '${CHECK}'"
+echo "  Cleanup: '${CLEANUP}'"
+echo " "
+
+nice -10 /bin/sh -c "cd ${DIR}; ${SETUP}  \
+	${LSIM_EXEC} \
+	-Pbase=./${BENCHMARK} \
+	-Puse_file_mode=no \
+	'-Pexec_args=${ARGS}' \
+	'-Pcommand_prefix=${PREFIX}' \
+	-Presult_file=result.out \
+	-Psample=${SAMPLE} \
+	-Pskip=${SKIP} \
+	-Pstats_ext=sim \
+	-Pprint_sample_stats=yes ${SIM_ARGS}; \
+        echo '>\n> RESULT CHECK BEGIN FOR ${BENCHMARK}'; \
+        ${CHECK}; \
+        echo '> RESULT CHECK END FOR ${BENCHMARK}\n>'; \
+        rm -f result.out; ${CLEANUP}\
+	echo '> Done (${BATCH_NAME} for ${BENCHMARK})';"

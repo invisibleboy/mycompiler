@@ -1,0 +1,1049 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Generates probed executable that generates a trace for 
+#   lcode simulation or profiling using the 'Lemulate' lcode to C technology
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script created by IMPACT Technologies Inc (John C. Gyllenhaal) 1/99
+#   
+
+# set up environment with default values:
+
+# 11/07/02 REK If IMPACT_ROOT isn't defined, set it to be the same as
+#              IMPACT_REL_PATH.  This will allow the script to still work if
+#              someone doesn't have IMPACT_ROOT set and allow the script
+#              to work with the new autoconf split source/build directories.
+if [ "x${IMPACT_ROOT}" = "x" ]; then
+    export IMPACT_ROOT = ${IMPACT_REL_PATH};
+fi
+
+OPT_DO_CPP=0;
+ANSI_C_SOURCE=1;    # Overriden by compile_info
+USE_USER_ANSI_C_SOURCE=0;
+DEBUG_EMUL_EXEC=0;
+OPTIMIZE_EMUL_EXEC=0;  # Overriden by compile_info
+USE_USER_EMUL_EXEC_MODE=0; 
+USE_SHARED_LIBRARIES=0;
+USE_USER_SHARED_LIBRARIES=0;
+ARCH_PARMS="-p ${IMPACT_REL_PATH}/parms/STD_PARMS.compile_bench"
+LIB_DIR=""
+SKIP_VERSION_CHECKS=0;
+PRINT_VERSION_INFO=0;
+START_PHASE="4";
+LENCODE_PARMS="";
+PROBE_PARMS="";
+COMPILER_FLAGS="";
+SHOW=0;
+CLEAN=1;
+VERBOSE=0;
+INSERT_PROBES=1;
+NOTRACE=0;
+LOCAL=0;
+ADD_LIBS=""
+EXT="USE LIST"
+EXT_DESC=""
+NO_EXT_DESC=0;
+LIST_WARN=1;
+LEMULATE_PARMS=""
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+BINCONVERT=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 3 ]; then
+    PREFIX="$1";
+    PROBE_TYPE="$2";
+    BASE_NAME="$3";
+    BENCHMARK="$3";
+    
+    # skip the 3 set arguments
+    shift 3;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+         # Allow different projects to be used 
+         # In version 2.30, primarily to simplify other scripts
+         -project)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_probed_lcode expects a name after -project"
+               exit 1;
+            fi
+            READ_PATHS="$READ_PATHS -project $1"
+            PROFILE_OPTIONS="${PROFILE_OPTIONS} -project $1";
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_probed_lcode expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            # Explicitly specify bench dir
+            READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+	-dump_parms)
+	    echo "> Will dump the parms used for Lemulate"
+	    LEMULATE_PARMS="${LEMULATE_PARMS} -Fdump_parms=yes";;
+
+        -ver)
+	    echo "> Will print out version information annotated into Lcode"
+	    PRINT_VERSION_INFO=1;;
+
+        -nover|-no_ver)
+	    echo "> Will skip all version checks on Lcode info attributes"
+	    SKIP_VERSION_CHECKS=1;
+	    LEMULATE_PARMS="${LEMULATE_PARMS} -Fgenerate_info_files=no";;
+       	    
+	-loop_iters)
+	    echo "> Will generate loop iteration info if profiling"
+	    echo "> or loop op and nesting info if simulating"
+	    LENCODE_PARMS="${LENCODE_PARMS} -Fencode_loop_info=yes -Fdo_loop_nest_info=yes -Fencode_sim_loop_info=yes";;
+
+        -bench)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_probed_lcode expects an argument after $OPTION"
+               exit 1;
+            fi
+            BENCHMARK="$1";
+            echo "> Using settings for '${BENCHMARK}'";
+            shift;;
+
+        -krc)
+            echo "> Will use K&R-C compatible compilation mode";
+            ANSI_C_SOURCE=0;
+	    USE_USER_ANSI_C_SOURCE=1;;
+
+        -ansi)
+            echo "> Will use Ansi-C compatible compilation mode";
+            ANSI_C_SOURCE=1;
+	    USE_USER_ANSI_C_SOURCE=1;;
+
+        -shared_libs|-shared)
+            echo "> Will use shared libraries"
+            USE_SHARED_LIBRARIES=1;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -static_libs|-static)
+            echo "> Will use static libraries"
+            USE_SHARED_LIBRARIES=0;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -optimize|-opti)
+            echo "> Will generate optimized emulation executable";
+            OPTIMIZE_EMUL_EXEC=1;
+	    USE_USER_EMUL_EXEC_MODE=1;;
+
+        -debug|-debugable)
+            echo "> Will generate debugable emulation executable";
+            DEBUG_EMUL_EXEC=1;
+	    USE_USER_EMUL_EXEC_MODE=1;;
+
+        -c++)
+	    OPT_DO_CPP=1;
+	    echo "> EXPERIMENTAL C++ mode";;
+
+	-noprobes)
+     	    echo "> Changing probe_type to 'noprobes' (no probes will be inserted)"
+	    PROBE_TYPE="noprobes";;
+
+	-flush_trace)
+	    echo "> Trace buffer will be flushed after every oper (slow, for debug only).";
+            if [ "$COMPILER_FLAGS" = "" ]; then
+	       COMPILER_FLAGS="-DFLUSH_TRACE";
+            else
+	       COMPILER_FLAGS="$COMPILER_FLAGS -DFLUSH_TRACE";
+            fi;;
+
+
+	-F*|-P*)
+	    echo "> Passing ${OPTION} to Lemulate"
+	    LEMULATE_PARMS="${LEMULATE_PARMS} ${OPTION}";;
+
+        -show)
+	    echo "> Show commands mode on (commands prefixed with +)"
+	    SHOW=1;;
+
+	-noclean)
+	    echo "> Will not clean up temp files"
+	    CLEAN=0;;
+
+	-verbose)
+	    echo "> Verbose mode on"
+	    VERBOSE=1;;
+
+        -noext|-no_ext)
+            if [ "$EXT_DESC" != "" ]; then
+              echo "> Will generate ${BASE_NAME}.probed not ${BASE_NAME}${EXT_DESC}.probed, etc."
+            else
+               echo "> Will not use Lcode extension in probed/encoded name"
+            fi
+            NO_EXT_DESC=1;;
+       
+        -stdin)
+            # Silently turn off stdin list warning
+            LIST_WARN=0;;
+	
+        -ext)
+            EXT="$1";
+	    EXT_DESC=".$1";
+            shift;
+            echo "> Will use .$EXT files and generate ${BASE_NAME}${EXT_DESC}.probed, etc.";
+            # gen_probed_lcode does not support Lhpl_pd Mcode (.O_tr, .S_tr,
+            # .HS_tr), so punt now if those extensions are given.
+            case ${EXT} in
+              O_tr)
+                echo "gen_probed_lcode only supports Lcode not Lhpl_pd mcode!"
+                echo "Possible solution: Use 'gen_profiled_lcode' on .O files"
+                echo "and convert .O_p files to .O_tr files with gen_Lhpl_pd."
+                exit 1;;
+
+              S_tr)
+                echo "gen_probed_lcode only supports Lcode not Lhpl_pd mcode!"
+                echo "Possible solution: Use 'gen_profiled_lcode' on .S files"
+                echo "and convert .S_p files to .S_tr files with gen_Lhpl_pd."
+                exit 1;;
+
+              HS_tr)
+                echo "gen_probed_lcode only supports Lcode not Lhpl_pd mcode!"
+                echo "Possible solution: Use 'gen_profiled_lcode' on .HS files"
+                echo "and convert .HS_p files to .HS_tr files with gen_Lhpl_pd."
+                exit 1;;
+
+            esac
+            LOCAL=1;;
+	# HCH 5-7-01 
+	-buf)
+       	    echo "> Will do loop buffer encoding and profiling"
+	    # If -buf is set by gen_profiled_lcode, -loop_iters will be, too
+	    LENCODE_PARMS="${LENCODE_PARMS} -Fdo_buf_info=yes -Fbuf_info_file_name=BUF_INFO";;
+
+	-lib_dir)
+	    NEW_LIB="$1";
+            LIB_DIR="${LIB_DIR} -L${NEW_LIB}";
+            shift;
+	    echo "> Add ${NEW_LIB} to library directories";;
+
+        -L*)
+            echo "> Adding '${OPTION}' to the link command";
+            LIB_DIR="${LIB_DIR} ${OPTION}";;
+        
+
+	-add_lib)
+	    NEW_LIB="$1";
+            ADD_LIBS="${ADD_LIBS} -l${NEW_LIB}";
+            shift;
+	    echo "> Add ${NEW_LIB} to libraries";;
+
+        -norc)
+            echo "> Marking for gspec (IPF only)";
+            BINCONVERT=1;;
+
+        -l*)
+            echo "> Adding '${OPTION}' to the link command";
+            ADD_LIBS="${ADD_LIBS} ${OPTION}";;
+
+	*)
+	    echo "Error: Unknown option '$OPTION'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+# Handle special probe types like noprobes
+case $PROBE_TYPE in
+   noprobes)
+      INSERT_PROBES=0;;
+esac
+
+# Cause probes to be inserted (if desired) 
+if [ $VALID_ARGS -eq 1 ]; then
+  if test $INSERT_PROBES = 1; then
+     case $PROBE_TYPE in
+        simulation) 
+           LEMULATE_PARMS="$LEMULATE_PARMS -Fprobe_for=$PROBE_TYPE";;
+
+        profiling)
+           LEMULATE_PARMS="$LEMULATE_PARMS -Fprobe_for=$PROBE_TYPE";;
+
+        value_profiling)
+           LEMULATE_PARMS="$LEMULATE_PARMS -Fprobe_for=$PROBE_TYPE";;
+
+        custom)
+           LEMULATE_PARMS="$LEMULATE_PARMS -Fprobe_for=$PROBE_TYPE";;
+
+        *)
+           echo "Error: Probe type of '$PROBE_TYPE' not supported!"
+           VALID_ARGS=0;;
+     esac
+  fi
+fi
+
+# Don't bother with finding benchmark info if already in an error state
+if [ $VALID_ARGS -eq 1 ]; then
+    #       Find the benchmark info
+    #
+    # Find the benchmark dir if not user specified
+    if [ $FIND_BENCH_DIR -eq 1 ]; then
+      BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+      if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: gen_probed_lcode could not find '${BENCHMARK}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+        exit 1;
+      fi
+    fi
+#   echo " ";
+#   echo "> Will use the compilation info for ${BENCHMARK} in:"
+#   echo ">   $BENCH_DIR"
+
+    echo " "
+
+    LIB_REQUIREMENTS=`read_compile_info ${BENCHMARK} $READ_PATHS -lib_requirements`;
+    if test "$?" != 0; then 
+       echo " "
+       echo "> Exiting: Could not read lib requirements using read_compile_info!"
+       echo "> Error message returned by read_compile_info:"
+       echo "$LIB_REQUIREMENTS";
+       exit 1;
+    fi
+
+    # Read in linking options
+    LINKING_PREOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_preoptions`;
+    if test "$?" != 0; then echo "Unexpected Exit (LINKING_PREOPTIONS)!: non-zero exit code";echo "$LINKING_PREOPTIONS";exit 1;fi
+
+    LINKING_POSTOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_postoptions`;
+    if test "$?" != 0; then echo "Unexpected Exit (LINKING_POSTOPTIONS)!: non-zero exit code";echo "$LINKING_POSTOPTIONS";exit 1;fi
+
+    # Get preprocessing options for error checking purposes
+    PREPROCESSING_OPTIONS=`read_compile_info ${BENCHMARK} ${READ_PATHS} -preprocessing_options`
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading preprocessing options command via read_compile_info!"
+      echo "> Error message returned by read_compile_info:"
+      echo "$PREPROCESSING_OPTIONS";
+      exit 1;
+    fi
+
+
+
+    # Read source mode from compile info if not set by user 
+    if [ $USE_USER_ANSI_C_SOURCE -eq 0 ]; then
+       ANSI_C_SOURCE=`read_compile_info ${BENCHMARK} $READ_PATHS -ansi_c_source`;
+       if test "$?" != 0; then echo "Unexpected Exit (ANSI_C_SOURCE)!: non-zero exit code";echo "$ANSI_C_SOURCE";exit 1;fi
+
+       if test "$ANSI_C_SOURCE" != 1; then echo "> WARNING K&R setting overridden"; ANSI_C_SOURCE=1; fi;
+
+    fi
+
+    # Read compilation mode from compile info if not set by user 
+    if [ $USE_USER_EMUL_EXEC_MODE -eq 0 ]; then 
+       OPTIMIZE_EMUL_EXEC=`read_compile_info ${BENCHMARK} $READ_PATHS -optimize_emul_exec`;
+       if test "$?" != 0; then 
+          echo "Unexpected Exit (OPTIMIZE_EMUL_EXEC)!: non-zero exit code";
+          echo "$OPTIMIZE_EMUL_EXEC";
+          exit 1;
+       fi
+    fi
+fi
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+
+    echo '> Usage: gen_probed_lcode dir probe_type base_name [options] < "list"';
+    echo '> ';
+    echo '> Generates a probed "Lemulate" executable for generating a trace';
+    echo '> '
+    echo '> probe_type - simulation, profiling, value_profiling, or noprobes ';
+    echo '> base_name is used to generate base_name_ext.probed and base_name_ext.encoded'
+    echo '>'
+    echo '> ';
+    echo '> Zero or more of the following options may be specified';
+    echo '> ';
+    echo '> General Options (source ext, bench_info settings, debug options, etc):';
+    echo '>   -loop_iters      generates loop iteration info (profiling mode only)';
+    echo ">   -bench 'name'    uses compile_info for 'name' instead of 'base_name'";
+    echo ">   -bench_dir 'dir' read info in 'dir' (default: find_bench_dir used)";
+    echo '>   -verbose         prints message at every step';
+    echo '>   -show            shows script commands (uses set -x)';
+    echo '>   -noclean         prevents clean up of temp files';
+    echo '>   -noprobes        probes are not inserted (sets probe_type to "noprobes")';
+    echo '>   -flush_trace     flushes trace buffer at every oper (slow, for debug only)';
+    echo '>   -dump_parms      dumps Lemulate parms';
+    echo '>   -ver             prints info attribute contents of input Lcode';
+    echo '>   -nover           suppress version checking on input Lcode info attributes';
+    echo ">   -ext 'ext'       uses .ext files and generates base_name_ext.probed, etc.";
+    echo ">   -noext           generate base_name.probed, etc. instead, for compatibility";
+    echo '>   -Fparm=value     Sets Lemulate parm to value'
+    echo '>   -Pmacro=value    Sets Lemulate parm macro value'
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -ansi            use Ansi-C compatible compilation mode';
+    echo '>   -krc             use K&R C compatible compilation mode';
+    echo '>   -static          use static libraries (default if STATIC_REQUIRED/NONE)';
+    echo '>   -shared          use shared libraries (default if SHARED_REQUIRED)';
+    echo '>   -optimize        generate optimized emulation executable';
+    echo '>   -debug           generate debugable emulation executable';
+    echo ">   -lib_dir 'dir'   also search 'dir' for libs";
+    echo ">   -Ldir            also search 'dir' for libs (cc-like version of -lib_dir)";
+    echo ">   -add_lib 'lib'   also link in 'lib'";
+    echo ">   -llibrary        also link in 'library' (cc-like version of -add_lib)";
+    echo '>   -f2c             links in f2c libs (Dont use! Compile in f2c lib source.)';
+    exit 0200;
+fi;
+
+# Make sure valid platform info specified
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+COMPILER_INVOCATION=`read_platform_info -compiler_invocation`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_INVOCATION";
+   exit 1;
+fi
+
+if [ $OPT_DO_CPP -eq 1 ]; then
+   LIB_DIR="${LIB_DIR} -L/opt/gcc-3.2/lib/ -L${IMPACT_ROOT}/platform/${HOST_PLATFORM}_${HOST_COMPILER}/lib/";
+   ADD_LIBS="${ADD_LIBS} -lC";
+fi;
+
+# Get preprocessor invocation command for error checking purposes
+PREPROCESSOR_INVOCATION=`read_platform_info -preprocessor_invocation`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading preprocessor invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$PREPROCESSOR_INVOCATION";
+   exit 1;
+fi
+
+# Use debug mode if -debug specified
+if [ $DEBUG_EMUL_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -debug_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading debug mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Use opti mode if -optimize or compile_info specifies (and not -debug)
+elif [ $OPTIMIZE_EMUL_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -opti_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading opti mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Otherwise don't optimize or add debug info
+else
+   OPTI_MODE_SPECIFIER="";
+fi
+
+
+# Get both Ansi-C and K&R C mode specifier for error checking purposes
+ANSI_C_MODE_SPECIFIER=`read_platform_info -ansi_c_mode_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read Ansi-C mode specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$ANSI_C_MODE_SPECIFIER";
+   exit 1;
+fi
+
+KRC_MODE_SPECIFIER=`read_platform_info -krc_mode_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read K&R-C mode specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$KRC_MODE_SPECIFIER";
+   exit 1;
+fi
+
+
+if [ $ANSI_C_SOURCE -eq 1 ]; then
+    C_MODE_SPECIFIER="$ANSI_C_MODE_SPECIFIER"
+    LEMULATE_PARMS="$LEMULATE_PARMS -Fansi_c_mode=yes";
+    echo "> Specifying Ansi-C mode for link command"
+    echo " "
+else
+    C_MODE_SPECIFIER="$KRC_MODE_SPECIFIER"
+    LEMULATE_PARMS="$LEMULATE_PARMS -Fansi_c_mode=no";
+    echo "> Specifying K&R-C mode for link command"
+    echo " "
+fi
+
+# Determine if should use static or shared libraries unless specified
+# by user
+if [ $USE_USER_SHARED_LIBRARIES -eq 0 ]; then
+   if [ "$LIB_REQUIREMENTS" = "SHARED_REQUIRED" ]; then
+      USE_SHARED_LIBRARIES=1;
+   else
+      USE_SHARED_LIBRARIES=0;
+   fi
+fi
+
+if [ $USE_SHARED_LIBRARIES -eq 1 ]; then
+   # Warn if goes again LIB_REQUIREMENTS
+   if [ "$LIB_REQUIRMENTS" = "STATIC_REQUIRED" ]; then
+      echo "> Warning: Overriding compile_info's STATIC_REQUIRED setting!"
+   fi
+
+   LINK_MODE_SPECIFIER=`read_platform_info -shared_lib_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read shared lib specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$LINK_MODE_SPECIFIER";
+      exit 1;
+   fi
+else
+   # Warn if goes again LIB_REQUIREMENTS
+   if [ "$LIB_REQUIRMENTS" = "SHARED_REQUIRED" ]; then
+      echo "> Warning: Overriding compile_info's SHARED_REQUIRED setting!"
+   fi
+
+   LINK_MODE_SPECIFIER=`read_platform_info -static_lib_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read static lib specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$LINK_MODE_SPECIFIER";
+      exit 1;
+   fi
+fi
+
+COMPILER_POSTOPTIONS=`read_platform_info -compiler_postoptions`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_POSTOPTIONS";
+   exit 1;
+fi
+
+EMUL_LIB_FILE=`read_platform_info -lcode_emul_lib`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading lcode emul library name via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$EMUL_LIB_FILE";
+   exit 1;
+fi
+
+# If have non-empty C_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$C_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $C_MODE_SPECIFIER";
+fi
+
+# If have non-empty OPTI_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$OPTI_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $OPTI_MODE_SPECIFIER";
+fi
+
+# If have non-empty LINK_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$LINK_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $LINK_MODE_SPECIFIER";
+fi
+
+# If have non-empty COMPILER_FLAGS, add to COMPILER_INVOCATION
+if [ "$COMPILER_FLAGS" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $COMPILER_FLAGS";
+fi
+
+echo "> The following platform information will be used:"
+echo ">"
+echo ">         Host Platform: '$HOST_PLATFORM'"
+echo ">         Host Compiler: '$HOST_COMPILER'"
+echo "> Base Compiler Command: '$COMPILER_INVOCATION'"
+echo ">  Compiler Postoptions: '$COMPILER_POSTOPTIONS'"
+
+# Update LINKING_POSTOPTIONS with user's additional libraries (if non-empty)
+if [ "$ADD_LIBS" != "" ]; then
+   LINKING_POSTOPTIONS="$LINKING_POSTOPTIONS $ADD_LIBS";
+fi
+
+# If have non-empty COMPILER_POSTOPTIONS, add to LINKING_POSTOPTIONS
+if [ "$COMPILER_POSTOPTIONS" != "" ]; then
+   LINKING_POSTOPTIONS="$LINKING_POSTOPTIONS $COMPILER_POSTOPTIONS";
+fi
+
+echo " "
+echo "> The following Lcode emulation library will be used:"
+echo ">   $EMUL_LIB_FILE"
+echo " "
+echo "> The following linking options will be used for Lcode emulation:"
+echo ">    Linking Preoptions: '$LINKING_PREOPTIONS'"
+echo ">   Linking Postoptions: '$LINKING_POSTOPTIONS'"
+echo " "
+
+# Verify the existence of the required header files
+EMUL_HEADER_FILE="${IMPACT_ROOT}/include/Lcode/l_trace_interface.h";
+if [ ! -f ${EMUL_HEADER_FILE} ]; then
+   echo "Error: Could not find a required emulation library header file:"
+   echo "       ${EMUL_HEADER_FILE}"
+   exit 1;
+fi
+
+if [ ${PROBE_TYPE} = "noprobes" ]; then
+   echo "> No probes will be inserted into executable"
+else
+   echo "> Probing for ${PROBE_TYPE}"
+fi
+LENCODE_PARMS="$ARCH_PARMS ${LENCODE_PARMS} -Fencode_for=${PROBE_TYPE}"
+
+# Change into "PREFIX" directory and start there
+cd $PREFIX
+
+# If -noext option specified by user, clear EXT_DESC
+if [ $NO_EXT_DESC -eq 1 ]; then
+   EXT_DESC="";
+fi
+
+# Determine names for probed and encoded files
+PROBED_NAME="${BASE_NAME}${EXT_DESC}.probed"
+ENCODED_NAME="${BASE_NAME}${EXT_DESC}.encoded"
+
+# Remove all the files that we are about to produce 	
+rm -f ${PROBED_NAME}
+rm -f ${ENCODED_NAME}
+rm -f ${BASE_NAME}.binmap
+rm -f ${BASE_NAME}.binsource
+rm -f ${BASE_NAME}.obj_list
+
+if test $SHOW = 1; then set -x; fi
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    # Put extension in temp directory name
+    TEMP_DIR="impactprobe_${EXT}";
+else
+    echo ""
+    echo "> Reading file names to process from stdin"
+    if [ $LIST_WARN -eq 1 ]; then
+      echo "> *** If script stops here, probably missing '-ext ext' or '< list'! ***"
+    fi
+    while read FILE;
+    do
+        FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+    echo "> File names sucessfully read from stdin"
+
+    # Use generic temp directory name
+    TEMP_DIR="impactprobe";
+fi
+
+# Place all temp files in ${TEMP_DIR}
+rm -rf ${TEMP_DIR}
+mkdir ${TEMP_DIR}
+
+# Encode lcode files if doing simulation or profiling
+if [ $PROBE_TYPE = "simulation" -o \
+     $PROBE_TYPE = "profiling" -o \
+     $PROBE_TYPE = "custom" -o \
+     $PROBE_TYPE = "value_profiling" ]; then
+   echo "> Encoding Lcode files for ${PROBE_TYPE}" 
+fi
+
+# Encode all the files and link them into ${TEMP_DIR}
+for FILE in $FILE_LIST
+do
+    FILEOUT=`echo $FILE | \
+    awk -F. '{if ($(NF) == "p") NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+
+    # Do not process empty files
+    if [ ! -s $FILE ]; then
+        if test $VERBOSE = 1; then
+           echo ">  Skipping empty file ${FILE}"; 
+        fi
+        continue;
+    fi
+
+    # Encode lcode files if doing simulation, profiling, value_profiling
+    if [ $PROBE_TYPE = "simulation" -o \
+	 $PROBE_TYPE = "profiling" -o \
+	 $PROBE_TYPE = "custom" -o \
+	 $PROBE_TYPE = "value_profiling" ]; then
+        if test $VERBOSE = 1; then 
+            echo ">  Encoding   ${FILE}"; 
+        fi
+	
+        echo "Lencode ${LENCODE_PARMS} -i ${FILE} -o stdout >> $ENCODED_NAME"
+        Lencode ${LENCODE_PARMS} -i ${FILE} -o stdout >> $ENCODED_NAME
+
+        if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    fi;
+    
+    ln -s ../${FILE} ${TEMP_DIR}
+    echo "$FILE" >> ${TEMP_DIR}/file_list
+done
+
+cd ${TEMP_DIR}
+
+# Lemulate needs host_layout_info.md 
+ln -s ../host_layout_info.md .
+
+if test $VERBOSE = 1; then 
+   echo "> Generating emulation code"
+fi
+
+echo "> Generating C code from Lcode files using Lemulate" 
+echo "> Using extra parms ${LEMULATE_PARMS}" 
+
+echo "Lemulate ${LEMULATE_PARMS} -i file_list"
+Lemulate ${LEMULATE_PARMS} -i file_list 
+ERROR=$?;
+if [ $ERROR != 0 ]; then
+   echo "> Lemulate failed on input file: file_list";
+   echo "> error_code= ${ERROR}";
+   exit 0200;
+fi;
+
+BRANDS_MATCH=1;
+
+# Skip checks if desired by user
+if [ $SKIP_VERSION_CHECKS -eq 1 ]; then
+  echo "> Skipping source Lcode version checks"
+
+# Skip checks if didn't get expected output
+elif [ ! -f host_info.platform -o ! -f host_info.compiler -o \
+     ! -f preprocess_info.invocation -o ! -f impact_info.version ]; then
+  echo " "
+  echo "> Warning: host_info, preprocess_info, impact_info attributes not present"
+  echo ">          in lcode source!"
+  echo ">          Will assume code preprocessed on this platform (may break if untrue)"
+  echo " "
+  BRANDS_MATCH=0;
+
+  # Move all info files to info subdirectory
+  mkdir info
+  
+  # Allowing this command to fail (with a warning) because it seems these
+  # files are never created in our version of Impact, and the enclosing
+  # if statement is already aware at least one file is missing.
+  #                           <Steve Lieberman Oct/16/2006> 
+  mv -f host_info.* impact_info.* preprocess_info.* info \
+    || echo "Warning: gen_probed_lcode: info files did not exist"
+
+else
+  # Get host_info, preprocess_info, and impact_info attribute files
+  # present in the source files thru the files written by Lemulate.
+  SOURCE_PLATFORM=`cat host_info.platform`
+  SOURCE_COMPILER=`cat host_info.compiler`
+  SOURCE_COMPILER_VERSION=`cat host_info.compiler_version`
+  SOURCE_MODE=`cat preprocess_info.mode`
+  SOURCE_INVOCATION=`cat preprocess_info.invocation`
+  SOURCE_EXTRA_OPTIONS=`cat preprocess_info.extra_options`
+  SOURCE_PREPROCESS_DATE=`cat preprocess_info.date`
+  SOURCE_IMPACT_VERSION=`cat impact_info.version`
+  SOURCE_IMPACT_TYPE=`cat impact_info.type`
+  SOURCE_IMPACT_DATE=`cat impact_info.date`
+  SOURCE_IMPACT_LCODE_VERSION=`cat impact_info.lcode`
+
+  if [ $PRINT_VERSION_INFO -eq 1 ]; then
+    echo ">"
+    echo "> **** Contents of Lcode info attributes generated by gen_CtoP ****"
+    echo ">      IMPACT Release Version: '$SOURCE_IMPACT_VERSION'"
+    echo ">         IMPACT Release Type: '$SOURCE_IMPACT_TYPE'"
+    echo ">         IMPACT Release Date: '$SOURCE_IMPACT_DATE'"
+    echo ">        IMPACT Lcode Version: '$SOURCE_IMPACT_LCODE_VERSION'"
+    echo ">               Host Platform: '$SOURCE_PLATFORM'"
+    echo ">               Host Compiler: '$SOURCE_COMPILER'"
+    echo ">       Host Compiler Version: '$SOURCE_COMPILER_VERSION'"
+    echo ">           Preprocessor Mode: '$SOURCE_MODE'"
+    echo ">   Base Preprocessor Command: '$SOURCE_INVOCATION'"
+    echo ">  Extra Preprocessor Options: '$SOURCE_EXTRA_OPTIONS'"
+    echo ">      C Files Preprocesed On: '$SOURCE_PREPROCESS_DATE'"
+    echo ">"
+  fi
+
+
+  EXPECTED_IMPACT_VERSION=`print_impact_info -version`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not get impact version using print_impact_info!"
+     echo "> Error message returned by print_impact_info:"
+     echo "$EXPECTED_IMPACT_VERSION";
+     exit 1;
+  fi
+
+  EXPECTED_IMPACT_TYPE=`print_impact_info -type`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not get impact release type using print_impact_info!"
+     echo "> Error message returned by print_impact_info:"
+     echo "$EXPECTED_IMPACT_TYPE";
+     exit 1;
+  fi
+
+  EXPECTED_IMPACT_DATE=`print_impact_info -date`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not get impact release date using print_impact_info!"
+     echo "> Error message returned by print_impact_info:"
+     echo "$EXPECTED_IMPACT_DATE";
+     exit 1;
+  fi
+
+  EXPECTED_IMPACT_LCODE_VERSION=`print_impact_info -lcode`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not get impact Lcode version using print_impact_info!"
+     echo "> Error message returned by print_impact_info:"
+     echo "$EXPECTED_IMPACT_LCODE_VERSION";
+     exit 1;
+  fi
+
+
+  HOST_COMPILER_VERSION=`read_platform_info -host_compiler_version`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not read host compiler version using read_platform_info!"
+     echo "> Error message returned by read_platform_info:"
+     echo "$HOST_COMPILER_VERSION";
+     exit 1;
+  fi
+
+  # Calculate the expected PREPROCESSOR command for ansi/KRC
+  if [ "$ANSI_C_MODE_SPECIFIER" != "" ]; then
+     EXPECTED_ANSI_PREPROCESSOR="${PREPROCESSOR_INVOCATION} ${ANSI_C_MODE_SPECIFIER}"
+  else
+     EXPECTED_ANSI_PREPROCESSOR="${PREPROCESSOR_INVOCATION}"
+  fi
+  if [ "$KRC_MODE_SPECIFIER" != "" ]; then
+     EXPECTED_KRC_PREPROCESSOR="${PREPROCESSOR_INVOCATION} ${KRC_MODE_SPECIFIER}"
+  else
+     EXPECTED_KRC_PREPROCESSOR="${PREPROCESSOR_INVOCATION}"
+  fi
+
+  if [ $ANSI_C_SOURCE -eq 1 ]; then
+     EXPECTED_INVOCATION="$EXPECTED_ANSI_PREPROCESSOR";
+  else
+     EXPECTED_INVOCATION="$EXPECTED_KRC_PREPROCESSOR";
+  fi
+
+  if [ "$PREPROCESSING_OPTIONS" != "" ]; then
+     EXPECTED_INVOCATION="$EXPECTED_INVOCATION $PREPROCESSING_OPTIONS";
+  fi
+
+  # Expect host_info brands to match current host_info
+  if [ "$SOURCE_PLATFORM" != "$HOST_PLATFORM" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed on platform '$SOURCE_PLATFORM'"
+     echo ">          not on platform '$HOST_PLATFORM!'"
+     BRANDS_MATCH=0;
+  fi
+  if [ "$SOURCE_COMPILER" != "$HOST_COMPILER" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed with host compiler '$SOURCE_COMPILER'"
+     echo ">          not with host compiler '$HOST_COMPILER'!"
+     BRANDS_MATCH=0;
+  fi
+  if [ "$SOURCE_COMPILER_VERSION" != "$HOST_COMPILER_VERSION" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed with compiler version:"
+     echo ">            '$SOURCE_COMPILER_VERSION'"
+     echo ">          not with compiler version:"
+     echo ">            '$HOST_COMPILER_VERSION'!"
+     BRANDS_MATCH=0;
+  fi
+  if [ "$SOURCE_IMPACT_LCODE_VERSION" != \
+       "$EXPECTED_IMPACT_LCODE_VERSION" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed on '$SOURCE_PREPROCESS_DATE'"
+     echo ">          with IMPACT $SOURCE_IMPACT_VERSION $SOURCE_IMPACT_TYPE $SOURCE_IMPACT_DATE"
+     echo ">          which targets Lcode version '$SOURCE_IMPACT_LCODE_VERSION'"
+     echo ">          not with IMPACT $EXPECTED_IMPACT_VERSION $EXPECTED_IMPACT_TYPE $EXPECTED_IMPACT_DATE"
+     echo ">          which targets Lcode version '$EXPECTED_IMPACT_LCODE_VERSION'!"
+     BRANDS_MATCH=0;
+  fi
+  if [ $ANSI_C_SOURCE -eq 1 -a "$SOURCE_MODE" != "Ansi-C" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed in K&R-C mode not Ansi-C!"
+     BRANDS_MATCH=0;
+  fi
+  if [ $ANSI_C_SOURCE -eq 0 -a "$SOURCE_MODE" != "K&R-C" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed in Ansi-C mode not K&R-C!"
+     BRANDS_MATCH=0;
+  fi
+  
+  if [ "$SOURCE_INVOCATION" != "$EXPECTED_INVOCATION" ]; then
+     echo " "
+     echo "> Warning: Source preprocessed with:"
+     echo ">            '$SOURCE_INVOCATION ...'"
+     echo ">          not with:"
+     echo ">            '$EXPECTED_INVOCATION ...'!"
+     BRANDS_MATCH=0;
+  fi
+
+  if [ "$BRANDS_MATCH" -eq 0 ]; then
+     echo " "
+     echo "> Warning: Detected differences between how code was originally preprocessed"
+     echo ">          and current host platform, host compiler, IMPACT, or bench_info"
+     echo ">          settings.  This can cause almost impossible to track down problems!"
+     echo ">          Proceed at your own risk!"
+     echo " "
+     echo "> Continuing to generate executable despite above warnings..."
+     echo " "
+  fi
+
+  # Move all info files to info subdirectory
+  mkdir info
+  mv -f host_info.* impact_info.* preprocess_info.* info
+fi
+
+
+echo "> Compiling Lemulate generated C code with host compiler" 
+
+if [ $OPT_DO_CPP -eq 0 ]; then
+
+  echo "$COMPILER_INVOCATION $LINKING_PREOPTIONS -I${IMPACT_ROOT}/include \
+     -I${IMPACT_REL_PATH}/config/${HOST_PLATFORM}_c -o $PROBED_NAME *.c \
+     $EMUL_LIB_FILE $LIB_DIR $LINKING_POSTOPTIONS"
+  $COMPILER_INVOCATION $LINKING_PREOPTIONS -I${IMPACT_ROOT}/include \
+     -I${IMPACT_REL_PATH}/config/${HOST_PLATFORM}_c -o $PROBED_NAME *.c \
+     $EMUL_LIB_FILE $LIB_DIR $LINKING_POSTOPTIONS
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+else
+
+  $COMPILER_INVOCATION -c -I${IMPACT_ROOT}/include \
+     -I${IMPACT_REL_PATH}/config/${HOST_PLATFORM}_c *.c 
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+  g++ $LINKING_PREOPTIONS -o $PROBED_NAME *.o \
+     $EMUL_LIB_FILE $LIB_DIR $LINKING_POSTOPTIONS
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+if [ $BINCONVERT -ne 0 ]; then
+    chatr -r $PROBED_NAME
+    ERROR=$?;
+    if [ $ERROR -ne 0 ]; then
+	echo "> chatr failed during compilation of ${BASE_NAME}";
+	echo "> error_code= ${ERROR}";
+	exit 0200;
+    fi;
+fi;
+
+echo "> $PROBED_NAME successfully generated with host compiler"
+
+mv $PROBED_NAME ..
+
+cd ..
+
+# Clean up unless using -noclean option
+if test $CLEAN = 1; then
+   rm -rf ${TEMP_DIR}
+fi
+
+WARNINGS_ISSUED=0;
+if [ $BRANDS_MATCH -eq 0 ]; then
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   echo " "
+   echo "> Done, gen_probed_lcode generated warnings for $PROBED_NAME"
+else
+   echo " "
+   echo "> Done, gen_probed_lcode succeeded for $PROBED_NAME"
+fi
+
+
+
+
+

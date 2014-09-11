@@ -1,0 +1,129 @@
+\section{psymbol.c File Reference}
+\label{psymbol_8c}\index{psymbol.c@{psymbol.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include \char`\"{}psymbol.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Psymbol\_\-Table} $\ast$ \bf{create\_\-Psymbol\_\-Table} (char $\ast$\bf{name})
+\item 
+void \bf{free\_\-Psymbol\_\-Table} (\bf{Psymbol\_\-Table} $\ast$table, void($\ast$free\_\-routine)(void $\ast$))
+\item 
+int \bf{hash\_\-Psymbol\_\-name} (char $\ast$\bf{name})
+\item 
+void \bf{add\_\-Psymbol} (\bf{Psymbol\_\-Table} $\ast$table, char $\ast$\bf{name}, void $\ast$data)
+\item 
+\bf{Psymbol} $\ast$ \bf{find\_\-Psymbol} (\bf{Psymbol\_\-Table} $\ast$table, char $\ast$\bf{name})
+\item 
+void \bf{delete\_\-Psymbol} (\bf{Psymbol} $\ast$symbol, void($\ast$free\_\-routine)(void $\ast$))
+\item 
+void \bf{print\_\-Psymbol\_\-hash\_\-table} (FILE $\ast$\bf{out}, \bf{Psymbol\_\-Table} $\ast$table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Psymbol\_\-Table\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Psymbol\_\-pool} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{psymbol.c@{psymbol.c}!add_Psymbol@{add\_\-Psymbol}}
+\index{add_Psymbol@{add\_\-Psymbol}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-Psymbol (\bf{Psymbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em name}, void $\ast$ {\em data})}\label{psymbol_8c_43c4935d67bb3583c3e7f4a50bc07bff}
+
+
+
+
+Definition at line 147 of file psymbol.c.
+
+References Psymbol\_\-Table::count, Psymbol::data, Psymbol\_\-Table::hash, hash\_\-Psymbol\_\-name(), Psymbol\_\-Table::head, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), Psymbol::name, Psymbol::next\_\-hash, Psymbol::next\_\-symbol, NULL, Psymbol::prev\_\-hash, Psymbol::prev\_\-symbol, Psymbol\_\-pool, Psymbol::table, and Psymbol\_\-Table::tail.
+
+Referenced by add\_\-Pdef(), main(), and process\_\-include\_\-directive().\index{psymbol.c@{psymbol.c}!create_Psymbol_Table@{create\_\-Psymbol\_\-Table}}
+\index{create_Psymbol_Table@{create\_\-Psymbol\_\-Table}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Psymbol\_\-Table}$\ast$ create\_\-Psymbol\_\-Table (char $\ast$ {\em name})}\label{psymbol_8c_8f6a98d5bf33556e5bbe7f8e940a0f81}
+
+
+
+
+Definition at line 72 of file psymbol.c.
+
+References Psymbol\_\-Table::count, Psymbol\_\-Table::hash, Psymbol\_\-Table::head, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), Psymbol\_\-Table::name, NULL, PSYMBOL\_\-HASH\_\-SIZE, Psymbol\_\-Table\_\-pool, and Psymbol\_\-Table::tail.
+
+Referenced by main().\index{psymbol.c@{psymbol.c}!delete_Psymbol@{delete\_\-Psymbol}}
+\index{delete_Psymbol@{delete\_\-Psymbol}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void delete\_\-Psymbol (\bf{Psymbol} $\ast$ {\em symbol}, void($\ast$)(void $\ast$) {\em free\_\-routine})}\label{psymbol_8c_21ac4b8e5e7b5a95b9d3cac63c5a6562}
+
+
+
+
+Definition at line 212 of file psymbol.c.
+
+References Psymbol\_\-Table::count, Psymbol::data, Psymbol\_\-Table::hash, hash\_\-Psymbol\_\-name(), Psymbol\_\-Table::head, L\_\-free(), Psymbol::name, Psymbol::next\_\-hash, Psymbol::next\_\-symbol, NULL, Psymbol::prev\_\-hash, Psymbol::prev\_\-symbol, Psymbol\_\-pool, Psymbol::table, and Psymbol\_\-Table::tail.
+
+Referenced by delete\_\-Pdef().\index{psymbol.c@{psymbol.c}!find_Psymbol@{find\_\-Psymbol}}
+\index{find_Psymbol@{find\_\-Psymbol}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Psymbol}$\ast$ find\_\-Psymbol (\bf{Psymbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em name})}\label{psymbol_8c_dcef8f7f2490ff89644f958db15b07cd}
+
+
+
+
+Definition at line 191 of file psymbol.c.
+
+References Psymbol\_\-Table::hash, hash\_\-Psymbol\_\-name(), Psymbol::name, Psymbol::next\_\-hash, and NULL.
+
+Referenced by add\_\-Pdef(), delete\_\-Pdef(), Plookup(), and process\_\-include\_\-directive().\index{psymbol.c@{psymbol.c}!free_Psymbol_Table@{free\_\-Psymbol\_\-Table}}
+\index{free_Psymbol_Table@{free\_\-Psymbol\_\-Table}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Psymbol\_\-Table (\bf{Psymbol\_\-Table} $\ast$ {\em table}, void($\ast$)(void $\ast$) {\em free\_\-routine})}\label{psymbol_8c_6d76093f228e49068b42c187a149e669}
+
+
+
+
+Definition at line 97 of file psymbol.c.
+
+References Psymbol::data, Psymbol\_\-Table::head, L\_\-free(), Psymbol::name, Psymbol\_\-Table::name, Psymbol::next\_\-symbol, NULL, Psymbol\_\-pool, and Psymbol\_\-Table\_\-pool.
+
+Referenced by main().\index{psymbol.c@{psymbol.c}!hash_Psymbol_name@{hash\_\-Psymbol\_\-name}}
+\index{hash_Psymbol_name@{hash\_\-Psymbol\_\-name}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int hash\_\-Psymbol\_\-name (char $\ast$ {\em name})}\label{psymbol_8c_3eb26afb9e01015e862209de3eb019ff}
+
+
+
+
+Definition at line 125 of file psymbol.c.
+
+References PSYMBOL\_\-HASH\_\-SIZE.
+
+Referenced by add\_\-Psymbol(), delete\_\-Psymbol(), and find\_\-Psymbol().\index{psymbol.c@{psymbol.c}!print_Psymbol_hash_table@{print\_\-Psymbol\_\-hash\_\-table}}
+\index{print_Psymbol_hash_table@{print\_\-Psymbol\_\-hash\_\-table}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-Psymbol\_\-hash\_\-table (FILE $\ast$ {\em out}, \bf{Psymbol\_\-Table} $\ast$ {\em table})}\label{psymbol_8c_73be357f45bd4e9041cd442895b011fc}
+
+
+
+
+Definition at line 257 of file psymbol.c.
+
+References Psymbol\_\-Table::count, Psymbol\_\-Table::hash, Psymbol\_\-Table::name, Psymbol::name, Psymbol::next\_\-hash, NULL, and PSYMBOL\_\-HASH\_\-SIZE.
+
+\subsection{Variable Documentation}
+\index{psymbol.c@{psymbol.c}!Psymbol_pool@{Psymbol\_\-pool}}
+\index{Psymbol_pool@{Psymbol\_\-pool}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Psymbol\_\-pool} = \bf{NULL}}\label{psymbol_8c_5083a45146f9908a31dac227cbe18aac}
+
+
+
+
+Definition at line 68 of file psymbol.c.
+
+Referenced by add\_\-Psymbol(), delete\_\-Psymbol(), free\_\-Psymbol\_\-Table(), and main().\index{psymbol.c@{psymbol.c}!Psymbol_Table_pool@{Psymbol\_\-Table\_\-pool}}
+\index{Psymbol_Table_pool@{Psymbol\_\-Table\_\-pool}!psymbol.c@{psymbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Psymbol\_\-Table\_\-pool} = \bf{NULL}}\label{psymbol_8c_2d729e93a340ce1b90a4aba0da407dc3}
+
+
+
+
+Definition at line 67 of file psymbol.c.
+
+Referenced by create\_\-Psymbol\_\-Table(), free\_\-Psymbol\_\-Table(), and main().

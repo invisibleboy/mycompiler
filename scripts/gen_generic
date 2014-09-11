@@ -1,0 +1,197 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#   This script will run any module you specify with any arguments 
+#   you specify
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script written by Kevin Crozier, Wen-mei Hwu 3/30/98
+
+# set up environment with default values:
+
+# Assume arguments valid
+VALID_ARGS=1;
+DIR=".";
+OUT_EXT="gm";
+SHOW=0;
+VERBOSE=0;
+LOCAL=0;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    MODULE="$1";
+
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-dir)
+	    DIR="$1";
+	    shift;
+	    echo "> Running in directory ${DIR}";;
+	    
+        -in)
+            EXT="$1";
+            shift;
+            echo "> Will use input files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+        -out)
+            OUT_EXT="$1";
+            shift;
+            echo "> Will place .${OUT_EXT} at the end of the output files";;
+
+        -args)
+	    EXTRA_ARGS="$1";
+	    shift;
+            echo "> Will run ${MODULE} with the following args: ${EXTRA_ARGS}";;
+
+        -show)
+            echo "> Show commands mode on (commands prefixed with +)"
+            SHOW=1;;
+
+        -verbose)
+            echo "> Verbose mode on"
+            VERBOSE=1;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: gen_generic module [options] < list";
+    echo '> ';
+    echo '> Runs the Lcode module you specify with the given options';
+    echo '> Module can either be an executable in your path or the full';
+    echo '>   pathname of an Lcode module. i.e. Lhyper or ~/impact/bin/hp_c/Lhyper';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo ">   -verbose        prints message at every step";
+    echo ">   -dir  'dir'      directory to run in (the default is .)";
+    echo ">   -in   'ext'      uses files in dir with .ext, instead of file list";
+    echo ">   -out  'ext'      places ext at the end of the output files (default .gm)";
+    echo ">   -args 'args'     extra args to pass to the module being run";
+    echo '>                      i.e. -Ffoo=bar or "-Ffoo=bar -Fparm=yes"';
+    echo '>   -show           shows script commands (uses set -x)';
+
+    exit 0200;
+fi;
+
+# Turn on debugging if -show used
+if test $SHOW = 1; then
+  set -x
+fi
+	
+# Make sure directory specified exists
+if [ ! -d ${DIR} ]; then
+        echo "> ERROR: Directory '${DIR}' doesn't exist"
+        exit 0200;
+fi
+
+cd ${DIR}
+
+# Check to make sure the given module exists in the user's path
+if [ ! -x ${MODULE} ]; then
+    WHICHOUTPUT="`which ${MODULE}`";
+    echo "> Using ${MODULE} found at ${WHICHOUTPUT}";
+else
+    echo "> Using ${MODULE}";
+fi;
+
+
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+else
+    while read FILE;
+    do
+	FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+fi
+
+for FILE in $FILE_LIST
+do
+    # Make sure file exists
+    if [ ! -f ${FILE} ]; then
+         echo "> ERROR: '${FILE}' does not exist in '${DIR}'";
+         exit 0200;
+    fi
+    
+    FILEOUT=`echo $FILE | awk -F. '{print $1}'`
+    if test $VERBOSE = 1; then
+       echo "> RUNNING: ${MODULE} -i ${FILE} -o ${FILEOUT}.${OUT_EXT} ${EXTRA_ARGS}";
+    fi;
+
+    echo "> processsing ${FILE}"
+    ${MODULE} -i ${FILE} -o ${FILEOUT}.${OUT_EXT} ${EXTRA_ARGS}
+    
+    ERROR=$?;
+
+    if [ $ERROR -ne 0 ]; then
+       echo "> ${MODULE} failed on input file: ${FILE}";
+       echo "> error_code= ${ERROR}";
+       exit $ERROR;
+    fi;
+
+done

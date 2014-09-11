@@ -1,0 +1,294 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# start Pcode command-line parameters
+$file$ = test;
+$gen_src_pos$ = yes;
+$gen_pstmt_warn$ = no;
+$do_dependence$ = no;
+$do_flatten$ = yes; # we always need to flatten in order for the returning of
+                    # structures from functions to be handled correctly.
+$print_pcode_stats$ = no;
+$gen_loop_prags$ = yes;
+$gen_loop_sim_prags$ = no;
+$gen_func_prags$ = yes;
+$gen_dep_prags$ = no;
+$gen_jsr_deps$ = yes;
+$gen_stat_prof$ = no;
+$stat_loop_weight$ = 10.0;
+$stat_func_weight$ = 100.0;
+$C_dep$ = no;
+$C_loop_conv$ = no;
+$debug$ = no;
+$verbose$ = no;
+$nice$ = 10;
+$transforms$ = ;
+# end Pcode command-line parameters
+
+(Pcode declaration
+    # input and output files can also be specified using -i and -o flags
+    input_file = $file$.pc;
+
+    # log and error files can also be specified using -l and -e flags
+    log_file = __impact_pcode_verbose_log;	# file for debug/verbose output
+    error_file = stderr;			# file for error/warning mesgs
+
+    # Parameter file parameters
+    # libimpact flags (These parameters set library global flags)
+    warn_parm_not_defined = no;
+    warn_parm_defined_twice = no;
+    warn_parm_not_used = no;
+    parm_warn_file_name = stderr;
+    dump_parms = no;
+    parm_dump_file_name = STD_PARMS_DUMP;
+
+    # statistics for transformations
+    pcode_statistics_file = $file$.pcode.stat; 	    # number of program units 
+    print_pcode_statistics = $print_pcode_stats$;
+
+    # for merging Memory Reference Profiling info
+    annot_file = $file$.annot;
+    annot_index_file = $file$.annot_index;
+    pcode_position_file = $file$.pc.pos;
+
+
+    do_flatten = $do_flatten$;			# flatten pcode (as noted above,
+						# this must always be done)
+
+    fast_mode = no;				# for modules piggy back on 
+						# Pcode. If fast_mode is yes, no
+						# analysis will performed
+
+    # for Pprofiler
+    do_insert_probe = no;
+    do_annotate_pcode = no;
+    do_insert_pseudo_probe = no;
+
+    #for debugging support. emitting source information to Hcode
+    emit_source_info = no;
+
+    # for static execution profile estimation:
+    generate_hcode_static_profile = $gen_stat_prof$;
+    hcode_static_loop_weight = $stat_loop_weight$;     # estimated loop iters
+    hcode_static_func_weight = $stat_func_weight$;     # est. func invocations
+
+    # misc. flags
+    generate_p_statement_warnings = $gen_pstmt_warn$;  # for Alliant
+    nice_value = $nice$;		# for OS nice setting  
+    warn_uninitialized_vars = no;       # warns if SAVE statement needed 
+                                        # for scalars when Fortran 
+                                        # implementation allocates local vars
+                                        # on stack
+
+    # output annotations:
+    generate_source_pos_in_output = $gen_src_pos$;     # Pcode formats
+    generate_hcode_loop_prags = $gen_loop_prags$;      # only for Hcode format
+    generate_hcode_loop_sim_prags = $gen_loop_sim_prags$;# only for Hcode format
+    generate_hcode_func_prags = $gen_func_prags$;      # only for Hcode format
+    generate_hcode_swp_prags = no;                   # generate SWP_INFO
+                                                     # pragmas with info
+                                                     # about software pipelined
+                                                     # loops in Hcode output
+
+    # list of transformations (with options) given below, in execution order 
+    transformation_list = $transforms$;
+
+    ############################################################################
+    # transformations and options:
+    #
+    # IVS 		-> induction variable substitution 
+    # 		   	   (should follow with "FWDSUBr DEADCD" for IVE) 
+    #
+    # FWDSUB[apr] 	-> scalar forward substitution 
+    # 			   (into array subscripts and parloop bounds)
+    #        option 'a' -> don't forward substitute into array subscripts
+    #        option 'p' -> don't forward substitute into parloop bounds
+    #        option 'r' -> forward substitute recursively if RHS uses not avail
+    #
+    # DEADCD 		-> dead code elimination 
+    #
+    ############################################################################
+
+    # interprocedural analysis:
+    generate_interprocedural_data=no;  # generate data to be interprocedurally
+                                       # anaylzed by PIP
+    process_interprocedural_data=no;   # do dataflow analysis on call graph
+				       # (for PIP only)????
+    merge_interprocedural_data=0;      # merge data calculated by PIP into
+				       # access table during its construction
+    generate_callgraph_only=no;        # merge only callgraph, not deps
+    generate_gvar_address_taken=no;    # generate a list of gvars whose 
+				       # addresses are taken
+                                       # add pragma to calls indicating their
+                                       # side effects.  Uses IPA
+    annotate_callsites_with_side_effects=no;
+
+    # dependence analysis:
+
+    dump_every_arc = no;                         # Debugging feature. Make a arc/ dir
+                                                 # first.
+    union_overlap_comp=yes;                      # Compensate for the fact that union
+                                                 # fields can overlap.
+
+    allow_unrestricted_casting = 0;              # 0 - Casting/Type filtering
+	                                         # 1 - Allow limted casting of
+					         #     pointer types
+	                                         # 2 - 1 plus Allow void* to be aggregates
+	
+    force_dependence_analysis = $do_dependence$;       # if not called by trans.
+    generate_hcode_dep_prags = $gen_dep_prags$;        # sync arc generation
+    generate_jsr_dependences = $gen_jsr_deps$;   # Generate dependences to/from
+                                                 # function calls for C code.
+                                                 # generate_hcode_dep_prags
+                                                 # must be on for this flag
+                                                 # to have any effect.
+                                                 # If generate_hcode_dep_prags
+                                                 # is OFF, dependences to/from
+                                                 # function calls ARE included
+                                                 # when the dependence graph
+                                                 # is built.
+    generate_jsr_jsr_dependences = no;        # should we draw sync arcs
+	                                      # between jsrs?
+    do_dep_anal_for_C = $C_dep$;	      # should we do dep anal for C?
+    do_loop_conversion_on_C = $C_loop_conv$;  # should we conv loops to 
+					      # Parloops for C.
+    do_loop_conv_if_unpromoted_iter_var = yes;   # Should we conv loops in which
+                                                 # the address of the iteration
+                                                 # variable is taken?
+                                                 # Only effects Fortran programs
+                                                 # Set to no if doing a Pcode
+                                                 # to Pcode pass and intend to
+                                                 # later generate sync arcs.
+
+    dd_calc_array_input_dep = no;       # need for array load elim
+    dd_calc_iter_var_deps = yes;        # dependences for iteration variables
+                                        # for Parloops
+    dd_use_omega_for_scalars = no;      # If no, use dataflow-based analysis
+                                        # for scalars.  If no, won't get
+                                        # top-level or intra-expr. deps.
+                                        # Must set to yes if generating
+                                        # sync arcs.  If yes, get conservative
+                                        # cross-iteration arcs for scalars.
+    dd_merge_omega_deps = no;           # merge deps with compatible dir vectors
+					# THIS NO LONGER WORKS!
+    dd_split_compound_expr_stmts = no;	# Only need if use_omega_for_scalars=no
+                                        # Splits comma expressions in statement,
+                                        # but not if nested in another expr.
+    dd_calc_top_level_dep = no; 	# Calculate top level (non-loop carried)
+                                        # dependences.  Only for deps calc'ed 
+                                        # using omega
+    dd_calc_intra_expr_dep = no;	# Calculate non-loop carried intra-
+                                        # expression dependences.
+                                        # If no, only deps between stmts and 
+					# loop-carried deps generated. Must 
+                                        # have use_omega_for_scalars = yes
+    dd_delin_only_params = no;          # delinearize only formal parameters
+    dd_arith_min_max_exp = no;		# Use arithmetic expression rather 
+                                        # than ?: operators for expansion of
+                                        # integer min,max.  The expansion is
+                                        # done right before generating Hcode
+                                        # or generating interprocedural data.
+    dd_fwd_sub_outside_parloops = no;   # do forward sub in Serloops, and top
+                                        # level code
+    dd_equiv_disambig_level = 0;	# disambiguate equivalences - 1 may be 
+                                        # unsafe for some programs
+    dd_ignore_cf_info = 1;              # ignore control flow information when
+                                        # generating sync arcs
+
+    log_demo_output = no;               # print demo output to log file - 
+                                        # includes access table and distance
+                                        # vectors
+
+
+    # miscellaneous debug:
+
+    debug_log = $debug$;                # print debugging info to log file
+    verbose_log = $verbose$;            # print progress messages to log file
+    dd_debug_delin = no;		# debug array delinearization
+
+    debug_trans_named_funcs_only = no;	# for debugging transformations
+    debug_named_funcs_to_trans = "";	# if above yes, list of function names
+
+    debug_dd_ivs_max = -1;		# number of IVS to do, for debugging
+					# (-1 means unlimited)
+
+    # debug specific source files:
+
+    debug_DD_data_dep = no;
+    debug_DD_acc_tbl = no;
+    debug_DD_fwd_sub = no;
+    debug_DD_dead_code = no;
+    debug_DD_ind_var_sub = no;
+    debug_CF_loop_summ = no;
+    debug_CF_dominator = no;
+    debug_CF_post_dominator = no;
+    debug_CF_loop_flow = no;
+    debug_CF_basic_block = no;
+    debug_CF_contr_flow = no;
+    debug_DF_reach_du = no;
+    debug_DF_live_var = no;
+    debug_DF_avail_du = no;
+    debug_DF_lc_reach_du = no;
+    debug_DF_defuse = no;
+    debug_gen_pcode = no;
+    debug_gen_hcode = no;
+    debug_gen_charlie = no;
+    debug_print_pcode = no;
+    debug_links = no;
+    debug_init = no;
+    debug_func = no;
+    debug_symtree = no;
+    debug_flattening = no;
+
+    only_1d_omega = no;		# only do omega for inner-most loop
+    PL_gen_arrayname_arraysize_attr = no;	# generate arrayname/arraysize attributes
+
+    PL_change_bb_cnt_type = no;
+    dd_generate_acyclic_sync_arc = no;
+
+end)

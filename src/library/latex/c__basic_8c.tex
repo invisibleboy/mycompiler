@@ -1,0 +1,1403 @@
+\section{c\_\-basic.c File Reference}
+\label{c__basic_8c}\index{c_basic.c@{c\_\-basic.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$errno.h$>$}\par
+{\tt \#include $<$sys/types.h$>$}\par
+{\tt \#include $<$signal.h$>$}\par
+{\tt \#include $<$unistd.h$>$}\par
+{\tt \#include $<$time.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/c\_\-basic.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Str}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{NUM\_\-BITS}~32
+\item 
+\#define \bf{MAX\_\-FILE}~512
+\item 
+\#define \bf{MAX\_\-NAME\_\-LENGTH}~512
+\item 
+\#define \bf{INIT\_\-FILE}~\{if (!\bf{init}) init\_\-file();\}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-Str} $\ast$ \bf{Str}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{C\_\-is\_\-space} (int ch)
+\item 
+int \bf{C\_\-is\_\-alpha} (int ch)
+\item 
+int \bf{C\_\-is\_\-lower} (int ch)
+\item 
+int \bf{C\_\-is\_\-upper} (int ch)
+\item 
+int \bf{C\_\-is\_\-digit} (int ch)
+\item 
+int \bf{C\_\-is\_\-alpha\_\-numeric} (int ch)
+\item 
+int \bf{C\_\-to\_\-lower} (int ch)
+\item 
+int \bf{C\_\-to\_\-upper} (int ch)
+\item 
+int \bf{C\_\-is\_\-hex\_\-digit} (int ch)
+\item 
+int \bf{C\_\-is\_\-oct\_\-digit} (int ch)
+\item 
+int \bf{C\_\-is\_\-control} (int ch)
+\item 
+int \bf{C\_\-is\_\-graph} (int ch)
+\item 
+int \bf{C\_\-log2} (\bf{C\_\-Integer} n)
+\item 
+int \bf{C\_\-is\_\-log2} (\bf{C\_\-Integer} n)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-pow2} (int n)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-mask} (int n)
+\item 
+int \bf{C\_\-strlen} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-strcpy} (\bf{C\_\-String} dst, \bf{C\_\-String} src)
+\item 
+\bf{C\_\-String} \bf{C\_\-strncpy} (\bf{C\_\-String} dst, \bf{C\_\-String} src, int n)
+\item 
+\bf{C\_\-String} \bf{C\_\-strcat} (\bf{C\_\-String} dst, \bf{C\_\-String} src)
+\item 
+\bf{C\_\-String} \bf{C\_\-strncat} (\bf{C\_\-String} dst, \bf{C\_\-String} src, int n)
+\item 
+int \bf{C\_\-strcmp} (\bf{C\_\-String} str1, \bf{C\_\-String} str2)
+\item 
+int \bf{C\_\-strncmp} (\bf{C\_\-String} str1, \bf{C\_\-String} str2, int n)
+\item 
+\bf{C\_\-String} \bf{C\_\-strchr} (\bf{C\_\-String} str, int ch)
+\item 
+\bf{C\_\-String} \bf{C\_\-strrchr} (\bf{C\_\-String} str, int ch)
+\item 
+int \bf{C\_\-strspn} (\bf{C\_\-String} str, \bf{C\_\-String} ct)
+\item 
+int \bf{C\_\-strcspn} (\bf{C\_\-String} str, \bf{C\_\-String} ct)
+\item 
+\bf{C\_\-String} \bf{C\_\-strpbrk} (\bf{C\_\-String} str, \bf{C\_\-String} ct)
+\item 
+\bf{C\_\-String} \bf{C\_\-strstr} (\bf{C\_\-String} str1, \bf{C\_\-String} str2)
+\item 
+\bf{C\_\-String} \bf{C\_\-strrstr} (\bf{C\_\-String} str1, \bf{C\_\-String} str2)
+\item 
+\bf{C\_\-String} \bf{C\_\-strsave} (\bf{C\_\-String} str)
+\item 
+int \bf{C\_\-str2char} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-savestr} (\bf{C\_\-String} str)
+\item 
+static \bf{Str} \bf{Find\-S} (\bf{Str} T, \bf{C\_\-String} str)
+\item 
+static \bf{Str} \bf{Add\-S} (\bf{Str} T, \bf{C\_\-String} str)
+\item 
+static \bf{Str} \bf{Find\-And\-Add\-S} (\bf{Str} T, \bf{C\_\-String} str, \bf{Str} $\ast$\bf{node})
+\item 
+\bf{C\_\-String} \bf{C\_\-findstr} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-addptr} (\bf{C\_\-String} str, \bf{C\_\-Pointer} ptr)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-findptr} (\bf{C\_\-String} str)
+\item 
+static void \bf{Visit\-S} (\bf{Str} T, int($\ast$fn)(\bf{C\_\-String} \bf{name}, \bf{C\_\-Pointer} ptr))
+\item 
+void \bf{C\_\-for\_\-all\_\-ptr} (int($\ast$fn)(\bf{C\_\-String} \bf{name}, \bf{C\_\-Pointer} ptr))
+\item 
+\bf{C\_\-Float} \bf{C\_\-string\_\-to\_\-float} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-float\_\-to\_\-string} (\bf{C\_\-Float} value, \bf{C\_\-String} line)
+\item 
+\bf{C\_\-Double} \bf{C\_\-string\_\-to\_\-double} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-double\_\-to\_\-string} (\bf{C\_\-Double} value, \bf{C\_\-String} line)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-string\_\-to\_\-char} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-char\_\-to\_\-string} (int value, \bf{C\_\-String} line)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-string\_\-to\_\-integer} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-integer\_\-to\_\-string} (\bf{C\_\-Integer} value, \bf{C\_\-String} line)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-string\_\-to\_\-hex} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-hex\_\-to\_\-string} (\bf{C\_\-Integer} value, \bf{C\_\-String} line)
+\item 
+\bf{C\_\-Integer} \bf{C\_\-string\_\-to\_\-oct} (\bf{C\_\-String} str)
+\item 
+\bf{C\_\-String} \bf{C\_\-oct\_\-to\_\-string} (\bf{C\_\-Integer} value, \bf{C\_\-String} line)
+\item 
+void \bf{C\_\-abort} (void)
+\item 
+void \bf{C\_\-exit} (int status)
+\item 
+void \bf{C\_\-assert} (int expression, char $\ast$error\_\-mesg)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-calloc} (int num\_\-obj, int size\_\-obj)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-malloc} (int size)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-calloc2} (int num\_\-obj, int size\_\-obj)
+\item 
+\bf{C\_\-Pointer} \bf{C\_\-malloc2} (int size)
+\item 
+void \bf{C\_\-free} (\bf{C\_\-Pointer} ptr)
+\item 
+static void \bf{init\_\-file} (void)
+\item 
+static int \bf{find\_\-file} (char $\ast$\bf{name})
+\item 
+static int \bf{new\_\-file} (char $\ast$\bf{name})
+\item 
+static void \bf{free\_\-file} (int i)
+\item 
+\bf{C\_\-File} \bf{C\_\-open\_\-file} (\bf{C\_\-String} file\_\-name, int \bf{mode})
+\item 
+int \bf{C\_\-flush\_\-file} (\bf{C\_\-File} \bf{file})
+\item 
+int \bf{C\_\-close\_\-file} (\bf{C\_\-File} \bf{file})
+\item 
+int \bf{C\_\-create\_\-tmp\_\-file} (\bf{C\_\-String} \bf{name})
+\item 
+int \bf{C\_\-remove\_\-file} (\bf{C\_\-String} \bf{name})
+\item 
+int \bf{C\_\-rename\_\-file} (\bf{C\_\-String} \bf{name}, \bf{C\_\-String} new\_\-name)
+\item 
+int \bf{C\_\-destroy\_\-directory} (\bf{C\_\-String} dir\_\-name)
+\item 
+static \bf{C\_\-String} \bf{index\_\-file} (\bf{C\_\-String} \bf{db\_\-prefix})
+\item 
+static int \bf{add\_\-record\_\-index} (\bf{C\_\-String} \bf{db\_\-prefix}, \bf{C\_\-String} \bf{name})
+\item 
+static int \bf{delete\_\-record\_\-index} (\bf{C\_\-String} \bf{db\_\-prefix}, \bf{C\_\-String} \bf{name})
+\item 
+static int \bf{destroy\_\-all\_\-records} (\bf{C\_\-String} db\_\-name)
+\item 
+int \bf{C\_\-database\_\-size} (\bf{C\_\-String} db\_\-name)
+\item 
+int \bf{C\_\-destroy\_\-database} (\bf{C\_\-String} db\_\-name)
+\item 
+int \bf{C\_\-disconnect\_\-database} (\bf{C\_\-String} db\_\-name)
+\item 
+\bf{C\_\-File} \bf{C\_\-read\_\-record} (\bf{C\_\-String} record\_\-name)
+\item 
+\bf{C\_\-File} \bf{C\_\-write\_\-record} (\bf{C\_\-String} record\_\-name)
+\item 
+int \bf{C\_\-destroy\_\-record} (\bf{C\_\-String} record\_\-name)
+\item 
+\bf{C\_\-String} \bf{C\_\-file\_\-name} (\bf{C\_\-File} \bf{file})
+\item 
+int \bf{C\_\-eof} (\bf{C\_\-File} \bf{file})
+\item 
+int \bf{C\_\-read\_\-char} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Integer} $\ast$value)
+\item 
+int \bf{C\_\-read\_\-word} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line, int length)
+\item 
+int \bf{C\_\-read\_\-integer} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Integer} $\ast$value)
+\item 
+int \bf{C\_\-read\_\-float} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Float} $\ast$value)
+\item 
+int \bf{C\_\-read\_\-double} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Double} $\ast$value)
+\item 
+int \bf{C\_\-read\_\-line} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line, int length)
+\item 
+int \bf{C\_\-read\_\-block} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line, int length)
+\item 
+int \bf{C\_\-write\_\-char} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Integer} value)
+\item 
+int \bf{C\_\-write\_\-word} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line)
+\item 
+int \bf{C\_\-write\_\-line} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line)
+\item 
+int \bf{C\_\-write\_\-block} (\bf{C\_\-File} \bf{file}, \bf{C\_\-String} line, int length)
+\item 
+int \bf{C\_\-write\_\-integer} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Integer} value)
+\item 
+int \bf{C\_\-write\_\-float} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Float} value)
+\item 
+int \bf{C\_\-write\_\-double} (\bf{C\_\-File} \bf{file}, \bf{C\_\-Double} value)
+\item 
+long \bf{C\_\-time} (void)
+\item 
+char $\ast$ \bf{C\_\-asctime} (time\_\-t tm)
+\item 
+static void \bf{Remove\-S} (\bf{Str} ptr)
+\item 
+void \bf{C\_\-Remove\-All\-String} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static unsigned long \bf{p2} [32]
+\item 
+static unsigned long \bf{m2} [33]
+\item 
+static \bf{Str} \bf{str\_\-root} = 0
+\item 
+static int \bf{string\_\-count}
+\item 
+static int \bf{string\_\-length}
+\item 
+\begin{tabbing}
+xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=xx\=\kill
+struct \{\\
+\>short \bf{defined}\\
+\>short \bf{eof}\\
+\>short \bf{mode}\\
+\>char $\ast$ \bf{name}\\
+\>FILE $\ast$ \bf{F}\\
+\} \bf{files} [MAX\_FILE]\\
+
+\end{tabbing}\item 
+static int \bf{init} = 0
+\item 
+int \bf{errno}
+\item 
+static \bf{C\_\-String} \bf{db\_\-prefix} = 0
+\item 
+static char \bf{db\_\-index} [MAX\_\-NAME\_\-LENGTH]
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{c_basic.c@{c\_\-basic.c}!INIT_FILE@{INIT\_\-FILE}}
+\index{INIT_FILE@{INIT\_\-FILE}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define INIT\_\-FILE~\{if (!\bf{init}) init\_\-file();\}}\label{c__basic_8c_b4c2978fc4ab68d56c0111b042cddf08}
+
+
+
+
+Definition at line 880 of file c\_\-basic.c.
+
+Referenced by C\_\-close\_\-file(), C\_\-create\_\-tmp\_\-file(), C\_\-eof(), C\_\-file\_\-name(), C\_\-flush\_\-file(), C\_\-open\_\-file(), C\_\-read\_\-block(), C\_\-read\_\-char(), C\_\-read\_\-double(), C\_\-read\_\-float(), C\_\-read\_\-integer(), C\_\-read\_\-line(), C\_\-read\_\-word(), C\_\-write\_\-block(), C\_\-write\_\-char(), C\_\-write\_\-double(), C\_\-write\_\-float(), C\_\-write\_\-integer(), C\_\-write\_\-line(), and C\_\-write\_\-word().\index{c_basic.c@{c\_\-basic.c}!MAX_FILE@{MAX\_\-FILE}}
+\index{MAX_FILE@{MAX\_\-FILE}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-FILE~512}\label{c__basic_8c_19d34ae55fb2e29df830c11df2219da8}
+
+
+
+
+Definition at line 867 of file c\_\-basic.c.
+
+Referenced by C\_\-close\_\-file(), C\_\-eof(), C\_\-file\_\-name(), C\_\-flush\_\-file(), C\_\-read\_\-block(), C\_\-read\_\-char(), C\_\-read\_\-double(), C\_\-read\_\-float(), C\_\-read\_\-integer(), C\_\-read\_\-line(), C\_\-read\_\-word(), C\_\-write\_\-block(), C\_\-write\_\-char(), C\_\-write\_\-double(), C\_\-write\_\-float(), C\_\-write\_\-integer(), C\_\-write\_\-line(), C\_\-write\_\-word(), find\_\-file(), init\_\-file(), and new\_\-file().\index{c_basic.c@{c\_\-basic.c}!MAX_NAME_LENGTH@{MAX\_\-NAME\_\-LENGTH}}
+\index{MAX_NAME_LENGTH@{MAX\_\-NAME\_\-LENGTH}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-NAME\_\-LENGTH~512}\label{c__basic_8c_0c397a708cec89c74029582574516b30}
+
+
+
+
+Definition at line 868 of file c\_\-basic.c.
+
+Referenced by C\_\-database\_\-size(), C\_\-destroy\_\-record(), C\_\-read\_\-record(), C\_\-write\_\-record(), delete\_\-record\_\-index(), and destroy\_\-all\_\-records().\index{c_basic.c@{c\_\-basic.c}!NUM_BITS@{NUM\_\-BITS}}
+\index{NUM_BITS@{NUM\_\-BITS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NUM\_\-BITS~32}\label{c__basic_8c_4331f5d7557d7b8ae0ec6f3f97bd78c9}
+
+
+
+
+Definition at line 166 of file c\_\-basic.c.
+
+Referenced by C\_\-is\_\-log2(), C\_\-log2(), C\_\-mask(), and C\_\-pow2().
+
+\subsection{Typedef Documentation}
+\index{c_basic.c@{c\_\-basic.c}!Str@{Str}}
+\index{Str@{Str}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Str} $\ast$ \bf{Str}}\label{c__basic_8c_3add9c18c3e181279703b6230116dbd4}
+
+
+
+
+\subsection{Function Documentation}
+\index{c_basic.c@{c\_\-basic.c}!add_record_index@{add\_\-record\_\-index}}
+\index{add_record_index@{add\_\-record\_\-index}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int add\_\-record\_\-index (\bf{C\_\-String} {\em db\_\-prefix}, \bf{C\_\-String} {\em name})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_28631511c2c7cf49094e108ddf2abaee}
+
+
+
+
+Definition at line 1077 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-BAD\_\-INDEX, C\_\-close\_\-file(), C\_\-OPEN\_\-APPEND\_\-ONLY, C\_\-open\_\-file(), C\_\-SUCCESS, C\_\-write\_\-line(), and index\_\-file().
+
+Referenced by C\_\-write\_\-record().\index{c_basic.c@{c\_\-basic.c}!AddS@{AddS}}
+\index{AddS@{AddS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Str} Add\-S (\bf{Str} {\em T}, \bf{C\_\-String} {\em str})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_1eb44da9131bba892858a7c019cc65ba}
+
+
+
+
+Definition at line 465 of file c\_\-basic.c.
+
+References C\_\-malloc2(), C\_\-savestr(), C\_\-strcmp(), \_\-Str::left, \_\-Str::name, \_\-Str::ptr, and \_\-Str::right.
+
+Referenced by Add\-S(), C\_\-addptr(), and Find\-String().\index{c_basic.c@{c\_\-basic.c}!C_abort@{C\_\-abort}}
+\index{C_abort@{C\_\-abort}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-abort (void)}\label{c__basic_8c_444d03c8c0836229e6050011309e10d5}
+
+
+
+
+Definition at line 802 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_addptr@{C\_\-addptr}}
+\index{C_addptr@{C\_\-addptr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-addptr (\bf{C\_\-String} {\em str}, \bf{C\_\-Pointer} {\em ptr})}\label{c__basic_8c_a50d24783916012cb1b76e6a098d0dc6}
+
+
+
+
+Definition at line 569 of file c\_\-basic.c.
+
+References Add\-S(), C\_\-assert(), Find\-S(), \_\-Str::ptr, and str\_\-root.\index{c_basic.c@{c\_\-basic.c}!C_asctime@{C\_\-asctime}}
+\index{C_asctime@{C\_\-asctime}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ C\_\-asctime (time\_\-t {\em tm})}\label{c__basic_8c_7d927796c56a2a830032ce234e68ab5d}
+
+
+
+
+Definition at line 1450 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_assert@{C\_\-assert}}
+\index{C_assert@{C\_\-assert}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-assert (int {\em expression}, char $\ast$ {\em error\_\-mesg})}\label{c__basic_8c_e3a5e797764be416757a30e7cf126d66}
+
+
+
+
+Definition at line 812 of file c\_\-basic.c.
+
+References C\_\-exit().
+
+Referenced by add\_\-record\_\-index(), C2\_\-init\_\-scope(), C2\_\-kill\_\-scope\_\-above(), C2\_\-reset\_\-attribute(), C2\_\-scope\_\-in(), C2\_\-scope\_\-out(), C\_\-addptr(), C\_\-calloc2(), C\_\-clear(), C\_\-clear\_\-attr(), C\_\-clear\_\-free\_\-all(), C\_\-clear\_\-free\_\-name(), C\_\-delete(), C\_\-delete\_\-tbl(), C\_\-destroy\_\-record(), C\_\-find(), C\_\-find\_\-from\_\-index(), C\_\-find\_\-index(), C\_\-findptr(), C\_\-findstr(), C\_\-forall(), C\_\-full(), C\_\-get\_\-arg(), C\_\-malloc2(), C\_\-open(), C\_\-open\_\-file(), C\_\-read\_\-record(), C\_\-strsave(), C\_\-unique\_\-name(), C\_\-update(), C\_\-write\_\-record(), delete\_\-record\_\-index(), find\_\-symbol(), and new\_\-file().\index{c_basic.c@{c\_\-basic.c}!C_calloc@{C\_\-calloc}}
+\index{C_calloc@{C\_\-calloc}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-calloc (int {\em num\_\-obj}, int {\em size\_\-obj})}\label{c__basic_8c_fad9011d98ff56b182b52e2f68d67a82}
+
+
+
+
+Definition at line 828 of file c\_\-basic.c.
+
+Referenced by C\_\-calloc2().\index{c_basic.c@{c\_\-basic.c}!C_calloc2@{C\_\-calloc2}}
+\index{C_calloc2@{C\_\-calloc2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-calloc2 (int {\em num\_\-obj}, int {\em size\_\-obj})}\label{c__basic_8c_e0afa8cd9a3869c1e1f21acec0736f8d}
+
+
+
+
+Definition at line 844 of file c\_\-basic.c.
+
+References C\_\-assert(), and C\_\-calloc().\index{c_basic.c@{c\_\-basic.c}!C_char_to_string@{C\_\-char\_\-to\_\-string}}
+\index{C_char_to_string@{C\_\-char\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-char\_\-to\_\-string (int {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_4a4051a87546f31b2c503a6993cb04c4}
+
+
+
+
+Definition at line 716 of file c\_\-basic.c.
+
+References C\_\-ALERT, C\_\-BS, C\_\-CR, C\_\-FF, C\_\-HT, C\_\-is\_\-control(), C\_\-is\_\-graph(), C\_\-NL, C\_\-S\_\-QUOTE, and C\_\-VT.\index{c_basic.c@{c\_\-basic.c}!C_close_file@{C\_\-close\_\-file}}
+\index{C_close_file@{C\_\-close\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-close\_\-file (\bf{C\_\-File} {\em file})}\label{c__basic_8c_f4d38ec731805345c3c69f7e8f8c11a9}
+
+
+
+
+Definition at line 996 of file c\_\-basic.c.
+
+References C\_\-FAILURE, C\_\-SUCCESS, defined, F, files, free\_\-file(), INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by add\_\-record\_\-index(), C\_\-database\_\-size(), delete\_\-record\_\-index(), destroy\_\-all\_\-records(), S\_\-store\_\-record(), and S\_\-sum\_\-of\_\-column().\index{c_basic.c@{c\_\-basic.c}!C_create_tmp_file@{C\_\-create\_\-tmp\_\-file}}
+\index{C_create_tmp_file@{C\_\-create\_\-tmp\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-create\_\-tmp\_\-file (\bf{C\_\-String} {\em name})}\label{c__basic_8c_455cced69dcdf91ef61e9d74e1c0bc57}
+
+
+
+
+Definition at line 1008 of file c\_\-basic.c.
+
+References C\_\-open\_\-file(), C\_\-OPEN\_\-WRITE\_\-ONLY, C\_\-strcpy(), and INIT\_\-FILE.
+
+Referenced by delete\_\-record\_\-index().\index{c_basic.c@{c\_\-basic.c}!C_database_size@{C\_\-database\_\-size}}
+\index{C_database_size@{C\_\-database\_\-size}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-database\_\-size (\bf{C\_\-String} {\em db\_\-name})}\label{c__basic_8c_9ec7a0a3eec5ac40c5425764bb2817b8}
+
+
+
+
+Definition at line 1139 of file c\_\-basic.c.
+
+References C\_\-BAD\_\-INDEX, C\_\-close\_\-file(), C\_\-eof(), C\_\-open\_\-file(), C\_\-OPEN\_\-READ\_\-ONLY, C\_\-read\_\-line(), index\_\-file(), and MAX\_\-NAME\_\-LENGTH.\index{c_basic.c@{c\_\-basic.c}!C_destroy_database@{C\_\-destroy\_\-database}}
+\index{C_destroy_database@{C\_\-destroy\_\-database}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-destroy\_\-database (\bf{C\_\-String} {\em db\_\-name})}\label{c__basic_8c_c1a15cb94cc3d2d9bb1f372033d37675}
+
+
+
+
+Definition at line 1160 of file c\_\-basic.c.
+
+References C\_\-destroy\_\-directory(), and destroy\_\-all\_\-records().\index{c_basic.c@{c\_\-basic.c}!C_destroy_directory@{C\_\-destroy\_\-directory}}
+\index{C_destroy_directory@{C\_\-destroy\_\-directory}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-destroy\_\-directory (\bf{C\_\-String} {\em dir\_\-name})}\label{c__basic_8c_cc30756158fa7aa162412cafbbec45c2}
+
+
+
+
+Definition at line 1053 of file c\_\-basic.c.
+
+References C\_\-FAILURE, and C\_\-SUCCESS.
+
+Referenced by C\_\-destroy\_\-database().\index{c_basic.c@{c\_\-basic.c}!C_destroy_record@{C\_\-destroy\_\-record}}
+\index{C_destroy_record@{C\_\-destroy\_\-record}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-destroy\_\-record (\bf{C\_\-String} {\em record\_\-name})}\label{c__basic_8c_6ede0a4230cc5d957af94e50a40a80d0}
+
+
+
+
+Definition at line 1192 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-remove\_\-file(), delete\_\-record\_\-index(), MAX\_\-NAME\_\-LENGTH, and name.\index{c_basic.c@{c\_\-basic.c}!C_disconnect_database@{C\_\-disconnect\_\-database}}
+\index{C_disconnect_database@{C\_\-disconnect\_\-database}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-disconnect\_\-database (\bf{C\_\-String} {\em db\_\-name})}\label{c__basic_8c_b5abdfe6c742ec90cb21001990e9a359}
+
+
+
+
+Definition at line 1167 of file c\_\-basic.c.
+
+References C\_\-SUCCESS.\index{c_basic.c@{c\_\-basic.c}!C_double_to_string@{C\_\-double\_\-to\_\-string}}
+\index{C_double_to_string@{C\_\-double\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-double\_\-to\_\-string (\bf{C\_\-Double} {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_daabdc56919dd3dbe9df0c68df6ca0dd}
+
+
+
+
+Definition at line 630 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_eof@{C\_\-eof}}
+\index{C_eof@{C\_\-eof}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-eof (\bf{C\_\-File} {\em file})}\label{c__basic_8c_fd5d61c706051dedc63ed2bf210c4370}
+
+
+
+
+Definition at line 1216 of file c\_\-basic.c.
+
+References defined, files, INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by C\_\-database\_\-size(), delete\_\-record\_\-index(), destroy\_\-all\_\-records(), and S\_\-sum\_\-of\_\-column().\index{c_basic.c@{c\_\-basic.c}!C_exit@{C\_\-exit}}
+\index{C_exit@{C\_\-exit}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-exit (int {\em status})}\label{c__basic_8c_32cdf224b079aa8b1797810edbec450f}
+
+
+
+
+Definition at line 807 of file c\_\-basic.c.
+
+Referenced by C\_\-assert().\index{c_basic.c@{c\_\-basic.c}!C_file_name@{C\_\-file\_\-name}}
+\index{C_file_name@{C\_\-file\_\-name}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-file\_\-name (\bf{C\_\-File} {\em file})}\label{c__basic_8c_db58c65b7e74e25e976ba6e120ed4fff}
+
+
+
+
+Definition at line 1206 of file c\_\-basic.c.
+
+References defined, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_findptr@{C\_\-findptr}}
+\index{C_findptr@{C\_\-findptr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-findptr (\bf{C\_\-String} {\em str})}\label{c__basic_8c_e0b71de272307872c136d57ec2b265b4}
+
+
+
+
+Definition at line 585 of file c\_\-basic.c.
+
+References C\_\-assert(), Find\-S(), \_\-Str::ptr, and str\_\-root.\index{c_basic.c@{c\_\-basic.c}!C_findstr@{C\_\-findstr}}
+\index{C_findstr@{C\_\-findstr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-findstr (\bf{C\_\-String} {\em str})}\label{c__basic_8c_160629f63c002bc5a860040ef7ca5dd0}
+
+
+
+
+Definition at line 557 of file c\_\-basic.c.
+
+References C\_\-assert(), Find\-And\-Add\-S(), \_\-Str::ptr, and str\_\-root.
+
+Referenced by Add\-Argument(), and Change\-Argument().\index{c_basic.c@{c\_\-basic.c}!C_float_to_string@{C\_\-float\_\-to\_\-string}}
+\index{C_float_to_string@{C\_\-float\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-float\_\-to\_\-string (\bf{C\_\-Float} {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_54cde48b77c2ccececa4698b6fe2d79b}
+
+
+
+
+Definition at line 621 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_flush_file@{C\_\-flush\_\-file}}
+\index{C_flush_file@{C\_\-flush\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-flush\_\-file (\bf{C\_\-File} {\em file})}\label{c__basic_8c_01d7ce07875dd7a35486434c641b0b9d}
+
+
+
+
+Definition at line 983 of file c\_\-basic.c.
+
+References C\_\-FAILURE, C\_\-OPEN\_\-READ\_\-ONLY, C\_\-SUCCESS, defined, F, files, INIT\_\-FILE, MAX\_\-FILE, and mode.\index{c_basic.c@{c\_\-basic.c}!C_for_all_ptr@{C\_\-for\_\-all\_\-ptr}}
+\index{C_for_all_ptr@{C\_\-for\_\-all\_\-ptr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-for\_\-all\_\-ptr (int($\ast$)(\bf{C\_\-String} \bf{name}, \bf{C\_\-Pointer} ptr) {\em fn})}\label{c__basic_8c_4164cf8a2b1dc649057072e0aa3095a2}
+
+
+
+
+Definition at line 609 of file c\_\-basic.c.
+
+References str\_\-root, and Visit\-S().\index{c_basic.c@{c\_\-basic.c}!C_free@{C\_\-free}}
+\index{C_free@{C\_\-free}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-free (\bf{C\_\-Pointer} {\em ptr})}\label{c__basic_8c_c4f36c66a129f1ab02a3a5bd73d34321}
+
+
+
+
+Definition at line 859 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_hex_to_string@{C\_\-hex\_\-to\_\-string}}
+\index{C_hex_to_string@{C\_\-hex\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-hex\_\-to\_\-string (\bf{C\_\-Integer} {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_1362ed3d1dd6504198ea23205cfc85f7}
+
+
+
+
+Definition at line 781 of file c\_\-basic.c.
+
+References ITintmaxhexfmt.\index{c_basic.c@{c\_\-basic.c}!C_integer_to_string@{C\_\-integer\_\-to\_\-string}}
+\index{C_integer_to_string@{C\_\-integer\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-integer\_\-to\_\-string (\bf{C\_\-Integer} {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_8bb8098660f720014870c6a10abeaf62}
+
+
+
+
+Definition at line 770 of file c\_\-basic.c.
+
+References ITintmaxformat.\index{c_basic.c@{c\_\-basic.c}!C_is_alpha@{C\_\-is\_\-alpha}}
+\index{C_is_alpha@{C\_\-is\_\-alpha}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-alpha (int {\em ch})}\label{c__basic_8c_b41e507db5ccf2e1e2550123f8029ddb}
+
+
+
+
+Definition at line 92 of file c\_\-basic.c.
+
+Referenced by C\_\-is\_\-alpha\_\-numeric().\index{c_basic.c@{c\_\-basic.c}!C_is_alpha_numeric@{C\_\-is\_\-alpha\_\-numeric}}
+\index{C_is_alpha_numeric@{C\_\-is\_\-alpha\_\-numeric}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-alpha\_\-numeric (int {\em ch})}\label{c__basic_8c_47689baf335fe031f10020c177d153aa}
+
+
+
+
+Definition at line 112 of file c\_\-basic.c.
+
+References C\_\-is\_\-alpha(), and C\_\-is\_\-digit().
+
+Referenced by C\_\-string\_\-to\_\-char().\index{c_basic.c@{c\_\-basic.c}!C_is_control@{C\_\-is\_\-control}}
+\index{C_is_control@{C\_\-is\_\-control}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-control (int {\em ch})}\label{c__basic_8c_146455b3b5e15731b71a83ffc5f24c15}
+
+
+
+
+Definition at line 152 of file c\_\-basic.c.
+
+Referenced by C\_\-char\_\-to\_\-string().\index{c_basic.c@{c\_\-basic.c}!C_is_digit@{C\_\-is\_\-digit}}
+\index{C_is_digit@{C\_\-is\_\-digit}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-digit (int {\em ch})}\label{c__basic_8c_3394dec4989e7893a34db2041fb93cb7}
+
+
+
+
+Definition at line 107 of file c\_\-basic.c.
+
+Referenced by C\_\-is\_\-alpha\_\-numeric().\index{c_basic.c@{c\_\-basic.c}!C_is_graph@{C\_\-is\_\-graph}}
+\index{C_is_graph@{C\_\-is\_\-graph}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-graph (int {\em ch})}\label{c__basic_8c_604f6f0697bf7389dfa72539a7e850bf}
+
+
+
+
+Definition at line 159 of file c\_\-basic.c.
+
+Referenced by C\_\-char\_\-to\_\-string().\index{c_basic.c@{c\_\-basic.c}!C_is_hex_digit@{C\_\-is\_\-hex\_\-digit}}
+\index{C_is_hex_digit@{C\_\-is\_\-hex\_\-digit}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-hex\_\-digit (int {\em ch})}\label{c__basic_8c_4dfe30f969fa9b6b5bebc9b973f95703}
+
+
+
+
+Definition at line 141 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_is_log2@{C\_\-is\_\-log2}}
+\index{C_is_log2@{C\_\-is\_\-log2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-log2 (\bf{C\_\-Integer} {\em n})}\label{c__basic_8c_5a73b745b65284d2ac1738e01f815025}
+
+
+
+
+Definition at line 253 of file c\_\-basic.c.
+
+References NUM\_\-BITS, and p2.\index{c_basic.c@{c\_\-basic.c}!C_is_lower@{C\_\-is\_\-lower}}
+\index{C_is_lower@{C\_\-is\_\-lower}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-lower (int {\em ch})}\label{c__basic_8c_c44d43034c58f3d75a511f23386189d8}
+
+
+
+
+Definition at line 97 of file c\_\-basic.c.
+
+Referenced by C\_\-to\_\-upper().\index{c_basic.c@{c\_\-basic.c}!C_is_oct_digit@{C\_\-is\_\-oct\_\-digit}}
+\index{C_is_oct_digit@{C\_\-is\_\-oct\_\-digit}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-oct\_\-digit (int {\em ch})}\label{c__basic_8c_c3259292c22a7cf7a67517f74a588130}
+
+
+
+
+Definition at line 147 of file c\_\-basic.c.
+
+Referenced by C\_\-string\_\-to\_\-char().\index{c_basic.c@{c\_\-basic.c}!C_is_space@{C\_\-is\_\-space}}
+\index{C_is_space@{C\_\-is\_\-space}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-space (int {\em ch})}\label{c__basic_8c_8ee6cd71e0b75f06a42c70d0cfc132f4}
+
+
+
+
+Definition at line 86 of file c\_\-basic.c.
+
+References C\_\-CR, C\_\-FF, C\_\-HT, C\_\-NL, and C\_\-VT.
+
+Referenced by C\_\-read\_\-word().\index{c_basic.c@{c\_\-basic.c}!C_is_upper@{C\_\-is\_\-upper}}
+\index{C_is_upper@{C\_\-is\_\-upper}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-is\_\-upper (int {\em ch})}\label{c__basic_8c_59fceb3eb31dd1aaf2e2040ae2565e0d}
+
+
+
+
+Definition at line 102 of file c\_\-basic.c.
+
+Referenced by C\_\-to\_\-lower().\index{c_basic.c@{c\_\-basic.c}!C_log2@{C\_\-log2}}
+\index{C_log2@{C\_\-log2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-log2 (\bf{C\_\-Integer} {\em n})}\label{c__basic_8c_b0494661b08b6670839d5b02d4d7cee9}
+
+
+
+
+Definition at line 242 of file c\_\-basic.c.
+
+References NUM\_\-BITS, and p2.\index{c_basic.c@{c\_\-basic.c}!C_malloc@{C\_\-malloc}}
+\index{C_malloc@{C\_\-malloc}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-malloc (int {\em size})}\label{c__basic_8c_8d95f5c50cd92a949156472463d1e7f6}
+
+
+
+
+Definition at line 834 of file c\_\-basic.c.
+
+Referenced by C\_\-malloc2(), C\_\-strsave(), and new\_\-node().\index{c_basic.c@{c\_\-basic.c}!C_malloc2@{C\_\-malloc2}}
+\index{C_malloc2@{C\_\-malloc2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Pointer} C\_\-malloc2 (int {\em size})}\label{c__basic_8c_4e6901a0bdbd2271b25bee7ca33f5e0b}
+
+
+
+
+Definition at line 851 of file c\_\-basic.c.
+
+References C\_\-assert(), and C\_\-malloc().
+
+Referenced by Add\-S(), C\_\-savestr(), and Find\-And\-Add\-S().\index{c_basic.c@{c\_\-basic.c}!C_mask@{C\_\-mask}}
+\index{C_mask@{C\_\-mask}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-mask (int {\em n})}\label{c__basic_8c_8b483c3d7ae7f6f18e7d4340ac2f10e5}
+
+
+
+
+Definition at line 271 of file c\_\-basic.c.
+
+References m2, and NUM\_\-BITS.\index{c_basic.c@{c\_\-basic.c}!C_oct_to_string@{C\_\-oct\_\-to\_\-string}}
+\index{C_oct_to_string@{C\_\-oct\_\-to\_\-string}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-oct\_\-to\_\-string (\bf{C\_\-Integer} {\em value}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_5e082b6a1450e164f089e10f5fa3259b}
+
+
+
+
+Definition at line 792 of file c\_\-basic.c.
+
+References ITintmaxoctfmt.\index{c_basic.c@{c\_\-basic.c}!C_open_file@{C\_\-open\_\-file}}
+\index{C_open_file@{C\_\-open\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-File} C\_\-open\_\-file (\bf{C\_\-String} {\em file\_\-name}, int {\em mode})}\label{c__basic_8c_2367fe0e4da092c7cde37a0c323d30a1}
+
+
+
+
+Definition at line 952 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-BAD\_\-INDEX, C\_\-OPEN\_\-APPEND\_\-ONLY, C\_\-OPEN\_\-READ\_\-ONLY, C\_\-OPEN\_\-WRITE\_\-ONLY, F, files, find\_\-file(), INIT\_\-FILE, new\_\-file(), and NULL.
+
+Referenced by add\_\-record\_\-index(), C\_\-create\_\-tmp\_\-file(), C\_\-database\_\-size(), C\_\-read\_\-record(), C\_\-write\_\-record(), delete\_\-record\_\-index(), destroy\_\-all\_\-records(), S\_\-create\_\-record(), and S\_\-sum\_\-of\_\-column().\index{c_basic.c@{c\_\-basic.c}!C_pow2@{C\_\-pow2}}
+\index{C_pow2@{C\_\-pow2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-pow2 (int {\em n})}\label{c__basic_8c_5a88e5380ebfbea2c8fa7c59866c422b}
+
+
+
+
+Definition at line 265 of file c\_\-basic.c.
+
+References NUM\_\-BITS, and p2.\index{c_basic.c@{c\_\-basic.c}!C_read_block@{C\_\-read\_\-block}}
+\index{C_read_block@{C\_\-read\_\-block}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-block (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line}, int {\em length})}\label{c__basic_8c_6d27dd666bd57789ada8449dd1689237}
+
+
+
+
+Definition at line 1345 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_read_char@{C\_\-read\_\-char}}
+\index{C_read_char@{C\_\-read\_\-char}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-char (\bf{C\_\-File} {\em file}, \bf{C\_\-Integer} $\ast$ {\em value})}\label{c__basic_8c_baadc7c497766b546221a015d0173b51}
+
+
+
+
+Definition at line 1226 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_read_double@{C\_\-read\_\-double}}
+\index{C_read_double@{C\_\-read\_\-double}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-double (\bf{C\_\-File} {\em file}, \bf{C\_\-Double} $\ast$ {\em value})}\label{c__basic_8c_ae3fc70d5bb1f959a1f5bd4cae2e4517}
+
+
+
+
+Definition at line 1304 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_read_float@{C\_\-read\_\-float}}
+\index{C_read_float@{C\_\-read\_\-float}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-float (\bf{C\_\-File} {\em file}, \bf{C\_\-Float} $\ast$ {\em value})}\label{c__basic_8c_332c79f40c5b2ea09db2eb3b3a8524c7}
+
+
+
+
+Definition at line 1288 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_read_integer@{C\_\-read\_\-integer}}
+\index{C_read_integer@{C\_\-read\_\-integer}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-integer (\bf{C\_\-File} {\em file}, \bf{C\_\-Integer} $\ast$ {\em value})}\label{c__basic_8c_a8011b1606a32daec8c4db9275637502}
+
+
+
+
+Definition at line 1276 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, ITintmaxformat, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_read_line@{C\_\-read\_\-line}}
+\index{C_read_line@{C\_\-read\_\-line}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-line (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line}, int {\em length})}\label{c__basic_8c_1a6df81884446dd41e688bd638ef3755}
+
+
+
+
+Definition at line 1320 of file c\_\-basic.c.
+
+References C\_\-NL, defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by C\_\-database\_\-size(), delete\_\-record\_\-index(), destroy\_\-all\_\-records(), and S\_\-sum\_\-of\_\-column().\index{c_basic.c@{c\_\-basic.c}!C_read_record@{C\_\-read\_\-record}}
+\index{C_read_record@{C\_\-read\_\-record}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-File} C\_\-read\_\-record (\bf{C\_\-String} {\em record\_\-name})}\label{c__basic_8c_8f9ff98d0906472b6980c8b83905b7e9}
+
+
+
+
+Definition at line 1172 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-open\_\-file(), C\_\-OPEN\_\-READ\_\-ONLY, MAX\_\-NAME\_\-LENGTH, and name.\index{c_basic.c@{c\_\-basic.c}!C_read_word@{C\_\-read\_\-word}}
+\index{C_read_word@{C\_\-read\_\-word}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-read\_\-word (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line}, int {\em length})}\label{c__basic_8c_f146bfd3866a4f5a63d97711a8bf08d2}
+
+
+
+
+Definition at line 1242 of file c\_\-basic.c.
+
+References C\_\-is\_\-space(), defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_remove_file@{C\_\-remove\_\-file}}
+\index{C_remove_file@{C\_\-remove\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-remove\_\-file (\bf{C\_\-String} {\em name})}\label{c__basic_8c_e0b7cbaae88d990dfe025889b802b53f}
+
+
+
+
+Definition at line 1020 of file c\_\-basic.c.
+
+References C\_\-FAILURE, and C\_\-SUCCESS.
+
+Referenced by C\_\-destroy\_\-record(), delete\_\-record\_\-index(), and destroy\_\-all\_\-records().\index{c_basic.c@{c\_\-basic.c}!C_RemoveAllString@{C\_\-RemoveAllString}}
+\index{C_RemoveAllString@{C\_\-RemoveAllString}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-Remove\-All\-String ()}\label{c__basic_8c_e7b53fe3522ac7645bca8c64d3f5b6b0}
+
+
+
+
+Definition at line 1471 of file c\_\-basic.c.
+
+References Remove\-S(), and str\_\-root.\index{c_basic.c@{c\_\-basic.c}!C_rename_file@{C\_\-rename\_\-file}}
+\index{C_rename_file@{C\_\-rename\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-rename\_\-file (\bf{C\_\-String} {\em name}, \bf{C\_\-String} {\em new\_\-name})}\label{c__basic_8c_baf27e269e0c0e41339aa204019da059}
+
+
+
+
+Definition at line 1033 of file c\_\-basic.c.
+
+References C\_\-BAD\_\-INDEX, C\_\-FAILURE, and C\_\-SUCCESS.
+
+Referenced by delete\_\-record\_\-index().\index{c_basic.c@{c\_\-basic.c}!C_savestr@{C\_\-savestr}}
+\index{C_savestr@{C\_\-savestr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-savestr (\bf{C\_\-String} {\em str})}\label{c__basic_8c_afdb1c4e6c3f0f7ba69205d57a1f4e21}
+
+
+
+
+Definition at line 440 of file c\_\-basic.c.
+
+References C\_\-malloc2(), C\_\-strcpy(), and C\_\-strlen().
+
+Referenced by Add\-S(), C\_\-get\_\-arg(), and Find\-And\-Add\-S().\index{c_basic.c@{c\_\-basic.c}!C_str2char@{C\_\-str2char}}
+\index{C_str2char@{C\_\-str2char}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-str2char (\bf{C\_\-String} {\em str})}\label{c__basic_8c_4012afc330a3a23981bee97d4fd284f7}
+
+
+
+
+Definition at line 383 of file c\_\-basic.c.
+
+References C\_\-ALERT, C\_\-BS, C\_\-CR, C\_\-FF, C\_\-HT, C\_\-NL, C\_\-NU, and C\_\-VT.\index{c_basic.c@{c\_\-basic.c}!C_strcat@{C\_\-strcat}}
+\index{C_strcat@{C\_\-strcat}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strcat (\bf{C\_\-String} {\em dst}, \bf{C\_\-String} {\em src})}\label{c__basic_8c_57567176a12611bb33df586d84c3b693}
+
+
+
+
+Definition at line 295 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strchr@{C\_\-strchr}}
+\index{C_strchr@{C\_\-strchr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strchr (\bf{C\_\-String} {\em str}, int {\em ch})}\label{c__basic_8c_7fb17d02326bcd719ae51fdb0cb67675}
+
+
+
+
+Definition at line 313 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strcmp@{C\_\-strcmp}}
+\index{C_strcmp@{C\_\-strcmp}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-strcmp (\bf{C\_\-String} {\em str1}, \bf{C\_\-String} {\em str2})}\label{c__basic_8c_2388089332b1e34e3b731b322aa8065c}
+
+
+
+
+Definition at line 304 of file c\_\-basic.c.
+
+Referenced by Add\-S(), find\_\-file(), Find\-And\-Add\-S(), and Find\-S().\index{c_basic.c@{c\_\-basic.c}!C_strcpy@{C\_\-strcpy}}
+\index{C_strcpy@{C\_\-strcpy}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strcpy (\bf{C\_\-String} {\em dst}, \bf{C\_\-String} {\em src})}\label{c__basic_8c_41b0f03bbee22df2e06acab0cefbea77}
+
+
+
+
+Definition at line 287 of file c\_\-basic.c.
+
+Referenced by C\_\-create\_\-tmp\_\-file(), and C\_\-savestr().\index{c_basic.c@{c\_\-basic.c}!C_strcspn@{C\_\-strcspn}}
+\index{C_strcspn@{C\_\-strcspn}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-strcspn (\bf{C\_\-String} {\em str}, \bf{C\_\-String} {\em ct})}\label{c__basic_8c_eb3d52b7de4c4578a68b262be7f4807f}
+
+
+
+
+Definition at line 327 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_string_to_char@{C\_\-string\_\-to\_\-char}}
+\index{C_string_to_char@{C\_\-string\_\-to\_\-char}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-string\_\-to\_\-char (\bf{C\_\-String} {\em str})}\label{c__basic_8c_2649b1d83736c636f9b50ce62ae2bc9a}
+
+
+
+
+Definition at line 635 of file c\_\-basic.c.
+
+References C\_\-ALERT, C\_\-BACKSLASH, C\_\-BS, C\_\-CR, C\_\-FF, C\_\-HT, C\_\-is\_\-alpha\_\-numeric(), C\_\-is\_\-oct\_\-digit(), C\_\-NL, C\_\-QUESTION, C\_\-string\_\-to\_\-hex(), C\_\-string\_\-to\_\-oct(), and C\_\-VT.\index{c_basic.c@{c\_\-basic.c}!C_string_to_double@{C\_\-string\_\-to\_\-double}}
+\index{C_string_to_double@{C\_\-string\_\-to\_\-double}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Double} C\_\-string\_\-to\_\-double (\bf{C\_\-String} {\em str})}\label{c__basic_8c_673922efde029f4f6fea0f7ce8e9395e}
+
+
+
+
+Definition at line 626 of file c\_\-basic.c.
+
+References atof().
+
+Referenced by yylex().\index{c_basic.c@{c\_\-basic.c}!C_string_to_float@{C\_\-string\_\-to\_\-float}}
+\index{C_string_to_float@{C\_\-string\_\-to\_\-float}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Float} C\_\-string\_\-to\_\-float (\bf{C\_\-String} {\em str})}\label{c__basic_8c_1e26562297d5d2d8dfc6d064c0f4bb97}
+
+
+
+
+Definition at line 617 of file c\_\-basic.c.
+
+References atof().\index{c_basic.c@{c\_\-basic.c}!C_string_to_hex@{C\_\-string\_\-to\_\-hex}}
+\index{C_string_to_hex@{C\_\-string\_\-to\_\-hex}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-string\_\-to\_\-hex (\bf{C\_\-String} {\em str})}\label{c__basic_8c_cad7f70163dc04f98d91731fe502cfca}
+
+
+
+
+Definition at line 775 of file c\_\-basic.c.
+
+References ITintmaxhexfmt.
+
+Referenced by C\_\-string\_\-to\_\-char(), and yylex().\index{c_basic.c@{c\_\-basic.c}!C_string_to_integer@{C\_\-string\_\-to\_\-integer}}
+\index{C_string_to_integer@{C\_\-string\_\-to\_\-integer}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-string\_\-to\_\-integer (\bf{C\_\-String} {\em str})}\label{c__basic_8c_2e16bcbe168d5f7c18ffe89ed3e70a6d}
+
+
+
+
+Definition at line 764 of file c\_\-basic.c.
+
+References ITintmaxformat.
+
+Referenced by yylex().\index{c_basic.c@{c\_\-basic.c}!C_string_to_oct@{C\_\-string\_\-to\_\-oct}}
+\index{C_string_to_oct@{C\_\-string\_\-to\_\-oct}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-Integer} C\_\-string\_\-to\_\-oct (\bf{C\_\-String} {\em str})}\label{c__basic_8c_8ecc0dc21731d12b5531491d2a5edbfc}
+
+
+
+
+Definition at line 786 of file c\_\-basic.c.
+
+References ITintmaxoctfmt.
+
+Referenced by C\_\-string\_\-to\_\-char(), and yylex().\index{c_basic.c@{c\_\-basic.c}!C_strlen@{C\_\-strlen}}
+\index{C_strlen@{C\_\-strlen}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-strlen (\bf{C\_\-String} {\em str})}\label{c__basic_8c_fee59d2befb71fb91885019f5db7e90e}
+
+
+
+
+Definition at line 281 of file c\_\-basic.c.
+
+Referenced by C\_\-savestr(), find\_\-empty\_\-entry(), and find\_\-symbol().\index{c_basic.c@{c\_\-basic.c}!C_strncat@{C\_\-strncat}}
+\index{C_strncat@{C\_\-strncat}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strncat (\bf{C\_\-String} {\em dst}, \bf{C\_\-String} {\em src}, int {\em n})}\label{c__basic_8c_301fe5d1daaaca499b82caa6f3dc4121}
+
+
+
+
+Definition at line 299 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strncmp@{C\_\-strncmp}}
+\index{C_strncmp@{C\_\-strncmp}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-strncmp (\bf{C\_\-String} {\em str1}, \bf{C\_\-String} {\em str2}, int {\em n})}\label{c__basic_8c_0b4a4f69d0dd1cc1cb27c805a435fe3e}
+
+
+
+
+Definition at line 309 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strncpy@{C\_\-strncpy}}
+\index{C_strncpy@{C\_\-strncpy}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strncpy (\bf{C\_\-String} {\em dst}, \bf{C\_\-String} {\em src}, int {\em n})}\label{c__basic_8c_7686316289a8d891cb8fbb45e34cb502}
+
+
+
+
+Definition at line 291 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strpbrk@{C\_\-strpbrk}}
+\index{C_strpbrk@{C\_\-strpbrk}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strpbrk (\bf{C\_\-String} {\em str}, \bf{C\_\-String} {\em ct})}\label{c__basic_8c_e1733cec138a6ba318b540e28a67b43f}
+
+
+
+
+Definition at line 331 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strrchr@{C\_\-strrchr}}
+\index{C_strrchr@{C\_\-strrchr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strrchr (\bf{C\_\-String} {\em str}, int {\em ch})}\label{c__basic_8c_95e35beafad545589468e9f746075e32}
+
+
+
+
+Definition at line 317 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strrstr@{C\_\-strrstr}}
+\index{C_strrstr@{C\_\-strrstr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strrstr (\bf{C\_\-String} {\em str1}, \bf{C\_\-String} {\em str2})}\label{c__basic_8c_1c8039736bc536e997c59ffc305f80d8}
+
+
+
+
+Definition at line 349 of file c\_\-basic.c.
+
+References C\_\-NIL.\index{c_basic.c@{c\_\-basic.c}!C_strsave@{C\_\-strsave}}
+\index{C_strsave@{C\_\-strsave}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strsave (\bf{C\_\-String} {\em str})}\label{c__basic_8c_c8864a457873c4ff942a2e87ea91f349}
+
+
+
+
+Definition at line 363 of file c\_\-basic.c.
+
+References C\_\-assert(), and C\_\-malloc().
+
+Referenced by C\_\-unique\_\-name(), C\_\-update(), and new\_\-file().\index{c_basic.c@{c\_\-basic.c}!C_strspn@{C\_\-strspn}}
+\index{C_strspn@{C\_\-strspn}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-strspn (\bf{C\_\-String} {\em str}, \bf{C\_\-String} {\em ct})}\label{c__basic_8c_c43918876a1062adab478a9e2aa5107b}
+
+
+
+
+Definition at line 322 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_strstr@{C\_\-strstr}}
+\index{C_strstr@{C\_\-strstr}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} C\_\-strstr (\bf{C\_\-String} {\em str1}, \bf{C\_\-String} {\em str2})}\label{c__basic_8c_5075f80a4e19dfbb232d65d3ac6c15fb}
+
+
+
+
+Definition at line 335 of file c\_\-basic.c.
+
+References C\_\-NIL.\index{c_basic.c@{c\_\-basic.c}!C_time@{C\_\-time}}
+\index{C_time@{C\_\-time}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long C\_\-time (void)}\label{c__basic_8c_23d871b92e007ec3a9e9937cb26b9b17}
+
+
+
+
+Definition at line 1445 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!C_to_lower@{C\_\-to\_\-lower}}
+\index{C_to_lower@{C\_\-to\_\-lower}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-to\_\-lower (int {\em ch})}\label{c__basic_8c_5f5fad17f5660e69be8fe7c41bd2de1b}
+
+
+
+
+Definition at line 117 of file c\_\-basic.c.
+
+References C\_\-is\_\-upper().\index{c_basic.c@{c\_\-basic.c}!C_to_upper@{C\_\-to\_\-upper}}
+\index{C_to_upper@{C\_\-to\_\-upper}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-to\_\-upper (int {\em ch})}\label{c__basic_8c_1b90db0d0093f3fc6828f7609d6e9ff8}
+
+
+
+
+Definition at line 129 of file c\_\-basic.c.
+
+References C\_\-is\_\-lower().\index{c_basic.c@{c\_\-basic.c}!C_write_block@{C\_\-write\_\-block}}
+\index{C_write_block@{C\_\-write\_\-block}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-block (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line}, int {\em length})}\label{c__basic_8c_2f6edac31d6e2a9411525563dcc32e0b}
+
+
+
+
+Definition at line 1393 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_write_char@{C\_\-write\_\-char}}
+\index{C_write_char@{C\_\-write\_\-char}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-char (\bf{C\_\-File} {\em file}, \bf{C\_\-Integer} {\em value})}\label{c__basic_8c_2b2dfd94e2065f0c0abc67de22f84576}
+
+
+
+
+Definition at line 1357 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_write_double@{C\_\-write\_\-double}}
+\index{C_write_double@{C\_\-write\_\-double}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-double (\bf{C\_\-File} {\em file}, \bf{C\_\-Double} {\em value})}\label{c__basic_8c_60d6e926e0dd64a162327c233d3ed481}
+
+
+
+
+Definition at line 1429 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by S\_\-print\_\-real().\index{c_basic.c@{c\_\-basic.c}!C_write_float@{C\_\-write\_\-float}}
+\index{C_write_float@{C\_\-write\_\-float}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-float (\bf{C\_\-File} {\em file}, \bf{C\_\-Float} {\em value})}\label{c__basic_8c_e968b8e21a15ed10bd9703c0f9415790}
+
+
+
+
+Definition at line 1417 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!C_write_integer@{C\_\-write\_\-integer}}
+\index{C_write_integer@{C\_\-write\_\-integer}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-integer (\bf{C\_\-File} {\em file}, \bf{C\_\-Integer} {\em value})}\label{c__basic_8c_801469b46559cac4fbfd5e04c4afb89d}
+
+
+
+
+Definition at line 1405 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, ITintmaxformat, and MAX\_\-FILE.
+
+Referenced by S\_\-print\_\-integer().\index{c_basic.c@{c\_\-basic.c}!C_write_line@{C\_\-write\_\-line}}
+\index{C_write_line@{C\_\-write\_\-line}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-line (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_8e35c0d48b79b341af2f7465403b5709}
+
+
+
+
+Definition at line 1381 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by add\_\-record\_\-index(), and delete\_\-record\_\-index().\index{c_basic.c@{c\_\-basic.c}!C_write_record@{C\_\-write\_\-record}}
+\index{C_write_record@{C\_\-write\_\-record}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-File} C\_\-write\_\-record (\bf{C\_\-String} {\em record\_\-name})}\label{c__basic_8c_2d6b8c0ebb2ee61a31d8a7f84ca0dc4f}
+
+
+
+
+Definition at line 1181 of file c\_\-basic.c.
+
+References add\_\-record\_\-index(), C\_\-assert(), C\_\-open\_\-file(), C\_\-OPEN\_\-WRITE\_\-ONLY, MAX\_\-NAME\_\-LENGTH, and name.\index{c_basic.c@{c\_\-basic.c}!C_write_word@{C\_\-write\_\-word}}
+\index{C_write_word@{C\_\-write\_\-word}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-write\_\-word (\bf{C\_\-File} {\em file}, \bf{C\_\-String} {\em line})}\label{c__basic_8c_dd369e05981241eb4e9e6f74b422a802}
+
+
+
+
+Definition at line 1369 of file c\_\-basic.c.
+
+References defined, F, files, INIT\_\-FILE, and MAX\_\-FILE.
+
+Referenced by S\_\-print\_\-name(), and S\_\-store\_\-record().\index{c_basic.c@{c\_\-basic.c}!delete_record_index@{delete\_\-record\_\-index}}
+\index{delete_record_index@{delete\_\-record\_\-index}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int delete\_\-record\_\-index (\bf{C\_\-String} {\em db\_\-prefix}, \bf{C\_\-String} {\em name})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_1e203b02f9b86240f089a28790ece9d6}
+
+
+
+
+Definition at line 1088 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-BAD\_\-INDEX, C\_\-close\_\-file(), C\_\-create\_\-tmp\_\-file(), C\_\-eof(), C\_\-open\_\-file(), C\_\-OPEN\_\-READ\_\-ONLY, C\_\-read\_\-line(), C\_\-remove\_\-file(), C\_\-rename\_\-file(), C\_\-SUCCESS, C\_\-write\_\-line(), index\_\-file(), and MAX\_\-NAME\_\-LENGTH.
+
+Referenced by C\_\-destroy\_\-record().\index{c_basic.c@{c\_\-basic.c}!destroy_all_records@{destroy\_\-all\_\-records}}
+\index{destroy_all_records@{destroy\_\-all\_\-records}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int destroy\_\-all\_\-records (\bf{C\_\-String} {\em db\_\-name})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_7947f889ea50413a206bdf1795977a18}
+
+
+
+
+Definition at line 1114 of file c\_\-basic.c.
+
+References C\_\-BAD\_\-INDEX, C\_\-close\_\-file(), C\_\-eof(), C\_\-FAILURE, C\_\-open\_\-file(), C\_\-OPEN\_\-READ\_\-ONLY, C\_\-read\_\-line(), C\_\-remove\_\-file(), C\_\-SUCCESS, index\_\-file(), MAX\_\-NAME\_\-LENGTH, and name.
+
+Referenced by C\_\-destroy\_\-database().\index{c_basic.c@{c\_\-basic.c}!find_file@{find\_\-file}}
+\index{find_file@{find\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int find\_\-file (char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_5b6ca0a0c3183131b0e1cd53a1982034}
+
+
+
+
+Definition at line 905 of file c\_\-basic.c.
+
+References C\_\-BAD\_\-INDEX, C\_\-strcmp(), defined, files, and MAX\_\-FILE.
+
+Referenced by C\_\-open\_\-file().\index{c_basic.c@{c\_\-basic.c}!FindAndAddS@{FindAndAddS}}
+\index{FindAndAddS@{FindAndAddS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Str} Find\-And\-Add\-S (\bf{Str} {\em T}, \bf{C\_\-String} {\em str}, \bf{Str} $\ast$ {\em node})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_d18925306330b6340494a12e7bd0b1a9}
+
+
+
+
+Definition at line 498 of file c\_\-basic.c.
+
+References C\_\-malloc2(), C\_\-savestr(), C\_\-strcmp(), \_\-Str::left, \_\-Str::name, node, \_\-Str::ptr, \_\-Str::right, string\_\-count, and string\_\-length.
+
+Referenced by C\_\-findstr().\index{c_basic.c@{c\_\-basic.c}!FindS@{FindS}}
+\index{FindS@{FindS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Str} Find\-S (\bf{Str} {\em T}, \bf{C\_\-String} {\em str})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_7e9d911903c774e5d01c4116b16bdb59}
+
+
+
+
+Definition at line 448 of file c\_\-basic.c.
+
+References C\_\-strcmp(), \_\-Str::left, \_\-Str::name, and \_\-Str::right.
+
+Referenced by C\_\-addptr(), C\_\-findptr(), Find\-S(), and Find\-String().\index{c_basic.c@{c\_\-basic.c}!free_file@{free\_\-file}}
+\index{free_file@{free\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void free\_\-file (int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_d25f91a4997729460f7d476a524fda35}
+
+
+
+
+Definition at line 935 of file c\_\-basic.c.
+
+References files.
+
+Referenced by C\_\-close\_\-file().\index{c_basic.c@{c\_\-basic.c}!index_file@{index\_\-file}}
+\index{index_file@{index\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{C\_\-String} index\_\-file (\bf{C\_\-String} {\em db\_\-prefix})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_124e1f537d7d5a017c75f8924c1da004}
+
+
+
+
+Definition at line 1071 of file c\_\-basic.c.
+
+Referenced by add\_\-record\_\-index(), C\_\-database\_\-size(), delete\_\-record\_\-index(), and destroy\_\-all\_\-records().\index{c_basic.c@{c\_\-basic.c}!init_file@{init\_\-file}}
+\index{init_file@{init\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void init\_\-file (void)\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_1338e9edaf3183d267554d007d51eb8c}
+
+
+
+
+Definition at line 883 of file c\_\-basic.c.
+
+References C\_\-OPEN\_\-READ\_\-ONLY, C\_\-OPEN\_\-WRITE\_\-ONLY, C\_\-STDERR, C\_\-STDIN, C\_\-STDOUT, defined, files, and MAX\_\-FILE.\index{c_basic.c@{c\_\-basic.c}!new_file@{new\_\-file}}
+\index{new_file@{new\_\-file}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int new\_\-file (char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_4f607a54b43b1700d07472cbbdda2181}
+
+
+
+
+Definition at line 917 of file c\_\-basic.c.
+
+References C\_\-assert(), C\_\-strsave(), defined, files, and MAX\_\-FILE.
+
+Referenced by C\_\-open\_\-file().\index{c_basic.c@{c\_\-basic.c}!RemoveS@{RemoveS}}
+\index{RemoveS@{RemoveS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Remove\-S (\bf{Str} {\em ptr})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_6492703d21c90d6a67726c88c36f0b6c}
+
+
+
+
+Definition at line 1457 of file c\_\-basic.c.
+
+References \_\-Str::left, \_\-Str::name, and \_\-Str::right.
+
+Referenced by C\_\-Remove\-All\-String(), Remove\-All\-String(), and Remove\-S().\index{c_basic.c@{c\_\-basic.c}!VisitS@{VisitS}}
+\index{VisitS@{VisitS}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Visit\-S (\bf{Str} {\em T}, int($\ast$)(\bf{C\_\-String} \bf{name}, \bf{C\_\-Pointer} ptr) {\em fn})\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_fcb605d2a5fc98e5ebd19ebcb64897e6}
+
+
+
+
+Definition at line 598 of file c\_\-basic.c.
+
+References \_\-Str::left, \_\-Str::name, \_\-Str::ptr, and \_\-Str::right.
+
+Referenced by C\_\-for\_\-all\_\-ptr().
+
+\subsection{Variable Documentation}
+\index{c_basic.c@{c\_\-basic.c}!db_index@{db\_\-index}}
+\index{db_index@{db\_\-index}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char \bf{db\_\-index}[MAX\_\-NAME\_\-LENGTH]\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_f6ab392917522c7a05ce671660743080}
+
+
+
+
+Definition at line 1068 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!db_prefix@{db\_\-prefix}}
+\index{db_prefix@{db\_\-prefix}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{C\_\-String} \bf{db\_\-prefix} = 0\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_7ad9021bad28b40bf31ddf416ccf46f4}
+
+
+
+
+Definition at line 1067 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!defined@{defined}}
+\index{defined@{defined}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}short \bf{defined}}\label{c__basic_8c_9d887150a3bc9ae3806d3bab61f91a77}
+
+
+
+
+Definition at line 872 of file c\_\-basic.c.
+
+Referenced by add\_\-node(), add\_\-reg(), C\_\-close\_\-file(), C\_\-eof(), C\_\-file\_\-name(), C\_\-flush\_\-file(), C\_\-read\_\-block(), C\_\-read\_\-char(), C\_\-read\_\-double(), C\_\-read\_\-float(), C\_\-read\_\-integer(), C\_\-read\_\-line(), C\_\-read\_\-word(), C\_\-write\_\-block(), C\_\-write\_\-char(), C\_\-write\_\-double(), C\_\-write\_\-float(), C\_\-write\_\-integer(), C\_\-write\_\-line(), C\_\-write\_\-word(), find\_\-df\_\-node(), find\_\-df\_\-reg(), find\_\-file(), init\_\-file(), new\_\-file(), reaching\_\-definition(), and reset\_\-nodes().\index{c_basic.c@{c\_\-basic.c}!eof@{eof}}
+\index{eof@{eof}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}short \bf{eof}}\label{c__basic_8c_50c8b1968ceaae924798225b2260b1de}
+
+
+
+
+Definition at line 873 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!errno@{errno}}
+\index{errno@{errno}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{errno}}\label{c__basic_8c_d65a8842cc674e3ddf69355898c0ecbf}
+
+
+\index{c_basic.c@{c\_\-basic.c}!F@{F}}
+\index{F@{F}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{F}}\label{c__basic_8c_da309aa59bb9aca17267271bd0852231}
+
+
+
+
+Definition at line 876 of file c\_\-basic.c.
+
+Referenced by C\_\-close\_\-file(), C\_\-flush\_\-file(), C\_\-open\_\-file(), C\_\-read\_\-block(), C\_\-read\_\-char(), C\_\-read\_\-double(), C\_\-read\_\-float(), C\_\-read\_\-integer(), C\_\-read\_\-line(), C\_\-read\_\-word(), C\_\-write\_\-block(), C\_\-write\_\-char(), C\_\-write\_\-double(), C\_\-write\_\-float(), C\_\-write\_\-integer(), C\_\-write\_\-line(), C\_\-write\_\-word(), I\_\-open\_\-output\_\-file(), Read\-Graph(), and Write\-Graph().\index{c_basic.c@{c\_\-basic.c}!files@{files}}
+\index{files@{files}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \{ ... \} 
+ \bf{files}[MAX\_\-FILE]\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_adc65ecd9df4b83d94a7fdebece821d7}
+
+
+
+
+Referenced by C\_\-close\_\-file(), C\_\-eof(), C\_\-file\_\-name(), C\_\-flush\_\-file(), C\_\-open\_\-file(), C\_\-read\_\-block(), C\_\-read\_\-char(), C\_\-read\_\-double(), C\_\-read\_\-float(), C\_\-read\_\-integer(), C\_\-read\_\-line(), C\_\-read\_\-word(), C\_\-write\_\-block(), C\_\-write\_\-char(), C\_\-write\_\-double(), C\_\-write\_\-float(), C\_\-write\_\-integer(), C\_\-write\_\-line(), C\_\-write\_\-word(), find\_\-file(), free\_\-file(), init\_\-file(), and new\_\-file().\index{c_basic.c@{c\_\-basic.c}!init@{init}}
+\index{init@{init}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{init} = 0\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_795ea50921b36311ffd5e7baa2ef1f7e}
+
+
+
+
+Definition at line 881 of file c\_\-basic.c.\index{c_basic.c@{c\_\-basic.c}!m2@{m2}}
+\index{m2@{m2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned long \bf{m2}[33]\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_ce49c1d63cf187f1c4450dff610cec79}
+
+
+
+
+Definition at line 201 of file c\_\-basic.c.
+
+Referenced by C\_\-mask().\index{c_basic.c@{c\_\-basic.c}!mode@{mode}}
+\index{mode@{mode}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}short \bf{mode}}\label{c__basic_8c_333c19a5aa15e91c469fe361186398d4}
+
+
+
+
+Definition at line 874 of file c\_\-basic.c.
+
+Referenced by C\_\-flush\_\-file(), find\_\-empty\_\-entry(), and find\_\-symbol().\index{c_basic.c@{c\_\-basic.c}!name@{name}}
+\index{name@{name}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{name}}\label{c__basic_8c_5ac083a645d964373f022d03df4849c8}
+
+
+
+
+Definition at line 875 of file c\_\-basic.c.
+
+Referenced by C\_\-destroy\_\-record(), C\_\-read\_\-record(), C\_\-write\_\-record(), destroy\_\-all\_\-records(), L\_\-add\_\-to\_\-parm\_\-table\_\-list(), and L\_\-read\_\-parm\_\-section\_\-defaults().\index{c_basic.c@{c\_\-basic.c}!p2@{p2}}
+\index{p2@{p2}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned long \bf{p2}[32]\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_007be3df3efb3ddf921d0f4e4678ebb9}
+
+
+
+
+Definition at line 167 of file c\_\-basic.c.
+
+Referenced by C\_\-is\_\-log2(), C\_\-log2(), and C\_\-pow2().\index{c_basic.c@{c\_\-basic.c}!str_root@{str\_\-root}}
+\index{str_root@{str\_\-root}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Str} \bf{str\_\-root} = 0\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_85074b288492780239446ae8d81951ee}
+
+
+
+
+Definition at line 437 of file c\_\-basic.c.
+
+Referenced by C\_\-addptr(), C\_\-findptr(), C\_\-findstr(), C\_\-for\_\-all\_\-ptr(), and C\_\-Remove\-All\-String().\index{c_basic.c@{c\_\-basic.c}!string_count@{string\_\-count}}
+\index{string_count@{string\_\-count}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{string\_\-count}\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_fd46a47dbbc5944b6360ffb0a76b364e}
+
+
+
+
+Definition at line 494 of file c\_\-basic.c.
+
+Referenced by Find\-And\-Add\-S().\index{c_basic.c@{c\_\-basic.c}!string_length@{string\_\-length}}
+\index{string_length@{string\_\-length}!c_basic.c@{c\_\-basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{string\_\-length}\hspace{0.3cm}{\tt  [static]}}\label{c__basic_8c_7ed23e172ed4f3fa8180869bc1e4be0a}
+
+
+
+
+Definition at line 494 of file c\_\-basic.c.
+
+Referenced by Find\-And\-Add\-S().

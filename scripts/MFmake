@@ -1,0 +1,315 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+                                                                                
+
+###############################################################################
+ #
+ # Copyright Notices/Identification of Licensor(s) of
+ # Original Software in the File
+ #
+ # Copyright 1990-1999 The Board of Trustees of the University of Illinois
+ # Contact: Research and Technology Management Office,
+ # University of Illinois at Urbana-Champaign;
+ # FAX: 217-244-3716, or email: rtmo@uiuc.edu
+ #
+ # All rights reserved by the foregoing, respectively.
+ #
+ # This is licensed software.  The software license agreement with
+ # the University of Illinois specifies the terms and conditions
+ # for use and redistribution.
+ #
+###############################################################################
+#  Created by Patrick R. Eaton, David I. August, Wen-Mei Hwu
+#  Reengineered and rewritten by John Gyllenhaal 5/99
+#
+#  Use MFmake -h for usage.
+
+# Assume arguments valid
+VALID_ARGS=1;
+IMAKE="imake";
+COMPILE_TYPE="c";
+CURRENT_DIR=".";
+IMAKE_DEFS="";
+SILENT=0;
+LINK_HEADERS=1;
+MAKE_DEPEND=1;
+DO_BUILD=1;
+
+OLDCC=$CC
+
+if [ "$CC" != "gcc" ]; then
+  echo "Overriding CC from environment with gcc";
+  export CC="gcc";
+fi
+
+# Cygwin mv does not have -f, but always overwrites the dest.
+if [ "$IMPACT_BUILD_TYPE" = "x86nt" ]; then
+MVCMD="mv"
+CPCMD="cp"
+else
+MVCMD="mv -f"
+CPCMD="cp -f"
+fi
+
+# get options 
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Short cut for make Makefiles call
+        -mf)
+            # For make Makefiles, want to make Makefile only!
+            SILENT=1;
+            MAKE_DEPEND=0;
+            LINK_HEADERS=0;
+            DO_BUILD=0;;
+
+        # Allow script to be operated in silent mode 
+        -s)
+            SILENT=1;;
+
+	-c)
+	    if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will create Makefile_${IMPACT_BUILD_TYPE}_c";
+	    fi
+	    COMPILE_TYPE="c";;
+
+	-cxx)
+            if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will create Makefile_${IMPACT_BUILD_TYPE}_cxx";
+            fi
+	    COMPILE_TYPE="cxx";;
+
+	-current)
+	    if [ $# -eq 0 ]; then
+	       echo "Error: MFmake expects a name after -current"
+	       exit 1;
+	    fi
+	    CURRENT_DIR="$1";
+	    if [ $SILENT -eq 0 ]; then
+	       echo "Setting CURRENT to '${CURRENT_DIR}'";
+	    fi
+	    shift;;
+
+	-insure|-ins)
+            if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will create Makefile_${IMPACT_BUILD_TYPE}_ins";
+            fi
+	    COMPILE_TYPE="ins";;
+
+	-no_depend|-nodepend|-D)
+            if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will not create dependence list";
+            fi
+	    MAKE_DEPEND=0;;
+
+	-no_link|-nolink|-no_export|-noexport|-L)
+            if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will not export header files to impact/include";
+            fi
+	    LINK_HEADERS=0;;
+
+	-no_build|-nobuild|-NB)
+            if [ $SILENT -eq 0 ]; then
+  	      echo "> MFmake will not build libraries/executables";
+            fi
+            DO_BUILD=0;;
+
+	-D*)
+	    if [ $SILENT -eq 0 ]; then
+              echo "> Will pass '${OPTION}' to ${IMAKE}";
+            fi
+	    IMAKE_DEFS="${IMAKE_DEFS} ${OPTION}";;
+
+	    
+        -h|-H)
+            VALID_ARGS=0;;
+	   
+        *)
+            echo "> Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo "> Usage: MFmake [options]";
+    echo '> ';
+    echo "> Builds IMPACT makefiles for '.' and subdirectories using ${IMAKE},";
+
+    echo "> Imakefile, .../impact/config/* and IMPACT_BUILD_TYPE (${IMPACT_BUILD_TYPE})";
+    echo '> ';
+    echo '> Zero or more of the following options may be specified:';
+    echo '>   -mf                    Silently creates just the makefile(s)';
+    echo '>   -c                     Builds C makefile (default)';
+    echo '>   -cxx                   Builds C++ makefile';
+    echo '>   -ins|insure            Builds insure makefile';
+    echo '>   -current "dir"         Sets 'CURRENT' location to "dir"';
+    echo '>   -no_depend             Will not create dependence list';
+    echo '>   -no_link               Will not export (link) header files';
+    echo '>   -no_build              Will not build libraries/executables';
+    echo '>   -s                     Suppresses argument parsing messages';
+    echo '>   -h                     Prints this message';
+    exit 1;
+fi
+
+# Sanity check, make sure required environment variables set
+ERROR=0;
+if [ -z "$IMPACT_REL_PATH" ]; then
+   echo "Error: The environment variable IMPACT_REL_PATH is not defined!";
+   ERROR=1;
+fi
+
+if [ -z "$IMPACT_ROOT" ]; then
+   echo "Error: The environment variable IMPACT_ROOT is not defined!";
+   ERROR=1;
+fi
+
+if [ -z "$IMPACT_BUILD_TYPE" ]; then
+   echo "Error: The environment variable IMPACT_BUILD_TYPE is not defined!";
+   ERROR=1;
+fi
+
+if [ $ERROR -eq 1 ]; then
+   exit 1;
+fi
+
+# Sanity check, make sure have Imakefile
+if [ ! -f Imakefile ]; then
+   echo "Error: Imakefile not found!  Required by ${IMAKE}!"
+   echo "       Use MFmake -h for usage.";
+   exit 1;
+fi
+
+# Get make command to use
+MAKE=`read_platform_info -make_command`
+if test "$?" != 0; then
+   echo " "
+   echo "Exiting: Could not make command using read_platform_info!"
+   echo "Error message returned by read_platform_info:"
+   echo "$MAKE";
+   exit 1;
+fi
+
+# Warn users that imake does not allow IMPACT_BUILD_TYPE to be linux (on
+# a linux box) because gcc defines linux to be '1' (and imake uses
+# gcc as the preprocessor) .  Otherwise, you will get the following:
+# makedepend: error:  cannot open "Makefile_1_c" 
+if [ "$IMPACT_BUILD_TYPE" = "linux" ]; then
+   echo "Error: IMPACT_BUILD_TYPE may not be set to 'linux'!"
+   echo "       imake uses the gcc's preprocessor and 'linux' is usually"
+   echo "       defined to '1' on linux boxes (messing up the generated makefile)!"
+   echo "       Use different name (e.g., x86lin)!"
+   exit 1;
+fi
+
+# Copy Makefile only if different (or missing) 
+cmp -s Makefile ${IMPACT_REL_PATH}/config/Makefile.driver
+if [ "$?" != 0 ]; then
+  # Save old Makefile, if present
+  if [ -f Makefile ]; then
+     echo "Replacing ${CURRENT_DIR}/Makefile"
+     $MVCMD Makefile Makefile.bak;
+  else
+     echo "Creating ${CURRENT_DIR}/Makefile"
+  fi
+
+  ${CPCMD} ${IMPACT_REL_PATH}/config/Makefile.driver Makefile
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Save old 'build_type' makefile, if present
+if [ -f Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} ]; then
+   ${MVCMD} Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} \
+         Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE}.bak;
+   echo "Replacing ${CURRENT_DIR}/Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE}"
+else
+   echo "Creating ${CURRENT_DIR}/Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE}"
+fi
+
+# Create new 'build_type' makefile using ${IMAKE}
+${IMAKE} -I${IMPACT_REL_PATH}/config \
+      -DVendorFile=\<${IMPACT_BUILD_TYPE}_c.cf\> \
+      -DTopDir=. -DCurrentDir=${CURRENT_DIR} ${IMAKE_DEFS} \
+      -DVendorType=${IMPACT_BUILD_TYPE} -DCompileType=${COMPILE_TYPE} \
+      -s Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} \
+      -TImake.tmpl.Impact;
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+
+# Create new 'build_type' makefiles for subdirectories
+${MAKE} -s -f Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} Makefiles;
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+# Link header files into the include directory, if desired
+if [ "$LINK_HEADERS" = 1 ]; then
+   ${MAKE} -s -f Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} install_hdrs;
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Create dependences in new 'build_type' makefile, if desired
+if [ "$MAKE_DEPEND" = 1 ]; then
+   ${MAKE} -s -f Makefile_${IMPACT_BUILD_TYPE}_${COMPILE_TYPE} depend;
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Build 'all' if specified (use Makefile to split all into parts!)
+if [ "$DO_BUILD" = 1 ]; then
+   export CC=$OLDCC
+   ${MAKE} -s -f Makefile all;
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+
+

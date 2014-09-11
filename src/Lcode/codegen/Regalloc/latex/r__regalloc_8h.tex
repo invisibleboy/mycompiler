@@ -1,0 +1,1395 @@
+\section{r\_\-regalloc.h File Reference}
+\label{r__regalloc_8h}\index{r_regalloc.h@{r\_\-regalloc.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include $<$library/stack.h$>$}\par
+{\tt \#include $<$library/heap.h$>$}\par
+{\tt \#include $<$library/set.h$>$}\par
+{\tt \#include $<$library/i\_\-list.h$>$}\par
+{\tt \#include $<$machine/lmdes.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-region.h$>$}\par
+{\tt \#include \char`\"{}r\_\-regproto.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{R\_\-Physical\_\-Bank}
+\item 
+struct \bf{R\_\-Alloc\_\-Info}
+\item 
+struct \bf{R\_\-Reg}
+\item 
+struct \bf{R\_\-Arc}
+\item 
+struct \bf{R\_\-Macro}
+\item 
+struct \bf{\_\-reconcile\_\-block}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{R\_\-NUM\_\-CLASS}~5
+\item 
+\#define \bf{R\_\-TYPE\_\-INC}~R\_\-NUM\_\-CLASS
+\item 
+\#define \bf{R\_\-NUM\_\-TYPES}~7
+\item 
+\#define \bf{R\_\-MAX\_\-BANK}~(R\_\-NUM\_\-TYPES$\ast$R\_\-NUM\_\-CLASS)
+\item 
+\#define \bf{R\_\-CALLER}~0
+\item 
+\#define \bf{R\_\-CALLEE}~1
+\item 
+\#define \bf{R\_\-SPILL}~2
+\item 
+\#define \bf{R\_\-MACRO\_\-CALLER}~3
+\item 
+\#define \bf{R\_\-MACRO\_\-CALLEE}~4
+\item 
+\#define \bf{R\_\-PREFER\_\-SPILL}~-1
+\item 
+\#define \bf{R\_\-PREDICATE}~0
+\item 
+\#define \bf{R\_\-INT}~5
+\item 
+\#define \bf{R\_\-FLOAT}~10
+\item 
+\#define \bf{R\_\-DOUBLE}~15
+\item 
+\#define \bf{R\_\-BTR}~20
+\item 
+\#define \bf{R\_\-QUAD}~25
+\item 
+\#define \bf{R\_\-POINTER}~30
+\item 
+\#define \bf{R\_\-OVERLAP\_\-PREDICATE}~0x01
+\item 
+\#define \bf{R\_\-OVERLAP\_\-INT}~0x02
+\item 
+\#define \bf{R\_\-OVERLAP\_\-FLOAT}~0x04
+\item 
+\#define \bf{R\_\-OVERLAP\_\-DOUBLE}~0x08
+\item 
+\#define \bf{R\_\-OVERLAP\_\-BTR}~0x10
+\item 
+\#define \bf{R\_\-OVERLAP\_\-QUAD}~0x20
+\item 
+\#define \bf{R\_\-OVERLAP\_\-POINTER}~0x40
+\item 
+\#define \bf{R\_\-SPILL\_\-CODE}~0
+\item 
+\#define \bf{R\_\-JSR\_\-SAVE\_\-CODE}~1
+\item 
+\#define \bf{R\_\-CALLEE\_\-SAVE\_\-CODE}~2
+\item 
+\#define \bf{R\_\-UNCONSTRAINED}~0x1
+\item 
+\#define \bf{R\_\-CONSTANT}~0x2
+\item 
+\#define \bf{R\_\-SPILLED}~0x4
+\item 
+\#define \bf{R\_\-CB\_\-SPLIT}~0x8
+\item 
+\#define \bf{R\_\-INSTR\_\-SPLIT}~0x10
+\item 
+\#define \bf{R\_\-PREALLOCATED\_\-MACRO}~0x20
+\item 
+\#define \bf{R\_\-PA\_\-HACK}~0x40
+\item 
+\#define \bf{R\_\-MCB\_\-PRELOAD}~0x80
+\item 
+\#define \bf{R\_\-CONTAINS\_\-JSR}~0x100
+\item 
+\#define \bf{R\_\-LIVE\_\-OUTSIDE\_\-REGION}~0x1000
+\item 
+\#define \bf{R\_\-PREALLOCATED\_\-FLYBY}~0x2000
+\item 
+\#define \bf{R\_\-REGION\_\-CONSTRAINED}~0x4000
+\item 
+\#define \bf{R\_\-CURRENT\_\-VREG}~0x8000
+\item 
+\#define \bf{VREG}(a)
+\item 
+\#define \bf{IMPACT\_\-ABS}(a)~((a$>$0)?a:-a)
+\item 
+\#define \bf{CALLOC}(a, b)~(((b)==0)?NULL:(a $\ast$)calloc((b),sizeof(a)))
+\item 
+\#define \bf{MALLOC}(a, b)~(((b)==0)?NULL:(a $\ast$)malloc((b)$\ast$sizeof(a)))
+\item 
+\#define \bf{FREE}(a)
+\item 
+\#define \bf{R\_\-OPERAND\_\-REG}(a)~((L\_\-is\_\-reg(\&a)) ? a.value.r : -1 )
+\item 
+\#define \bf{R\_\-OPERAND\_\-MACRO}(a)~((L\_\-is\_\-macro(\&a)) ? a.value.mac : -1 )
+\item 
+\#define \bf{R\_\-OPERAND\_\-TYPE}(a)~((int)L\_\-return\_\-old\_\-ctype(\&a))
+\item 
+\#define \bf{R\_\-MAX}(a, b)~(((a)$>$(b))?(a):(b))
+\item 
+\#define \bf{R\_\-MIN}(a, b)~(((a)$>$(b))?(b):(a))
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-reconcile\_\-block} \bf{RCB}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+double \bf{R\_\-callee\_\-cost} (int lcode\_\-ctype, int leaf, int callee\_\-allocated)
+\item 
+double \bf{R\_\-caller\_\-cost} (int lcode\_\-ctype, int leaf)
+\item 
+double \bf{R\_\-spill\_\-load\_\-cost} (int lcode\_\-ctype)
+\item 
+double \bf{R\_\-spill\_\-store\_\-cost} (int lcode\_\-ctype)
+\item 
+L\_\-Oper $\ast$ \bf{O\_\-spill\_\-reg} (int reg, int type, L\_\-Operand $\ast$operand, int spill\_\-offset, L\_\-Operand $\ast$$\ast$pred, int type\_\-flag)
+\item 
+L\_\-Oper $\ast$ \bf{O\_\-fill\_\-reg} (int reg, int type, L\_\-Operand $\ast$operand, int fill\_\-offset, L\_\-Operand $\ast$$\ast$pred, int type\_\-flag)
+\item 
+L\_\-Oper $\ast$ \bf{O\_\-move\_\-reg} (int dest\_\-reg, int src\_\-reg, int reg\_\-type)
+\item 
+L\_\-Oper $\ast$ \bf{O\_\-jump\_\-oper} (int opc, L\_\-Cb $\ast$dst)
+\item 
+\bf{R\_\-Physical\_\-Bank} $\ast$ \bf{O\_\-locate\_\-rot\_\-reg\_\-bank} (L\_\-Func $\ast$fn, \bf{R\_\-Reg} $\ast$vreg)
+\item 
+int \bf{R\_\-Ltype\_\-to\_\-Rtype} (int type)
+\item 
+char $\ast$ \bf{BANK\_\-NAME} (int type)
+\item 
+char $\ast$ \bf{CLASS\_\-NAME} (int rclass)
+\item 
+int \bf{R\_\-conv\_\-type\_\-to\_\-Ltype} (int type)
+\item 
+void \bf{R\_\-add\_\-interference\_\-arc} (\bf{R\_\-Reg} $\ast$from, \bf{R\_\-Reg} $\ast$to)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{R\_\-global\_\-overlap} [$\,$]
+\item 
+int \bf{R\_\-max\_\-overlap\_\-size} [$\,$]
+\item 
+int \bf{R\_\-Utilize\_\-Profile\_\-Info}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{R\_\-alloc\_\-virtual\_\-register}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{R\_\-alloc\_\-interference\_\-arc}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{R\_\-Region\-Alloc\_\-pool}
+\item 
+int $\ast$ \bf{R\_\-register\_\-contents}
+\item 
+double \bf{ld\_\-wgt}
+\item 
+double \bf{st\_\-wgt}
+\item 
+double \bf{mv\_\-wgt}
+\item 
+int \bf{ld\_\-cnt}
+\item 
+int \bf{st\_\-cnt}
+\item 
+int \bf{mv\_\-cnt}
+\item 
+\bf{R\_\-Physical\_\-Bank} $\ast$ \bf{R\_\-bank}
+\item 
+int $\ast$$\ast$ \bf{R\_\-map}
+\item 
+\bf{R\_\-Reg} $\ast$ \bf{R\_\-vreg}
+\item 
+\bf{Hash\-Table} \bf{R\_\-vreg\-Hash\-Tbl}
+\item 
+\bf{Hash\-Table} \bf{R\_\-region\-Alloc\-Map}
+\item 
+\bf{Hash\-Table} \bf{flow\-Hash\-Tbl}
+\item 
+int $\ast$ \bf{R\_\-buf}
+\item 
+int $\ast$ \bf{R\_\-buf2}
+\item 
+void $\ast$$\ast$ \bf{R\_\-pbuf}
+\item 
+void $\ast$$\ast$ \bf{R\_\-pbuf2}
+\item 
+int \bf{R\_\-n\_\-oper}
+\item 
+\bf{Set} \bf{R\_\-oper\_\-set}
+\item 
+\bf{List} \bf{R\_\-jsr\_\-list}
+\item 
+L\_\-Oper $\ast$ \bf{R\_\-rts}
+\item 
+int \bf{pred\_\-spill\_\-stack}
+\item 
+int \bf{int\_\-spill\_\-stack}
+\item 
+int \bf{fp\_\-spill\_\-stack}
+\item 
+\bf{R\_\-Macro} $\ast$ \bf{R\_\-avail\_\-macro}
+\item 
+\bf{R\_\-Macro} $\ast$ \bf{R\_\-jsr\_\-def\_\-macro}
+\item 
+int \bf{R\_\-n\_\-avail\_\-macro}
+\item 
+int \bf{R\_\-n\_\-jsr\_\-def\_\-macro}
+\item 
+int \bf{R\_\-Sort\_\-List}
+\item 
+double \bf{total\_\-instruction\_\-weight}
+\item 
+double \bf{total\_\-spill\_\-weight}
+\item 
+double \bf{total\_\-region\_\-spill\_\-weight}
+\item 
+double \bf{total\_\-caller\_\-weight}
+\item 
+L\_\-Region $\ast$ \bf{R\_\-Region}
+\item 
+int \bf{R\_\-Init}
+\item 
+int \bf{R\_\-Register\_\-Allocation}
+\item 
+int \bf{R\_\-Macro\_\-Allocation}
+\item 
+int \bf{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}
+\item 
+int \bf{R\_\-Same\_\-Cycle\_\-Anti\_\-Deps\_\-Interference}
+\item 
+int \bf{R\_\-Region\_\-Based\_\-Allocation}
+\item 
+int \bf{R\_\-Round\_\-Robin\_\-Allocation}
+\item 
+int \bf{R\_\-Prextern\_\-Parm\_\-Configuration}
+\item 
+int \bf{R\_\-Prextern\_\-Bank\_\-Configuration}
+\item 
+int \bf{R\_\-Invariant\_\-Vreg\_\-Priorities}
+\item 
+int \bf{R\_\-Print\_\-Macroregisters}
+\item 
+int \bf{R\_\-Print\_\-Live\_\-Ranges}
+\item 
+int \bf{R\_\-Print\_\-Interference\_\-Graph}
+\item 
+int \bf{R\_\-Print\_\-Class\_\-Selection}
+\item 
+int \bf{R\_\-Print\_\-Coloring\_\-Stats}
+\item 
+int \bf{R\_\-Print\_\-Allocation}
+\item 
+int \bf{R\_\-Print\_\-Allocation\_\-Stats}
+\item 
+int \bf{R\_\-Print\_\-Dead\_\-Code\_\-Results}
+\item 
+int \bf{R\_\-Print\_\-Virtual\_\-Register\_\-Function}
+\item 
+int \bf{R\_\-Allow\_\-Dead\_\-Code\_\-Elimination}
+\item 
+int \bf{R\_\-Minimize\_\-Spill\_\-Fill}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{r_regalloc.h@{r\_\-regalloc.h}!CALLOC@{CALLOC}}
+\index{CALLOC@{CALLOC}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CALLOC(a, b)~(((b)==0)?NULL:(a $\ast$)calloc((b),sizeof(a)))}\label{r__regalloc_8h_dcd948b2b42aa0c9a8028dd260a8a6ca}
+
+
+
+
+Definition at line 372 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), and R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!FREE@{FREE}}
+\index{FREE@{FREE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FREE(a)}\label{r__regalloc_8h_834f31033781e091a3dbdfe16f7e8285}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}{ if ( a != NULL ) \
+                                        free(a); \
+                                  a = NULL; \
+                                }
+\end{verbatim}\end{Code}
+
+
+Definition at line 374 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!IMPACT_ABS@{IMPACT\_\-ABS}}
+\index{IMPACT_ABS@{IMPACT\_\-ABS}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define IMPACT\_\-ABS(a)~((a$>$0)?a:-a)}\label{r__regalloc_8h_0b90a36fdada82d41f84f4e037d755b6}
+
+
+
+
+Definition at line 370 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!MALLOC@{MALLOC}}
+\index{MALLOC@{MALLOC}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MALLOC(a, b)~(((b)==0)?NULL:(a $\ast$)malloc((b)$\ast$sizeof(a)))}\label{r__regalloc_8h_a22c214daeb745035df48608b773bcfd}
+
+
+
+
+Definition at line 373 of file r\_\-regalloc.h.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!R_BTR@{R\_\-BTR}}
+\index{R_BTR@{R\_\-BTR}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-BTR~20}\label{r__regalloc_8h_d952cc9790292c9732a3dc5e9b11d1f2}
+
+
+
+
+Definition at line 234 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), R\_\-register\_\-saving\_\-convention\_\-selection(), R\_\-smallest\_\-overlapping\_\-bank(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_CALLEE@{R\_\-CALLEE}}
+\index{R_CALLEE@{R\_\-CALLEE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CALLEE~1}\label{r__regalloc_8h_ef5ee9ec63b25f4f22b01f0ae1f4f7c3}
+
+
+
+
+Definition at line 220 of file r\_\-regalloc.h.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-find\_\-free\_\-register(), R\_\-find\_\-rotating\_\-register(), R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple(), R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-number\_\-of\_\-registers(), R\_\-process\_\-illegal\_\-register\_\-attr(), R\_\-prune\_\-interference\_\-graph(), and R\_\-unmap\_\-physical\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_CALLEE_SAVE_CODE@{R\_\-CALLEE\_\-SAVE\_\-CODE}}
+\index{R_CALLEE_SAVE_CODE@{R\_\-CALLEE\_\-SAVE\_\-CODE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CALLEE\_\-SAVE\_\-CODE~2}\label{r__regalloc_8h_25ebed91c6e85fbf2bed2977d52ec4e4}
+
+
+
+
+Definition at line 267 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_CALLER@{R\_\-CALLER}}
+\index{R_CALLER@{R\_\-CALLER}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CALLER~0}\label{r__regalloc_8h_8ee379b39a84fa159b2e2728293a12ee}
+
+
+
+
+Definition at line 219 of file r\_\-regalloc.h.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-find\_\-free\_\-register(), R\_\-find\_\-rotating\_\-register(), R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple(), R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc(), R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-isplit\_\-spilled\_\-live\_\-range(), R\_\-number\_\-of\_\-registers(), R\_\-process\_\-illegal\_\-register\_\-attr(), R\_\-prune\_\-interference\_\-graph(), R\_\-register\_\-allocation\_\-sep(), R\_\-register\_\-overlap(), R\_\-spill\_\-all\_\-virtual\_\-registers(), and R\_\-unmap\_\-physical\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_CB_SPLIT@{R\_\-CB\_\-SPLIT}}
+\index{R_CB_SPLIT@{R\_\-CB\_\-SPLIT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CB\_\-SPLIT~0x8}\label{r__regalloc_8h_cefa5449da5ae235059aca331ab1ffcc}
+
+
+
+
+Definition at line 273 of file r\_\-regalloc.h.
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-handle\_\-unallocatable\_\-vreg(), and R\_\-register\_\-spill\_\-is\_\-required().\index{r_regalloc.h@{r\_\-regalloc.h}!R_CONSTANT@{R\_\-CONSTANT}}
+\index{R_CONSTANT@{R\_\-CONSTANT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CONSTANT~0x2}\label{r__regalloc_8h_592e5af0fc7d8acfa696b84184e671b3}
+
+
+
+
+Definition at line 271 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_CONTAINS_JSR@{R\_\-CONTAINS\_\-JSR}}
+\index{R_CONTAINS_JSR@{R\_\-CONTAINS\_\-JSR}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CONTAINS\_\-JSR~0x100}\label{r__regalloc_8h_a6cde4579456921fec98ee290daca821}
+
+
+
+
+Definition at line 279 of file r\_\-regalloc.h.
+
+Referenced by R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_CURRENT_VREG@{R\_\-CURRENT\_\-VREG}}
+\index{R_CURRENT_VREG@{R\_\-CURRENT\_\-VREG}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-CURRENT\_\-VREG~0x8000}\label{r__regalloc_8h_4c7b72b10e355f8e5e371482b71d5bc6}
+
+
+
+
+Definition at line 284 of file r\_\-regalloc.h.
+
+Referenced by R\_\-new\_\-reg(), and R\_\-process\_\-cb().\index{r_regalloc.h@{r\_\-regalloc.h}!R_DOUBLE@{R\_\-DOUBLE}}
+\index{R_DOUBLE@{R\_\-DOUBLE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-DOUBLE~15}\label{r__regalloc_8h_38761686c8b8293b31fb5a57cd529c92}
+
+
+
+
+Definition at line 233 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), R\_\-register\_\-allocation\_\-sep(), R\_\-smallest\_\-overlapping\_\-bank(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_FLOAT@{R\_\-FLOAT}}
+\index{R_FLOAT@{R\_\-FLOAT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-FLOAT~10}\label{r__regalloc_8h_3d018b79b3eec30b6a14c8b4ff5a9123}
+
+
+
+
+Definition at line 232 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), R\_\-smallest\_\-overlapping\_\-bank(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_INSTR_SPLIT@{R\_\-INSTR\_\-SPLIT}}
+\index{R_INSTR_SPLIT@{R\_\-INSTR\_\-SPLIT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-INSTR\_\-SPLIT~0x10}\label{r__regalloc_8h_989753383b7bc648dc59352485f19043}
+
+
+
+
+Definition at line 274 of file r\_\-regalloc.h.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-isplit\_\-spilled\_\-live\_\-range(), and R\_\-register\_\-spill\_\-is\_\-required().\index{r_regalloc.h@{r\_\-regalloc.h}!R_INT@{R\_\-INT}}
+\index{R_INT@{R\_\-INT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-INT~5}\label{r__regalloc_8h_acb6838ac242e446e931dd32a87333cf}
+
+
+
+
+Definition at line 231 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), R\_\-register\_\-allocation\_\-sep(), R\_\-smallest\_\-overlapping\_\-bank(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_JSR_SAVE_CODE@{R\_\-JSR\_\-SAVE\_\-CODE}}
+\index{R_JSR_SAVE_CODE@{R\_\-JSR\_\-SAVE\_\-CODE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-JSR\_\-SAVE\_\-CODE~1}\label{r__regalloc_8h_e8d182e42fd4b9e5933eb1395da6e6ab}
+
+
+
+
+Definition at line 266 of file r\_\-regalloc.h.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!R_LIVE_OUTSIDE_REGION@{R\_\-LIVE\_\-OUTSIDE\_\-REGION}}
+\index{R_LIVE_OUTSIDE_REGION@{R\_\-LIVE\_\-OUTSIDE\_\-REGION}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-LIVE\_\-OUTSIDE\_\-REGION~0x1000}\label{r__regalloc_8h_4a38eb6e49c1dc696cce5839f08cbb0e}
+
+
+
+
+Definition at line 281 of file r\_\-regalloc.h.
+
+Referenced by R\_\-determine\_\-reconcile\_\-cost().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MACRO_CALLEE@{R\_\-MACRO\_\-CALLEE}}
+\index{R_MACRO_CALLEE@{R\_\-MACRO\_\-CALLEE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MACRO\_\-CALLEE~4}\label{r__regalloc_8h_06ff3fe294594741632fdd172e236c33}
+
+
+
+
+Definition at line 223 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-macro\_\-register(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-free\_\-register(), R\_\-number\_\-of\_\-registers(), R\_\-print\_\-bank\_\-configuration(), and R\_\-unmap\_\-physical\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MACRO_CALLER@{R\_\-MACRO\_\-CALLER}}
+\index{R_MACRO_CALLER@{R\_\-MACRO\_\-CALLER}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MACRO\_\-CALLER~3}\label{r__regalloc_8h_4816155f3da0373280325b8def30844a}
+
+
+
+
+Definition at line 222 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-macro\_\-register(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-free\_\-register(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-number\_\-of\_\-registers(), R\_\-print\_\-bank\_\-configuration(), R\_\-prune\_\-interference\_\-graph(), and R\_\-unmap\_\-physical\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MAX@{R\_\-MAX}}
+\index{R_MAX@{R\_\-MAX}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MAX(a, b)~(((a)$>$(b))?(a):(b))}\label{r__regalloc_8h_e2c354a09eac9d246070a1e82797c44c}
+
+
+
+
+Definition at line 383 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MAX_BANK@{R\_\-MAX\_\-BANK}}
+\index{R_MAX_BANK@{R\_\-MAX\_\-BANK}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MAX\_\-BANK~(R\_\-NUM\_\-TYPES$\ast$R\_\-NUM\_\-CLASS)}\label{r__regalloc_8h_c2e5aad226c2723cad642ac4f608c658}
+
+
+
+
+Definition at line 174 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-max\_\-bank\_\-offset(), R\_\-print\_\-bank\_\-configuration(), and R\_\-reset\_\-register\_\-stacks().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MCB_PRELOAD@{R\_\-MCB\_\-PRELOAD}}
+\index{R_MCB_PRELOAD@{R\_\-MCB\_\-PRELOAD}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MCB\_\-PRELOAD~0x80}\label{r__regalloc_8h_6e8e323f6e7901a0cba59593f8721d54}
+
+
+
+
+Definition at line 277 of file r\_\-regalloc.h.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg(), and R\_\-process\_\-cb().\index{r_regalloc.h@{r\_\-regalloc.h}!R_MIN@{R\_\-MIN}}
+\index{R_MIN@{R\_\-MIN}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-MIN(a, b)~(((a)$>$(b))?(b):(a))}\label{r__regalloc_8h_9142e8147a0eefc0dbe99863977f3213}
+
+
+
+
+Definition at line 384 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_NUM_CLASS@{R\_\-NUM\_\-CLASS}}
+\index{R_NUM_CLASS@{R\_\-NUM\_\-CLASS}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-NUM\_\-CLASS~5}\label{r__regalloc_8h_7c468fc7c6e758b083123b78772165b9}
+
+
+
+
+Definition at line 171 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_NUM_TYPES@{R\_\-NUM\_\-TYPES}}
+\index{R_NUM_TYPES@{R\_\-NUM\_\-TYPES}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-NUM\_\-TYPES~7}\label{r__regalloc_8h_a5ac30e8fc7a406f73b64bbf5b924d1d}
+
+
+
+
+Definition at line 173 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-free\_\-register\_\-in\_\-bank(), and R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OPERAND_MACRO@{R\_\-OPERAND\_\-MACRO}}
+\index{R_OPERAND_MACRO@{R\_\-OPERAND\_\-MACRO}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OPERAND\_\-MACRO(a)~((L\_\-is\_\-macro(\&a)) ? a.value.mac : -1 )}\label{r__regalloc_8h_24d56a7af0d814343df22dac0cd562ec}
+
+
+
+
+Definition at line 380 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_OPERAND_REG@{R\_\-OPERAND\_\-REG}}
+\index{R_OPERAND_REG@{R\_\-OPERAND\_\-REG}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OPERAND\_\-REG(a)~((L\_\-is\_\-reg(\&a)) ? a.value.r : -1 )}\label{r__regalloc_8h_9e749c2a210dd81a4134f163675a0b2b}
+
+
+
+
+Definition at line 379 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_OPERAND_TYPE@{R\_\-OPERAND\_\-TYPE}}
+\index{R_OPERAND_TYPE@{R\_\-OPERAND\_\-TYPE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OPERAND\_\-TYPE(a)~((int)L\_\-return\_\-old\_\-ctype(\&a))}\label{r__regalloc_8h_08c55d5d5e34555d4592df786889ae32}
+
+
+
+
+Definition at line 381 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_BTR@{R\_\-OVERLAP\_\-BTR}}
+\index{R_OVERLAP_BTR@{R\_\-OVERLAP\_\-BTR}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-BTR~0x10}\label{r__regalloc_8h_917af45a185cb780374de53f599f0753}
+
+
+
+
+Definition at line 245 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_DOUBLE@{R\_\-OVERLAP\_\-DOUBLE}}
+\index{R_OVERLAP_DOUBLE@{R\_\-OVERLAP\_\-DOUBLE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-DOUBLE~0x08}\label{r__regalloc_8h_f18adf94e4ed40b9f4f4af2601c3f204}
+
+
+
+
+Definition at line 244 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_FLOAT@{R\_\-OVERLAP\_\-FLOAT}}
+\index{R_OVERLAP_FLOAT@{R\_\-OVERLAP\_\-FLOAT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-FLOAT~0x04}\label{r__regalloc_8h_3269b3446c26991b694a48593efc3368}
+
+
+
+
+Definition at line 243 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_INT@{R\_\-OVERLAP\_\-INT}}
+\index{R_OVERLAP_INT@{R\_\-OVERLAP\_\-INT}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-INT~0x02}\label{r__regalloc_8h_50db5ca5a780b43f3544105deed28599}
+
+
+
+
+Definition at line 242 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_POINTER@{R\_\-OVERLAP\_\-POINTER}}
+\index{R_OVERLAP_POINTER@{R\_\-OVERLAP\_\-POINTER}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-POINTER~0x40}\label{r__regalloc_8h_cd15c4c66329039f78debedd0dc8871b}
+
+
+
+
+Definition at line 247 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), and R\_\-print\_\-bank\_\-configuration().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_PREDICATE@{R\_\-OVERLAP\_\-PREDICATE}}
+\index{R_OVERLAP_PREDICATE@{R\_\-OVERLAP\_\-PREDICATE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-PREDICATE~0x01}\label{r__regalloc_8h_ac906f27db11740d7949f4954ceab84b}
+
+
+
+
+Definition at line 241 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_OVERLAP_QUAD@{R\_\-OVERLAP\_\-QUAD}}
+\index{R_OVERLAP_QUAD@{R\_\-OVERLAP\_\-QUAD}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-OVERLAP\_\-QUAD~0x20}\label{r__regalloc_8h_9f25c7d8017f92e0848cf2526f7e5226}
+
+
+
+
+Definition at line 246 of file r\_\-regalloc.h.
+
+Referenced by R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_PA_HACK@{R\_\-PA\_\-HACK}}
+\index{R_PA_HACK@{R\_\-PA\_\-HACK}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-PA\_\-HACK~0x40}\label{r__regalloc_8h_3b1103bc13892c3e855cfa4c3a2a9100}
+
+
+
+
+Definition at line 276 of file r\_\-regalloc.h.
+
+Referenced by R\_\-process\_\-cb(), and R\_\-prune\_\-interference\_\-graph().\index{r_regalloc.h@{r\_\-regalloc.h}!R_POINTER@{R\_\-POINTER}}
+\index{R_POINTER@{R\_\-POINTER}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-POINTER~30}\label{r__regalloc_8h_b80ba431e49ac1f79145afafe3fde93c}
+
+
+
+
+Definition at line 236 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_PREALLOCATED_FLYBY@{R\_\-PREALLOCATED\_\-FLYBY}}
+\index{R_PREALLOCATED_FLYBY@{R\_\-PREALLOCATED\_\-FLYBY}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-PREALLOCATED\_\-FLYBY~0x2000}\label{r__regalloc_8h_5a89bf1e821d51a3d5f1addd453fbd1c}
+
+
+
+
+Definition at line 282 of file r\_\-regalloc.h.
+
+Referenced by R\_\-determine\_\-allocation\_\-constraints(), R\_\-determine\_\-region\_\-flybys(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-update\_\-alloc\_\-state(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_PREALLOCATED_MACRO@{R\_\-PREALLOCATED\_\-MACRO}}
+\index{R_PREALLOCATED_MACRO@{R\_\-PREALLOCATED\_\-MACRO}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-PREALLOCATED\_\-MACRO~0x20}\label{r__regalloc_8h_4ecf35dfd6b7766a10185123be87429a}
+
+
+
+
+Definition at line 275 of file r\_\-regalloc.h.
+
+Referenced by R\_\-determine\_\-allocation\_\-constraints(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-reconcile\_\-allocated\_\-region(), R\_\-register\_\-saving\_\-convention\_\-selection(), R\_\-reset\_\-vreg\_\-list(), and R\_\-update\_\-alloc\_\-state().\index{r_regalloc.h@{r\_\-regalloc.h}!R_PREDICATE@{R\_\-PREDICATE}}
+\index{R_PREDICATE@{R\_\-PREDICATE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-PREDICATE~0}\label{r__regalloc_8h_5fe067a23b05f3bc547b85a04c26acda}
+
+
+
+
+Definition at line 230 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-print\_\-bank\_\-configuration(), R\_\-smallest\_\-overlapping\_\-bank(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_PREFER_SPILL@{R\_\-PREFER\_\-SPILL}}
+\index{R_PREFER_SPILL@{R\_\-PREFER\_\-SPILL}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-PREFER\_\-SPILL~-1}\label{r__regalloc_8h_960db348dbea6b1656db26d15b11fd72}
+
+
+
+
+Definition at line 225 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-register(), R\_\-find\_\-free\_\-register(), and R\_\-reset\_\-vreg\_\-list().\index{r_regalloc.h@{r\_\-regalloc.h}!R_QUAD@{R\_\-QUAD}}
+\index{R_QUAD@{R\_\-QUAD}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-QUAD~25}\label{r__regalloc_8h_a55345e3b97f2cd90611c5a97999a48d}
+
+
+
+
+Definition at line 235 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-print\_\-bank\_\-configuration(), and R\_\-smallest\_\-overlapping\_\-bank().\index{r_regalloc.h@{r\_\-regalloc.h}!R_REGION_CONSTRAINED@{R\_\-REGION\_\-CONSTRAINED}}
+\index{R_REGION_CONSTRAINED@{R\_\-REGION\_\-CONSTRAINED}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-REGION\_\-CONSTRAINED~0x4000}\label{r__regalloc_8h_9b1705644580fd07cd64aceff34fb1e7}
+
+
+
+
+Definition at line 283 of file r\_\-regalloc.h.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-determine\_\-allocation\_\-constraints(), R\_\-determine\_\-reserved\_\-registers(), R\_\-find\_\-free\_\-register(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_SPILL@{R\_\-SPILL}}
+\index{R_SPILL@{R\_\-SPILL}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-SPILL~2}\label{r__regalloc_8h_7e79950b2a2e9a13850c80824635b176}
+
+
+
+
+Definition at line 221 of file r\_\-regalloc.h.\index{r_regalloc.h@{r\_\-regalloc.h}!R_SPILL_CODE@{R\_\-SPILL\_\-CODE}}
+\index{R_SPILL_CODE@{R\_\-SPILL\_\-CODE}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-SPILL\_\-CODE~0}\label{r__regalloc_8h_eed56d7c3b732db6229cb720584aaffe}
+
+
+
+
+Definition at line 265 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-load(), R\_\-add\_\-store(), R\_\-insert\_\-spill\_\-fill\_\-code(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_SPILLED@{R\_\-SPILLED}}
+\index{R_SPILLED@{R\_\-SPILLED}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-SPILLED~0x4}\label{r__regalloc_8h_8ed8b0c1661069e068898fb73c0a58e8}
+
+
+
+
+Definition at line 272 of file r\_\-regalloc.h.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-insert\_\-spill\_\-fill\_\-code(), R\_\-isplit\_\-spilled\_\-live\_\-range(), R\_\-reconcile\_\-allocated\_\-region(), R\_\-update\_\-alloc\_\-state(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_TYPE_INC@{R\_\-TYPE\_\-INC}}
+\index{R_TYPE_INC@{R\_\-TYPE\_\-INC}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-TYPE\_\-INC~R\_\-NUM\_\-CLASS}\label{r__regalloc_8h_30a850cab48e3b5e8701380cde56af69}
+
+
+
+
+Definition at line 172 of file r\_\-regalloc.h.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-free\_\-register\_\-in\_\-bank(), and R\_\-print\_\-bank\_\-configuration().\index{r_regalloc.h@{r\_\-regalloc.h}!R_UNCONSTRAINED@{R\_\-UNCONSTRAINED}}
+\index{R_UNCONSTRAINED@{R\_\-UNCONSTRAINED}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define R\_\-UNCONSTRAINED~0x1}\label{r__regalloc_8h_0488c162a30b0e19789f7ed782e50e3b}
+
+
+
+
+Definition at line 270 of file r\_\-regalloc.h.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), and R\_\-prune\_\-interference\_\-graph().\index{r_regalloc.h@{r\_\-regalloc.h}!VREG@{VREG}}
+\index{VREG@{VREG}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VREG(a)}\label{r__regalloc_8h_75f9e216dad7f43cfd99917d62f28c66}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((R_Reg *) \
+                                 HashTable_find_or_null(R_vregHashTbl,(a)))
+\end{verbatim}\end{Code}
+
+
+Definition at line 366 of file r\_\-regalloc.h.
+
+Referenced by R\_\-add\_\-macro\_\-register(), R\_\-add\_\-register(), R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-determine\_\-allocation\_\-constraints(), R\_\-determine\_\-region\_\-flybys(), R\_\-determine\_\-reserved\_\-registers(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-insert\_\-spill\_\-fill\_\-code(), R\_\-process\_\-cb(), R\_\-process\_\-illegal\_\-register\_\-attr(), R\_\-reconcile\_\-allocated\_\-region(), R\_\-register\_\-spill\_\-is\_\-required(), and R\_\-spill\_\-all\_\-virtual\_\-registers().
+
+\subsection{Typedef Documentation}
+\index{r_regalloc.h@{r\_\-regalloc.h}!RCB@{RCB}}
+\index{RCB@{RCB}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-reconcile\_\-block}  \bf{RCB}}\label{r__regalloc_8h_40b72985b838bc932888de1194075d52}
+
+
+
+
+\subsection{Function Documentation}
+\index{r_regalloc.h@{r\_\-regalloc.h}!BANK_NAME@{BANK\_\-NAME}}
+\index{BANK_NAME@{BANK\_\-NAME}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ BANK\_\-NAME (int {\em type})}\label{r__regalloc_8h_051a7ad6a6187411dc94287c4383706f}
+
+
+
+
+Referenced by R\_\-add\_\-register(), R\_\-find\_\-free\_\-register(), R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-find\_\-rotating\_\-register(), R\_\-invalid\_\-bank\_\-overlap(), R\_\-print\_\-bank\_\-configuration(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!CLASS_NAME@{CLASS\_\-NAME}}
+\index{CLASS_NAME@{CLASS\_\-NAME}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ CLASS\_\-NAME (int {\em rclass})}\label{r__regalloc_8h_4a0dc00a9c54e0e914a7cddc0d2f76c9}
+
+
+
+
+Referenced by R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-invalid\_\-bank\_\-overlap(), R\_\-print\_\-bank\_\-configuration(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!O_fill_reg@{O\_\-fill\_\-reg}}
+\index{O_fill_reg@{O\_\-fill\_\-reg}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ O\_\-fill\_\-reg (int {\em reg}, int {\em type}, L\_\-Operand $\ast$ {\em operand}, int {\em fill\_\-offset}, L\_\-Operand $\ast$$\ast$ {\em pred}, int {\em type\_\-flag})}\label{r__regalloc_8h_9f7d468e025a4f50218cb5c0927aac50}
+
+
+
+
+Definition at line 108 of file r\_\-stub.c.
+
+References NULL.
+
+Referenced by R\_\-add\_\-load(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-insert\_\-spill\_\-fill\_\-code(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!O_jump_oper@{O\_\-jump\_\-oper}}
+\index{O_jump_oper@{O\_\-jump\_\-oper}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ O\_\-jump\_\-oper (int {\em opc}, L\_\-Cb $\ast$ {\em dst})}\label{r__regalloc_8h_53073d2eacf19a4e5ef57ef8afb9db59}
+
+
+
+
+Definition at line 93 of file r\_\-stub.c.
+
+Referenced by R\_\-insert\_\-reconciliation\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!O_locate_rot_reg_bank@{O\_\-locate\_\-rot\_\-reg\_\-bank}}
+\index{O_locate_rot_reg_bank@{O\_\-locate\_\-rot\_\-reg\_\-bank}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{R\_\-Physical\_\-Bank}$\ast$ O\_\-locate\_\-rot\_\-reg\_\-bank (L\_\-Func $\ast$ {\em fn}, \bf{R\_\-Reg} $\ast$ {\em vreg})}\label{r__regalloc_8h_50a0a78097d883cc35ed5656fd2b2182}
+
+
+
+
+Definition at line 122 of file r\_\-stub.c.
+
+References NULL.
+
+Referenced by R\_\-find\_\-rotating\_\-register().\index{r_regalloc.h@{r\_\-regalloc.h}!O_move_reg@{O\_\-move\_\-reg}}
+\index{O_move_reg@{O\_\-move\_\-reg}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ O\_\-move\_\-reg (int {\em dest\_\-reg}, int {\em src\_\-reg}, int {\em reg\_\-type})}\label{r__regalloc_8h_7a0c9cc9975e308ac3e6fb0105e092ac}
+
+
+\index{r_regalloc.h@{r\_\-regalloc.h}!O_spill_reg@{O\_\-spill\_\-reg}}
+\index{O_spill_reg@{O\_\-spill\_\-reg}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ O\_\-spill\_\-reg (int {\em reg}, int {\em type}, L\_\-Operand $\ast$ {\em operand}, int {\em spill\_\-offset}, L\_\-Operand $\ast$$\ast$ {\em pred}, int {\em type\_\-flag})}\label{r__regalloc_8h_5249a2aa8d7d7d5dd3017f2381970f4e}
+
+
+
+
+Definition at line 98 of file r\_\-stub.c.
+
+References NULL.
+
+Referenced by R\_\-add\_\-store(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regalloc.h@{r\_\-regalloc.h}!R_add_interference_arc@{R\_\-add\_\-interference\_\-arc}}
+\index{R_add_interference_arc@{R\_\-add\_\-interference\_\-arc}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-add\_\-interference\_\-arc (\bf{R\_\-Reg} $\ast$ {\em from}, \bf{R\_\-Reg} $\ast$ {\em to})}\label{r__regalloc_8h_8889dced65bab22b9fd6669711d7f7d9}
+
+
+
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), and R\_\-isplit\_\-spilled\_\-live\_\-range().\index{r_regalloc.h@{r\_\-regalloc.h}!R_callee_cost@{R\_\-callee\_\-cost}}
+\index{R_callee_cost@{R\_\-callee\_\-cost}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double R\_\-callee\_\-cost (int {\em lcode\_\-ctype}, int {\em leaf}, int {\em callee\_\-allocated})}\label{r__regalloc_8h_865fa697be175e9009dbfbd0ddbaded3}
+
+
+
+
+Definition at line 69 of file r\_\-stub.c.
+
+Referenced by R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_caller_cost@{R\_\-caller\_\-cost}}
+\index{R_caller_cost@{R\_\-caller\_\-cost}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double R\_\-caller\_\-cost (int {\em lcode\_\-ctype}, int {\em leaf})}\label{r__regalloc_8h_06a9b67aa7ff79099512bc9b45121ad0}
+
+
+
+
+Definition at line 75 of file r\_\-stub.c.
+
+Referenced by R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_conv_type_to_Ltype@{R\_\-conv\_\-type\_\-to\_\-Ltype}}
+\index{R_conv_type_to_Ltype@{R\_\-conv\_\-type\_\-to\_\-Ltype}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-conv\_\-type\_\-to\_\-Ltype (int {\em type})}\label{r__regalloc_8h_145831cd48f7466e95577c28c9cee904}
+
+
+
+
+Definition at line 1994 of file r\_\-regalloc.c.\index{r_regalloc.h@{r\_\-regalloc.h}!R_Ltype_to_Rtype@{R\_\-Ltype\_\-to\_\-Rtype}}
+\index{R_Ltype_to_Rtype@{R\_\-Ltype\_\-to\_\-Rtype}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-Ltype\_\-to\_\-Rtype (int {\em type})}\label{r__regalloc_8h_d1bd8108e1f3ba8e661eecbaa540e5e5}
+
+
+
+
+Definition at line 2035 of file r\_\-regalloc.c.\index{r_regalloc.h@{r\_\-regalloc.h}!R_spill_load_cost@{R\_\-spill\_\-load\_\-cost}}
+\index{R_spill_load_cost@{R\_\-spill\_\-load\_\-cost}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double R\_\-spill\_\-load\_\-cost (int {\em lcode\_\-ctype})}\label{r__regalloc_8h_81182c2e2cc5adf59bae84752b07ad94}
+
+
+
+
+Definition at line 81 of file r\_\-stub.c.
+
+Referenced by R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_spill_store_cost@{R\_\-spill\_\-store\_\-cost}}
+\index{R_spill_store_cost@{R\_\-spill\_\-store\_\-cost}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double R\_\-spill\_\-store\_\-cost (int {\em lcode\_\-ctype})}\label{r__regalloc_8h_b71237561fcf4fc259b3c85f949b14e7}
+
+
+
+
+Definition at line 87 of file r\_\-stub.c.
+
+Referenced by R\_\-register\_\-saving\_\-convention\_\-selection().
+
+\subsection{Variable Documentation}
+\index{r_regalloc.h@{r\_\-regalloc.h}!flowHashTbl@{flowHashTbl}}
+\index{flowHashTbl@{flowHashTbl}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Hash\-Table} \bf{flow\-Hash\-Tbl}}\label{r__regalloc_8h_9c212ddf99ef05a31beb28057eebde4a}
+
+
+
+
+Definition at line 201 of file r\_\-regalloc.c.
+
+Referenced by R\_\-init\_\-flow\_\-hash\_\-tbl(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!fp_spill_stack@{fp\_\-spill\_\-stack}}
+\index{fp_spill_stack@{fp\_\-spill\_\-stack}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{fp\_\-spill\_\-stack}}\label{r__regalloc_8h_058f50532dbe9ee564bfc6fd53829878}
+
+
+
+
+Definition at line 219 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-regalloc\_\-memory\_\-init(), R\_\-register\_\-allocation\_\-sep(), R\_\-spill\_\-loc(), and R\_\-update\_\-region\_\-spill\_\-stack().\index{r_regalloc.h@{r\_\-regalloc.h}!int_spill_stack@{int\_\-spill\_\-stack}}
+\index{int_spill_stack@{int\_\-spill\_\-stack}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{int\_\-spill\_\-stack}}\label{r__regalloc_8h_4cbe8b90de02945ccbcd6b4b0aa4df2e}
+
+
+
+
+Definition at line 218 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-regalloc\_\-memory\_\-init(), R\_\-register\_\-allocation\_\-sep(), R\_\-spill\_\-loc(), and R\_\-update\_\-region\_\-spill\_\-stack().\index{r_regalloc.h@{r\_\-regalloc.h}!ld_cnt@{ld\_\-cnt}}
+\index{ld_cnt@{ld\_\-cnt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{ld\_\-cnt}}\label{r__regalloc_8h_b12189c686485593a22fead8b67c32ef}
+
+
+
+
+Definition at line 188 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!ld_wgt@{ld\_\-wgt}}
+\index{ld_wgt@{ld\_\-wgt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{ld\_\-wgt}}\label{r__regalloc_8h_9909e0445ef838082b0c63a06a731d2b}
+
+
+
+
+Definition at line 187 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!mv_cnt@{mv\_\-cnt}}
+\index{mv_cnt@{mv\_\-cnt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{mv\_\-cnt}}\label{r__regalloc_8h_ad328b799284edf18d18c9b67358bf1f}
+
+
+
+
+Definition at line 188 of file r\_\-regalloc.c.\index{r_regalloc.h@{r\_\-regalloc.h}!mv_wgt@{mv\_\-wgt}}
+\index{mv_wgt@{mv\_\-wgt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{mv\_\-wgt}}\label{r__regalloc_8h_bfce554b6a8275c861c701bfc72d7b93}
+
+
+
+
+Definition at line 187 of file r\_\-regalloc.c.\index{r_regalloc.h@{r\_\-regalloc.h}!pred_spill_stack@{pred\_\-spill\_\-stack}}
+\index{pred_spill_stack@{pred\_\-spill\_\-stack}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{pred\_\-spill\_\-stack}}\label{r__regalloc_8h_f7c2e397f4ba08a61ff6f5e4dd5391df}
+
+
+
+
+Definition at line 217 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-regalloc\_\-memory\_\-init(), R\_\-register\_\-allocation\_\-sep(), and R\_\-spill\_\-loc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_alloc_interference_arc@{R\_\-alloc\_\-interference\_\-arc}}
+\index{R_alloc_interference_arc@{R\_\-alloc\_\-interference\_\-arc}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{R\_\-alloc\_\-interference\_\-arc}}\label{r__regalloc_8h_cbe63b363af67955207c957b29a00b80}
+
+
+
+
+Definition at line 182 of file r\_\-regalloc.c.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-isplit\_\-spilled\_\-live\_\-range(), R\_\-regalloc\_\-memory\_\-cleanup(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_alloc_virtual_register@{R\_\-alloc\_\-virtual\_\-register}}
+\index{R_alloc_virtual_register@{R\_\-alloc\_\-virtual\_\-register}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{R\_\-alloc\_\-virtual\_\-register}}\label{r__regalloc_8h_d9c135d9e98c611483eaf0d10a395047}
+
+
+
+
+Definition at line 181 of file r\_\-regalloc.c.
+
+Referenced by R\_\-new\_\-reg(), R\_\-regalloc\_\-memory\_\-cleanup(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Allow_Dead_Code_Elimination@{R\_\-Allow\_\-Dead\_\-Code\_\-Elimination}}
+\index{R_Allow_Dead_Code_Elimination@{R\_\-Allow\_\-Dead\_\-Code\_\-Elimination}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Allow\_\-Dead\_\-Code\_\-Elimination}}\label{r__regalloc_8h_4a883ab92852b2a86d44ca35e6376774}
+
+
+
+
+Definition at line 153 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_avail_macro@{R\_\-avail\_\-macro}}
+\index{R_avail_macro@{R\_\-avail\_\-macro}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{R\_\-Macro}$\ast$ \bf{R\_\-avail\_\-macro}}\label{r__regalloc_8h_c02ed243a1595ec434dce74e462980e7}
+
+
+
+
+Definition at line 223 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-available\_\-macros(), and R\_\-process\_\-cb().\index{r_regalloc.h@{r\_\-regalloc.h}!R_bank@{R\_\-bank}}
+\index{R_bank@{R\_\-bank}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{R\_\-Physical\_\-Bank}$\ast$ \bf{R\_\-bank}}\label{r__regalloc_8h_7c53b9c99d7cdeb5f475a3ea6133b616}
+
+
+
+
+Definition at line 190 of file r\_\-regalloc.c.
+
+Referenced by R\_\-add\_\-macro\_\-register(), R\_\-allocate\_\-unconstrained\_\-virtual\_\-registers(), R\_\-allocate\_\-virtual\_\-registers(), R\_\-analyze\_\-bank\_\-overlap(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-base\_\-from\_\-phys\_\-reg(), R\_\-find\_\-free\_\-register(), R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-find\_\-rotating\_\-register(), R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple(), R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc(), R\_\-in\_\-physical\_\-register(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-max\_\-bank\_\-offset(), R\_\-number\_\-of\_\-registers(), R\_\-print\_\-bank\_\-configuration(), R\_\-process\_\-illegal\_\-register\_\-attr(), R\_\-prune\_\-interference\_\-graph(), R\_\-put\_\-in\_\-physical\_\-register(), R\_\-register\_\-allocation\_\-sep(), R\_\-register\_\-overlap(), R\_\-reset\_\-register\_\-stacks(), R\_\-same\_\-register(), R\_\-size\_\-of\_\-register(), R\_\-smallest\_\-overlapping\_\-bank(), R\_\-spill\_\-all\_\-virtual\_\-registers(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_buf@{R\_\-buf}}
+\index{R_buf@{R\_\-buf}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{R\_\-buf}}\label{r__regalloc_8h_b943b8403b8be5f723edae80d2e8201b}
+
+
+
+
+Definition at line 203 of file r\_\-regalloc.c.
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-determine\_\-allocation\_\-constraints(), R\_\-determine\_\-region\_\-flybys(), R\_\-determine\_\-reserved\_\-registers(), R\_\-isplit\_\-spilled\_\-live\_\-range(), R\_\-process\_\-cb(), R\_\-reconcile\_\-allocated\_\-region(), R\_\-regalloc\_\-memory\_\-init(), R\_\-unmap\_\-physical\_\-registers(), and R\_\-update\_\-alloc\_\-state().\index{r_regalloc.h@{r\_\-regalloc.h}!R_buf2@{R\_\-buf2}}
+\index{R_buf2@{R\_\-buf2}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{R\_\-buf2}}\label{r__regalloc_8h_381cd998a24acd64ba259059d37582c5}
+
+
+
+
+Definition at line 204 of file r\_\-regalloc.c.
+
+Referenced by R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_global_overlap@{R\_\-global\_\-overlap}}
+\index{R_global_overlap@{R\_\-global\_\-overlap}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-global\_\-overlap}[$\,$]}\label{r__regalloc_8h_d9149b93aecd9f2589b72d8dee36dea6}
+
+
+
+
+Definition at line 192 of file r\_\-regalloc.c.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), and R\_\-prune\_\-interference\_\-graph().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Init@{R\_\-Init}}
+\index{R_Init@{R\_\-Init}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Init}}\label{r__regalloc_8h_449a2a9288e72e91e512dc072c8c4ec2}
+
+
+
+
+Definition at line 124 of file r\_\-regalloc.c.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Invariant_Vreg_Priorities@{R\_\-Invariant\_\-Vreg\_\-Priorities}}
+\index{R_Invariant_Vreg_Priorities@{R\_\-Invariant\_\-Vreg\_\-Priorities}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Invariant\_\-Vreg\_\-Priorities}}\label{r__regalloc_8h_ed4046d2e70d6083273a5c1cb109c7af}
+
+
+
+
+Definition at line 136 of file r\_\-regalloc.c.
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-isplit\_\-spilled\_\-live\_\-range(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_jsr_def_macro@{R\_\-jsr\_\-def\_\-macro}}
+\index{R_jsr_def_macro@{R\_\-jsr\_\-def\_\-macro}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{R\_\-Macro}$\ast$ \bf{R\_\-jsr\_\-def\_\-macro}}\label{r__regalloc_8h_58eacaad61f390154672f7aaaf697d74}
+
+
+
+
+Definition at line 224 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-available\_\-macros().\index{r_regalloc.h@{r\_\-regalloc.h}!R_jsr_list@{R\_\-jsr\_\-list}}
+\index{R_jsr_list@{R\_\-jsr\_\-list}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{List} \bf{R\_\-jsr\_\-list}}\label{r__regalloc_8h_e42142c3cf3f4b03b9c81ee578366b4a}
+
+
+
+
+Definition at line 212 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-process\_\-cb(), and R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Macro_Allocation@{R\_\-Macro\_\-Allocation}}
+\index{R_Macro_Allocation@{R\_\-Macro\_\-Allocation}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Macro\_\-Allocation}}\label{r__regalloc_8h_57606c12fb7869c3f4b29009831e885f}
+
+
+
+
+Definition at line 127 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-free\_\-register(), R\_\-number\_\-of\_\-registers(), R\_\-print\_\-parm\_\-configuration(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_map@{R\_\-map}}
+\index{R_map@{R\_\-map}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$$\ast$ \bf{R\_\-map}}\label{r__regalloc_8h_618da4011243399ad7bd81e63f5b1577}
+
+
+
+
+Definition at line 191 of file r\_\-regalloc.c.
+
+Referenced by R\_\-add\_\-macro\_\-register(), R\_\-define\_\-physical\_\-bank\_\-with\_\-rot(), R\_\-determine\_\-available\_\-macros(), R\_\-find\_\-base\_\-from\_\-phys\_\-reg(), R\_\-print\_\-bank\_\-configuration(), R\_\-process\_\-illegal\_\-register\_\-attr(), R\_\-spill\_\-all\_\-virtual\_\-registers(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_max_overlap_size@{R\_\-max\_\-overlap\_\-size}}
+\index{R_max_overlap_size@{R\_\-max\_\-overlap\_\-size}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-max\_\-overlap\_\-size}[$\,$]}\label{r__regalloc_8h_1ca8cd6a6d677e658bc2fa42c4cb29f5}
+
+
+
+
+Definition at line 193 of file r\_\-regalloc.c.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap(), and R\_\-prune\_\-interference\_\-graph().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Minimize_Spill_Fill@{R\_\-Minimize\_\-Spill\_\-Fill}}
+\index{R_Minimize_Spill_Fill@{R\_\-Minimize\_\-Spill\_\-Fill}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Minimize\_\-Spill\_\-Fill}}\label{r__regalloc_8h_4458f3f27c27bed0125cfce6a72e9839}
+
+
+
+
+Definition at line 176 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_n_avail_macro@{R\_\-n\_\-avail\_\-macro}}
+\index{R_n_avail_macro@{R\_\-n\_\-avail\_\-macro}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-n\_\-avail\_\-macro}}\label{r__regalloc_8h_214508ad8172ac6738e54d61bc4e4869}
+
+
+
+
+Definition at line 226 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-available\_\-macros().\index{r_regalloc.h@{r\_\-regalloc.h}!R_n_jsr_def_macro@{R\_\-n\_\-jsr\_\-def\_\-macro}}
+\index{R_n_jsr_def_macro@{R\_\-n\_\-jsr\_\-def\_\-macro}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-n\_\-jsr\_\-def\_\-macro}}\label{r__regalloc_8h_e85156301a9d5d6aa120ee2af71d6855}
+
+
+
+
+Definition at line 227 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-available\_\-macros().\index{r_regalloc.h@{r\_\-regalloc.h}!R_n_oper@{R\_\-n\_\-oper}}
+\index{R_n_oper@{R\_\-n\_\-oper}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-n\_\-oper}}\label{r__regalloc_8h_86fc593893c798d2cc9a1f08f6c221bf}
+
+
+
+
+Definition at line 209 of file r\_\-regalloc.c.
+
+Referenced by R\_\-regalloc\_\-memory\_\-init(), and R\_\-register\_\-spill\_\-is\_\-required().\index{r_regalloc.h@{r\_\-regalloc.h}!R_oper_set@{R\_\-oper\_\-set}}
+\index{R_oper_set@{R\_\-oper\_\-set}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{R\_\-oper\_\-set}}\label{r__regalloc_8h_0462961e38d1e52b29b2c1abd94565a6}
+
+
+
+
+Definition at line 211 of file r\_\-regalloc.c.
+
+Referenced by R\_\-process\_\-cb(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_pbuf@{R\_\-pbuf}}
+\index{R_pbuf@{R\_\-pbuf}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$$\ast$ \bf{R\_\-pbuf}}\label{r__regalloc_8h_c477d4746f6efc32a6a33c4dd4697bb7}
+
+
+
+
+Definition at line 206 of file r\_\-regalloc.c.
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_pbuf2@{R\_\-pbuf2}}
+\index{R_pbuf2@{R\_\-pbuf2}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$$\ast$ \bf{R\_\-pbuf2}}\label{r__regalloc_8h_bf8ecc44bcf4abdb7009ae2a450dc33d}
+
+
+
+
+Definition at line 207 of file r\_\-regalloc.c.
+
+Referenced by R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Prevent_MCB_Preload_Spills@{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}}
+\index{R_Prevent_MCB_Preload_Spills@{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}}\label{r__regalloc_8h_524ba9bc74fe12c1750b3b0af8b451cf}
+
+
+
+
+Definition at line 129 of file r\_\-regalloc.c.\index{r_regalloc.h@{r\_\-regalloc.h}!R_Prextern_Bank_Configuration@{R\_\-Prextern\_\-Bank\_\-Configuration}}
+\index{R_Prextern_Bank_Configuration@{R\_\-Prextern\_\-Bank\_\-Configuration}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Prextern\_\-Bank\_\-Configuration}}\label{r__regalloc_8h_3f812a1dfef1918017c41723547c6eb3}
+
+
+\index{r_regalloc.h@{r\_\-regalloc.h}!R_Prextern_Parm_Configuration@{R\_\-Prextern\_\-Parm\_\-Configuration}}
+\index{R_Prextern_Parm_Configuration@{R\_\-Prextern\_\-Parm\_\-Configuration}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Prextern\_\-Parm\_\-Configuration}}\label{r__regalloc_8h_29568b6128e16604befa1a24c48bf0c1}
+
+
+\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Allocation@{R\_\-Print\_\-Allocation}}
+\index{R_Print_Allocation@{R\_\-Print\_\-Allocation}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Allocation}}\label{r__regalloc_8h_5fc9cc940655d6f372ab7f78f935f2ea}
+
+
+
+
+Definition at line 147 of file r\_\-regalloc.c.
+
+Referenced by R\_\-print\_\-parm\_\-configuration(), R\_\-read\_\-parm\_\-regalloc(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Allocation_Stats@{R\_\-Print\_\-Allocation\_\-Stats}}
+\index{R_Print_Allocation_Stats@{R\_\-Print\_\-Allocation\_\-Stats}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Allocation\_\-Stats}}\label{r__regalloc_8h_f73157ef01eb0a33ef27781f0ac04eb2}
+
+
+
+
+Definition at line 148 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Class_Selection@{R\_\-Print\_\-Class\_\-Selection}}
+\index{R_Print_Class_Selection@{R\_\-Print\_\-Class\_\-Selection}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Class\_\-Selection}}\label{r__regalloc_8h_e994b9ea68b7534a169ab7286c0ac2ae}
+
+
+
+
+Definition at line 145 of file r\_\-regalloc.c.
+
+Referenced by R\_\-print\_\-parm\_\-configuration(), R\_\-read\_\-parm\_\-regalloc(), and R\_\-register\_\-saving\_\-convention\_\-selection().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Coloring_Stats@{R\_\-Print\_\-Coloring\_\-Stats}}
+\index{R_Print_Coloring_Stats@{R\_\-Print\_\-Coloring\_\-Stats}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Coloring\_\-Stats}}\label{r__regalloc_8h_d0b75992fe4dd4f551a7a3d4045e63e4}
+
+
+
+
+Definition at line 146 of file r\_\-regalloc.c.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-print\_\-parm\_\-configuration(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Dead_Code_Results@{R\_\-Print\_\-Dead\_\-Code\_\-Results}}
+\index{R_Print_Dead_Code_Results@{R\_\-Print\_\-Dead\_\-Code\_\-Results}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Dead\_\-Code\_\-Results}}\label{r__regalloc_8h_fe6f57697cef035ba961e2fb7ceb30ab}
+
+
+
+
+Definition at line 150 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Interference_Graph@{R\_\-Print\_\-Interference\_\-Graph}}
+\index{R_Print_Interference_Graph@{R\_\-Print\_\-Interference\_\-Graph}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Interference\_\-Graph}}\label{r__regalloc_8h_12d24fb1e1bffd01fdebc9d826413a1c}
+
+
+
+
+Definition at line 144 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Live_Ranges@{R\_\-Print\_\-Live\_\-Ranges}}
+\index{R_Print_Live_Ranges@{R\_\-Print\_\-Live\_\-Ranges}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Live\_\-Ranges}}\label{r__regalloc_8h_cf839178054c7970cc5e36af35907fba}
+
+
+
+
+Definition at line 143 of file r\_\-regalloc.c.
+
+Referenced by R\_\-print\_\-parm\_\-configuration(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Macroregisters@{R\_\-Print\_\-Macroregisters}}
+\index{R_Print_Macroregisters@{R\_\-Print\_\-Macroregisters}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Macroregisters}}\label{r__regalloc_8h_e5a9cb5c06f2fc4697e6af7cf304277c}
+
+
+
+
+Definition at line 142 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Print_Virtual_Register_Function@{R\_\-Print\_\-Virtual\_\-Register\_\-Function}}
+\index{R_Print_Virtual_Register_Function@{R\_\-Print\_\-Virtual\_\-Register\_\-Function}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Print\_\-Virtual\_\-Register\_\-Function}}\label{r__regalloc_8h_9ae8198dd0b4a1782a84ca9b533a1b66}
+
+
+
+
+Definition at line 152 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Region@{R\_\-Region}}
+\index{R_Region@{R\_\-Region}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Region$\ast$ \bf{R\_\-Region}}\label{r__regalloc_8h_8dcb42f5ea3c18a0cd300b269c24235a}
+
+
+
+
+Definition at line 236 of file r\_\-regalloc.c.
+
+Referenced by R\_\-determine\_\-region\_\-flybys(), R\_\-determine\_\-reserved\_\-registers(), R\_\-find\_\-free\_\-register(), R\_\-handle\_\-unallocatable\_\-vreg(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Region_Based_Allocation@{R\_\-Region\_\-Based\_\-Allocation}}
+\index{R_Region_Based_Allocation@{R\_\-Region\_\-Based\_\-Allocation}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Region\_\-Based\_\-Allocation}}\label{r__regalloc_8h_0730ca7568a827089b1d7aeaf18064d1}
+
+
+
+
+Definition at line 133 of file r\_\-regalloc.c.
+
+Referenced by R\_\-assemble\_\-region(), R\_\-init\_\-spill\_\-stack(), R\_\-print\_\-parm\_\-configuration(), R\_\-process\_\-cb(), R\_\-read\_\-parm\_\-regalloc(), R\_\-register\_\-allocation\_\-sep(), R\_\-register\_\-saving\_\-convention\_\-selection(), and R\_\-update\_\-region\_\-spill\_\-stack().\index{r_regalloc.h@{r\_\-regalloc.h}!R_RegionAlloc_pool@{R\_\-RegionAlloc\_\-pool}}
+\index{R_RegionAlloc_pool@{R\_\-RegionAlloc\_\-pool}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{R\_\-Region\-Alloc\_\-pool}}\label{r__regalloc_8h_3639f07b92c3fabb0e608122d26b1ebd}
+
+
+\index{r_regalloc.h@{r\_\-regalloc.h}!R_regionAllocMap@{R\_\-regionAllocMap}}
+\index{R_regionAllocMap@{R\_\-regionAllocMap}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Hash\-Table} \bf{R\_\-region\-Alloc\-Map}}\label{r__regalloc_8h_5995532566d405c35426e58b54ec4cc5}
+
+
+
+
+Definition at line 199 of file r\_\-regalloc.c.
+
+Referenced by R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Register_Allocation@{R\_\-Register\_\-Allocation}}
+\index{R_Register_Allocation@{R\_\-Register\_\-Allocation}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Register\_\-Allocation}}\label{r__regalloc_8h_da5733999d55af991a5c2cbdb4451e3a}
+
+
+
+
+Definition at line 125 of file r\_\-regalloc.c.
+
+Referenced by R\_\-read\_\-parm\_\-regalloc(), and R\_\-register\_\-spill\_\-is\_\-required().\index{r_regalloc.h@{r\_\-regalloc.h}!R_register_contents@{R\_\-register\_\-contents}}
+\index{R_register_contents@{R\_\-register\_\-contents}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{R\_\-register\_\-contents}}\label{r__regalloc_8h_3ce7ce30fdd85726021a9fbe22baaa56}
+
+
+
+
+Definition at line 221 of file r\_\-regalloc.c.
+
+Referenced by R\_\-in\_\-physical\_\-register(), R\_\-insert\_\-spill\_\-fill\_\-code(), and R\_\-put\_\-in\_\-physical\_\-register().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Round_Robin_Allocation@{R\_\-Round\_\-Robin\_\-Allocation}}
+\index{R_Round_Robin_Allocation@{R\_\-Round\_\-Robin\_\-Allocation}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Round\_\-Robin\_\-Allocation}}\label{r__regalloc_8h_0b4893f94d0a988fc0b549ef95004f68}
+
+
+
+
+Definition at line 134 of file r\_\-regalloc.c.
+
+Referenced by R\_\-find\_\-free\_\-register\_\-in\_\-bank(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_rts@{R\_\-rts}}
+\index{R_rts@{R\_\-rts}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ \bf{R\_\-rts}}\label{r__regalloc_8h_844ae0cf78616c8d50d0cd640dda9fee}
+
+
+
+
+Definition at line 215 of file r\_\-regalloc.c.
+
+Referenced by R\_\-process\_\-cb().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Same_Cycle_Anti_Deps_Interference@{R\_\-Same\_\-Cycle\_\-Anti\_\-Deps\_\-Interference}}
+\index{R_Same_Cycle_Anti_Deps_Interference@{R\_\-Same\_\-Cycle\_\-Anti\_\-Deps\_\-Interference}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Same\_\-Cycle\_\-Anti\_\-Deps\_\-Interference}}\label{r__regalloc_8h_f0070d0fe96a6341fa456cacb106da14}
+
+
+
+
+Definition at line 130 of file r\_\-regalloc.c.
+
+Referenced by R\_\-process\_\-cb(), and R\_\-read\_\-parm\_\-regalloc().\index{r_regalloc.h@{r\_\-regalloc.h}!R_Sort_List@{R\_\-Sort\_\-List}}
+\index{R_Sort_List@{R\_\-Sort\_\-List}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Sort\_\-List}}\label{r__regalloc_8h_78d0b71c172433da333fb17e769da0de}
+
+
+\index{r_regalloc.h@{r\_\-regalloc.h}!R_Utilize_Profile_Info@{R\_\-Utilize\_\-Profile\_\-Info}}
+\index{R_Utilize_Profile_Info@{R\_\-Utilize\_\-Profile\_\-Info}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Utilize\_\-Profile\_\-Info}}\label{r__regalloc_8h_cb42be9fdd1b603eb7b714df20afc9ae}
+
+
+
+
+Definition at line 128 of file r\_\-regalloc.c.
+
+Referenced by R\_\-print\_\-parm\_\-configuration(), R\_\-read\_\-parm\_\-regalloc(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!R_vreg@{R\_\-vreg}}
+\index{R_vreg@{R\_\-vreg}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{R\_\-Reg}$\ast$ \bf{R\_\-vreg}}\label{r__regalloc_8h_2dbcf950358669643eac003e20df4a6f}
+
+
+
+
+Definition at line 196 of file r\_\-regalloc.c.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers(), R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-new\_\-reg(), R\_\-prune\_\-interference\_\-graph(), R\_\-regalloc\_\-memory\_\-cleanup(), R\_\-register\_\-saving\_\-convention\_\-selection(), R\_\-update\_\-alloc\_\-state(), and R\_\-virtual\_\-to\_\-machine\_\-conversion().\index{r_regalloc.h@{r\_\-regalloc.h}!R_vregHashTbl@{R\_\-vregHashTbl}}
+\index{R_vregHashTbl@{R\_\-vregHashTbl}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Hash\-Table} \bf{R\_\-vreg\-Hash\-Tbl}}\label{r__regalloc_8h_5af1440b54ff2374201da593736f163c}
+
+
+
+
+Definition at line 198 of file r\_\-regalloc.c.
+
+Referenced by R\_\-new\_\-reg(), and R\_\-regalloc\_\-memory\_\-init().\index{r_regalloc.h@{r\_\-regalloc.h}!st_cnt@{st\_\-cnt}}
+\index{st_cnt@{st\_\-cnt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{st\_\-cnt}}\label{r__regalloc_8h_2e851ea165e823befccbe6bee6d064f2}
+
+
+
+
+Definition at line 188 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!st_wgt@{st\_\-wgt}}
+\index{st_wgt@{st\_\-wgt}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{st\_\-wgt}}\label{r__regalloc_8h_ca0a0b44fc8d6a56b9f78ce8c60170ca}
+
+
+
+
+Definition at line 187 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regalloc.h@{r\_\-regalloc.h}!total_caller_weight@{total\_\-caller\_\-weight}}
+\index{total_caller_weight@{total\_\-caller\_\-weight}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{total\_\-caller\_\-weight}}\label{r__regalloc_8h_79eb96ea76194350e245f552d858ae95}
+
+
+
+
+Definition at line 234 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!total_instruction_weight@{total\_\-instruction\_\-weight}}
+\index{total_instruction_weight@{total\_\-instruction\_\-weight}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{total\_\-instruction\_\-weight}}\label{r__regalloc_8h_c643820fe073dfd44fb62a6430595b9c}
+
+
+
+
+Definition at line 231 of file r\_\-regalloc.c.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!total_region_spill_weight@{total\_\-region\_\-spill\_\-weight}}
+\index{total_region_spill_weight@{total\_\-region\_\-spill\_\-weight}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{total\_\-region\_\-spill\_\-weight}}\label{r__regalloc_8h_438ba5d7669773a5742206bd31674ecb}
+
+
+
+
+Definition at line 233 of file r\_\-regalloc.c.
+
+Referenced by R\_\-insert\_\-reconciliation\_\-code(), and R\_\-register\_\-allocation\_\-sep().\index{r_regalloc.h@{r\_\-regalloc.h}!total_spill_weight@{total\_\-spill\_\-weight}}
+\index{total_spill_weight@{total\_\-spill\_\-weight}!r_regalloc.h@{r\_\-regalloc.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{total\_\-spill\_\-weight}}\label{r__regalloc_8h_d11ed0e43ea906b2f8df38b402967969}
+
+
+
+
+Definition at line 232 of file r\_\-regalloc.c.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().

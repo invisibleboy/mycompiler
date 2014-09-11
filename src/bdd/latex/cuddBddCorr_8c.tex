@@ -1,0 +1,234 @@
+\section{cudd\-Bdd\-Corr.c File Reference}
+\label{cuddBddCorr_8c}\index{cuddBddCorr.c@{cuddBddCorr.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{hash\-Entry}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{hash\-Entry} \bf{Hash\-Entry}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static double bdd\-Correlation\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{st\_\-table} $\ast$table))
+\item 
+static double bdd\-Correlation\-Weights\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob, \bf{st\_\-table} $\ast$table))
+\item 
+static int Correl\-Compare \bf{ARGS} ((const char $\ast$key1, const char $\ast$key2))
+\item 
+static int Correl\-Hash \bf{ARGS} ((char $\ast$key, int modulus))
+\item 
+static enum \bf{st\_\-retval} Correl\-Clean\-Up \bf{ARGS} ((char $\ast$key, char $\ast$value, char $\ast$arg))
+\item 
+double \bf{Cudd\_\-bdd\-Correlation} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+double \bf{Cudd\_\-bdd\-Correlation\-Weights} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob)
+\item 
+static double \bf{bdd\-Correlation\-Aux} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{st\_\-table} $\ast$table)
+\item 
+static double \bf{bdd\-Correlation\-Weights\-Aux} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob, \bf{st\_\-table} $\ast$table)
+\item 
+static int \bf{Correl\-Compare} (const char $\ast$key1, const char $\ast$key2)
+\item 
+static int \bf{Correl\-Hash} (char $\ast$key, int modulus)
+\item 
+static enum \bf{st\_\-retval} \bf{Correl\-Clean\-Up} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bdd\-Corr.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Typedef Documentation}
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!HashEntry@{HashEntry}}
+\index{HashEntry@{HashEntry}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{hash\-Entry}  \bf{Hash\-Entry}}\label{cuddBddCorr_8c_a4d1f1adc2f433cbfb2084af1c689af5}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Bdd\-Corr.c}{p.}{cuddBddCorr_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Correlation between BDDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Correlation()}{p.}{cuddBddCorr_8c_0419deb183e4225531473b7775f06f9d} \item \doxyref{Cudd\_\-bdd\-Correlation\-Weights()}{p.}{cuddBddCorr_8c_79ee92dcdb59f091b2e809f0c461ccef} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{bdd\-Correlation\-Aux()}{p.}{cuddBddCorr_8c_3ddf2877dbb75717bc4822f9df401638} \item \doxyref{bdd\-Correlation\-Weights\-Aux()}{p.}{cuddBddCorr_8c_6e8b8c84a11ecc36e8246925af6058c3} \item \doxyref{Correl\-Compare()}{p.}{cuddBddCorr_8c_c80d67dd9f947acf0ab7996b483f3792} \item \doxyref{Correl\-Hash()}{p.}{cuddBddCorr_8c_62c293790921f647fbed058672326110} \item \doxyref{Correl\-Clean\-Up()}{p.}{cuddBddCorr_8c_52855d2b54cd6d0d53bb2f0c3ba29d58} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+\subsection{Function Documentation}
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} Correl\-Clean\-Up ARGS ((char $\ast$key, char $\ast$value, char $\ast$arg))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_2d4df8b6311d076165622976166fadbb}
+
+
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Correl\-Hash ARGS ((char $\ast$key, int modulus))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_dc81cd2e9f962b4c3a8ec7c0240d69f1}
+
+
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Correl\-Compare ARGS ((const char $\ast$key1, const char $\ast$key2))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_13e5a64d83c167640b17be5bacf942ce}
+
+
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Correlation\-Weights\-Aux ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_e6befd6b6d105c449003ec51e13ca21c}
+
+
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Correlation\-Aux ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_2325701dfd0e1184fe993c9bc849be43}
+
+
+Automatic\-Start \index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!bddCorrelationAux@{bddCorrelationAux}}
+\index{bddCorrelationAux@{bddCorrelationAux}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Correlation\-Aux (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_3ddf2877dbb75717bc4822f9df401638}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Correlation.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Correlation. Returns the fraction of minterms in the ON-set of the EXNOR of f and g.]
+
+Side\-Effects [None]
+
+See\-Also [bdd\-Correlation\-Weights\-Aux] 
+
+Definition at line 202 of file cudd\-Bdd\-Corr.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, entry, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-bdd\-Correlation().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!bddCorrelationWeightsAux@{bddCorrelationWeightsAux}}
+\index{bddCorrelationWeightsAux@{bddCorrelationWeightsAux}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Correlation\-Weights\-Aux (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, double $\ast$ {\em prob}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_6e8b8c84a11ecc36e8246925af6058c3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Correlation\-Weigths.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [bdd\-Correlation\-Aux] 
+
+Definition at line 303 of file cudd\-Bdd\-Corr.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, entry, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-bdd\-Correlation\-Weights().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!CorrelCleanUp@{CorrelCleanUp}}
+\index{CorrelCleanUp@{CorrelCleanUp}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} Correl\-Clean\-Up (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_52855d2b54cd6d0d53bb2f0c3ba29d58}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees memory associated with hash table.]
+
+Description [Frees memory associated with hash table. Returns ST\_\-CONTINUE.]
+
+Side\-Effects [None] 
+
+Definition at line 467 of file cudd\-Bdd\-Corr.c.
+
+References entry, FREE, and ST\_\-CONTINUE.
+
+Referenced by Cudd\_\-bdd\-Correlation(), and Cudd\_\-bdd\-Correlation\-Weights().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!CorrelCompare@{CorrelCompare}}
+\index{CorrelCompare@{CorrelCompare}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Correl\-Compare (const char $\ast$ {\em key1}, const char $\ast$ {\em key2})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_c80d67dd9f947acf0ab7996b483f3792}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Compares two hash table entries.]
+
+Description [Compares two hash table entries. Returns 0 if they are identical; 1 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 410 of file cudd\-Bdd\-Corr.c.
+
+References hash\-Entry::f, and hash\-Entry::g.
+
+Referenced by Cudd\_\-bdd\-Correlation(), and Cudd\_\-bdd\-Correlation\-Weights().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!CorrelHash@{CorrelHash}}
+\index{CorrelHash@{CorrelHash}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Correl\-Hash (char $\ast$ {\em key}, int {\em modulus})\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_62c293790921f647fbed058672326110}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Hashes a hash table entry.]
+
+Description [Hashes a hash table entry. It is patterned after st\_\-strhash. Returns a value between 0 and modulus.]
+
+Side\-Effects [None] 
+
+Definition at line 437 of file cudd\-Bdd\-Corr.c.
+
+References entry.
+
+Referenced by Cudd\_\-bdd\-Correlation(), and Cudd\_\-bdd\-Correlation\-Weights().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!Cudd_bddCorrelation@{Cudd\_\-bddCorrelation}}
+\index{Cudd_bddCorrelation@{Cudd\_\-bddCorrelation}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-bdd\-Correlation (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddBddCorr_8c_0419deb183e4225531473b7775f06f9d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the correlation of f and g.]
+
+Description [Computes the correlation of f and g. If f == g, their correlation is 1. If f == g', their correlation is 0. Returns the fraction of minterms in the ON-set of the EXNOR of f and g. If it runs out of memory, returns (double)CUDD\_\-OUT\_\-OF\_\-MEM.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Correlation\-Weights] 
+
+Definition at line 112 of file cudd\-Bdd\-Corr.c.
+
+References bdd\-Correlation\-Aux(), Correl\-Clean\-Up(), Correl\-Compare(), Correl\-Hash(), CUDD\_\-OUT\_\-OF\_\-MEM, NIL, st\_\-foreach(), st\_\-free\_\-table(), and st\_\-init\_\-table().\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!Cudd_bddCorrelationWeights@{Cudd\_\-bddCorrelationWeights}}
+\index{Cudd_bddCorrelationWeights@{Cudd\_\-bddCorrelationWeights}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-bdd\-Correlation\-Weights (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, double $\ast$ {\em prob})}\label{cuddBddCorr_8c_79ee92dcdb59f091b2e809f0c461ccef}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the correlation of f and g for given input probabilities.]
+
+Description [Computes the correlation of f and g for given input probabilities. On input, prob$\backslash$[i$\backslash$] is supposed to contain the probability of the i-th input variable to be 1. If f == g, their correlation is 1. If f == g', their correlation is 0. Returns the probability that f and g have the same value. If it runs out of memory, returns (double)CUDD\_\-OUT\_\-OF\_\-MEM. The correlation of f and the constant one gives the probability of f.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Correlation] 
+
+Definition at line 154 of file cudd\-Bdd\-Corr.c.
+
+References bdd\-Correlation\-Weights\-Aux(), Correl\-Clean\-Up(), Correl\-Compare(), Correl\-Hash(), CUDD\_\-OUT\_\-OF\_\-MEM, NIL, st\_\-foreach(), st\_\-free\_\-table(), and st\_\-init\_\-table().
+
+\subsection{Variable Documentation}
+\index{cuddBddCorr.c@{cudd\-Bdd\-Corr.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddBddCorr.c@{cudd\-Bdd\-Corr.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bdd\-Corr.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddBddCorr_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 65 of file cudd\-Bdd\-Corr.c.

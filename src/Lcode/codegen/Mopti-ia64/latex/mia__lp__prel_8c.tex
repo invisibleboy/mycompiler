@@ -1,0 +1,322 @@
+\section{mia\_\-lp\_\-prel.c File Reference}
+\label{mia__lp__prel_8c}\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}mia\_\-internal.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{ERR}~stdout
+\item 
+\#define \bf{MAX\_\-LOOP\_\-NESTING}~10
+\item 
+\#define \bf{MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT}~50.0
+\item 
+\#define \bf{MIN\_\-LOOP\_\-ITER\_\-FOR\_\-PRELOAD}~2.0
+\item 
+\#define \bf{MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP}~16
+\item 
+\#define \bf{MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS}~16
+\item 
+\#define \bf{MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD}~32
+\item 
+\#define \bf{L\_\-MAX\_\-REQUEST}~2048
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int \bf{need\_\-preload} (L\_\-Oper $\ast$oper, L\_\-Operand $\ast$operand, int src\_\-num)
+\item 
+static void \bf{flush\_\-preload\_\-request} ()
+\item 
+static void \bf{request\_\-for\_\-preload} (L\_\-Oper $\ast$oper, L\_\-Operand $\ast$$\ast$operand)
+\item 
+static void \bf{add\_\-preload\_\-code} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$preheader\_\-cb)
+\item 
+static void \bf{replace\_\-preload\_\-operand} ()
+\item 
+static void \bf{preload\_\-loop} (L\_\-Func $\ast$fn, L\_\-Loop $\ast$loop)
+\item 
+void \bf{Mopti\_\-constant\_\-generation} (L\_\-Func $\ast$fn)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+double \bf{Lconst\_\-min\_\-preload\_\-weight} = MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT
+\item 
+int \bf{Lconst\_\-max\_\-preload\_\-const\_\-per\_\-loop} = MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP
+\item 
+int \bf{Lconst\_\-max\_\-loop\_\-size\_\-with\_\-nested\_\-loops} = MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS
+\item 
+int \bf{Lconst\_\-max\_\-loop\_\-size\_\-for\_\-preload} = MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD
+\item 
+static int \bf{n\_\-request} = 0
+\item 
+static L\_\-Oper $\ast$ \bf{request\_\-oper} [L\_\-MAX\_\-REQUEST]
+\item 
+static L\_\-Operand $\ast$$\ast$ \bf{request\_\-operand} [L\_\-MAX\_\-REQUEST]
+\item 
+static int \bf{n\_\-preload} = 0
+\item 
+static L\_\-Operand \bf{preload\_\-constant} [L\_\-MAX\_\-REQUEST]
+\item 
+static L\_\-Operand $\ast$ \bf{preload\_\-register} [L\_\-MAX\_\-REQUEST]
+\item 
+static double \bf{preload\_\-weight} [L\_\-MAX\_\-REQUEST]
+\item 
+static int \bf{preload} [L\_\-MAX\_\-REQUEST]
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!ERR@{ERR}}
+\index{ERR@{ERR}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \bf{ERR}~stdout}\label{mia__lp__prel_8c_735563036dced0b7d6cc98f97ea4978b}
+
+
+
+
+Definition at line 68 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), M\_\-local\_\-constant\_\-propagation(), preload\_\-loop(), and replace\_\-preload\_\-operand().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!L_MAX_REQUEST@{L\_\-MAX\_\-REQUEST}}
+\index{L_MAX_REQUEST@{L\_\-MAX\_\-REQUEST}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-MAX\_\-REQUEST~2048}\label{mia__lp__prel_8c_7c5f7f8fbb899748dc21279096396b11}
+
+
+
+
+Definition at line 160 of file mia\_\-lp\_\-prel.c.
+
+Referenced by request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MAX_LOOP_NESTING@{MAX\_\-LOOP\_\-NESTING}}
+\index{MAX_LOOP_NESTING@{MAX\_\-LOOP\_\-NESTING}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-LOOP\_\-NESTING~10}\label{mia__lp__prel_8c_884f45876d5ae7e312160cc16042bb06}
+
+
+
+
+Definition at line 89 of file mia\_\-lp\_\-prel.c.
+
+Referenced by Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MAX_LOOP_SIZE_FOR_PRELOAD@{MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD}}
+\index{MAX_LOOP_SIZE_FOR_PRELOAD@{MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD~32}\label{mia__lp__prel_8c_afb2c1d818f840b067728f20bc3c09bb}
+
+
+
+
+Definition at line 95 of file mia\_\-lp\_\-prel.c.
+
+Referenced by preload\_\-loop().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MAX_LOOP_SIZE_WITH_NESTED_LOOPS@{MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS}}
+\index{MAX_LOOP_SIZE_WITH_NESTED_LOOPS@{MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS~16}\label{mia__lp__prel_8c_bc069227c45c46cae6d764fe701257a7}
+
+
+
+
+Definition at line 94 of file mia\_\-lp\_\-prel.c.\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MAX_PRELOAD_CONST_PER_LOOP@{MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP}}
+\index{MAX_PRELOAD_CONST_PER_LOOP@{MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP~16}\label{mia__lp__prel_8c_aed64aa9c0e25b9678cae9cc3ae949cb}
+
+
+
+
+Definition at line 93 of file mia\_\-lp\_\-prel.c.\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MIN_LOOP_ITER_FOR_PRELOAD@{MIN\_\-LOOP\_\-ITER\_\-FOR\_\-PRELOAD}}
+\index{MIN_LOOP_ITER_FOR_PRELOAD@{MIN\_\-LOOP\_\-ITER\_\-FOR\_\-PRELOAD}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-LOOP\_\-ITER\_\-FOR\_\-PRELOAD~2.0}\label{mia__lp__prel_8c_afa18da6c82702cd6b6b70cbe1fb2150}
+
+
+
+
+Definition at line 92 of file mia\_\-lp\_\-prel.c.
+
+Referenced by Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!MIN_LOOP_PRELOAD_WEIGHT@{MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT}}
+\index{MIN_LOOP_PRELOAD_WEIGHT@{MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT~50.0}\label{mia__lp__prel_8c_06c182314aa99477092b5ad98f2e4981}
+
+
+
+
+Definition at line 91 of file mia\_\-lp\_\-prel.c.
+
+\subsection{Function Documentation}
+\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!add_preload_code@{add\_\-preload\_\-code}}
+\index{add_preload_code@{add\_\-preload\_\-code}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void add\_\-preload\_\-code (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em preheader\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_586a3bf339800125349ab83fb8e5629f}
+
+
+
+
+Definition at line 213 of file mia\_\-lp\_\-prel.c.
+
+References ERR, Lconst\_\-max\_\-preload\_\-const\_\-per\_\-loop, Lconst\_\-min\_\-preload\_\-weight, n\_\-preload, preload, preload\_\-constant, preload\_\-register, and preload\_\-weight.\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!flush_preload_request@{flush\_\-preload\_\-request}}
+\index{flush_preload_request@{flush\_\-preload\_\-request}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void flush\_\-preload\_\-request ()\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_f9b3bc9bc46f68ad66bf5419d5810dbf}
+
+
+
+
+Definition at line 173 of file mia\_\-lp\_\-prel.c.
+
+References n\_\-preload, and n\_\-request.
+
+Referenced by preload\_\-loop().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!Mopti_constant_generation@{Mopti\_\-constant\_\-generation}}
+\index{Mopti_constant_generation@{Mopti\_\-constant\_\-generation}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mopti\_\-constant\_\-generation (L\_\-Func $\ast$ {\em fn})}\label{mia__lp__prel_8c_ce49d15c4fd47f651213d2f0a5df9f71}
+
+
+
+
+Definition at line 412 of file mia\_\-lp\_\-prel.c.
+
+References Lconst\_\-max\_\-loop\_\-size\_\-for\_\-preload, Lconst\_\-max\_\-loop\_\-size\_\-with\_\-nested\_\-loops, Lconst\_\-min\_\-preload\_\-weight, MAX\_\-LOOP\_\-NESTING, MIN\_\-LOOP\_\-ITER\_\-FOR\_\-PRELOAD, and preload\_\-loop().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!need_preload@{need\_\-preload}}
+\index{need_preload@{need\_\-preload}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int need\_\-preload (L\_\-Oper $\ast$ {\em oper}, L\_\-Operand $\ast$ {\em operand}, int {\em src\_\-num})\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_d8767f4e13897f750ec4583bc24699a4}
+
+
+
+
+Definition at line 110 of file mia\_\-lp\_\-prel.c.
+
+References SIMM\_\-14, and SIMM\_\-8.
+
+Referenced by preload\_\-loop().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!preload_loop@{preload\_\-loop}}
+\index{preload_loop@{preload\_\-loop}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void preload\_\-loop (L\_\-Func $\ast$ {\em fn}, L\_\-Loop $\ast$ {\em loop})\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_59ae35d80101b898bda2b30736db1065}
+
+
+
+
+Definition at line 367 of file mia\_\-lp\_\-prel.c.
+
+References ERR, flush\_\-preload\_\-request(), loop\_\-cb, MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD, need\_\-preload(), and request\_\-for\_\-preload().
+
+Referenced by Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!replace_preload_operand@{replace\_\-preload\_\-operand}}
+\index{replace_preload_operand@{replace\_\-preload\_\-operand}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void replace\_\-preload\_\-operand ()\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_c00fb0eb1175b6e432c0db7b3f466ca2}
+
+
+
+
+Definition at line 337 of file mia\_\-lp\_\-prel.c.
+
+References ERR, n\_\-preload, n\_\-request, preload, preload\_\-constant, preload\_\-register, request\_\-oper, and request\_\-operand.\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!request_for_preload@{request\_\-for\_\-preload}}
+\index{request_for_preload@{request\_\-for\_\-preload}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void request\_\-for\_\-preload (L\_\-Oper $\ast$ {\em oper}, L\_\-Operand $\ast$$\ast$ {\em operand})\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_253f57304a67b2453b2ec4bb061666c7}
+
+
+
+
+Definition at line 180 of file mia\_\-lp\_\-prel.c.
+
+References L\_\-MAX\_\-REQUEST, n\_\-preload, n\_\-request, preload\_\-constant, preload\_\-weight, request\_\-oper, and request\_\-operand.
+
+Referenced by preload\_\-loop().
+
+\subsection{Variable Documentation}
+\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!Lconst_max_loop_size_for_preload@{Lconst\_\-max\_\-loop\_\-size\_\-for\_\-preload}}
+\index{Lconst_max_loop_size_for_preload@{Lconst\_\-max\_\-loop\_\-size\_\-for\_\-preload}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lconst\_\-max\_\-loop\_\-size\_\-for\_\-preload} = MAX\_\-LOOP\_\-SIZE\_\-FOR\_\-PRELOAD}\label{mia__lp__prel_8c_59948d23605b2eddc8dd0e0888247d92}
+
+
+
+
+Definition at line 107 of file mia\_\-lp\_\-prel.c.
+
+Referenced by Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!Lconst_max_loop_size_with_nested_loops@{Lconst\_\-max\_\-loop\_\-size\_\-with\_\-nested\_\-loops}}
+\index{Lconst_max_loop_size_with_nested_loops@{Lconst\_\-max\_\-loop\_\-size\_\-with\_\-nested\_\-loops}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lconst\_\-max\_\-loop\_\-size\_\-with\_\-nested\_\-loops} = MAX\_\-LOOP\_\-SIZE\_\-WITH\_\-NESTED\_\-LOOPS}\label{mia__lp__prel_8c_59de3285284f791c68c738c8086406d3}
+
+
+
+
+Definition at line 106 of file mia\_\-lp\_\-prel.c.
+
+Referenced by Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!Lconst_max_preload_const_per_loop@{Lconst\_\-max\_\-preload\_\-const\_\-per\_\-loop}}
+\index{Lconst_max_preload_const_per_loop@{Lconst\_\-max\_\-preload\_\-const\_\-per\_\-loop}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lconst\_\-max\_\-preload\_\-const\_\-per\_\-loop} = MAX\_\-PRELOAD\_\-CONST\_\-PER\_\-LOOP}\label{mia__lp__prel_8c_4970b15537e25c34343c0819cd183b73}
+
+
+
+
+Definition at line 105 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!Lconst_min_preload_weight@{Lconst\_\-min\_\-preload\_\-weight}}
+\index{Lconst_min_preload_weight@{Lconst\_\-min\_\-preload\_\-weight}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{Lconst\_\-min\_\-preload\_\-weight} = MIN\_\-LOOP\_\-PRELOAD\_\-WEIGHT}\label{mia__lp__prel_8c_f0df201664b603e5b52607e588b40269}
+
+
+
+
+Definition at line 104 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), and Mopti\_\-constant\_\-generation().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!n_preload@{n\_\-preload}}
+\index{n_preload@{n\_\-preload}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-preload} = 0\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_98c49189df14e601226192bb52d69b12}
+
+
+
+
+Definition at line 166 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), flush\_\-preload\_\-request(), replace\_\-preload\_\-operand(), and request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!n_request@{n\_\-request}}
+\index{n_request@{n\_\-request}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-request} = 0\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_af67953e47646ec9b39eae7c699b370b}
+
+
+
+
+Definition at line 161 of file mia\_\-lp\_\-prel.c.
+
+Referenced by flush\_\-preload\_\-request(), replace\_\-preload\_\-operand(), and request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!preload@{preload}}
+\index{preload@{preload}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{preload}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_c0e0a3d5ef59f3fb14c50d1c6f427555}
+
+
+
+
+Definition at line 170 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), and replace\_\-preload\_\-operand().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!preload_constant@{preload\_\-constant}}
+\index{preload_constant@{preload\_\-constant}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Operand \bf{preload\_\-constant}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_55cf12a2bcb4d565835bc04cac373988}
+
+
+
+
+Definition at line 167 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), replace\_\-preload\_\-operand(), and request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!preload_register@{preload\_\-register}}
+\index{preload_register@{preload\_\-register}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Operand$\ast$ \bf{preload\_\-register}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_0d335db781bd550c382dbc3b90d378cb}
+
+
+
+
+Definition at line 168 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), and replace\_\-preload\_\-operand().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!preload_weight@{preload\_\-weight}}
+\index{preload_weight@{preload\_\-weight}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{preload\_\-weight}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_efd9a311b6f65396d2bbdfd427a623c7}
+
+
+
+
+Definition at line 169 of file mia\_\-lp\_\-prel.c.
+
+Referenced by add\_\-preload\_\-code(), and request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!request_oper@{request\_\-oper}}
+\index{request_oper@{request\_\-oper}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ \bf{request\_\-oper}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_fe951214eacc34396c8347408cc0a0b7}
+
+
+
+
+Definition at line 162 of file mia\_\-lp\_\-prel.c.
+
+Referenced by replace\_\-preload\_\-operand(), and request\_\-for\_\-preload().\index{mia_lp_prel.c@{mia\_\-lp\_\-prel.c}!request_operand@{request\_\-operand}}
+\index{request_operand@{request\_\-operand}!mia_lp_prel.c@{mia\_\-lp\_\-prel.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Operand$\ast$$\ast$ \bf{request\_\-operand}[L\_\-MAX\_\-REQUEST]\hspace{0.3cm}{\tt  [static]}}\label{mia__lp__prel_8c_1bf5a3c6253a59a59b7b109fece0821b}
+
+
+
+
+Definition at line 163 of file mia\_\-lp\_\-prel.c.
+
+Referenced by replace\_\-preload\_\-operand(), and request\_\-for\_\-preload().

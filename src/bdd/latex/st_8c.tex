@@ -1,0 +1,432 @@
+\section{st.c File Reference}
+\label{st_8c}\index{st.c@{st.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{ST\_\-NUMCMP}(x, y)~((x) != (y))
+\item 
+\#define \bf{ST\_\-NUMHASH}(x, \bf{size})~(ABS((long)x)\%(\bf{size}))
+\item 
+\#define \bf{ST\_\-PTRHASH}(x, \bf{size})~((int)((unsigned long)(x)$>$$>$2)\%\bf{size})
+\item 
+\#define \bf{EQUAL}(func, x, y)
+\item 
+\#define \bf{do\_\-hash}(key, table)
+\item 
+\#define \bf{PTR\_\-NOT\_\-EQUAL}(table, ptr, user\_\-key)~(ptr != NULL \&\& !EQUAL(table $\rightarrow$ compare, user\_\-key, (ptr) $\rightarrow$ key))
+\item 
+\#define \bf{FIND\_\-ENTRY}(table, hash\_\-val, key, ptr, last)
+\item 
+\#define \bf{ADD\_\-DIRECT}(table, key, value, hash\_\-val, newt)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int rehash \bf{ARGS} ((\bf{st\_\-table} $\ast$))
+\item 
+\bf{st\_\-table} $\ast$ \bf{st\_\-init\_\-table\_\-with\_\-params} (\bf{ST\_\-PFICPCP} compare, \bf{ST\_\-PFICPI} hash, int \bf{size}, int density, double grow\_\-factor, int reorder\_\-flag)
+\item 
+\bf{st\_\-table} $\ast$ \bf{st\_\-init\_\-table} (\bf{ST\_\-PFICPCP} compare, \bf{ST\_\-PFICPI} hash)
+\item 
+void \bf{st\_\-free\_\-table} (\bf{st\_\-table} $\ast$table)
+\item 
+int \bf{st\_\-lookup} (\bf{st\_\-table} $\ast$table, char $\ast$key, char $\ast$$\ast$value)
+\item 
+int \bf{st\_\-lookup\_\-int} (\bf{st\_\-table} $\ast$table, char $\ast$key, int $\ast$value)
+\item 
+int \bf{st\_\-insert} (\bf{st\_\-table} $\ast$table, char $\ast$key, char $\ast$value)
+\item 
+int \bf{st\_\-add\_\-direct} (\bf{st\_\-table} $\ast$table, char $\ast$key, char $\ast$value)
+\item 
+int \bf{st\_\-find\_\-or\_\-add} (\bf{st\_\-table} $\ast$table, char $\ast$key, char $\ast$$\ast$$\ast$slot)
+\item 
+int \bf{st\_\-find} (\bf{st\_\-table} $\ast$table, char $\ast$key, char $\ast$$\ast$$\ast$slot)
+\item 
+static int \bf{rehash} (\bf{st\_\-table} $\ast$table)
+\item 
+\bf{st\_\-table} $\ast$ \bf{st\_\-copy} (\bf{st\_\-table} $\ast$old\_\-table)
+\item 
+int \bf{st\_\-delete} (\bf{st\_\-table} $\ast$table, char $\ast$$\ast$keyp, char $\ast$$\ast$value)
+\item 
+int \bf{st\_\-delete\_\-int} (\bf{st\_\-table} $\ast$table, int $\ast$keyp, char $\ast$$\ast$value)
+\item 
+int \bf{st\_\-foreach} (\bf{st\_\-table} $\ast$table, \bf{ST\_\-PFSR} func, char $\ast$arg)
+\item 
+int \bf{st\_\-strhash} (char $\ast$string, int modulus)
+\item 
+int \bf{st\_\-numhash} (char $\ast$x, int \bf{size})
+\item 
+int \bf{st\_\-ptrhash} (char $\ast$x, int \bf{size})
+\item 
+int \bf{st\_\-numcmp} (const char $\ast$x, const char $\ast$y)
+\item 
+int \bf{st\_\-ptrcmp} (const char $\ast$x, const char $\ast$y)
+\item 
+\bf{st\_\-generator} $\ast$ \bf{st\_\-init\_\-gen} (\bf{st\_\-table} $\ast$table)
+\item 
+int \bf{st\_\-gen} (\bf{st\_\-generator} $\ast$gen, char $\ast$$\ast$key\_\-p, char $\ast$$\ast$value\_\-p)
+\item 
+int \bf{st\_\-gen\_\-int} (\bf{st\_\-generator} $\ast$gen, char $\ast$$\ast$key\_\-p, long $\ast$value\_\-p)
+\item 
+void \bf{st\_\-free\_\-gen} (\bf{st\_\-generator} $\ast$gen)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{st.c@{st.c}!ADD_DIRECT@{ADD\_\-DIRECT}}
+\index{ADD_DIRECT@{ADD\_\-DIRECT}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ADD\_\-DIRECT(table, key, value, hash\_\-val, newt)}\label{st_8c_956d9dcd99d68ab4503789312b72c29a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}{\
+    if (table->num_entries/table->num_bins >= table->max_density) {\
+        rehash(table);\
+        hash_val = do_hash(key,table);\
+    }\
+    \
+    newt = ALLOC(st_table_entry, 1);\
+    \
+    newt->key = key;\
+    newt->record = value;\
+    newt->next = table->bins[hash_val];\
+    table->bins[hash_val] = newt;\
+    table->num_entries++;\
+}
+\end{verbatim}\end{Code}
+
+
+Definition at line 151 of file st.c.\index{st.c@{st.c}!do_hash@{do\_\-hash}}
+\index{do_hash@{do\_\-hash}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define do\_\-hash(key, table)}\label{st_8c_8719b25fa2e849ad268f0bb382bae21c}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((int)((table->hash == st_ptrhash) ? ST_PTRHASH((key),(table)->num_bins) :\
+     (table->hash == st_numhash) ? ST_NUMHASH((key), (table)->num_bins) :\
+     (*table->hash)((key), (table)->num_bins)))
+\end{verbatim}\end{Code}
+
+
+Definition at line 24 of file st.c.
+
+Referenced by rehash(), st\_\-add\_\-direct(), st\_\-delete(), st\_\-delete\_\-int(), st\_\-find(), st\_\-find\_\-or\_\-add(), st\_\-insert(), st\_\-lookup(), and st\_\-lookup\_\-int().\index{st.c@{st.c}!EQUAL@{EQUAL}}
+\index{EQUAL@{EQUAL}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EQUAL(func, x, y)}\label{st_8c_df137c378b35c2dbab9579eeb5c03150}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((((func) == st_numcmp) || ((func) == st_ptrcmp)) ?\
+      (ST_NUMCMP((x),(y)) == 0) : ((*func)((x), (y)) == 0))
+\end{verbatim}\end{Code}
+
+
+Definition at line 19 of file st.c.\index{st.c@{st.c}!FIND_ENTRY@{FIND\_\-ENTRY}}
+\index{FIND_ENTRY@{FIND\_\-ENTRY}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIND\_\-ENTRY(table, hash\_\-val, key, ptr, last)}\label{st_8c_9fc5c02ec598b362bd1fd5ddb6442731}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(last) = &(table)->bins[hash_val];\
+    (ptr) = *(last);\
+    while (PTR_NOT_EQUAL((table), (ptr), (key))) {\
+        (last) = &(ptr)->next; (ptr) = *(last);\
+    }\
+    if ((ptr) != NULL && (table)->reorder_flag) {\
+        *(last) = (ptr)->next;\
+        (ptr)->next = (table)->bins[hash_val];\
+        (table)->bins[hash_val] = (ptr);\
+    }
+\end{verbatim}\end{Code}
+
+
+Definition at line 98 of file st.c.
+
+Referenced by st\_\-delete(), st\_\-delete\_\-int(), st\_\-find(), st\_\-find\_\-or\_\-add(), st\_\-insert(), st\_\-lookup(), and st\_\-lookup\_\-int().\index{st.c@{st.c}!PTR_NOT_EQUAL@{PTR\_\-NOT\_\-EQUAL}}
+\index{PTR_NOT_EQUAL@{PTR\_\-NOT\_\-EQUAL}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PTR\_\-NOT\_\-EQUAL(table, ptr, user\_\-key)~(ptr != NULL \&\& !EQUAL(table $\rightarrow$ compare, user\_\-key, (ptr) $\rightarrow$ key))}\label{st_8c_dc63a1b1f02f0b457c85154dc513d626}
+
+
+
+
+Definition at line 95 of file st.c.\index{st.c@{st.c}!ST_NUMCMP@{ST\_\-NUMCMP}}
+\index{ST_NUMCMP@{ST\_\-NUMCMP}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ST\_\-NUMCMP(x, y)~((x) != (y))}\label{st_8c_2796b8bc2a5f15834d61a3519ad149d5}
+
+
+
+
+Definition at line 16 of file st.c.
+
+Referenced by st\_\-numcmp(), and st\_\-ptrcmp().\index{st.c@{st.c}!ST_NUMHASH@{ST\_\-NUMHASH}}
+\index{ST_NUMHASH@{ST\_\-NUMHASH}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ST\_\-NUMHASH(x, \bf{size})~(ABS((long)x)\%(\bf{size}))}\label{st_8c_76573cced143d429f99bfb5e286c621e}
+
+
+
+
+Definition at line 17 of file st.c.
+
+Referenced by st\_\-numhash().\index{st.c@{st.c}!ST_PTRHASH@{ST\_\-PTRHASH}}
+\index{ST_PTRHASH@{ST\_\-PTRHASH}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ST\_\-PTRHASH(x, \bf{size})~((int)((unsigned long)(x)$>$$>$2)\%\bf{size})}\label{st_8c_524a1efaf5df2432aa5bf96e35546164}
+
+
+
+
+Definition at line 18 of file st.c.
+
+Referenced by st\_\-ptrhash().
+
+\subsection{Function Documentation}
+\index{st.c@{st.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int rehash ARGS ((\bf{st\_\-table} $\ast$))\hspace{0.3cm}{\tt  [static]}}\label{st_8c_9258aa29260061322fd1f5fa1e5c4172}
+
+
+\index{st.c@{st.c}!rehash@{rehash}}
+\index{rehash@{rehash}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int rehash (\bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{st_8c_974179f1640bb047e2c46bdafe2b2fb0}
+
+
+
+
+Definition at line 281 of file st.c.
+
+References ALLOC, st\_\-table::bins, do\_\-hash, FREE, st\_\-table::grow\_\-factor, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by st\_\-add\_\-direct(), st\_\-find\_\-or\_\-add(), and st\_\-insert().\index{st.c@{st.c}!st_add_direct@{st\_\-add\_\-direct}}
+\index{st_add_direct@{st\_\-add\_\-direct}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-add\_\-direct (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, char $\ast$ {\em value})}\label{st_8c_23181b3571fdb45f4ff4b5ffad656f5c}
+
+
+
+
+Definition at line 202 of file st.c.
+
+References ALLOC, st\_\-table::bins, do\_\-hash, st\_\-table\_\-entry::key, st\_\-table::max\_\-density, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, st\_\-table\_\-entry::record, rehash(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by cudd\-Bdd\-Transfer\-Recur(), cudd\-Collect\-Nodes(), cudd\-Estimate\-Cofactor(), dd\-Count\-Minterm\-Aux(), dd\-Count\-Path\-Aux(), and dp2().\index{st.c@{st.c}!st_copy@{st\_\-copy}}
+\index{st_copy@{st\_\-copy}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{st\_\-table}$\ast$ st\_\-copy (\bf{st\_\-table} $\ast$ {\em old\_\-table})}\label{st_8c_1fe53fe235ae6db0c7abe49413785363}
+
+
+
+
+Definition at line 327 of file st.c.
+
+References ALLOC, st\_\-table::bins, FREE, st\_\-table\_\-entry::next, NIL, and st\_\-table::num\_\-bins.\index{st.c@{st.c}!st_delete@{st\_\-delete}}
+\index{st_delete@{st\_\-delete}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-delete (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$$\ast$ {\em keyp}, char $\ast$$\ast$ {\em value})}\label{st_8c_45ee9bed192436dabfb6a52dbd754a15}
+
+
+
+
+Definition at line 372 of file st.c.
+
+References do\_\-hash, FIND\_\-ENTRY, FREE, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-entries, and st\_\-table\_\-entry::record.
+
+Referenced by cudd\-Ga().\index{st.c@{st.c}!st_delete_int@{st\_\-delete\_\-int}}
+\index{st_delete_int@{st\_\-delete\_\-int}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-delete\_\-int (\bf{st\_\-table} $\ast$ {\em table}, int $\ast$ {\em keyp}, char $\ast$$\ast$ {\em value})}\label{st_8c_d79d880ccd6e65ced48c04d0b165f30e}
+
+
+
+
+Definition at line 395 of file st.c.
+
+References do\_\-hash, FIND\_\-ENTRY, FREE, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-entries, and st\_\-table\_\-entry::record.\index{st.c@{st.c}!st_find@{st\_\-find}}
+\index{st_find@{st\_\-find}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-find (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, char $\ast$$\ast$$\ast$ {\em slot})}\label{st_8c_c511f7f70bc7c3935ecc4d87ab40c797}
+
+
+
+
+Definition at line 261 of file st.c.
+
+References do\_\-hash, FIND\_\-ENTRY, NIL, and st\_\-table\_\-entry::record.\index{st.c@{st.c}!st_find_or_add@{st\_\-find\_\-or\_\-add}}
+\index{st_find_or_add@{st\_\-find\_\-or\_\-add}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-find\_\-or\_\-add (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, char $\ast$$\ast$$\ast$ {\em slot})}\label{st_8c_44ecb97d7f538951538c6f1ede4f60a6}
+
+
+
+
+Definition at line 227 of file st.c.
+
+References ALLOC, st\_\-table::bins, do\_\-hash, FIND\_\-ENTRY, st\_\-table\_\-entry::key, st\_\-table::max\_\-density, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, st\_\-table\_\-entry::record, rehash(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by cudd\-Bdd\-LICMark\-Edges().\index{st.c@{st.c}!st_foreach@{st\_\-foreach}}
+\index{st_foreach@{st\_\-foreach}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-foreach (\bf{st\_\-table} $\ast$ {\em table}, \bf{ST\_\-PFSR} {\em func}, char $\ast$ {\em arg})}\label{st_8c_4d18e5a6949c772c9ff8c3c70ec00b57}
+
+
+
+
+Definition at line 418 of file st.c.
+
+References st\_\-table::bins, FREE, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, st\_\-table\_\-entry::record, ST\_\-CONTINUE, ST\_\-DELETE, and ST\_\-STOP.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Correlation(), Cudd\_\-bdd\-Correlation\-Weights(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), cudd\-Bdd\-LICompaction(), and cudd\-Subset\-Short\-Paths().\index{st.c@{st.c}!st_free_gen@{st\_\-free\_\-gen}}
+\index{st_free_gen@{st\_\-free\_\-gen}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void st\_\-free\_\-gen (\bf{st\_\-generator} $\ast$ {\em gen})}\label{st_8c_d41b7ddada4e857c815181e0da79c8e1}
+
+
+
+
+Definition at line 553 of file st.c.
+
+References FREE.
+
+Referenced by Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Gen\-Free(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), and cudd\-Subset\-Heavy\-Branch().\index{st.c@{st.c}!st_free_table@{st\_\-free\_\-table}}
+\index{st_free_table@{st\_\-free\_\-table}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void st\_\-free\_\-table (\bf{st\_\-table} $\ast$ {\em table})}\label{st_8c_93394fd99c5fa4fbcce2be9717abee45}
+
+
+
+
+Definition at line 78 of file st.c.
+
+References st\_\-table::bins, FREE, st\_\-table\_\-entry::next, NIL, and st\_\-table::num\_\-bins.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Correlation(), Cudd\_\-bdd\-Correlation\-Weights(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Debug\-Check(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-First\-Node(), Cudd\_\-Gen\-Free(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Dag\-Size(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), cudd\-Ga(), cudd\-P(), cudd\-Remap\-Under\-Approx(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Under\-Approx(), cudd\-Zdd\-P(), gather\-Info(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), and Subset\-Count\-Nodes\-Aux().\index{st.c@{st.c}!st_gen@{st\_\-gen}}
+\index{st_gen@{st\_\-gen}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-gen (\bf{st\_\-generator} $\ast$ {\em gen}, char $\ast$$\ast$ {\em key\_\-p}, char $\ast$$\ast$ {\em value\_\-p})}\label{st_8c_3fcaece6163a224ed605652118da1eef}
+
+
+
+
+Definition at line 499 of file st.c.
+
+References st\_\-table::bins, st\_\-generator::entry, st\_\-generator::index, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table\_\-entry::record, and st\_\-generator::table.
+
+Referenced by Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-First\-Node(), Cudd\_\-Next\-Node(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), and cudd\-Subset\-Heavy\-Branch().\index{st.c@{st.c}!st_gen_int@{st\_\-gen\_\-int}}
+\index{st_gen_int@{st\_\-gen\_\-int}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-gen\_\-int (\bf{st\_\-generator} $\ast$ {\em gen}, char $\ast$$\ast$ {\em key\_\-p}, long $\ast$ {\em value\_\-p})}\label{st_8c_234f6f716bd6ad638bab98457e538ef9}
+
+
+
+
+Definition at line 526 of file st.c.
+
+References st\_\-table::bins, st\_\-generator::entry, st\_\-generator::index, st\_\-table\_\-entry::key, st\_\-table\_\-entry::next, NIL, st\_\-table\_\-entry::record, and st\_\-generator::table.\index{st.c@{st.c}!st_init_gen@{st\_\-init\_\-gen}}
+\index{st_init_gen@{st\_\-init\_\-gen}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{st\_\-generator}$\ast$ st\_\-init\_\-gen (\bf{st\_\-table} $\ast$ {\em table})}\label{st_8c_2fb7a7c51faa5ae0f14d0520804253d4}
+
+
+
+
+Definition at line 483 of file st.c.
+
+References ALLOC, st\_\-generator::entry, st\_\-generator::index, NIL, and st\_\-generator::table.
+
+Referenced by Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-First\-Node(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), and cudd\-Subset\-Heavy\-Branch().\index{st.c@{st.c}!st_init_table@{st\_\-init\_\-table}}
+\index{st_init_table@{st\_\-init\_\-table}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{st\_\-table}$\ast$ st\_\-init\_\-table (\bf{ST\_\-PFICPCP} {\em compare}, \bf{ST\_\-PFICPI} {\em hash})}\label{st_8c_24ffe70dd1bb859ac2f650ccf1ba1eda}
+
+
+
+
+Definition at line 69 of file st.c.
+
+References ST\_\-DEFAULT\_\-GROW\_\-FACTOR, ST\_\-DEFAULT\_\-INIT\_\-TABLE\_\-SIZE, ST\_\-DEFAULT\_\-MAX\_\-DENSITY, ST\_\-DEFAULT\_\-REORDER\_\-FLAG, and st\_\-init\_\-table\_\-with\_\-params().
+
+Referenced by Create\-Path\-Table(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Correlation(), Cudd\_\-bdd\-Correlation\-Weights(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Debug\-Check(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-First\-Node(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Dag\-Size(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), cudd\-Ga(), cudd\-P(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-P(), gather\-Info(), and Subset\-Count\-Minterm().\index{st.c@{st.c}!st_init_table_with_params@{st\_\-init\_\-table\_\-with\_\-params}}
+\index{st_init_table_with_params@{st\_\-init\_\-table\_\-with\_\-params}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{st\_\-table}$\ast$ st\_\-init\_\-table\_\-with\_\-params (\bf{ST\_\-PFICPCP} {\em compare}, \bf{ST\_\-PFICPI} {\em hash}, int {\em size}, int {\em density}, double {\em grow\_\-factor}, int {\em reorder\_\-flag})}\label{st_8c_88896d7ce4715597cba13ff35952e0b5}
+
+
+
+
+Definition at line 32 of file st.c.
+
+References ALLOC, st\_\-table::bins, st\_\-table::compare, FREE, st\_\-table::grow\_\-factor, st\_\-table::hash, st\_\-table::max\_\-density, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, and st\_\-table::reorder\_\-flag.
+
+Referenced by st\_\-init\_\-table().\index{st.c@{st.c}!st_insert@{st\_\-insert}}
+\index{st_insert@{st\_\-insert}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-insert (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, char $\ast$ {\em value})}\label{st_8c_f49cc6904c1ca19f009c4523f61d8591}
+
+
+
+
+Definition at line 168 of file st.c.
+
+References ALLOC, st\_\-table::bins, do\_\-hash, FIND\_\-ENTRY, st\_\-table\_\-entry::key, st\_\-table::max\_\-density, st\_\-table\_\-entry::next, NIL, st\_\-table::num\_\-bins, st\_\-table::num\_\-entries, st\_\-table\_\-entry::record, rehash(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by bdd\-Annotate\-Minterm\-Count(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), Count\-Minterms(), Create\-Bot\-Dist(), Create\-Path\-Table(), Create\-Top\-Dist(), Cudd\_\-Debug\-Check(), cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Conjuncts\-Aux(), cudd\-Ga(), cudd\-Subset\-Heavy\-Branch(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), cudd\-Zdd\-Dag\-Int(), dd\-Do\-Dump\-Blif(), dd\-Do\-Dump\-Da\-Vinci(), dd\-Do\-Dump\-DDcal(), gather\-Info(), gather\-Info\-Aux(), get\_\-largest(), get\_\-shortest(), Pick\-One\-Pair(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), Zero\-Case(), and zp2().\index{st.c@{st.c}!st_lookup@{st\_\-lookup}}
+\index{st_lookup@{st\_\-lookup}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-lookup (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, char $\ast$$\ast$ {\em value})}\label{st_8c_557d860b11aff620a96b6addcf836d81}
+
+
+
+
+Definition at line 111 of file st.c.
+
+References do\_\-hash, FIND\_\-ENTRY, NIL, and st\_\-table\_\-entry::record.
+
+Referenced by bdd\-Annotate\-Minterm\-Count(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), build\_\-dd(), Build\-Conjuncts(), Build\-Subset\-Bdd(), compute\-Savings(), Count\-Minterms(), Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-Debug\-Check(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Estimate\-Cofactor(), cudd\-Ga(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), dd\-Cof\-Minterm\-Aux(), dd\-Count\-Minterm\-Aux(), dd\-Count\-Path\-Aux(), gather\-Info\-Aux(), get\_\-cube(), get\_\-largest(), get\_\-path(), get\_\-shortest(), RAbuild\-Subset(), RAmark\-Nodes(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), UAmark\-Nodes(), update\-Parity(), and update\-Refs().\index{st.c@{st.c}!st_lookup_int@{st\_\-lookup\_\-int}}
+\index{st_lookup_int@{st\_\-lookup\_\-int}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-lookup\_\-int (\bf{st\_\-table} $\ast$ {\em table}, char $\ast$ {\em key}, int $\ast$ {\em value})}\label{st_8c_c88c6483b7dce1532154a3a0d662b6f3}
+
+
+
+
+Definition at line 131 of file st.c.
+
+References do\_\-hash, FIND\_\-ENTRY, NIL, and st\_\-table\_\-entry::record.
+
+Referenced by Build\-Conjuncts(), Check\-Tables\-Cache\-And\-Return(), Pair\-In\-Tables(), Pick\-One\-Pair(), and Zero\-Case().\index{st.c@{st.c}!st_numcmp@{st\_\-numcmp}}
+\index{st_numcmp@{st\_\-numcmp}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-numcmp (const char $\ast$ {\em x}, const char $\ast$ {\em y})}\label{st_8c_0ba60ae98aae8e6dd21bbe3b485bcfbe}
+
+
+
+
+Definition at line 471 of file st.c.
+
+References ST\_\-NUMCMP.\index{st.c@{st.c}!st_numhash@{st\_\-numhash}}
+\index{st_numhash@{st\_\-numhash}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-numhash (char $\ast$ {\em x}, int {\em size})}\label{st_8c_ede320ef4713f295a335b4da6e1d8358}
+
+
+
+
+Definition at line 459 of file st.c.
+
+References ST\_\-NUMHASH.\index{st.c@{st.c}!st_ptrcmp@{st\_\-ptrcmp}}
+\index{st_ptrcmp@{st\_\-ptrcmp}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-ptrcmp (const char $\ast$ {\em x}, const char $\ast$ {\em y})}\label{st_8c_52bf6e577a2a87b2cdedb1c3d0e25075}
+
+
+
+
+Definition at line 477 of file st.c.
+
+References ST\_\-NUMCMP.
+
+Referenced by Create\-Path\-Table(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Debug\-Check(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-First\-Node(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Dag\-Size(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), cudd\-P(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-P(), gather\-Info(), and Subset\-Count\-Minterm().\index{st.c@{st.c}!st_ptrhash@{st\_\-ptrhash}}
+\index{st_ptrhash@{st\_\-ptrhash}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-ptrhash (char $\ast$ {\em x}, int {\em size})}\label{st_8c_da6e90b4df1ca291977c89a6d4fdea06}
+
+
+
+
+Definition at line 465 of file st.c.
+
+References ST\_\-PTRHASH.
+
+Referenced by Create\-Path\-Table(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Debug\-Check(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-First\-Node(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Dag\-Size(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Transfer(), cudd\-Conjuncts\-Aux(), cudd\-P(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-P(), gather\-Info(), and Subset\-Count\-Minterm().\index{st.c@{st.c}!st_strhash@{st\_\-strhash}}
+\index{st_strhash@{st\_\-strhash}!st.c@{st.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int st\_\-strhash (char $\ast$ {\em string}, int {\em modulus})}\label{st_8c_19f7c89b3e6ea56f9a3c29c07271e29a}
+
+
+
+
+Definition at line 446 of file st.c.

@@ -1,0 +1,376 @@
+\section{dataflow.c File Reference}
+\label{dataflow_8c}\index{dataflow.c@{dataflow.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$library/graph.h$>$}\par
+{\tt \#include $<$library/dataflow.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{GOOD\_\-ID}(id)~((id$>$=0) \&\& (id$<$MAX\_\-NODE\_\-ID))
+\item 
+\#define \bf{GOOD\_\-REG\_\-ID}(id)~((id$>$=0) \&\& (id$<$MAX\_\-REG\_\-ID))
+\item 
+\#define \bf{MAX}~((MAX\_\-NODE\_\-ID $>$ MAX\_\-REG\_\-ID) ? MAX\_\-NODE\_\-ID : MAX\_\-REG\_\-ID)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{reaching\_\-definition} (\bf{FGraph} \bf{graph}, struct \bf{I\_\-Node} $\ast$\bf{nodes}, struct \bf{I\_\-Reg} $\ast$\bf{regs})
+\item 
+static void \bf{ud\_\-chain} (\bf{FGraph} \bf{graph}, struct \bf{I\_\-Node} $\ast$\bf{nodes}, struct \bf{I\_\-Reg} $\ast$\bf{regs}, \bf{Node} \bf{entry})
+\item 
+static void \bf{live\_\-variable} (\bf{FGraph} \bf{graph}, struct \bf{I\_\-Node} $\ast$\bf{nodes}, struct \bf{I\_\-Reg} $\ast$\bf{regs})
+\item 
+static void \bf{dominator} (\bf{FGraph} \bf{graph}, struct \bf{I\_\-Node} $\ast$\bf{nodes}, \bf{Node} \bf{entry})
+\item 
+static void \bf{post\_\-dominator} (\bf{FGraph} \bf{graph}, struct \bf{I\_\-Node} $\ast$\bf{nodes}, \bf{Node} \bf{entry})
+\item 
+static void \bf{punt} (char $\ast$mesg)
+\item 
+static void \bf{reset\_\-nodes} (void)
+\item 
+\bf{I\_\-Node} $\ast$ \bf{find\_\-df\_\-node} (int id)
+\item 
+static struct \bf{I\_\-Node} $\ast$ \bf{add\_\-node} (int id)
+\item 
+\bf{I\_\-Reg} $\ast$ \bf{find\_\-df\_\-reg} (int reg\_\-id)
+\item 
+static struct \bf{I\_\-Reg} $\ast$ \bf{add\_\-reg} (int reg\_\-id)
+\item 
+void \bf{define\_\-df\_\-graph} (void)
+\item 
+void \bf{add\_\-df\_\-node} (int id)
+\item 
+void \bf{add\_\-df\_\-node\_\-src\_\-reg} (int reg\_\-id)
+\item 
+void \bf{add\_\-df\_\-node\_\-dest\_\-reg} (int reg\_\-id)
+\item 
+void \bf{connect\_\-df\_\-node} (int src\_\-id, int dest\_\-id)
+\item 
+void \bf{end\_\-df\_\-graph} (void)
+\item 
+void \bf{analyze\_\-df\_\-graph} (int \bf{mode})
+\item 
+static void \bf{print\_\-set} (FILE $\ast$\bf{F}, \bf{Set} set, char $\ast$prefix)
+\item 
+void \bf{print\_\-df\_\-node} (FILE $\ast$\bf{F}, struct \bf{I\_\-Node} $\ast$\bf{node})
+\item 
+void \bf{print\_\-df\_\-graph} (FILE $\ast$\bf{F})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static struct \bf{I\_\-Reg} \bf{regs} [MAX\_\-REG\_\-ID]
+\item 
+static struct \bf{I\_\-Node} \bf{nodes} [MAX\_\-NODE\_\-ID]
+\item 
+static int \bf{nodes\_\-defined} = 0
+\item 
+static \bf{FGraph} \bf{graph} = 0
+\item 
+static struct \bf{I\_\-Node} $\ast$ \bf{node} = 0
+\item 
+static \bf{Node} \bf{entry} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{dataflow.c@{dataflow.c}!GOOD_ID@{GOOD\_\-ID}}
+\index{GOOD_ID@{GOOD\_\-ID}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GOOD\_\-ID(id)~((id$>$=0) \&\& (id$<$MAX\_\-NODE\_\-ID))}\label{dataflow_8c_f4e85281d8e3098e9bda4b454a57c07e}
+
+
+
+
+Definition at line 83 of file dataflow.c.
+
+Referenced by add\_\-df\_\-node(), add\_\-node(), and find\_\-df\_\-node().\index{dataflow.c@{dataflow.c}!GOOD_REG_ID@{GOOD\_\-REG\_\-ID}}
+\index{GOOD_REG_ID@{GOOD\_\-REG\_\-ID}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GOOD\_\-REG\_\-ID(id)~((id$>$=0) \&\& (id$<$MAX\_\-REG\_\-ID))}\label{dataflow_8c_51158b961f002ef88862bdff752f1e9f}
+
+
+
+
+Definition at line 84 of file dataflow.c.
+
+Referenced by add\_\-df\_\-node\_\-dest\_\-reg(), add\_\-df\_\-node\_\-src\_\-reg(), add\_\-reg(), and find\_\-df\_\-reg().\index{dataflow.c@{dataflow.c}!MAX@{MAX}}
+\index{MAX@{MAX}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX~((MAX\_\-NODE\_\-ID $>$ MAX\_\-REG\_\-ID) ? MAX\_\-NODE\_\-ID : MAX\_\-REG\_\-ID)}\label{dataflow_8c_392fb874e547e582e9c66a08a1f23326}
+
+
+
+
+Definition at line 861 of file dataflow.c.
+
+\subsection{Function Documentation}
+\index{dataflow.c@{dataflow.c}!add_df_node@{add\_\-df\_\-node}}
+\index{add_df_node@{add\_\-df\_\-node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-df\_\-node (int {\em id})}\label{dataflow_8c_7f405d5c7c371a55362c8389ed9c4b05}
+
+
+
+
+Definition at line 296 of file dataflow.c.
+
+References add\_\-node(), Add\-Node(), entry, find\_\-df\_\-node(), Find\-Node(), GOOD\_\-ID, graph, New\-Node(), node, node\-Ext, node\-Id, and punt().\index{dataflow.c@{dataflow.c}!add_df_node_dest_reg@{add\_\-df\_\-node\_\-dest\_\-reg}}
+\index{add_df_node_dest_reg@{add\_\-df\_\-node\_\-dest\_\-reg}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-df\_\-node\_\-dest\_\-reg (int {\em reg\_\-id})}\label{dataflow_8c_f182228aef8e2118a879f42eeb3d7c1d}
+
+
+
+
+Definition at line 337 of file dataflow.c.
+
+References add\_\-reg(), I\_\-Node::dest\_\-reg, I\_\-Reg::e\_\-def, GOOD\_\-REG\_\-ID, graph, I\_\-Node::id, node, punt(), and Set\_\-add().\index{dataflow.c@{dataflow.c}!add_df_node_src_reg@{add\_\-df\_\-node\_\-src\_\-reg}}
+\index{add_df_node_src_reg@{add\_\-df\_\-node\_\-src\_\-reg}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-df\_\-node\_\-src\_\-reg (int {\em reg\_\-id})}\label{dataflow_8c_90bb36d257114197da5da7233cce012c}
+
+
+
+
+Definition at line 322 of file dataflow.c.
+
+References add\_\-reg(), I\_\-Reg::e\_\-use, GOOD\_\-REG\_\-ID, graph, I\_\-Node::id, node, punt(), Set\_\-add(), and I\_\-Node::src\_\-reg.\index{dataflow.c@{dataflow.c}!add_node@{add\_\-node}}
+\index{add_node@{add\_\-node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static struct \bf{I\_\-Node}$\ast$ add\_\-node (int {\em id})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_e7dc2f79b7804a22f68c6b4342c4c8a0}
+
+
+
+
+Definition at line 225 of file dataflow.c.
+
+References I\_\-Node::defined, defined, GOOD\_\-ID, nodes, nodes\_\-defined, and punt().
+
+Referenced by add\_\-df\_\-node().\index{dataflow.c@{dataflow.c}!add_reg@{add\_\-reg}}
+\index{add_reg@{add\_\-reg}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static struct \bf{I\_\-Reg}$\ast$ add\_\-reg (int {\em reg\_\-id})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_b7acaf92f239588a7fd1e42514f6a882}
+
+
+
+
+Definition at line 251 of file dataflow.c.
+
+References I\_\-Reg::defined, defined, GOOD\_\-REG\_\-ID, nodes\_\-defined, punt(), and regs.
+
+Referenced by add\_\-df\_\-node\_\-dest\_\-reg(), and add\_\-df\_\-node\_\-src\_\-reg().\index{dataflow.c@{dataflow.c}!analyze_df_graph@{analyze\_\-df\_\-graph}}
+\index{analyze_df_graph@{analyze\_\-df\_\-graph}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void analyze\_\-df\_\-graph (int {\em mode})}\label{dataflow_8c_35fcc36d70bd4a3e5bf901b0141aabea}
+
+
+
+
+Definition at line 397 of file dataflow.c.
+
+References DOMINATOR, dominator(), entry, graph, LIVE\_\-VAR, live\_\-variable(), nodes, POST\_\-DOMINATOR, post\_\-dominator(), REACH\_\-DEFINE, reaching\_\-definition(), regs, ud\_\-chain(), and USE\_\-DEF\_\-CHAIN.\index{dataflow.c@{dataflow.c}!connect_df_node@{connect\_\-df\_\-node}}
+\index{connect_df_node@{connect\_\-df\_\-node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void connect\_\-df\_\-node (int {\em src\_\-id}, int {\em dest\_\-id})}\label{dataflow_8c_04c9b99c0375698dcfe160ee36ca146c}
+
+
+
+
+Definition at line 356 of file dataflow.c.
+
+References Add\-Node(), Connect\-Nodes(), Find\-Node(), graph, New\-Node(), node\-Id, and punt().\index{dataflow.c@{dataflow.c}!define_df_graph@{define\_\-df\_\-graph}}
+\index{define_df_graph@{define\_\-df\_\-graph}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void define\_\-df\_\-graph (void)}\label{dataflow_8c_18d17ac37de12e3bc188f054718aa646}
+
+
+
+
+Definition at line 270 of file dataflow.c.
+
+References entry, Free\-Graph(), graph, New\-Graph(), node, punt(), and reset\_\-nodes().\index{dataflow.c@{dataflow.c}!dominator@{dominator}}
+\index{dominator@{dominator}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dominator (\bf{FGraph} {\em graph}, struct \bf{I\_\-Node} $\ast$ {\em nodes}, \bf{Node} {\em entry})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_07aa15a7171ce573fca1008cd5c6fcd9}
+
+
+
+
+Definition at line 725 of file dataflow.c.
+
+References I\_\-Node::dom, entry, graph, I\_\-Node::id, next\-Arc, next\-Node, node, node\-Id, nodes, \_\-FGraph::nodes, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect(), Set\_\-same(), Set\_\-union(), source\-Arcs, and source\-Node.
+
+Referenced by analyze\_\-df\_\-graph(), and Free\-Extension\-Fields().\index{dataflow.c@{dataflow.c}!end_df_graph@{end\_\-df\_\-graph}}
+\index{end_df_graph@{end\_\-df\_\-graph}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void end\_\-df\_\-graph (void)}\label{dataflow_8c_bd53f0f6499bdd55bc4e4d8af145ccb5}
+
+
+
+
+Definition at line 379 of file dataflow.c.
+
+References entry, graph, next\-Node, node\-Ext, \_\-FGraph::nodes, and punt().\index{dataflow.c@{dataflow.c}!find_df_node@{find\_\-df\_\-node}}
+\index{find_df_node@{find\_\-df\_\-node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{I\_\-Node}$\ast$ find\_\-df\_\-node (int {\em id})}\label{dataflow_8c_831f2c23f46102a82ab271b75dcaf9bd}
+
+
+
+
+Definition at line 213 of file dataflow.c.
+
+References defined, GOOD\_\-ID, nodes, nodes\_\-defined, and punt().
+
+Referenced by add\_\-df\_\-node().\index{dataflow.c@{dataflow.c}!find_df_reg@{find\_\-df\_\-reg}}
+\index{find_df_reg@{find\_\-df\_\-reg}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{I\_\-Reg}$\ast$ find\_\-df\_\-reg (int {\em reg\_\-id})}\label{dataflow_8c_fd2051a50cece4bb251d07694aaaf671}
+
+
+
+
+Definition at line 239 of file dataflow.c.
+
+References defined, GOOD\_\-REG\_\-ID, nodes\_\-defined, punt(), and regs.\index{dataflow.c@{dataflow.c}!live_variable@{live\_\-variable}}
+\index{live_variable@{live\_\-variable}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void live\_\-variable (\bf{FGraph} {\em graph}, struct \bf{I\_\-Node} $\ast$ {\em nodes}, struct \bf{I\_\-Reg} $\ast$ {\em regs})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_7980e5c580070c57f393077571c169dc}
+
+
+
+
+Definition at line 626 of file dataflow.c.
+
+References I\_\-Node::def, I\_\-Node::dest\_\-reg, destination\-Arcs, destination\-Node, graph, next\-Arc, next\-Node, node, node\-Id, nodes, \_\-FGraph::nodes, Set\_\-dispose(), Set\_\-size(), Set\_\-subtract(), Set\_\-union(), I\_\-Node::src\_\-reg, I\_\-Node::use, I\_\-Node::v\_\-in, and I\_\-Node::v\_\-out.
+
+Referenced by analyze\_\-df\_\-graph().\index{dataflow.c@{dataflow.c}!post_dominator@{post\_\-dominator}}
+\index{post_dominator@{post\_\-dominator}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void post\_\-dominator (\bf{FGraph} {\em graph}, struct \bf{I\_\-Node} $\ast$ {\em nodes}, \bf{Node} {\em entry})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_94c6077d3b61d20de24b30b3d3a019b4}
+
+
+
+
+Definition at line 791 of file dataflow.c.
+
+References destination\-Arcs, destination\-Node, graph, I\_\-Node::id, next\-Arc, next\-Node, node, node\-Id, nodes, \_\-FGraph::nodes, I\_\-Node::post\_\-dom, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect(), Set\_\-same(), and Set\_\-union().
+
+Referenced by analyze\_\-df\_\-graph().\index{dataflow.c@{dataflow.c}!print_df_graph@{print\_\-df\_\-graph}}
+\index{print_df_graph@{print\_\-df\_\-graph}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-df\_\-graph (FILE $\ast$ {\em F})}\label{dataflow_8c_3f0a2441aab00712f252b61f1ca9b703}
+
+
+
+
+Definition at line 916 of file dataflow.c.
+
+References graph, I\_\-Node::id, next\-Node, node, node\-Id, \_\-FGraph::nodes, nodes, and print\_\-df\_\-node().\index{dataflow.c@{dataflow.c}!print_df_node@{print\_\-df\_\-node}}
+\index{print_df_node@{print\_\-df\_\-node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-df\_\-node (FILE $\ast$ {\em F}, struct \bf{I\_\-Node} $\ast$ {\em node})}\label{dataflow_8c_17dc8a7db94edf7cfdca834b178bde2f}
+
+
+
+
+Definition at line 881 of file dataflow.c.
+
+References I\_\-Node::a\_\-in, I\_\-Node::a\_\-out, I\_\-Node::def, I\_\-Node::defined, I\_\-Node::dest\_\-reg, I\_\-Node::dom, I\_\-Node::e\_\-in, I\_\-Node::e\_\-out, I\_\-Node::gen, I\_\-Node::id, I\_\-Node::kill, node, I\_\-Node::post\_\-dom, print\_\-set(), I\_\-Node::src\_\-reg, I\_\-Node::use, I\_\-Node::v\_\-in, and I\_\-Node::v\_\-out.
+
+Referenced by print\_\-df\_\-graph().\index{dataflow.c@{dataflow.c}!print_set@{print\_\-set}}
+\index{print_set@{print\_\-set}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void print\_\-set (FILE $\ast$ {\em F}, \bf{Set} {\em set}, char $\ast$ {\em prefix})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_5ca1dc1f1faecf9c5f34638963e72377}
+
+
+
+
+Definition at line 864 of file dataflow.c.
+
+References MAX, and Set\_\-in().
+
+Referenced by print\_\-df\_\-node().\index{dataflow.c@{dataflow.c}!punt@{punt}}
+\index{punt@{punt}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void punt (char $\ast$ {\em mesg})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_f0931678875804718c6d3459d6628485}
+
+
+
+
+Definition at line 87 of file dataflow.c.
+
+Referenced by add\_\-df\_\-node(), add\_\-df\_\-node\_\-dest\_\-reg(), add\_\-df\_\-node\_\-src\_\-reg(), add\_\-node(), add\_\-reg(), connect\_\-df\_\-node(), define\_\-df\_\-graph(), end\_\-df\_\-graph(), find\_\-df\_\-node(), and find\_\-df\_\-reg().\index{dataflow.c@{dataflow.c}!reaching_definition@{reaching\_\-definition}}
+\index{reaching_definition@{reaching\_\-definition}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void reaching\_\-definition (\bf{FGraph} {\em graph}, struct \bf{I\_\-Node} $\ast$ {\em nodes}, struct \bf{I\_\-Reg} $\ast$ {\em regs})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_cd4ebc26b673b66a06053423aedae318}
+
+
+
+
+Definition at line 425 of file dataflow.c.
+
+References I\_\-Node::def, defined, I\_\-Node::dest\_\-reg, I\_\-Node::e\_\-in, I\_\-Node::e\_\-out, I\_\-Node::gen, graph, I\_\-Node::kill, MAX\_\-REG\_\-ID, next\-Arc, next\-Node, node, node\-Id, nodes, \_\-FGraph::nodes, regs, Set\_\-add(), Set\_\-dispose(), Set\_\-in(), Set\_\-size(), Set\_\-subtract(), Set\_\-union(), source\-Arcs, and source\-Node.
+
+Referenced by analyze\_\-df\_\-graph().\index{dataflow.c@{dataflow.c}!reset_nodes@{reset\_\-nodes}}
+\index{reset_nodes@{reset\_\-nodes}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void reset\_\-nodes (void)\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_4e7aefa1bf03f464736cf3d8dd5fceb2}
+
+
+
+
+Definition at line 95 of file dataflow.c.
+
+References I\_\-Node::a\_\-in, I\_\-Node::a\_\-out, I\_\-Node::def, defined, I\_\-Node::dest\_\-reg, I\_\-Reg::e\_\-def, I\_\-Node::e\_\-in, I\_\-Node::e\_\-out, I\_\-Reg::e\_\-use, I\_\-Node::gen, I\_\-Node::id, I\_\-Node::kill, MAX\_\-NODE\_\-ID, MAX\_\-REG\_\-ID, nodes, nodes\_\-defined, regs, Set\_\-dispose(), I\_\-Node::src\_\-reg, I\_\-Node::use, I\_\-Node::v\_\-in, and I\_\-Node::v\_\-out.
+
+Referenced by define\_\-df\_\-graph().\index{dataflow.c@{dataflow.c}!ud_chain@{ud\_\-chain}}
+\index{ud_chain@{ud\_\-chain}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void ud\_\-chain (\bf{FGraph} {\em graph}, struct \bf{I\_\-Node} $\ast$ {\em nodes}, struct \bf{I\_\-Reg} $\ast$ {\em regs}, \bf{Node} {\em entry})\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_e760b1d43934b0d277054d53d929bc76}
+
+
+
+
+Definition at line 524 of file dataflow.c.
+
+References I\_\-Node::a\_\-in, I\_\-Node::a\_\-out, entry, I\_\-Node::gen, graph, I\_\-Node::kill, next\-Arc, next\-Node, node, node\-Ext, node\-Id, nodes, \_\-FGraph::nodes, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect(), Set\_\-size(), Set\_\-subtract(), Set\_\-union(), source\-Arcs, source\-Node, and U.
+
+Referenced by analyze\_\-df\_\-graph().
+
+\subsection{Variable Documentation}
+\index{dataflow.c@{dataflow.c}!entry@{entry}}
+\index{entry@{entry}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node} \bf{entry} = 0\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_79617e393ed50f7bffa2de436e1f9c74}
+
+
+
+
+Definition at line 267 of file dataflow.c.
+
+Referenced by \_\-MD\_\-check\_\-entry(), \_\-MD\_\-check\_\-field(), \_\-MD\_\-check\_\-section(), \_\-MD\_\-delete\_\-entry(), \_\-MD\_\-find\_\-field(), \_\-MD\_\-free\_\-entry(), \_\-MD\_\-get\_\-entry\_\-ext(), \_\-MD\_\-set\_\-entry\_\-ext(), add\_\-df\_\-node(), analyze\_\-df\_\-graph(), define\_\-df\_\-graph(), dominator(), end\_\-df\_\-graph(), MD\_\-delete\_\-field\_\-decl(), MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-next\_\-entry(), MD\_\-prev\_\-entry(), MD\_\-print\_\-entry(), MD\_\-print\_\-entry\_\-template(), MD\_\-print\_\-md\_\-declarations(), MD\_\-print\_\-section(), MD\_\-print\_\-section\_\-template(), MD\_\-read\_\-md(), MD\_\-rename\_\-entry(), MD\_\-resize\_\-field\_\-arrays(), MD\_\-write\_\-md(), and ud\_\-chain().\index{dataflow.c@{dataflow.c}!graph@{graph}}
+\index{graph@{graph}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{FGraph} \bf{graph} = 0\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_3e542f70d4117a954b3d7f30956d2b0d}
+
+
+
+
+Definition at line 265 of file dataflow.c.
+
+Referenced by add\_\-df\_\-node(), add\_\-df\_\-node\_\-dest\_\-reg(), add\_\-df\_\-node\_\-src\_\-reg(), Add\-Extension\-Fields(), Add\-Node(), analyze\_\-df\_\-graph(), connect\_\-df\_\-node(), Decode\-Arc(), Decode\-Node(), Decode\-Root(), define\_\-df\_\-graph(), Delete\-Node(), dominator(), end\_\-df\_\-graph(), Find\-Node(), Free\-Graph(), Graph\_\-arc\_\-from\_\-id(), Graph\_\-arc\_\-from\_\-id\_\-or\_\-null(), Graph\_\-connect\_\-nodes(), Graph\_\-connect\_\-nodes\_\-with\_\-weight(), Graph\_\-control\_\-dependence(), Graph\_\-count\_\-paths(), Graph\_\-create\_\-graph\_\-arc(), Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-create\_\-graph\_\-equiv\_\-cd(), Graph\_\-create\_\-graph\_\-node(), Graph\_\-create\_\-graph\_\-node\_\-given\_\-id(), Graph\_\-da\-Vinci(), Graph\_\-da\-Vinci2(), Graph\_\-da\-Vinci2\_\-multi\_\-root(), Graph\_\-delete\_\-unreachable(), Graph\_\-dfs\_\-topo\_\-sort(), Graph\_\-dfs\_\-topo\_\-visit(), Graph\_\-dominator(), Graph\_\-equiv\_\-cd(), Graph\_\-equiv\_\-cd\_\-from\_\-id(), Graph\_\-free\_\-graph(), Graph\_\-imm\_\-dominator(), Graph\_\-imm\_\-post\_\-dominator(), Graph\_\-node\_\-from\_\-id(), Graph\_\-node\_\-from\_\-id\_\-or\_\-null(), Graph\_\-post\_\-dominator(), Graph\_\-preorder\_\-dfs\_\-sort(), Graph\_\-preorder\_\-dfs\_\-visit(), Graph\_\-rev\_\-topological\_\-sort(), Graph\_\-rev\_\-topological\_\-visit(), Graph\_\-size(), Graph\_\-topological\_\-sort(), live\_\-variable(), Place\-Traces(), post\_\-dominator(), print\_\-df\_\-graph(), reaching\_\-definition(), Read\-Graph(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), Trace\-Selection(), ud\_\-chain(), and Write\-Graph().\index{dataflow.c@{dataflow.c}!node@{node}}
+\index{node@{node}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{I\_\-Node}$\ast$ \bf{node} = 0\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_69971143e908d3fc31e596632d5a4073}
+
+
+
+
+Definition at line 266 of file dataflow.c.
+
+Referenced by \_\-Add\_\-2\_\-nd\_\-buf(), add\_\-df\_\-node(), add\_\-df\_\-node\_\-dest\_\-reg(), add\_\-df\_\-node\_\-src\_\-reg(), Add\-Node(), best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Cl\_\-dispose(), Cl\_\-print(), Clear\-Status\-Bits(), Decode\-Arc(), Decode\-Node(), define\_\-df\_\-graph(), Dispose\-Node(), dominator(), Find\-And\-Add\-S(), Find\-Non\-Zero(), Free\-Node(), Graph\_\-control\_\-dependence(), Graph\_\-count\_\-paths(), Graph\_\-count\_\-paths\_\-visit(), Graph\_\-da\-Vinci(), Graph\_\-da\-Vinci2(), Graph\_\-da\-Vinci2\_\-multi\_\-root(), Graph\_\-da\-Vinci\_\-visit(), Graph\_\-da\-Vinci\_\-visit2(), Graph\_\-delete\_\-unreachable(), Graph\_\-dfs\_\-topo\_\-sort(), Graph\_\-dfs\_\-topo\_\-visit(), Graph\_\-dominator(), Graph\_\-equiv\_\-cd(), Graph\_\-free\_\-graph(), Graph\_\-imm\_\-dominator(), Graph\_\-imm\_\-post\_\-dominator(), Graph\_\-post\_\-dominator(), Graph\_\-preorder\_\-dfs\_\-sort(), Graph\_\-preorder\_\-dfs\_\-visit(), Graph\_\-rev\_\-topological\_\-sort(), Graph\_\-rev\_\-topological\_\-visit(), Heap\_\-Dispose(), Is\-Cyclic(), L\_\-add\_\-forced\_\-parms(), L\_\-add\_\-parm\_\-already\_\-defined(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-add\_\-parm\_\-not\_\-used(), L\_\-add\_\-to\_\-parm\_\-table\_\-list(), L\_\-define\_\-parm\_\-macro(), L\_\-free\_\-parm\_\-macro\_\-list(), L\_\-free\_\-parm\_\-table\_\-list(), L\_\-get\_\-parm\_\-macro\_\-value(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), L\_\-read\_\-parm\_\-s(), L\_\-show\_\-parms\_\-warnings(), L\_\-warn\_\-about\_\-unused\_\-macros(), live\_\-variable(), look\_\-for\_\-forced\_\-param(), Mark\-Nodes(), Mark\-Nodes\-Zero(), Mark\-Status\-Bits(), Place\-Traces(), post\_\-dominator(), print\_\-df\_\-graph(), print\_\-df\_\-node(), print\_\-node(), Print\-Node(), reaching\_\-definition(), Read\-Graph(), Remove\-Nodes(), Report\-Selection\-Result(), ud\_\-chain(), Visit\-All\-Nodes(), and Visit\-Nodes().\index{dataflow.c@{dataflow.c}!nodes@{nodes}}
+\index{nodes@{nodes}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{I\_\-Node} \bf{nodes}[MAX\_\-NODE\_\-ID]\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_ae537a19454c5638b4ae21eb660d33df}
+
+
+
+
+Definition at line 80 of file dataflow.c.
+
+Referenced by add\_\-node(), analyze\_\-df\_\-graph(), dominator(), find\_\-df\_\-node(), Free\-Graph(), live\_\-variable(), post\_\-dominator(), print\_\-df\_\-graph(), reaching\_\-definition(), reset\_\-nodes(), and ud\_\-chain().\index{dataflow.c@{dataflow.c}!nodes_defined@{nodes\_\-defined}}
+\index{nodes_defined@{nodes\_\-defined}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{nodes\_\-defined} = 0\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_b09601288459e665bd4d0c07d76d21aa}
+
+
+
+
+Definition at line 81 of file dataflow.c.
+
+Referenced by add\_\-node(), add\_\-reg(), find\_\-df\_\-node(), find\_\-df\_\-reg(), and reset\_\-nodes().\index{dataflow.c@{dataflow.c}!regs@{regs}}
+\index{regs@{regs}!dataflow.c@{dataflow.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{I\_\-Reg} \bf{regs}[MAX\_\-REG\_\-ID]\hspace{0.3cm}{\tt  [static]}}\label{dataflow_8c_4e995b4ebf5203cec7882557e291e9b9}
+
+
+
+
+Definition at line 79 of file dataflow.c.
+
+Referenced by add\_\-reg(), analyze\_\-df\_\-graph(), find\_\-df\_\-reg(), reaching\_\-definition(), and reset\_\-nodes().

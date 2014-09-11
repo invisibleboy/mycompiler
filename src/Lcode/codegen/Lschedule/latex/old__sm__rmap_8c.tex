@@ -1,0 +1,240 @@
+\section{old\_\-sm\_\-rmap.c File Reference}
+\label{old__sm__rmap_8c}\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include \char`\"{}old\_\-sm.h\char`\"{}}\par
+{\tt \#include $<$machine/mdes2.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DEBUG\_\-RMAP\_\-RESIZE}~0
+\item 
+\#define \bf{DEBUG\_\-RMAP}~0
+\item 
+\#define \bf{TAKE\_\-STATS}~0
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{OLD\_\-SM\_\-commit\_\-choices} (unsigned int $\ast$map, SM\_\-Table $\ast$table, unsigned short $\ast$choices\_\-made)
+\item 
+\bf{OLD\_\-SM\_\-Cb} $\ast$ \bf{OLD\_\-SM\_\-new\_\-cb} (Mdes2 $\ast$mdes2, \bf{OLD\_\-SM\_\-Func} $\ast$sm\_\-func, L\_\-Cb $\ast$cb)
+\item 
+void \bf{OLD\_\-SM\_\-delete\_\-cb} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{OLD\_\-SM\_\-check\_\-map} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, int max\_\-init\_\-offset)
+\item 
+void \bf{OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, int min\_\-init\_\-offset)
+\item 
+void \bf{OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, int max\_\-usage\_\-offset)
+\item 
+void \bf{OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, int min\_\-usage\_\-offset)
+\item 
+void \bf{OLD\_\-SM\_\-create\_\-map} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, int min\_\-usage\_\-offset, int max\_\-usage\_\-offset)
+\item 
+int \bf{OLD\_\-SM\_\-sched\_\-table} (\bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb, SM\_\-Table $\ast$table, int time, unsigned short min\_\-slot, unsigned short max\_\-slot, int commit, Mdes\_\-Stats $\ast$stats)
+\item 
+int \bf{OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options} (unsigned int $\ast$map, SM\_\-Table $\ast$table, unsigned short $\ast$choices\_\-made, unsigned int min\_\-slot, unsigned int max\_\-slot, Mdes\_\-Stats $\ast$stats)
+\item 
+void \bf{OLD\_\-SM\_\-print\_\-option} (FILE $\ast$out, SM\_\-Mdes $\ast$sm\_\-mdes, SM\_\-Option $\ast$option)
+\item 
+void \bf{OLD\_\-SM\_\-print\_\-map} (FILE $\ast$out, SM\_\-Mdes $\ast$sm\_\-mdes, \bf{OLD\_\-SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{OLD\_\-SM\_\-print\_\-stats} (FILE $\ast$out, Mdes\_\-Stats $\ast$stats)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{OLD\_\-SM\_\-Cb\_\-pool} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!DEBUG_RMAP@{DEBUG\_\-RMAP}}
+\index{DEBUG_RMAP@{DEBUG\_\-RMAP}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEBUG\_\-RMAP~0}\label{old__sm__rmap_8c_bb86bec221a00d270ed52f47811465d5}
+
+
+
+
+Definition at line 68 of file old\_\-sm\_\-rmap.c.\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!DEBUG_RMAP_RESIZE@{DEBUG\_\-RMAP\_\-RESIZE}}
+\index{DEBUG_RMAP_RESIZE@{DEBUG\_\-RMAP\_\-RESIZE}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEBUG\_\-RMAP\_\-RESIZE~0}\label{old__sm__rmap_8c_c5b47c4c50783b54a9e9efbe9262698f}
+
+
+
+
+Definition at line 67 of file old\_\-sm\_\-rmap.c.\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!TAKE_STATS@{TAKE\_\-STATS}}
+\index{TAKE_STATS@{TAKE\_\-STATS}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TAKE\_\-STATS~0}\label{old__sm__rmap_8c_ef6cd5c57e3470359ed522e3c3c69490}
+
+
+
+
+Definition at line 69 of file old\_\-sm\_\-rmap.c.
+
+\subsection{Function Documentation}
+\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_check_map@{OLD\_\-SM\_\-check\_\-map}}
+\index{OLD_SM_check_map@{OLD\_\-SM\_\-check\_\-map}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-check\_\-map (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{old__sm__rmap_8c_18f0c2176ab8e4618d61b0c3bdcb92fc}
+
+
+
+
+Definition at line 112 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, and OLD\_\-SM\_\-Cb::min\_\-init\_\-offset.
+
+Referenced by OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset(), OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset(), OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage(), and OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_choose_first_avail_options@{OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options}}
+\index{OLD_SM_choose_first_avail_options@{OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options (unsigned int $\ast$ {\em map}, SM\_\-Table $\ast$ {\em table}, unsigned short $\ast$ {\em choices\_\-made}, unsigned int {\em min\_\-slot}, unsigned int {\em max\_\-slot}, Mdes\_\-Stats $\ast$ {\em stats})}\label{old__sm__rmap_8c_582037c63a20285d19dfe12ed2dea91d}
+
+
+
+
+Definition at line 694 of file old\_\-sm\_\-rmap.c.
+
+References NULL, and OLD\_\-SM\_\-print\_\-option().
+
+Referenced by OLD\_\-SM\_\-sched\_\-table().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_commit_choices@{OLD\_\-SM\_\-commit\_\-choices}}
+\index{OLD_SM_commit_choices@{OLD\_\-SM\_\-commit\_\-choices}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-commit\_\-choices (unsigned int $\ast$ {\em map}, SM\_\-Table $\ast$ {\em table}, unsigned short $\ast$ {\em choices\_\-made})}\label{old__sm__rmap_8c_92eb28f97648d8884686ce4bee6766bb}
+
+
+
+
+Definition at line 921 of file old\_\-sm\_\-rmap.c.
+
+Referenced by OLD\_\-SM\_\-sched\_\-table().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_create_map@{OLD\_\-SM\_\-create\_\-map}}
+\index{OLD_SM_create_map@{OLD\_\-SM\_\-create\_\-map}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-create\_\-map (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em min\_\-usage\_\-offset}, int {\em max\_\-usage\_\-offset})}\label{old__sm__rmap_8c_ca14bd7d089f3c11cf973af6fd7fe2c0}
+
+
+
+
+Definition at line 498 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-array\_\-size, OLD\_\-SM\_\-Cb::map\_\-end\_\-offset, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, OLD\_\-SM\_\-Cb::min\_\-init\_\-offset, NULL, and OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage().
+
+Referenced by OLD\_\-SM\_\-sched\_\-table().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_delete_cb@{OLD\_\-SM\_\-delete\_\-cb}}
+\index{OLD_SM_delete_cb@{OLD\_\-SM\_\-delete\_\-cb}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-delete\_\-cb (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{old__sm__rmap_8c_bba3da2bbe4aa10245598f765e55f45f}
+
+
+
+
+Definition at line 102 of file old\_\-sm\_\-rmap.c.
+
+References L\_\-free(), OLD\_\-SM\_\-Cb::map\_\-array, NULL, and OLD\_\-SM\_\-Cb\_\-pool.
+
+Referenced by RU\_\-map\_\-init().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_expand_map_end_offset@{OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset}}
+\index{OLD_SM_expand_map_end_offset@{OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em max\_\-init\_\-offset})}\label{old__sm__rmap_8c_28de85a9612fd3a1beab750ef2dd4173}
+
+
+
+
+Definition at line 137 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-array\_\-size, OLD\_\-SM\_\-Cb::map\_\-end\_\-offset, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, OLD\_\-SM\_\-Cb::min\_\-init\_\-offset, NULL, and OLD\_\-SM\_\-check\_\-map().
+
+Referenced by OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_expand_map_start_offset@{OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset}}
+\index{OLD_SM_expand_map_start_offset@{OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em min\_\-init\_\-offset})}\label{old__sm__rmap_8c_ae011071b72f337e045a87caf9cd2fda}
+
+
+
+
+Definition at line 217 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-array\_\-size, OLD\_\-SM\_\-Cb::map\_\-end\_\-offset, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, OLD\_\-SM\_\-Cb::min\_\-init\_\-offset, NULL, and OLD\_\-SM\_\-check\_\-map().
+
+Referenced by OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_init_for_max_usage@{OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage}}
+\index{OLD_SM_init_for_max_usage@{OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em max\_\-usage\_\-offset})}\label{old__sm__rmap_8c_0dcd9031ad45b544fdf36bd029baaa00}
+
+
+
+
+Definition at line 308 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-end\_\-offset, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, OLD\_\-SM\_\-check\_\-map(), and OLD\_\-SM\_\-expand\_\-map\_\-end\_\-offset().
+
+Referenced by OLD\_\-SM\_\-create\_\-map(), and OLD\_\-SM\_\-sched\_\-table().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_init_for_min_usage@{OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage}}
+\index{OLD_SM_init_for_min_usage@{OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em min\_\-usage\_\-offset})}\label{old__sm__rmap_8c_694759c1c614a5d187e5ff67e22e9bb0}
+
+
+
+
+Definition at line 402 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::min\_\-init\_\-offset, OLD\_\-SM\_\-check\_\-map(), and OLD\_\-SM\_\-expand\_\-map\_\-start\_\-offset().
+
+Referenced by OLD\_\-SM\_\-sched\_\-table().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_new_cb@{OLD\_\-SM\_\-new\_\-cb}}
+\index{OLD_SM_new_cb@{OLD\_\-SM\_\-new\_\-cb}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{OLD\_\-SM\_\-Cb}$\ast$ OLD\_\-SM\_\-new\_\-cb (Mdes2 $\ast$ {\em mdes2}, \bf{OLD\_\-SM\_\-Func} $\ast$ {\em sm\_\-func}, L\_\-Cb $\ast$ {\em cb})}\label{old__sm__rmap_8c_2a8e20d7b4bcc0db776ae4b6332a4b5d}
+
+
+
+
+Definition at line 77 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::cb, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), OLD\_\-SM\_\-Cb::map\_\-array, NULL, OLD\_\-SM\_\-Cb\_\-pool, OLD\_\-SM\_\-Cb::sm\_\-func, and OLD\_\-SM\_\-Cb::sm\_\-mdes.
+
+Referenced by RU\_\-map\_\-init().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_print_map@{OLD\_\-SM\_\-print\_\-map}}
+\index{OLD_SM_print_map@{OLD\_\-SM\_\-print\_\-map}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-print\_\-map (FILE $\ast$ {\em out}, SM\_\-Mdes $\ast$ {\em sm\_\-mdes}, \bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{old__sm__rmap_8c_a21abe36de254eb267e395ef14dcd133}
+
+
+
+
+Definition at line 1049 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, OLD\_\-SM\_\-Cb::map\_\-start\_\-offset, OLD\_\-SM\_\-Cb::max\_\-init\_\-offset, and OLD\_\-SM\_\-Cb::min\_\-init\_\-offset.
+
+Referenced by RU\_\-map\_\-init().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_print_option@{OLD\_\-SM\_\-print\_\-option}}
+\index{OLD_SM_print_option@{OLD\_\-SM\_\-print\_\-option}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-print\_\-option (FILE $\ast$ {\em out}, SM\_\-Mdes $\ast$ {\em sm\_\-mdes}, SM\_\-Option $\ast$ {\em option})}\label{old__sm__rmap_8c_76de179c12baa6033e082dd8776988b7}
+
+
+
+
+Definition at line 1016 of file old\_\-sm\_\-rmap.c.
+
+References name.
+
+Referenced by OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options().\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_print_stats@{OLD\_\-SM\_\-print\_\-stats}}
+\index{OLD_SM_print_stats@{OLD\_\-SM\_\-print\_\-stats}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void OLD\_\-SM\_\-print\_\-stats (FILE $\ast$ {\em out}, Mdes\_\-Stats $\ast$ {\em stats})}\label{old__sm__rmap_8c_ff6155436294299fda77bc86ed972ae1}
+
+
+
+
+Definition at line 1146 of file old\_\-sm\_\-rmap.c.\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_sched_table@{OLD\_\-SM\_\-sched\_\-table}}
+\index{OLD_SM_sched_table@{OLD\_\-SM\_\-sched\_\-table}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int OLD\_\-SM\_\-sched\_\-table (\bf{OLD\_\-SM\_\-Cb} $\ast$ {\em sm\_\-cb}, SM\_\-Table $\ast$ {\em table}, int {\em time}, unsigned short {\em min\_\-slot}, unsigned short {\em max\_\-slot}, int {\em commit}, Mdes\_\-Stats $\ast$ {\em stats})}\label{old__sm__rmap_8c_e99a5403da030759f300328c3273fcdf}
+
+
+
+
+Definition at line 558 of file old\_\-sm\_\-rmap.c.
+
+References OLD\_\-SM\_\-Cb::map\_\-array, NULL, OLD\_\-SM\_\-choose\_\-first\_\-avail\_\-options(), OLD\_\-SM\_\-commit\_\-choices(), OLD\_\-SM\_\-create\_\-map(), OLD\_\-SM\_\-init\_\-for\_\-max\_\-usage(), OLD\_\-SM\_\-init\_\-for\_\-min\_\-usage(), and OLD\_\-SM\_\-Cb::sm\_\-mdes.
+
+Referenced by RU\_\-can\_\-schedule\_\-op(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), and RU\_\-schedule\_\-op\_\-reverse().
+
+\subsection{Variable Documentation}
+\index{old_sm_rmap.c@{old\_\-sm\_\-rmap.c}!OLD_SM_Cb_pool@{OLD\_\-SM\_\-Cb\_\-pool}}
+\index{OLD_SM_Cb_pool@{OLD\_\-SM\_\-Cb\_\-pool}!old_sm_rmap.c@{old\_\-sm\_\-rmap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{OLD\_\-SM\_\-Cb\_\-pool} = \bf{NULL}\hspace{0.3cm}{\tt  [static]}}\label{old__sm__rmap_8c_d314575f4cc77999cbc830d8a6405daa}
+
+
+
+
+Definition at line 71 of file old\_\-sm\_\-rmap.c.
+
+Referenced by OLD\_\-SM\_\-delete\_\-cb(), and OLD\_\-SM\_\-new\_\-cb().

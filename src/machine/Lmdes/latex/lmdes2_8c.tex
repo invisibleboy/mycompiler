@@ -1,0 +1,321 @@
+\section{lmdes2.c File Reference}
+\label{lmdes2_8c}\index{lmdes2.c@{lmdes2.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdarg.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/md.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include \char`\"{}lmdes.h\char`\"{}}\par
+{\tt \#include \char`\"{}lmdes2.h\char`\"{}}\par
+{\tt \#include \char`\"{}mdes2.h\char`\"{}}\par
+{\tt \#include $<$library/heap.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-flags.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DEBUG\_\-LMDES2}~0
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{SM\_\-add\_\-ids\_\-to\_\-entries} (\bf{MD\_\-Section} $\ast$section)
+\item 
+static void \bf{init\_\-stats} (\bf{Mdes\_\-Stats} $\ast$stats)
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{find\_\-parm\_\-value} (\bf{MD} $\ast$md, char $\ast$parm\_\-name)
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{find\_\-field\_\-by\_\-name} (\bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$field\_\-name)
+\item 
+char $\ast$ \bf{get\_\-string\_\-parm} (\bf{MD} $\ast$md, char $\ast$parm\_\-name)
+\item 
+int \bf{get\_\-int\_\-parm} (\bf{MD} $\ast$md, char $\ast$parm\_\-name)
+\item 
+static int \bf{value\_\-match} (char $\ast$s1, char $\ast$s2)
+\item 
+int \bf{get\_\-binary\_\-parm} (\bf{MD} $\ast$md, char $\ast$parm\_\-name)
+\item 
+int \bf{get\_\-num\_\-entries} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+int \bf{get\_\-int\_\-value} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$entry\_\-name, char $\ast$field\_\-name, int index)
+\item 
+int \bf{calc\_\-total\_\-entry\_\-name\_\-len} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+void \bf{set\_\-latencies} (\bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$field\_\-name, int $\ast$lat\_\-array)
+\item 
+int \bf{calc\_\-num\_\-op\_\-alts} (\bf{MD\_\-Entry} $\ast$impact\_\-op\_\-entry)
+\item 
+int \bf{calc\_\-num\_\-alts} (\bf{MD} $\ast$md)
+\item 
+int \bf{calc\_\-op\_\-total\_\-string\_\-len} (\bf{MD} $\ast$md)
+\item 
+\bf{Mdes} $\ast$ \bf{load\_\-lmdes\_\-from\_\-version2} (char $\ast$file\_\-name, int num\_\-pred, int num\_\-dest, int num\_\-src, int num\_\-sync)
+\item 
+void \bf{increment\_\-check\_\-history} (\bf{INT\_\-Symbol\_\-Table} $\ast$table, int num\_\-checks, int inc)
+\item 
+static void \bf{add\_\-check\_\-history} (\bf{INT\_\-Symbol\_\-Table} $\ast$dest, \bf{INT\_\-Symbol\_\-Table} $\ast$src)
+\item 
+static void \bf{add\_\-stats} (\bf{Mdes\_\-Stats} $\ast$\bf{total}, \bf{Mdes\_\-Stats} $\ast$add)
+\item 
+void \bf{print\_\-check\_\-history} (FILE $\ast$out, char $\ast$\bf{name}, char $\ast$type, \bf{INT\_\-Symbol\_\-Table} $\ast$table)
+\item 
+void \bf{print\_\-op\_\-stats} (FILE $\ast$out, char $\ast$\bf{name}, \bf{Mdes\_\-Stats} $\ast$can\_\-stats, \bf{Mdes\_\-Stats} $\ast$do\_\-stats)
+\item 
+void \bf{print\_\-mdes\_\-stats} (FILE $\ast$out, int prepass)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{lmdes2.c@{lmdes2.c}!DEBUG_LMDES2@{DEBUG\_\-LMDES2}}
+\index{DEBUG_LMDES2@{DEBUG\_\-LMDES2}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEBUG\_\-LMDES2~0}\label{lmdes2_8c_cbd33eb94d61d242d3c1c9077a8cbe3a}
+
+
+
+
+Definition at line 69 of file lmdes2.c.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().
+
+\subsection{Function Documentation}
+\index{lmdes2.c@{lmdes2.c}!add_check_history@{add\_\-check\_\-history}}
+\index{add_check_history@{add\_\-check\_\-history}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void add\_\-check\_\-history (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em dest}, \bf{INT\_\-Symbol\_\-Table} $\ast$ {\em src})\hspace{0.3cm}{\tt  [static]}}\label{lmdes2_8c_0126b1769b797ae98c87c73835892b8f}
+
+
+
+
+Definition at line 1417 of file lmdes2.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, increment\_\-check\_\-history(), INT\_\-Symbol::next\_\-symbol, NULL, and INT\_\-Symbol::value.
+
+Referenced by add\_\-stats().\index{lmdes2.c@{lmdes2.c}!add_stats@{add\_\-stats}}
+\index{add_stats@{add\_\-stats}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void add\_\-stats (\bf{Mdes\_\-Stats} $\ast$ {\em total}, \bf{Mdes\_\-Stats} $\ast$ {\em add})\hspace{0.3cm}{\tt  [static]}}\label{lmdes2_8c_4df107e0ccc474fa9c0486d3a0c6a35e}
+
+
+
+
+Definition at line 1433 of file lmdes2.c.
+
+References add\_\-check\_\-history(), Mdes\_\-Stats::fail\_\-option\_\-check\_\-dist, Mdes\_\-Stats::fail\_\-usage\_\-check\_\-dist, Mdes\_\-Stats::first\_\-choice\_\-dist, Mdes\_\-Stats::num\_\-choice\_\-dist, Mdes\_\-Stats::num\_\-oper\_\-checks, Mdes\_\-Stats::num\_\-oper\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-option\_\-checks, Mdes\_\-Stats::num\_\-option\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-slot\_\-checks, Mdes\_\-Stats::num\_\-slot\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-table\_\-checks, Mdes\_\-Stats::num\_\-table\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-usage\_\-checks, Mdes\_\-Stats::num\_\-usage\_\-checks\_\-failed, Mdes\_\-Stats::succeed\_\-option\_\-check\_\-dist, Mdes\_\-Stats::succeed\_\-usage\_\-check\_\-dist, and total.
+
+Referenced by print\_\-mdes\_\-stats().\index{lmdes2.c@{lmdes2.c}!calc_num_alts@{calc\_\-num\_\-alts}}
+\index{calc_num_alts@{calc\_\-num\_\-alts}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-num\_\-alts (\bf{MD} $\ast$ {\em md})}\label{lmdes2_8c_faa1394d0cf90c7e14bf82c367326c07}
+
+
+
+
+Definition at line 337 of file lmdes2.c.
+
+References MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), and NULL.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!calc_num_op_alts@{calc\_\-num\_\-op\_\-alts}}
+\index{calc_num_op_alts@{calc\_\-num\_\-op\_\-alts}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-num\_\-op\_\-alts (\bf{MD\_\-Entry} $\ast$ {\em impact\_\-op\_\-entry})}\label{lmdes2_8c_e51936eb893fc5d7cc61f2dea3c4cd9c}
+
+
+
+
+Definition at line 299 of file lmdes2.c.
+
+References find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, and MD\_\-get\_\-link.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!calc_op_total_string_len@{calc\_\-op\_\-total\_\-string\_\-len}}
+\index{calc_op_total_string_len@{calc\_\-op\_\-total\_\-string\_\-len}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-op\_\-total\_\-string\_\-len (\bf{MD} $\ast$ {\em md})}\label{lmdes2_8c_7967aafc33685b5b6a38c9d7f3fe2bf9}
+
+
+
+
+Definition at line 391 of file lmdes2.c.
+
+References MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, and NULL.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!calc_total_entry_name_len@{calc\_\-total\_\-entry\_\-name\_\-len}}
+\index{calc_total_entry_name_len@{calc\_\-total\_\-entry\_\-name\_\-len}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-total\_\-entry\_\-name\_\-len (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2_8c_3643591e6f1acf88563df0bf51208342}
+
+
+
+
+Definition at line 246 of file lmdes2.c.
+
+References entry, I\_\-punt(), MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), and NULL.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!find_field_by_name@{find\_\-field\_\-by\_\-name}}
+\index{find_field_by_name@{find\_\-field\_\-by\_\-name}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ find\_\-field\_\-by\_\-name (\bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em field\_\-name})}\label{lmdes2_8c_d8b800468ff0c9640e7b77394d5d0ae2}
+
+
+
+
+Definition at line 102 of file lmdes2.c.
+
+References entry, I\_\-punt(), MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, and NULL.
+
+Referenced by calc\_\-num\_\-op\_\-alts(), load\_\-lmdes\_\-from\_\-version2(), and set\_\-latencies().\index{lmdes2.c@{lmdes2.c}!find_parm_value@{find\_\-parm\_\-value}}
+\index{find_parm_value@{find\_\-parm\_\-value}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ find\_\-parm\_\-value (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em parm\_\-name})}\label{lmdes2_8c_8c53cfcfc329fbf79f3f646dad15c6af}
+
+
+
+
+Definition at line 76 of file lmdes2.c.
+
+References I\_\-punt(), MD\_\-find\_\-entry, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-Field\_\-Decl::name, and NULL.
+
+Referenced by get\_\-binary\_\-parm(), get\_\-int\_\-parm(), and get\_\-string\_\-parm().\index{lmdes2.c@{lmdes2.c}!get_binary_parm@{get\_\-binary\_\-parm}}
+\index{get_binary_parm@{get\_\-binary\_\-parm}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-binary\_\-parm (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em parm\_\-name})}\label{lmdes2_8c_02d89f445d36e1ba6e2cce84865d2689}
+
+
+
+
+Definition at line 177 of file lmdes2.c.
+
+References find\_\-parm\_\-value(), I\_\-punt(), MD\_\-get\_\-string, and value\_\-match().
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!get_int_parm@{get\_\-int\_\-parm}}
+\index{get_int_parm@{get\_\-int\_\-parm}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-int\_\-parm (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em parm\_\-name})}\label{lmdes2_8c_b72d20b5453850f8f529b452f87f0c6b}
+
+
+
+
+Definition at line 127 of file lmdes2.c.
+
+References find\_\-parm\_\-value(), I\_\-punt(), and MD\_\-get\_\-string.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2(), and SM\_\-build\_\-prod\_\-cons\_\-latency().\index{lmdes2.c@{lmdes2.c}!get_int_value@{get\_\-int\_\-value}}
+\index{get_int_value@{get\_\-int\_\-value}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-int\_\-value (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em entry\_\-name}, char $\ast$ {\em field\_\-name}, int {\em index})}\label{lmdes2_8c_43559819289a0e8fab0c93489486f057}
+
+
+
+
+Definition at line 216 of file lmdes2.c.
+
+References entry, I\_\-punt(), MD\_\-find\_\-entry, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-get\_\-int, MD\_\-Field\_\-Decl::name, and NULL.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!get_num_entries@{get\_\-num\_\-entries}}
+\index{get_num_entries@{get\_\-num\_\-entries}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int get\_\-num\_\-entries (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2_8c_bebae7b6c0099bb98773c6352ead5f47}
+
+
+
+
+Definition at line 202 of file lmdes2.c.
+
+References MD\_\-Section::entry\_\-table, MD\_\-find\_\-section, and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!get_string_parm@{get\_\-string\_\-parm}}
+\index{get_string_parm@{get\_\-string\_\-parm}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ get\_\-string\_\-parm (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em parm\_\-name})}\label{lmdes2_8c_bbfde937235d598faa885cf283cec940}
+
+
+
+
+Definition at line 116 of file lmdes2.c.
+
+References find\_\-parm\_\-value(), and MD\_\-get\_\-string.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!increment_check_history@{increment\_\-check\_\-history}}
+\index{increment_check_history@{increment\_\-check\_\-history}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void increment\_\-check\_\-history (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em table}, int {\em num\_\-checks}, int {\em inc})}\label{lmdes2_8c_29f817af40da58d6d2d8154a3d6f425f}
+
+
+
+
+Definition at line 1398 of file lmdes2.c.
+
+References INT\_\-Symbol::data, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), and NULL.
+
+Referenced by add\_\-check\_\-history().\index{lmdes2.c@{lmdes2.c}!init_stats@{init\_\-stats}}
+\index{init_stats@{init\_\-stats}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void init\_\-stats (\bf{Mdes\_\-Stats} $\ast$ {\em stats})\hspace{0.3cm}{\tt  [static]}}\label{lmdes2_8c_78199cabec4aa12318cc0b82389c019e}
+
+
+
+
+Definition at line 1372 of file lmdes2.c.
+
+References Mdes\_\-Stats::fail\_\-option\_\-check\_\-dist, Mdes\_\-Stats::fail\_\-usage\_\-check\_\-dist, Mdes\_\-Stats::first\_\-choice\_\-dist, INT\_\-new\_\-symbol\_\-table(), Mdes\_\-Stats::num\_\-choice\_\-dist, Mdes\_\-Stats::num\_\-oper\_\-checks, Mdes\_\-Stats::num\_\-oper\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-option\_\-checks, Mdes\_\-Stats::num\_\-option\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-slot\_\-checks, Mdes\_\-Stats::num\_\-slot\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-table\_\-checks, Mdes\_\-Stats::num\_\-table\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-usage\_\-checks, Mdes\_\-Stats::num\_\-usage\_\-checks\_\-failed, Mdes\_\-Stats::succeed\_\-option\_\-check\_\-dist, and Mdes\_\-Stats::succeed\_\-usage\_\-check\_\-dist.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2(), and print\_\-mdes\_\-stats().\index{lmdes2.c@{lmdes2.c}!load_lmdes_from_version2@{load\_\-lmdes\_\-from\_\-version2}}
+\index{load_lmdes_from_version2@{load\_\-lmdes\_\-from\_\-version2}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mdes}$\ast$ load\_\-lmdes\_\-from\_\-version2 (char $\ast$ {\em file\_\-name}, int {\em num\_\-pred}, int {\em num\_\-dest}, int {\em num\_\-src}, int {\em num\_\-sync})}\label{lmdes2_8c_aab44dbf962252b56f0b1b97fd3da680}
+
+
+
+
+Definition at line 450 of file lmdes2.c.
+
+References mdes\_\-operation\_\-st::alt, mdes\_\-alt\_\-st::alt\_\-flags, mdes\_\-alt\_\-st::asm\_\-name, calc\_\-num\_\-alts(), calc\_\-num\_\-op\_\-alts(), calc\_\-op\_\-total\_\-string\_\-len(), calc\_\-total\_\-entry\_\-name\_\-len(), mdes\_\-operation\_\-st::can\_\-sched\_\-postpass, mdes\_\-operation\_\-st::can\_\-sched\_\-prepass, DEBUG\_\-LMDES2, entry, mdes\_\-latency\_\-st::exception, mdes\_\-IO\_\-set\_\-st::external\_\-id, mdes\_\-operation\_\-st::external\_\-name, find\_\-field\_\-by\_\-name(), get\_\-binary\_\-parm(), get\_\-int\_\-parm(), get\_\-int\_\-value(), get\_\-num\_\-entries(), get\_\-string\_\-parm(), mdes\_\-operation\_\-st::heuristic\_\-alt, I\_\-punt(), mdes\_\-alt\_\-st::id, mdes\_\-operation\_\-st::id, mdes\_\-latency\_\-st::id, mdes\_\-resource\_\-st::id, mdes\_\-IO\_\-item\_\-st::id, mdes\_\-IO\_\-set\_\-st::id, init\_\-stats(), mdes\_\-alt\_\-st::IO\_\-item, mdes\_\-operation\_\-st::lat\_\-class, mdes\_\-alt\_\-st::latency, load\_\-mdes2(), Malloc\_\-name(), Malloc\_\-struct(), SM\_\-Syllable::mask, SM\_\-Port::mask, mdes\_\-IO\_\-set\_\-st::mask, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-next\_\-entry(), MDES\_\-DEST, MDES\_\-PRED, MDES\_\-SRC, MDES\_\-SUPERSCALAR, MDES\_\-SYNC\_\-IN, MDES\_\-SYNC\_\-OUT, MDES\_\-VLIW, MD\_\-Entry::name, mdes\_\-latency\_\-st::name, mdes\_\-resource\_\-st::name, mdes\_\-IO\_\-item\_\-st::name, mdes\_\-IO\_\-set\_\-st::name, SM\_\-Nop::next\_\-nop, mdes\_\-operation\_\-st::nop, NULL, mdes\_\-operation\_\-st::num\_\-alts, SM\_\-Table::num\_\-choices, SM\_\-Syllable::num\_\-slots, mdes\_\-operation\_\-st::num\_\-slots, mdes\_\-operation\_\-st::op\_\-flags, mdes\_\-operation\_\-st::opcode, mdes\_\-latency\_\-st::operand\_\-latency, mdes\_\-IO\_\-item\_\-st::operand\_\-type, mdes\_\-alt\_\-st::operation, mdes\_\-operation\_\-st::port\_\-mask, SM\_\-Nop::prev\_\-nop, mdes\_\-alt\_\-st::reslist, mdes\_\-operation\_\-st::sched\_\-postpass, mdes\_\-operation\_\-st::sched\_\-prepass, MD\_\-Entry::section, Set\_\-add(), Set\_\-copy(), Set\_\-dispose(), set\_\-latencies(), Set\_\-new(), SM\_\-add\_\-ids\_\-to\_\-entries(), mdes\_\-operation\_\-st::syll\_\-mask, SM\_\-Port::syllable, and mdes\_\-alt\_\-st::table.
+
+Referenced by L\_\-init\_\-lmdes2().\index{lmdes2.c@{lmdes2.c}!print_check_history@{print\_\-check\_\-history}}
+\index{print_check_history@{print\_\-check\_\-history}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-check\_\-history (FILE $\ast$ {\em out}, char $\ast$ {\em name}, char $\ast$ {\em type}, \bf{INT\_\-Symbol\_\-Table} $\ast$ {\em table})}\label{lmdes2_8c_03b8d53dbd6d6382363c8186cb91193a}
+
+
+
+
+Definition at line 1468 of file lmdes2.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, Heap\_\-Create(), Heap\_\-Extract\-Top(), Heap\_\-Insert(), HEAP\_\-MIN, INT\_\-Symbol::next\_\-symbol, NULL, and INT\_\-Symbol::value.
+
+Referenced by print\_\-mdes\_\-stats().\index{lmdes2.c@{lmdes2.c}!print_mdes_stats@{print\_\-mdes\_\-stats}}
+\index{print_mdes_stats@{print\_\-mdes\_\-stats}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-mdes\_\-stats (FILE $\ast$ {\em out}, int {\em prepass})}\label{lmdes2_8c_8df6c58c53e5c8878fdacd3b6bd89819}
+
+
+
+
+Definition at line 1566 of file lmdes2.c.
+
+References add\_\-stats(), mdes\_\-operation\_\-st::can\_\-sched\_\-postpass, mdes\_\-operation\_\-st::can\_\-sched\_\-prepass, mdes\_\-operation\_\-st::external\_\-name, Mdes\_\-Stats::fail\_\-option\_\-check\_\-dist, Mdes\_\-Stats::fail\_\-usage\_\-check\_\-dist, Mdes\_\-Stats::first\_\-choice\_\-dist, Heap\_\-Create(), Heap\_\-Extract\-Top(), Heap\_\-Insert(), HEAP\_\-MAX, init\_\-stats(), lmdes, mdes\_\-st::max\_\-opcode, mdes\_\-st::mdes2, NULL, Mdes\_\-Stats::num\_\-choice\_\-dist, Mdes\_\-Stats::num\_\-oper\_\-checks, Mdes\_\-Stats::num\_\-slot\_\-checks, Mdes\_\-Stats::num\_\-usage\_\-checks, mdes\_\-st::op\_\-table, print\_\-check\_\-history(), print\_\-op\_\-stats(), mdes\_\-operation\_\-st::sched\_\-postpass, mdes\_\-operation\_\-st::sched\_\-prepass, Mdes\_\-Stats::succeed\_\-option\_\-check\_\-dist, and Mdes\_\-Stats::succeed\_\-usage\_\-check\_\-dist.\index{lmdes2.c@{lmdes2.c}!print_op_stats@{print\_\-op\_\-stats}}
+\index{print_op_stats@{print\_\-op\_\-stats}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-op\_\-stats (FILE $\ast$ {\em out}, char $\ast$ {\em name}, \bf{Mdes\_\-Stats} $\ast$ {\em can\_\-stats}, \bf{Mdes\_\-Stats} $\ast$ {\em do\_\-stats})}\label{lmdes2_8c_87e34ca62bc70490fa7d9c29f6f85044}
+
+
+
+
+Definition at line 1519 of file lmdes2.c.
+
+References Mdes\_\-Stats::num\_\-oper\_\-checks, Mdes\_\-Stats::num\_\-option\_\-checks, Mdes\_\-Stats::num\_\-slot\_\-checks\_\-failed, Mdes\_\-Stats::num\_\-usage\_\-checks, and Mdes\_\-Stats::num\_\-usage\_\-checks\_\-failed.
+
+Referenced by print\_\-mdes\_\-stats().\index{lmdes2.c@{lmdes2.c}!set_latencies@{set\_\-latencies}}
+\index{set_latencies@{set\_\-latencies}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void set\_\-latencies (\bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em field\_\-name}, int $\ast$ {\em lat\_\-array})}\label{lmdes2_8c_53965a6fe6b1113e05485fde7c10d391}
+
+
+
+
+Definition at line 270 of file lmdes2.c.
+
+References MD\_\-Field::entry, entry, find\_\-field\_\-by\_\-name(), I\_\-punt(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes2.c@{lmdes2.c}!SM_add_ids_to_entries@{SM\_\-add\_\-ids\_\-to\_\-entries}}
+\index{SM_add_ids_to_entries@{SM\_\-add\_\-ids\_\-to\_\-entries}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int SM\_\-add\_\-ids\_\-to\_\-entries (\bf{MD\_\-Section} $\ast$ {\em section})}\label{lmdes2_8c_4d1665aeb658c58e66a84443a500d2c2}
+
+
+
+
+Definition at line 71 of file sm\_\-mdes.c.
+
+References entry, I\_\-punt(), MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, and NULL.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2(), SM\_\-build\_\-choices(), SM\_\-build\_\-drules(), SM\_\-build\_\-issues(), SM\_\-build\_\-ports(), SM\_\-build\_\-prod\_\-cons\_\-latency(), SM\_\-build\_\-resources(), SM\_\-build\_\-restrictions(), SM\_\-build\_\-syllables(), SM\_\-build\_\-tables(), SM\_\-build\_\-templates(), SM\_\-build\_\-tgroups(), and SM\_\-build\_\-units().\index{lmdes2.c@{lmdes2.c}!value_match@{value\_\-match}}
+\index{value_match@{value\_\-match}!lmdes2.c@{lmdes2.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int value\_\-match (char $\ast$ {\em s1}, char $\ast$ {\em s2})\hspace{0.3cm}{\tt  [static]}}\label{lmdes2_8c_fc22e1d6a3d854cec8597ccbfa14d6ca}
+
+
+
+
+Definition at line 159 of file lmdes2.c.
+
+Referenced by get\_\-binary\_\-parm().

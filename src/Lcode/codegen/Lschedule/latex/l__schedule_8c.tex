@@ -1,0 +1,1209 @@
+\section{l\_\-schedule.c File Reference}
+\label{l__schedule_8c}\index{l_schedule.c@{l\_\-schedule.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-schedule.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-mcb.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{LEAF}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{FALL\_\-THRU}~0
+\item 
+\#define \bf{UBR\_\-TAKEN}~1
+\item 
+\#define \bf{CBR\_\-TAKEN}~2
+\item 
+\#define \bf{NO\_\-CB\_\-PAD}~0x7FFFFFFF
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{Lsched\_\-loads\_\-per\_\-cycle} ()
+\item 
+int \bf{Lsched\_\-stores\_\-per\_\-cycle} ()
+\item 
+int \bf{Lsched\_\-branches\_\-per\_\-cycle} ()
+\item 
+int \bf{Lsched\_\-issue\_\-time} (L\_\-Oper $\ast$oper)
+\item 
+int \bf{Lsched\_\-completion\_\-time} (L\_\-Oper $\ast$oper)
+\item 
+int \bf{Lsched\_\-latency} (L\_\-Oper $\ast$oper)
+\item 
+void \bf{L\_\-read\_\-parm\_\-lsched} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+void \bf{Lsched\_\-init} (\bf{Parm\_\-Macro\_\-List} $\ast$command\_\-line\_\-macro\_\-list, char $\ast$lmdes\_\-file\_\-name)
+\item 
+void \bf{Lsched\_\-renumber\_\-issue\_\-slots} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lsched\_\-func\_\-complete} (L\_\-Func $\ast$fn)
+\item 
+\bf{Sched\_\-Info} $\ast$ \bf{L\_\-create\_\-sched\_\-info} (L\_\-Oper $\ast$oper, int home\_\-block, L\_\-Oper $\ast$prev\_\-br, L\_\-Oper $\ast$post\_\-br)
+\item 
+void \bf{L\_\-update\_\-sched\_\-info} (\bf{Sched\_\-Info} $\ast$sinfo, L\_\-Oper $\ast$oper, int home\_\-block)
+\item 
+void \bf{L\_\-delete\_\-sched\_\-info} (\bf{Sched\_\-Info} $\ast$sinfo)
+\item 
+void \bf{L\_\-print\_\-sched\_\-info} (FILE $\ast$\bf{F}, \bf{Sched\_\-Info} $\ast$s\_\-info)
+\item 
+void \bf{Lsched\_\-init\_\-etimes\_\-and\_\-ltimes} (L\_\-Cb $\ast$cb)
+\item 
+int \bf{Lsched\_\-determine\_\-etimes} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$$\ast$$\ast$exit\_\-ops)
+\item 
+void \bf{Lsched\_\-determine\_\-ltimes} (L\_\-Cb $\ast$cb, int num\_\-exits, L\_\-Oper $\ast$$\ast$exit\_\-ops)
+\item 
+void \bf{Lsched\_\-calculate\_\-priority\_\-normal} (L\_\-Cb $\ast$cb, int num\_\-exits, L\_\-Oper $\ast$$\ast$exit\_\-ops)
+\item 
+int \bf{Lsched\_\-is\_\-branch} (int proc\_\-opc)
+\item 
+L\_\-Oper $\ast$ \bf{L\_\-find\_\-next\_\-branch} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper)
+\item 
+void \bf{L\_\-annotate\_\-instr} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-make\_\-ready} (L\_\-Cb $\ast$cb, int oper\_\-issue\_\-time, \bf{Sched\_\-Info} $\ast$sinfo, \bf{Sched\_\-Info} $\ast$dep\_\-sinfo, int to\_\-index, int from\_\-index, int distance)
+\item 
+void \bf{Lsched\_\-schedule\_\-op} (L\_\-Cb $\ast$cb, \bf{Sched\_\-Info} $\ast$sinfo, int spec, int ready\_\-time)
+\item 
+int \bf{Lsched\_\-can\_\-schedule\_\-op} (L\_\-Cb $\ast$cb, \bf{Sched\_\-Info} $\ast$sinfo, int \bf{current\_\-time}, int current\_\-block, int $\ast$issue\_\-slot, int $\ast$spec, int $\ast$silent)
+\item 
+static L\_\-Oper $\ast$ \bf{Lsched\_\-create\_\-nop} (int issue\_\-time, int issue\_\-slot)
+\item 
+static L\_\-Oper $\ast$ \bf{Lsched\_\-create\_\-jump} (int issue\_\-time, int issue\_\-slot, L\_\-Operand $\ast$target)
+\item 
+static void \bf{Lsched\_\-pad\_\-slots\_\-with\_\-nops} (L\_\-Cb $\ast$cb)
+\item 
+int \bf{Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-create\_\-cb\_\-start\_\-pad} (L\_\-Cb $\ast$cb, int pad\_\-value)
+\item 
+int \bf{Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-create\_\-cb\_\-end\_\-pad} (L\_\-Cb $\ast$cb, int pad\_\-value)
+\item 
+int \bf{Lsched\_\-get\_\-br\_\-pad\_\-value} (L\_\-Oper $\ast$oper)
+\item 
+void \bf{Lsched\_\-create\_\-br\_\-pad} (L\_\-Oper $\ast$oper, int pad\_\-value)
+\item 
+int \bf{Lsched\_\-cb\_\-completion\_\-time} (L\_\-Cb $\ast$cb)
+\item 
+int \bf{Lsched\_\-need\_\-pad} (L\_\-Cb $\ast$target, L\_\-Oper $\ast$oper, int overextend)
+\item 
+static void \bf{Lsched\_\-determine\_\-pad\_\-for\_\-vliw} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{Lsched\_\-pad\_\-cycles\_\-for\_\-vliw} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb)
+\item 
+static void \bf{Lsched\_\-correct\_\-schedule\_\-for\_\-vliw} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lsched\_\-add\_\-isl\_\-attr} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lsched\_\-delete\_\-isl\_\-attr} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lsched\_\-fix\_\-flows} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-schedule\_\-block} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-prepass\_\-code\_\-scheduling} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lsched\_\-postpass\_\-code\_\-scheduling} (L\_\-Func $\ast$fn)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{Lsched\_\-debug\_\-operation\_\-priority} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-prepass\_\-scheduling} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-postpass\_\-scheduling} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-squashing\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-nonsquashing\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-unfilled\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound} = 100000000
+\item 
+int \bf{Lsched\_\-num\_\-branches\_\-per\_\-cycle} = 0
+\item 
+int \bf{Lsched\_\-static\_\-fall\_\-thru\_\-weight} = 1
+\item 
+int \bf{Lsched\_\-pad\_\-height} = 1
+\item 
+int \bf{Lsched\_\-use\_\-fan\_\-out} = 1
+\item 
+int \bf{Lsched\_\-infinite\_\-issue} = 0
+\item 
+int \bf{Lsched\_\-do\_\-postpass\_\-scheduling} = 0
+\item 
+int \bf{Lsched\_\-demote\_\-all\_\-the\_\-way} = 0
+\item 
+int \bf{Lsched\_\-do\_\-fill\_\-squashing\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-do\_\-fill\_\-unfilled\_\-branches} = 0
+\item 
+int \bf{Lsched\_\-include\_\-only\_\-oper\_\-lt\_\-hb} = 0
+\item 
+int \bf{Lsched\_\-print\_\-statistics} = 0
+\item 
+int \bf{Lsched\_\-print\_\-prepass\_\-statistics} = 0
+\item 
+int \bf{Lsched\_\-print\_\-spec\_\-condition} = 0
+\item 
+int \bf{Lsched\_\-do\_\-sentinel\_\-recovery} = 0
+\item 
+int \bf{Lsched\_\-prepass} = 0
+\item 
+int \bf{Lsched\_\-print\_\-hb\_\-and\_\-spec} = 0
+\item 
+int \bf{Lsched\_\-print\_\-cycle\_\-delimiter} = 0
+\item 
+int \bf{Lsched\_\-num\_\-opers} = 0
+\item 
+int \bf{Lsched\_\-loads\_\-each\_\-cycle} = 0
+\item 
+int \bf{Lsched\_\-stores\_\-each\_\-cycle} = 0
+\item 
+int \bf{current\_\-time} = 0
+\item 
+int \bf{Lsched\_\-infinite\_\-issue\_\-slot} = 0
+\item 
+int \bf{Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops} = 0
+\item 
+int \bf{Lsched\_\-vliw\_\-has\_\-interlocking} = 0
+\item 
+int \bf{Lsched\_\-do\_\-renumber\_\-issue\_\-slots} = 0
+\item 
+char $\ast$ \bf{Lsched\_\-profile\_\-info\_\-to\_\-use} = \bf{NULL}
+\item 
+L\_\-Oper $\ast$ \bf{Lsched\_\-latest\_\-br} = \bf{NULL}
+\item 
+\bf{Squeue} $\ast$ \bf{scheduled\_\-queue}
+\item 
+\bf{Squeue} $\ast$ \bf{priority\_\-ready\_\-queue}
+\item 
+\bf{Squeue} $\ast$ \bf{regpres\_\-ready\_\-queue}
+\item 
+\bf{Squeue} $\ast$ \bf{pending\_\-ready\_\-queue}
+\item 
+\bf{Squeue} $\ast$ \bf{not\_\-ready\_\-queue}
+\item 
+int \bf{Lsched\_\-processor\_\-model} = MDES\_\-SUPERSCALAR
+\item 
+int \bf{Lsched\_\-total\_\-issue\_\-slots} = 0
+\item 
+float \bf{Lsched\_\-branch\_\-increase} = 0.0
+\item 
+int \bf{Lsched\_\-fill\_\-delay\_\-slots} = 0
+\item 
+int \bf{Lsched\_\-debug\_\-messages} = 0
+\item 
+int \bf{Lmcb\_\-keep\_\-checks} = 0
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Squeue\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Sq\_\-entry\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Sched\_\-Info\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Operand\_\-ready\_\-pool} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_schedule.c@{l\_\-schedule.c}!CBR_TAKEN@{CBR\_\-TAKEN}}
+\index{CBR_TAKEN@{CBR\_\-TAKEN}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CBR\_\-TAKEN~2}\label{l__schedule_8c_87e3ac61028234f430493ba624e9c6f5}
+
+
+
+
+Definition at line 1074 of file l\_\-schedule.c.\index{l_schedule.c@{l\_\-schedule.c}!FALL_THRU@{FALL\_\-THRU}}
+\index{FALL_THRU@{FALL\_\-THRU}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FALL\_\-THRU~0}\label{l__schedule_8c_78acf9a760383460d3aac987a8e46bd3}
+
+
+
+
+Definition at line 1072 of file l\_\-schedule.c.\index{l_schedule.c@{l\_\-schedule.c}!NO_CB_PAD@{NO\_\-CB\_\-PAD}}
+\index{NO_CB_PAD@{NO\_\-CB\_\-PAD}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NO\_\-CB\_\-PAD~0x7FFFFFFF}\label{l__schedule_8c_41d6c6a83879de5e8a3c3c62532d9a4c}
+
+
+
+
+Definition at line 1950 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value(), and Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!UBR_TAKEN@{UBR\_\-TAKEN}}
+\index{UBR_TAKEN@{UBR\_\-TAKEN}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define UBR\_\-TAKEN~1}\label{l__schedule_8c_9edb73b1b8df6d4ae828b11ea66b461e}
+
+
+
+
+Definition at line 1073 of file l\_\-schedule.c.
+
+\subsection{Function Documentation}
+\index{l_schedule.c@{l\_\-schedule.c}!L_annotate_instr@{L\_\-annotate\_\-instr}}
+\index{L_annotate_instr@{L\_\-annotate\_\-instr}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-annotate\_\-instr (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_e1d1f2e8c81606a280a520d8feb5d7f8}
+
+
+
+
+Definition at line 1389 of file l\_\-schedule.c.
+
+References Sched\_\-Info::current\_\-block, Sched\_\-Info::home\_\-block, Lsched\_\-print\_\-hb\_\-and\_\-spec, NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!L_create_sched_info@{L\_\-create\_\-sched\_\-info}}
+\index{L_create_sched_info@{L\_\-create\_\-sched\_\-info}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Sched\_\-Info}$\ast$ L\_\-create\_\-sched\_\-info (L\_\-Oper $\ast$ {\em oper}, int {\em home\_\-block}, L\_\-Oper $\ast$ {\em prev\_\-br}, L\_\-Oper $\ast$ {\em post\_\-br})}\label{l__schedule_8c_268dd685af46604df42953774a82cca3}
+
+
+
+
+Definition at line 585 of file l\_\-schedule.c.
+
+References Sched\_\-Info::benefit, Sched\_\-Info::branch\_\-kill\_\-set, Sched\_\-Info::branch\_\-kill\_\-set\_\-size, Sched\_\-Info::check\_\-op, Sched\_\-Info::current\_\-block, Regtypes::d, Sched\_\-Info::def\_\-set, Sched\_\-Info::delay\_\-sinfo, Sched\_\-Info::dep\_\-info, Sched\_\-Info::earliest\_\-slot, Sched\_\-Info::entry\_\-list, Sched\_\-Info::etime, Sched\_\-Info::extend\_\-lr\_\-down, Regtypes::f, Sched\_\-Info::home\_\-block, Regtypes::i, Sched\_\-Info::id, Sched\_\-Info::index, Sched\_\-Info::instr\_\-prob, Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, Sched\_\-Info::kill\_\-set, L\_\-alloc(), L\_\-create\_\-ru\_\-info\_\-oper(), Sched\_\-Info::ltimes, Sched\_\-Info::mdes\_\-info, Dep\_\-Info::n\_\-input\_\-dep, Sched\_\-Info::not\_\-taken\_\-instr\_\-prob, NULL, Sched\_\-Info::num\_\-depend, Sched\_\-Info::on\_\-stack, Sched\_\-Info::oper, Operand\_\-ready\_\-pool, Sched\_\-Info::operand\_\-ready\_\-times, Sched\_\-Info::orig\_\-block, Regtypes::p, Sched\_\-Info::post\_\-br, Sched\_\-Info::prev\_\-br, Sched\_\-Info::priority, Sched\_\-Info::proc\_\-opc, Sched\_\-Info::ready\_\-time, Sched\_\-Info::relative\_\-latency, Sched\_\-Info::rsort\_\-key1, Sched\_\-Info::rsort\_\-key2, Sched\_\-Info::ru\_\-info, Sched\_\-Info\_\-pool, Sched\_\-Info::scheduled, Sched\_\-Info::sort\_\-key1, Sched\_\-Info::spec\_\-cond, Dep\_\-Info::spec\_\-cond, Sched\_\-Info::store\_\-list, Sched\_\-Info::taken\_\-instr\_\-prob, and Sched\_\-Info::weight.
+
+Referenced by L\_\-mcb\_\-insert\_\-check(), Lsched\_\-create\_\-jump(), Lsched\_\-create\_\-nop(), Lsched\_\-mcb\_\-schedule\_\-block(), Lsched\_\-postpass\_\-code\_\-scheduling(), and wbs\_\-insert\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!L_delete_sched_info@{L\_\-delete\_\-sched\_\-info}}
+\index{L_delete_sched_info@{L\_\-delete\_\-sched\_\-info}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-delete\_\-sched\_\-info (\bf{Sched\_\-Info} $\ast$ {\em sinfo})}\label{l__schedule_8c_8a1f800cff6d1e8b40ae9b11667c05dd}
+
+
+
+
+Definition at line 698 of file l\_\-schedule.c.
+
+References Sched\_\-Info::branch\_\-kill\_\-set, L\_\-delete\_\-ru\_\-info\_\-oper(), L\_\-free(), Sched\_\-Info::ltimes, NULL, Dep\_\-Info::oper, Sched\_\-Info::oper, Operand\_\-ready\_\-pool, Sched\_\-Info::operand\_\-ready\_\-times, Sched\_\-Info::relative\_\-latency, Sched\_\-Info::ru\_\-info, and Sched\_\-Info\_\-pool.
+
+Referenced by L\_\-mcb\_\-delete\_\-check(), Lsched\_\-func\_\-complete(), and wbs\_\-delete\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!L_find_next_branch@{L\_\-find\_\-next\_\-branch}}
+\index{L_find_next_branch@{L\_\-find\_\-next\_\-branch}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ L\_\-find\_\-next\_\-branch (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper})}\label{l__schedule_8c_6d691d5261d79228e4e680680a58f405}
+
+
+
+
+Definition at line 1374 of file l\_\-schedule.c.
+
+References Lsched\_\-is\_\-branch(), and NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!L_print_sched_info@{L\_\-print\_\-sched\_\-info}}
+\index{L_print_sched_info@{L\_\-print\_\-sched\_\-info}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-print\_\-sched\_\-info (FILE $\ast$ {\em F}, \bf{Sched\_\-Info} $\ast$ {\em s\_\-info})}\label{l__schedule_8c_984f853032a84d37536ca6225c560c9a}
+
+
+
+
+Definition at line 713 of file l\_\-schedule.c.
+
+References Sched\_\-Info::current\_\-block, Sched\_\-Info::home\_\-block, Sched\_\-Info::id, Sched\_\-Info::post\_\-br, and Sched\_\-Info::prev\_\-br.\index{l_schedule.c@{l\_\-schedule.c}!L_read_parm_lsched@{L\_\-read\_\-parm\_\-lsched}}
+\index{L_read_parm_lsched@{L\_\-read\_\-parm\_\-lsched}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-lsched (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__schedule_8c_a94ad87ba5f6079a85916abd4c36e0c2}
+
+
+
+
+Definition at line 213 of file l\_\-schedule.c.
+
+References L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-s(), Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-nonsquashing\_\-branches, Lsched\_\-debug\_\-operation\_\-priority, Lsched\_\-debug\_\-postpass\_\-scheduling, Lsched\_\-debug\_\-prepass\_\-scheduling, Lsched\_\-debug\_\-squashing\_\-branches, Lsched\_\-debug\_\-unfilled\_\-branches, Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds, Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches, Lsched\_\-do\_\-fill\_\-squashing\_\-branches, Lsched\_\-do\_\-fill\_\-unfilled\_\-branches, Lsched\_\-do\_\-postpass\_\-scheduling, Lsched\_\-do\_\-renumber\_\-issue\_\-slots, Lsched\_\-do\_\-sentinel\_\-recovery, Lsched\_\-infinite\_\-issue, Lsched\_\-loads\_\-each\_\-cycle, Lsched\_\-num\_\-branches\_\-per\_\-cycle, Lsched\_\-pad\_\-height, Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops, Lsched\_\-print\_\-cycle\_\-delimiter, Lsched\_\-print\_\-hb\_\-and\_\-spec, Lsched\_\-print\_\-prepass\_\-statistics, Lsched\_\-print\_\-spec\_\-condition, Lsched\_\-print\_\-statistics, Lsched\_\-profile\_\-info\_\-to\_\-use, Lsched\_\-register\_\-pressure\_\-threshhold, Lsched\_\-static\_\-fall\_\-thru\_\-weight, Lsched\_\-stores\_\-each\_\-cycle, Lsched\_\-use\_\-fan\_\-out, Lsched\_\-use\_\-register\_\-pressure\_\-heuristic, and Lsched\_\-vliw\_\-has\_\-interlocking.
+
+Referenced by Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!L_update_sched_info@{L\_\-update\_\-sched\_\-info}}
+\index{L_update_sched_info@{L\_\-update\_\-sched\_\-info}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-update\_\-sched\_\-info (\bf{Sched\_\-Info} $\ast$ {\em sinfo}, L\_\-Oper $\ast$ {\em oper}, int {\em home\_\-block})}\label{l__schedule_8c_3d2397076410181103f5fea34a5acff0}
+
+
+
+
+Definition at line 664 of file l\_\-schedule.c.
+
+References Sched\_\-Info::check\_\-op, Sched\_\-Info::current\_\-block, Sched\_\-Info::delay\_\-sinfo, Sched\_\-Info::dep\_\-info, DEP\_\-NON\_\-EXCEPTING, Sched\_\-Info::earliest\_\-slot, Sched\_\-Info::entry\_\-list, Sched\_\-Info::extend\_\-lr\_\-down, Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, Sched\_\-Info::mdes\_\-info, Dep\_\-Info::n\_\-input\_\-dep, NULL, Sched\_\-Info::num\_\-depend, Sched\_\-Info::on\_\-stack, Sched\_\-Info::operand\_\-ready\_\-times, Sched\_\-Info::orig\_\-block, Sched\_\-Info::ready\_\-time, Sched\_\-Info::relative\_\-latency, Sched\_\-Info::scheduled, Sched\_\-Info::spec\_\-cond, and Dep\_\-Info::spec\_\-cond.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_add_isl_attr@{Lsched\_\-add\_\-isl\_\-attr}}
+\index{Lsched_add_isl_attr@{Lsched\_\-add\_\-isl\_\-attr}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-add\_\-isl\_\-attr (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_1882c164271a9d0021a970f2735de0b0}
+
+
+
+
+Definition at line 2370 of file l\_\-schedule.c.
+
+References Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, NULL, Sched\_\-Info::relative\_\-latency, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_branches_per_cycle@{Lsched\_\-branches\_\-per\_\-cycle}}
+\index{Lsched_branches_per_cycle@{Lsched\_\-branches\_\-per\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-branches\_\-per\_\-cycle (void)}\label{l__schedule_8c_88f473ee64c9d02c72fbce4fbed050b1}
+
+
+
+
+Definition at line 160 of file l\_\-schedule.c.
+
+References Lsched\_\-num\_\-branches\_\-per\_\-cycle.
+
+Referenced by Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_calculate_priority_normal@{Lsched\_\-calculate\_\-priority\_\-normal}}
+\index{Lsched_calculate_priority_normal@{Lsched\_\-calculate\_\-priority\_\-normal}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-calculate\_\-priority\_\-normal (L\_\-Cb $\ast$ {\em cb}, int {\em num\_\-exits}, L\_\-Oper $\ast$$\ast$ {\em exit\_\-ops})}\label{l__schedule_8c_4e16f3a046599410c9dea41ee3313473}
+
+
+
+
+Definition at line 974 of file l\_\-schedule.c.
+
+References Sched\_\-Info::etime, Sched\_\-Info::ltimes, Dep\_\-Info::oper, Sched\_\-Info::priority, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_can_schedule_op@{Lsched\_\-can\_\-schedule\_\-op}}
+\index{Lsched_can_schedule_op@{Lsched\_\-can\_\-schedule\_\-op}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-can\_\-schedule\_\-op (L\_\-Cb $\ast$ {\em cb}, \bf{Sched\_\-Info} $\ast$ {\em sinfo}, int {\em current\_\-time}, int {\em current\_\-block}, int $\ast$ {\em issue\_\-slot}, int $\ast$ {\em spec}, int $\ast$ {\em silent})}\label{l__schedule_8c_dffafbbbcd5e813ae2e9057db8a5853e}
+
+
+
+
+Definition at line 1652 of file l\_\-schedule.c.
+
+References CAN\_\-SCHEDULE, CANT\_\-SCHEDULE, DEP\_\-DELAYS\_\-EXCEPTION, Sched\_\-Info::dep\_\-info, DEP\_\-SILENT, Sched\_\-Info::earliest\_\-slot, Sched\_\-Info::home\_\-block, Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, Lsched\_\-infinite\_\-issue, Lsched\_\-infinite\_\-issue\_\-slot, Lsched\_\-processor\_\-model, Lsched\_\-total\_\-issue\_\-slots, Sched\_\-Info::mdes\_\-info, NULL, Sched\_\-Info::operand\_\-ready\_\-times, Sched\_\-Info::prev\_\-br, Sched\_\-Info::ready\_\-time, RU\_\-can\_\-schedule\_\-op(), Sched\_\-Info::ru\_\-info, SCHED\_\-INFO, Sched\_\-Info::scheduled, and Dep\_\-Info::spec\_\-cond.
+
+Referenced by Lsched\_\-schedule\_\-block(), and Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_cb_completion_time@{Lsched\_\-cb\_\-completion\_\-time}}
+\index{Lsched_cb_completion_time@{Lsched\_\-cb\_\-completion\_\-time}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-cb\_\-completion\_\-time (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_ea239380278678733fcc0300478dca01}
+
+
+
+
+Definition at line 2024 of file l\_\-schedule.c.
+
+References IS\_\-IGNORE, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_completion_time@{Lsched\_\-completion\_\-time}}
+\index{Lsched_completion_time@{Lsched\_\-completion\_\-time}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-completion\_\-time (L\_\-Oper $\ast$ {\em oper})}\label{l__schedule_8c_9e4ae98a71c7047b700d6f583cac4810}
+
+
+
+
+Definition at line 176 of file l\_\-schedule.c.
+
+References Lsched\_\-latency(), NULL, and SCHED\_\-INFO.
+
+Referenced by L\_\-approx\_\-cb\_\-time(), L\_\-print\_\-schedule(), and Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_correct_schedule_for_vliw@{Lsched\_\-correct\_\-schedule\_\-for\_\-vliw}}
+\index{Lsched_correct_schedule_for_vliw@{Lsched\_\-correct\_\-schedule\_\-for\_\-vliw}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-correct\_\-schedule\_\-for\_\-vliw (L\_\-Func $\ast$ {\em fn})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_ae97816316ba9759ce6777c433e9f3c4}
+
+
+
+
+Definition at line 2311 of file l\_\-schedule.c.
+
+References Lsched\_\-determine\_\-pad\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw(), Lsched\_\-pad\_\-slots\_\-with\_\-nops(), Lsched\_\-print\_\-statistics, M\_\-arch, M\_\-HPPA, M\_\-IMPACT, M\_\-PLAYDOH, and NULL.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_create_br_pad@{Lsched\_\-create\_\-br\_\-pad}}
+\index{Lsched_create_br_pad@{Lsched\_\-create\_\-br\_\-pad}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-create\_\-br\_\-pad (L\_\-Oper $\ast$ {\em oper}, int {\em pad\_\-value})}\label{l__schedule_8c_f3df48ff01088f85fd1e6b1ddf8ca06b}
+
+
+
+
+Definition at line 2009 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_create_cb_end_pad@{Lsched\_\-create\_\-cb\_\-end\_\-pad}}
+\index{Lsched_create_cb_end_pad@{Lsched\_\-create\_\-cb\_\-end\_\-pad}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-create\_\-cb\_\-end\_\-pad (L\_\-Cb $\ast$ {\em cb}, int {\em pad\_\-value})}\label{l__schedule_8c_d3e42788dce5fe5bece79fd15af24462}
+
+
+
+
+Definition at line 1985 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_create_cb_start_pad@{Lsched\_\-create\_\-cb\_\-start\_\-pad}}
+\index{Lsched_create_cb_start_pad@{Lsched\_\-create\_\-cb\_\-start\_\-pad}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-create\_\-cb\_\-start\_\-pad (L\_\-Cb $\ast$ {\em cb}, int {\em pad\_\-value})}\label{l__schedule_8c_c26c26ff3edd8f6887aaf172c38fcfd2}
+
+
+
+
+Definition at line 1961 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_create_jump@{Lsched\_\-create\_\-jump}}
+\index{Lsched_create_jump@{Lsched\_\-create\_\-jump}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper$\ast$ Lsched\_\-create\_\-jump (int {\em issue\_\-time}, int {\em issue\_\-slot}, L\_\-Operand $\ast$ {\em target})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_b274a5699dfc00ff67c351458a2703ad}
+
+
+
+
+Definition at line 1864 of file l\_\-schedule.c.
+
+References Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, L\_\-create\_\-sched\_\-info(), and NULL.
+
+Referenced by Lsched\_\-pad\_\-cycles\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_create_nop@{Lsched\_\-create\_\-nop}}
+\index{Lsched_create_nop@{Lsched\_\-create\_\-nop}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper$\ast$ Lsched\_\-create\_\-nop (int {\em issue\_\-time}, int {\em issue\_\-slot})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_29f3519886531eee9bcddfd3d204d364}
+
+
+
+
+Definition at line 1841 of file l\_\-schedule.c.
+
+References Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, L\_\-create\_\-sched\_\-info(), and NULL.
+
+Referenced by Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw(), and Lsched\_\-pad\_\-slots\_\-with\_\-nops().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_delete_isl_attr@{Lsched\_\-delete\_\-isl\_\-attr}}
+\index{Lsched_delete_isl_attr@{Lsched\_\-delete\_\-isl\_\-attr}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-delete\_\-isl\_\-attr (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_5877322a652d30df0a7ad278ee7d26e6}
+
+
+
+
+Definition at line 2409 of file l\_\-schedule.c.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_determine_etimes@{Lsched\_\-determine\_\-etimes}}
+\index{Lsched_determine_etimes@{Lsched\_\-determine\_\-etimes}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-determine\_\-etimes (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$$\ast$$\ast$ {\em exit\_\-ops})}\label{l__schedule_8c_d60fd7dc501d262065cd706caf9b6fc8}
+
+
+
+
+Definition at line 763 of file l\_\-schedule.c.
+
+References DEP\_\-INFO, L\_\-Dep::distance, Sched\_\-Info::etime, L\_\-Dep::from\_\-oper, Dep\_\-Info::input\_\-dep, IS\_\-COND\_\-BRANCH, IS\_\-UCOND\_\-BRANCH, L\_\-DEP\_\-CNT, Lsched\_\-branch\_\-increase, L\_\-Dep::next\_\-dep, L\_\-Dep::omega, Dep\_\-Info::oper, SCHED\_\-INFO, and L\_\-Dep::type.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_determine_ltimes@{Lsched\_\-determine\_\-ltimes}}
+\index{Lsched_determine_ltimes@{Lsched\_\-determine\_\-ltimes}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-determine\_\-ltimes (L\_\-Cb $\ast$ {\em cb}, int {\em num\_\-exits}, L\_\-Oper $\ast$$\ast$ {\em exit\_\-ops})}\label{l__schedule_8c_08a2b260fa792027bc09bbaf9858e331}
+
+
+
+
+Definition at line 853 of file l\_\-schedule.c.
+
+References DEP\_\-INFO, L\_\-Dep::distance, IS\_\-UCOND\_\-BRANCH, L\_\-DEP\_\-CNT, Lsched\_\-branch\_\-increase, Lsched\_\-profile\_\-info\_\-to\_\-use, L\_\-Dep::next\_\-dep, L\_\-Dep::omega, Dep\_\-Info::oper, Dep\_\-Info::output\_\-dep, SCHED\_\-INFO, L\_\-Dep::to\_\-oper, and L\_\-Dep::type.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_determine_pad_for_vliw@{Lsched\_\-determine\_\-pad\_\-for\_\-vliw}}
+\index{Lsched_determine_pad_for_vliw@{Lsched\_\-determine\_\-pad\_\-for\_\-vliw}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-determine\_\-pad\_\-for\_\-vliw (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_7d91b6ba74db4857cb38588bfbfe9c63}
+
+
+
+
+Definition at line 2061 of file l\_\-schedule.c.
+
+References DEP\_\-INFO, L\_\-Dep::from\_\-oper, IS\_\-IGNORE, Lsched\_\-cb\_\-completion\_\-time(), Lsched\_\-completion\_\-time(), Lsched\_\-create\_\-br\_\-pad(), Lsched\_\-create\_\-cb\_\-end\_\-pad(), Lsched\_\-create\_\-cb\_\-start\_\-pad(), Lsched\_\-get\_\-br\_\-pad\_\-value(), Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value(), Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value(), Lsched\_\-need\_\-pad(), L\_\-Dep::next\_\-dep, and NULL.
+
+Referenced by Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_fix_flows@{Lsched\_\-fix\_\-flows}}
+\index{Lsched_fix_flows@{Lsched\_\-fix\_\-flows}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-fix\_\-flows (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_9a49b776bfb91fe021d561770910b8a2}
+
+
+
+
+Definition at line 2425 of file l\_\-schedule.c.
+
+References NULL, Sched\_\-Info::orig\_\-block, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_func_complete@{Lsched\_\-func\_\-complete}}
+\index{Lsched_func_complete@{Lsched\_\-func\_\-complete}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-func\_\-complete (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_548bd94fba94b9dfa0fb7dfea903bbd4}
+
+
+
+
+Definition at line 427 of file l\_\-schedule.c.
+
+References DEP\_\-ALWAYS\_\-SAFE, DEP\_\-COMPLEX\_\-SAFE, DEP\_\-CTL\_\-DEP\_\-SAFE, DEP\_\-DELAYS\_\-EXCEPTION, DEP\_\-NON\_\-EXCEPTING, DEP\_\-SAFE\_\-STORE, DEP\_\-SILENT, Sched\_\-Info::issue\_\-time, L\_\-delete\_\-sched\_\-info(), Lsched\_\-do\_\-postpass\_\-scheduling, Lsched\_\-do\_\-renumber\_\-issue\_\-slots, Lsched\_\-print\_\-cycle\_\-delimiter, Lsched\_\-print\_\-spec\_\-condition, Lsched\_\-renumber\_\-issue\_\-slots(), Sched\_\-Info::mdes\_\-info, NULL, Dep\_\-Info::oper, SCHED\_\-INFO, and Sched\_\-Info::spec\_\-cond.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_get_br_pad_value@{Lsched\_\-get\_\-br\_\-pad\_\-value}}
+\index{Lsched_get_br_pad_value@{Lsched\_\-get\_\-br\_\-pad\_\-value}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-get\_\-br\_\-pad\_\-value (L\_\-Oper $\ast$ {\em oper})}\label{l__schedule_8c_e4c45c26b8351919c84a714d5f98882f}
+
+
+
+
+Definition at line 1999 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw(), and Lsched\_\-pad\_\-cycles\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_get_cb_end_pad_value@{Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value}}
+\index{Lsched_get_cb_end_pad_value@{Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_497f05aa980592a2e1edbdd0fbfaee76}
+
+
+
+
+Definition at line 1975 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw(), and Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_get_cb_start_pad_value@{Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value}}
+\index{Lsched_get_cb_start_pad_value@{Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_8df7af51ac5aa60f63d83ae7d6989db6}
+
+
+
+
+Definition at line 1951 of file l\_\-schedule.c.
+
+References NO\_\-CB\_\-PAD.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw(), Lsched\_\-pad\_\-cycles\_\-for\_\-vliw(), and Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_init@{Lsched\_\-init}}
+\index{Lsched_init@{Lsched\_\-init}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-init (\bf{Parm\_\-Macro\_\-List} $\ast$ {\em command\_\-line\_\-macro\_\-list}, char $\ast$ {\em lmdes\_\-file\_\-name})}\label{l__schedule_8c_a55aae15093dd030630975c50933ac30}
+
+
+
+
+Definition at line 293 of file l\_\-schedule.c.
+
+References BASIC\_\-BLOCK, GENERAL, L\_\-create\_\-alloc\_\-pool(), L\_\-create\_\-queue(), L\_\-load\_\-parameters\_\-aliased(), L\_\-mcb\_\-init(), L\_\-read\_\-parm\_\-lsched(), Ldep\_\-allow\_\-downward\_\-code\_\-perc, Ldep\_\-allow\_\-upward\_\-code\_\-perc, Ldep\_\-init(), Lsched\_\-branch\_\-increase, Lsched\_\-branches\_\-per\_\-cycle(), Lsched\_\-demote\_\-all\_\-the\_\-way, Lsched\_\-do\_\-sentinel\_\-recovery, Lsched\_\-include\_\-only\_\-oper\_\-lt\_\-hb, Lsched\_\-processor\_\-model, Lsched\_\-total\_\-issue\_\-slots, MCB, not\_\-ready\_\-queue, Operand\_\-ready\_\-pool, pending\_\-ready\_\-queue, priority\_\-ready\_\-queue, regpres\_\-ready\_\-queue, RESTRICTED, RU\_\-map\_\-create(), RU\_\-set\_\-max\_\-pred(), Sched\_\-Info\_\-pool, scheduled\_\-queue, SENTINEL, Sq\_\-entry\_\-pool, Squeue\_\-pool, and WRITEBACK\_\-SUPPRESSION.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_init_etimes_and_ltimes@{Lsched\_\-init\_\-etimes\_\-and\_\-ltimes}}
+\index{Lsched_init_etimes_and_ltimes@{Lsched\_\-init\_\-etimes\_\-and\_\-ltimes}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-init\_\-etimes\_\-and\_\-ltimes (L\_\-Cb $\ast$ {\em cb})}\label{l__schedule_8c_6c5b84bc622cfdd643bb13b29e9570d5}
+
+
+
+
+Definition at line 744 of file l\_\-schedule.c.
+
+References Sched\_\-Info::etime, Sched\_\-Info::ltimes, NULL, Dep\_\-Info::oper, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_is_branch@{Lsched\_\-is\_\-branch}}
+\index{Lsched_is_branch@{Lsched\_\-is\_\-branch}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-is\_\-branch (int {\em proc\_\-opc})}\label{l__schedule_8c_cc88d49ca4d88e9903f8f4becff22831}
+
+
+
+
+Definition at line 1366 of file l\_\-schedule.c.
+
+References IS\_\-BRANCH, IS\_\-CTL, and SENTINEL.
+
+Referenced by L\_\-find\_\-next\_\-branch(), Lsched\_\-mcb\_\-schedule\_\-block(), Lsched\_\-postpass\_\-code\_\-scheduling(), Lsched\_\-schedule\_\-block(), wbs\_\-insert\_\-check(), and wbs\_\-remove\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_issue_time@{Lsched\_\-issue\_\-time}}
+\index{Lsched_issue_time@{Lsched\_\-issue\_\-time}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-issue\_\-time (L\_\-Oper $\ast$ {\em oper})}\label{l__schedule_8c_92dd48019f20a24c8bb797604f98568e}
+
+
+
+
+Definition at line 168 of file l\_\-schedule.c.
+
+References NULL, and SCHED\_\-INFO.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_latency@{Lsched\_\-latency}}
+\index{Lsched_latency@{Lsched\_\-latency}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-latency (L\_\-Oper $\ast$ {\em oper})}\label{l__schedule_8c_f5f80bb6ba0f18e8be67e0ec1be834c1}
+
+
+
+
+Definition at line 185 of file l\_\-schedule.c.
+
+References NULL, Sched\_\-Info::relative\_\-latency, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-completion\_\-time().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_loads_per_cycle@{Lsched\_\-loads\_\-per\_\-cycle}}
+\index{Lsched_loads_per_cycle@{Lsched\_\-loads\_\-per\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-loads\_\-per\_\-cycle (void)}\label{l__schedule_8c_374490810b4ebc38b10ce86b61d20241}
+
+
+
+
+Definition at line 144 of file l\_\-schedule.c.
+
+References Lsched\_\-loads\_\-each\_\-cycle.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_make_ready@{Lsched\_\-make\_\-ready}}
+\index{Lsched_make_ready@{Lsched\_\-make\_\-ready}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-make\_\-ready (L\_\-Cb $\ast$ {\em cb}, int {\em oper\_\-issue\_\-time}, \bf{Sched\_\-Info} $\ast$ {\em sinfo}, \bf{Sched\_\-Info} $\ast$ {\em dep\_\-sinfo}, int {\em to\_\-index}, int {\em from\_\-index}, int {\em distance})}\label{l__schedule_8c_afdc2e63f43924ffd008603f33e5f56a}
+
+
+
+
+Definition at line 1421 of file l\_\-schedule.c.
+
+References Sched\_\-Info::earliest\_\-slot, FILLER, Sched\_\-Info::issue\_\-slot, L\_\-dequeue(), L\_\-enqueue\_\-min\_\-to\_\-max\_\-1(), Lsched\_\-fill\_\-delay\_\-slots, Lsched\_\-infinite\_\-issue, Lsched\_\-processor\_\-model, Lsched\_\-update\_\-ctl\_\-delay\_\-sinfo(), Sched\_\-Info::mdes\_\-info, not\_\-ready\_\-queue, NULL, Sched\_\-Info::num\_\-depend, Sched\_\-Info::oper, Sched\_\-Info::operand\_\-ready\_\-times, pending\_\-ready\_\-queue, Sched\_\-Info::proc\_\-opc, Sched\_\-Info::ready\_\-time, Sched\_\-Info::ru\_\-info, RU\_\-SELECTED\_\-ALT, and RU\_\-SELECTED\_\-ALT\_\-ID.
+
+Referenced by L\_\-mcb\_\-delete\_\-check(), and wbs\_\-delete\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_need_pad@{Lsched\_\-need\_\-pad}}
+\index{Lsched_need_pad@{Lsched\_\-need\_\-pad}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-need\_\-pad (L\_\-Cb $\ast$ {\em target}, L\_\-Oper $\ast$ {\em oper}, int {\em overextend})}\label{l__schedule_8c_aa099d7828bbac61af2f67eaac8c4b9a}
+
+
+
+
+Definition at line 2033 of file l\_\-schedule.c.
+
+References IS\_\-IGNORE, NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-determine\_\-pad\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_cycles_end_of_cb_for_vliw@{Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw}}
+\index{Lsched_pad_cycles_end_of_cb_for_vliw@{Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-pad\_\-cycles\_\-end\_\-of\_\-cb\_\-for\_\-vliw (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_39431a5fbacd2cea668db7733c89038e}
+
+
+
+
+Definition at line 2187 of file l\_\-schedule.c.
+
+References IS\_\-IGNORE, Lsched\_\-create\_\-nop(), Lsched\_\-get\_\-cb\_\-end\_\-pad\_\-value(), Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value(), and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_cycles_for_vliw@{Lsched\_\-pad\_\-cycles\_\-for\_\-vliw}}
+\index{Lsched_pad_cycles_for_vliw@{Lsched\_\-pad\_\-cycles\_\-for\_\-vliw}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-pad\_\-cycles\_\-for\_\-vliw (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_219e20eb7ceb63961aab25b01b50708e}
+
+
+
+
+Definition at line 2217 of file l\_\-schedule.c.
+
+References Lsched\_\-create\_\-jump(), Lsched\_\-create\_\-nop(), Lsched\_\-get\_\-br\_\-pad\_\-value(), Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value(), NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_cycles_start_of_cb_for_vliw@{Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw}}
+\index{Lsched_pad_cycles_start_of_cb_for_vliw@{Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-pad\_\-cycles\_\-start\_\-of\_\-cb\_\-for\_\-vliw (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_285509e2641f69859c90cc655f512dd8}
+
+
+
+
+Definition at line 2157 of file l\_\-schedule.c.
+
+References IS\_\-IGNORE, Lsched\_\-create\_\-nop(), Lsched\_\-get\_\-cb\_\-start\_\-pad\_\-value(), NO\_\-CB\_\-PAD, NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_slots_with_nops@{Lsched\_\-pad\_\-slots\_\-with\_\-nops}}
+\index{Lsched_pad_slots_with_nops@{Lsched\_\-pad\_\-slots\_\-with\_\-nops}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lsched\_\-pad\_\-slots\_\-with\_\-nops (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__schedule_8c_7d13a484c6cb9d6e9717830d702cca04}
+
+
+
+
+Definition at line 1885 of file l\_\-schedule.c.
+
+References IS\_\-IGNORE, Sched\_\-Info::issue\_\-slot, Sched\_\-Info::issue\_\-time, Lsched\_\-create\_\-nop(), Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops, Lsched\_\-total\_\-issue\_\-slots, NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_postpass_code_scheduling@{Lsched\_\-postpass\_\-code\_\-scheduling}}
+\index{Lsched_postpass_code_scheduling@{Lsched\_\-postpass\_\-code\_\-scheduling}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-postpass\_\-code\_\-scheduling (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_97697bfbdf7be22085fc3d8b3f177d72}
+
+
+
+
+Definition at line 2888 of file l\_\-schedule.c.
+
+References EXTERN\_\-LOG\_\-FILE, IS\_\-IGNORE, IS\_\-UCOND\_\-BRANCH, L\_\-annotate\_\-instr(), L\_\-build\_\-dependence\_\-graph(), L\_\-create\_\-sched\_\-info(), L\_\-delete\_\-dependence\_\-graph(), L\_\-find\_\-next\_\-branch(), L\_\-print\_\-schedule(), L\_\-update\_\-sched\_\-info(), Ldep\_\-allow\_\-downward\_\-code\_\-perc, Ldep\_\-allow\_\-upward\_\-code\_\-perc, Ldep\_\-mark\_\-safe(), LDEP\_\-MODE\_\-ACYCLIC, LDEP\_\-POSTPASS, Lsched\_\-add\_\-isl\_\-attr(), Lsched\_\-correct\_\-schedule\_\-for\_\-vliw(), Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-postpass\_\-scheduling, Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds, Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches, Lsched\_\-do\_\-fill\_\-squashing\_\-branches, Lsched\_\-do\_\-fill\_\-unfilled\_\-branches, Lsched\_\-do\_\-postpass\_\-scheduling, Lsched\_\-fill\_\-delay\_\-slots, Lsched\_\-fill\_\-nonsquashing\_\-branches(), Lsched\_\-fill\_\-squashing\_\-branches(), Lsched\_\-fill\_\-unfilled\_\-branches(), Lsched\_\-func\_\-complete(), Lsched\_\-is\_\-branch(), Lsched\_\-latest\_\-br, Lsched\_\-num\_\-opers, Lsched\_\-prepass, Lsched\_\-processor\_\-model, Lsched\_\-schedule\_\-block(), Lsched\_\-static\_\-fall\_\-thru\_\-weight, Lsched\_\-vliw\_\-has\_\-interlocking, MCB, NULL, SCHED\_\-INFO, SENTINEL, wbs\_\-insert\_\-check(), and WRITEBACK\_\-SUPPRESSION.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_prepass_code_scheduling@{Lsched\_\-prepass\_\-code\_\-scheduling}}
+\index{Lsched_prepass_code_scheduling@{Lsched\_\-prepass\_\-code\_\-scheduling}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-prepass\_\-code\_\-scheduling (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_d4ed46984d617a811319d1f38f269481}
+
+
+
+
+Definition at line 2692 of file l\_\-schedule.c.
+
+References Ldep\_\-mark\_\-safe(), Lregpres\_\-init\_\-func(), Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-messages, Lsched\_\-debug\_\-prepass\_\-scheduling, Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound, Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds, Lsched\_\-fill\_\-delay\_\-slots, Lsched\_\-prepass, Lsched\_\-static\_\-fall\_\-thru\_\-weight, MCB, NULL, and SENTINEL.\index{l_schedule.c@{l\_\-schedule.c}!Lsched_renumber_issue_slots@{Lsched\_\-renumber\_\-issue\_\-slots}}
+\index{Lsched_renumber_issue_slots@{Lsched\_\-renumber\_\-issue\_\-slots}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-renumber\_\-issue\_\-slots (L\_\-Func $\ast$ {\em fn})}\label{l__schedule_8c_e494cec59630ffe567ad5b8a1062ab5c}
+
+
+
+
+Definition at line 379 of file l\_\-schedule.c.
+
+References NULL.
+
+Referenced by Lsched\_\-func\_\-complete().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_schedule_block@{Lsched\_\-schedule\_\-block}}
+\index{Lsched_schedule_block@{Lsched\_\-schedule\_\-block}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-schedule\_\-block (L\_\-Cb        $\ast$ {\em cb})}\label{l__schedule_8c_7d9e535e6ceefbc9b8be92d3349d67a0}
+
+
+
+
+Definition at line 2485 of file l\_\-schedule.c.
+
+References CAN\_\-SCHEDULE, Sched\_\-Info::current\_\-block, current\_\-time, Sched\_\-Info::dep\_\-info, FALSE, Sched\_\-Info::home\_\-block, Sched\_\-Info::issue\_\-slot, L\_\-dequeue(), L\_\-enqueue(), L\_\-enqueue\_\-min\_\-to\_\-max\_\-1(), L\_\-get\_\-next\_\-entry(), L\_\-get\_\-queue\_\-head(), L\_\-get\_\-queue\_\-size(), L\_\-init\_\-ready\_\-queue(), L\_\-insert\_\-entry(), Dep\_\-Info::level, Lregpres\_\-init\_\-cb(), Lsched\_\-calculate\_\-priority\_\-normal(), Lsched\_\-can\_\-schedule\_\-op(), Lsched\_\-check\_\-for\_\-fill\_\-candidates(), Lsched\_\-determine\_\-etimes(), Lsched\_\-determine\_\-ltimes(), Lsched\_\-fill\_\-delay\_\-slots, Lsched\_\-fix\_\-flows(), Lsched\_\-handle\_\-spilled\_\-branch(), Lsched\_\-infinite\_\-issue, Lsched\_\-infinite\_\-issue\_\-slot, Lsched\_\-init\_\-etimes\_\-and\_\-ltimes(), Lsched\_\-is\_\-branch(), Lsched\_\-num\_\-opers, Lsched\_\-regpres\_\-heuristic, Lsched\_\-schedule\_\-op(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), Sched\_\-Info::mdes\_\-info, not\_\-ready\_\-queue, NULL, Sched\_\-Info::num\_\-depend, Sched\_\-Info::oper, Sched\_\-Info::operand\_\-ready\_\-times, pending\_\-ready\_\-queue, priority\_\-ready\_\-queue, Sched\_\-Info::proc\_\-opc, Sched\_\-Info::ready\_\-time, Sched\_\-Info::ru\_\-info, RU\_\-map\_\-init(), RU\_\-MODE\_\-ACYCLIC, RU\_\-schedule\_\-op\_\-at(), SCHED\_\-INFO, scheduled\_\-queue, and TRUE.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_schedule_op@{Lsched\_\-schedule\_\-op}}
+\index{Lsched_schedule_op@{Lsched\_\-schedule\_\-op}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-schedule\_\-op (L\_\-Cb $\ast$ {\em cb}, \bf{Sched\_\-Info} $\ast$ {\em sinfo}, int {\em spec}, int {\em ready\_\-time})}\label{l__schedule_8c_53b29f1251e9c43df47311cd38555125}
+
+
+
+
+Definition at line 1551 of file l\_\-schedule.c.
+
+References Sched\_\-Info::dep\_\-info, Sched\_\-Info::issue\_\-time, L\_\-update\_\-virt\_\-reg(), Lsched\_\-infinite\_\-issue, Sched\_\-Info::mdes\_\-info, NULL, Sched\_\-Info::oper, Sched\_\-Info::proc\_\-opc, Sched\_\-Info::relative\_\-latency, Sched\_\-Info::ru\_\-info, and RU\_\-SELECTED\_\-ALT\_\-ID.
+
+Referenced by Lsched\_\-schedule\_\-block(), and Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_stores_per_cycle@{Lsched\_\-stores\_\-per\_\-cycle}}
+\index{Lsched_stores_per_cycle@{Lsched\_\-stores\_\-per\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-stores\_\-per\_\-cycle (void)}\label{l__schedule_8c_5a7ad0e9648a9f387c0d7421d2f55947}
+
+
+
+
+Definition at line 152 of file l\_\-schedule.c.
+
+References Lsched\_\-stores\_\-each\_\-cycle.
+
+\subsection{Variable Documentation}
+\index{l_schedule.c@{l\_\-schedule.c}!current_time@{current\_\-time}}
+\index{current_time@{current\_\-time}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{current\_\-time} = 0}\label{l__schedule_8c_8915224642e155ba06d1682e27c56c41}
+
+
+
+
+Definition at line 104 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lmcb_keep_checks@{Lmcb\_\-keep\_\-checks}}
+\index{Lmcb_keep_checks@{Lmcb\_\-keep\_\-checks}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lmcb\_\-keep\_\-checks} = 0}\label{l__schedule_8c_7fa8b9ab156b1588456d5055d2d2633f}
+
+
+
+
+Definition at line 124 of file l\_\-schedule.c.
+
+Referenced by L\_\-mcb\_\-remove\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_branch_increase@{Lsched\_\-branch\_\-increase}}
+\index{Lsched_branch_increase@{Lsched\_\-branch\_\-increase}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float \bf{Lsched\_\-branch\_\-increase} = 0.0}\label{l__schedule_8c_426e0448adb8542b89a2e698d6020bb2}
+
+
+
+
+Definition at line 120 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-determine\_\-etimes(), Lsched\_\-determine\_\-ltimes(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_lower_sched_cb_bound@{Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound}}
+\index{Lsched_debug_lower_sched_cb_bound@{Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-lower\_\-sched\_\-cb\_\-bound} = 0}\label{l__schedule_8c_3b4f7a21cbaf1b8ed78ae395b1f610b5}
+
+
+
+
+Definition at line 78 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_messages@{Lsched\_\-debug\_\-messages}}
+\index{Lsched_debug_messages@{Lsched\_\-debug\_\-messages}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-messages} = 0}\label{l__schedule_8c_69b188aa5e7ffe9ebe9d25ada889bb4f}
+
+
+
+
+Definition at line 122 of file l\_\-schedule.c.
+
+Referenced by L\_\-mcb\_\-delete\_\-check(), Lsched\_\-mcb\_\-schedule\_\-block(), Lsched\_\-prepass\_\-code\_\-scheduling(), and wbs\_\-delete\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_nonsquashing_branches@{Lsched\_\-debug\_\-nonsquashing\_\-branches}}
+\index{Lsched_debug_nonsquashing_branches@{Lsched\_\-debug\_\-nonsquashing\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-nonsquashing\_\-branches} = 0}\label{l__schedule_8c_9ee6e81eaa3a35d7523b7d81f38cdbc8}
+
+
+
+
+Definition at line 73 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), and Lsched\_\-update\_\-ctl\_\-delay\_\-sinfo().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_operation_priority@{Lsched\_\-debug\_\-operation\_\-priority}}
+\index{Lsched_debug_operation_priority@{Lsched\_\-debug\_\-operation\_\-priority}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-operation\_\-priority} = 0}\label{l__schedule_8c_54976628291eb350de98246e583e7069}
+
+
+
+
+Definition at line 69 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_postpass_scheduling@{Lsched\_\-debug\_\-postpass\_\-scheduling}}
+\index{Lsched_debug_postpass_scheduling@{Lsched\_\-debug\_\-postpass\_\-scheduling}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-postpass\_\-scheduling} = 0}\label{l__schedule_8c_cb6bd68cf55e01ed524d25aec561a569}
+
+
+
+
+Definition at line 71 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_prepass_scheduling@{Lsched\_\-debug\_\-prepass\_\-scheduling}}
+\index{Lsched_debug_prepass_scheduling@{Lsched\_\-debug\_\-prepass\_\-scheduling}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-prepass\_\-scheduling} = 0}\label{l__schedule_8c_ab0ccf85b37a82c182ce4edd6814eab9}
+
+
+
+
+Definition at line 70 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_squashing_branches@{Lsched\_\-debug\_\-squashing\_\-branches}}
+\index{Lsched_debug_squashing_branches@{Lsched\_\-debug\_\-squashing\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-squashing\_\-branches} = 0}\label{l__schedule_8c_edb9555f6c00ca8943e8a8a058731e68}
+
+
+
+
+Definition at line 72 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_unfilled_branches@{Lsched\_\-debug\_\-unfilled\_\-branches}}
+\index{Lsched_debug_unfilled_branches@{Lsched\_\-debug\_\-unfilled\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-unfilled\_\-branches} = 0}\label{l__schedule_8c_4c875e480a2233a014e03f62cab39191}
+
+
+
+
+Definition at line 74 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-fill\_\-unfilled\_\-branches().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_upper_sched_cb_bound@{Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound}}
+\index{Lsched_debug_upper_sched_cb_bound@{Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-upper\_\-sched\_\-cb\_\-bound} = 100000000}\label{l__schedule_8c_e75029d0ece9ff7e181c53e7091e054c}
+
+
+
+
+Definition at line 79 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_debug_use_sched_cb_bounds@{Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds}}
+\index{Lsched_debug_use_sched_cb_bounds@{Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-debug\_\-use\_\-sched\_\-cb\_\-bounds} = 0}\label{l__schedule_8c_c3f7692f32a5f078bb087c6709be3dc6}
+
+
+
+
+Definition at line 77 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_demote_all_the_way@{Lsched\_\-demote\_\-all\_\-the\_\-way}}
+\index{Lsched_demote_all_the_way@{Lsched\_\-demote\_\-all\_\-the\_\-way}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-demote\_\-all\_\-the\_\-way} = 0}\label{l__schedule_8c_a42d0c45d271917fdbdc1cc4daa18b1d}
+
+
+
+
+Definition at line 89 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_fill_nonsquashing_branches@{Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches}}
+\index{Lsched_do_fill_nonsquashing_branches@{Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-fill\_\-nonsquashing\_\-branches} = 0}\label{l__schedule_8c_71c03ff0a19ef4532954edc78836a18b}
+
+
+
+
+Definition at line 91 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_fill_squashing_branches@{Lsched\_\-do\_\-fill\_\-squashing\_\-branches}}
+\index{Lsched_do_fill_squashing_branches@{Lsched\_\-do\_\-fill\_\-squashing\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-fill\_\-squashing\_\-branches} = 0}\label{l__schedule_8c_073f10e729943841844c9ac33ab08760}
+
+
+
+
+Definition at line 90 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_fill_unfilled_branches@{Lsched\_\-do\_\-fill\_\-unfilled\_\-branches}}
+\index{Lsched_do_fill_unfilled_branches@{Lsched\_\-do\_\-fill\_\-unfilled\_\-branches}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-fill\_\-unfilled\_\-branches} = 0}\label{l__schedule_8c_51b02dd4ff5d452f0832853d61065c2c}
+
+
+
+
+Definition at line 92 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_postpass_scheduling@{Lsched\_\-do\_\-postpass\_\-scheduling}}
+\index{Lsched_do_postpass_scheduling@{Lsched\_\-do\_\-postpass\_\-scheduling}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-postpass\_\-scheduling} = 0}\label{l__schedule_8c_0feea7b69688d91321677afa857b2e9b}
+
+
+
+
+Definition at line 88 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-func\_\-complete(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_renumber_issue_slots@{Lsched\_\-do\_\-renumber\_\-issue\_\-slots}}
+\index{Lsched_do_renumber_issue_slots@{Lsched\_\-do\_\-renumber\_\-issue\_\-slots}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-renumber\_\-issue\_\-slots} = 0}\label{l__schedule_8c_a4b5460a6770efd4d849eb261e856daa}
+
+
+
+
+Definition at line 108 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-func\_\-complete().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_do_sentinel_recovery@{Lsched\_\-do\_\-sentinel\_\-recovery}}
+\index{Lsched_do_sentinel_recovery@{Lsched\_\-do\_\-sentinel\_\-recovery}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-do\_\-sentinel\_\-recovery} = 0}\label{l__schedule_8c_e92a2b503333948c586d0b6907833c94}
+
+
+
+
+Definition at line 97 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_fill_delay_slots@{Lsched\_\-fill\_\-delay\_\-slots}}
+\index{Lsched_fill_delay_slots@{Lsched\_\-fill\_\-delay\_\-slots}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-fill\_\-delay\_\-slots} = 0}\label{l__schedule_8c_6d53c903b4fd077ed1a02626dbebfda0}
+
+
+
+
+Definition at line 121 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-make\_\-ready(), Lsched\_\-postpass\_\-code\_\-scheduling(), Lsched\_\-prepass\_\-code\_\-scheduling(), and Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_include_only_oper_lt_hb@{Lsched\_\-include\_\-only\_\-oper\_\-lt\_\-hb}}
+\index{Lsched_include_only_oper_lt_hb@{Lsched\_\-include\_\-only\_\-oper\_\-lt\_\-hb}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-include\_\-only\_\-oper\_\-lt\_\-hb} = 0}\label{l__schedule_8c_20a06bed1bdca8cd03cffb1cbe5b588b}
+
+
+
+
+Definition at line 93 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_infinite_issue@{Lsched\_\-infinite\_\-issue}}
+\index{Lsched_infinite_issue@{Lsched\_\-infinite\_\-issue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-infinite\_\-issue} = 0}\label{l__schedule_8c_a41d94228aa003482c3c8da8841c420f}
+
+
+
+
+Definition at line 87 of file l\_\-schedule.c.
+
+Referenced by L\_\-print\_\-schedule(), L\_\-read\_\-parm\_\-lsched(), Lsched\_\-can\_\-schedule\_\-op(), Lsched\_\-make\_\-ready(), Lsched\_\-schedule\_\-block(), and Lsched\_\-schedule\_\-op().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_infinite_issue_slot@{Lsched\_\-infinite\_\-issue\_\-slot}}
+\index{Lsched_infinite_issue_slot@{Lsched\_\-infinite\_\-issue\_\-slot}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-infinite\_\-issue\_\-slot} = 0}\label{l__schedule_8c_2d920740be5e3d47a1f43c90428182eb}
+
+
+
+
+Definition at line 105 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-can\_\-schedule\_\-op(), and Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_latest_br@{Lsched\_\-latest\_\-br}}
+\index{Lsched_latest_br@{Lsched\_\-latest\_\-br}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ \bf{Lsched\_\-latest\_\-br} = \bf{NULL}}\label{l__schedule_8c_9038dbd897cfe1df535858875651b3e4}
+
+
+
+
+Definition at line 110 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_loads_each_cycle@{Lsched\_\-loads\_\-each\_\-cycle}}
+\index{Lsched_loads_each_cycle@{Lsched\_\-loads\_\-each\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-loads\_\-each\_\-cycle} = 0}\label{l__schedule_8c_14f9b657ee8e365347a970ed01a869a1}
+
+
+
+
+Definition at line 102 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-loads\_\-per\_\-cycle().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_num_branches_per_cycle@{Lsched\_\-num\_\-branches\_\-per\_\-cycle}}
+\index{Lsched_num_branches_per_cycle@{Lsched\_\-num\_\-branches\_\-per\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-num\_\-branches\_\-per\_\-cycle} = 0}\label{l__schedule_8c_42512cec3f5bb5c7b60f1db41f252ec7}
+
+
+
+
+Definition at line 83 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-branches\_\-per\_\-cycle().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_num_opers@{Lsched\_\-num\_\-opers}}
+\index{Lsched_num_opers@{Lsched\_\-num\_\-opers}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-num\_\-opers} = 0}\label{l__schedule_8c_81a1b68006a09b691fdbe6e8d1fb354d}
+
+
+
+
+Definition at line 101 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-schedule\_\-block().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_height@{Lsched\_\-pad\_\-height}}
+\index{Lsched_pad_height@{Lsched\_\-pad\_\-height}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-pad\_\-height} = 1}\label{l__schedule_8c_cdd4938179f0cfad035fefce3c2ced7a}
+
+
+
+
+Definition at line 85 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_pad_vliw_slots_with_nops@{Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops}}
+\index{Lsched_pad_vliw_slots_with_nops@{Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-pad\_\-vliw\_\-slots\_\-with\_\-nops} = 0}\label{l__schedule_8c_b5f9a08750a50c4fa56c2f52f372749b}
+
+
+
+
+Definition at line 106 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-pad\_\-slots\_\-with\_\-nops().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_prepass@{Lsched\_\-prepass}}
+\index{Lsched_prepass@{Lsched\_\-prepass}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-prepass} = 0}\label{l__schedule_8c_fac4677c213f235af5efb6e5fd7cde1b}
+
+
+
+
+Definition at line 98 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling(), Lsched\_\-prepass\_\-code\_\-scheduling(), RU\_\-can\_\-schedule\_\-op(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), and RU\_\-schedule\_\-op\_\-reverse().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_print_cycle_delimiter@{Lsched\_\-print\_\-cycle\_\-delimiter}}
+\index{Lsched_print_cycle_delimiter@{Lsched\_\-print\_\-cycle\_\-delimiter}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-print\_\-cycle\_\-delimiter} = 0}\label{l__schedule_8c_7689853b9040f1b843690d0c0e7de833}
+
+
+
+
+Definition at line 100 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-func\_\-complete().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_print_hb_and_spec@{Lsched\_\-print\_\-hb\_\-and\_\-spec}}
+\index{Lsched_print_hb_and_spec@{Lsched\_\-print\_\-hb\_\-and\_\-spec}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-print\_\-hb\_\-and\_\-spec} = 0}\label{l__schedule_8c_af219a307f8e80d27600cf40832135af}
+
+
+
+
+Definition at line 99 of file l\_\-schedule.c.
+
+Referenced by L\_\-annotate\_\-instr(), and L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_print_prepass_statistics@{Lsched\_\-print\_\-prepass\_\-statistics}}
+\index{Lsched_print_prepass_statistics@{Lsched\_\-print\_\-prepass\_\-statistics}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-print\_\-prepass\_\-statistics} = 0}\label{l__schedule_8c_181a18821bedca4935435e87b165d3a0}
+
+
+
+
+Definition at line 95 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_print_spec_condition@{Lsched\_\-print\_\-spec\_\-condition}}
+\index{Lsched_print_spec_condition@{Lsched\_\-print\_\-spec\_\-condition}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-print\_\-spec\_\-condition} = 0}\label{l__schedule_8c_c3946267c46785410b547ee22a070b17}
+
+
+
+
+Definition at line 96 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-func\_\-complete().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_print_statistics@{Lsched\_\-print\_\-statistics}}
+\index{Lsched_print_statistics@{Lsched\_\-print\_\-statistics}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-print\_\-statistics} = 0}\label{l__schedule_8c_e677cd429292523a696a32d17cc7e389}
+
+
+
+
+Definition at line 94 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-correct\_\-schedule\_\-for\_\-vliw().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_processor_model@{Lsched\_\-processor\_\-model}}
+\index{Lsched_processor_model@{Lsched\_\-processor\_\-model}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-processor\_\-model} = MDES\_\-SUPERSCALAR}\label{l__schedule_8c_4d59bf1a4de63a2857de2b9f53abd7b2}
+
+
+
+
+Definition at line 118 of file l\_\-schedule.c.
+
+Referenced by L\_\-compute\_\-control\_\-dependence(), Lsched\_\-can\_\-schedule\_\-op(), Lsched\_\-init(), Lsched\_\-make\_\-ready(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_profile_info_to_use@{Lsched\_\-profile\_\-info\_\-to\_\-use}}
+\index{Lsched_profile_info_to_use@{Lsched\_\-profile\_\-info\_\-to\_\-use}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{Lsched\_\-profile\_\-info\_\-to\_\-use} = \bf{NULL}}\label{l__schedule_8c_11161fe0b364a73fa794db32524bd926}
+
+
+
+
+Definition at line 109 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-determine\_\-ltimes().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_static_fall_thru_weight@{Lsched\_\-static\_\-fall\_\-thru\_\-weight}}
+\index{Lsched_static_fall_thru_weight@{Lsched\_\-static\_\-fall\_\-thru\_\-weight}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-static\_\-fall\_\-thru\_\-weight} = 1}\label{l__schedule_8c_87ee175780759eb78fb67c94f584eeef}
+
+
+
+
+Definition at line 84 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_stores_each_cycle@{Lsched\_\-stores\_\-each\_\-cycle}}
+\index{Lsched_stores_each_cycle@{Lsched\_\-stores\_\-each\_\-cycle}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-stores\_\-each\_\-cycle} = 0}\label{l__schedule_8c_9be7ba98ab64e7c71052045fd2e066b2}
+
+
+
+
+Definition at line 103 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-stores\_\-per\_\-cycle().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_total_issue_slots@{Lsched\_\-total\_\-issue\_\-slots}}
+\index{Lsched_total_issue_slots@{Lsched\_\-total\_\-issue\_\-slots}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-total\_\-issue\_\-slots} = 0}\label{l__schedule_8c_7511cf13b18125e863ce2bb076d8f1cd}
+
+
+
+
+Definition at line 119 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-can\_\-schedule\_\-op(), Lsched\_\-init(), Lsched\_\-pad\_\-slots\_\-with\_\-nops(), and Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_use_fan_out@{Lsched\_\-use\_\-fan\_\-out}}
+\index{Lsched_use_fan_out@{Lsched\_\-use\_\-fan\_\-out}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-use\_\-fan\_\-out} = 1}\label{l__schedule_8c_dc2b7936a51554fc91cf180edacf0b19}
+
+
+
+
+Definition at line 86 of file l\_\-schedule.c.
+
+Referenced by L\_\-insert\_\-entry(), and L\_\-read\_\-parm\_\-lsched().\index{l_schedule.c@{l\_\-schedule.c}!Lsched_vliw_has_interlocking@{Lsched\_\-vliw\_\-has\_\-interlocking}}
+\index{Lsched_vliw_has_interlocking@{Lsched\_\-vliw\_\-has\_\-interlocking}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-vliw\_\-has\_\-interlocking} = 0}\label{l__schedule_8c_50679cc20a4e01b36d91b0593ea51875}
+
+
+
+
+Definition at line 107 of file l\_\-schedule.c.
+
+Referenced by L\_\-read\_\-parm\_\-lsched(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_schedule.c@{l\_\-schedule.c}!not_ready_queue@{not\_\-ready\_\-queue}}
+\index{not_ready_queue@{not\_\-ready\_\-queue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Squeue} $\ast$ \bf{not\_\-ready\_\-queue}}\label{l__schedule_8c_fe3f0aa3f7900d8acb68f9c302f32a7f}
+
+
+
+
+Definition at line 112 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-init(), Lsched\_\-make\_\-ready(), Lsched\_\-schedule\_\-block(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), and Lsched\_\-update\_\-ctl\_\-delay\_\-sinfo().\index{l_schedule.c@{l\_\-schedule.c}!Operand_ready_pool@{Operand\_\-ready\_\-pool}}
+\index{Operand_ready_pool@{Operand\_\-ready\_\-pool}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Operand\_\-ready\_\-pool} = \bf{NULL}}\label{l__schedule_8c_5aeea507b43d25bfcbdd09f85aa420ca}
+
+
+
+
+Definition at line 131 of file l\_\-schedule.c.
+
+Referenced by L\_\-create\_\-sched\_\-info(), L\_\-delete\_\-sched\_\-info(), L\_\-free\_\-sched\_\-info(), L\_\-remove\_\-sched\_\-cb(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!pending_ready_queue@{pending\_\-ready\_\-queue}}
+\index{pending_ready_queue@{pending\_\-ready\_\-queue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Squeue} $\ast$ \bf{pending\_\-ready\_\-queue}}\label{l__schedule_8c_065691cd75db4683c71bba868f90264d}
+
+
+
+
+Definition at line 112 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-init(), Lsched\_\-make\_\-ready(), Lsched\_\-schedule\_\-block(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), and Lsched\_\-update\_\-ctl\_\-delay\_\-sinfo().\index{l_schedule.c@{l\_\-schedule.c}!priority_ready_queue@{priority\_\-ready\_\-queue}}
+\index{priority_ready_queue@{priority\_\-ready\_\-queue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Squeue} $\ast$ \bf{priority\_\-ready\_\-queue}}\label{l__schedule_8c_7ad0faa72489db11d3885ff9a0f42366}
+
+
+
+
+Definition at line 112 of file l\_\-schedule.c.
+
+Referenced by L\_\-get\_\-next\_\-entry(), L\_\-init\_\-ready\_\-queue(), L\_\-insert\_\-entry(), Lsched\_\-init(), Lsched\_\-schedule\_\-block(), and Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{l_schedule.c@{l\_\-schedule.c}!regpres_ready_queue@{regpres\_\-ready\_\-queue}}
+\index{regpres_ready_queue@{regpres\_\-ready\_\-queue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Squeue} $\ast$ \bf{regpres\_\-ready\_\-queue}}\label{l__schedule_8c_99d40e945682d462016f6899c74be8d9}
+
+
+
+
+Definition at line 112 of file l\_\-schedule.c.
+
+Referenced by L\_\-get\_\-next\_\-entry(), L\_\-init\_\-ready\_\-queue(), L\_\-insert\_\-entry(), L\_\-update\_\-virt\_\-reg(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Sched_Info_pool@{Sched\_\-Info\_\-pool}}
+\index{Sched_Info_pool@{Sched\_\-Info\_\-pool}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Sched\_\-Info\_\-pool} = \bf{NULL}}\label{l__schedule_8c_373147875f98887da63ee267f1ac4cfe}
+
+
+
+
+Definition at line 130 of file l\_\-schedule.c.
+
+Referenced by L\_\-create\_\-sched\_\-info(), L\_\-delete\_\-sched\_\-info(), L\_\-free\_\-sched\_\-info(), L\_\-remove\_\-sched\_\-cb(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!scheduled_queue@{scheduled\_\-queue}}
+\index{scheduled_queue@{scheduled\_\-queue}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Squeue}$\ast$ \bf{scheduled\_\-queue}}\label{l__schedule_8c_b45d8d03ce37d7b7cf89b0321c5d3c28}
+
+
+
+
+Definition at line 112 of file l\_\-schedule.c.
+
+Referenced by L\_\-mcb\_\-delete\_\-check(), L\_\-mcb\_\-remove\_\-check(), Lsched\_\-init(), Lsched\_\-schedule\_\-block(), and wbs\_\-delete\_\-check().\index{l_schedule.c@{l\_\-schedule.c}!Sq_entry_pool@{Sq\_\-entry\_\-pool}}
+\index{Sq_entry_pool@{Sq\_\-entry\_\-pool}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Sq\_\-entry\_\-pool} = \bf{NULL}}\label{l__schedule_8c_905d903f4a74734bcd6535bdc20f5c84}
+
+
+
+
+Definition at line 129 of file l\_\-schedule.c.
+
+Referenced by L\_\-dequeue(), L\_\-dequeue\_\-entry(), L\_\-enqueue(), L\_\-enqueue\_\-before(), and Lsched\_\-init().\index{l_schedule.c@{l\_\-schedule.c}!Squeue_pool@{Squeue\_\-pool}}
+\index{Squeue_pool@{Squeue\_\-pool}!l_schedule.c@{l\_\-schedule.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Squeue\_\-pool} = \bf{NULL}}\label{l__schedule_8c_70490b1c3107e1406d0a788c58460d61}
+
+
+
+
+Definition at line 128 of file l\_\-schedule.c.
+
+Referenced by L\_\-create\_\-queue(), L\_\-delete\_\-queue(), and Lsched\_\-init().

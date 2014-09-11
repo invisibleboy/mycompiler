@@ -1,0 +1,1704 @@
+\section{ml\_\-bx86.c File Reference}
+\label{ml__bx86_8c}\index{ml_bx86.c@{ml\_\-bx86.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-spec.h\char`\"{}}\par
+{\tt \#include \char`\"{}m\_\-bx86.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-DOUBLE}~32
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-BX86\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-BX86\_\-MAX\_\-FNVAR\_\-REG}~0
+\item 
+\#define \bf{M\_\-BX86\_\-SMALL\_\-STRUCT\_\-MAX}~04
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(16 $\ast$ 0)
+\item 
+\#define \bf{M\_\-BX86\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-BX86\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-BX86\_\-RET\_\-I32}~0
+\item 
+\#define \bf{M\_\-BX86\_\-RET\_\-I64}~0
+\item 
+\#define \bf{M\_\-BX86\_\-RET\_\-ST}~0
+\item 
+\#define \bf{M\_\-BX86\_\-RET\_\-F}~1
+\item 
+\#define \bf{M\_\-BX86\_\-RET\_\-F2}~1
+\item 
+\#define \bf{M\_\-BX86\_\-VAR\_\-PTR}~\char`\"{}\$LV\char`\"{}
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\item 
+\#define \bf{MSPEC\_\-oszapc\_\-flags}~LBX86\_\-MAC\_\-OSZAPC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-c\_\-flags}~LBX86\_\-MAC\_\-C\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-oszap\_\-flags}~LBX86\_\-MAC\_\-OSZAP\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-oc\_\-flags}~LBX86\_\-MAC\_\-OC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-szapc\_\-flags}~LBX86\_\-MAC\_\-SZAPC\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-oszpc\_\-flags}~LBX86\_\-MAC\_\-OSZPC\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-z\_\-flags}~LBX86\_\-MAC\_\-Z\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-zc\_\-flags}~LBX86\_\-MAC\_\-ZC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-osz\_\-flags}~LBX86\_\-MAC\_\-OSZ\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-os\_\-flags}~LBX86\_\-MAC\_\-OS\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-d\_\-flags}~LBX86\_\-MAC\_\-D\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-o\_\-flags}~LBX86\_\-MAC\_\-O\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-s\_\-flags}~LBX86\_\-MAC\_\-S\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-a\_\-flags}~LBX86\_\-MAC\_\-A\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-p\_\-flags}~LBX86\_\-MAC\_\-P\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-gp\_\-reg32}~LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG32,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-gp\_\-reg16}~LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG16,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-eax}~LBX86\_\-MAC\_\-EAX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ebx}~LBX86\_\-MAC\_\-EBX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ecx}~LBX86\_\-MAC\_\-ECX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-edx}~LBX86\_\-MAC\_\-EDX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-esi}~LBX86\_\-MAC\_\-ESI,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-edi}~LBX86\_\-MAC\_\-EDI,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ebp}~LBX86\_\-MAC\_\-EBP,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-esp}~LBX86\_\-MAC\_\-ESP,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ax}~LBX86\_\-MAC\_\-AX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-bx}~LBX86\_\-MAC\_\-BX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-cx}~LBX86\_\-MAC\_\-CX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-dx}~LBX86\_\-MAC\_\-DX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-si}~LBX86\_\-MAC\_\-SI,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-di}~LBX86\_\-MAC\_\-DI,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-bp}~LBX86\_\-MAC\_\-BP,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-sp}~LBX86\_\-MAC\_\-SP,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-eaxh}~LBX86\_\-MAC\_\-EAXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ebxh}~LBX86\_\-MAC\_\-EBXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ecxh}~LBX86\_\-MAC\_\-ECXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-edxh}~LBX86\_\-MAC\_\-EDXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-esih}~LBX86\_\-MAC\_\-ESIH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-edih}~LBX86\_\-MAC\_\-EDIH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ebph}~LBX86\_\-MAC\_\-EBPH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-esph}~LBX86\_\-MAC\_\-ESPH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-al}~LBX86\_\-MAC\_\-AL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-bl}~LBX86\_\-MAC\_\-BL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-cl}~LBX86\_\-MAC\_\-CL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-dl}~LBX86\_\-MAC\_\-DL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ah}~LBX86\_\-MAC\_\-AH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-bh}~LBX86\_\-MAC\_\-BH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ch}~LBX86\_\-MAC\_\-CH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-dh}~LBX86\_\-MAC\_\-DH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-cs}~LBX86\_\-MAC\_\-CS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ds}~LBX86\_\-MAC\_\-DS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-es}~LBX86\_\-MAC\_\-ES,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-fs}~LBX86\_\-MAC\_\-FS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-gs}~LBX86\_\-MAC\_\-GS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-ss}~LBX86\_\-MAC\_\-SS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-all\_\-fst}~LBX86\_\-MAC\_\-ALL\_\-FST,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st0}~LBX86\_\-MAC\_\-ST0,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st1}~LBX86\_\-MAC\_\-ST1,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st2}~LBX86\_\-MAC\_\-ST2,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st3}~LBX86\_\-MAC\_\-ST3,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st4}~LBX86\_\-MAC\_\-ST4,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st5}~LBX86\_\-MAC\_\-ST5,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st6}~LBX86\_\-MAC\_\-ST6,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-st7}~LBX86\_\-MAC\_\-ST7,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-all\_\-mm}~LBX86\_\-MAC\_\-ALL\_\-MM,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm0}~LBX86\_\-MAC\_\-MM0,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm1}~LBX86\_\-MAC\_\-MM1,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm2}~LBX86\_\-MAC\_\-MM2,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm3}~LBX86\_\-MAC\_\-MM3,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm4}~LBX86\_\-MAC\_\-MM4,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm5}~LBX86\_\-MAC\_\-MM5,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm6}~LBX86\_\-MAC\_\-MM6,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-mm7}~LBX86\_\-MAC\_\-MM7,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-addr}~LBX86\_\-MAC\_\-ADDR,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-fpsw}~LBX86\_\-MAC\_\-FPSW,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\item 
+\#define \bf{MSPEC\_\-fpcw}~LBX86\_\-MAC\_\-FPCW,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-bx86\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-bx86\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-bx86\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-bx86\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-bx86\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-bx86\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-bx86\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-bx86\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-bx86\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-bx86\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-bx86\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-bx86\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-bx86\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-bx86\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-bx86\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-bx86\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-bx86\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-bx86\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-bx86\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-bx86\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-bx86\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-bx86\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-bx86\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-bx86\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-bx86\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-bx86\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-bx86\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-bx86\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-bx86\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-bx86\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-bx86\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-bx86\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-bx86\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+int \bf{M\_\-bx86\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-bx86} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-bx86} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-bx86} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-bx86} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-bx86} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-bx86} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-bx86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-bx86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-bx86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-bx86} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+void \bf{M\_\-get\_\-memory\_\-operands\_\-bx86} (int $\ast$first, int $\ast$number, int proc\_\-opc)
+\item 
+int \bf{M\_\-memory\_\-access\_\-size\_\-bx86} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-get\_\-data\_\-type\_\-bx86} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-num\_\-registers\_\-bx86} (int ctype)
+\item 
+int \bf{M\_\-is\_\-implicit\_\-memory\_\-op\_\-bx86} (L\_\-Oper $\ast$oper)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_bx86.c@{ml\_\-bx86.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__bx86_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_bx86.c@{ml\_\-bx86.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__bx86_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_bx86.c@{ml\_\-bx86.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__bx86_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_bx86.c@{ml\_\-bx86.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__bx86_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_BIT@{M\_\-BX86\_\-ALIGN\_\-BIT}}
+\index{M_BX86_ALIGN_BIT@{M\_\-BX86\_\-ALIGN\_\-BIT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-BIT~1}\label{ml__bx86_8c_7c6024834ddf5dd4bf4742a40ad57c74}
+
+
+
+
+Definition at line 96 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_BLOCK@{M\_\-BX86\_\-ALIGN\_\-BLOCK}}
+\index{M_BX86_ALIGN_BLOCK@{M\_\-BX86\_\-ALIGN\_\-BLOCK}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-BLOCK~-1}\label{ml__bx86_8c_bd9e71c4c7cfefe0f634a40d554ec6cd}
+
+
+
+
+Definition at line 106 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_CHAR@{M\_\-BX86\_\-ALIGN\_\-CHAR}}
+\index{M_BX86_ALIGN_CHAR@{M\_\-BX86\_\-ALIGN\_\-CHAR}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-CHAR~8}\label{ml__bx86_8c_d3e21981d9616c391bbf4cad69ae24bb}
+
+
+
+
+Definition at line 97 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_DOUBLE@{M\_\-BX86\_\-ALIGN\_\-DOUBLE}}
+\index{M_BX86_ALIGN_DOUBLE@{M\_\-BX86\_\-ALIGN\_\-DOUBLE}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-DOUBLE~32}\label{ml__bx86_8c_57e5ee51b12739430b42a51130807886}
+
+
+
+
+Definition at line 102 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_FLOAT@{M\_\-BX86\_\-ALIGN\_\-FLOAT}}
+\index{M_BX86_ALIGN_FLOAT@{M\_\-BX86\_\-ALIGN\_\-FLOAT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-FLOAT~32}\label{ml__bx86_8c_69d41f23fc1e2a42c78fc6dd6497a788}
+
+
+
+
+Definition at line 101 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_INT@{M\_\-BX86\_\-ALIGN\_\-INT}}
+\index{M_BX86_ALIGN_INT@{M\_\-BX86\_\-ALIGN\_\-INT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-INT~32}\label{ml__bx86_8c_cb1e5bc838b5f1f14da055912ed56159}
+
+
+
+
+Definition at line 99 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_LONG@{M\_\-BX86\_\-ALIGN\_\-LONG}}
+\index{M_BX86_ALIGN_LONG@{M\_\-BX86\_\-ALIGN\_\-LONG}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-LONG~32}\label{ml__bx86_8c_e62ebd0d5e3ba27a477cab5d9768ce90}
+
+
+
+
+Definition at line 100 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_MAX@{M\_\-BX86\_\-ALIGN\_\-MAX}}
+\index{M_BX86_ALIGN_MAX@{M\_\-BX86\_\-ALIGN\_\-MAX}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-MAX~64}\label{ml__bx86_8c_e4bdfa2ce774788e9366f62a1a129b23}
+
+
+
+
+Definition at line 107 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_POINTER@{M\_\-BX86\_\-ALIGN\_\-POINTER}}
+\index{M_BX86_ALIGN_POINTER@{M\_\-BX86\_\-ALIGN\_\-POINTER}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-POINTER~32}\label{ml__bx86_8c_227096658aaa8117af742f7f49c5fc12}
+
+
+
+
+Definition at line 103 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_SHORT@{M\_\-BX86\_\-ALIGN\_\-SHORT}}
+\index{M_BX86_ALIGN_SHORT@{M\_\-BX86\_\-ALIGN\_\-SHORT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-SHORT~16}\label{ml__bx86_8c_3ff7a09901317bae5c41856bca906d46}
+
+
+
+
+Definition at line 98 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_STRUCT@{M\_\-BX86\_\-ALIGN\_\-STRUCT}}
+\index{M_BX86_ALIGN_STRUCT@{M\_\-BX86\_\-ALIGN\_\-STRUCT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-STRUCT~-1}\label{ml__bx86_8c_8debda573b86b86dbe48d3a92a61710f}
+
+
+
+
+Definition at line 105 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_UNION@{M\_\-BX86\_\-ALIGN\_\-UNION}}
+\index{M_BX86_ALIGN_UNION@{M\_\-BX86\_\-ALIGN\_\-UNION}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-UNION~-1}\label{ml__bx86_8c_764a1f86e671b76658e3a9650d1663dc}
+
+
+
+
+Definition at line 104 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_ALIGN_VOID@{M\_\-BX86\_\-ALIGN\_\-VOID}}
+\index{M_BX86_ALIGN_VOID@{M\_\-BX86\_\-ALIGN\_\-VOID}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-ALIGN\_\-VOID~-1}\label{ml__bx86_8c_f4dc3b2cbe6c7efd38b4a8040fb7f4cf}
+
+
+
+
+Definition at line 95 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_FLT_BASE@{M\_\-BX86\_\-FLT\_\-BASE}}
+\index{M_BX86_FLT_BASE@{M\_\-BX86\_\-FLT\_\-BASE}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-FLT\_\-BASE~4}\label{ml__bx86_8c_e7584285fd005454d2c2883e551e874b}
+
+
+
+
+Definition at line 119 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_INT_BASE@{M\_\-BX86\_\-INT\_\-BASE}}
+\index{M_BX86_INT_BASE@{M\_\-BX86\_\-INT\_\-BASE}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-INT\_\-BASE~0}\label{ml__bx86_8c_08e61348102edddcf3712071f6a48d8b}
+
+
+
+
+Definition at line 118 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_MAX_FNVAR_REG@{M\_\-BX86\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_BX86_MAX_FNVAR_REG@{M\_\-BX86\_\-MAX\_\-FNVAR\_\-REG}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-MAX\_\-FNVAR\_\-REG~0}\label{ml__bx86_8c_dbd17eeeb49a7341b4f63ba3d47a149c}
+
+
+
+
+Definition at line 113 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_RET_F@{M\_\-BX86\_\-RET\_\-F}}
+\index{M_BX86_RET_F@{M\_\-BX86\_\-RET\_\-F}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-RET\_\-F~1}\label{ml__bx86_8c_c91156ab6095c042fc190eb8b781e665}
+
+
+
+
+Definition at line 124 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-return\_\-register().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_RET_F2@{M\_\-BX86\_\-RET\_\-F2}}
+\index{M_BX86_RET_F2@{M\_\-BX86\_\-RET\_\-F2}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-RET\_\-F2~1}\label{ml__bx86_8c_5de09f36589c4fe6abededca8e8c80c4}
+
+
+
+
+Definition at line 125 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_RET_I32@{M\_\-BX86\_\-RET\_\-I32}}
+\index{M_BX86_RET_I32@{M\_\-BX86\_\-RET\_\-I32}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-RET\_\-I32~0}\label{ml__bx86_8c_3731fdf77f5148f3def08ced10876d46}
+
+
+
+
+Definition at line 121 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-return\_\-register().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_RET_I64@{M\_\-BX86\_\-RET\_\-I64}}
+\index{M_BX86_RET_I64@{M\_\-BX86\_\-RET\_\-I64}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-RET\_\-I64~0}\label{ml__bx86_8c_f673341ff25de648bb852d8640939989}
+
+
+
+
+Definition at line 122 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_RET_ST@{M\_\-BX86\_\-RET\_\-ST}}
+\index{M_BX86_RET_ST@{M\_\-BX86\_\-RET\_\-ST}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-RET\_\-ST~0}\label{ml__bx86_8c_598b1becab7b4524e6eaa7e3af04e6c1}
+
+
+
+
+Definition at line 123 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-structure\_\-pointer().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_BIT@{M\_\-BX86\_\-SIZE\_\-BIT}}
+\index{M_BX86_SIZE_BIT@{M\_\-BX86\_\-SIZE\_\-BIT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-BIT~1}\label{ml__bx86_8c_c57ce8839d41d938e8496ba486c824f2}
+
+
+
+
+Definition at line 82 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_BLOCK@{M\_\-BX86\_\-SIZE\_\-BLOCK}}
+\index{M_BX86_SIZE_BLOCK@{M\_\-BX86\_\-SIZE\_\-BLOCK}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-BLOCK~-1}\label{ml__bx86_8c_905496c8a58cf3acf671b0b757ac2a00}
+
+
+
+
+Definition at line 92 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_CHAR@{M\_\-BX86\_\-SIZE\_\-CHAR}}
+\index{M_BX86_SIZE_CHAR@{M\_\-BX86\_\-SIZE\_\-CHAR}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-CHAR~8}\label{ml__bx86_8c_c5f61a596116316673f895d36b233a9b}
+
+
+
+
+Definition at line 83 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_DOUBLE@{M\_\-BX86\_\-SIZE\_\-DOUBLE}}
+\index{M_BX86_SIZE_DOUBLE@{M\_\-BX86\_\-SIZE\_\-DOUBLE}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-DOUBLE~64}\label{ml__bx86_8c_c6f542cc79941edba2a6d9d66cb86ed7}
+
+
+
+
+Definition at line 88 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_FLOAT@{M\_\-BX86\_\-SIZE\_\-FLOAT}}
+\index{M_BX86_SIZE_FLOAT@{M\_\-BX86\_\-SIZE\_\-FLOAT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-FLOAT~32}\label{ml__bx86_8c_31be9e8bfde01ea89a309d8fae094a3e}
+
+
+
+
+Definition at line 87 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_INT@{M\_\-BX86\_\-SIZE\_\-INT}}
+\index{M_BX86_SIZE_INT@{M\_\-BX86\_\-SIZE\_\-INT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-INT~32}\label{ml__bx86_8c_7f387490d58296626423bf6da353744e}
+
+
+
+
+Definition at line 85 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_LONG@{M\_\-BX86\_\-SIZE\_\-LONG}}
+\index{M_BX86_SIZE_LONG@{M\_\-BX86\_\-SIZE\_\-LONG}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-LONG~32}\label{ml__bx86_8c_ac888d82016d439a2dbd67b4ee126ab2}
+
+
+
+
+Definition at line 86 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_MAX@{M\_\-BX86\_\-SIZE\_\-MAX}}
+\index{M_BX86_SIZE_MAX@{M\_\-BX86\_\-SIZE\_\-MAX}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-MAX~64}\label{ml__bx86_8c_aa95c383796b4144a5d7c25795c2a164}
+
+
+
+
+Definition at line 93 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_POINTER@{M\_\-BX86\_\-SIZE\_\-POINTER}}
+\index{M_BX86_SIZE_POINTER@{M\_\-BX86\_\-SIZE\_\-POINTER}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-POINTER~32}\label{ml__bx86_8c_5f491df18f2b0bd69d31972a5b0572c9}
+
+
+
+
+Definition at line 89 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_SHORT@{M\_\-BX86\_\-SIZE\_\-SHORT}}
+\index{M_BX86_SIZE_SHORT@{M\_\-BX86\_\-SIZE\_\-SHORT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-SHORT~16}\label{ml__bx86_8c_5a85d87ddb76ac09baf70c520844e799}
+
+
+
+
+Definition at line 84 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_STRUCT@{M\_\-BX86\_\-SIZE\_\-STRUCT}}
+\index{M_BX86_SIZE_STRUCT@{M\_\-BX86\_\-SIZE\_\-STRUCT}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-STRUCT~-1}\label{ml__bx86_8c_7984e0e0c7edec4f81b3271e48a2de0d}
+
+
+
+
+Definition at line 91 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_UNION@{M\_\-BX86\_\-SIZE\_\-UNION}}
+\index{M_BX86_SIZE_UNION@{M\_\-BX86\_\-SIZE\_\-UNION}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-UNION~-1}\label{ml__bx86_8c_37e7f213d84f35c8b3fdf1b8ac88e3e6}
+
+
+
+
+Definition at line 90 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SIZE_VOID@{M\_\-BX86\_\-SIZE\_\-VOID}}
+\index{M_BX86_SIZE_VOID@{M\_\-BX86\_\-SIZE\_\-VOID}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SIZE\_\-VOID~0}\label{ml__bx86_8c_49fff98fbf23ec5b0b07e9fc3e819dd6}
+
+
+
+
+Definition at line 81 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_SMALL_STRUCT_MAX@{M\_\-BX86\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_BX86_SMALL_STRUCT_MAX@{M\_\-BX86\_\-SMALL\_\-STRUCT\_\-MAX}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-SMALL\_\-STRUCT\_\-MAX~04}\label{ml__bx86_8c_605d9d166db36f842ebf1ee5a0108157}
+
+
+
+
+Definition at line 114 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout().\index{ml_bx86.c@{ml\_\-bx86.c}!M_BX86_VAR_PTR@{M\_\-BX86\_\-VAR\_\-PTR}}
+\index{M_BX86_VAR_PTR@{M\_\-BX86\_\-VAR\_\-PTR}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-BX86\_\-VAR\_\-PTR~\char`\"{}\$LV\char`\"{}}\label{ml__bx86_8c_cd5ee981a36eabaf4d2958daa2c76b7a}
+
+
+
+
+Definition at line 126 of file ml\_\-bx86.c.
+
+Referenced by M\_\-bx86\_\-lvar\_\-layout().\index{ml_bx86.c@{ml\_\-bx86.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(16 $\ast$ 0)}\label{ml__bx86_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 115 of file ml\_\-bx86.c.\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_a_flags@{MSPEC\_\-a\_\-flags}}
+\index{MSPEC_a_flags@{MSPEC\_\-a\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-a\_\-flags~LBX86\_\-MAC\_\-A\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_599048f42550be1cbe587284c2886ec1}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_addr@{MSPEC\_\-addr}}
+\index{MSPEC_addr@{MSPEC\_\-addr}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-addr~LBX86\_\-MAC\_\-ADDR,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_9e2940dc528a9c215abe1274371caa41}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ah@{MSPEC\_\-ah}}
+\index{MSPEC_ah@{MSPEC\_\-ah}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ah~LBX86\_\-MAC\_\-AH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_559407de736693c518238ad0c3b5daa3}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_al@{MSPEC\_\-al}}
+\index{MSPEC_al@{MSPEC\_\-al}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-al~LBX86\_\-MAC\_\-AL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_f8354adbcb40deeb57da02b510b920f0}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_all_fst@{MSPEC\_\-all\_\-fst}}
+\index{MSPEC_all_fst@{MSPEC\_\-all\_\-fst}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-all\_\-fst~LBX86\_\-MAC\_\-ALL\_\-FST,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_afeef3c7bfa8b5cadd05e2743f839020}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_all_mm@{MSPEC\_\-all\_\-mm}}
+\index{MSPEC_all_mm@{MSPEC\_\-all\_\-mm}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-all\_\-mm~LBX86\_\-MAC\_\-ALL\_\-MM,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_7443dcaa44f2bb3edec6ae7a7fda2897}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ax@{MSPEC\_\-ax}}
+\index{MSPEC_ax@{MSPEC\_\-ax}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ax~LBX86\_\-MAC\_\-AX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_7f95175376765db7e12bcbaf1d26c11a}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_bh@{MSPEC\_\-bh}}
+\index{MSPEC_bh@{MSPEC\_\-bh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-bh~LBX86\_\-MAC\_\-BH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_e49d53a69b9b262548676c3ed29abd2e}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_bl@{MSPEC\_\-bl}}
+\index{MSPEC_bl@{MSPEC\_\-bl}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-bl~LBX86\_\-MAC\_\-BL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_0e238ea99b2b6c61fbc20968e5ba3d2d}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_bp@{MSPEC\_\-bp}}
+\index{MSPEC_bp@{MSPEC\_\-bp}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-bp~LBX86\_\-MAC\_\-BP,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_0e951a6e0eaf9fa1e87d36c576270e4a}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_bx@{MSPEC\_\-bx}}
+\index{MSPEC_bx@{MSPEC\_\-bx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-bx~LBX86\_\-MAC\_\-BX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_6f8044ea02bd6fc995f9ffa4f82e19b7}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_c_flags@{MSPEC\_\-c\_\-flags}}
+\index{MSPEC_c_flags@{MSPEC\_\-c\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-c\_\-flags~LBX86\_\-MAC\_\-C\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_5a985d309e7a2771f42f3f4779da72e3}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ch@{MSPEC\_\-ch}}
+\index{MSPEC_ch@{MSPEC\_\-ch}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ch~LBX86\_\-MAC\_\-CH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_6271b631e1c94cfae720822f2c3cb96c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_cl@{MSPEC\_\-cl}}
+\index{MSPEC_cl@{MSPEC\_\-cl}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-cl~LBX86\_\-MAC\_\-CL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_16cb43d36345387ab6a81ec6f6affd60}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_cs@{MSPEC\_\-cs}}
+\index{MSPEC_cs@{MSPEC\_\-cs}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-cs~LBX86\_\-MAC\_\-CS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_11ee2827494b6667a699b7a06c8988f7}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_cx@{MSPEC\_\-cx}}
+\index{MSPEC_cx@{MSPEC\_\-cx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-cx~LBX86\_\-MAC\_\-CX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_c307b8d03714d712d0f235624a72ad45}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_d_flags@{MSPEC\_\-d\_\-flags}}
+\index{MSPEC_d_flags@{MSPEC\_\-d\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-d\_\-flags~LBX86\_\-MAC\_\-D\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_1166aef863b0151d39a47c0e583d9a3b}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_dh@{MSPEC\_\-dh}}
+\index{MSPEC_dh@{MSPEC\_\-dh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-dh~LBX86\_\-MAC\_\-DH,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_1877660032ba6eceb5f47b8b9f9fd917}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_di@{MSPEC\_\-di}}
+\index{MSPEC_di@{MSPEC\_\-di}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-di~LBX86\_\-MAC\_\-DI,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_eba23f1422a3fe978fb3820f089ddeca}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_dl@{MSPEC\_\-dl}}
+\index{MSPEC_dl@{MSPEC\_\-dl}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-dl~LBX86\_\-MAC\_\-DL,L\_\-CTYPE\_\-CHAR,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_00724c824ed6b4eec78a093b13ab7bfb}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ds@{MSPEC\_\-ds}}
+\index{MSPEC_ds@{MSPEC\_\-ds}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ds~LBX86\_\-MAC\_\-DS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_13cbfda7951adb67d3fb6d73cd7109c8}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_dx@{MSPEC\_\-dx}}
+\index{MSPEC_dx@{MSPEC\_\-dx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-dx~LBX86\_\-MAC\_\-DX,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_2d9881ed298e27b8cbdb7871ee3c6551}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_eax@{MSPEC\_\-eax}}
+\index{MSPEC_eax@{MSPEC\_\-eax}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-eax~LBX86\_\-MAC\_\-EAX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_dbb8d478157797b8c5c2de9bf3c13f71}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_eaxh@{MSPEC\_\-eaxh}}
+\index{MSPEC_eaxh@{MSPEC\_\-eaxh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-eaxh~LBX86\_\-MAC\_\-EAXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_d115c541c3ac1afc9e6ca3a6702d965c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ebp@{MSPEC\_\-ebp}}
+\index{MSPEC_ebp@{MSPEC\_\-ebp}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ebp~LBX86\_\-MAC\_\-EBP,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_613d10d5e1da616c02c1476d3ff03ad8}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ebph@{MSPEC\_\-ebph}}
+\index{MSPEC_ebph@{MSPEC\_\-ebph}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ebph~LBX86\_\-MAC\_\-EBPH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_11ee5709604054d5dba016bcac6d4ce0}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ebx@{MSPEC\_\-ebx}}
+\index{MSPEC_ebx@{MSPEC\_\-ebx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ebx~LBX86\_\-MAC\_\-EBX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_1b9367febeefe27ba356793be5f3919c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ebxh@{MSPEC\_\-ebxh}}
+\index{MSPEC_ebxh@{MSPEC\_\-ebxh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ebxh~LBX86\_\-MAC\_\-EBXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_c03a10f2bbfdb293d499f82345a8be07}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ecx@{MSPEC\_\-ecx}}
+\index{MSPEC_ecx@{MSPEC\_\-ecx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ecx~LBX86\_\-MAC\_\-ECX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_02851894e614f602847dbc319cd9c93c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ecxh@{MSPEC\_\-ecxh}}
+\index{MSPEC_ecxh@{MSPEC\_\-ecxh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ecxh~LBX86\_\-MAC\_\-ECXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_5f5a9ae1763b0d80808239dd3a136869}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_edi@{MSPEC\_\-edi}}
+\index{MSPEC_edi@{MSPEC\_\-edi}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-edi~LBX86\_\-MAC\_\-EDI,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_40987cbca18e54c68d655aa45c2534b2}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_edih@{MSPEC\_\-edih}}
+\index{MSPEC_edih@{MSPEC\_\-edih}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-edih~LBX86\_\-MAC\_\-EDIH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_3c0e0cf76b20112f509249064a7e6a06}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_edx@{MSPEC\_\-edx}}
+\index{MSPEC_edx@{MSPEC\_\-edx}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-edx~LBX86\_\-MAC\_\-EDX,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_f419e0c7391c0568f25cde158a464333}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_edxh@{MSPEC\_\-edxh}}
+\index{MSPEC_edxh@{MSPEC\_\-edxh}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-edxh~LBX86\_\-MAC\_\-EDXH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_d71a0ca656d2901921216aeac5739716}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_es@{MSPEC\_\-es}}
+\index{MSPEC_es@{MSPEC\_\-es}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-es~LBX86\_\-MAC\_\-ES,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_29bcf596558134c690360cac9fb31c95}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_esi@{MSPEC\_\-esi}}
+\index{MSPEC_esi@{MSPEC\_\-esi}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-esi~LBX86\_\-MAC\_\-ESI,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_21603ec9fac89258c26e1af8c42b7b56}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_esih@{MSPEC\_\-esih}}
+\index{MSPEC_esih@{MSPEC\_\-esih}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-esih~LBX86\_\-MAC\_\-ESIH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_cb716c2ab4b6f941ff53f77a0348d14b}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_esp@{MSPEC\_\-esp}}
+\index{MSPEC_esp@{MSPEC\_\-esp}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-esp~LBX86\_\-MAC\_\-ESP,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_91b25ea32581cc070e7c6ed09e1eb6bf}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_esph@{MSPEC\_\-esph}}
+\index{MSPEC_esph@{MSPEC\_\-esph}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-esph~LBX86\_\-MAC\_\-ESPH,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_2390dbe88ddba711e551ef478689b145}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_fpcw@{MSPEC\_\-fpcw}}
+\index{MSPEC_fpcw@{MSPEC\_\-fpcw}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-fpcw~LBX86\_\-MAC\_\-FPCW,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_63331d9064097b547c59b451e99c326b}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_fpsw@{MSPEC\_\-fpsw}}
+\index{MSPEC_fpsw@{MSPEC\_\-fpsw}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-fpsw~LBX86\_\-MAC\_\-FPSW,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_47a8d9660290dca85b66fd14319122ef}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_fs@{MSPEC\_\-fs}}
+\index{MSPEC_fs@{MSPEC\_\-fs}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-fs~LBX86\_\-MAC\_\-FS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_d7fc19c7d7f8f00a5f382d7985bbd48f}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_gp_reg16@{MSPEC\_\-gp\_\-reg16}}
+\index{MSPEC_gp_reg16@{MSPEC\_\-gp\_\-reg16}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-gp\_\-reg16~LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG16,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_5641e4236faf7032b1ae30fc4f8dd3d6}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_gp_reg32@{MSPEC\_\-gp\_\-reg32}}
+\index{MSPEC_gp_reg32@{MSPEC\_\-gp\_\-reg32}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-gp\_\-reg32~LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG32,L\_\-CTYPE\_\-INT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_555dbbc14ca48ec4bab1e6727049f425}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_gs@{MSPEC\_\-gs}}
+\index{MSPEC_gs@{MSPEC\_\-gs}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-gs~LBX86\_\-MAC\_\-GS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_9425b3c5e086ade1b1054e397a933bf3}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm0@{MSPEC\_\-mm0}}
+\index{MSPEC_mm0@{MSPEC\_\-mm0}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm0~LBX86\_\-MAC\_\-MM0,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_8e50436998145cb45543564944cff7f8}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm1@{MSPEC\_\-mm1}}
+\index{MSPEC_mm1@{MSPEC\_\-mm1}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm1~LBX86\_\-MAC\_\-MM1,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_63f15c951d292c6a4b359ca5ff5ced92}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm2@{MSPEC\_\-mm2}}
+\index{MSPEC_mm2@{MSPEC\_\-mm2}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm2~LBX86\_\-MAC\_\-MM2,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_dc5c54083caa2e1ee8e44395db7016ea}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm3@{MSPEC\_\-mm3}}
+\index{MSPEC_mm3@{MSPEC\_\-mm3}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm3~LBX86\_\-MAC\_\-MM3,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_65899c5258e4ca35eebe92c47d872866}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm4@{MSPEC\_\-mm4}}
+\index{MSPEC_mm4@{MSPEC\_\-mm4}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm4~LBX86\_\-MAC\_\-MM4,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_238a78ab071758997b12605977f74296}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm5@{MSPEC\_\-mm5}}
+\index{MSPEC_mm5@{MSPEC\_\-mm5}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm5~LBX86\_\-MAC\_\-MM5,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_dec4ce6f5cb425f874ac954b050d474a}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm6@{MSPEC\_\-mm6}}
+\index{MSPEC_mm6@{MSPEC\_\-mm6}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm6~LBX86\_\-MAC\_\-MM6,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_a6c0f9cd43b7eb6e322160547f82fab6}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_mm7@{MSPEC\_\-mm7}}
+\index{MSPEC_mm7@{MSPEC\_\-mm7}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-mm7~LBX86\_\-MAC\_\-MM7,L\_\-CTYPE\_\-LONG,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_8fb0a4cfc33bb6513bd4c84ef65d74db}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_o_flags@{MSPEC\_\-o\_\-flags}}
+\index{MSPEC_o_flags@{MSPEC\_\-o\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-o\_\-flags~LBX86\_\-MAC\_\-O\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_960b20637a18489257e191bdb24a5978}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_oc_flags@{MSPEC\_\-oc\_\-flags}}
+\index{MSPEC_oc_flags@{MSPEC\_\-oc\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-oc\_\-flags~LBX86\_\-MAC\_\-OC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_ed63d41bd4f8877ad270078c673730fc}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_os_flags@{MSPEC\_\-os\_\-flags}}
+\index{MSPEC_os_flags@{MSPEC\_\-os\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-os\_\-flags~LBX86\_\-MAC\_\-OS\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_9564591a7a19759249d7043e99952e65}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_osz_flags@{MSPEC\_\-osz\_\-flags}}
+\index{MSPEC_osz_flags@{MSPEC\_\-osz\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-osz\_\-flags~LBX86\_\-MAC\_\-OSZ\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_428e2b82269ad2a17ea6c7eef670086c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_oszap_flags@{MSPEC\_\-oszap\_\-flags}}
+\index{MSPEC_oszap_flags@{MSPEC\_\-oszap\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-oszap\_\-flags~LBX86\_\-MAC\_\-OSZAP\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_d2c22c6cc74376448c0265581719363e}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_oszapc_flags@{MSPEC\_\-oszapc\_\-flags}}
+\index{MSPEC_oszapc_flags@{MSPEC\_\-oszapc\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-oszapc\_\-flags~LBX86\_\-MAC\_\-OSZAPC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_ce8823a3f5cbe6ca6b83e6e9bbcb841a}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_oszpc_flags@{MSPEC\_\-oszpc\_\-flags}}
+\index{MSPEC_oszpc_flags@{MSPEC\_\-oszpc\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-oszpc\_\-flags~LBX86\_\-MAC\_\-OSZPC\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_b9a67dda5358efb3e5870c4ef32c979f}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_p_flags@{MSPEC\_\-p\_\-flags}}
+\index{MSPEC_p_flags@{MSPEC\_\-p\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-p\_\-flags~LBX86\_\-MAC\_\-P\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_8b17f450d3b2622d4564a56afe02de07}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_s_flags@{MSPEC\_\-s\_\-flags}}
+\index{MSPEC_s_flags@{MSPEC\_\-s\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-s\_\-flags~LBX86\_\-MAC\_\-S\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_b9f4e0eca472557b8d71d24ee2e2998c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_si@{MSPEC\_\-si}}
+\index{MSPEC_si@{MSPEC\_\-si}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-si~LBX86\_\-MAC\_\-SI,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_496434fba97bd81337b621e364313b87}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_sp@{MSPEC\_\-sp}}
+\index{MSPEC_sp@{MSPEC\_\-sp}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-sp~LBX86\_\-MAC\_\-SP,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_a484e005a0c35176d36aeb9e346cf7ab}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_ss@{MSPEC\_\-ss}}
+\index{MSPEC_ss@{MSPEC\_\-ss}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-ss~LBX86\_\-MAC\_\-SS,L\_\-CTYPE\_\-SHORT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_0b79c88d529457b1c1d4395df628c1f1}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st0@{MSPEC\_\-st0}}
+\index{MSPEC_st0@{MSPEC\_\-st0}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st0~LBX86\_\-MAC\_\-ST0,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_892689deedf2ca58b954bcb21d63eb92}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st1@{MSPEC\_\-st1}}
+\index{MSPEC_st1@{MSPEC\_\-st1}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st1~LBX86\_\-MAC\_\-ST1,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_00e3462fd9d7d53f5cf98ba5d0bc5846}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st2@{MSPEC\_\-st2}}
+\index{MSPEC_st2@{MSPEC\_\-st2}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st2~LBX86\_\-MAC\_\-ST2,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_74c8bc50a54a62984754db884958e5a6}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st3@{MSPEC\_\-st3}}
+\index{MSPEC_st3@{MSPEC\_\-st3}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st3~LBX86\_\-MAC\_\-ST3,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_726b788127e2d0c74d576f0a52cd1c45}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st4@{MSPEC\_\-st4}}
+\index{MSPEC_st4@{MSPEC\_\-st4}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st4~LBX86\_\-MAC\_\-ST4,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_ed304216028edf8f45de56b7a991376d}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st5@{MSPEC\_\-st5}}
+\index{MSPEC_st5@{MSPEC\_\-st5}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st5~LBX86\_\-MAC\_\-ST5,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_152e5c65a6b4d66d1bb68de6f6dc0499}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st6@{MSPEC\_\-st6}}
+\index{MSPEC_st6@{MSPEC\_\-st6}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st6~LBX86\_\-MAC\_\-ST6,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_45dc28d5ebbd84c4c2b21f2befbe4297}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_st7@{MSPEC\_\-st7}}
+\index{MSPEC_st7@{MSPEC\_\-st7}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-st7~LBX86\_\-MAC\_\-ST7,L\_\-CTYPE\_\-FLOAT,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_334b70602864fa163f41687b4e79fe40}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_szapc_flags@{MSPEC\_\-szapc\_\-flags}}
+\index{MSPEC_szapc_flags@{MSPEC\_\-szapc\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-szapc\_\-flags~LBX86\_\-MAC\_\-SZAPC\_\-FLAGS,L\_\-CTYPE\_\-VOID, L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_34d642778c82eee57d7a6ec3b76bb400}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_z_flags@{MSPEC\_\-z\_\-flags}}
+\index{MSPEC_z_flags@{MSPEC\_\-z\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-z\_\-flags~LBX86\_\-MAC\_\-Z\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_9658c8ad1a86b49dc25a2bfc2139ec6c}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!MSPEC_zc_flags@{MSPEC\_\-zc\_\-flags}}
+\index{MSPEC_zc_flags@{MSPEC\_\-zc\_\-flags}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MSPEC\_\-zc\_\-flags~LBX86\_\-MAC\_\-ZC\_\-FLAGS,L\_\-CTYPE\_\-VOID,L\_\-PTYPE\_\-NULL}\label{ml__bx86_8c_a1e29100e306c644cab25ccbe75d90a1}
+
+
+
+
+Referenced by M\_\-conflicting\_\-operands\_\-bx86().\index{ml_bx86.c@{ml\_\-bx86.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__bx86_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) ||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_bx86.c@{ml\_\-bx86.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__bx86_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_bx86.c@{ml\_\-bx86.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__bx86_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_array_align@{M\_\-bx86\_\-array\_\-align}}
+\index{M_bx86_array_align@{M\_\-bx86\_\-array\_\-align}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__bx86_8c_984b65e8f07a16bffcbf301daf34f0eb}
+
+
+
+
+Definition at line 397 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, and I\_\-punt().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_array_layout@{M\_\-bx86\_\-array\_\-layout}}
+\index{M_bx86_array_layout@{M\_\-bx86\_\-array\_\-layout}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__bx86_8c_ccb320055614dea9baf9942c8dbd0053}
+
+
+
+
+Definition at line 390 of file ml\_\-bx86.c.
+
+References I\_\-punt().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_array_size@{M\_\-bx86\_\-array\_\-size}}
+\index{M_bx86_array_size@{M\_\-bx86\_\-array\_\-size}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__bx86_8c_d924dce73427324c7631f1d80b2b41f8}
+
+
+
+
+Definition at line 404 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), and \_\-struct\_\-M\_\-Type::size.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_bit_char@{M\_\-bx86\_\-bit\_\-char}}
+\index{M_bx86_bit_char@{M\_\-bx86\_\-bit\_\-char}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__bx86_8c_21db3f6d223d47a124a35b399acee32e}
+
+
+
+
+Definition at line 184 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-BIT, M\_\-BX86\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_bit_int@{M\_\-bx86\_\-bit\_\-int}}
+\index{M_bx86_bit_int@{M\_\-bx86\_\-bit\_\-int}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__bx86_8c_220e0e699bca85da464e4279dc2fcaa9}
+
+
+
+
+Definition at line 158 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-BIT, M\_\-BX86\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_bit_long@{M\_\-bx86\_\-bit\_\-long}}
+\index{M_bx86_bit_long@{M\_\-bx86\_\-bit\_\-long}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__bx86_8c_1a24ff2c44e9442e23c4aeb67e4d09f8}
+
+
+
+
+Definition at line 145 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-BIT, M\_\-BX86\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_bit_short@{M\_\-bx86\_\-bit\_\-short}}
+\index{M_bx86_bit_short@{M\_\-bx86\_\-bit\_\-short}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__bx86_8c_d3907801e3d76a8c83e73fad53eca534}
+
+
+
+
+Definition at line 171 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-BIT, M\_\-BX86\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_call_type@{M\_\-bx86\_\-call\_\-type}}
+\index{M_bx86_call_type@{M\_\-bx86\_\-call\_\-type}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__bx86_8c_1a8ac9ccaa749230a50771322bfb0f2f}
+
+
+
+
+Definition at line 309 of file ml\_\-bx86.c.
+
+References I\_\-punt(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_call_type2@{M\_\-bx86\_\-call\_\-type2}}
+\index{M_bx86_call_type2@{M\_\-bx86\_\-call\_\-type2}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__bx86_8c_f8ab8b2180cd5b4b19afd1b997ddf6d7}
+
+
+
+
+Definition at line 345 of file ml\_\-bx86.c.
+
+References I\_\-punt(), M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_cb_label_name@{M\_\-bx86\_\-cb\_\-label\_\-name}}
+\index{M_bx86_cb_label_name@{M\_\-bx86\_\-cb\_\-label\_\-name}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__bx86_8c_ef7c5e1688e9b0fca9c6124593f7628d}
+
+
+
+
+Definition at line 1017 of file ml\_\-bx86.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_double@{M\_\-bx86\_\-double}}
+\index{M_bx86_double@{M\_\-bx86\_\-double}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__bx86_8c_a72cd3e11d5646b837e6074c7af8dfba}
+
+
+
+
+Definition at line 208 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-BX86\_\-ALIGN\_\-DOUBLE, M\_\-BX86\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_eval_type@{M\_\-bx86\_\-eval\_\-type}}
+\index{M_bx86_eval_type@{M\_\-bx86\_\-eval\_\-type}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__bx86_8c_9a666f0e87bd84c7d16dab6c4603d6b3}
+
+
+
+
+Definition at line 231 of file ml\_\-bx86.c.
+
+References I\_\-punt(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_eval_type2@{M\_\-bx86\_\-eval\_\-type2}}
+\index{M_bx86_eval_type2@{M\_\-bx86\_\-eval\_\-type2}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__bx86_8c_2013319ca9900a4b7225399b6f3a9fa6}
+
+
+
+
+Definition at line 266 of file ml\_\-bx86.c.
+
+References I\_\-punt(), M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_float@{M\_\-bx86\_\-float}}
+\index{M_bx86_float@{M\_\-bx86\_\-float}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__bx86_8c_2fa536e8b323a4e8e649f7e998151b34}
+
+
+
+
+Definition at line 197 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-BX86\_\-ALIGN\_\-FLOAT, M\_\-BX86\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_fn_label_name@{M\_\-bx86\_\-fn\_\-label\_\-name}}
+\index{M_bx86_fn_label_name@{M\_\-bx86\_\-fn\_\-label\_\-name}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-bx86\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__bx86_8c_c9d91fe91085f54571271645c4a0fc50}
+
+
+
+
+Definition at line 1091 of file ml\_\-bx86.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_fn_name_from_label@{M\_\-bx86\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_bx86_fn_name_from_label@{M\_\-bx86\_\-fn\_\-name\_\-from\_\-label}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-bx86\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__bx86_8c_4ac7df30459f8683618d00a724f44c74}
+
+
+
+
+Definition at line 1106 of file ml\_\-bx86.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_fnvar_layout@{M\_\-bx86\_\-fnvar\_\-layout}}
+\index{M_bx86_fnvar_layout@{M\_\-bx86\_\-fnvar\_\-layout}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__bx86_8c_ec6b6d6e2f94ff9c63ee392829f32504}
+
+
+
+
+Definition at line 721 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, have\_\-reversed, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-INT, M\_\-BX86\_\-ALIGN\_\-MAX, M\_\-BX86\_\-FLT\_\-BASE, M\_\-BX86\_\-INT\_\-BASE, M\_\-BX86\_\-MAX\_\-FNVAR\_\-REG, M\_\-BX86\_\-SIZE\_\-INT, M\_\-BX86\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_fragile_macro@{M\_\-bx86\_\-fragile\_\-macro}}
+\index{M_bx86_fragile_macro@{M\_\-bx86\_\-fragile\_\-macro}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__bx86_8c_e9dad53ec18df549a23857a02956788c}
+
+
+
+
+Definition at line 1118 of file ml\_\-bx86.c.
+
+References M\_\-assert(), M\_\-B\_\-486, M\_\-B\_\-K5, M\_\-B\_\-K6, M\_\-B\_\-K6\_\-MMX, M\_\-B\_\-K6\_\-PLUS, M\_\-B\_\-PENTIUM, M\_\-B\_\-PENTIUM\_\-II, M\_\-B\_\-PENTIUM\_\-MMX, M\_\-B\_\-PPRO, and M\_\-model.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_is_cb_label@{M\_\-bx86\_\-is\_\-cb\_\-label}}
+\index{M_bx86_is_cb_label@{M\_\-bx86\_\-is\_\-cb\_\-label}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__bx86_8c_f73c81af020b2cc019475a9d715b448b}
+
+
+
+
+Definition at line 1023 of file ml\_\-bx86.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_is_jumptbl_label@{M\_\-bx86\_\-is\_\-jumptbl\_\-label}}
+\index{M_bx86_is_jumptbl_label@{M\_\-bx86\_\-is\_\-jumptbl\_\-label}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__bx86_8c_d889ce4fb3f4591f9eaff89ca14dd2d6}
+
+
+
+
+Definition at line 1036 of file ml\_\-bx86.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_jumptbl_label_name@{M\_\-bx86\_\-jumptbl\_\-label\_\-name}}
+\index{M_bx86_jumptbl_label_name@{M\_\-bx86\_\-jumptbl\_\-label\_\-name}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__bx86_8c_6e48d8df24c32bf54a6784df59c8a72b}
+
+
+
+
+Definition at line 1029 of file ml\_\-bx86.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_lvar_layout@{M\_\-bx86\_\-lvar\_\-layout}}
+\index{M_bx86_lvar_layout@{M\_\-bx86\_\-lvar\_\-layout}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__bx86_8c_0842e184f1f9d2921d28ab34daa640fd}
+
+
+
+
+Definition at line 968 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-MAX, M\_\-BX86\_\-VAR\_\-PTR, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_no_short_int@{M\_\-bx86\_\-no\_\-short\_\-int}}
+\index{M_bx86_no_short_int@{M\_\-bx86\_\-no\_\-short\_\-int}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-no\_\-short\_\-int (void)}\label{ml__bx86_8c_12c526db476cda00f5443441116bce1b}
+
+
+
+
+Definition at line 1011 of file ml\_\-bx86.c.
+
+References M\_\-BX86\_\-SIZE\_\-INT, and M\_\-BX86\_\-SIZE\_\-SHORT.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_pointer@{M\_\-bx86\_\-pointer}}
+\index{M_bx86_pointer@{M\_\-bx86\_\-pointer}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__bx86_8c_563522254ad79091df4e089c239a47fb}
+
+
+
+
+Definition at line 219 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-BX86\_\-ALIGN\_\-POINTER, M\_\-BX86\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_return_register@{M\_\-bx86\_\-return\_\-register}}
+\index{M_bx86_return_register@{M\_\-bx86\_\-return\_\-register}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__bx86_8c_30d3e4d3819307a36b1b4df5e7e64c02}
+
+
+
+
+Definition at line 1070 of file ml\_\-bx86.c.
+
+References M\_\-BX86\_\-RET\_\-F, M\_\-BX86\_\-RET\_\-I32, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, and M\_\-TYPE\_\-LONG.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_struct_align@{M\_\-bx86\_\-struct\_\-align}}
+\index{M_bx86_struct_align@{M\_\-bx86\_\-struct\_\-align}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__bx86_8c_317a57d7158d6594ec256c6fc738bdca}
+
+
+
+
+Definition at line 638 of file ml\_\-bx86.c.
+
+References I\_\-punt(), and M\_\-BX86\_\-ALIGN\_\-CHAR.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_struct_layout@{M\_\-bx86\_\-struct\_\-layout}}
+\index{M_bx86_struct_layout@{M\_\-bx86\_\-struct\_\-layout}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__bx86_8c_dde1201ea767874e04bed2cd5d876c9c}
+
+
+
+
+Definition at line 499 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-SIZE\_\-CHAR, M\_\-BX86\_\-SIZE\_\-INT, M\_\-BX86\_\-SIZE\_\-LONG, M\_\-BX86\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_struct_size@{M\_\-bx86\_\-struct\_\-size}}
+\index{M_bx86_struct_size@{M\_\-bx86\_\-struct\_\-size}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__bx86_8c_178ec470e25149e4860c12c0f7f02b52}
+
+
+
+
+Definition at line 659 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-BX86\_\-ALIGN\_\-CHAR, M\_\-BX86\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_structure_pointer@{M\_\-bx86\_\-structure\_\-pointer}}
+\index{M_bx86_structure_pointer@{M\_\-bx86\_\-structure\_\-pointer}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-structure\_\-pointer (int {\em purpose})}\label{ml__bx86_8c_1143f1cb9d965e619b8efb827b0ac9f7}
+
+
+
+
+Definition at line 1064 of file ml\_\-bx86.c.
+
+References M\_\-BX86\_\-RET\_\-ST.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_subroutine_call@{M\_\-bx86\_\-subroutine\_\-call}}
+\index{M_bx86_subroutine_call@{M\_\-bx86\_\-subroutine\_\-call}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-subroutine\_\-call (int {\em opc})}\label{ml__bx86_8c_ed0763221ce8b928fded67eb4bbe86ac}
+
+
+
+
+Definition at line 1154 of file ml\_\-bx86.c.
+
+References M\_\-assert(), M\_\-B\_\-486, M\_\-B\_\-K5, M\_\-B\_\-K6, M\_\-B\_\-K6\_\-MMX, M\_\-B\_\-K6\_\-PLUS, M\_\-B\_\-PENTIUM, M\_\-B\_\-PENTIUM\_\-II, M\_\-B\_\-PENTIUM\_\-MMX, M\_\-B\_\-PPRO, and M\_\-model.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_union_align@{M\_\-bx86\_\-union\_\-align}}
+\index{M_bx86_union_align@{M\_\-bx86\_\-union\_\-align}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__bx86_8c_b064c822a6369d1368f976c10c979b18}
+
+
+
+
+Definition at line 432 of file ml\_\-bx86.c.
+
+References I\_\-punt(), and M\_\-BX86\_\-ALIGN\_\-CHAR.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_union_layout@{M\_\-bx86\_\-union\_\-layout}}
+\index{M_bx86_union_layout@{M\_\-bx86\_\-union\_\-layout}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__bx86_8c_ab14e501b9aa492a29bc15baf1196b57}
+
+
+
+
+Definition at line 420 of file ml\_\-bx86.c.
+
+References I\_\-punt().\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_union_size@{M\_\-bx86\_\-union\_\-size}}
+\index{M_bx86_union_size@{M\_\-bx86\_\-union\_\-size}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-bx86\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__bx86_8c_455fff4924c59a257d94edd6f8d34f49}
+
+
+
+
+Definition at line 453 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-BX86\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.\index{ml_bx86.c@{ml\_\-bx86.c}!M_bx86_void@{M\_\-bx86\_\-void}}
+\index{M_bx86_void@{M\_\-bx86\_\-void}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-bx86\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__bx86_8c_add5ab9a34d587374f638a42b1e805a6}
+
+
+
+
+Definition at line 134 of file ml\_\-bx86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-BX86\_\-ALIGN\_\-VOID, M\_\-BX86\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().\index{ml_bx86.c@{ml\_\-bx86.c}!M_conflicting_operands_bx86@{M\_\-conflicting\_\-operands\_\-bx86}}
+\index{M_conflicting_operands_bx86@{M\_\-conflicting\_\-operands\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-bx86 (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__bx86_8c_4954ea2e9fd4bad8ff3bb50174c9fd7f}
+
+
+
+
+Definition at line 1719 of file ml\_\-bx86.c.
+
+References LBX86\_\-MAC\_\-A\_\-FLAGS, LBX86\_\-MAC\_\-ADDR, LBX86\_\-MAC\_\-AH, LBX86\_\-MAC\_\-AL, LBX86\_\-MAC\_\-ALL\_\-FST, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG16, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG32, LBX86\_\-MAC\_\-ALL\_\-MM, LBX86\_\-MAC\_\-AX, LBX86\_\-MAC\_\-BH, LBX86\_\-MAC\_\-BL, LBX86\_\-MAC\_\-BP, LBX86\_\-MAC\_\-BX, LBX86\_\-MAC\_\-C\_\-FLAGS, LBX86\_\-MAC\_\-CH, LBX86\_\-MAC\_\-CL, LBX86\_\-MAC\_\-CX, LBX86\_\-MAC\_\-DH, LBX86\_\-MAC\_\-DI, LBX86\_\-MAC\_\-DL, LBX86\_\-MAC\_\-DX, LBX86\_\-MAC\_\-EAX, LBX86\_\-MAC\_\-EAXH, LBX86\_\-MAC\_\-EBP, LBX86\_\-MAC\_\-EBPH, LBX86\_\-MAC\_\-EBX, LBX86\_\-MAC\_\-EBXH, LBX86\_\-MAC\_\-ECX, LBX86\_\-MAC\_\-ECXH, LBX86\_\-MAC\_\-EDI, LBX86\_\-MAC\_\-EDIH, LBX86\_\-MAC\_\-EDX, LBX86\_\-MAC\_\-EDXH, LBX86\_\-MAC\_\-ESI, LBX86\_\-MAC\_\-ESIH, LBX86\_\-MAC\_\-ESP, LBX86\_\-MAC\_\-ESPH, LBX86\_\-MAC\_\-MM0, LBX86\_\-MAC\_\-MM1, LBX86\_\-MAC\_\-MM2, LBX86\_\-MAC\_\-MM3, LBX86\_\-MAC\_\-MM4, LBX86\_\-MAC\_\-MM5, LBX86\_\-MAC\_\-MM6, LBX86\_\-MAC\_\-MM7, LBX86\_\-MAC\_\-O\_\-FLAGS, LBX86\_\-MAC\_\-OC\_\-FLAGS, LBX86\_\-MAC\_\-OS\_\-FLAGS, LBX86\_\-MAC\_\-OSZ\_\-FLAGS, LBX86\_\-MAC\_\-OSZAP\_\-FLAGS, LBX86\_\-MAC\_\-OSZAPC\_\-FLAGS, LBX86\_\-MAC\_\-OSZPC\_\-FLAGS, LBX86\_\-MAC\_\-P\_\-FLAGS, LBX86\_\-MAC\_\-S\_\-FLAGS, LBX86\_\-MAC\_\-SI, LBX86\_\-MAC\_\-SP, LBX86\_\-MAC\_\-ST0, LBX86\_\-MAC\_\-ST1, LBX86\_\-MAC\_\-ST2, LBX86\_\-MAC\_\-ST3, LBX86\_\-MAC\_\-ST4, LBX86\_\-MAC\_\-ST5, LBX86\_\-MAC\_\-ST6, LBX86\_\-MAC\_\-ST7, LBX86\_\-MAC\_\-SZAPC\_\-FLAGS, LBX86\_\-MAC\_\-Z\_\-FLAGS, LBX86\_\-MAC\_\-ZC\_\-FLAGS, M\_\-assert(), MSPEC\_\-a\_\-flags, MSPEC\_\-ah, MSPEC\_\-al, MSPEC\_\-all\_\-fst, MSPEC\_\-all\_\-mm, MSPEC\_\-ax, MSPEC\_\-bh, MSPEC\_\-bl, MSPEC\_\-bp, MSPEC\_\-bx, MSPEC\_\-c\_\-flags, MSPEC\_\-ch, MSPEC\_\-cl, MSPEC\_\-cx, MSPEC\_\-dh, MSPEC\_\-di, MSPEC\_\-dl, MSPEC\_\-dx, MSPEC\_\-eax, MSPEC\_\-eaxh, MSPEC\_\-ebp, MSPEC\_\-ebph, MSPEC\_\-ebx, MSPEC\_\-ebxh, MSPEC\_\-ecx, MSPEC\_\-ecxh, MSPEC\_\-edi, MSPEC\_\-edih, MSPEC\_\-edx, MSPEC\_\-edxh, MSPEC\_\-esi, MSPEC\_\-esih, MSPEC\_\-esp, MSPEC\_\-esph, MSPEC\_\-gp\_\-reg16, MSPEC\_\-gp\_\-reg32, MSPEC\_\-mm0, MSPEC\_\-mm1, MSPEC\_\-mm2, MSPEC\_\-mm3, MSPEC\_\-mm4, MSPEC\_\-mm5, MSPEC\_\-mm6, MSPEC\_\-mm7, MSPEC\_\-o\_\-flags, MSPEC\_\-oc\_\-flags, MSPEC\_\-os\_\-flags, MSPEC\_\-osz\_\-flags, MSPEC\_\-oszap\_\-flags, MSPEC\_\-oszapc\_\-flags, MSPEC\_\-oszpc\_\-flags, MSPEC\_\-p\_\-flags, MSPEC\_\-s\_\-flags, MSPEC\_\-si, MSPEC\_\-sp, MSPEC\_\-st0, MSPEC\_\-st1, MSPEC\_\-st2, MSPEC\_\-st3, MSPEC\_\-st4, MSPEC\_\-st5, MSPEC\_\-st6, MSPEC\_\-st7, MSPEC\_\-szapc\_\-flags, MSPEC\_\-z\_\-flags, and MSPEC\_\-zc\_\-flags.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_bx86.c@{ml\_\-bx86.c}!M_define_macros_bx86@{M\_\-define\_\-macros\_\-bx86}}
+\index{M_define_macros_bx86@{M\_\-define\_\-macros\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-bx86 (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__bx86_8c_a56b8ff3ce4bd6afc405a3733f34ddfb}
+
+
+
+
+Definition at line 1178 of file ml\_\-bx86.c.
+
+References LBX86\_\-MAC\_\-A\_\-FLAGS, LBX86\_\-MAC\_\-ADDR, LBX86\_\-MAC\_\-AH, LBX86\_\-MAC\_\-AL, LBX86\_\-MAC\_\-ALL\_\-FST, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG16, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG32, LBX86\_\-MAC\_\-ALL\_\-MM, LBX86\_\-MAC\_\-AX, LBX86\_\-MAC\_\-BH, LBX86\_\-MAC\_\-BL, LBX86\_\-MAC\_\-BP, LBX86\_\-MAC\_\-BX, LBX86\_\-MAC\_\-C\_\-FLAGS, LBX86\_\-MAC\_\-CALLEE\_\-F, LBX86\_\-MAC\_\-CALLEE\_\-I, LBX86\_\-MAC\_\-CH, LBX86\_\-MAC\_\-CL, LBX86\_\-MAC\_\-CS, LBX86\_\-MAC\_\-CX, LBX86\_\-MAC\_\-D\_\-FLAGS, LBX86\_\-MAC\_\-DH, LBX86\_\-MAC\_\-DI, LBX86\_\-MAC\_\-DL, LBX86\_\-MAC\_\-DS, LBX86\_\-MAC\_\-DX, LBX86\_\-MAC\_\-EAX, LBX86\_\-MAC\_\-EAXH, LBX86\_\-MAC\_\-EBP, LBX86\_\-MAC\_\-EBPH, LBX86\_\-MAC\_\-EBX, LBX86\_\-MAC\_\-EBXH, LBX86\_\-MAC\_\-ECX, LBX86\_\-MAC\_\-ECXH, LBX86\_\-MAC\_\-EDI, LBX86\_\-MAC\_\-EDIH, LBX86\_\-MAC\_\-EDX, LBX86\_\-MAC\_\-EDXH, LBX86\_\-MAC\_\-ES, LBX86\_\-MAC\_\-ESI, LBX86\_\-MAC\_\-ESIH, LBX86\_\-MAC\_\-ESP, LBX86\_\-MAC\_\-ESPH, LBX86\_\-MAC\_\-FPCW, LBX86\_\-MAC\_\-FPSW, LBX86\_\-MAC\_\-FS, LBX86\_\-MAC\_\-GS, LBX86\_\-MAC\_\-MM0, LBX86\_\-MAC\_\-MM1, LBX86\_\-MAC\_\-MM2, LBX86\_\-MAC\_\-MM3, LBX86\_\-MAC\_\-MM4, LBX86\_\-MAC\_\-MM5, LBX86\_\-MAC\_\-MM6, LBX86\_\-MAC\_\-MM7, LBX86\_\-MAC\_\-O\_\-FLAGS, LBX86\_\-MAC\_\-OC\_\-FLAGS, LBX86\_\-MAC\_\-OS\_\-FLAGS, LBX86\_\-MAC\_\-OSZ\_\-FLAGS, LBX86\_\-MAC\_\-OSZAP\_\-FLAGS, LBX86\_\-MAC\_\-OSZAPC\_\-FLAGS, LBX86\_\-MAC\_\-OSZPC\_\-FLAGS, LBX86\_\-MAC\_\-P\_\-FLAGS, LBX86\_\-MAC\_\-S\_\-FLAGS, LBX86\_\-MAC\_\-SI, LBX86\_\-MAC\_\-SP, LBX86\_\-MAC\_\-SS, LBX86\_\-MAC\_\-ST0, LBX86\_\-MAC\_\-ST1, LBX86\_\-MAC\_\-ST2, LBX86\_\-MAC\_\-ST3, LBX86\_\-MAC\_\-ST4, LBX86\_\-MAC\_\-ST5, LBX86\_\-MAC\_\-ST6, LBX86\_\-MAC\_\-ST7, LBX86\_\-MAC\_\-SZAPC\_\-FLAGS, LBX86\_\-MAC\_\-Z\_\-FLAGS, LBX86\_\-MAC\_\-ZC\_\-FLAGS, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros().\index{ml_bx86.c@{ml\_\-bx86.c}!M_define_opcode_name_bx86@{M\_\-define\_\-opcode\_\-name\_\-bx86}}
+\index{M_define_opcode_name_bx86@{M\_\-define\_\-opcode\_\-name\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-bx86 (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__bx86_8c_f6c7f2a7412c8d3dd02b327d8830432e}
+
+
+
+
+Definition at line 1431 of file ml\_\-bx86.c.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_get_data_type_bx86@{M\_\-get\_\-data\_\-type\_\-bx86}}
+\index{M_get_data_type_bx86@{M\_\-get\_\-data\_\-type\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-get\_\-data\_\-type\_\-bx86 (L\_\-Oper $\ast$ {\em op})}\label{ml__bx86_8c_a7d1f699532530fd65054fbf757cf766}
+
+
+
+
+Definition at line 2396 of file ml\_\-bx86.c.
+
+References I\_\-punt(), and M\_\-assert().
+
+Referenced by M\_\-get\_\-data\_\-type().\index{ml_bx86.c@{ml\_\-bx86.c}!M_get_macro_name_bx86@{M\_\-get\_\-macro\_\-name\_\-bx86}}
+\index{M_get_macro_name_bx86@{M\_\-get\_\-macro\_\-name\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-bx86 (int {\em id})}\label{ml__bx86_8c_60523ef5cc26fa6fbb39603bf8397e01}
+
+
+
+
+Definition at line 1263 of file ml\_\-bx86.c.
+
+References LBX86\_\-MAC\_\-A\_\-FLAGS, LBX86\_\-MAC\_\-ADDR, LBX86\_\-MAC\_\-AH, LBX86\_\-MAC\_\-AL, LBX86\_\-MAC\_\-ALL\_\-FST, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG16, LBX86\_\-MAC\_\-ALL\_\-GP\_\-REG32, LBX86\_\-MAC\_\-ALL\_\-MM, LBX86\_\-MAC\_\-AX, LBX86\_\-MAC\_\-BH, LBX86\_\-MAC\_\-BL, LBX86\_\-MAC\_\-BP, LBX86\_\-MAC\_\-BX, LBX86\_\-MAC\_\-C\_\-FLAGS, LBX86\_\-MAC\_\-CALLEE\_\-F, LBX86\_\-MAC\_\-CALLEE\_\-I, LBX86\_\-MAC\_\-CH, LBX86\_\-MAC\_\-CL, LBX86\_\-MAC\_\-CS, LBX86\_\-MAC\_\-CX, LBX86\_\-MAC\_\-D\_\-FLAGS, LBX86\_\-MAC\_\-DH, LBX86\_\-MAC\_\-DI, LBX86\_\-MAC\_\-DL, LBX86\_\-MAC\_\-DS, LBX86\_\-MAC\_\-DX, LBX86\_\-MAC\_\-EAX, LBX86\_\-MAC\_\-EAXH, LBX86\_\-MAC\_\-EBP, LBX86\_\-MAC\_\-EBPH, LBX86\_\-MAC\_\-EBX, LBX86\_\-MAC\_\-EBXH, LBX86\_\-MAC\_\-ECX, LBX86\_\-MAC\_\-ECXH, LBX86\_\-MAC\_\-EDI, LBX86\_\-MAC\_\-EDIH, LBX86\_\-MAC\_\-EDX, LBX86\_\-MAC\_\-EDXH, LBX86\_\-MAC\_\-ES, LBX86\_\-MAC\_\-ESI, LBX86\_\-MAC\_\-ESIH, LBX86\_\-MAC\_\-ESP, LBX86\_\-MAC\_\-ESPH, LBX86\_\-MAC\_\-FPCW, LBX86\_\-MAC\_\-FPSW, LBX86\_\-MAC\_\-FS, LBX86\_\-MAC\_\-GS, LBX86\_\-MAC\_\-MM0, LBX86\_\-MAC\_\-MM1, LBX86\_\-MAC\_\-MM2, LBX86\_\-MAC\_\-MM3, LBX86\_\-MAC\_\-MM4, LBX86\_\-MAC\_\-MM5, LBX86\_\-MAC\_\-MM6, LBX86\_\-MAC\_\-MM7, LBX86\_\-MAC\_\-O\_\-FLAGS, LBX86\_\-MAC\_\-OC\_\-FLAGS, LBX86\_\-MAC\_\-OS\_\-FLAGS, LBX86\_\-MAC\_\-OSZ\_\-FLAGS, LBX86\_\-MAC\_\-OSZAP\_\-FLAGS, LBX86\_\-MAC\_\-OSZAPC\_\-FLAGS, LBX86\_\-MAC\_\-OSZPC\_\-FLAGS, LBX86\_\-MAC\_\-P\_\-FLAGS, LBX86\_\-MAC\_\-S\_\-FLAGS, LBX86\_\-MAC\_\-SI, LBX86\_\-MAC\_\-SP, LBX86\_\-MAC\_\-SS, LBX86\_\-MAC\_\-ST0, LBX86\_\-MAC\_\-ST1, LBX86\_\-MAC\_\-ST2, LBX86\_\-MAC\_\-ST3, LBX86\_\-MAC\_\-ST4, LBX86\_\-MAC\_\-ST5, LBX86\_\-MAC\_\-ST6, LBX86\_\-MAC\_\-ST7, LBX86\_\-MAC\_\-SZAPC\_\-FLAGS, LBX86\_\-MAC\_\-Z\_\-FLAGS, and LBX86\_\-MAC\_\-ZC\_\-FLAGS.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_get_memory_operands_bx86@{M\_\-get\_\-memory\_\-operands\_\-bx86}}
+\index{M_get_memory_operands_bx86@{M\_\-get\_\-memory\_\-operands\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-get\_\-memory\_\-operands\_\-bx86 (int $\ast$ {\em first}, int $\ast$ {\em number}, int {\em proc\_\-opc})}\label{ml__bx86_8c_aeb1f7e6392818a6388672cb4207a20b}
+
+
+
+
+Definition at line 2379 of file ml\_\-bx86.c.
+
+Referenced by M\_\-get\_\-memory\_\-operands().\index{ml_bx86.c@{ml\_\-bx86.c}!M_get_opcode_name_bx86@{M\_\-get\_\-opcode\_\-name\_\-bx86}}
+\index{M_get_opcode_name_bx86@{M\_\-get\_\-opcode\_\-name\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-bx86 (int {\em id})}\label{ml__bx86_8c_56e81768f756c65776bd5910c997cf07}
+
+
+
+
+Definition at line 1437 of file ml\_\-bx86.c.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_bx86.c@{ml\_\-bx86.c}!M_is_implicit_memory_op_bx86@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-bx86}}
+\index{M_is_implicit_memory_op_bx86@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-implicit\_\-memory\_\-op\_\-bx86 (L\_\-Oper $\ast$ {\em oper})}\label{ml__bx86_8c_b2146cfbc423cbd987963d4d1ea3705f}
+
+
+
+
+Definition at line 2496 of file ml\_\-bx86.c.
+
+References I\_\-punt().
+
+Referenced by M\_\-is\_\-implicit\_\-memory\_\-op().\index{ml_bx86.c@{ml\_\-bx86.c}!M_is_stack_operand_bx86@{M\_\-is\_\-stack\_\-operand\_\-bx86}}
+\index{M_is_stack_operand_bx86@{M\_\-is\_\-stack\_\-operand\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-bx86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__bx86_8c_560cc3ad62068191aa217aa887df9214}
+
+
+
+
+Definition at line 1619 of file ml\_\-bx86.c.
+
+References LBX86\_\-MAC\_\-ESP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_bx86.c@{ml\_\-bx86.c}!M_is_unsafe_macro_bx86@{M\_\-is\_\-unsafe\_\-macro\_\-bx86}}
+\index{M_is_unsafe_macro_bx86@{M\_\-is\_\-unsafe\_\-macro\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-bx86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__bx86_8c_1641727022261783bf341bb62216872b}
+
+
+
+
+Definition at line 1631 of file ml\_\-bx86.c.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_bx86.c@{ml\_\-bx86.c}!M_memory_access_size_bx86@{M\_\-memory\_\-access\_\-size\_\-bx86}}
+\index{M_memory_access_size_bx86@{M\_\-memory\_\-access\_\-size\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-memory\_\-access\_\-size\_\-bx86 (L\_\-Oper $\ast$ {\em op})}\label{ml__bx86_8c_fdf7accdeedba6010af1be1d4758a219}
+
+
+
+
+Definition at line 2388 of file ml\_\-bx86.c.
+
+References LBX86\_\-EXT.
+
+Referenced by M\_\-memory\_\-access\_\-size().\index{ml_bx86.c@{ml\_\-bx86.c}!M_num_oper_required_for_bx86@{M\_\-num\_\-oper\_\-required\_\-for\_\-bx86}}
+\index{M_num_oper_required_for_bx86@{M\_\-num\_\-oper\_\-required\_\-for\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-bx86 (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__bx86_8c_53c0f60a4d9e96d06f27d77bbe81a130}
+
+
+
+
+Definition at line 1489 of file ml\_\-bx86.c.
+
+References indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_bx86.c@{ml\_\-bx86.c}!M_num_registers_bx86@{M\_\-num\_\-registers\_\-bx86}}
+\index{M_num_registers_bx86@{M\_\-num\_\-registers\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-bx86 (int {\em ctype})}\label{ml__bx86_8c_ed639861180b50ad6923f4bdac8b2ed4}
+
+
+
+
+Definition at line 2479 of file ml\_\-bx86.c.
+
+References I\_\-punt().
+
+Referenced by M\_\-num\_\-registers().\index{ml_bx86.c@{ml\_\-bx86.c}!M_oper_supported_in_arch_bx86@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-bx86}}
+\index{M_oper_supported_in_arch_bx86@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-bx86 (int {\em opc})}\label{ml__bx86_8c_ed6d1eee3749d099ff2cca1ab122039e}
+
+
+
+
+Definition at line 1453 of file ml\_\-bx86.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_bx86.c@{ml\_\-bx86.c}!M_operand_type_bx86@{M\_\-operand\_\-type\_\-bx86}}
+\index{M_operand_type_bx86@{M\_\-operand\_\-type\_\-bx86}!ml_bx86.c@{ml\_\-bx86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-bx86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__bx86_8c_7d2d535b02535f95ace9a15d621fc39c}
+
+
+
+
+Definition at line 1644 of file ml\_\-bx86.c.
+
+References M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().

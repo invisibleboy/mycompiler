@@ -1,0 +1,44 @@
+#!/bin/sh
+
+#
+# HP Task Broker Impact Simulation Service (ImpactSim)
+# 
+# Author: Richard Hank
+# Version 1.0: 12/14/94
+#
+
+# Simulation Service Execution Script
+# Assumes following environment variables are defined:
+#
+# BENCHMARK	- benchmark name
+# BATCH_NAME	- name of script requesting simulation
+# DIR		- path to benchmark being simulated
+# SETUP		- setup prior to simulation
+# CHECK		- output verification
+# CLEANUP	- cleanup after simulation
+# SIMULATOR	- simulator to use
+# LSIM_ARGS	- simulation arguments
+
+
+# Print out exactly what we are doing
+# Using csh echo allows printing out \rm and \cp properly, otherwise
+# get inproper output (treated as newlines, etc)
+# But should really use /bin/rm and /bin/cp instead of \cp anyways
+echo "> Simulating ${BENCHMARK} in directory '${DIR}'"
+echo " "
+echo "    Setup: '${SETUP}'"
+echo "   Prefix: '${PREFIX}'"
+echo " Sim Args: '${ARGS} >& result.out'"
+echo "     Skip: '${SKIP}'"
+echo "    Check: '${CHECK}'"
+echo "  Cleanup: '${CLEANUP}'"
+echo " "
+
+/bin/sh -c "cd ${DIR}; ${SETUP} \
+	${SIMULATOR} \
+	    ${LSIM_ARGS} ;\
+        echo '>\n> RESULT CHECK BEGIN FOR ${BENCHMARK}'; \
+        ${CHECK}; \
+        echo '> RESULT CHECK END FOR ${BENCHMARK}\n>'; \
+        rm -f result.out; ${CLEANUP}\
+	echo '> Done (${BATCH_NAME} for ${BENCHMARK})';"

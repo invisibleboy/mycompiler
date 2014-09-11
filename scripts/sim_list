@@ -1,0 +1,109 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       Simulates a list of benchmarks with sim_bench, each benchmark
+#       in its own directory.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 6/99
+#
+
+BENCH_SCRIPT="sim_bench"
+
+if [ $# -lt 2 ]; then
+   echo "> Usage: sim_list list ext [options]"
+   echo ">"
+   echo ">   For every 'BENCHMARK' in the 'list' file, changes directory into"
+   echo ">   'BENCHMARK' (if it exists), and runs '$BENCH_SCRIPT BENCHMARK ext options'"
+   echo ">   in it."
+   echo ">"
+   echo ">   Note: The 'compile_list' script with the new simulation options, such as"
+   echo ">         -X_im_p2X_im_p.sim, -HS_im_p2HS_im_p, etc., offers much more"
+   echo ">         flexibility than sim_list!"
+   exit 1;
+fi
+
+FILE_NAME="$1";
+shift;
+FILE_LIST=`cat $FILE_NAME`
+
+echo " "
+echo "> For every benchmark in '$FILE_NAME', will run:"
+echo ">   ${BENCH_SCRIPT} (bench_name) $@"
+
+for PROGRAM in $FILE_LIST
+do
+
+  echo " "
+  DIR_TO="./${PROGRAM}";
+
+  if [ ! -d $DIR_TO ]; then
+     echo "> Error: Directory '${DIR_TO}' does not exist, skipping!"
+  else
+     echo "> Changing directories into ${DIR_TO}"
+     cd ${DIR_TO};
+
+     echo " "
+     echo "> Starting ${BENCH_SCRIPT} ${PROGRAM} $@:"
+     echo " "
+
+     $BENCH_SCRIPT $PROGRAM $@ 
+
+     echo " "
+     echo "> Finished with ${PROGRAM}, changing directories to '..'"
+     cd ..;
+  fi
+
+done;
+
+echo " "
+echo "> Done, sim_list has reached the end of '${FILE_NAME}'"
+

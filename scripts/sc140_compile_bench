@@ -1,0 +1,2726 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	This script compiles a benchmark using IMPACT public release
+#       2.10 functionality.  
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 4/29/98
+#       Updated for IMPACT release versions 1.01-2.10 by John C. Gyllenhaal
+#       Modified for use by StarCore by Chris Shannon 8/7/01
+#
+
+# Assume the IMPACT environment has been properly set up
+VALID_ENV=1;
+
+# Determine if IMPACT_REL_PATH environment variable has been defined
+release="${IMPACT_REL_PATH}"
+if [ "$release" = "" ] ; then
+    echo "The environment variable IMPACT_REL_PATH is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_REL_PATH exists
+elif [ ! -d ${IMPACT_REL_PATH} ]; then
+    echo "The directory IMPACT_REL_PATH = ${IMPACT_REL_PATH} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Determine if IMPACT_ROOT environment variable has been defined
+root="${IMPACT_ROOT}"
+if [ "$root" = "" ] ; then
+    echo "The environment variable IMPACT_ROOT is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_ROOT exists
+elif [ ! -d ${IMPACT_ROOT} ]; then
+    echo "The directory IMPACT_ROOT = ${IMPACT_ROOT} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Set up environment with default values
+BASELINE_PARMS_FILE="${IMPACT_REL_PATH}/parms/STD_PARMS.SC140";
+READ_PATHS="";
+BEGIN_SETX="";
+END_SETX="";
+NOCLEAN=0;
+FIND_BENCH_DIR=1;
+PROJECT_NAME="$DEFAULT_PROJECT"; # Default project unless -project used
+LOCAL_SRC=0;
+SAFER_OPTI=0;
+LESS_ILP=0;
+SAFER_SCHED=0;
+FASTER_SCHED=0;
+NO_INLINING=0;
+PINLINE_OVERRIDES="";
+HTOL_OVERRIDES="";
+OPTI_DISAMBIG_OVERRIDES="";
+LSUPERSCALAR_OVERRIDES="";
+SCHED_DISAMBIG_OVERRIDES="";
+LIMPACT_OVERRIDES="";
+LHPL_PD_OVERRIDES="";
+DO_PROF=1;
+DO_SEGMENTS_SPECIFIED=0;
+DO_c2lc=0;
+DO_pc2lc=0;
+DO_lc2O=0;
+DO_O2S=0;
+DO_O2H=0;
+DO_O2HS=0;
+DO_lc2sl=0;
+DO_O2sl=0;    
+DO_H2sl=0;
+DO_S2sl=0;    
+DO_HS2sl=0;
+DO_lc_sl2sim=0;  
+DO_O_sl2sim=0; 
+DO_S_sl2sim=0;
+DO_H_sl2sim=0;
+DO_HS_sl2sim=0;
+INVOKE_PIP=1;
+DISABLE_SYNCARCS=0;
+COPY_INTRINSIC_SRC=0;
+USE_SOFTPIPE=0;
+USE_KRC_MODE=0;
+PREPROCESSOR_OPTIONS="";
+PROFILE_OPTIONS="";
+PROBE_OPTIONS="";
+SIM_OPTIONS="";
+LMDES2_SPECIFIED=0;
+LMDES2="";
+USE_LHPL_PD=0;
+TIME="";  # Set by -times option
+TRAIN_OPTION="";
+TRAIN_LIST="";
+TRAIN_PREFIX="";
+EVAL_OPTION="";
+EVAL_LIST="";
+EVAL_PREFIX="";
+SIM_PARMS_SETTING="";
+
+# In order to get -setup, etc. to work properly, I need to break up
+# the '-setup' and the "text", so that the "text" can be presented
+# as one argument to gen_profiled_pcode and gen_profiled_lcode.
+SETUP_CMD="";
+SETUP_TEXT="";
+CPREFIX_CMD="";
+CPREFIX_TEXT="";
+ARGS_CMD="";
+ARGS_TEXT="";
+CHECK_CMD="";
+CHECK_TEXT="";
+CLEANUP_CMD="";
+CLEANUP_TEXT="";
+DESCRIPTION="";
+PPROF_INPUT_CMD="";
+LPROF_INPUT_CMD="";
+SIM_INPUT_CMD="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+   BENCHMARK="$1";
+   BASENAME="$1";
+
+   COMPILE_BENCH_ARGS="$*";
+   TIME_STAMP=`date`;
+   START_DATE=`date +"%T %D"`;
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo "> Begin 'sc140_compile_bench ${COMPILE_BENCH_ARGS}'";
+   echo "> Started on $TIME_STAMP"
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo " "
+   
+   # skip the 1 set argument
+   shift 1;
+else
+   VALID_ARGS=0;
+fi
+
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+  OPTION="$1"
+  shift
+
+  # For backward compatibility, convert -*_im options to -*_im_p, 
+  # -path to -bench_dir, and fix my common mistakes :) -JCG 6/99 
+  case $OPTION in
+    -*_im)
+      echo "> Interpreting '$OPTION' as '${OPTION}_p', for backward compatibility"
+      OPTION="${OPTION}_p";;
+
+    -path)
+      echo "> Interpreting '$OPTION' as '-bench_dir', for backward compatibility"
+      OPTION="-bench_dir";;
+
+    -noinline|-no_inline)
+      echo "> Interpreting '$OPTION' as '-no_inlining'"
+      OPTION="-no_inlining";;
+
+    -noPIP|-no_PIP|-nopip|-no_pip|-nopointer|-no_pointer|-no_sync)
+      echo "> Interpreting '$OPTION' as '-nosync'"
+      OPTION="-nosync";;
+
+    -no_intrinsic|-nointrinsics|-no_intrinsics)
+      echo "> Interpreting '$OPTION' as '-nointrinsic'"
+      OPTION="-nointrinsic";;
+
+    -no_intrinsic2|-nointrinsics2|-no_intrinsics2)
+      echo "> Interpreting '$OPTION' as '-nointrinsic2'"
+      OPTION="-nointrinsic2";;
+
+    -remainder)
+      echo "> Interpreting '$OPTION' as '-remain'"
+      OPTION="-remain";;
+
+    -softpipe)
+      echo "> Interpreting '$OPTION' as '-pipe'"
+      OPTION="-pipe";;
+
+  esac
+
+  case $OPTION in
+    # Allow compilation segments to be specified individually, the related 
+    # messages will be printed out below.  Allow all caps for ease of use.
+    # May specify any combination of individual segments and segment combos.
+    -c2lc)
+      DO_c2lc=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -pc2lc)
+      DO_c2lc=1;
+      DO_pc2lc=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2O)
+      DO_lc2O=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2H)
+      DO_O2H=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2S)
+      DO_O2S=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2HS)
+      DO_O2HS=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2sl)
+      DO_lc2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2sl)
+      DO_O2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -H2sl)
+      DO_H2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -S2sl)
+      DO_S2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -HS2sl)
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc_sl2sim)
+      DO_lc_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_sl2sim)
+      DO_O_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -H_sl2sim)
+      DO_H_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -S_sl2sim)
+      DO_S_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -HS_sl2sim)
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    # Segment combos (of the above). 
+    -c2O)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2S)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2S=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2HS)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2HS=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2lc_sl)
+      DO_c2lc=1;
+      DO_lc2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2O_sl)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2H_sl)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2H=1;
+      DO_H2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2S_sl)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2HS_sl)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2lc_sim)
+      DO_c2lc=1;
+      DO_lc2sl=1;
+      DO_lc_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2O_sim)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2S_sim)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_S_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2HS_sim)
+      DO_c2lc=1;
+      DO_lc2O=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2O_sl)
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2H_sl)
+      DO_lc2O=1;
+      DO_O2H=1;
+      DO_H2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2S_sl)
+      DO_lc2O=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2HS_sl)
+      DO_lc2O=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2O_sim)
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2S_sim)
+      DO_lc2O=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_S_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2HS_sim)
+      DO_lc2O=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2H_sl)
+      DO_O2H=1;
+      DO_H2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2S_sl)
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2HS_sl)
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2S_sim)
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_S_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2HS_sim)
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2sim)
+      DO_lc2sl=1;
+      DO_lc_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2sim)
+      DO_O2sl=1;
+      DO_O_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -S2sim)
+      DO_S2sl=1;
+      DO_S_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -HS2sim)
+      DO_HS2sl=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2X_sl)
+      DO_c2lc=1;
+      DO_lc2sl=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2X_sim)
+      DO_c2lc=1;
+      DO_lc2sl=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_lc_sl2sim=1;
+      DO_O_sl2sim=1;
+      DO_S_sl2sim=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2X_sl)
+      DO_lc2sl=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -lc2X_sim)
+      DO_lc2sl=1;
+      DO_lc2O=1;
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_lc_sl2sim=1;
+      DO_O_sl2sim=1;
+      DO_S_sl2sim=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2X_sl)
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2X_sim)
+      DO_O2sl=1;
+      DO_O2S=1;
+      DO_S2sl=1;
+      DO_O2HS=1;
+      DO_HS2sl=1;
+      DO_O_sl2sim=1;
+      DO_S_sl2sim=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -X2X_sl)
+      DO_lc2sl=1;
+      DO_O2sl=1;
+      DO_S2sl=1;
+      DO_HS2sl=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -X2X_sim)
+      DO_lc2sl=1;
+      DO_O2sl=1;
+      DO_S2sl=1;
+      DO_HS2sl=1;
+      DO_lc_sl2sim=1;
+      DO_O_sl2sim=1;
+      DO_S_sl2sim=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -X_sl2X_sim)
+      DO_lc_sl2sim=1;
+      DO_O_sl2sim=1;
+      DO_S_sl2sim=1;
+      DO_HS_sl2sim=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    # Allow pointer analysis to be turned off
+    -nosync)
+      echo "> Will not invoke sync arc generation (pointer analysis)"
+      # Do not allow HtoL to add sync arcs for variables it creates.
+      HTOL_OVERRIDES="${HTOL_OVERRIDES} -Fgenerate_sync_arcs=no"
+      INVOKE_PIP=0;;
+    
+    # Allow intrinsic support to be turned off
+    -nointrinsic)
+      echo "> Will not use intrinsic operations (will leave as function calls)"
+      HTOL_OVERRIDES="$HTOL_OVERRIDES -Finsert_intrinsics=no";;
+
+    # Turn off intrinsic support and 
+    # flags that intrinsic library source should be copied in with bench source
+    -nointrinsic2)
+      echo "> Will not use intrinsic operations (will leave as function calls) and "
+      HTOL_OVERRIDES="$HTOL_OVERRIDES -Finsert_intrinsics=no";
+      echo "> will copy impact/intrinsic.lib/*.[ch] in addition to bench src"
+      COPY_INTRINSIC_SRC=1;;
+
+    # Allow remainder loop opti to be turned on
+    -remain)
+      echo "> Will turn on remainder loop optimization";
+      LSUPERSCALAR_OVERRIDES="$LSUPERSCALAR_OVERRIDES -Funroll_with_remainder_loop=yes -Funroll_pipelined_loops=yes";;
+
+    # Allow software pipeliner to be turned on
+    # Turn off multiway branch opti also.
+    -pipe)    
+      USE_SOFTPIPE=1;;
+
+    # Allow different projects to be used
+    -project)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects a name after -project"
+        exit 1;
+      fi
+      PROJECT_NAME="$1";
+      READ_PATHS="$READ_PATHS -project $PROJECT_NAME";
+      shift;;
+
+    # Allow an benchmark dir be specified
+    -bench_dir)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects a name after -bench_dir"
+        exit 1;
+      fi
+      BENCH_DIR="$1";
+      # Make sure specified path exists
+      if [ ! -d $BENCH_DIR ]; then
+        echo "Error: Invalid directory specified with -bench_dir option:"
+        echo "       '${BENCH_DIR}'"
+        exit 1;
+      fi
+      READ_PATHS="-bench_dir $BENCH_DIR $READ_PATHS";
+      FIND_BENCH_DIR=0;
+      shift;;
+    
+    -setx)
+      echo '> Will show key commands exactly via "set -x"';
+      BEGIN_SETX="set -x";
+      END_SETX="set +x";;
+
+    -copy_src)
+      echo '> Will compile source fetched via copy_bench_src script (now default)';
+      LOCAL_SRC=0;;
+
+    -local_src)
+      echo '> Will use the source in "." (instead of using copy_bench_src)';
+      LOCAL_SRC=1;;
+
+    -krc)
+      echo "> Source is K&R C";
+      USE_KRC_MODE=1;;
+
+    -p)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      NEW_PARMS="$1";
+      shift;
+
+      # Make sure parameter file valid in current directory
+      if [ ! -f ${NEW_PARMS} ]; then
+        echo "Error: Parameter file specified with '-p' not found:";
+        echo "       '${NEW_PARMS}'"
+        exit 1;
+      fi
+
+      # Make absolute path, if not already
+      case $NEW_PARMS in
+          # If start with ~ or /, path already absolute
+          ~*|/*)
+            FIXED_PATH=0;;
+
+          # Otherwise, prepend current directory to make absolute path
+          *)
+             CUR_DIR=`pwd | sed s/.tmp_mnt//`;
+             if test "$?" != 0; then
+                echo "Error: Non-zero exit code returned by pwd while"
+               echo "       patching up '-p $NEW_PARMS' option";
+                exit 1;
+             fi
+             OLD_PARMS="${NEW_PARMS}";
+             NEW_PARMS="${CUR_DIR}/${NEW_PARMS}";
+
+             # Make sure new fixed up path valid
+             if [ ! -f ${NEW_PARMS} ]; then
+                echo "Unexpected error while converting specified parameter file (via -p):";
+                echo "    '$OLD_PARMS'";
+                echo "into absolute path to parameter file:";
+                echo "    '$NEW_PARMS'";
+                echo "The fixup up path is not valid!";
+                echo "Fix this script or use an absolute path!";
+                exit 1;
+             fi
+             echo "> Interpreting '-p $OLD_PARMS' as:";
+             echo ">   '-p $NEW_PARMS'";
+             FIXED_PATH=1;;
+      esac
+      echo "> Will use as the baseline parms for everything (except profiling):";
+      echo ">  '${NEW_PARMS}'"
+      SIM_PARMS_SETTING="-p ${NEW_PARMS}";
+      BASELINE_PARMS_FILE="${NEW_PARMS}";;
+
+    -noclean|-no_clean)
+      echo "> Will save ALL the intermediate files using gen_tar";
+      echo "> Will add '${OPTION}' to the profile command";
+      if [ "$PROFILE_OPTIONS" != "" ]; then
+         PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";
+      else
+         PROFILE_OPTIONS="${OPTION}";
+      fi
+      if [ "$PROBE_OPTIONS" != "" ]; then
+         PROBE_OPTIONS="${PROBE_OPTIONS} ${OPTION}";
+      else
+         PROBE_OPTIONS="${OPTION}";
+      fi;
+      NOCLEAN=1;;
+
+    -times)
+      echo "> Will perform time measurements on intermediate steps";
+      TIME="time";;
+
+    -safer_opti)
+      echo "> Using safer memory disambig settings during opti (reduces performance).";
+      SAFER_OPTI=1;;
+
+    -safer_sched)
+      echo "> Using safer memory disambig settings during sched (reduces performance).";
+      SAFER_SCHED=1;;
+	    
+    -less_ILP|-less_ilp|-faster_opti)
+      echo "> Using less-aggressive ILP optimizations settings (reduces performance)";
+      LESS_ILP=1;;
+
+    -max_unroll)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      MAX_UNROLL="$1";
+      shift;
+      # Make sure MAX_UNROLL starts with a number or a +
+      case ${MAX_UNROLL} in
+        [0-9+]*)
+  	  echo "> Will unroll loops a maximum of ${MAX_UNROLL} times.";;
+        *)
+	  echo "> Error: integer expected after -max_unroll, not '${MAX_UNROLL}'";
+        VALID_ARGS=0;;
+
+      esac;;
+
+    -faster_sched)
+      echo "> Using less-aggressive pred dataflow during sched & reg alloc (reduces perf)";
+      FASTER_SCHED=1;;
+
+    -no_inlining|-noinlining)
+      echo "> Preventing function inlining (significantly reduces performance)";
+      NO_INLINING=1;
+      PINLINE_OVERRIDES="$PINLINE_OVERRIDES -Fregroup_only=yes";;
+
+    -target)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      LMDES2="$1";
+      shift;
+      echo "> Using the following machine description for scheduling:"
+      echo ">   ${LMDES2}"
+      echo " "
+      if [ ! -f ${LMDES2} ]; then
+        echo "ERROR: ${LMDES2} not found!";
+        echo " ";
+        VALID_ARGS=0;
+      fi
+      LIMPACT_OVERRIDES="${LIMPACT_OVERRIDES} -Flmdes=${LMDES2}";
+      LHYPER_OVERRIDES="${LHYPER_OVERRIDES} -Flmdes=${LMDES2}";
+      LMDES2_SPECIFIED=1;;
+
+    -bench)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      BENCHMARK="$1";
+      shift;
+      echo "> Using settings for '${BENCHMARK}' instead of for '${BASENAME}";;
+
+    -setup)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo "> Setup text set to '$1'";
+      SETUP_CMD="-setup";
+      SETUP_TEXT="$1";
+      shift;;
+
+    -cprefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo "> Prefixing '$1' to profile exec command";
+      CPREFIX_CMD="-cprefix";
+      CPREFIX_TEXT="$1";
+      shift;;
+
+    -args)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo "> Args set to '$1'";
+      ARGS_CMD="-args";
+      ARGS_TEXT="$1";
+      shift;;
+
+    -check)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo "> Check text set to '$1'";
+      CHECK_CMD="-check";
+      CHECK_TEXT="$1";
+      shift;;
+
+    -cleanup)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo "> Cleanup text set to '$1'";
+      CLEANUP_CMD="-cleanup";
+      CLEANUP_TEXT="$1";
+      shift;;
+
+    -input)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_LIST="$1";
+      EVAL_OPTION="$OPTION";
+      EVAL_LIST="$1";
+      shift;;
+
+    -prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_PREFIX="$1";
+      EVAL_OPTION="$OPTION";
+      EVAL_PREFIX="$1";
+      shift;;
+
+    -train_input)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_LIST="$1";
+      shift;;
+
+    -train_prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_PREFIX="$1";
+      shift;;
+
+    -eval_input)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      EVAL_OPTION="$OPTION";
+      EVAL_LIST="$1";
+      shift;;
+
+    -eval_prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      EVAL_OPTION="$OPTION";
+      EVAL_PREFIX="$1";
+      shift;;
+
+    -L*|-l*)
+      echo "> Will add '${OPTION}' to the link command";
+      if [ "$PROFILE_OPTIONS" != "" ]; then
+         PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";
+      else
+         PROFILE_OPTIONS="${OPTION}";
+      fi
+      if [ "$PROBE_OPTIONS" != "" ]; then
+         PROBE_OPTIONS="${PROBE_OPTIONS} ${OPTION}";
+      else
+         PROBE_OPTIONS="${OPTION}";
+      fi;;
+
+    -l*)
+      echo "> Will add '${OPTION}' to the link command";
+      if [ "$PROFILE_OPTIONS" != "" ]; then
+         PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";
+      else
+         PROFILE_OPTIONS="${OPTION}";
+      fi
+      if [ "$PROBE_OPTIONS" != "" ]; then
+         PROBE_OPTIONS="${PROBE_OPTIONS} ${OPTION}";
+      else
+         PROBE_OPTIONS="${OPTION}";
+      fi;;
+
+    -I*|-D*)
+      echo "> Adding '$OPTION' to the preprocessor command";
+      if [ "$PREPROCESSOR_OPTIONS" != "" ]; then
+         PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} ${OPTION}";
+      else
+         PREPROCESSOR_OPTIONS="${OPTION}";
+      fi;;
+
+    *.eln)
+      ;;
+
+    -o)
+      ;;
+
+    *.eld)
+      echo "> Linking will be done via scc";
+      scc *.eln -o ${OPTION};
+      exit 0;;
+
+    *.c)
+      echo "> Will compile file '${OPTION}'";;
+
+    -no_prof)
+      echo "> Will not perform pcf profiling";
+      DO_PROF=0;
+      NO_INLINING=1;
+      PINLINE_OVERRIDES="$PINLINE_OVERRIDES -Fregroup_only=yes";;
+
+    *)
+      echo "Error: Unknown option '${OPTION}'"
+      VALID_ARGS=0;;
+  esac
+done
+
+PROFILE_OPTIONS="-bench ${BENCHMARK} ${PROFILE_OPTIONS}";
+PREPROCESSOR_OPTIONS="-bench ${BENCHMARK} ${PREPROCESSOR_OPTIONS}";
+if [ "$BASENAME" != "$BENCHMARK" ]; then
+   PROBE_OPTIONS="-bench $BENCHMARK $PROBE_OPTIONS";
+   SIM_OPTIONS="-bench $BENCHMARK $SIM_OPTIONS";
+fi
+
+# Allow software pipelining to be turned off by -nosync or -nopipe
+if [ $USE_SOFTPIPE -eq 1 ]; then
+   echo "> Will perform software pipelining (disables multiway branch opti)"
+   LIMPACT_OVERRIDES="${LIMPACT_OVERRIDES} -Fdo_software_pipelining=yes";
+   LSUPERSCALAR_OVERRIDES="$LSUPERSCALAR_OVERRIDES -Fmark_softpipe_loops=yes -Fdo_multiway_branch_opti=no";
+fi
+
+# Don't do segment messages and checks if already in error state
+if [ $VALID_ARGS -eq 1 -a $VALID_ENV -eq 1 ]; then
+  # Find the benchmark dir if not user specified
+  if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+    fi
+  fi
+
+  # Make sure project name set!
+  if [ "${PROJECT_NAME}" = "" ]; then
+     echo " "
+     echo "> Exiting: Environment variable 'DEFAULT_PROJECT' must be defined by user!"
+     echo ">          See README.install for instructions on setting this variable."
+     exit 1;
+  fi
+
+  # Get project dir so we can export below
+  PROJECT_DIR=`find_project_dir ${PROJECT_NAME}`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not find '${PROJECT_NAME}' using find_project_dir!"
+     echo "> Error message returned by find_project_dir:"
+     echo "$PROJECT_DIR";
+     exit 1;
+  fi
+fi
+
+# Don't do segment messages and checks if already in error state
+if [ $VALID_ARGS -eq 1 -a $VALID_ENV -eq 1 ]; then
+
+  # If no segment or combo options were specified, default to settings
+  # for the -c2X_im_p option
+  if [ $DO_SEGMENTS_SPECIFIED -eq 0 ]; then
+    DO_c2lc=1;
+    DO_lc2sl=1;
+    DO_lc2O=1;
+    DO_O2sl=1;
+    DO_O2S=1;
+    DO_S2sl=1;
+    DO_O2HS=1;
+    DO_HS2sl=1;
+  fi
+
+  # Print out message for each segment invoked.   Also make sure each segment 
+  # has a producer or the appropriate tgz file exists
+   
+  if [ $DO_c2lc -eq 1 ]; then
+    if [ $DO_pc2lc -eq 0 ]; then
+    echo "> Will do c (C source) to lc (unoptimized Lcode) segment"
+
+    # If there is no /src directory in $BENCH_DIR, default to local src
+    if [ $LOCAL_SRC -ne 1 -a ! -d ${BENCH_DIR}/src ]; then
+      C_FILE_LIST="`ls *.c 2>/dev/null`"
+      if [ "$C_FILE_LIST" = "" ]; then
+        echo "> Error: There is no source provided for ${BENCHMARK} and"
+        echo ">        there are no .c files in '.'!"
+        echo " ";
+      else
+        echo "> Warning: There is no source provided for ${BENCHMARK}"
+        echo ">          so the .c files in "." will be used (-local_src)!";
+        echo ' '
+        LOCAL_SRC=1;
+      fi
+    fi;
+
+    # If -c2lc and -local_src, make sure have src is valid
+    if [ $LOCAL_SRC -eq 1 ]; then
+      C_FILE_LIST="`ls *.c 2>/dev/null`"
+      if [ "$C_FILE_LIST" = "" ]; then
+        echo "> Error: Expect at least one .c file in '.' with -local_src!";
+        echo " ";
+        VALID_ENV=0;
+      fi
+    fi
+    else
+      echo "> Will do pc (Pcode) to lc (unoptimized Lcode) segment"
+      # Assume local source for pcode input
+      LOCAL_SRC=1;
+      C_FILE_LIST="`ls *.pc 2>/dev/null`"
+      if [ "$C_FILE_LIST" = "" ]; then
+        echo "> Error: Expect at least one .pc file in '.' with -local_src!";
+        echo " ";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+  
+  if [ $DO_lc2sl -eq 1 ]; then
+    echo '> Will do lc to sl (scheduled/reg_allocated "assembly") segment';
+
+    if [ $DO_c2lc -eq 0 ]; then
+      # If -lc2sl and !-c2lc, make sure has .lcs.tgz file
+      if [ ! -f ${BASENAME}.lcs.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.lcs.tgz in '.' or -c2lc option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_lc_sl2sim -eq 1 ]; then
+    echo '> Will do lc_sl to sim (full system simulation) segment';
+
+    if [ $DO_lc2sl -eq 0 ]; then
+      # If -lc_sl2sim and !-lc2sl, make sure has .lc_sl.tgz file
+      if [ ! -f ${BASENAME}.lc_sl.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.lc_sl.tgz in '.' or -lc2sl option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_lc2O -eq 1 ]; then
+    echo "> Will do lc to O (classical optimization, no ILP) segment"
+
+    if [ $DO_c2lc -eq 0 ]; then
+      # If -lc2O and !-c2lc, make sure has .lcs.tgz file
+      if [ ! -f ${BASENAME}.lcs.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.lcs.tgz in '.' or -c2lc option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_O2sl -eq 1 ]; then
+    echo '> Will do O to sl (scheduled/reg_allocated "assembly") segment';
+
+    if [ $DO_lc2O -eq 0 ]; then
+      # If -O2sl and !-lc2O, make sure has .O.tgz file
+      if [ ! -f ${BASENAME}.O.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.O.tgz in '.' or -lc2O option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_O_sl2sim -eq 1 ]; then
+    echo '> Will do O_sl to sim (full system simulation) segment';
+
+    if [ $DO_O2sl -eq 0 ]; then
+      # If -O_sl2sim and !-O2sl, make sure has .O_sl.tgz file
+      if [ ! -f ${BASENAME}.O_sl.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.O_sl.tgz in '.' or -O2sl option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_O2H -eq 1 ]; then
+    echo "> Will do O to H (hyperblocks + ILP) segment";
+
+    if [ $DO_lc2O -eq 0 ]; then
+      # If -O2S and !-lc2O, make sure has .O.tgz file
+      if [ ! -f ${BASENAME}.O.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.O.tgz in '.' or -lc2O option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_H2sl -eq 1 ]; then
+    echo '> Will do H to sl (scheduled/reg_allocated "assembly") segment';
+
+    if [ $DO_O2H -eq 0 ]; then
+      # If -H2sl and !-O2H, make sure has .H.tgz file
+      if [ ! -f ${BASENAME}.H.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.H.tgz in '.' or -O2H option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_H_sl2sim -eq 1 ]; then
+    echo '> Will do H_sl to sim (full system simulation) segment';
+
+    if [ $DO_H2sl -eq 0 ]; then
+      # If -H_sl2sim and !-H2sl, make sure has .H_sl.tgz file
+      if [ ! -f ${BASENAME}.H_sl.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.H_sl.tgz in '.' or -H2sl option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_O2S -eq 1 ]; then
+    echo "> Will do O to S (superblocks + ILP, no predication) segment";
+
+    if [ $DO_lc2O -eq 0 ]; then
+      # If -O2S and !-lc2O, make sure has .O.tgz file
+      if [ ! -f ${BASENAME}.O.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.O.tgz in '.' or -lc2O option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_S2sl -eq 1 ]; then
+    echo '> Will do S to sl (scheduled/reg_allocated "assembly") segment';
+
+    if [ $DO_O2S -eq 0 ]; then
+      # If -S2sl and !-O2S, make sure has .S.tgz file
+      if [ ! -f ${BASENAME}.S.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.S.tgz in '.' or -O2S option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_S_sl2sim -eq 1 ]; then
+    echo '> Will do S_sl to sim (full system simulation) segment';
+
+    if [ $DO_S2sl -eq 0 ]; then
+      # If -S_sl2sim and !-S2sl, make sure has .S_sl.tgz file
+      if [ ! -f ${BASENAME}.S_sl.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.S_sl.tgz in '.' or -S2sl option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_O2HS -eq 1 ]; then
+    echo "> Will do O to HS (hyperblocks + ILP, predicated) segment";
+
+    if [ $DO_lc2O -eq 0 ]; then
+      # If -O2HS and !-lc2O, make sure has .O.tgz file
+      if [ ! -f ${BASENAME}.O.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.O.tgz in '.' or -lc2O option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_HS2sl -eq 1 ]; then
+    echo '> Will do HS to sl (scheduled/reg_allocated "assembly") segment'
+
+    if [ $DO_O2HS -eq 0 ]; then
+      # If -HS2sl and !-O2HS, make sure has .HS.tgz file
+      if [ ! -f ${BASENAME}.HS.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.HS.tgz in '.' or -O2HS option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+
+  if [ $DO_HS_sl2sim -eq 1 ]; then
+    echo '> Will do HS_sl to sim (full system simulation) segment';
+
+    if [ $DO_HS2sl -eq 0 ]; then
+      # If -HS_sl2sim and !-HS2sl, make sure has .HS_sl.tgz
+      if [ ! -f ${BASENAME}.HS_sl.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.HS_sl.tgz in '.' or -HS2sl option!";
+        VALID_ENV=0;
+      fi
+    fi
+  fi
+fi
+
+# Make sure benchmark can be found by the bench_info scripts 
+# Assume benchmark info present
+VALID_BENCHMARK=1;
+
+# Don't bother with more tests if already in an error state
+if [ $VALID_ENV -eq 1 -a $VALID_ARGS -eq 1 ]; then
+
+  echo " ";
+  echo "> Will use the compilation and execution info for ${BENCHMARK} in:"
+  echo ">   $BENCH_DIR"
+
+
+  # Get and verify benchmark train inputs
+  TRAIN_ERROR_CODE=0;
+
+  # Handle -train_prefix and train portion of -prefix
+  if [ "$TRAIN_OPTION" = "-train_prefix" -o \
+       "$TRAIN_OPTION" = "-prefix" ]; then
+    echo "> Using train prefix '$TRAIN_PREFIX' to find inputs for Pcode profiling"
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$TRAIN_PREFIX\") 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+  
+  # Handle -train_input and train portion of -input
+  elif [ "$TRAIN_OPTION" = "-train_input" -o \
+         "$TRAIN_OPTION" = "-input" ]; then
+    echo "> Verifying specified train input list for Pcode profiling"
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$TRAIN_LIST\") 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+
+  # Handle default cause, using train_inputs
+  elif [ "$TRAIN_OPTION" = "" ]; then
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+  fi
+
+  if test "$TRAIN_ERROR_CODE" != 0; then
+    echo " "
+    echo "> Exiting compile_bench, find_bench_inputs returned this error message:"
+    echo "$TRAIN_LIST";
+    exit 1;
+  fi
+
+  # Suppress train input info if not doing c2lc segment
+  if [ $DO_c2lc -eq 1 -o $DO_pc2lc -eq 1 ]; then
+     echo " "
+     echo "> The following input(s) will be used for Pcode profiling/training:"
+     echo ">   $TRAIN_LIST"
+  fi
+  # Cause TRAIN_LIST to be used (instead of ignored by gen_profiled_pcode)
+  PPROF_INPUT_CMD="-input";
+ 
+  # Get and verify benchmark eval inputs
+  EVAL_ERROR_CODE=0;
+
+  # Handle -eval_prefix and eval portion of -prefix
+  if [ "$EVAL_OPTION" = "-eval_prefix" -o \
+       "$EVAL_OPTION" = "-prefix" ]; then
+    echo "> Using eval prefix '$EVAL_PREFIX' to find inputs for .X_im_p file prof/eval"
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$EVAL_PREFIX\") 2>&1`";
+    EVAL_ERROR_CODE="$?";
+   
+  # Handle -eval_input and eval portion of -input
+  elif [ "$EVAL_OPTION" = "-eval_input" -o \
+         "$EVAL_OPTION" = "-input" ]; then
+    echo "> Verifying specified eval input list for .X_im_p file profiling/evaluation"
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$EVAL_LIST\") 2>&1`";
+    EVAL_ERROR_CODE="$?";
+
+  # Handle default cause, using eval_inputs
+  elif [ "$EVAL_OPTION" = "" ]; then
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+    EVAL_ERROR_CODE="$?";
+  fi
+
+  if test "$EVAL_ERROR_CODE" != 0; then
+    echo " "
+    echo "> Exiting compile_bench, find_bench_inputs returned this error message:"
+    echo "$EVAL_LIST";
+    exit 1;
+  fi
+  # Suppress train input info if not doing a X2X_sl segment
+  if [ $DO_O2sl -eq 1 -o $DO_S2sl -eq 1 -o $DO_HS2sl -eq 1 ]; then
+     echo " "
+     echo "> The following input(s) will be used to prof/eval the final .X_im files:"
+     echo ">   $EVAL_LIST"
+  fi
+  # Cause EVAL_LIST to be used (instead of ignored by gen_profiled_lcode)
+  LPROF_INPUT_CMD="-input";
+  # Cause EVAL_LIST to be used (instead of ignored by sim_bench)
+  SIM_INPUT_CMD="-input";
+
+  # Read project_info to determine if override parameters needed to
+  # get benchmark to compile properly 
+  PROJECT_PARMS_FILE="`read_project_info $BENCHMARK $READ_PATHS -parm_override_file`";
+  if test "$?" != 0; then
+    echo "> Error: read_project_info ${BENCHMARK} -parm_override_file returned:"
+    echo "${PROJECT_PARMS_FILE}"
+    echo "> Exiting: unexpected error in compile_bench ";
+    exit 1;
+  fi    
+fi
+
+# Allow -safer_opti to be specified in presets or on the command line
+if [ $SAFER_OPTI -eq 1 ]; then
+    OPTI_DISAMBIG_OVERRIDES="${OPTI_DISAMBIG_OVERRIDES} \
+        -Flabel_and_reg_access_indep=no \
+	-Fdiff_data_types_indep=no";
+fi
+
+# Allow -less_ILP to be specified in presets or on the command line
+if [ $LESS_ILP -eq 1 ]; then
+    LSUPERSCALAR_OVERRIDES="${LSUPERSCALAR_OVERRIDES} \
+        -Fallow_backedge_exp=no \
+	-Fallow_expansion_of_loops=no \
+	-Fallow_extra_unrolling_for_small_loops=no";
+
+   # Set max unroll to 8 unless already specified by user
+   if [ "${MAX_UNROLL}" = "" ]; then
+        MAX_UNROLL="8";
+   fi
+fi
+
+# If user specified different max unroll (through -max_unroll or -less_ILP,
+# override the Lsuperscalar parameter
+if [ "${MAX_UNROLL}" != "" ]; then
+    LSUPERSCALAR_OVERRIDES="${LSUPERSCALAR_OVERRIDES} \
+	-Fmax_unroll_allowed=${MAX_UNROLL}";
+fi
+
+# Allow -safer_sched to be specified in presets or on the command line
+if [ $SAFER_SCHED -eq 1 ]; then
+    SCHED_DISAMBIG_OVERRIDES="${SCHED_DISAMBIG_OVERRIDES} \
+        -Flabel_and_reg_access_indep=no \
+        -Fdiff_data_types_indep=no";
+fi
+
+# Allow -faster_sched to be specified in presets or on the command line
+if [ $FASTER_SCHED -eq 1 ]; then
+    SCHED_DISAMBIG_OVERRIDES="${SCHED_DISAMBIG_OVERRIDES} \
+        -Fdf_max_pred_paths=20";
+fi
+
+# Allow -krc to be specified in presets or on the command line
+if [ $USE_KRC_MODE -eq 1 ]; then
+  PROFILE_OPTIONS="${PROFILE_OPTIONS} -krc";
+  PROBE_OPTIONS="${PROBE_OPTIONS} -krc";
+  PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} -krc";
+fi
+
+# Make sure parameter file specified exists
+if [ $VALID_ARGS -eq 1 -a ! -f ${BASELINE_PARMS_FILE} ]; then
+    echo " "
+    echo "ERROR: The following baseline parameter file could not be found:"
+    echo "  ${BASELINE_PARMS_FILE}"
+    echo " "
+    echo "  One solution is to the '-p parms_file' option to pick a different file."
+    echo " "
+    VALID_ENV=0;
+fi
+
+if [ $VALID_ARGS -eq 0 -o $VALID_ENV -eq 0 -o \
+     $VALID_BENCHMARK -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: sc140_compile_bench benchmark [options]';
+    echo '> ';
+    echo '> Generates ILP-optimized "assembly" from the benchmark'\''s .c files in the';
+    echo '> current directory using the IMPACT compiler (essentially "cc +O4 *.c").'
+    echo '> This source is initially profiled to drive inlining and ILP optimization.'
+    echo '> The final "assembly" is profiled to verify correctness.  Static performance'
+    echo '> estimates are generated based on the final code schedule and the new profile.';
+    echo '> Full system simulation of the final code may also be performed, if desired.';
+    echo '> ';
+    echo '> Compiler configuration determined by the project parameters and (unless'
+    echo '> "-p baseline_parms" is specified) impact/parms/STD_PARMS.compile_bench.';
+    echo '> ';
+    echo '> Zero or more of the following options may be specified.';
+    echo '> ';
+    echo '> Individual compilation segment options (default combo is -c2X_im_p):';
+    echo '>   -c2lc                do c (C source) to lc (unoptimized Lcode) segment';
+    echo '>   -pc2lc               do pc (Pcode) to lc (unoptimized Lcode) segment';
+    echo '>   -lc2O                do lc to O (classical optimizations, no ILP) segment';
+    echo '>   -O2S                 do O to S (superblocks + ILP, no predication) segment';
+    echo '>   -O2HS                do O to HS (hyperblocks + ILP, predicated) segment';
+    echo '>   -O2sl                do O to O_sl (sched/reg_alloc "assembly")';
+    echo '>   -S2sl                do S to S_sl (sched/reg_alloc "assembly")';
+    echo '>   -HS2sl               do HS to HS_sl (sched/reg_alloc "assembly")';
+    echo '>   -O_sl2sim            do O_sl to sim (full system simulation)';
+    echo '>   -S_sl2sim            do S_sl to sim (full system simulation)';
+    echo '>   -HS_sl2sim           do HS_sl to sim (full system simulation)';
+    echo '> ';
+    echo '> Combo compilation segment options (combinations of above options):';
+    echo '>   -(start)2(end)       turn on segments required to get from (start) to (end)';
+    echo '>   -c2X_sl              same as -c2O_sl -c2S_sl -c2HS_sl (default)';
+    echo '>   -c2X_sim             same as -c2O_sim -c2S_sim -c2HS_sim';
+    echo '>   -X2X_sl              same as -O2sl -S2sl -HS2sl';
+    echo '>   -X2X_sim             same as -O2sim -S2sim -HS2sim';
+    echo '>   -X_sl2X_sim          same as -O_sl2sim ... -HS_sl2sim';
+    echo '> ';
+    echo '> General options:';
+    echo '>   -nosync              do not generate sync arcs (no pointer analysis)';
+    echo '>   -nointrinsic         do not generate intrinsic ops (they remain jsrs)';
+    echo '>   -nointrinsic2        no intrinsics and compile in intrinsic library src'
+    echo '>   -remain              perform remainder loops optimization';
+    echo '>   -pipe                perform software pipelining';
+    echo '>   -copy_src            use copy_bench_src to get benchmark source (default)';
+    echo '>   -local_src           use bench source in "." (default: copy over bench src)';
+    echo '>   -noclean             saves ALL the intermediate files using gen_tar';
+    echo '>   -times               perform time measurements on the intermediate steps';
+    echo '>   -setx                show key commands exactly via "set -x"';
+    echo '> ';
+    echo "> Options for selecting different bench_info settings:";
+    echo '>   -project "project"   project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -bench_dir "dir"     read info in "dir" (default: find_bench_dir used)';
+    echo '>   -bench "name"        uses settings for "name" (default: for "benchmark")';
+    echo '> ';
+    echo "> Options for overriding the benchmark's bench_info settings:";
+    echo '>   -input "name(s)"     train/eval with "name(s)" (default: project inputs)';
+    echo '>   -prefix "prefix"     train/eval with "prefix*" (default: project inputs)';
+    echo '>   -train_input "ns"    train with "name(s)" (default: project train inputs)';
+    echo '>   -train_prefix "p"    train with "p*" (default: project train inputs)';
+    echo '>   -eval_input "ns"     eval with "name(s)" (default: project eval inputs)';
+    echo '>   -eval_prefix "p"     eval with "p*" (default: project eval inputs)';
+    echo '>   -p baseline_parms    use baseline_parms (default: STD_PARMS.compile_bench)'
+    echo '>   -target "lmdes2"     schedule using "lmdes2" (default: project lmdes2 file)';
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -krc                 source is K&R c (default: Ansi-C)';
+    echo '>   -Dname=def           define name to the preprocessor';
+    echo '>   -Idir                adds "dir" to include search path';
+    echo '>   -Ldir                adds "dir" to library search path';
+    echo '>   -llibrary            use the library named "library" when linking';
+    echo '>   -safer_opti          uses "safer" memory disambig settings during opti';
+    echo '>   -less_ILP            scales back ILP optimizations to reduce compile time';
+    echo '>   -max_unroll int      unroll loops a maximum of "int" times';
+    echo '>   -safer_sched         uses "safer" memory disambig settings during sched';
+    echo '>   -faster_sched        scales back pred dataflow during sched and reg alloc';
+    echo '>   -no_inlining         prevents function inlining (default: inlining)';
+    echo '>   -no_prof             skips the pcf profiling step';
+
+    echo '> ';
+    echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+    echo '>   -setup   "text"      runs "text" to setup profile run';
+    echo '>   -cprefix "text"      prefixes "text" to profile_exec_command';
+    echo '>   -args    "text"      sets profile execution arguments to "text"';
+    echo '>   -check   "text"      runs "text" to check output';
+    echo '>   -cleanup "text"      runs "text" to cleanup after profile run';
+    echo '> '
+
+    exit 1;
+fi;
+
+
+############################################################################
+#       Starting compilation
+############################################################################
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> Setting up for ${BASENAME}";
+
+############################################################################
+#       Copy benchmark source unless -local_src option selected 
+#       or not doing frontend
+############################################################################
+    if [ $LOCAL_SRC -eq 0 -a $DO_c2lc -eq 1 ]; then
+        echo " "
+	echo "> Creating 'impactbenchsrc' to hold copy of ${BENCHMARK} source"
+	rm -rf impactbenchsrc
+        mkdir impactbenchsrc
+
+        if [ $COPY_INTRINSIC_SRC -eq 1 ]; then
+           echo " ";
+           echo "> Copying impact/intrinsic.lib/*.[ch] into impactbenchsrc";
+           cp ${IMPACT_REL_PATH}/intrinsic.lib/*.[ch] impactbenchsrc
+           if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        fi
+
+        echo " ";
+        copy_bench_src ${BENCHMARK} $READ_PATHS -dest impactbenchsrc
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    fi
+
+############################################################################
+#       Override user's STD_PARMS_FILE setting
+############################################################################
+
+
+    # The bench info infrastructure requires that BASELINE_PARMS_FILE be
+    # exported for use by the compile_parms file in each benchmark directory
+    # (which in turn is used by the PROJECT_PARMS_FILE).  This is how
+    # the user's parameters (if specified with -p), or the default 
+    # compile benchmark parameters, are reached.
+    echo " ";
+    echo "> Exporting BASELINE_PARMS_FILE for use by ${BENCHMARK}/compile_parms:";
+    echo ">   $BASELINE_PARMS_FILE";
+    $BEGIN_SETX
+    export BASELINE_PARMS_FILE;
+    $END_SETX
+
+    # The project info infrastructure requires that PROJECT_DIR and BENCH_DIR 
+    # be exported for use by the PROJECT_PARMS_FILE.  This allows the
+    # project to find and override the compile_parms in each benchmark 
+    # directory.  
+    echo ">"
+    echo "> Exporting BENCH_DIR for use by ${PROJECT_NAME}/project_parms";
+    echo ">   $BENCH_DIR";
+    echo ">"
+    echo "> Exporting PROJECT_DIR for use by ${PROJECT_NAME}/project_parms_${BENCHMARK}:";
+    echo ">   $PROJECT_DIR";
+    $BEGIN_SETX
+    export PROJECT_DIR
+    export BENCH_DIR
+    $END_SETX
+
+
+    # All the IMPACT modules will use STD_PARMS_FILE to determine the 
+    # parameter file.  Set this to the PROJECT_PARMS_FILE and export.
+    echo ">"
+    echo "> Exporting STD_PARMS_FILE for use by IMPACT modules:"
+    echo ">   $PROJECT_PARMS_FILE";
+    $BEGIN_SETX
+    STD_PARMS_FILE="$PROJECT_PARMS_FILE";
+    export STD_PARMS_FILE;
+    $END_SETX
+
+############################################################################
+#    Part 1/6 of the c2lc compilation segment
+#    Run the EDG front-end 
+############################################################################
+if [ $DO_c2lc -eq 1 ]; then
+    if [ $DO_pc2lc -eq 0 ]; then
+      rm -f *.pc *.nm;
+      INPUT_SPEC="*.c";
+    else
+      INPUT_SPEC="*.pc";
+    fi
+
+    echo " ";
+    echo "> %%%%%%%%%%%";
+
+    if [ $LOCAL_SRC -eq 0 ]; then
+      echo "> c2lc segment 1/6: IMPACT-enhanced EDG frontend on the $INPUT_SPEC in impactbenchsrc";
+      cd impactbenchsrc
+      if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    else
+      echo "> c2lc segment 1/6: IMPACT-enhanced EDG frontend on the $INPUT_SPEC in '.'";
+    fi
+
+    if [ "$PREPROCESSOR_OPTIONS" != "" -o "$READ_PATHS" != "" ]; then
+       echo " ";
+       echo "> The following options will be passed to gen_CtoP:"
+       echo ">   $READ_PATHS $PREPROCESSOR_OPTIONS"
+    fi
+
+    echo " ";
+    $BEGIN_SETX
+    if [ $NOCLEAN -eq 1 ]; then
+	gen_CtoP $READ_PATHS $PREPROCESSOR_OPTIONS $INPUT_SPEC -noclean;
+    else
+	gen_CtoP $READ_PATHS $PREPROCESSOR_OPTIONS $INPUT_SPEC;
+    fi;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    # If compiled in impactbenchsrc, move back to original dir
+    if [ $LOCAL_SRC -eq 0 ]; then
+      mv *.pc ..
+      if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+      mv *.nm ..
+      if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+      mv host_layout_info.md ..
+      if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+      cd ..
+    fi
+    
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} pc;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+        echo " ";
+        gen_tar ${BASENAME} nm;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+     else
+        # If copied and preprocessed source in impactbenchsrc, delete it now 
+        # unless -noclean specified
+        if [ $LOCAL_SRC -eq 0 ]; then
+           echo " ";
+           echo "> Removing impactbenchsrc"
+	   rm -rf impactbenchsrc
+        fi
+    fi
+
+    if [ $DO_pc2lc -eq 0 ]; then
+      rm -f *.nm;
+    fi
+fi
+
+
+############################################################################
+#    Part 2/6 of the c2lc compilation segment
+#    Perform Pcode flattening
+############################################################################
+if [ $DO_c2lc -eq 1 ]; then
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> c2lc segment 2/6: Performing Pcode flattening";
+    echo " ";
+    rm -f *.pcf
+
+    ls *.pc > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    gen_PtoP-flatten . < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} pcf;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    fi
+
+    if [ $DO_pc2lc -eq 0 ]; then
+      rm -f *.pc;
+    fi
+    rm -f impactlist;
+fi
+
+############################################################################
+#    Part 3/6 of the c2lc compilation segment
+#    Perform Pcode profiling
+############################################################################
+if [ $DO_c2lc -eq 1 ] && [ $DO_PROF -eq 1 ]; then
+    echo " ";
+    echo "> %%%%%%%%%%%";
+    echo "> c2lc segment 3/6: Performing Pcode profiling using settings for ${BENCHMARK}";
+    echo " ";
+    rm -f *.pcf_p
+
+    $BEGIN_SETX
+    ${TIME} gen_Pprofiled_sc140 . -ext pcf -noflatten \
+        $READ_PATHS $PROFILE_OPTIONS \
+        $PPROF_INPUT_CMD "$TRAIN_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then  echo "Exiting: non-zero exit code"; exit 1; fi
+    $END_SETX
+
+    #if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} pcf_p;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    #fi
+
+    rm -f *.pcf;
+fi
+
+
+############################################################################
+#    Part 4/6 of the c2lc compilation segment
+#    Perform Pcode file splitting
+############################################################################
+if [ $DO_c2lc -eq 1 ]; then
+    echo " ";
+    echo "> %%%%%%%%%%%";
+    echo "> c2lc segment 4/6: Performing Pcode file splitting";
+    echo " ";
+    rm -f *.pcs *.pch
+
+    if [ $DO_PROF -eq 1 ]; then
+	ls *.pcf_p > p_files;
+    else
+        ls *.pcf > p_files;
+    fi
+
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    gen_Psplit p_files;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} pcs;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+        echo " ";
+        gen_tar ${BASENAME} pch;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    fi
+
+    rm -f p_files;
+    rm -f *.pcf;
+    rm -f *.pcf_p;
+fi
+
+############################################################################
+#    Part 5/6 of the c2lc compilation segment
+#    Perform aggressive inlining on Pcode files
+############################################################################
+if [ $DO_c2lc -eq 1 ]; then
+    echo " ";
+    if [ $NO_INLINING -eq 0 ]; then
+        echo "> %%%%%%%%%%%";
+        echo "> c2lc segment 5/6: Performing Pcode inlining";
+    else
+        echo "> %%%%%%%%%%";
+        echo "> c2lc segment 5/6: Performing Pcode inlining steps (but no actual inlining)";
+    fi
+    echo " ";
+    rm -f *.pci
+
+    $BEGIN_SETX
+    ${TIME} gen_Pinline "${PINLINE_OVERRIDES}";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} pci;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+        echo " ";
+        gen_tar ${BASENAME} pch;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    fi
+
+    # Remove even if -noclean specified
+    #rm -f impact_mapping impact_filelist;
+
+    # 126.gcc overwhelms 'rm -f *.pcs', so do in parts.
+    rm -f f_*0.pcs
+    rm -f f_*1.pcs
+    rm -f f_*2.pcs
+    rm -f f_*3.pcs
+    rm -f f_*4.pcs
+    rm -f f_*5.pcs
+    rm -f f_*6.pcs
+    rm -f f_*7.pcs
+    rm -f f_*8.pcs
+    rm -f f_*9.pcs
+    rm -f *.pcs
+fi
+
+############################################################################
+#    Part 6/6 of the c2lc compilation segment
+#    Convert Pcode files to Hcode (plus pointer analysis)
+############################################################################
+if [ $DO_c2lc -eq 1 ]; then
+    echo " ";
+    echo "> %%%%%%%%%%";
+
+    # Get benchmarks' default for disabling sync arcs for module's use
+    DISABLE_SYNCARCS=`read_compile_info ${BENCHMARK} $READ_PATHS -disable_syncarcs`;
+    if test "$?" != 0; then
+       echo " "
+       echo "> Exiting: Could not read default disable_syncarcs using read_compile_info!"
+       echo "> Error message returned by read_compile_info:"
+       echo "$DISABLE_SYNCARCS";
+       exit 1;
+    fi
+    if [ $DISABLE_SYNCARCS -eq 1 ]; then
+      echo "> c2lc segment 6/6:  Disabling sync arc generation from benchmark compile_info"
+      if [ $INVOKE_PIP -eq 1 ]; then
+         # Do not allow HtoL to add sync arcs for variables it creates.
+         HTOL_OVERRIDES="${HTOL_OVERRIDES} -Fgenerate_sync_arcs=no"
+      fi;
+      INVOKE_PIP=0;
+    fi
+
+    if [ $INVOKE_PIP -eq 1 ]; then
+       echo "> c2lc segment 6/6:  Converting Pcode files to Lcode files (with sync arcs)"
+    else
+       echo "> c2lc segment 6/6:  Converting Pcode files to Lcode files (no sync arcs)"
+    fi
+    echo " ";
+# CWL
+#    rm -f *.hc *.hch *.hc.stat
+    rm -f *.lc
+ 
+    ls *.pci > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    # Invoke PIP (pointer analysis), if desired
+    if [ $INVOKE_PIP -eq 1 ]; then
+       rm -rf pip pip1;
+       mkdir pip pip1;
+
+       $BEGIN_SETX
+       gen_PIP_new . < impactlist
+       if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+       PLATFORM_INFO_DIR=`read_platform_info -platform_dir`
+       if test "$?" != 0; then
+	  echo " "
+	  echo "Exiting: Could not read platform info dir using read_platform_info!"
+	  echo "Error message returned by read_platform_info:"
+	  echo "$PLATFORM_INFO_DIR";
+	  echo " "
+	  echo "Verify that '.../impact/scripts' is in your path! "
+	  exit 1;
+       fi
+
+       PIPAnal -Fpoints_to_representation=1 -Flib_pip_path=$PLATFORM_INFO_DIR/PIP_info;
+       if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+       echo "> Begin merge of PIP results"
+       echo ""
+       
+       gen_merge_PIP_result . STARCORE SC140 < impactlist;
+       if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+       mv -f pip.log time_and_memory_usage pip1
+       if [ -f side_effect.log ]; then
+         mv -f side_effect.log pip1
+       fi
+
+       if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+       $END_SETX
+
+       # Remove pip and pip1 unless -noclean specified
+       if [ $NOCLEAN -ne 1 ]; then
+          rm -rf pip pip1
+       fi
+
+    # Otherwise, use old path (no pointer analysis)
+    else
+       $BEGIN_SETX
+# CWL
+#       gen_PtoH . < impactlist;
+       gen_PtoL . STARCORE SC140 < impactlist;
+       if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+       $END_SETX
+    fi
+
+    gen_tar ${BASENAME} lc;
+
+    rm -f *.lcs;
+    gen_generic Lstring -in lc -out lcs;
+    echo "> done";
+
+    cat *.lcs > impact.lcs.temp;
+    rm -f *.lcs;
+    mv impact.lcs.temp impact.lcs;
+
+    echo " ";
+    echo "> Splitting lcs files";
+    SplitAll -d lcs
+
+    rm -f *.lc
+
+    # Always keep .lcs files, useful place to start reoptimizing from
+    echo " ";
+    gen_tar ${BASENAME} lcs;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Remove .lcs files if not used by later segment
+    if [ $DO_lc2O -eq 0 -a $DO_lc2sl -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .lcs files, not used by later compilation segments"
+        rm -f *.lcs;
+    fi
+
+#    if [ $NOCLEAN -eq 1 ]; then
+#        echo " ";
+#        gen_tar ${BASENAME} hc;
+#        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+#        echo " ";
+#        gen_tar ${BASENAME} hch;
+#        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+#    fi
+
+#    rm -f impactlist impact_aggregate.dat impact_global.dat impact_vararg;
+#    rm -f *.pci;
+#    rm -f *.pch;
+fi
+
+
+############################################################################
+#    Part 7/7 of the c2lc compilation segment
+#    Convert Hcode files to Lcode
+############################################################################
+#if [ $DO_c2lc -eq 1 ]; then
+#    echo " ";
+#    echo "> %%%%%%%%%%";
+#    echo "> c2lc segment 7/7: Converting Hcode files to Lcode files"
+#    echo " ";
+#    rm -f *.lc
+#    rm -f *.lcs
+
+#    ls *.hc > impactlist;
+#    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+#    $BEGIN_SETX
+#    gen_HtoL . STARCORE SC140 "${HTOL_OVERRIDES}" < impactlist;
+#    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+#    $END_SETX
+
+#    gen_tar ${BASENAME} lc;
+
+#    gen_generic Lstring -in lc -out lcs;
+
+#    cat *.lcs > impact.lcs.temp;
+#    rm -f *.lcs;
+#    mv impact.lcs.temp impact.lcs;
+
+#    SplitAll -d lcs
+
+#    rm -f *.lc;
+
+    # Always keep .lcs files, useful place to start reoptimizing from
+#    echo " ";
+#    gen_tar ${BASENAME} lcs;
+#    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Remove .lcs files if not used by later segment
+#    if [ $DO_lc2O -eq 0 -a $DO_lc2sl -eq 0 ]; then
+#        echo " "
+#        echo "> Removing untarred .lcs files, not used by later compilation segments"
+#        rm -f *.lcs;
+#    fi
+
+#    rm -f impactlist;
+#    rm -f *.hc;
+#    rm -f *.hch;
+#    rm -f *.hc.stat;
+#fi
+
+############################################################################
+#    The lc2sl compilation segment
+############################################################################
+if [ $DO_lc2sl -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> lc2sl segment: Scheduling and register allocating .lcs files"
+    echo " ";
+    rm -f *.lc_sl
+
+    # Restore lcs files, if necessary
+    if [ $DO_c2lc -eq 0 ]; then
+        rm -f *.lcs;
+        gen_untar ${BASENAME} lcs;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.lcs > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lstarcore . sc140 lc_sl "${SCHED_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+
+    echo " ";
+    gen_tar ${BASENAME} lc_sl;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+
+    # Remove .lcs files if not used by later segment
+    if [ $DO_lc2O -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .lcs files, not used by later compilation segments"
+        rm -f *.lcs;
+    fi
+
+fi
+
+############################################################################
+#    The lc_sl2sim segment
+############################################################################
+if [ $DO_lc_sl2sim -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> lc_sl2sim segment: Full system simulation of .lc_sl files"
+    echo " ";
+
+    rm -f *.eln impact.eld;
+
+    # Restore lc_sl files, if necessary
+    if [ $DO_lc2sl -eq 0 ]; then
+        rm -f *.lc_sl;
+        gen_untar ${BASENAME} lc_sl;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    echo " ";
+    echo '> Assembling lc_sl files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    for file in *.lc_sl
+    do
+       asmsc100 -b $file | grep Error | awk '{print $1 "\t" $2; if ($1 != '0') exit 1;}'
+       if test "$?" != 0; then 
+           echo "*** $file ***"; 
+           asmsc100 -b $file > $file.asm;
+           #echo "Exiting: non-zero exit code";
+           #exit 1;
+       fi
+    done
+    $END_SETX
+
+    echo " ";
+    echo '> Linking eln files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    ${TIME} scc *.eln -o impact.eld
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    $BEGIN_SETX
+    ${TIME} sc140_sim_bench $BASENAME impact.eld $READ_PATHS $SIM_OPTIONS \
+	$SIM_PARMS_SETTING \
+        $SIM_INPUT_CMD "$EVAL_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+fi
+
+############################################################################
+#    The lc2O compilation segment
+############################################################################
+if [ $DO_lc2O -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> lc2O segment:  Running Lopti on *.lcs files";
+    echo " ";
+    rm -f *.O impactlist
+
+    # Restore lc files, if necessary
+    if [ $DO_c2lc -eq 0 ]; then
+        rm -f *.lcs;
+        gen_untar ${BASENAME} lcs;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.lcs > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    $BEGIN_SETX
+    ${TIME} gen_Lopti . STARCORE SC140 4 \
+      "${OPTI_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+    
+    # Always keep .O files, useful as a baseline for performance
+    echo " ";
+    gen_tar ${BASENAME} O;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    rm -f *.lcs;
+    rm -f impactlist;
+
+    # Remove .O files if not used by later segment
+    if [ $DO_O2sl -eq 0 -a $DO_O2H -eq 0 \
+         -a $DO_O2S -eq 0 -a $DO_O2HS -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .O files, not used by later compilation segments"
+        rm -f *.O;
+    fi
+fi
+
+############################################################################
+#    The O2sl compilation segment
+############################################################################
+if [ $DO_O2sl -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> O2sl segment: Scheduling and register allocating .O files"
+    echo " ";
+    rm -f *.O_sl
+
+    # Restore O files, if necessary
+    if [ $DO_lc2O -eq 0 ]; then
+        rm -f *.O;
+        gen_untar ${BASENAME} O;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.O > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lstarcore . sc140 O_sl "${SCHED_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+
+    echo " ";
+    gen_tar ${BASENAME} O_sl;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+
+    # Remove .O files if not used by later segment
+    if [ $DO_O2S -eq 0 -a $DO_O2HS -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .O files, not used by later compilation segments"
+        rm -f *.O;
+    fi
+
+fi
+
+############################################################################
+#    The O_sl2sim segment
+############################################################################
+if [ $DO_O_sl2sim -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> O_sl2sim segment: Full system simulation of .O_sl files"
+    echo " ";
+
+    rm -f *.eln impact.eld;
+
+    # Restore O_sl files, if necessary
+    if [ $DO_O2sl -eq 0 ]; then
+        rm -f *.O_sl;
+        gen_untar ${BASENAME} O_sl;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    echo " ";
+    echo '> Assembling O_sl files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    for file in *.O_sl
+    do
+       asmsc100 -b $file | grep Error | awk '{print $1 "\t" $2; if ($1 != '0') exit 1;}'
+       if test "$?" != 0; then 
+           echo "*** $file ***"; 
+           asmsc100 -b $file > $file.asm;
+           #echo "Exiting: non-zero exit code";
+           #exit 1;
+       fi
+    done
+    $END_SETX
+
+    echo " ";
+    echo '> Linking eln files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    ${TIME} scc *.eln -o impact.eld
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    $BEGIN_SETX
+    ${TIME} sc140_sim_bench $BASENAME impact.eld $READ_PATHS $SIM_OPTIONS \
+	$SIM_PARMS_SETTING \
+        $SIM_INPUT_CMD "$EVAL_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+fi
+
+###########################################################################
+#    The O2S compilation segment
+############################################################################
+if [ $DO_O2S -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> O2S segment:  Running Lsuperscalar on .O files";
+    echo " ";
+    rm -f *.S
+
+    # Restore O files, if necessary
+    if [ $DO_lc2O -eq 0 ]; then
+        rm -f *.O;
+        gen_untar ${BASENAME} O;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.O > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lsuperscalar . STARCORE SC140 "${OPTI_DISAMBIG_OVERRIDES} \
+         ${LSUPERSCALAR_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then 
+        echo " ";
+        echo " Lsuperscalar failed for ${BASENAME}.";
+        echo " "
+        echo " If Lsuperscalar ran out of memory, consider using the -less_ILP flag";
+        echo " (if not already specified or defaulted to).";
+        echo " ";
+        echo "Exiting: non-zero exit code"; 
+        exit 1;
+    fi
+    $END_SETX
+
+    # Always keep .S files, can take a while to generate
+    echo " ";
+    gen_tar ${BASENAME} S;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    rm impactlist;
+
+    # Remove .O files if not used by later segment
+    if [ $DO_O2HS -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .O files, not used by later compilation segments"
+        rm -f *.O;
+    fi
+
+    # Remove .S files if not used by later segment
+    if [ $DO_S2sl -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .S files, not used by later compilation segments"
+        rm -f *.S;
+    fi
+fi
+
+############################################################################
+#    The S2sl compilation segment
+############################################################################
+if [ $DO_S2sl -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> S2sl segment: Scheduling and register allocating .S files"
+    echo " ";
+    rm -f *.S_sl
+
+    # Restore S files, if necessary
+    if [ $DO_O2S -eq 0 ]; then
+        rm -f *.S;
+        gen_untar ${BASENAME} S;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.S > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lstarcore . sc140 S_sl "${SCHED_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+
+    echo " ";
+    gen_tar ${BASENAME} S_sl;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+
+    # Remove .S files since not used by later segment
+    echo " "
+    echo "> Removing untarred .S files, not used by later compilation segments"
+    rm -f *.S;
+
+fi
+
+############################################################################
+#    The S_sl2sim segment
+############################################################################
+if [ $DO_S_sl2sim -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> S_sl2sim segment: Full system simulation of .S_sl files"
+    echo " ";
+
+    rm -f *.eln impact.eld;
+
+    # Restore S_sl files, if necessary
+    if [ $DO_S2sl -eq 0 ]; then
+        rm -f *.S_sl;
+        gen_untar ${BASENAME} S_sl;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    echo " ";
+    echo '> Assembling S_sl files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    for file in *.S_sl
+    do
+       asmsc100 -b $file | grep Error | awk '{print $1 "\t" $2; if ($1 != '0') exit 1;}'
+       if test "$?" != 0; then 
+           echo "*** $file ***"; 
+           asmsc100 -b $file > $file.asm;
+           #echo "Exiting: non-zero exit code";
+           #exit 1;
+       fi
+    done
+    $END_SETX
+
+    echo " ";
+    echo '> Linking eln files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    ${TIME} scc *.eln -o impact.eld
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    $BEGIN_SETX
+    ${TIME} sc140_sim_bench $BASENAME impact.eld $READ_PATHS $SIM_OPTIONS \
+	$SIM_PARMS_SETTING \
+        $SIM_INPUT_CMD "$EVAL_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+fi
+
+############################################################################
+#    The O2H segment
+############################################################################
+if [ $DO_O2H -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%";
+    echo "> O2H segment: Running Lhyper on .O files to create hyperblocks"
+    echo " ";
+    rm -f *.H
+
+    # Restore O files, if necessary
+    if [ $DO_lc2O -eq 0 ]; then
+        rm -f *.O;
+        gen_untar ${BASENAME} O;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.O > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lhyper . STARCORE SC140 "${OPTI_DISAMBIG_OVERRIDES} \
+            ${LHYPER_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+    rm -f *.O;
+
+    echo " ";
+    gen_tar ${BASENAME} H;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+fi
+
+############################################################################
+#    The H2sl compilation segment
+############################################################################
+if [ $DO_H2sl -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> H2sl segment: Scheduling and register allocating .H files"
+    echo " ";
+    rm -f *.H_sl
+
+    # Restore H files, if necessary
+    if [ $DO_O2H -eq 0 ]; then
+        rm -f *.H;
+        gen_untar ${BASENAME} H;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.H > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lstarcore . sc140 H_sl "${SCHED_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+
+    echo " ";
+    gen_tar ${BASENAME} H_sl;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+
+    # Remove .H files since not used by later segment
+    echo " "
+    echo "> Removing untarred .H files, not used by later compilation segments"
+    rm -f *.H;
+
+fi
+
+############################################################################
+#    The H_sl2sim segment
+############################################################################
+if [ $DO_H_sl2sim -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> H_sl2sim segment: Full system simulation of .H_sl files"
+    echo " ";
+
+    rm -f *.eln impact.eld;
+
+    # Restore H_sl files, if necessary
+    if [ $DO_H2sl -eq 0 ]; then
+        rm -f *.H_sl;
+        gen_untar ${BASENAME} H_sl;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    echo " ";
+    echo '> Assembling H_sl files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    for file in *.H_sl
+    do
+       asmsc100 -b $file | grep Error | awk '{print $1 "\t" $2; if ($1 != '0') exit 1;}'
+       if test "$?" != 0; then 
+           echo "*** $file ***"; 
+           asmsc100 -b $file > $file.asm;
+           #echo "Exiting: non-zero exit code";
+           #exit 1;
+       fi
+    done
+    $END_SETX
+
+    echo " ";
+    echo '> Linking eln files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    ${TIME} scc *.eln -o impact.eld
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    $BEGIN_SETX
+    ${TIME} sc140_sim_bench $BASENAME impact.eld $READ_PATHS $SIM_OPTIONS \
+	$SIM_PARMS_SETTING \
+        $SIM_INPUT_CMD "$EVAL_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+fi
+
+############################################################################
+#    Part 1 of 2 of the O2HS compilation segment
+#    Create hyperblocks using Lhyper
+############################################################################
+if [ $DO_O2HS -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%";
+    echo "> O2HS segment 1/2: Running Lhyper on .O files to create hyperblocks"
+    echo " ";
+    rm -f *.H
+
+    # Restore O files, if necessary
+    if [ $DO_lc2O -eq 0 ]; then
+        rm -f *.O;
+        gen_untar ${BASENAME} O;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.O > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lhyper . STARCORE SC140 "${OPTI_DISAMBIG_OVERRIDES} \
+            ${LHYPER_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+    rm -f *.O;
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        gen_tar ${BASENAME} H;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    fi
+fi
+
+############################################################################
+#    Part 2 of 2 of the O2HS compilation segment
+#    ILP optimize hyperblocks using Lsuperscalar
+############################################################################
+if [ $DO_O2HS -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> O2HS segment 2/2: Running Lsuperscalar on .H files"
+    echo " ";
+    rm -f *.HS
+
+    ls *.H > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    # do_branch_combining and pred_exec_support creates predicates.
+    # Should only be turned on when predicate execution is desired.
+    $BEGIN_SETX
+    ${TIME} gen_LsuperscalarH . STARCORE SC140 \
+           "-Fdo_branch_combining=yes -Fpred_exec_support=yes ${OPTI_DISAMBIG_OVERRIDES} ${LSUPERSCALAR_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then 
+        echo " ";
+        echo " Lsuperscalar failed for ${BASENAME}.";
+        echo " ";
+        echo " If Lsuperscalar ran out of memory, consider using the -less_ILP flag";
+        echo " (if not already specified or defaulted to).";
+        echo " ";
+        echo "Exiting: non-zero exit code"; 
+        exit 1;
+    fi
+    $END_SETX
+
+    rm -f impactlist;
+    rm -f *.H;
+
+    # Always keep .HS files, can take a while to generate
+    echo " ";
+    gen_tar ${BASENAME} HS;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Remove .HS files if not used by later segment
+    if [ $DO_HS2sl -eq 0 -a $DO_HS2HS_tr -eq 0 ]; then
+        echo " "
+        echo "> Removing untarred .HS files, not used by later compilation segments"
+        rm -f *.HS;
+    fi
+fi
+
+############################################################################
+#    The HS2sl compilation segment
+############################################################################
+if [ $DO_HS2sl -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> HS2sl segment: Scheduling and register allocating .HS files"
+    echo " ";
+    rm -f *.HS_sl
+
+    # Restore HS files, if necessary
+    if [ $DO_O2HS -eq 0 ]; then
+        rm -f *.HS;
+        gen_untar ${BASENAME} HS;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    ls *.HS > impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $BEGIN_SETX
+    ${TIME} gen_Lstarcore . sc140 HS_sl "${SCHED_DISAMBIG_OVERRIDES}" < impactlist;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    $END_SETX
+
+    rm -f impactlist;
+
+    echo " ";
+    gen_tar ${BASENAME} HS_sl;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+
+    # Remove .HS files since not used by later segment
+    echo " "
+    echo "> Removing untarred .HS files, not used by later compilation segments"
+    rm -f *.HS;
+
+fi
+
+############################################################################
+#    The HS_sl2sim segment
+############################################################################
+if [ $DO_HS_sl2sim -eq 1 ]; then
+
+    echo " ";
+    echo "> %%%%%%%%%%";
+    echo "> HS_sl2sim segment: Full system simulation of .HS_sl files"
+    echo " ";
+
+    rm -f *.eln impact.eld;
+
+    # Restore HS_sl files, if necessary
+    if [ $DO_HS2sl -eq 0 ]; then
+        rm -f *.HS_sl;
+        gen_untar ${BASENAME} HS_sl;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+        echo " ";
+    fi
+
+    echo " ";
+    echo '> Assembling HS_sl files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    for file in *.HS_sl
+    do
+       asmsc100 -b $file | grep Error | awk '{print $1 "\t" $2; if ($1 != '0') exit 1;}'
+       if test "$?" != 0; then 
+           echo "*** $file ***"; 
+           asmsc100 -b $file > $file.asm;
+           #echo "Exiting: non-zero exit code";
+           #exit 1;
+       fi
+    done
+    $END_SETX
+
+    echo " ";
+    echo '> Linking eln files using scc'
+    echo " ";
+
+    $BEGIN_SETX
+    ${TIME} scc *.eln -o impact.eld
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+    $BEGIN_SETX
+    ${TIME} sc140_sim_bench $BASENAME impact.eld $READ_PATHS $SIM_OPTIONS \
+	$SIM_PARMS_SETTING \
+        $SIM_INPUT_CMD "$EVAL_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+    $END_SETX
+
+fi
+
+############################################################################
+#       Done, whew!
+############################################################################
+
+   END_DATE=`date +"%T %D"`;
+   echo " "
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo "> Finished 'sc140_compile_bench ${COMPILE_BENCH_ARGS}'";
+   echo "> Processed ${BASENAME} from $START_DATE to $END_DATE";
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";

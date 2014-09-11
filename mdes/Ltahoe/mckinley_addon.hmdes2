@@ -1,0 +1,275 @@
+/*****************************************************************************\
+ *
+ *                    Illinois Open Source License
+ *                     University of Illinois/NCSA
+ *                         Open Source License
+ *
+ * Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+ * All rights reserved.
+ *
+ * Developed by:
+ *
+ *              IMPACT Research Group
+ *
+ *              University of Illinois at Urbana-Champaign
+ *
+ *              http://www.crhc.uiuc.edu/IMPACT
+ *              http://www.gelato.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal with the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimers.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimers in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the names of the IMPACT Research Group, the University of
+ * Illinois, nor the names of its contributors may be used to endorse
+ * or promote products derived from this Software without specific
+ * prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+ *
+\*****************************************************************************/
+
+
+/*****************************************************************************\
+ * This is for Itanium specific sections of Mdes.
+ * Trying to describe Itanium specific descriptions such as bundling,
+ * templates, and dispersal rules from Mdes to SM.
+\*****************************************************************************/
+
+SECTION Prod_Cons_Latency
+{
+  PCLAT_MM_2_NONMM_PRIM
+    (prod(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     pdest(1 0 0 0)
+     cons(OP_ADD OP_SUB OP_SHLADD OP_MOVE
+          OP_LOGIC
+	  OP_ADDP4 OP_SHLADDP4
+	  OP_XTD
+	  OP_MOVE_L
+	  OP_DEE
+	  OP_COMPARE_I
+	  OP_TBIT
+	  OP_LFETCH
+	  OP_I_TO_F
+	  OP_MOVE_TO_PR
+	  OP_MOVE_TO_AR_M
+	  OP_MOVE_TO_AR_I
+	  OP_CHECK_A OP_CHECK_I OP_CHECK_M)
+     /* 20021124 SZU
+      * SHLADD and CHECK require third reg
+      * csrc(1 1 0 0 0 0)
+      */
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_MM_2_NONMM_ADDR_INCR
+    (prod(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     pdest(1 0 0 0)
+     cons(OP_LOAD_I OP_LOAD_I_FILL
+          OP_LOAD_F
+	  OP_LOAD_C
+	  OP_LOAD_F_C
+	  OP_STORE_I OP_STORE_I_SPILL
+	  OP_STORE_F)
+     csrc(1 1 0 0 0 0)
+     latency(1));
+
+  PCLAT_LD_DATA_2_ADDR
+    (prod(OP_LOAD_I OP_LOAD_I_FILL)
+     /* 20021125 SZU
+      * PCLAT comes from data field only
+      */
+     pdest(1 0 0 0)
+     cons(OP_LOAD_I OP_LOAD_I_FILL
+          OP_LOAD_C
+	  OP_LOAD_F
+	  OP_LOAD_F_C
+	  OP_STORE_I OP_STORE_I_SPILL
+	  OP_STORE_F)
+     /* 20021125 SZU
+      * PCLAT comes applies to addr field only
+      */
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  PCLAT_LD_DATA_2_TOFR
+    (prod(OP_LOAD_I OP_LOAD_I_FILL)
+     pdest(1 0 0 0)
+     cons(OP_I_TO_F)
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  PCLAT_LD_2_MM
+    (prod(OP_LOAD_I OP_LOAD_I_FILL)
+     /* 20021125 SZU
+      * PCLAT comes from both data and addr fields
+      */
+     pdest(1 1 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     /* 20021125 SZU
+      * OP_PSHIFTADD has IREG for 3rd src. Primary?
+      */
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_CLD_2_MM
+    (prod(OP_LOAD_C)
+     pdest(1 0 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_FCLD_2_MM
+    (prod(OP_LOAD_F_C)
+     /* 20021125 SZU
+      * PCLAT comes from addr. IREG instead of FREG?
+      * pdest(1 0 0 0)
+      */
+     pdest(1 1 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_FLD_2_MM
+    (prod(OP_LOAD_F)
+     pdest(1 1 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_FRFR_BR_PR_2_MM
+    (prod(OP_F_TO_I
+          OP_MOVE_FROM_BR
+	  OP_MOVE_FROM_PR)
+     pdest(1 0 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_FRAR_2_MM
+    (prod(OP_MOVE_FROM_AR_M
+          OP_MOVE_FROM_AR_I)
+     pdest(1 0 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(2));
+
+  PCLAT_IALU_PNT_XTD_ILOG_2_MM
+    (prod(OP_ADD OP_SUB OP_SHLADD OP_MOVE
+          OP_ADDP4 OP_SHLADDP4
+	  OP_XTD
+	  OP_LOGIC
+	  OP_DEE)
+     pdest(1 0 0 0)
+     cons(OP_PSAD
+          OP_PADD OP_PSHIFTADD
+	  OP_PACK OP_MUX OP_PSHIFT OP_SHIFT
+	  OP_PMPY OP_PMPYSHIFT)
+     csrc(1 1 1 0 0 0)
+     latency(1));
+
+  PCLAT_FLD_2_ST
+    (prod(OP_LOAD_F)
+     /* 20021125 SZU
+      * PCLAT is data field only
+      */
+     pdest(1 0 0 0)
+     cons(OP_STORE_I OP_STORE_I_SPILL)
+     /* 20021125 SZU
+      * PCLAT should be data field only
+      */
+     csrc(1 1 0 0 0 0)
+     latency(1));
+
+  PCLAT_FLD_2_FRFR
+    (prod(OP_LOAD_F)
+     /* 20021125 SZU
+      * PCLAT is data field only
+      */
+     pdest(1 0 0 0)
+     cons(OP_F_TO_I)
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  PCLAT_TOFR_2_ST
+    (prod(OP_I_TO_F)
+     pdest(1 0 0 0)
+     cons(OP_STORE_I OP_STORE_I_SPILL)
+     /* 20021125 SZU
+      * PCLAT should be data field only
+      */
+     csrc(1 1 0 0 0 0)
+     latency(1));
+
+  PCLAT_TOFR_2_FRFR
+    (prod(OP_I_TO_F)
+     pdest(1 0 0 0)
+     cons(OP_F_TO_I)
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  PCLAT_TOAR_I_2_FRAR
+    (prod(OP_MOVE_TO_AR_I)
+     pdest(1 0 0 0)
+     cons(OP_MOVE_FROM_AR_I)
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  PCLAT_TOBR_2_FRBR
+    (prod(OP_MOVE_TO_BR)
+     pdest(1 0 0 0)
+     cons(OP_MOVE_FROM_BR)
+     csrc(1 0 0 0 0 0)
+     latency(1));
+
+  /* 20021125 SZU
+   * Latency penalty is 0
+  PCLAT_LD_DATA_2_ST_DATA
+    (prod(OP_LOAD_I OP_LOAD_I_FILL)
+     pdest(1 0 0 0)
+     cons(OP_STORE_I OP_STORE_I_SPILL)
+     csrc(0 1 0 0 0 0)
+     latency(0));
+   */
+}

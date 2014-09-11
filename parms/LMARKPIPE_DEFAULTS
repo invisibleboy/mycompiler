@@ -1,0 +1,85 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# default parameters ofr loop marking library.
+#
+# Created by Dan Lavery, 4/15/97
+#
+
+(Lmarkpipe
+       mark_multi_exit_loops = yes;         # pipeline loops w/ multiple exits
+
+       check_sync_arcs = no;                # Check sync arcs against static
+                                            # address analysis.  Debugging
+                                            # tool that sometimes gives false
+                                            # warnings/punts.
+       add_swp_info = yes;                  # add SWP_INFO attributes or add
+                                            # information to attributes
+                                            # already added by Pcode
+       print_marking_statistics = yes;      # Print statistics on loop
+                                            # marking in mark_ph[12].stats.
+
+       markpipe_min_header_weight = 25.0;   # minimum weight of header cb to
+                                            # make software pipelining
+                                            # worthwhile
+       markpipe_min_ave_iter = 2.0;         # minimum average iterations per
+                                            # invocation of the loop for
+                                            # software pipelining to be
+                                            # beneficial
+       markpipe_allow_fp_conversion = yes;  # Allow F_I, I_F, etc. in 
+					    # software pipelined loops
+       markpipe_min_ii = 0;	            # Minimum II. Generally
+	                                    # used to make the loop body into
+					    # 1 stage for debugging purposes
+       markpipe_max_ii = 99;		    # Maximum II. If the II is too
+					    # large, then it isn't worth
+					    # pipelining.
+       markpipe_max_stages = 99;	    # Maximum stages.  When the number
+                                            # of stages gets large, the
+                                            # reg pressure also gets large.
+end)

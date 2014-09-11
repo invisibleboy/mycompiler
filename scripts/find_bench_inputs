@@ -1,0 +1,301 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script returns a list of valid input names for a benchmark
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 10/29/98
+#
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    BENCHMARK="$1";
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: find_bench_inputs expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="${READ_PATHS} -project $1"
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: find_bench_inputs expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Allow the default -all case to be specified
+        -all|-train_inputs|-eval_inputs)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: find_bench_inputs does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION";;
+
+        
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: find_bench_inputs does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: find_bench_inputs expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            if [ "$INPUT_OPTION" = "-input" -a "INPUT_ARG" = "" ]; then
+               echo "Error: empty argument '$INPUT_ARG' not allowed after $INPUT_OPTION"
+               exit 1;
+            fi
+            shift;;
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo '> Usage: find_bench_inputs benchmark [options]';
+    echo '> ';
+    echo '> Prints list of valid benchmark input names (and returns 0).'
+    echo '> Prints error message (and returns 1) if one or more names are invalid.'
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -bench_dir "dir"    read info in "dir" (default: find_bench_dir used)';
+    echo ">   -project 'project'  project inputs to use (default: \$DEFAULT_PROJECT used)";
+    echo '>   -all                verifies/prints all benchmark inputs (default)';
+    echo ">   -train_inputs       verifies/prints the project's train input(s)";
+    echo ">   -eval_inputs        verifies/prints the project's eval input(s)";
+    echo '>   -input "name(s)"    verifies/prints input(s) in "name(s)" (default -all)';
+    echo '>   -prefix "prefix"    verifies/prints inputs named "prefix*" (default -all)';
+    exit 1;
+fi;
+
+
+
+############################################################################
+#       Find the benchmark info
+############################################################################
+
+  # Find the benchmark dir if not user specified
+  if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+    fi
+  fi
+  # Explicitly specify bench dir
+  READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+
+############################################################################
+#       Deterimine inputs to test and make sure valid
+############################################################################
+  # Handle default -all (all input) case
+  if [ "$INPUT_OPTION" = "" -o "$INPUT_OPTION" = "-all" ]; then 
+    # Test all exec_info_* files in $BENCH_DIR!
+    # Strip of leading exec_info_ so can use normal interface
+    INPUT_LIST="`cd $BENCH_DIR; (ls -d exec_info_* | sed 's/^exec_info_//') 2>/dev/null`";
+
+  # Handle -train_inputs case
+  elif [ "$INPUT_OPTION" = "-train_inputs" ]; then 
+    # Get default train list using read_project_info
+    INPUT_LIST="`(read_project_info $BENCHMARK $READ_PATHS -train_inputs) 2>&1`";
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not get train inputs using read_project_info!"
+      echo "> Error message returned by read_project_info:"
+      echo "$INPUT_LIST";
+      exit 1;
+    fi
+
+  # Handle -eval_inputs case
+  elif [ "$INPUT_OPTION" = "-eval_inputs" ]; then 
+    # Get default eval list using read_project_info
+    INPUT_LIST="`(read_project_info $BENCHMARK $READ_PATHS -eval_inputs) 2>&1`";
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not get default eval inputs using read_project_info!"
+      echo "> Error message returned by read_project_info:"
+      echo "$INPUT_LIST";
+      exit 1;
+    fi
+
+  # Handle -prefix case 
+  elif [ "$INPUT_OPTION" = "-prefix" ]; then 
+    # Test all exec_info_${INPUT_PREFIX}* files in $BENCH_DIR!
+    # Strip of leading exec_info_ so can use normal interface
+    INPUT_LIST="`cd $BENCH_DIR;(ls -d exec_info_${INPUT_ARG}* | sed 's/^exec_info_//') 2>/dev/null`";
+ 
+    # Make sure we got at least one input name!
+    if [ "$INPUT_LIST" = "" ]; then
+      echo "> Error: no inputs found with prefix '$INPUT_ARG' for '$BENCHMARK' in:";
+      echo ">        $BENCH_DIR";
+      echo "> "
+      echo "> The following inputs were found in this directory:"
+      cd ${BENCH_DIR};
+      ls -d exec_info_* | sed 's/^exec_info_//'
+      echo "> find_bench_inputs exiting due to above error"
+      exit 1;
+    fi
+
+  elif [ "$INPUT_OPTION" = "-input" ]; then 
+    INPUT_LIST="$INPUT_ARG";
+
+  else
+    echo " "
+    echo "> Error: find_bench_inputs unexpectedly doesn't know how to handle '$INPUT_OPTION'"
+    exit 1;
+  fi
+
+  # By request, filter out common backup file names so that "bad" files
+  # do not confuse the scripts
+  FILTERED_INPUT_LIST="";
+  for INPUT in $INPUT_LIST
+  do
+     case $INPUT in
+        # Filter out *~ and *.bak files
+        *~|*.bak)
+           ;;
+
+        # Add all other files to the filtered list
+        *)
+           # Add name to FILTERED_LIST
+           if [ "$FILTERED_INPUT_LIST" = "" ]; then
+             FILTERED_INPUT_LIST="$INPUT";
+           else
+             FILTERED_INPUT_LIST="$FILTERED_INPUT_LIST $INPUT"
+           fi
+     esac
+  done
+
+  if [ "$FILTERED_INPUT_LIST" = "" ]; then
+    echo "> Error: After filtering out *~ and *.bak files from input list:"
+    echo "$INPUT_LIST"
+    echo ">        No input names were left!"
+    echo "> "
+    echo "> The following inputs were found in this directory:"
+    cd ${BENCH_DIR};
+    ls -d exec_info_* | sed 's/^exec_info_//'
+    echo "> find_bench_inputs exiting due to above error"
+    exit 1;
+  fi
+
+  # Make sure each input is a valid input before continuing
+  VALID_INPUT_LIST="";
+  for INPUT in $FILTERED_INPUT_LIST
+  do
+    # Use -args instead of -all, so don't force check of compile_info also.
+    # Checking compile_info slows down check and also can cause some confusing
+    # error messages!
+    READ_RESULT="`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -args`"
+    if test "$?" != 0; then 
+      echo "> Error: input '$INPUT' invalid.";
+      echo "> Error message return by read_exec_info:"
+      echo "$READ_RESULT";
+      exit 1;
+    fi
+
+    # Add name to VALID_LIST
+    if [ "$VALID_INPUT_LIST" = "" ]; then
+      VALID_INPUT_LIST="$INPUT";
+    else
+      VALID_INPUT_LIST="$VALID_INPUT_LIST $INPUT"
+    fi
+  done
+
+############################################################################
+#       Print the inputs, if valid
+############################################################################
+echo "$VALID_INPUT_LIST";
+exit 0;

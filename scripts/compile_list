@@ -1,0 +1,143 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       Compiles a list of benchmarks with compile_bench, each benchmark
+#       in its own directory.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 2/15/99
+#
+
+BENCH_SCRIPT="compile_bench"
+VALID_ARGS=1
+SAVE_DIRS=0
+
+if [ $# -lt 1 ]; then
+   VALID_ARGS=0;
+fi
+
+if [ $VALID_ARGS -eq 1 ]; then
+   FILE_NAME="$1";
+   shift;
+   FILE_LIST=`cat $FILE_NAME`;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+  OPTION="$1"
+  shift
+
+  case $OPTION in
+    -save_dirs)
+      echo "> Saving the benchmark directories after compilation"
+      SAVE_DIRS=1;;
+    *)
+      echo "Error: Unknown option '${OPTION}'"
+      VALID_ARGS=0;;
+  esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+   echo "> Usage: compile_list list [options]"
+   echo ">"
+   echo ">   For every 'BENCHMARK' in the 'list' file, makes a directory"
+   echo ">   'BENCHMARK' (if doesn't exist), and runs '$BENCH_SCRIPT BENCHMARK options'"
+   echo ">   in it."
+   echo ">"   
+   echo ">   -save_dirs           save the benchmark directories after compilation"
+   echo ">"   
+
+   exit 1;
+fi
+
+echo " "
+echo "> For every benchmark in '$FILE_NAME', will run:"
+echo ">   ${BENCH_SCRIPT} (bench_name) $@"
+
+for PROGRAM in $FILE_LIST
+do
+
+  echo " "
+  DIR_TO="./${PROGRAM}";
+
+  if [ ! -d $DIR_TO ]; then
+     echo "> Creating '${DIR_TO}'"
+     mkdir ${DIR_TO};
+  fi
+
+  echo "> Changing directories into ${DIR_TO}"
+  cd ${DIR_TO};
+
+  echo " "
+  echo "> Starting ${BENCH_SCRIPT} ${PROGRAM} $@:"
+  echo " "
+
+  time $BENCH_SCRIPT $PROGRAM $@ 
+  date >> ../$LOGFILE
+
+  echo " "
+  echo "> Finished with ${PROGRAM}, changing directories to '..'"
+
+  cd ..;
+
+  if [ $SAVE_DIRS -eq 0 ]; then
+    if [ -d $DIR_TO ]; then
+       rm -f -r ${DIR_TO};
+    fi
+  fi
+
+done;
+
+echo " "
+echo "> Done, compile_list has reached the end of '${FILE_NAME}'"
+

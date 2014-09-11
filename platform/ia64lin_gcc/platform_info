@@ -1,0 +1,89 @@
+
+###############################################################################
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+# Run 'read_platform_info --help | more' for documentation.
+#
+# Platform info module for: ia64lin gcc
+#
+
+PREPROCESSOR_INVOCATION="gcc -w -E -DIMPACT_FIX"
+INCLUDE_PATH_OPTIONS="-I${PLATFORM_DIR}/include"
+PREPROCESSED_EXTENSION=".i"
+
+COMPILER_INVOCATION="gcc -w -DIMPACT_FIX"
+COMPILER_INVOCATION_4LAYOUT="gcc -w -DIMPACT_FIX"
+OUTPUT_FILE_SPECIFIER="-o " # Space required after -o!
+EXECUTABLE_EXTENSION="";    # No extra extension required
+OPTI_MODE_SPECIFIER="-O"
+DEBUG_MODE_SPECIFIER="-g"
+ANSI_C_MODE_SPECIFIER=""
+
+# KRC mode is not supported by modern (i.e. v. 2.2) glibc
+KRC_MODE_SPECIFIER=""
+USE_KRC_MODE=0
+
+SHARED_LIB_SPECIFIER=""
+STATIC_LIB_SPECIFIER="-static"
+COMPILER_POSTOPTIONS=""
+COMPILER_VERSION_QUERY="gcc --version"
+
+if test -f ${PLATFORM_DIR}/impact_pprof_lib.o ; then
+	PCODE_PROF_LIB="${PLATFORM_DIR}/impact_pprof_lib.o"
+else
+	PCODE_PROF_LIB="${IMPACT_ROOT}/lib/libimpact_pprof.a"
+fi
+
+if test -f ${PLATFORM_DIR}/impact_lemul_lib.o ; then
+	LCODE_EMUL_LIB="${PLATFORM_DIR}/impact_lemul_lib.o"
+else
+	LCODE_EMUL_LIB="${IMPACT_ROOT}/lib/libimpact_lemul.a"
+fi
+
+MAKE_COMMAND="make"
+LN_COMMAND="ln -s"

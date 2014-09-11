@@ -1,0 +1,195 @@
+#!/bin/sh
+# JWS 20001115
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+# *===========================================================================
+# *      File :          sumview.pl
+# *      Description :   Format IMPACT_001 in a useful way
+# *      Author :        Kevin Crozier, Wen-mei Hwu
+# *       Modified from the original sumview.c
+# *
+# *==========================================================================
+
+sub get_input {
+    local ($handle) = @_;
+    while (<$handle>) { 
+	if (/\(\sCONTROL\s(\S+)\s(\S+)\s\)/){
+	    $func_name = $1;
+	    $file_name{$func_name} = $2;
+	}
+	if (/\(\s(br_t_n)\s(\d+\.\d+)/) {
+	    $mispredicts{$func_name} += $2;
+	    $total_mispredicts += $2;
+	}
+	if (/\(\s(br_n_t)\s(\d+\.\d+)/) {
+	    $mispredicts{$func_name} += $2;
+	    $total_mispredicts += $2;
+	}	
+	if (/\(\s(jump_n_t)\s(\d+\.\d+)/) {
+	    $mispredicts{$func_name} += $2;
+	    $total_mispredicts += $2;
+	}
+	if (/\(\s(jump_rg_n_t)\s(\d+\.\d+)/) {
+	    $mispredicts{$func_name} += $2;
+	    $total_mispredicts += $2;
+	}		
+	if (/\(\s(superscalar_issue_count)\s(\d+\.\d+)/) {
+	    $issue_count{$func_name} = $2;
+	    $total_issue += $2;
+	}
+	if (/\(\s(static_opers)\s(\d+\.\d+)/) {
+	    $static_count{$func_name} = $2;
+	    $total_static += $2;
+	}
+	if (/\(\s(worst_cycle_count)\s(\d+\.\d+)/) {
+	    $cycle_count{$func_name} = $2;
+	    $total_cycle += $2;
+	}
+    }
+
+    @keys = sort {
+	$cycle_count{$b} <=> $cycle_count{$a}
+    } keys %cycle_count;
+}
+
+sub print_output {
+    local ($handle, $penalty) = @_;
+    $total_with = $total_mispredicts * $penalty + $total_cycle;
+    printf $handle "Overall totals\n";
+    printf $handle "\tcycle count = \t%15.1f\n", $total_cycle;
+    if ($penalty) {
+	printf $handle "\tcyc w/brmp = \t%15.1f\n", $total_with; 
+    }
+    printf $handle "\tIPC = \t\t%15.2f\n", ($total_issue/$total_cycle);
+    printf $handle "\tStatic ops = \t%15.1f\n",$total_static;
+    printf $handle "Individual function totals\n";
+
+    $flag = 0;
+    foreach $func (@keys) {
+	$i++;
+	$percent = 100.0 * $cycle_count{$func} / $total_cycle;
+	 if ((!$flag) && ($percent < 1.0)) {
+            $flag = 1;
+            printf $handle "*********  Less than 1 percent execution below *********\n";
+	}
+	printf $handle "[%3d]\t%s  (%s)\n", $i, $func, $file_name{$func};
+        printf $handle "\tcycle count = \t%15.1f (%4.1f %%)\n",
+                                        $cycle_count{$func},
+                                        $percent;
+	if ($penalty) {
+	    printf $handle "\tcyc w/brmp = \t%15.1f (%4.1f %%)\n",
+	    $mispredicts{$func} * $penalty + $cycle_count{$func},
+	    100.0 * ($mispredicts{$func} * $penalty + $cycle_count{$func}) /
+		$total_with;
+	}
+        if ($cycle_count{$func} > 0.0) {
+            printf $handle "\tIPC = \t\t%15.2f\n",
+                        ($issue_count{$func}/$cycle_count{$func});
+	}
+        else {
+            printf $handle "\tIPC = \t\t%15.2f\n", 0.0;
+	}
+	printf $handle "\tStatic ops = \t%15.1f\n",$static_count{$func};
+   }
+
+}
+
+# main -- if you will 
+
+$in = IMPACT_001;
+$out = stdout;
+
+$mispred = 0;
+
+while ($_ = $ARGV[0], /^-/) {
+    shift;
+    if (/-i/) {
+	$in = shift;
+    }
+
+    if (/-o/) {
+	$out = shift;
+    }
+
+    if (/-b/) {
+	$mispred = shift;
+	if ($mispred !~ /\d+/) {
+	    die "Mispredict penalty must be a number.";
+	}
+    } 
+}
+
+if ($in eq 'stdin') {
+    $input = STDIN;
+}
+else {
+    open (INFILE, $in) || die "Can't open input file: $in.";
+    $input = INFILE
+}
+
+if ($out eq 'stdout') {
+    $output = STDOUT;
+}
+else {
+    open (OUTFILE, '>'.$out) || die "Can't open output file: $out.";
+    $output = OUTFILE
+}
+
+&get_input($input);
+&print_output($output, $mispred);
+
+close ($input);
+close ($output);
+

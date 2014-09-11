@@ -1,0 +1,275 @@
+\section{block\_\-sparse\_\-array.h File Reference}
+\label{block__sparse__array_8h}\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Block\-Sparse\-Array}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{BLOCK\_\-SIZE}~32
+\item 
+\#define \bf{BSA\_\-WARN\_\-ON\_\-OVERWRITE}~0x0000000000000001
+\item 
+\#define \bf{BSA\_\-CHECK\_\-NULL\_\-ON\_\-FREE}~0x0000000000000002
+\item 
+\#define \bf{BSA\_\-BLOCK\_\-INDEX}(i)~(i) - ((i) \% BLOCK\_\-SIZE)
+\item 
+\#define \bf{BSA\_\-BLOCK\_\-LENGTH}(i, l)
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-Block\-Sparse\-Array} $\ast$ \bf{Block\-Sparse\-Array}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Block\-Sparse\-Array} \bf{New\-Block\-Sparse\-Array} ()
+\item 
+void \bf{Free\-Block\-Sparse\-Array} (\bf{Block\-Sparse\-Array} array)
+\item 
+void \bf{Block\-Sparse\-Array\-Set} (\bf{Block\-Sparse\-Array} $\ast$array, int index, void $\ast$data)
+\item 
+void \bf{Block\-Sparse\-Array\-Clear} (\bf{Block\-Sparse\-Array} $\ast$array, int index)
+\item 
+void $\ast$ \bf{Block\-Sparse\-Array\-Get} (\bf{Block\-Sparse\-Array} $\ast$array, int index)
+\item 
+int \bf{Block\-Sparse\-Array\-Get\-First\-Index} (\bf{Block\-Sparse\-Array} $\ast$array)
+\item 
+int \bf{Block\-Sparse\-Array\-Get\-Next\-Index} (\bf{Block\-Sparse\-Array} $\ast$array, int index)
+\item 
+int \bf{Block\-Sparse\-Array\-Get\-First\-Non\-Zero\-Index} (\bf{Block\-Sparse\-Array} $\ast$array)
+\item 
+int \bf{Block\-Sparse\-Array\-Get\-Next\-Non\-Zero\-Index} (\bf{Block\-Sparse\-Array} $\ast$array, int index)
+\item 
+void $\ast$ \bf{Block\-Sparse\-Array\-Get\-First\-Non\-Zero} (\bf{Block\-Sparse\-Array} $\ast$array, int $\ast$index)
+\item 
+void $\ast$ \bf{Block\-Sparse\-Array\-Get\-Next\-Non\-Zero} (\bf{Block\-Sparse\-Array} $\ast$array, int $\ast$index)
+\item 
+void \bf{Block\-Sparse\-Array\-Set\-Option} (\bf{Block\-Sparse\-Array} array, int option)
+\item 
+void \bf{Block\-Sparse\-Array\-Clr\-Option} (\bf{Block\-Sparse\-Array} array, int option)
+\item 
+void \bf{Block\-Sparse\-Array\-Prepare} (\bf{Block\-Sparse\-Array} $\ast$array, int index, int length)
+\item 
+void \bf{Block\-Sparse\-Array\-Compact} (\bf{Block\-Sparse\-Array} $\ast$array)
+\item 
+void \bf{Block\-Sparse\-Array\-Dump} (\bf{Block\-Sparse\-Array} array, FILE $\ast$out, void($\ast$print\_\-func)(FILE $\ast$out, void $\ast$data))
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BLOCK_SIZE@{BLOCK\_\-SIZE}}
+\index{BLOCK_SIZE@{BLOCK\_\-SIZE}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BLOCK\_\-SIZE~32}\label{block__sparse__array_8h_d51ded0bbd705f02f73fc60c0b721ced}
+
+
+
+
+Definition at line 78 of file block\_\-sparse\_\-array.h.
+
+Referenced by Block\-Sparse\-Array\-Compact(), and Merge\-Blocks().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BSA_BLOCK_INDEX@{BSA\_\-BLOCK\_\-INDEX}}
+\index{BSA_BLOCK_INDEX@{BSA\_\-BLOCK\_\-INDEX}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BSA\_\-BLOCK\_\-INDEX(i)~(i) - ((i) \% BLOCK\_\-SIZE)}\label{block__sparse__array_8h_962e578d84d24522c6e235e7817c8928}
+
+
+
+
+Definition at line 94 of file block\_\-sparse\_\-array.h.
+
+Referenced by Allocate\-Data(), Block\-Sparse\-Array\-Compact(), and Get\-Or\-Add\-Block().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BSA_BLOCK_LENGTH@{BSA\_\-BLOCK\_\-LENGTH}}
+\index{BSA_BLOCK_LENGTH@{BSA\_\-BLOCK\_\-LENGTH}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BSA\_\-BLOCK\_\-LENGTH(i, l)}\label{block__sparse__array_8h_b2792f873af43c3bd741898e64cf0cf6}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(BLOCK_SIZE - (((i) + (l) - 1) % BLOCK_SIZE) + \
+                                (l) - 1 + ((i) % BLOCK_SIZE))
+\end{verbatim}\end{Code}
+
+
+Definition at line 100 of file block\_\-sparse\_\-array.h.
+
+Referenced by Allocate\-Data(), and Get\-Or\-Add\-Block().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BSA_CHECK_NULL_ON_FREE@{BSA\_\-CHECK\_\-NULL\_\-ON\_\-FREE}}
+\index{BSA_CHECK_NULL_ON_FREE@{BSA\_\-CHECK\_\-NULL\_\-ON\_\-FREE}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BSA\_\-CHECK\_\-NULL\_\-ON\_\-FREE~0x0000000000000002}\label{block__sparse__array_8h_a08e46096e6f2c4db3aa81e9b7ec9e36}
+
+
+
+
+Definition at line 86 of file block\_\-sparse\_\-array.h.
+
+Referenced by Free\-Block\-Sparse\-Array(), and Merge\-Blocks().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BSA_WARN_ON_OVERWRITE@{BSA\_\-WARN\_\-ON\_\-OVERWRITE}}
+\index{BSA_WARN_ON_OVERWRITE@{BSA\_\-WARN\_\-ON\_\-OVERWRITE}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BSA\_\-WARN\_\-ON\_\-OVERWRITE~0x0000000000000001}\label{block__sparse__array_8h_37721de4c719011530f959c6c3ee3a18}
+
+
+
+
+Definition at line 83 of file block\_\-sparse\_\-array.h.
+
+Referenced by Block\-Sparse\-Array\-Set().
+
+\subsection{Typedef Documentation}
+\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArray@{BlockSparseArray}}
+\index{BlockSparseArray@{BlockSparseArray}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Block\-Sparse\-Array} $\ast$ \bf{Block\-Sparse\-Array}}\label{block__sparse__array_8h_724cb68321a9b3e0cc366108c6839132}
+
+
+
+
+\subsection{Function Documentation}
+\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayClear@{BlockSparseArrayClear}}
+\index{BlockSparseArrayClear@{BlockSparseArrayClear}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Clear (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index})}\label{block__sparse__array_8h_addb19ecae936e51d15d2054eeffdbe1}
+
+
+
+
+Definition at line 156 of file block\_\-sparse\_\-array.c.
+
+References Get\-Or\-Add\-Block(), I\_\-punt(), and NULL.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayClrOption@{BlockSparseArrayClrOption}}
+\index{BlockSparseArrayClrOption@{BlockSparseArrayClrOption}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Clr\-Option (\bf{Block\-Sparse\-Array} {\em array}, int {\em option})}\label{block__sparse__array_8h_c0a4eb2f032ed20389a564bf174c98fe}
+
+
+
+
+Definition at line 403 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::next, \_\-Block\-Sparse\-Array::options, and \_\-Block\-Sparse\-Array::prev.
+
+Referenced by Merge\-Blocks().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayCompact@{BlockSparseArrayCompact}}
+\index{BlockSparseArrayCompact@{BlockSparseArrayCompact}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Compact (\bf{Block\-Sparse\-Array} $\ast$ {\em array})}\label{block__sparse__array_8h_ca4448964f6ae7164e8e6b7e3fdebdc8}
+
+
+
+
+Definition at line 431 of file block\_\-sparse\_\-array.c.
+
+References BLOCK\_\-SIZE, BSA\_\-BLOCK\_\-INDEX, \_\-Block\-Sparse\-Array::data, Extract\-Block(), \_\-Block\-Sparse\-Array::first\_\-index, \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, NULL, and \_\-Block\-Sparse\-Array::prev.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayDump@{BlockSparseArrayDump}}
+\index{BlockSparseArrayDump@{BlockSparseArrayDump}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Dump (\bf{Block\-Sparse\-Array} {\em array}, FILE $\ast$ {\em out}, void($\ast$)(FILE $\ast$out, void $\ast$data) {\em print\_\-func})}\label{block__sparse__array_8h_235c49b2a1c0bba47b344568ed490866}
+
+
+
+
+Definition at line 552 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::next, and \_\-Block\-Sparse\-Array::prev.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGet@{BlockSparseArrayGet}}
+\index{BlockSparseArrayGet@{BlockSparseArrayGet}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Block\-Sparse\-Array\-Get (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index})}\label{block__sparse__array_8h_1c50d98a3304ccd73b83a89417606ca5}
+
+
+
+
+Definition at line 172 of file block\_\-sparse\_\-array.c.
+
+References Get\-Block(), and NULL.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetFirstIndex@{BlockSparseArrayGetFirstIndex}}
+\index{BlockSparseArrayGetFirstIndex@{BlockSparseArrayGetFirstIndex}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Block\-Sparse\-Array\-Get\-First\-Index (\bf{Block\-Sparse\-Array} $\ast$ {\em array})}\label{block__sparse__array_8h_6adb292385a6ca7a1e64b7bd9d196597}
+
+
+
+
+Definition at line 185 of file block\_\-sparse\_\-array.c.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetFirstNonZero@{BlockSparseArrayGetFirstNonZero}}
+\index{BlockSparseArrayGetFirstNonZero@{BlockSparseArrayGetFirstNonZero}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Block\-Sparse\-Array\-Get\-First\-Non\-Zero (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int $\ast$ {\em index})}\label{block__sparse__array_8h_19a09bd1a8a10ecb044eb709c4758329}
+
+
+
+
+Definition at line 311 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::data, \_\-Block\-Sparse\-Array::first\_\-index, \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, NULL, and \_\-Block\-Sparse\-Array::prev.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetFirstNonZeroIndex@{BlockSparseArrayGetFirstNonZeroIndex}}
+\index{BlockSparseArrayGetFirstNonZeroIndex@{BlockSparseArrayGetFirstNonZeroIndex}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Block\-Sparse\-Array\-Get\-First\-Non\-Zero\-Index (\bf{Block\-Sparse\-Array} $\ast$ {\em array})}\label{block__sparse__array_8h_f411bba4c8aad6b1feff3fe14c860bf9}
+
+
+
+
+Definition at line 236 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::data, \_\-Block\-Sparse\-Array::first\_\-index, \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, NULL, and \_\-Block\-Sparse\-Array::prev.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetNextIndex@{BlockSparseArrayGetNextIndex}}
+\index{BlockSparseArrayGetNextIndex@{BlockSparseArrayGetNextIndex}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Block\-Sparse\-Array\-Get\-Next\-Index (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index})}\label{block__sparse__array_8h_e8d38d30d99d06ccbc76c978f2325646}
+
+
+
+
+Definition at line 201 of file block\_\-sparse\_\-array.c.
+
+References Get\-Block().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetNextNonZero@{BlockSparseArrayGetNextNonZero}}
+\index{BlockSparseArrayGetNextNonZero@{BlockSparseArrayGetNextNonZero}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Block\-Sparse\-Array\-Get\-Next\-Non\-Zero (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int $\ast$ {\em index})}\label{block__sparse__array_8h_2224a6eace237cc92f0c74744ab68247}
+
+
+
+
+Definition at line 342 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::data, \_\-Block\-Sparse\-Array::first\_\-index, Get\-Block(), \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, and NULL.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayGetNextNonZeroIndex@{BlockSparseArrayGetNextNonZeroIndex}}
+\index{BlockSparseArrayGetNextNonZeroIndex@{BlockSparseArrayGetNextNonZeroIndex}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Block\-Sparse\-Array\-Get\-Next\-Non\-Zero\-Index (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index})}\label{block__sparse__array_8h_2bc3cfe3a80e7f68cada4de4f38ab232}
+
+
+
+
+Definition at line 264 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::data, \_\-Block\-Sparse\-Array::first\_\-index, Get\-Block(), \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, and NULL.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArrayPrepare@{BlockSparseArrayPrepare}}
+\index{BlockSparseArrayPrepare@{BlockSparseArrayPrepare}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Prepare (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index}, int {\em length})}\label{block__sparse__array_8h_7f0e8079e206ab4caa1e80ee4418770d}
+
+
+
+
+Definition at line 421 of file block\_\-sparse\_\-array.c.
+
+References Get\-Or\-Add\-Block().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArraySet@{BlockSparseArraySet}}
+\index{BlockSparseArraySet@{BlockSparseArraySet}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Set (\bf{Block\-Sparse\-Array} $\ast$ {\em array}, int {\em index}, void $\ast$ {\em data})}\label{block__sparse__array_8h_1cbcf4fa36138a9fd05f2517fc2fe5ea}
+
+
+
+
+Definition at line 132 of file block\_\-sparse\_\-array.c.
+
+References BSA\_\-WARN\_\-ON\_\-OVERWRITE, Get\-Or\-Add\-Block(), I\_\-punt(), I\_\-warn(), and NULL.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!BlockSparseArraySetOption@{BlockSparseArraySetOption}}
+\index{BlockSparseArraySetOption@{BlockSparseArraySetOption}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Block\-Sparse\-Array\-Set\-Option (\bf{Block\-Sparse\-Array} {\em array}, int {\em option})}\label{block__sparse__array_8h_8a80d175ad7bb329b089b3e9de62a2c7}
+
+
+
+
+Definition at line 389 of file block\_\-sparse\_\-array.c.
+
+References \_\-Block\-Sparse\-Array::next, \_\-Block\-Sparse\-Array::options, and \_\-Block\-Sparse\-Array::prev.\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!FreeBlockSparseArray@{FreeBlockSparseArray}}
+\index{FreeBlockSparseArray@{FreeBlockSparseArray}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Free\-Block\-Sparse\-Array (\bf{Block\-Sparse\-Array} {\em array})}\label{block__sparse__array_8h_7291c7747788fe0ae7e0bd8a0284f852}
+
+
+
+
+Definition at line 96 of file block\_\-sparse\_\-array.c.
+
+References BSA\_\-CHECK\_\-NULL\_\-ON\_\-FREE, \_\-Block\-Sparse\-Array::data, \_\-Block\-Sparse\-Array::first\_\-index, Free\-Block\-Sparse\-Array(), I\_\-warn(), \_\-Block\-Sparse\-Array::length, \_\-Block\-Sparse\-Array::next, NULL, \_\-Block\-Sparse\-Array::options, and \_\-Block\-Sparse\-Array::prev.
+
+Referenced by Free\-Block\-Sparse\-Array(), and Merge\-Blocks().\index{block_sparse_array.h@{block\_\-sparse\_\-array.h}!NewBlockSparseArray@{NewBlockSparseArray}}
+\index{NewBlockSparseArray@{NewBlockSparseArray}!block_sparse_array.h@{block\_\-sparse\_\-array.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Block\-Sparse\-Array} New\-Block\-Sparse\-Array ()}\label{block__sparse__array_8h_4070ef3b8cd4519b49811f88002197a5}
+
+
+
+
+Definition at line 81 of file block\_\-sparse\_\-array.c.
+
+References I\_\-punt(), and NULL.
+
+Referenced by Extract\-Block(), Get\-Or\-Add\-Block(), and Merge\-Blocks().

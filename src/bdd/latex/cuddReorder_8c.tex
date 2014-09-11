@@ -1,0 +1,555 @@
+\section{cudd\-Reorder.c File Reference}
+\label{cuddReorder_8c}\index{cuddReorder.c@{cuddReorder.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DD\_\-MAX\_\-SUBTABLE\_\-SPARSITY}~8
+\item 
+\#define \bf{DD\_\-SHRINK\_\-FACTOR}~2
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int dd\-Unique\-Compare \bf{ARGS} ((int $\ast$ptr\-X, int $\ast$ptr\-Y))
+\item 
+static \bf{Move} $\ast$dd\-Swap\-Any \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y))
+\item 
+static int dd\-Sifting\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))
+\item 
+static \bf{Move} $\ast$dd\-Sifting\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low))
+\item 
+static \bf{Move} $\ast$dd\-Sifting\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High))
+\item 
+static int dd\-Sifting\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))
+\item 
+static int dd\-Reorder\-Preprocess \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table))
+\item 
+static int dd\-Shuffle \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int $\ast$permutation))
+\item 
+static int dd\-Sift\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low))
+\item 
+static void bdd\-Fix\-Tree \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode))
+\item 
+int \bf{Cudd\_\-Reduce\-Heap} (\bf{Dd\-Manager} $\ast$table, \bf{Cudd\_\-Reordering\-Type} heuristic, int minsize)
+\item 
+int \bf{Cudd\_\-Shuffle\-Heap} (\bf{Dd\-Manager} $\ast$table, int $\ast$permutation)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Dynamic\-Alloc\-Node} (\bf{Dd\-Manager} $\ast$table)
+\item 
+int \bf{cudd\-Sifting} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+int \bf{cudd\-Swapping} (\bf{Dd\-Manager} $\ast$table, int lower, int upper, \bf{Cudd\_\-Reordering\-Type} heuristic)
+\item 
+int \bf{cudd\-Next\-High} (\bf{Dd\-Manager} $\ast$table, int x)
+\item 
+int \bf{cudd\-Next\-Low} (\bf{Dd\-Manager} $\ast$table, int x)
+\item 
+int \bf{cudd\-Swap\-In\-Place} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+int \bf{cudd\-Bdd\-Align\-To\-Zdd} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static int \bf{dd\-Unique\-Compare} (int $\ast$ptr\-X, int $\ast$ptr\-Y)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Swap\-Any} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+static int \bf{dd\-Sifting\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Sifting\-Up} (\bf{Dd\-Manager} $\ast$table, int y, int x\-Low)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Sifting\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\-High)
+\item 
+static int \bf{dd\-Sifting\-Backward} (\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves)
+\item 
+static int \bf{dd\-Reorder\-Preprocess} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static int \bf{dd\-Reorder\-Postprocess} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static int \bf{dd\-Shuffle} (\bf{Dd\-Manager} $\ast$table, int $\ast$permutation)
+\item 
+static int \bf{dd\-Sift\-Up} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low)
+\item 
+static void \bf{bdd\-Fix\-Tree} (\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Reorder.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int $\ast$ \bf{entry}
+\item 
+int \bf{dd\-Total\-Number\-Swapping}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddReorder.c@{cudd\-Reorder.c}!DD_MAX_SUBTABLE_SPARSITY@{DD\_\-MAX\_\-SUBTABLE\_\-SPARSITY}}
+\index{DD_MAX_SUBTABLE_SPARSITY@{DD\_\-MAX\_\-SUBTABLE\_\-SPARSITY}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-MAX\_\-SUBTABLE\_\-SPARSITY~8}\label{cuddReorder_8c_2c2814c1dad41139f4282f95ae92102a}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Reorder.c}{p.}{cuddReorder_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for dynamic variable reordering.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-Reduce\-Heap()}{p.}{cuddReorder_8c_02a5a86dfb8ebc7726d6cf56b6a7eec1} \item \doxyref{Cudd\_\-Shuffle\-Heap()}{p.}{cuddReorder_8c_8568f20319c54de096630b40c998e2e8} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Dynamic\-Alloc\-Node()}{p.}{cuddReorder_8c_2ef0f60dfd6084809e4a645281450663} \item \doxyref{cudd\-Sifting()}{p.}{cuddReorder_8c_d379df946ff42f0241f8cc432ed5a61a} \item \doxyref{cudd\-Swapping()}{p.}{cuddReorder_8c_4fcc58544702da24985351c6e63fcc04} \item \doxyref{cudd\-Next\-High()}{p.}{cuddReorder_8c_1001b8075a1b90d0231d8967a0290186} \item \doxyref{cudd\-Next\-Low()}{p.}{cuddReorder_8c_ce4f0137c821e3a72f1121ad072de8d8} \item \doxyref{cudd\-Swap\-In\-Place()}{p.}{cuddReorder_8c_02e55858557a72e60c2c2e81a53916d8} \item \doxyref{cudd\-Bdd\-Align\-To\-Zdd()}{p.}{cuddReorder_8c_76fe76c0bc706efc355dde4db43f8669} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dd\-Unique\-Compare()}{p.}{cuddReorder_8c_633360a635abf6047ee256b66656872a} \item \doxyref{dd\-Swap\-Any()}{p.}{cuddReorder_8c_48b5879a1ec896c578be3357f8e01303} \item \doxyref{dd\-Sifting\-Aux()}{p.}{cuddReorder_8c_406e1e522d0773ed25ea29910166b282} \item \doxyref{dd\-Sifting\-Up()}{p.}{cuddReorder_8c_f0316f5d6b9d591dae355b80c48cc3f6} \item \doxyref{dd\-Sifting\-Down()}{p.}{cuddReorder_8c_2c64ac880e9184b83148a419a710a1de} \item \doxyref{dd\-Sifting\-Backward()}{p.}{cuddReorder_8c_7ccd621129c1c758d8496b0cbb9ce4d6} \item \doxyref{dd\-Reorder\-Preprocess()}{p.}{cuddReorder_8c_f10d05b2d480c2083dc53009b68a5781} \item \doxyref{dd\-Reorder\-Postprocess()}{p.}{cuddReorder_8c_cb38f795d39e6eeb71d62d9ce62278f6} \item \doxyref{dd\-Shuffle()}{p.}{cuddExact_8c_a844070376bbc546ebb3c0e525ba07de} \item \doxyref{dd\-Sift\-Up()}{p.}{cuddExact_8c_455b1aacb79f33883b83423cc76cbb81} \item \doxyref{bdd\-Fix\-Tree()}{p.}{cuddReorder_8c_fed29bb40cfd57de1cc37c029ada1175} \end{itemize}
+]
+
+Author [Shipra Panda, Bernard Plessier, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 57 of file cudd\-Reorder.c.
+
+Referenced by dd\-Reorder\-Postprocess(), and zdd\-Reorder\-Postprocess().\index{cuddReorder.c@{cudd\-Reorder.c}!DD_SHRINK_FACTOR@{DD\_\-SHRINK\_\-FACTOR}}
+\index{DD_SHRINK_FACTOR@{DD\_\-SHRINK\_\-FACTOR}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-SHRINK\_\-FACTOR~2}\label{cuddReorder_8c_8427b2e887972295ae979db811b04811}
+
+
+
+
+Definition at line 58 of file cudd\-Reorder.c.
+
+\subsection{Function Documentation}
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void bdd\-Fix\-Tree ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_bc7e98fd08496de60eeb2700266903c9}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sift\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_372f97f7fe69d0fbc62fe7aad0b9d980}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Shuffle ARGS ((\bf{Dd\-Manager} $\ast$table, int $\ast$permutation))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_9c1350114a9ed86a3d79764425a9a7a0}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Reorder\-Preprocess ARGS ((\bf{Dd\-Manager} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_cb46821ccd53a07edb25891b39ab30ad}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sifting\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_63b9ffbf451b41b3231076992e75a180}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Sifting\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_45e490ab0e32b42efa2def64be159e23}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Sifting\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_a5cab02beaaf98cc1c20f8d8591c2b55}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sifting\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_d94530bc76f620e7598ea1514a37ebc1}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Swap\-Any ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_eb7a967f49cf46d11df24dbe1f27dc02}
+
+
+\index{cuddReorder.c@{cudd\-Reorder.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Unique\-Compare ARGS ((int $\ast$ptr\-X, int $\ast$ptr\-Y))\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_36de98d5c13462bcf0da51053233fb8e}
+
+
+Automatic\-Start \index{cuddReorder.c@{cudd\-Reorder.c}!bddFixTree@{bddFixTree}}
+\index{bddFixTree@{bddFixTree}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void bdd\-Fix\-Tree (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Mtr\-Node} $\ast$ {\em treenode})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_fed29bb40cfd57de1cc37c029ada1175}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Fixes the BDD variable group tree after a shuffle.]
+
+Description [Fixes the BDD variable group tree after a shuffle. Assumes that the order of the variables in a terminal node has not been changed.]
+
+Side\-Effects [Changes the BDD variable group tree.]
+
+See\-Also [] 
+
+Definition at line 1853 of file cudd\-Reorder.c.
+
+References Mtr\-Node::child, Mtr\-Node::index, Mtr\-Node::low, Mtr\-Node::parent, Dd\-Manager::perm, Dd\-Manager::size, and Mtr\-Node::younger.
+
+Referenced by cudd\-Bdd\-Align\-To\-Zdd().\index{cuddReorder.c@{cudd\-Reorder.c}!Cudd_ReduceHeap@{Cudd\_\-ReduceHeap}}
+\index{Cudd_ReduceHeap@{Cudd\_\-ReduceHeap}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Reduce\-Heap (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Cudd\_\-Reordering\-Type} {\em heuristic}, int {\em minsize})}\label{cuddReorder_8c_02a5a86dfb8ebc7726d6cf56b6a7eec1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Main dynamic reordering routine.]
+
+Description [Main dynamic reordering routine. Calls one of the possible reordering procedures: \begin{itemize}
+\item Swapping \item Sifting \item Symmetric Sifting \item Group Sifting \item Window Permutation \item Simulated Annealing \item Genetic Algorithm \item Dynamic Programming (exact) \end{itemize}
+
+
+For sifting, symmetric sifting, group sifting, and window permutation it is possible to request reordering to convergence.
+
+The core of all methods is the reordering procedure \doxyref{cudd\-Swap\-In\-Place()}{p.}{cuddReorder_8c_02e55858557a72e60c2c2e81a53916d8} which swaps two adjacent variables and is based on Rudell's paper. Returns 1 in case of success; 0 otherwise. In the case of symmetric sifting (with and without convergence) returns 1 plus the number of symmetric variables, in case of success.]
+
+Side\-Effects [Changes the variable order for all diagrams and clears the cache.] 
+
+Definition at line 145 of file cudd\-Reorder.c.
+
+References Dd\-Manager::auto\-Method, Dd\-Manager::constants, CUDD\_\-REORDER\_\-ANNEALING, CUDD\_\-REORDER\_\-EXACT, CUDD\_\-REORDER\_\-GENETIC, CUDD\_\-REORDER\_\-GROUP\_\-SIFT, CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV, CUDD\_\-REORDER\_\-LINEAR, CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE, CUDD\_\-REORDER\_\-NONE, CUDD\_\-REORDER\_\-RANDOM, CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT, CUDD\_\-REORDER\_\-SAME, CUDD\_\-REORDER\_\-SIFT, CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE, CUDD\_\-REORDER\_\-SYMM\_\-SIFT, CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV, CUDD\_\-REORDER\_\-WINDOW2, CUDD\_\-REORDER\_\-WINDOW2\_\-CONV, CUDD\_\-REORDER\_\-WINDOW3, CUDD\_\-REORDER\_\-WINDOW3\_\-CONV, CUDD\_\-REORDER\_\-WINDOW4, CUDD\_\-REORDER\_\-WINDOW4\_\-CONV, cudd\-Tree\-Sifting(), cudd\-Zdd\-Align\-To\-Bdd(), DD\_\-DYN\_\-RATIO, dd\-Reorder\-Postprocess(), dd\-Reorder\-Preprocess(), dd\-Total\-Number\-Swapping, Dd\-Manager::dead, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Hook::next, Dd\-Manager::next\-Dyn, Dd\-Manager::post\-Reordering\-Hook, Dd\-Manager::pre\-Reordering\-Hook, Dd\-Manager::realign, Dd\-Manager::reordered, Dd\-Manager::reorderings, Dd\-Manager::reord\-Time, result, and util\_\-cpu\_\-time().
+
+Referenced by cudd\-Unique\-Inter().\index{cuddReorder.c@{cudd\-Reorder.c}!Cudd_ShuffleHeap@{Cudd\_\-ShuffleHeap}}
+\index{Cudd_ShuffleHeap@{Cudd\_\-ShuffleHeap}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Shuffle\-Heap (\bf{Dd\-Manager} $\ast$ {\em table}, int $\ast$ {\em permutation})}\label{cuddReorder_8c_8568f20319c54de096630b40c998e2e8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders variables according to given permutation.]
+
+Description [Reorders variables according to given permutation. The i-th entry of the permutation array contains the index of the variable that should be brought to the i-th level. The size of the array should be equal or greater to the number of variables currently in use. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [Changes the variable order for all diagrams and clears the cache.]
+
+See\-Also [Cudd\_\-Reduce\-Heap] 
+
+Definition at line 296 of file cudd\-Reorder.c.
+
+References dd\-Reorder\-Postprocess(), dd\-Reorder\-Preprocess(), dd\-Shuffle(), and result.\index{cuddReorder.c@{cudd\-Reorder.c}!cuddBddAlignToZdd@{cuddBddAlignToZdd}}
+\index{cuddBddAlignToZdd@{cuddBddAlignToZdd}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Bdd\-Align\-To\-Zdd (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddReorder_8c_76fe76c0bc706efc355dde4db43f8669}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders ZDD variables according to the order of the BDD variables.]
+
+Description [Reorders BDD variables according to the order of the ZDD variables. This function can be called at the end of ZDD reordering to insure that the order of the BDD variables is consistent with the order of the ZDD variables. The number of ZDD variables must be a multiple of the number of BDD variables. Let {\tt M} be the ratio of the two numbers. cudd\-Bdd\-Align\-To\-Zdd then considers the ZDD variables from {\tt M$\ast$i} to {\tt (M+1)$\ast$i-1} as corresponding to BDD variable {\tt i}. This function should be normally called from Cudd\_\-zdd\-Reduce\-Heap, which clears the cache. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [Changes the BDD variable order for all diagrams and performs garbage collection of the BDD unique table.]
+
+See\-Also [Cudd\_\-Shuffle\-Heap Cudd\_\-zdd\-Reduce\-Heap] 
+
+Definition at line 1018 of file cudd\-Reorder.c.
+
+References ALLOC, bdd\-Fix\-Tree(), CUDD\_\-MEMORY\_\-OUT, cudd\-Garbage\-Collect(), cudd\-Init\-Interact(), dd\-Shuffle(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm\-Z, result, Dd\-Manager::size, and Dd\-Manager::size\-Z.
+
+Referenced by Cudd\_\-zdd\-Reduce\-Heap().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddDynamicAllocNode@{cuddDynamicAllocNode}}
+\index{cuddDynamicAllocNode@{cuddDynamicAllocNode}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Dynamic\-Alloc\-Node (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddReorder_8c_2ef0f60dfd6084809e4a645281450663}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Dynamically allocates a Node.]
+
+Description [Dynamically allocates a Node. This procedure is similar to cudd\-Alloc\-Node in Cudd\_\-Table.c, but it does not attempt garbage collection, because during reordering there are no dead nodes. Returns a pointer to a new node if successful; NULL is memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Alloc\-Node] 
+
+Definition at line 335 of file cudd\-Reorder.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, DD\_\-MEM\_\-CHUNK, Dd\-Manager::error\-Code, Dd\-Manager::memory\-List, Dd\-Manager::memused, Dd\-Node::next, and Dd\-Manager::next\-Free.
+
+Referenced by cudd\-Linear\-In\-Place(), cudd\-Swap\-In\-Place(), cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), cudd\-Zdd\-Sifting\-Down(), cudd\-Zdd\-Sifting\-Up(), cudd\-Zdd\-Swap\-In\-Place(), cudd\-Zdd\-Symm\-Sifting\_\-down(), cudd\-Zdd\-Symm\-Sifting\_\-up(), cudd\-Zdd\-Undo\-Moves(), dd\-Exchange(), dd\-Group\-Move(), dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), dd\-Jumping\-Down(), dd\-Jumping\-Up(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Sifting\-Down(), dd\-Sifting\-Up(), dd\-Swap\-Any(), dd\-Symm\-Group\-Move(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), dd\-Undo\-Moves(), zdd\-Group\-Move(), zdd\-Group\-Sifting\-Down(), zdd\-Group\-Sifting\-Up(), and zdd\-Swap\-Any().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddNextHigh@{cuddNextHigh}}
+\index{cuddNextHigh@{cuddNextHigh}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Next\-High (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x})}\label{cuddReorder_8c_1001b8075a1b90d0231d8967a0290186}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the next subtable with a larger index.]
+
+Description [Finds the next subtable with a larger index. Returns the index.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Next\-Low] 
+
+Definition at line 607 of file cudd\-Reorder.c.
+
+Referenced by cudd\-Linear\-In\-Place(), cudd\-Swap\-In\-Place(), dd\-Exchange(), dd\-Group\-Move(), dd\-Group\-Move\-Backward(), dd\-Group\-Sifting\-Aux(), dd\-Group\-Sifting\-Down(), dd\-Jumping\-Aux(), dd\-Jumping\-Down(), dd\-Linear\-And\-Sifting\-Down(), dd\-Sifting\-Down(), dd\-Swap\-Any(), dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Sifting\-Conv\-Aux(), and dd\-Symm\-Sifting\-Down().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddNextLow@{cuddNextLow}}
+\index{cuddNextLow@{cuddNextLow}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Next\-Low (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x})}\label{cuddReorder_8c_ce4f0137c821e3a72f1121ad072de8d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the next subtable with a smaller index.]
+
+Description [Finds the next subtable with a smaller index. Returns the index.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Next\-High] 
+
+Definition at line 629 of file cudd\-Reorder.c.
+
+Referenced by dd\-Exchange(), dd\-Group\-Move(), dd\-Group\-Move\-Backward(), dd\-Group\-Sifting\-Up(), dd\-Jumping\-Aux(), dd\-Jumping\-Up(), dd\-Linear\-And\-Sifting\-Up(), dd\-Sifting\-Up(), dd\-Sift\-Up(), dd\-Swap\-Any(), dd\-Symm\-Group\-Move\-Backward(), dd\-Symm\-Sifting\-Up(), restore\-Order(), and sift\_\-up().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddSifting@{cuddSifting}}
+\index{cuddSifting@{cuddSifting}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddReorder_8c_d379df946ff42f0241f8cc432ed5a61a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implementation of Rudell's sifting algorithm.]
+
+Description [Implementation of Rudell's sifting algorithm. Assumes that no dead nodes are present. \begin{enumerate}
+\item Order all the variables according to the number of entries in each unique table. \item Sift the variable up and down, remembering each time the total size of the DD heap. \item Select the best permutation. \item Repeat 3 and 4 for all variables. \end{enumerate}
+Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 401 of file cudd\-Reorder.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, dd\-Min, dd\-Sifting\-Aux(), dd\-Total\-Number\-Swapping, dd\-Unique\-Compare(), entry, Dd\-Manager::error\-Code, FREE, Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Subtable::keys, Dd\-Manager::perm, qsort(), result, Dd\-Manager::sift\-Max\-Swap, Dd\-Manager::sift\-Max\-Var, Dd\-Manager::size, size, and Dd\-Manager::subtables.
+
+Referenced by build\_\-dd(), cudd\-Annealing(), cudd\-Ga(), and dd\-Reorder\-Children().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddSwapInPlace@{cuddSwapInPlace}}
+\index{cuddSwapInPlace@{cuddSwapInPlace}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Swap\-In\-Place (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddReorder_8c_02e55858557a72e60c2c2e81a53916d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two adjacent variables.]
+
+Description [Swaps two adjacent variables. It assumes that no dead nodes are present on entry to this procedure. The procedure then guarantees that no dead nodes will be present when it terminates. cudd\-Swap\-In\-Place assumes that x $<$ y. Returns the number of keys in the table if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 652 of file cudd\-Reorder.c.
+
+References assert, Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-E, cudd\-Next\-High(), cudd\-Sat\-Dec, cudd\-Sat\-Inc, cudd\-T, cudd\-Test\-Interact(), dd\-Hash, dd\-Total\-Number\-Swapping, Dd\-Subtable::dead, Dd\-Node::index, Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Subtable::slots, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by dd\-Exchange(), dd\-Group\-Move(), dd\-Group\-Move\-Backward(), dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), dd\-Jumping\-Down(), dd\-Jumping\-Up(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Permute\-Window3(), dd\-Permute\-Window4(), dd\-Sifting\-Down(), dd\-Sifting\-Up(), dd\-Sift\-Up(), dd\-Swap\-Any(), dd\-Symm\-Group\-Move(), dd\-Symm\-Group\-Move\-Backward(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), dd\-Undo\-Moves(), dd\-Window2(), dd\-Window\-Conv2(), restore\-Order(), and sift\_\-up().\index{cuddReorder.c@{cudd\-Reorder.c}!cuddSwapping@{cuddSwapping}}
+\index{cuddSwapping@{cuddSwapping}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Swapping (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper}, \bf{Cudd\_\-Reordering\-Type} {\em heuristic})}\label{cuddReorder_8c_4fcc58544702da24985351c6e63fcc04}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders variables by a sequence of (non-adjacent) swaps.]
+
+Description [Implementation of Plessier's algorithm that reorders variables by a sequence of (non-adjacent) swaps. \begin{enumerate}
+\item Select two variables (RANDOM or HEURISTIC). \item Permute these variables. \item If the nodes have decreased accept the permutation. \item Otherwise reconstruct the original heap. \item Loop. \end{enumerate}
+Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 496 of file cudd\-Reorder.c.
+
+References assert, Cudd\_\-Random(), CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT, cudd\-Dealloc\-Node, dd\-Sifting\-Backward(), dd\-Swap\-Any(), dd\-Total\-Number\-Swapping, Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Subtable::keys, max, Move::next, result, Dd\-Manager::sift\-Max\-Swap, size, and Dd\-Manager::subtables.
+
+Referenced by dd\-Reorder\-Children().\index{cuddReorder.c@{cudd\-Reorder.c}!ddReorderPostprocess@{ddReorderPostprocess}}
+\index{ddReorderPostprocess@{ddReorderPostprocess}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Reorder\-Postprocess (\bf{Dd\-Manager} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_cb38f795d39e6eeb71d62d9ce62278f6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Shrinks almost empty subtables at the end of reordering to guarantee that they have a reasonable load factor.]
+
+Description [Frees the interaction matrix and shrinks almost empty subtables at the end of reordering to guarantee that they have a reasonable load factor. However, if there many nodes are being reclaimed, then no resizing occurs. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1632 of file cudd\-Reorder.c.
+
+References ALLOC, Dd\-Manager::allocated, Cudd\_\-Out\-Of\-Mem(), CUDD\_\-UNIQUE\_\-SLOTS, cudd\-E, cudd\-T, DD\_\-MAX\_\-SUBTABLE\_\-SPARSITY, dd\-Hash, dd\-Min, FREE, Dd\-Manager::gc\-Percent, Dd\-Manager::interact, Dd\-Subtable::keys, Dd\-Manager::max\-Cache, Dd\-Manager::max\-Cache\-Hard, Dd\-Subtable::max\-Keys, Dd\-Manager::memused, Dd\-Manager::min\-Dead, MMout\-Of\-Memory, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::reclaimed, Dd\-Subtable::shift, Dd\-Manager::size, Dd\-Manager::slots, Dd\-Subtable::slots, and Dd\-Manager::subtables.
+
+Referenced by Cudd\_\-Reduce\-Heap(), and Cudd\_\-Shuffle\-Heap().\index{cuddReorder.c@{cudd\-Reorder.c}!ddReorderPreprocess@{ddReorderPreprocess}}
+\index{ddReorderPreprocess@{ddReorderPreprocess}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Reorder\-Preprocess (\bf{Dd\-Manager} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_f10d05b2d480c2083dc53009b68a5781}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prepares the DD heap for dynamic reordering.]
+
+Description [Prepares the DD heap for dynamic reordering. Does garbage collection, to guarantee that there are no dead nodes; clears the cache, which is invalidated by dynamic reordering; initializes the number of isolated projection functions; and initializes the interaction matrix. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1589 of file cudd\-Reorder.c.
+
+References cudd\-Cache\-Flush(), cudd\-Garbage\-Collect(), cudd\-Init\-Interact(), cudd\-Local\-Cache\-Clear\-All(), Dd\-Manager::isolated, Dd\-Node::ref, Dd\-Manager::size, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-Reduce\-Heap(), and Cudd\_\-Shuffle\-Heap().\index{cuddReorder.c@{cudd\-Reorder.c}!ddShuffle@{ddShuffle}}
+\index{ddShuffle@{ddShuffle}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Shuffle (\bf{Dd\-Manager} $\ast$ {\em table}, int $\ast$ {\em permutation})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_f9b390f19df1d4ca3e54e521af6fb4fd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders variables according to a given permutation.]
+
+Description [Reorders variables according to a given permutation. The i-th permutation array contains the index of the variable that should be brought to the i-th level. dd\-Shuffle assumes that no dead nodes are present and that the interaction matrix is properly initialized. The reordering is achieved by a series of upward sifts. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1742 of file cudd\-Reorder.c.
+
+References dd\-Sift\-Up(), dd\-Total\-Number\-Swapping, Dd\-Manager::isolated, Dd\-Manager::keys, numvars, Dd\-Manager::perm, result, Dd\-Manager::size, and util\_\-cpu\_\-time().\index{cuddReorder.c@{cudd\-Reorder.c}!ddSiftingAux@{ddSiftingAux}}
+\index{ddSiftingAux@{ddSiftingAux}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sifting\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_406e1e522d0773ed25ea29910166b282}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries.]
+
+Description [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries. Finds the best position and does the required changes. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1255 of file cudd\-Reorder.c.
+
+References CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Dealloc\-Node, dd\-Sifting\-Backward(), dd\-Sifting\-Down(), dd\-Sifting\-Up(), Dd\-Manager::isolated, Dd\-Manager::keys, Move::next, result, Move::x, and Move::y.
+
+Referenced by cudd\-Sifting().\index{cuddReorder.c@{cudd\-Reorder.c}!ddSiftingBackward@{ddSiftingBackward}}
+\index{ddSiftingBackward@{ddSiftingBackward}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sifting\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em size}, \bf{Move} $\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_7ccd621129c1c758d8496b0cbb9ce4d6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the DD heap to the position giving the minimum size.]
+
+Description [Given a set of moves, returns the DD heap to the position giving the minimum size. In case of ties, returns to the closest position giving the minimum size. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1550 of file cudd\-Reorder.c.
+
+References Move::next, and Move::size.
+
+Referenced by cudd\-Swapping(), and dd\-Sifting\-Aux().\index{cuddReorder.c@{cudd\-Reorder.c}!ddSiftingDown@{ddSiftingDown}}
+\index{ddSiftingDown@{ddSiftingDown}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Sifting\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_2c64ac880e9184b83148a419a710a1de}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable down.]
+
+Description [Sifts a variable down. Moves x down until either it reaches the bound (x\-High) or the size of the DD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 1458 of file cudd\-Reorder.c.
+
+References assert, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-High(), cudd\-Swap\-In\-Place(), cudd\-Test\-Interact(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, Move::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Sifting\-Aux().\index{cuddReorder.c@{cudd\-Reorder.c}!ddSiftingUp@{ddSiftingUp}}
+\index{ddSiftingUp@{ddSiftingUp}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Sifting\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em y}, int {\em x\-Low})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_f0316f5d6b9d591dae355b80c48cc3f6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable up.]
+
+Description [Sifts a variable up. Moves y up until either it reaches the bound (x\-Low) or the size of the DD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 1358 of file cudd\-Reorder.c.
+
+References assert, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), cudd\-Test\-Interact(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, Move::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Sifting\-Aux().\index{cuddReorder.c@{cudd\-Reorder.c}!ddSiftUp@{ddSiftUp}}
+\index{ddSiftUp@{ddSiftUp}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sift\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_455b1aacb79f33883b83423cc76cbb81}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves one variable up.]
+
+Description [Takes a variable from position x and sifts it up to position x\-Low; x\-Low should be less than or equal to x. Returns 1 if successful; 0 otherwise]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1817 of file cudd\-Reorder.c.
+
+References cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), and size.\index{cuddReorder.c@{cudd\-Reorder.c}!ddSwapAny@{ddSwapAny}}
+\index{ddSwapAny@{ddSwapAny}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Swap\-Any (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_48b5879a1ec896c578be3357f8e01303}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps any two variables.]
+
+Description [Swaps any two variables. Returns the set of moves.]
+
+Side\-Effects [None] 
+
+Definition at line 1114 of file cudd\-Reorder.c.
+
+References cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-High(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Manager::max\-Growth, Move::next, Move::size, size, Move::x, and Move::y.
+
+Referenced by cudd\-Swapping().\index{cuddReorder.c@{cudd\-Reorder.c}!ddUniqueCompare@{ddUniqueCompare}}
+\index{ddUniqueCompare@{ddUniqueCompare}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Unique\-Compare (int $\ast$ {\em ptr\-X}, int $\ast$ {\em ptr\-Y})\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_633360a635abf6047ee256b66656872a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function used by qsort.]
+
+Description [Comparison function used by qsort to order the variables according to the number of keys in the subtables. Returns the difference in number of keys between the two variables being compared.]
+
+Side\-Effects [None] 
+
+Definition at line 1090 of file cudd\-Reorder.c.
+
+References entry.
+
+Referenced by cudd\-Sifting().
+
+\subsection{Variable Documentation}
+\index{cuddReorder.c@{cudd\-Reorder.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Reorder.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 73 of file cudd\-Reorder.c.\index{cuddReorder.c@{cudd\-Reorder.c}!ddTotalNumberSwapping@{ddTotalNumberSwapping}}
+\index{ddTotalNumberSwapping@{ddTotalNumberSwapping}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{dd\-Total\-Number\-Swapping}}\label{cuddReorder_8c_1860a312dbd8ab2ab829b1a3beed31d9}
+
+
+
+
+Definition at line 78 of file cudd\-Reorder.c.\index{cuddReorder.c@{cudd\-Reorder.c}!entry@{entry}}
+\index{entry@{entry}!cuddReorder.c@{cudd\-Reorder.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{entry}\hspace{0.3cm}{\tt  [static]}}\label{cuddReorder_8c_ef8c63519ad43f7d8c5f40f8807b886e}
+
+
+
+
+Definition at line 76 of file cudd\-Reorder.c.

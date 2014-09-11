@@ -1,0 +1,697 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script finds and reads the appropriate project info 
+#       for the specified benchmark.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 6/99
+#
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+PRINT_OPTION="";
+READ_PATHS="";
+PROJECT_NAME="";
+PRINT_PROJECT_INFO_DOCUMENTATION=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    # The first argument must be the benchmark name
+    BENCH_NAME="$1";
+
+    # Allow --help to be first argument
+    if [ "$BENCH_NAME" = "--help" ]; then
+       PRINT_PROJECT_INFO_DOCUMENTATION=1;
+    fi
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Print out the documentation for writing project_info files
+	--help)
+            PRINT_PROJECT_INFO_DOCUMENTATION=1;;
+
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_project_info expects a name after -project"
+               exit 1;
+            fi
+            PROJECT_NAME="$1";
+            shift;;
+
+        # Allow an benchmark dir be specified
+	-bench_dir|-path)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_project_info expects a name after -bench_dir"
+               exit 1;
+            fi
+	    BENCH_DIR="$1";
+            # Make sure specified path exists 
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+	    fi
+            READ_PATHS="-bench_dir $BENCH_DIR $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+	# Allow the contents of a particular variable to be printed
+        -train_inputs|-eval_inputs|-parm_override_file|-all)
+	    if [ "$PRINT_OPTION" != "" ]; then
+               echo "Error: read_project_info does not expect both '$PRINT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    PRINT_OPTION="$OPTION";;
+	   
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $PRINT_PROJECT_INFO_DOCUMENTATION -eq 1 ]; then
+cat <<PROJECT_INFO_DOCUMENTATION_EOF
+# =======================================================================
+# Note: Documentation for 'project_parms' and 'project_parms_(bench)' 
+#       files follows the documentation for 'project_info' files.
+#       Examples based on 'impact/projects/EPIC_8G_1BL' from version 2.33.
+# =======================================================================
+# Documentation for 'project_info' files.
+# Created for IMPACT Version 2.33 by John C. Gyllenhaal
+#
+# The 'project_info' file is placed in each project info directory to
+# specify the training inputs, evaluation inputs, and parameter file
+# overrides to use for a particular project or experiment for a *particular*
+# benchmark (the information provided may be different for each benchmark
+# it is called for).  The interface to this file's information is the 
+# impact/scripts/read_project_info script.
+#
+# The read_project_info script uses the shell's include mechanism
+# ". \${PROJECT_DIR}/project_info" to read the values of the variables
+# defined in the file.  This mechanism is fragile!  The guidelines
+# outlined in this file should be followed to ensure correct behavior.
+#
+# Use impact/scripts/read_project_info to ensure expected output.
+# Use impact/scripts/compile_bench to test the validity of the settings.
+#
+# This information is used primarily by compile_bench (all info), 
+# sim_bench (project parms and eval inputs only),  gen_profiled_pcode 
+# (train inputs only), and gen_profiled_lcode (eval inputs only).
+# These scripts may be examined to see exactly how this information is
+# being used.
+#
+# The special projects 'less_memory', 'full', 'full_unsafe' are provided
+# for those cases when a project file has not been setup yet for an
+# experiment or minimal (or no) parameter tweaking by the project is desired.
+#
+# At the end of this documentation is a sample project_info file.
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MUST BE DEFINED BY 'project_info':
+#
+#   TRAIN_INPUTS="inputs to use for training (gen_profiled_pcode)"
+#   EVAL_INPUTS="inputs to use for evaluation (sim_bench, gen_profiled_lcode)"
+#
+#     The training/evaluation inputs specified will be used unless the
+#     user overrides them (see compile_bench options -prefix, -inputs, etc).  
+#
+#   Examples:
+#     "$DEFAULT_TRAIN"         -> Use the benchmark's default train inputs
+#     "$DEFAULT_EVAL"          -> Use the benchmark's default eval inputs
+#     "input1"                 -> Use a single input for train/eval
+#     "input1 input2 input3"   -> Use three inputs for train/eval
+#
+#     # Determine project inputs for this benchmark
+#     case $BENCH_NAME in
+#       # Set project-specific benchmark inputs
+#       wc)
+#          TRAIN_INPUTS="input1 input2"
+#          EVAL_INPUTS="input2";;
+#        
+#       # If not specified above, use benchmark's default inputs
+#       *)
+#          TRAIN_INPUTS="$DEFAULT_TRAIN";
+#          EVAL_INPUTS="$DEFAULT_EVAL";;
+#     esac
+#
+#
+#   PARM_OVERRIDE_FILE="Project parameter overrides for the benchmark"
+#
+#     The "${PROJECT_DIR}" environment variable should always be used
+#     to locate the project parms.  A single project_parms file may
+#     be used for all benchmarks but it is often desirable to
+#     allow optimizations to be scaled back for particular benchmarks.
+#
+#   Example:
+#
+#     # Use benchmark-specific project parm file if exists
+#     if [ -f ${PROJECT_DIR}/project_parms_${BENCH_NAME} ]; then
+#        PARM_OVERRIDE_FILE="${PROJECT_DIR}/project_parms_${BENCH_NAME}";
+#     else
+#        PARM_OVERRIDE_FILE="${PROJECT_DIR}/project_parms"
+#     fi
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MAY OPTIONALLY BE DEFINED BY 'project_info':
+#
+#   There are currently no optionally defined variables.
+#
+#
+# --------------------
+# SHELL VARIABLES DEFINED BY 'read_project_info' THAT MAY BE USED:
+#
+#   PROJECT_NAME="name of the project (e.g., 'EPIC_8G_1BL')"
+#   PROJECT_DIR="project location (e.g., '.../impact/projects/EPIC_8G_1BL')"
+#   BENCH_NAME="name of the benchmark (e.g., 'wc')"
+#   BENCH_DIR="benchmark location (e.g., '.../impact/benchmarks/wc')"
+#   DEFAULT_TRAIN="benchmark's default train inputs (from compile_info file))"
+#   DEFAULT_EVAL="benchmark's default eval inputs (from compile_info file))"
+#   HOST_PLATFORM="host platform for profiling/emulation (e.g., 'x86lin')"
+#   HOST_COMPILER="host compiler for libraries/header files (e.g., 'gcc')"
+#
+# If desired, you may use these variables to set the project_info file 
+# variables.  See examples for how they may be used.
+#
+#
+# --------------------
+# GENERAL NOTES:
+#
+# The use of environment/shell variables not defined by read_project_info, or
+# the calling of another script/executable, is discouraged due to
+# portability and compatibility considerations.
+#
+#
+# --------------------
+# EXAMPLE TYPICAL 'project_info' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.32  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  June 28, 1999 #
+###############################################################################
+#  Run 'read_project_info --help | more' for documentation.
+#
+#   The "EPIC_8G_1BL" project specifies the processor configuration parameters
+#   for IMPACT's Lcode scheduler and simulator for the following processor:
+#
+#       EPIC 8-issue (uniform functional units) 1-branch processor
+#       that supports general speculation (non-trapping operations).
+#
+#   None of the ILP optimization parameters are overridden, except those
+#   overrides inherited from the "less_memory" project (the starting point
+#   of this project).  See the less_memory project for details.
+#
+#   Note: This project can be used as the basis for your own project, just
+#         copy the entire directory to a new directory.
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+# Determine project inputs for this benchmark
+case $BENCH_NAME in
+   # Set project-specific benchmark inputs
+   wc)     # For illustration, not actually in EPIC_8G_1BL project
+      TRAIN_INPUTS="input1 input2"
+      EVAL_INPUTS="input2";;
+
+   # If not specified above, use benchmark's default inputs
+   *)
+      TRAIN_INPUTS="$DEFAULT_TRAIN";
+      EVAL_INPUTS="$DEFAULT_EVAL";;
+esac
+
+# Use benchmark-specific project parm file if exists
+if [ -f ${PROJECT_DIR}/project_parms_${BENCH_NAME} ]; then
+   PARM_OVERRIDE_FILE="${PROJECT_DIR}/project_parms_${BENCH_NAME}";
+else
+   PARM_OVERRIDE_FILE="${PROJECT_DIR}/project_parms"
+fi
+
+# =======================================================================
+# Documentation for 'project_parms' and 'project_parms_(bench)' files.
+# Created for IMPACT Version 2.33 by John C. Gyllenhaal
+#
+# The 'project_parms' file specifies any parameter overrides that 
+# are not benchmark-specific.  These typically include the scheduler's 
+# machine description, the simulation machine configuration parameters, 
+# and experiment-specific optimization configuration parameters.
+# 
+# The optional 'project_parms_(bench)' file is used in conjunction with
+# the 'project_parms' file to override benchmark-specific parameters.
+# Typically these are parameter tweaking to improve performance for
+# that benchmark or to reduce memory usage for that benchmark. 
+# The 'project_info' file picks what parameter file to used for each
+# benchmark (see example project_info above), so the project's designer
+# has total control for how the project is organized.
+# 
+# The 'project_parms' and 'project_parms_(bench)' files will be read
+# using IMPACT's parameter file facility.  
+#
+# The IMPACT project facility will set the environment variable
+# 'BENCH_DIR' to the directory of the benchmark being compiled.
+# '${BENCH_DIR}/compile_parms' should be used by the 'project_parms' file as
+# the 'default' parameter file for every section.  This will allow 
+# benchmark-specific critical parameter overrides will be used.
+#
+# The IMPACT project facility will also set the environment variable
+# 'PROJECT_DIR' to the directory of the project being used.
+# '${PROJECT_DIR}/project_parms' should be used by the 'project_parms_(bench)'
+# file as the 'default' parameter file for every section.  This will allow
+# the 'project_parm' overrides to also be used without duplicating settings.
+#
+# The scripts compile_bench and sim_bench will set all the appropriate
+# environment variables (BASELINE_PARMS_FILE, BENCH_DIR, and PROJECT_DIR)
+# and will set STD_PARMS_FILE to the PARM_OVERRIDE_FILE returned by 
+# read_project_info.  In this way, all the parameter overrides will
+# be seen appropriately by the IMPACT module. 
+#
+# Note: 1) command-line parm options (e.g., '-Fparm=yes') override everything.
+#       2) project_parms_(bench) settings override everything except 1. 
+#       3) project_parms settings override everything except 1 and 2.
+#       4) compile_parms settings override everything except 1-3.
+#       5) STD_PARMS.compile_bench override everything except 1-4.
+#       6) ... until reach LGLOBAL_DEFAULTS, etc.
+#
+# --------------------
+# EXAMPLE TYPICAL 'project_parms' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.32  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  June 28, 1999 #
+###############################################################################
+#  Run 'read_project_info --help | more' for documentation.
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+# Set the lmdes2 file to use for scheduling
+(Larchitecture $BENCH_DIR$/compile_parms
+    lmdes = $IMPACT_ROOT$/mdes/Limpact/EPIC_8G_1BL.lmdes2
+end)
+
+# Set the IMPACT simulator's processor configuration parameters for
+# the target machine
+
+# Define issue_width for this file, the user's parm file, and LSIM_DEFAULT
+$issue_width$=8
+
+(Lsim $BENCH_DIR$/compile_parms
+
+    # Use in-order EPIC processor with variable length operation packets
+    processor_model = EPIC;
+    processor_type = In-Order;
+    epic_support_interlocking =yes;
+    epic_fixed_length_instructions = no;
+
+
+    # Use standard fetch configuration (issue width dependent)
+    fetch_model = aggressive;          # aggressive or conservative
+    fetch_width = $issue_width$;       # in number of instructions
+    fetch_buf_size = 3 * $issue_width$;# in number of instructions
+    fetch_mark = 2 * $issue_width$;    # will fetch at <= this mark
+    issue_width = $issue_width$;
+end)
+
+# For all other parameters, use benchmark-specific settings
+(* $BENCH_DIR$/compile_parms
+end)
+
+# --------------------
+# EXAMPLE 'project_parms_099.go' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.30  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  June 14, 1999 #
+###############################################################################
+#  Run 'read_project_info --help | more' for documentation.
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+# Reduce the compile-time memory requirements for this benchmark
+(Lsuperscalar $PROJECT_DIR$/project_parms
+    # maximum number of times can ever unroll this loop (default 32)
+    # Set to a maximum of 4 to reduce compile-time memory requirements
+    max_unroll_allowed = 4;
+
+
+    # Setting the following parameters to 'yes' yields the best performance.
+    # However, they can cause a huge amount of code duplication and thus
+    # significantly increase compile time and memory requirements.
+    #
+    # Set the following to 'no' to reduce compile-time memory requirements
+    allow_backedge_exp=no;
+    allow_expansion_of_loops=no;
+    allow_extra_unrolling_for_small_loops=no;
+end)
+
+(Lhyper $PROJECT_DIR$/project_parms
+    # Do not hyperblock 'chckside' unless you have a lot of memory.
+    prevent_hyperblock_functions=chckside
+end)
+
+# Use project settings for everything else
+(* $PROJECT_DIR$/project_parms
+end)
+
+PROJECT_INFO_DOCUMENTATION_EOF
+exit 1;
+fi
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo "> Usage: read_project_info benchmark [options]";
+    echo '> ';
+    echo '> Reads a project info module for the specified benchmark and'
+    echo '> prints extracted info.';
+    echo '> ';
+    echo '> General options (zero or more of the the following may be specified):';
+    echo '>   -project "project"   project to find (default: \$DEFAULT_PROJECT used)';
+    echo '>   -bench_dir "dir"     read info in "dir" (default: use find_bench_dir)';
+    echo '> ';
+    echo '> Print options (zero or one of the the following may be specified):';
+    echo '>   -all                 print all the info read (default)';
+    echo '>   -train_inputs        prints the contents of "TRAIN_INPUTS"';
+    echo '>   -eval_inputs         prints the contents of "EVAL_INPUTS"';
+    echo '>   -parm_override_file  prints the contents of "PARM_OVERRIDE_FILE"';
+    echo '>   --help               prints documentation for project_info files';
+    exit 1;
+fi
+
+# Use DEFAULT_PROJECT, if project not specified with -project
+if [ "$PROJECT_NAME" = "" ]; then
+   PROJECT_NAME="$DEFAULT_PROJECT";
+   if [ "$PROJECT_NAME" = "" ] ; then
+      echo "The environment variable DEFAULT_PROJECT is not defined!!";
+      echo "IMPACT's README.install describes how to set up your environment.";
+      echo "";
+      VALID_ENV=0;
+   fi
+fi
+
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCH_NAME}`
+    if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCH_NAME}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+       exit 1;
+    fi
+    READ_PATHS="-bench_dir $BENCH_DIR $READ_PATHS";
+fi
+
+PROJECT_DIR=`find_project_dir ${PROJECT_NAME}`
+if test "$?" != 0; then
+   echo " "
+   echo "Exiting: Could not find project dir using find_project_dir!"
+   echo "Error message returned by find_project_dir:"
+   echo "$PROJECT_DIR";
+  exit 1;
+fi
+
+PROJECT_FILE="project_info"
+MODULE_PATH="${PROJECT_DIR}/${PROJECT_FILE}"
+
+# Get host platform and compiler for module's use
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+# Get benchmarks' default train and eval inputs for module's use
+DEFAULT_TRAIN=`read_compile_info ${BENCH_NAME} $READ_PATHS -default_train`;
+if test "$?" != 0; then 
+   echo " "
+   echo "> Exiting: Could not read default train inputs using read_compile_info!"
+   echo "> Error message returned by read_compile_info:"
+   echo "$DEFAULT_TRAIN";
+   exit 1;
+fi
+
+DEFAULT_EVAL=`read_compile_info ${BENCH_NAME} $READ_PATHS -default_eval`;
+if test "$?" != 0; then 
+   echo " "
+   echo "> Exiting: Could not read default eval inputs using read_compile_info!"
+   echo "> Error message returned by read_compile_info:"
+   echo "$DEFAULT_EVAL";
+   exit 1;
+fi
+
+
+# PROJECT_NAME, PROJECT_DIR, BENCH_NAME, BENCH_DIR, HOST_PLATFORM, 
+# HOST_COMPILER, DEFAULT_TRAIN, and DEFAULT_EVAL set above as promised 
+# for use by the project info module.
+
+# The following variables are the only variables that should be
+# defined in the project info file.  Set to "(invalid)" to
+# allow detection of undefined variables.
+
+TRAIN_INPUTS="(invalid)"
+EVAL_INPUTS="(invalid)"
+PARM_OVERRIDE_FILE="(invalid)"
+
+# Do a test execution of the module to make sure valid before doing
+# the "real" execution below as part of this script (using . $MODULE_PATH).  
+# The goal is to avoid criptic error messages about read_project_info having
+# mismatched quotes, etc., when it really is the info module's problem.
+#
+# This test needs PROJECT_NAME, PROJECT_DIR, BENCH_NAME, BENCH_DIR, 
+# HOST_PLATFORM, HOST_COMPILER, DEFAULT_TRAIN, and DEFAULT_EVAL 
+# exported (since not using . $MODULE_PATH)
+export PROJECT_NAME
+export PROJECT_DIR
+export BENCH_NAME
+export BENCH_DIR
+export HOST_PLATFORM
+export HOST_COMPILER
+export DEFAULT_TRAIN
+export DEFAULT_EVAL
+
+# Shell out and run script (which should do nothing) and look for error message
+# or random output (which will cause strange errors)
+SH_ERROR="`(/bin/sh $MODULE_PATH) 2>&1`"
+ERROR_CODE="$?";
+if test "$ERROR_CODE" != 0 -o "$SH_ERROR" != "" ; then
+   echo " "
+   echo "> Error: read_project_info received error executing module (via /bin/sh):"
+   echo ">  $MODULE_PATH"
+   echo "> "
+   if test "$ERROR_CODE" != 0 ; then
+      echo "> Error message returned by /bin/sh (return value $ERROR_CODE):"
+   else
+      echo "> Message returned by /bin/sh (returned 0 but any output indicates error):"
+   fi
+   echo " ";
+   echo "$SH_ERROR";
+   echo " ";
+   echo "> Exiting read_project_info.  Invalid project info module.";
+   exit 1;
+fi
+
+# Execute the module as if it was part of this script.
+# This module does not need to be executable.  Must trust the module
+# not to do anything that makes this script break (somewhat tested above).
+. $MODULE_PATH
+
+# Make sure every variable was defined in the project info module
+INFO_MISSING=0;
+
+if [ "$TRAIN_INPUTS" = "(invalid)" ]; then
+  echo "> Error: TRAIN_INPUTS not defined in ${PROJECT_FILE}"
+  INFO_MISSING=1;
+fi
+
+if [ "$EVAL_INPUTS" = "(invalid)" ]; then
+  echo "> Error: EVAL_INPUTS not defined in ${PROJECT_FILE}"
+  INFO_MISSING=1;
+fi
+
+if [ "$PARM_OVERRIDE_FILE" = "(invalid)" ]; then
+  echo "> Error: PARM_OVERRIDE_FILE not defined in ${PROJECT_FILE}"
+  INFO_MISSING=1;
+fi
+
+if [ $INFO_MISSING  -eq 1 ]; then
+  echo "> Error: The above variables were not defined by ${PROJECT_FILE} in"
+  echo ">        ${PROJECT_DIR}"
+  echo ">        These variables must be defined in this project info module!"
+  exit 1;
+fi
+
+# Make sure variables set to valid values
+INFO_INVALID=0;
+
+# Also make sure PARM_OVERRIDE_FILE valid 
+if [ "$PARM_OVERRIDE_FILE" != "" ]; then
+  if [ ! -f $PARM_OVERRIDE_FILE ]; then
+    echo "> Error: PARM_OVERRIDE_FILE set to non-existent file:"
+    echo ">        '$PARM_OVERRIDE_FILE'"
+    INFO_INVALID=1;
+  fi
+else
+    echo "> Error: PARM_OVERRIDE_FILE may not be set to ''"
+    INFO_INVALID=1;
+fi
+
+# Make sure TRAIN_INPUTS valid
+INPUTS_SPECIFIED=0;
+for TRAIN_INPUT in $TRAIN_INPUTS
+do
+  if [ ! -f ${BENCH_DIR}/exec_info_${TRAIN_INPUT} ]; then
+    echo "> Error: DEFAULT_TRAIN specifies a non-existent input:"
+    echo ">        '$TRAIN_INPUT'"
+    INFO_INVALID=1;
+  fi    
+  INPUTS_SPECIFIED=1;
+done
+if [ "$INPUTS_SPECIFIED" != "1" ]; then
+  echo "> Error: TRAIN_INPUTS must be specify least one input, not '$TRAIN_INPUTS'"
+  INFO_INVALID=1;
+fi
+
+# Make sure EVAL_INPUTS valid
+INPUTS_SPECIFIED=0;
+for EVAL_INPUT in $EVAL_INPUTS
+do
+  if [ ! -f ${BENCH_DIR}/exec_info_${EVAL_INPUT} ]; then
+    echo "> Error: DEFAULT_EVAL specifies a non-existent input:"
+    echo ">        '$EVAL_INPUT'"
+    INFO_INVALID=1;
+  fi    
+  INPUTS_SPECIFIED=1;
+done
+if [ "$INPUTS_SPECIFIED" != "1" ]; then
+  echo "> Error: EVAL_INPUTS must specify at least one input, not '$EVAL_INPUTS'"
+  INFO_INVALID=1;
+fi
+
+if [ $INFO_INVALID -eq 1 ]; then
+  echo "> Error: The above variables were not set properly by ${PROJECT_FILE} in:"
+  echo ">          ${PROJECT_DIR}"
+  echo ">"
+  echo ">        These variables must be properly set in this project info module!"
+  exit 1;
+fi
+
+
+# Print out the appropriate output based on PRINT_OPTION's value
+case "$PRINT_OPTION" in
+  ""|-all)
+    # Print the settings read, formatted and with labels
+    echo " "
+    echo "     Project Name: '$PROJECT_NAME'"
+    echo "      Project Dir: '$PROJECT_DIR'"
+    echo "       Bench Name: '$BENCH_NAME'"
+    echo "        Bench Dir: '$BENCH_DIR'"
+    echo "    Default Train: '$DEFAULT_TRAIN'"
+    echo "     Default Eval: '$DEFAULT_EVAL'"
+    echo "    Host Platform: '$HOST_PLATFORM'"
+    echo "    Host Compiler: '$HOST_COMPILER'"
+    echo " "
+    echo "     Train Inputs: '$TRAIN_INPUTS'"
+    echo "      Eval Inputs: '$EVAL_INPUTS'"
+    echo "Parm Overide File: '$PARM_OVERRIDE_FILE'"
+    exit 0;;
+
+  # Print out each individual setting, with no labels
+  -train_inputs)
+    echo "$TRAIN_INPUTS"
+    exit 0;;
+
+  -eval_inputs)
+    echo "$EVAL_INPUTS"
+    exit 0;;
+
+  -parm_override_file)
+    echo "$PARM_OVERRIDE_FILE"
+    exit 0;;
+
+  *)
+     echo "> Error: Unexpected error.  '$PRINT_OPTION' option unhandled";
+     exit 1;;
+esac
+

@@ -1,0 +1,186 @@
+ 
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+# Run 'read_platform_info --help | more' for documentation.
+#
+# Platform info module for: x86lin gcc
+#
+# See www.trimaran.org for Trimaran-based testing and porting info.
+#
+# Note: Running 'compile_bench' or 'compile_list' on a NFS mounted drive 
+#       (served by a Sun Solaris 5.6 server) did *not* work for us.  IMPACT 
+#       scripts randomly failed because Linux intermittently claimed that a 
+#       file was not there that our script had just created (and showed up on 
+#       an 'ls').  For example: 'ls > list; cat < list' would randomly claim
+#       the file 'list' could not be found.  Rerunning the script would 
+#       cause another failure in a different place!  
+# 
+#       Compile benchmarks on a local drive or use a Linux NFS server for 
+#       your Linux boxes (both have worked for us)!
+#
+# IMPACT-based testing history for this platform info:
+#
+#   7/12/99  IMPACT version 2.33     
+#            Red Hat Linux 6.0 (Kernel 2.2.5-15) and gcc (egcs-2.91.66)
+#
+#            Benchmark sets tested (all benchmark names in 'list' below):
+#
+#              SPECint92_info_12JUL99.tgz
+#              SPECint95_info_12JUL99.tgz
+#              052.alvinn_info_12JUL99.tgz
+#              IMPACT_tests_12JUL99.tgz
+#              HPL_kernels_12JUL99.tgz
+#              wc_12JUL99.tgz
+#
+#            Regression runs:
+#
+#              1) test_list list >& test.out  
+#               
+#                 All benchmarks PASSED.
+#
+#
+#              2) compile_list list -c2O_im_p -eval_prefix input >& O.out
+#
+#                 All benchmarks PASSED except:
+#
+#                  a) 099.go/input2: undiagnosed MISMATCH.
+#                     099.go/input[1,2,4]: PASSED.
+#              
+#
+#              3) compile_list list -O2S_im_p -eval_prefix input >& S.out
+#
+#                 All benchmarks PASSED except:
+#
+#                  a) 099.go/input2: same as above
+#
+#                  b) 126.gcc: undiagnosed Lprofile punt.
+#
+#
+#              4) compile_list list -O2HS_im_p -eval_prefix input >& HS.out
+#                 
+#                 All benchmarks PASSED except:
+#
+#                  a) 099.go/input1: undiagnosed coredump during execution.
+#                     099.go/input[2-4]: not run.
+#
+#                  b) 126.gcc: undiagnosed Lprofile punt.
+#
+#                  c) 072.sc/input[1-9]: undiagnosed MISMATCHes.
+#            
+#
+#   7/12/99  IMPACT version 2.33     
+#            Red Hat Linux 5.1 (Kernel 2.0.35) and gcc (2.7.2.3)
+#
+#            Benchmark sets tested (all benchmark names in 'list' below):
+#
+#              SPECint92_info_12JUL99.tgz
+#              SPECint95_info_12JUL99.tgz
+#              052.alvinn_info_12JUL99.tgz
+#              IMPACT_tests_12JUL99.tgz
+#              HPL_kernels_12JUL99.tgz
+#              wc_12JUL99.tgz
+#
+#            Regression runs:
+#
+#              1) test_list list >& test.out  
+#               
+#                 All benchmarks PASSED.
+#
+#
+#              2) compile_list list -c2O_im_p -eval_prefix input >& O.out
+#
+#                 All benchmarks PASSED except:
+#
+#                  a) 099.go/input2: undiagnosed MISMATCH.
+#                     099.go/input[1,2,4]: PASSED.
+# 
+#
+#             Note: S and HS not tested on RedHat 5.1, but expect similar to 
+#                   RedHat 6.0 results shown above.
+#
+# In the past, we have run regressions on RedHat 5.2 (Kernel 2.2.7) and
+# gcc (2.7.2.3) and received similar results.  We have been told this also 
+# works well on Caldera OpenLinux 2.2.
+#                            
+# Revision history for this file:
+#   5/99  Created by IMPACT Technologies, Inc (John C. Gyllenhaal)
+
+PREPROCESSOR_INVOCATION="gcc -w -E -m32 -DIMPACT_FIX"
+INCLUDE_PATH_OPTIONS="-I${PLATFORM_DIR}/include"
+PREPROCESSED_EXTENSION=".i"
+
+COMPILER_INVOCATION="gcc -w -m32 -U__GNUC__"
+COMPILER_INVOCATION_4LAYOUT="gcc -w -m32 -DIMPACT_FIX"
+OUTPUT_FILE_SPECIFIER="-o " # Space required after -o!
+EXECUTABLE_EXTENSION="";    # No extra extension required
+OPTI_MODE_SPECIFIER="-O"
+DEBUG_MODE_SPECIFIER="-g"
+ANSI_C_MODE_SPECIFIER=""
+KRC_MODE_SPECIFIER=""
+USE_KRC_MODE=0
+SHARED_LIB_SPECIFIER=""
+STATIC_LIB_SPECIFIER="-static"
+COMPILER_POSTOPTIONS=""
+COMPILER_VERSION_QUERY="gcc --version"
+
+if test -f ${PLATFORM_DIR}/impact_pprof_lib.o ; then
+	PCODE_PROF_LIB="${PLATFORM_DIR}/impact_pprof_lib.o"
+else
+	PCODE_PROF_LIB="${IMPACT_ROOT}/lib/libimpact_pprof.a"
+fi
+
+if test -f ${PLATFORM_DIR}/impact_lemul_lib.o ; then
+	LCODE_EMUL_LIB="${PLATFORM_DIR}/impact_lemul_lib.o"
+else
+	LCODE_EMUL_LIB="${IMPACT_ROOT}/lib/libimpact_lemul.a"
+fi
+
+MAKE_COMMAND="make"
+LN_COMMAND="ln -s"
+

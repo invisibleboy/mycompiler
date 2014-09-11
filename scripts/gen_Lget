@@ -1,0 +1,284 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	Merge Lcode profile data and Lcode
+#
+#	Run this script with no arguments for usage informantion
+#
+#	Script rewritten by John Gyllenhaal 1/95 to add -sparc flag
+#
+#	Previous authors (that I know about) include Scott Mahlke, 
+#          Pohua Chang, Teresa Johnson, Dan Connors, Wen-mei Hwu
+#
+
+# Assume hppa arch
+ARCH_PARMS="-Farch=hppa -Fmodel=PA-7100"
+FILE_EXTENSION="p"
+
+# Default of control profiling
+INSERT_PROFILE="yes"
+
+# Memory dependence profiling options
+MEM_DEP_PARMS=""
+
+# Value profiling options
+VALUE_PARMS=""
+VALUE_ANNOT=0;
+
+# Memory reuse profiling options
+REUSE_PARMS=""
+REUSE_ANNOT=0;
+
+# Multiple input option
+INPUT_EXTENSION=""
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 3 ]; then
+    PREFIX="$1";
+    PROFILE="$2";
+    INDEX="$3";
+
+    # skip the 3 set arguments
+    shift 3;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        -hppa)
+	   echo "> Inserting profile into hppa code";
+	   ARCH_PARMS="-Farch=hppa -Fmodel=pa-7100";;
+
+        -sparc)
+	   echo "> Inserting profile into sparc code";
+	   ARCH_PARMS="-Farch=sparc -Fmodel=elc";;
+
+        -Lcode)
+           echo "> Inserting profile into Lcode";
+           ARCH_PARMS="-Farch=impact -Fmodel=Lcode";;
+
+        -x86)
+	   echo "> Inserting profile into x86 code";
+	   ARCH_PARMS="-Farch=x86 -Fmodel=486";;
+
+	-p)
+	   echo "> Using parms in '${1}'";
+	   ARCH_PARMS="${ARCH_PARMS} -p ${1}";
+	   shift;;
+
+	-mem_dep)
+	   echo "> Getting memory dependence information";
+	   FILE_EXTENSION="m";
+	   INSERT_PROFILE="no";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Finsert_mem_dep_profile=yes";;
+
+	-mem_dep_file)
+	   echo "> Using the memory dependence database file : $1";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Fmem_dep_profile_file=$1";
+	   shift;;
+
+	-nozero)
+	   echo "> Will not insert zero-conflict arcs";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Fremove_zero_conflict_sync_arcs=yes";;
+
+	-remove_sync)
+	   echo "> Removing existing sync arcs";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Fremove_existing_sync_arcs=yes";;
+
+	-gen_sync)
+	   echo "> Will generate profile sync arcs";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Fmem_dep_annotate_mode=sync";;
+
+	-gen_attr)
+	   echo "> Will generate profile attributes";
+	   MEM_DEP_PARMS="${MEM_DEP_PARMS} -Fmem_dep_annotate_mode=attr";;
+
+	-gen_value)
+	   echo "> Will annotate value profile attributes";
+	   FILE_EXTENSION="v";
+	   INSERT_PROFILE="no";
+	   VALUE_PARMS="${VALUE_PARMS} -Finsert_value_profile=yes";;
+
+	-value)
+	   echo "> Will annotate value profile attributes";
+	   VALUE_PARMS="${VALUE_PARMS} -Fvalue_profile_percentage=$1";
+           VALUE_ANNOT=1;
+	   shift;;
+
+	-value_file)
+	   echo "> Using the value profile file : $1";
+	   VALUE_PARMS="${VALUE_PARMS} -Fvalue_profile_file=$1";
+	   shift;;
+
+	-mem_reuse)
+	   echo "> Will annotate memory reuse profile attributes";
+           REUSE_ANNOT=1;
+	   FILE_EXTENSION="m";
+	   INSERT_PROFILE="no";
+	   REUSE_PARMS="${REUSE_PARMS} -Finsert_mem_reuse_profile=yes";;
+
+	-mem_reuse_file)
+	   echo "> Using the memory reuse profile file : $1";
+	   REUSE_PARMS="${REUSE_PARMS} -Fmem_reuse_profile_file=$1";
+	   shift;;
+
+	-reuse)
+	   echo "> Will annotate memory reuse profile attributes";
+           REUSE_ANNOT=1;
+	   FILE_EXTENSION="r";
+	   INSERT_PROFILE="no";
+	   REUSE_PARMS="${REUSE_PARMS} -Finsert_reuse_profile=yes";;
+
+	-reuse_file)
+	   echo "> Using the memory reuse profile file : $1";
+	   REUSE_PARMS="${REUSE_PARMS} -Freuse_profile_file=$1";
+	   shift;;
+
+        -input)
+           echo "> Modifying extension for input : $1";
+           INPUT_EXTENSION="$1";
+           shift;;
+
+        *)
+            echo "Error: Unknown option '$OPTION'"
+            VALID_ARGS=0;;
+    esac
+done
+
+# check if doing both memory and value profiling
+if [ $VALUE_ANNOT -eq 1 -a $REUSE_ANNOT -eq 1 ]; then
+   FILE_EXTENSION="v";
+fi
+
+FILE_EXTENSION="${FILE_EXTENSION}${INPUT_EXTENSION}";
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: gen_Lget dir profile_file index_file [options] < list';
+    echo '> ';
+    echo "> 'dir' is prefixed to names in 'list' only.";
+    echo "> 'profile_file' is the profile database that Lprofile created.";
+    echo "> 'index_file' is used for the database index (gen_Lget creates it).";
+    echo '> ';
+    echo '>';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -Lcode          indicates merging into Lcode code (defaults to hppa code)';
+    echo '>   -sparc          indicates merging into sparc code (defaults to hppa code)';
+    echo '>   -x86            indicates merging into x86 code (defaults to hppa code)';
+    echo '>   -hppa           indicates merging into hppa code (defaults to hppa code)';
+    echo '>   -p parm_file    overrides default parm file';
+    echo '>';
+    echo '> Memory Dependence Options:';
+    echo '>   -mem_dep        indicates merging mem dependence profile info';
+    echo '>   -mem_dep_file (filename) indicates the memory dependence profile filename';
+    echo '>   -nozero         indicates Lget should remove zero-conflict arcs';
+    echo '>   -remove_sync    indicates Lget should remove existing sync arcs';
+    echo '>   -gen_sync       indicates Lget should create profiled sync arcs';
+    echo '>   -gen_attr       indicates Lget should create profile attributes';
+    echo '>   -gen_value      indicates Lget should create value profile attributes';
+    echo '>   -value num         percentage of value occurence that should be annotated';
+    echo '>   -value_file (filename) indicates the value profile filename';
+    echo '>   -mem_reuse      indicates Lget should create memory reuse profile attributes';
+    echo '>   -mem_reuse_file (filename) indicates the memory reuse profile filename';
+    echo '>   -reuse          indicates Lget should create reuse profile attributes';
+    echo '>   -reuse_file     (filename) indicates the reuse profile filename';
+    echo '>   -input (extension) indicates an additional extension for annotated files';
+
+    exit 0200;
+fi;
+
+echo "> Making index file";
+Lget \
+	-Fmode=index \
+	-Fprofile_file=${PROFILE} \
+	-Findex_file=${INDEX} \
+	${ARCH_PARMS}
+
+while read FILE;
+do
+	echo "> processing $PREFIX/$FILE"
+
+        FILEOUT=`echo $FILE | \
+	awk -F. 'BEGIN {FS="."}; {if (($(NF) == "p")||($(NF) == "m")||($(NF) == "v")) NF=NF-1; ORS="."; \
+		 for (i=1; i<NF; i++) print $i; ORS=""; print $(NF)}'`
+
+	echo "> Merging profile data";
+	Lget \
+		-Fmode=insert  \
+		-Finsert_profile=${INSERT_PROFILE} \
+		-Fprofile_file=${PROFILE} \
+		-Findex_file=${INDEX} \
+		-i ${PREFIX}/${FILE} \
+		-o ${PREFIX}/${FILEOUT}_${FILE_EXTENSION} \
+		${ARCH_PARMS} \
+		${MEM_DEP_PARMS} \
+		${VALUE_PARMS} \
+		${REUSE_PARMS} 
+
+	ERROR=$?;
+	if [ $ERROR -ne 0 ]; then
+	    echo "> Lget failed on input file: ${FILE}";
+	    echo "> error_code= ${ERROR}";
+	    exit 0200;
+	fi;
+done;
+
+echo "> done";

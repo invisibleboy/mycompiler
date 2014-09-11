@@ -1,0 +1,680 @@
+\section{cudd\-Decomp.c File Reference}
+\label{cuddDecomp_8c}\index{cuddDecomp.c@{cuddDecomp.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Conjuncts}
+\item 
+struct \bf{Node\-Stat}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DEPTH}~5
+\item 
+\#define \bf{THRESHOLD}~10
+\item 
+\#define \bf{NONE}~0
+\item 
+\#define \bf{PAIR\_\-ST}~1
+\item 
+\#define \bf{PAIR\_\-CR}~2
+\item 
+\#define \bf{G\_\-ST}~3
+\item 
+\#define \bf{G\_\-CR}~4
+\item 
+\#define \bf{H\_\-ST}~5
+\item 
+\#define \bf{H\_\-CR}~6
+\item 
+\#define \bf{BOTH\_\-G}~7
+\item 
+\#define \bf{BOTH\_\-H}~8
+\item 
+\#define \bf{Factors\-Not\-Stored}(factors)~((int)((long)(factors) \& 01))
+\item 
+\#define \bf{Factors\-Complement}(factors)~((\bf{Conjuncts} $\ast$)((long)(factors) $|$ 01))
+\item 
+\#define \bf{Factors\-Uncomplement}(factors)~((\bf{Conjuncts} $\ast$)((long)(factors) $^\wedge$ 01))
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Node\-Stat} $\ast$Create\-Bot\-Dist \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table))
+\item 
+static double Count\-Minterms \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$minterm\-Table))
+\item 
+static void Conjuncts\-Free \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Conjuncts} $\ast$factors))
+\item 
+static int Pair\-In\-Tables \bf{ARGS} ((\bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table))
+\item 
+static \bf{Conjuncts} $\ast$Check\-Tables\-Cache\-And\-Return \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table))
+\item 
+static \bf{Conjuncts} $\ast$Pick\-One\-Pair \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table))
+\item 
+static \bf{Conjuncts} $\ast$Check\-In\-Tables \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int $\ast$out\-Of\-Mem))
+\item 
+static \bf{Conjuncts} $\ast$Zero\-Case \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Conjuncts} $\ast$factors\-Nv, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int switched))
+\item 
+static \bf{Conjuncts} $\ast$Build\-Conjuncts \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table, \bf{st\_\-table} $\ast$cache\-Table, int approx\-Distance, int max\-Local\-Ref, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$minterm\-Table))
+\item 
+static int cudd\-Conjuncts\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$c1, \bf{Dd\-Node} $\ast$$\ast$c2))
+\item 
+int \bf{Cudd\_\-bdd\-Approx\-Conj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Approx\-Disj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Iter\-Conj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Iter\-Disj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Gen\-Conj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Gen\-Disj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Var\-Conj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts)
+\item 
+int \bf{Cudd\_\-bdd\-Var\-Disj\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts)
+\item 
+static \bf{Node\-Stat} $\ast$ \bf{Create\-Bot\-Dist} (\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table)
+\item 
+static double \bf{Count\-Minterms} (\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$minterm\-Table)
+\item 
+static void \bf{Conjuncts\-Free} (\bf{Dd\-Manager} $\ast$dd, \bf{Conjuncts} $\ast$factors)
+\item 
+static int \bf{Pair\-In\-Tables} (\bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table)
+\item 
+static \bf{Conjuncts} $\ast$ \bf{Check\-Tables\-Cache\-And\-Return} (\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table)
+\item 
+static \bf{Conjuncts} $\ast$ \bf{Pick\-One\-Pair} (\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table)
+\item 
+static \bf{Conjuncts} $\ast$ \bf{Check\-In\-Tables} (\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int $\ast$out\-Of\-Mem)
+\item 
+static \bf{Conjuncts} $\ast$ \bf{Zero\-Case} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Conjuncts} $\ast$factors\-Nv, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int switched)
+\item 
+static \bf{Conjuncts} $\ast$ \bf{Build\-Conjuncts} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table, \bf{st\_\-table} $\ast$cache\-Table, int approx\-Distance, int max\-Local\-Ref, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$minterm\-Table)
+\item 
+static int \bf{cudd\-Conjuncts\-Aux} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$c1, \bf{Dd\-Node} $\ast$$\ast$c2)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Decomp.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{one}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\item 
+long \bf{last\-Time\-G}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddDecomp.c@{cudd\-Decomp.c}!BOTH_G@{BOTH\_\-G}}
+\index{BOTH_G@{BOTH\_\-G}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BOTH\_\-G~7}\label{cuddDecomp_8c_d4637f90ba7bba70e9644293f654c913}
+
+
+
+
+Definition at line 55 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!BOTH_H@{BOTH\_\-H}}
+\index{BOTH_H@{BOTH\_\-H}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BOTH\_\-H~8}\label{cuddDecomp_8c_09f174c91e99d36c1a2ca2f683dab432}
+
+
+
+
+Definition at line 56 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!DEPTH@{DEPTH}}
+\index{DEPTH@{DEPTH}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEPTH~5}\label{cuddDecomp_8c_50267d552ca6f788254032e40046b770}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Decomp.c}{p.}{cuddDecomp_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for BDD decomposition.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Approx\-Conj\-Decomp()}{p.}{cuddDecomp_8c_536e36dac9b4ddf90edb3a48934b7886} \item \doxyref{Cudd\_\-bdd\-Approx\-Disj\-Decomp()}{p.}{cuddDecomp_8c_a9d8d2d24ef2842db6b6ab5794d2bb6e} \item \doxyref{Cudd\_\-bdd\-Iter\-Conj\-Decomp()}{p.}{cuddDecomp_8c_d7b54f1fae0417dcb3eeab6f1be792fa} \item \doxyref{Cudd\_\-bdd\-Iter\-Disj\-Decomp()}{p.}{cuddDecomp_8c_c716bb2411a608764d34404fadf09379} \item \doxyref{Cudd\_\-bdd\-Gen\-Conj\-Decomp()}{p.}{cuddDecomp_8c_8de1749d0e92e061d1b3edafc56956b3} \item \doxyref{Cudd\_\-bdd\-Gen\-Disj\-Decomp()}{p.}{cuddDecomp_8c_0f7cc1a34d26e9bbf9d3919e258dd952} \item \doxyref{Cudd\_\-bdd\-Var\-Conj\-Decomp()}{p.}{cuddDecomp_8c_aa21da753c8a5798886891fed4baaaa4} \item \doxyref{Cudd\_\-bdd\-Var\-Disj\-Decomp()}{p.}{cuddDecomp_8c_057207ca7a87e980a040bb1183db3645} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Conjuncts\-Aux()}{p.}{cuddDecomp_8c_d7ccdb7a449913b1e570ae336f34e665} \item \doxyref{Create\-Bot\-Dist()}{p.}{cuddDecomp_8c_677a13bad737b71a8cbbf3791f0a6f9b} \item \doxyref{Build\-Conjuncts()}{p.}{cuddDecomp_8c_62a5aae86e8c804eddfc84134d05be4e} \item \doxyref{Conjuncts\-Free()}{p.}{cuddDecomp_8c_f4526827b5d326a789805110e7937559} \end{itemize}
+]
+
+Author [Kavita Ravi, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 46 of file cudd\-Decomp.c.
+
+Referenced by cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!FactorsComplement@{FactorsComplement}}
+\index{FactorsComplement@{FactorsComplement}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Factors\-Complement(factors)~((\bf{Conjuncts} $\ast$)((long)(factors) $|$ 01))}\label{cuddDecomp_8c_5faf70e0ff9741c9a77b785163774a2c}
+
+
+
+
+Definition at line 94 of file cudd\-Decomp.c.
+
+Referenced by Build\-Conjuncts().\index{cuddDecomp.c@{cudd\-Decomp.c}!FactorsNotStored@{FactorsNotStored}}
+\index{FactorsNotStored@{FactorsNotStored}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Factors\-Not\-Stored(factors)~((int)((long)(factors) \& 01))}\label{cuddDecomp_8c_955ab001141d9916c63d700aafbf406a}
+
+
+
+
+Definition at line 92 of file cudd\-Decomp.c.
+
+Referenced by Build\-Conjuncts(), and cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!FactorsUncomplement@{FactorsUncomplement}}
+\index{FactorsUncomplement@{FactorsUncomplement}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Factors\-Uncomplement(factors)~((\bf{Conjuncts} $\ast$)((long)(factors) $^\wedge$ 01))}\label{cuddDecomp_8c_2222d3e7efefe33aeb8329cfdf27cfbf}
+
+
+
+
+Definition at line 96 of file cudd\-Decomp.c.
+
+Referenced by Build\-Conjuncts(), and cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!G_CR@{G\_\-CR}}
+\index{G_CR@{G\_\-CR}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define G\_\-CR~4}\label{cuddDecomp_8c_1281cf32367f04a8b5d44c34d9c89302}
+
+
+
+
+Definition at line 52 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!G_ST@{G\_\-ST}}
+\index{G_ST@{G\_\-ST}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define G\_\-ST~3}\label{cuddDecomp_8c_4cdccfbacfcbec51d7ab394bcffb4bd6}
+
+
+
+
+Definition at line 51 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!H_CR@{H\_\-CR}}
+\index{H_CR@{H\_\-CR}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define H\_\-CR~6}\label{cuddDecomp_8c_3c22a343f5591b834c0175d43bd0592b}
+
+
+
+
+Definition at line 54 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!H_ST@{H\_\-ST}}
+\index{H_ST@{H\_\-ST}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define H\_\-ST~5}\label{cuddDecomp_8c_01bd6b0372e14f14782c818fbb778520}
+
+
+
+
+Definition at line 53 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!NONE@{NONE}}
+\index{NONE@{NONE}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NONE~0}\label{cuddDecomp_8c_655c84af1b0034986ff56e12e84f983d}
+
+
+
+
+Definition at line 48 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!PAIR_CR@{PAIR\_\-CR}}
+\index{PAIR_CR@{PAIR\_\-CR}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PAIR\_\-CR~2}\label{cuddDecomp_8c_57e4e1e01aae91b6337bd0cf5bd5c65f}
+
+
+
+
+Definition at line 50 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!PAIR_ST@{PAIR\_\-ST}}
+\index{PAIR_ST@{PAIR\_\-ST}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define PAIR\_\-ST~1}\label{cuddDecomp_8c_9d0324bc023993d04644f4914ca00e99}
+
+
+
+
+Definition at line 49 of file cudd\-Decomp.c.
+
+Referenced by Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), and Pair\-In\-Tables().\index{cuddDecomp.c@{cudd\-Decomp.c}!THRESHOLD@{THRESHOLD}}
+\index{THRESHOLD@{THRESHOLD}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define THRESHOLD~10}\label{cuddDecomp_8c_4679d8ea8690999a6c6c7c0cb245c879}
+
+
+
+
+Definition at line 47 of file cudd\-Decomp.c.
+
+\subsection{Function Documentation}
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Conjuncts\-Aux ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$c1, \bf{Dd\-Node} $\ast$$\ast$c2))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_005f1c4ae65dd168dd213e9325ad54c3}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Build\-Conjuncts ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table, \bf{st\_\-table} $\ast$cache\-Table, int approx\-Distance, int max\-Local\-Ref, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$minterm\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_0fec209fb7371a5b959a53ecd26dfe84}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Zero\-Case ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Conjuncts} $\ast$factors\-Nv, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int switched))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_0aec99e636c4f269f3c06c9ae78a1d14}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Check\-In\-Tables ARGS ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table, int $\ast$out\-Of\-Mem))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_a60c0613dc82e60c70fddd208c70962a}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Pick\-One\-Pair ARGS ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g1, \bf{Dd\-Node} $\ast$h1, \bf{Dd\-Node} $\ast$g2, \bf{Dd\-Node} $\ast$h2, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_806ed0ea0081545e2f186208360cdb9b}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Check\-Tables\-Cache\-And\-Return ARGS ((\bf{Dd\-Node} $\ast$node, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table, \bf{st\_\-table} $\ast$cache\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_4165539c23f7f1c4673fac0d2defab74}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Pair\-In\-Tables ARGS ((\bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{st\_\-table} $\ast$gh\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_51c38babe63a99aa9ae68735d4f6b75e}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Conjuncts\-Free ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Conjuncts} $\ast$factors))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_e3c4516e451dc649d840f03114c791c9}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double Count\-Minterms ARGS ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$minterm\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_4a24dae24336a42efd58b2ec11ac0860}
+
+
+\index{cuddDecomp.c@{cudd\-Decomp.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Node\-Stat}$\ast$ Create\-Bot\-Dist ARGS ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$distance\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_b8326b8b626bba4d71dc34aeab188c4a}
+
+
+Automatic\-Start \index{cuddDecomp.c@{cudd\-Decomp.c}!BuildConjuncts@{BuildConjuncts}}
+\index{BuildConjuncts@{BuildConjuncts}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Build\-Conjuncts (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em distance\-Table}, \bf{st\_\-table} $\ast$ {\em cache\-Table}, int {\em approx\-Distance}, int {\em max\-Local\-Ref}, \bf{st\_\-table} $\ast$ {\em gh\-Table}, \bf{st\_\-table} $\ast$ {\em minterm\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_62a5aae86e8c804eddfc84134d05be4e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the conjuncts recursively, bottom up.]
+
+Description [Builds the conjuncts recursively, bottom up. Constants are returned as (f, f). The cache is checked for previously computed result. The decomposition points are determined by the local reference count of this node and the longest distance from the constant. At the decomposition point, the factors returned are (f, 1). Recur on the two children. The order is determined by the heavier branch. Combine the factors of the two children and pick the one that already occurs in the gh table. Occurence in g is indicated by value 1, occurence in h by 2, occurence in both 3.]
+
+Side\-Effects []
+
+See\-Also [cudd\-Conjuncts\-Aux] 
+
+Definition at line 1683 of file cudd\-Decomp.c.
+
+References ALLOC, Check\-In\-Tables(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Bdd\-Ite\-Recur(), cudd\-E, cudd\-Ref, cudd\-T, Dd\-Manager::error\-Code, Factors\-Complement, Factors\-Not\-Stored, Factors\-Uncomplement, FREE, Conjuncts::g, Conjuncts::h, last\-Time\-G, one, Pick\-One\-Pair(), st\_\-insert(), st\_\-lookup(), st\_\-lookup\_\-int(), ST\_\-OUT\_\-OF\_\-MEM, Dd\-Manager::vars, zero, and Zero\-Case().
+
+Referenced by cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!CheckInTables@{CheckInTables}}
+\index{CheckInTables@{CheckInTables}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Check\-In\-Tables (\bf{Dd\-Node} $\ast$ {\em node}, \bf{Dd\-Node} $\ast$ {\em g1}, \bf{Dd\-Node} $\ast$ {\em h1}, \bf{Dd\-Node} $\ast$ {\em g2}, \bf{Dd\-Node} $\ast$ {\em h2}, \bf{st\_\-table} $\ast$ {\em gh\-Table}, \bf{st\_\-table} $\ast$ {\em cache\-Table}, int $\ast$ {\em out\-Of\-Mem})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_45ff90aaf5756d5ae802aedff7c6043b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Check if the two pairs exist in the table, If any of the conjuncts do exist, store in the cache and return the corresponding pair.]
+
+Description [Check if the two pairs exist in the table. If any of the conjuncts do exist, store in the cache and return the corresponding pair.]
+
+Side\-Effects []
+
+See\-Also [Zero\-Case Build\-Conjuncts] 
+
+Definition at line 1198 of file cudd\-Decomp.c.
+
+References ALLOC, BOTH\_\-G, BOTH\_\-H, Cudd\_\-Regular, FREE, Conjuncts::g, G\_\-CR, G\_\-ST, Conjuncts::h, H\_\-CR, H\_\-ST, NONE, one, PAIR\_\-CR, PAIR\_\-ST, Pair\-In\-Tables(), st\_\-insert(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Build\-Conjuncts(), and Zero\-Case().\index{cuddDecomp.c@{cudd\-Decomp.c}!CheckTablesCacheAndReturn@{CheckTablesCacheAndReturn}}
+\index{CheckTablesCacheAndReturn@{CheckTablesCacheAndReturn}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Check\-Tables\-Cache\-And\-Return (\bf{Dd\-Node} $\ast$ {\em node}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h}, \bf{st\_\-table} $\ast$ {\em gh\-Table}, \bf{st\_\-table} $\ast$ {\em cache\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_3a81187089ae72737a1bdcd14d6acdd0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Check the tables for the existence of pair and return one combination, cache the result.]
+
+Description [Check the tables for the existence of pair and return one combination, cache the result. The assumption is that one of the conjuncts is already in the tables.]
+
+Side\-Effects [g and h referenced for the cache]
+
+See\-Also [Zero\-Case] 
+
+Definition at line 966 of file cudd\-Decomp.c.
+
+References ALLOC, assert, BOTH\_\-G, BOTH\_\-H, Cudd\_\-Regular, FREE, Conjuncts::g, G\_\-CR, G\_\-ST, Conjuncts::h, H\_\-CR, H\_\-ST, NONE, one, PAIR\_\-CR, PAIR\_\-ST, Pair\-In\-Tables(), st\_\-insert(), st\_\-lookup\_\-int(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Zero\-Case().\index{cuddDecomp.c@{cudd\-Decomp.c}!ConjunctsFree@{ConjunctsFree}}
+\index{ConjunctsFree@{ConjunctsFree}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Conjuncts\-Free (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Conjuncts} $\ast$ {\em factors})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_f4526827b5d326a789805110e7937559}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Free factors structure]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 876 of file cudd\-Decomp.c.
+
+References Cudd\_\-Recursive\-Deref(), FREE, Conjuncts::g, and Conjuncts::h.
+
+Referenced by cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!CountMinterms@{CountMinterms}}
+\index{CountMinterms@{CountMinterms}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double Count\-Minterms (\bf{Dd\-Node} $\ast$ {\em node}, double {\em max}, \bf{st\_\-table} $\ast$ {\em minterm\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_71eb8aef4966c905b34bb00296e74af2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Count the number of minterms of each node ina a BDD and store it in a hash table.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 814 of file cudd\-Decomp.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!CreateBotDist@{CreateBotDist}}
+\index{CreateBotDist@{CreateBotDist}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Node\-Stat}$\ast$ Create\-Bot\-Dist (\bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em distance\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_677a13bad737b71a8cbbf3791f0a6f9b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Get longest distance of node from constant.]
+
+Description [Get longest distance of node from constant. Returns the distance of the root from the constant if successful; CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 744 of file cudd\-Decomp.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-E, cudd\-T, Node\-Stat::distance, st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Create\-Bot\-Dist(), Create\-Path\-Table(), and cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddApproxConjDecomp@{Cudd\_\-bddApproxConjDecomp}}
+\index{Cudd_bddApproxConjDecomp@{Cudd\_\-bddApproxConjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Approx\-Conj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em conjuncts})}\label{cuddDecomp_8c_536e36dac9b4ddf90edb3a48934b7886}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way conjunctive decomposition of a BDD.]
+
+Description [Performs two-way conjunctive decomposition of a BDD. This procedure owes its name to the use of supersetting to obtain an initial factor of the given function. Returns the number of conjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The conjuncts produced by this procedure tend to be imbalanced.]
+
+Side\-Effects [The factors are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the conjuncts are already referenced. If the function returns 0, the array for the conjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Approx\-Disj\-Decomp Cudd\_\-bdd\-Iter\-Conj\-Decomp Cudd\_\-bdd\-Gen\-Conj\-Decomp Cudd\_\-bdd\-Var\-Conj\-Decomp Cudd\_\-Remap\-Over\-Approx Cudd\_\-bdd\-Squeeze Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 147 of file cudd\-Decomp.c.
+
+References ALLOC, Cudd\_\-bdd\-LICompaction(), Cudd\_\-bdd\-Squeeze(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref(), Cudd\_\-Remap\-Over\-Approx(), Cudd\_\-Support\-Size(), cudd\-Ref, and DD\_\-ONE.
+
+Referenced by Cudd\_\-bdd\-Approx\-Disj\-Decomp().\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddApproxDisjDecomp@{Cudd\_\-bddApproxDisjDecomp}}
+\index{Cudd_bddApproxDisjDecomp@{Cudd\_\-bddApproxDisjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Approx\-Disj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em disjuncts})}\label{cuddDecomp_8c_a9d8d2d24ef2842db6b6ab5794d2bb6e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way disjunctive decomposition of a BDD.]
+
+Description [Performs two-way disjunctive decomposition of a BDD. Returns the number of disjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The disjuncts produced by this procedure tend to be imbalanced.]
+
+Side\-Effects [The two disjuncts are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the disjuncts are already referenced. If the function returns 0, the array for the disjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Approx\-Conj\-Decomp Cudd\_\-bdd\-Iter\-Disj\-Decomp Cudd\_\-bdd\-Gen\-Disj\-Decomp Cudd\_\-bdd\-Var\-Disj\-Decomp] 
+
+Definition at line 245 of file cudd\-Decomp.c.
+
+References Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-Not, and result.\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddGenConjDecomp@{Cudd\_\-bddGenConjDecomp}}
+\index{Cudd_bddGenConjDecomp@{Cudd\_\-bddGenConjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Gen\-Conj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em conjuncts})}\label{cuddDecomp_8c_8de1749d0e92e061d1b3edafc56956b3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way conjunctive decomposition of a BDD.]
+
+Description [Performs two-way conjunctive decomposition of a BDD. This procedure owes its name to the fact tht it generalizes the decomposition based on the cofactors with respect to one variable. Returns the number of conjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The conjuncts produced by this procedure tend to be balanced.]
+
+Side\-Effects [The two factors are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the conjuncts are already referenced. If the function returns 0, the array for the conjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Gen\-Disj\-Decomp Cudd\_\-bdd\-Approx\-Conj\-Decomp Cudd\_\-bdd\-Iter\-Conj\-Decomp Cudd\_\-bdd\-Var\-Conj\-Decomp] 
+
+Definition at line 468 of file cudd\-Decomp.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), cudd\-Conjuncts\-Aux(), DD\_\-ONE, one, Dd\-Manager::reordered, result, and zero.
+
+Referenced by Cudd\_\-bdd\-Gen\-Disj\-Decomp().\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddGenDisjDecomp@{Cudd\_\-bddGenDisjDecomp}}
+\index{Cudd_bddGenDisjDecomp@{Cudd\_\-bddGenDisjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Gen\-Disj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em disjuncts})}\label{cuddDecomp_8c_0f7cc1a34d26e9bbf9d3919e258dd952}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way disjunctive decomposition of a BDD.]
+
+Description [Performs two-way disjunctive decomposition of a BDD. Returns the number of disjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The disjuncts produced by this procedure tend to be balanced.]
+
+Side\-Effects [The two disjuncts are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the disjuncts are already referenced. If the function returns 0, the array for the disjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Gen\-Conj\-Decomp Cudd\_\-bdd\-Approx\-Disj\-Decomp Cudd\_\-bdd\-Iter\-Disj\-Decomp Cudd\_\-bdd\-Var\-Disj\-Decomp] 
+
+Definition at line 547 of file cudd\-Decomp.c.
+
+References Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-Not, and result.\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddIterConjDecomp@{Cudd\_\-bddIterConjDecomp}}
+\index{Cudd_bddIterConjDecomp@{Cudd\_\-bddIterConjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Iter\-Conj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em conjuncts})}\label{cuddDecomp_8c_d7b54f1fae0417dcb3eeab6f1be792fa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way conjunctive decomposition of a BDD.]
+
+Description [Performs two-way conjunctive decomposition of a BDD. This procedure owes its name to the iterated use of supersetting to obtain a factor of the given function. Returns the number of conjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The conjuncts produced by this procedure tend to be imbalanced.]
+
+Side\-Effects [The factors are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the conjuncts are already referenced. If the function returns 0, the array for the conjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Iter\-Disj\-Decomp Cudd\_\-bdd\-Approx\-Conj\-Decomp Cudd\_\-bdd\-Gen\-Conj\-Decomp Cudd\_\-bdd\-Var\-Conj\-Decomp Cudd\_\-Remap\-Over\-Approx Cudd\_\-bdd\-Squeeze Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 285 of file cudd\-Decomp.c.
+
+References ALLOC, Cudd\_\-bdd\-And(), Cudd\_\-bdd\-LICompaction(), Cudd\_\-bdd\-Squeeze(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref(), Cudd\_\-Remap\-Over\-Approx(), Cudd\_\-Sharing\-Size(), Cudd\_\-Support\-Size(), cudd\-Ref, and DD\_\-ONE.
+
+Referenced by Cudd\_\-bdd\-Iter\-Disj\-Decomp().\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddIterDisjDecomp@{Cudd\_\-bddIterDisjDecomp}}
+\index{Cudd_bddIterDisjDecomp@{Cudd\_\-bddIterDisjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Iter\-Disj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em disjuncts})}\label{cuddDecomp_8c_c716bb2411a608764d34404fadf09379}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way disjunctive decomposition of a BDD.]
+
+Description [Performs two-way disjunctive decomposition of a BDD. Returns the number of disjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise. The disjuncts produced by this procedure tend to be imbalanced.]
+
+Side\-Effects [The two disjuncts are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the disjuncts are already referenced. If the function returns 0, the array for the disjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Iter\-Conj\-Decomp Cudd\_\-bdd\-Approx\-Disj\-Decomp Cudd\_\-bdd\-Gen\-Disj\-Decomp Cudd\_\-bdd\-Var\-Disj\-Decomp] 
+
+Definition at line 428 of file cudd\-Decomp.c.
+
+References Cudd\_\-bdd\-Iter\-Conj\-Decomp(), Cudd\_\-Not, and result.\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddVarConjDecomp@{Cudd\_\-bddVarConjDecomp}}
+\index{Cudd_bddVarConjDecomp@{Cudd\_\-bddVarConjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Var\-Conj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em conjuncts})}\label{cuddDecomp_8c_aa21da753c8a5798886891fed4baaaa4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way conjunctive decomposition of a BDD.]
+
+Description [Conjunctively decomposes one BDD according to a variable. If {\tt f} is the function of the BDD and {\tt x} is the variable, the decomposition is {\tt (f+x)(f+x')}. The variable is chosen so as to balance the sizes of the two conjuncts and to keep them small. Returns the number of conjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise.]
+
+Side\-Effects [The two factors are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the conjuncts are already referenced. If the function returns 0, the array for the conjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Var\-Disj\-Decomp Cudd\_\-bdd\-Gen\-Conj\-Decomp Cudd\_\-bdd\-Approx\-Conj\-Decomp Cudd\_\-bdd\-Iter\-Conj\-Decomp] 
+
+Definition at line 587 of file cudd\-Decomp.c.
+
+References ALLOC, assert, Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-bdd\-Or(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Support(), cudd\-Ref, cudd\-T, DD\_\-ONE, Dd\-Manager::error\-Code, scan, and size.
+
+Referenced by Cudd\_\-bdd\-Var\-Disj\-Decomp().\index{cuddDecomp.c@{cudd\-Decomp.c}!Cudd_bddVarDisjDecomp@{Cudd\_\-bddVarDisjDecomp}}
+\index{Cudd_bddVarDisjDecomp@{Cudd\_\-bddVarDisjDecomp}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Var\-Disj\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em disjuncts})}\label{cuddDecomp_8c_057207ca7a87e980a040bb1183db3645}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs two-way disjunctive decomposition of a BDD.]
+
+Description [Performs two-way disjunctive decomposition of a BDD according to a variable. If {\tt f} is the function of the BDD and {\tt x} is the variable, the decomposition is {\tt f$\ast$x + f$\ast$x'}. The variable is chosen so as to balance the sizes of the two disjuncts and to keep them small. Returns the number of disjuncts produced, that is, 2 if successful; 1 if no meaningful decomposition was found; 0 otherwise.]
+
+Side\-Effects [The two disjuncts are returned in an array as side effects. The array is allocated by this function. It is the caller's responsibility to free it. On successful completion, the disjuncts are already referenced. If the function returns 0, the array for the disjuncts is not allocated. If the function returns 1, the only factor equals the function to be decomposed.]
+
+See\-Also [Cudd\_\-bdd\-Var\-Conj\-Decomp Cudd\_\-bdd\-Approx\-Disj\-Decomp Cudd\_\-bdd\-Iter\-Disj\-Decomp Cudd\_\-bdd\-Gen\-Disj\-Decomp] 
+
+Definition at line 705 of file cudd\-Decomp.c.
+
+References Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-Not, and result.\index{cuddDecomp.c@{cudd\-Decomp.c}!cuddConjunctsAux@{cuddConjunctsAux}}
+\index{cuddConjunctsAux@{cuddConjunctsAux}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Conjuncts\-Aux (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em c1}, \bf{Dd\-Node} $\ast$$\ast$ {\em c2})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_d7ccdb7a449913b1e570ae336f34e665}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Procedure to compute two conjunctive factors of f and place in $\ast$c1 and $\ast$c2.]
+
+Description [Procedure to compute two conjunctive factors of f and place in $\ast$c1 and $\ast$c2. Sets up the required data - table of distances from the constant and local reference count. Also minterm table. ]
+
+Side\-Effects []
+
+See\-Also [] 
+
+Definition at line 2002 of file cudd\-Decomp.c.
+
+References ALLOC, assert, Build\-Conjuncts(), Conjuncts\-Free(), Count\-Minterms(), Create\-Bot\-Dist(), Cudd\_\-bdd\-Leq(), Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Random(), Cudd\_\-Support\-Size(), cudd\-Ref, DD\_\-ONE, DEPTH, Node\-Stat::distance, Factors\-Not\-Stored, Factors\-Uncomplement, FREE, Conjuncts::g, Conjuncts::h, last\-Time\-G, Node\-Stat::local\-Ref, max, one, st\_\-free\_\-gen(), st\_\-free\_\-table(), st\_\-gen(), st\_\-init\_\-gen(), st\_\-init\_\-table(), st\_\-insert(), ST\_\-OUT\_\-OF\_\-MEM, st\_\-ptrcmp(), and st\_\-ptrhash().
+
+Referenced by Cudd\_\-bdd\-Gen\-Conj\-Decomp().\index{cuddDecomp.c@{cudd\-Decomp.c}!PairInTables@{PairInTables}}
+\index{PairInTables@{PairInTables}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Pair\-In\-Tables (\bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h}, \bf{st\_\-table} $\ast$ {\em gh\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_3cf0babf23592ac86844a69942f019d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Check whether the given pair is in the tables.]
+
+Description [.Check whether the given pair is in the tables. g\-Table and h\-Table are combined. absence in both is indicated by 0, presence in g\-Table is indicated by 1, presence in h\-Table by 2 and presence in both by 3. The values returned by this function are PAIR\_\-ST, PAIR\_\-CR, G\_\-ST, G\_\-CR, H\_\-ST, H\_\-CR, BOTH\_\-G, BOTH\_\-H, NONE. PAIR\_\-ST implies g in g\-Table and h in h\-Table PAIR\_\-CR implies g in h\-Table and h in g\-Table G\_\-ST implies g in g\-Table and h not in any table G\_\-CR implies g in h\-Table and h not in any table H\_\-ST implies h in h\-Table and g not in any table H\_\-CR implies h in g\-Table and g not in any table BOTH\_\-G implies both in g\-Table BOTH\_\-H implies both in h\-Table NONE implies none in table; ]
+
+Side\-Effects []
+
+See\-Also [Check\-Tables\-Cache\-And\-Return Check\-In\-Tables] 
+
+Definition at line 916 of file cudd\-Decomp.c.
+
+References BOTH\_\-G, BOTH\_\-H, Cudd\_\-Regular, G\_\-CR, G\_\-ST, H\_\-CR, H\_\-ST, NONE, PAIR\_\-CR, PAIR\_\-ST, and st\_\-lookup\_\-int().
+
+Referenced by Check\-In\-Tables(), and Check\-Tables\-Cache\-And\-Return().\index{cuddDecomp.c@{cudd\-Decomp.c}!PickOnePair@{PickOnePair}}
+\index{PickOnePair@{PickOnePair}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Pick\-One\-Pair (\bf{Dd\-Node} $\ast$ {\em node}, \bf{Dd\-Node} $\ast$ {\em g1}, \bf{Dd\-Node} $\ast$ {\em h1}, \bf{Dd\-Node} $\ast$ {\em g2}, \bf{Dd\-Node} $\ast$ {\em h2}, \bf{st\_\-table} $\ast$ {\em gh\-Table}, \bf{st\_\-table} $\ast$ {\em cache\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_e43d47d2a4970d50d3c7986c58adb858}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Check the tables for the existence of pair and return one combination, store in cache.]
+
+Description [Check the tables for the existence of pair and return one combination, store in cache. The pair that has more pointers to it is picked. An approximation of the number of local pointers is made by taking the reference count of the pairs sent. ]
+
+Side\-Effects []
+
+See\-Also [Zero\-Case Build\-Conjuncts] 
+
+Definition at line 1075 of file cudd\-Decomp.c.
+
+References ALLOC, Cudd\_\-Regular, FREE, Conjuncts::g, Conjuncts::h, one, st\_\-insert(), st\_\-lookup\_\-int(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Build\-Conjuncts(), and Zero\-Case().\index{cuddDecomp.c@{cudd\-Decomp.c}!ZeroCase@{ZeroCase}}
+\index{ZeroCase@{ZeroCase}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Conjuncts}$\ast$ Zero\-Case (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, \bf{Conjuncts} $\ast$ {\em factors\-Nv}, \bf{st\_\-table} $\ast$ {\em gh\-Table}, \bf{st\_\-table} $\ast$ {\em cache\-Table}, int {\em switched})\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_4026d82c5fdbea92f4e8cda0311f2d28}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [If one child is zero, do explicitly what Restrict does or better]
+
+Description [If one child is zero, do explicitly what Restrict does or better. First separate a variable and its child in the base case. In case of a cube times a function, separate the cube and function. As a last resort, look in tables.]
+
+Side\-Effects [Frees the BDDs in factors\-Nv. factors\-Nv itself is not freed because it is freed above.]
+
+See\-Also [Build\-Conjuncts] 
+
+Definition at line 1441 of file cudd\-Decomp.c.
+
+References ALLOC, Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-E, cudd\-Ref, cudd\-T, Dd\-Manager::error\-Code, FREE, Conjuncts::g, Conjuncts::h, Dd\-Node::index, one, Pick\-One\-Pair(), st\_\-insert(), st\_\-lookup\_\-int(), ST\_\-OUT\_\-OF\_\-MEM, Dd\-Manager::vars, and zero.
+
+Referenced by Build\-Conjuncts().
+
+\subsection{Variable Documentation}
+\index{cuddDecomp.c@{cudd\-Decomp.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Decomp.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 81 of file cudd\-Decomp.c.\index{cuddDecomp.c@{cudd\-Decomp.c}!lastTimeG@{lastTimeG}}
+\index{lastTimeG@{lastTimeG}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{last\-Time\-G}}\label{cuddDecomp_8c_d8632835749f1dc28fc29e7f02d39401}
+
+
+
+
+Definition at line 85 of file cudd\-Decomp.c.
+
+Referenced by Build\-Conjuncts(), and cudd\-Conjuncts\-Aux().\index{cuddDecomp.c@{cudd\-Decomp.c}!one@{one}}
+\index{one@{one}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{one}\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_49e3c7508be54a84ae83273ed240e31c}
+
+
+
+
+Definition at line 84 of file cudd\-Decomp.c.
+
+Referenced by add\-Var\-To\-Const(), add\-Walsh\-Int(), bdd\-Var\-To\-Canonical(), bdd\-Var\-To\-Const(), Build\-Conjuncts(), Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ite\-Constant(), Cudd\_\-add\-Read(), Cudd\_\-add\-Xeqy(), Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-bdd\-Is\-Var\-Essential(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Pick\-One\-Cube(), Cudd\_\-bdd\-Read(), Cudd\_\-Dxygtdxz(), Cudd\_\-Dxygtdyz(), Cudd\_\-Equiv\-DC(), Cudd\_\-Init(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Add\-Or\-Abstract\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Check\-Cube(), cudd\-Cofactor\-Recur(), cudd\-Conjuncts\-Aux(), cudd\-CProjection\-Recur(), cudd\-Insert\-Subtables(), cudd\-Resize\-Table\-Zdd(), cudd\-Solve\-Eqn\-Recur(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), dd\-Bdd\-To\-Add\-Recur(), dd\-Ext\-Symm\-Check(), dd\-Find\-Essential\-Recur(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Resize\-Table(), get\_\-cube(), get\_\-path(), minterms\-From\-Universe(), Pick\-One\-Pair(), select\-Minterms\-From\-Universe(), zdd\-Port\-To\-Bdd\-Step(), and Zero\-Case().\index{cuddDecomp.c@{cudd\-Decomp.c}!zero@{zero}}
+\index{zero@{zero}!cuddDecomp.c@{cudd\-Decomp.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddDecomp_8c_559a95c469bb341bde49e5950629e726}
+
+
+
+
+Definition at line 84 of file cudd\-Decomp.c.

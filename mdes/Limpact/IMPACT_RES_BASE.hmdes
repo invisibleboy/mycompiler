@@ -1,0 +1,556 @@
+Version1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%		      Illinois Open Source License
+%%                     University of Illinois/NCSA
+%%                         Open Source License
+%%
+%% Copyright (c) 2002, The University of Illinois at Urbana-Champaign.
+%% All rights reserved.
+%%
+%% Developed by:             
+%%
+%%		IMPACT Research Group
+%%
+%%		University of Illinois at Urbana-Champaign
+%%
+%%              http://www.crhc.uiuc.edu/IMPACT
+%%              http://www.gelato.org
+%%
+%% Permission is hereby granted, free of charge, to any person
+%% obtaining a copy of this software and associated documentation
+%% files (the "Software"), to deal with the Software without
+%% restriction, including without limitation the rights to use, copy,
+%% modify, merge, publish, distribute, sublicense, and/or sell copies
+%% of the Software, and to permit persons to whom the Software is
+%% furnished to do so, subject to the following conditions:
+%%
+%% Redistributions of source code must retain the above copyright
+%% notice, this list of conditions and the following disclaimers.
+%%
+%% Redistributions in binary form must reproduce the above copyright
+%% notice, this list of conditions and the following disclaimers in
+%% the documentation and/or other materials provided with the
+%% distribution.
+%%
+%% Neither the names of the IMPACT Research Group, the University of
+%% Illinois, nor the names of its contributors may be used to endorse
+%% or promote products derived from this Software without specific
+%% prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+%% WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+%% LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+%% PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+%% CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+%% OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+%% OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+%% OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPACT v1.0 Architecture High-Level Machine Description
+% Issue 1, general percolation
+% Author: Scott A. Mahlke
+% Date:   6-93
+
+$define ISSUE	1
+$define BRANCH	1
+
+(Define declaration
+    C_header_file	"$IMPACT_ROOT$/include/Lcode/l_opc.h"
+    C_header_file	"$IMPACT_ROOT$/include/Lcode/l_flags.h"
+    C_header_file	"$IMPACT_ROOT$/include/Lcode/limpact_phase1.h"
+    C_header_file	"$IMPACT_ROOT$/include/machine/m_spec.h"
+    C_header_file	"$IMPACT_ROOT$/include/machine/m_impact.h"
+    predicates		1
+    dest_operands	2
+    dest_syncs		4	# Used to construct control/sync dependences
+    source_operands	4
+    src_syncs		4	# Used to construct control/sync dependences
+    processor_model     superscalar
+end)
+
+#
+# name ((capacity "static" "rotating") (width "size in bits"))
+#
+
+(Register_Files declaration
+    p       ((capacity 32 0) (width 32))
+    i	    ((capacity 64 0) (width 32))
+    f	    ((capacity 64 0) (width 32))
+    f2	    ((capacity 32 0) (width 64))
+    
+    # generic literal field  bit field for short loads/stores
+    Lit    ((capacity 0 0) (width 32))
+    
+    Label   ((capacity 0 0) (width 32))
+
+    NULL    ((capacity 0 0) (width 0))
+    
+end)
+
+#
+# name (reg_file1 ...)
+#
+
+(IO_Sets declaration
+    REG (p i f f2)
+    CON (Lit Label)
+    SOME (REG Lit Label)
+    ANY (REG Lit Label NULL)
+    RANY (REG NULL)
+    
+end)
+
+#
+# name (<predicate0 ...>[dest0 ...][src0 ...])
+#
+
+(IO_Items declaration
+    # Standard 3 operand instruction format
+    IOI_Std3 		(<RANY>[REG - ][SOME SOME - - ])
+    
+    # Standard 5 operand instruction format
+    IOI_Std5		(<RANY>[REG RANY][SOME SOME SOME -])
+
+    # Predicate clear
+    IOI_predclr		([REG -][- - - -])
+
+    # Predicate copy
+    IOI_predcopy	(<RANY>[REG -][- - - -])
+
+    # Predicate comparison
+    IOI_predcmp        (<RANY>[REG RANY][SOME SOME - - ])
+
+    # Operand format for "move"
+    IOI_mov 		(<RANY>[REG - ][SOME - - - ])
+    IOI_cmov            (<->   [REG - ][SOME SOME - -])
+    IOI_select          (<->   [REG - ][SOME SOME SOME -])
+
+    # Operand format for unconditional branch
+    # SAM 8/94 - 3 types of ubr, generic (ubr), predicated (pubr), 
+    #            non-predicated (npubr).  This is so can treat predicated
+    #            jumps just like conditional branches, but still handle other
+    #            unconditional brs like jrg and jsr separately
+    IOI_rts		(<RANY>[ - - ][ - - - -])
+    IOI_ubr             (<RANY>[ - - ][SOME ANY - - ])
+    IOI_npubr           (      [ - - ][SOME ANY - - ])
+    IOI_pubr            (<REG> [ - - ][SOME ANY - - ])
+   
+    # Operand format for conditional branch
+    IOI_cbr		(<RANY>[ - - ][SOME SOME CON - ])
+   
+    # Operand format for stores
+	# basic store
+    IOI_store1		(<RANY>[ - - ][SOME SOME SOME - ])
+    	# pre/post inc store
+    IOI_store2		(<RANY>[REG - ][SOME SOME SOME SOME ])
+
+    # Operand format for loads
+	# basic load
+    IOI_load1		(<RANY>[REG - ][SOME SOME - - ])
+    	# pre/post inc load
+    IOI_load2		(<RANY>[REG REG][SOME SOME SOME - ])
+
+    IOI_Nil (<RANY>[][])
+    IOI_Ch (<RANY>[][ANY ANY ANY])
+    IOI_Ignore  (<ANY>[ANY ANY][ANY ANY ANY ANY])
+end)
+
+# Enumerate resources
+
+(Resources declaration
+    slot[0..$ISSUE$]
+    ialu[0..$ISSUE$]
+    imul[0..$ISSUE$]
+    idiv[0..$ISSUE$]
+    fpalu[0..$ISSUE$]
+    fpmul[0..$ISSUE$]
+    fpdiv[0..$ISSUE$]
+    mem[0..$ISSUE$]
+    branch[0..$BRANCH$]
+end)
+
+(ResTables declaration
+    RL_INOP    ( # 1 cycle NOP
+    			(slot 0)
+	       )
+    RL_IAlu    ( # 1 cycle IAlu
+    			(slot 0)
+			(ialu 0)
+	       )
+    RL_IMul    ( # fully pipelined IMul
+			(slot 0)
+			(imul 0)
+	       )
+    RL_IDiv    ( # fully pipelined IDiv
+			(slot 0)
+			(idiv 0)
+	       )
+    RL_FPAlu   ( # fully pipelined single/double precision fp alu op 
+    			(slot 0)
+			(fpalu 0)
+	       )
+    RL_FPMul   ( # fully pipelined single/double precision fp multiply
+    			(slot 0)
+    			(fpmul 0)
+	       )
+    RL_FPDiv   ( # fully pipelined single/double precision fp divide
+    			(slot 0)
+    			(fpdiv 0)
+	       )
+    RL_Load    ( # fully pipelined load
+		 	(slot 0)
+			(mem 0)
+    	       )
+    RL_Store   ( # fully pipelined store
+    			(slot 0)
+			(mem  0)
+    	       )
+    RL_Branch  ( # fully pipelined branch
+			(slot 0)
+			(branch 0)
+               )
+end)
+
+
+# 
+# name (exception_latency (pred) (dest0 ...) (src0 ...) (sync_dest ...) (sync_src ...)
+#
+#       Sync arcs description   1: memory
+#                               2: control
+#                               3: synchronization
+#                               4: vliw (special use, set to 0)
+
+(Latencies declaration
+    Lat1    ( 1 (0) (1 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))
+    Lat1ma  ( 1 (0) (0 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# st
+    Lat1mb  ( 1 (0) (1 0) (0 0 0 0) (1 0 0 0) (0 0 0 0))	# post/pre inc st
+    Lat1ba  ( 1 (0) (1 0) (0 0 0 0) (0 1 0 0) (0 0 0 0))	# uncond branches
+    Lat1bb  ( 1 (0) (1 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# int cond branches
+    Lat1p   ( 1 (0) (1 1) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# int pred compares
+    Lat2ma  ( 2 (0) (2 0) (0 0 0 0) (1 0 0 0) (0 0 0 0))	# ld
+    Lat2mb  ( 2 (0) (2 1) (0 0 0 0) (1 0 0 0) (0 0 0 0))	# post/pre inc ld
+
+# Lat3's changed to 2 cycles to match HPPA - SAM 9-94
+    Lat3    ( 2 (0) (2 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))
+    Lat3a   ( 2 (0) (2 2) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# mul_add, mul_sub
+    Lat3bb  ( 2 (0) (2 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# flt/dbl cond branches
+    Lat3p   ( 2 (0) (2 2) (0 0 0 0) (0 0 0 0) (0 0 0 0))	# flt/dbl pred compares
+    Lat10   ( 10 (0) (10 0) (0 0 0 0) (0 0 0 0) (0 0 0 0))
+end)
+    
+# name ((io_list, resource_list, latency) ...())
+(Operation_class declaration
+	CL_Ignore
+		(
+			(IOI_Ignore RL_INOP Lat1)
+		)
+end)
+
+# lcode_name <op_flags> (assembly_name <alt_flags> (operation_class))
+#
+# The following op_flags are supported:
+#       op_flags must be the same across common lcode_names
+#
+#       IGNORE - scheduler ignores this op
+#       CBR - conditional branch op
+#       JMP - unconditional branch op
+#       JSR - subroutine call
+#       RTS - subroutine return
+#       SYNC - synchronization op
+#       LOAD - load op
+#       STORE - store op
+#       EXCEPT - op may cause an exception
+#
+# The following alt_flags are supported:
+#       alternative flags may be different across common lcode_names
+#
+#       SILENT - speculative version
+
+(Operations declaration 
+
+# Lcode opcodes that are ignored by scheduler
+	Lop_DEFINE	<IGNORE>        (Lop_DEFINE	           CL_Ignore)
+	Lop_ALLOC	<IGNORE>        (Lop_ALLOC	           CL_Ignore)
+	Lop_EPILOGUE	<SYNC>          (Lop_EPILOGUE	           CL_Ignore)
+	Lop_PROLOGUE	<IGNORE>        (Lop_PROLOGUE	           CL_Ignore)
+	Lop_SIM_DIR	<IGNORE>        (Lop_SIM_DIR	           CL_Ignore)
+	Lop_BOUNDARY    <IGNORE>        (Lop_BOUNDARY              CL_Ignore)
+	
+# The remaining opcodes are supported by the scheduler
+	Lop_NO_OP   		        (Lop_NO_OP               ((IOI_Nil  RL_INOP  Lat1)) )
+        Lop_CHECK       <CHK>   	(Lop_CHECK   		 ((IOI_Ch   RL_INOP  Lat1)) )
+        Lop_CONFIRM     <CHK>   	(Lop_CONFIRM 		 ((IOI_Ch   RL_INOP  Lat1)) )
+ 
+ 	Lop_JSR		<JSR> 	        (Lop_JSR                 ((IOI_ubr  RL_Branch  Lat1ba)) )
+ 	Lop_JSR_FS	<JSR> 	        (Lop_JSR_FS              ((IOI_ubr  RL_Branch  Lat1ba)) )
+
+    	Lop_RTS		<RTS>	        (Lop_RTS                 ((IOI_rts  RL_Branch  Lat1ba)) )
+    	Lop_RTS_FS	<RTS>	        (Lop_RTS_FS              ((IOI_rts  RL_Branch  Lat1ba)) )
+
+    	Lop_JUMP	<JMP>           (Lop_JUMP                ((IOI_npubr  RL_Branch  Lat1ba)) )
+    	Lop_JUMP	<JMP>           (Lop_JUMP                ((IOI_pubr  RL_Branch  Lat1bb)) )
+	Lop_JUMP_FS	<JMP> 	        (Lop_JUMP_FS             ((IOI_npubr  RL_Branch  Lat1ba)) )
+	Lop_JUMP_FS	<JMP> 	        (Lop_JUMP_FS             ((IOI_pubr  RL_Branch  Lat1bb)) )
+
+	Lop_JUMP_RG	<JMP>	        (Lop_JUMP_RG             ((IOI_ubr  RL_Branch  Lat1ba)) )
+      	Lop_JUMP_RG_FS	<JMP>	        (Lop_JUMP_RG_FS          ((IOI_ubr  RL_Branch  Lat1ba)) )
+
+# Conditional branch instructions
+
+	Lop_BEQ         <CBR>           (Lop_BEQ                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BEQ_FS      <CBR>           (Lop_BEQ_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BNE         <CBR>           (Lop_BNE                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BNE_FS      <CBR>           (Lop_BNE_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGT         <CBR>           (Lop_BGT                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGT_FS      <CBR>           (Lop_BGT_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGE         <CBR>           (Lop_BGE                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGE_FS      <CBR>           (Lop_BGE_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLT         <CBR>           (Lop_BLT                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLT_FS      <CBR>           (Lop_BLT_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLE         <CBR>           (Lop_BLE                 ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLE_FS      <CBR>           (Lop_BLE_FS              ((IOI_cbr  RL_Branch  Lat1bb)) )
+
+	Lop_BGT_U       <CBR>           (Lop_BGT_U               ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGT_U_FS    <CBR>           (Lop_BGT_U_FS            ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGE_U       <CBR>           (Lop_BGE_U               ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BGE_U_FS    <CBR>           (Lop_BGE_U_FS            ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLT_U       <CBR>           (Lop_BLT_U               ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLT_U_FS    <CBR>           (Lop_BLT_U_FS            ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLE_U       <CBR>           (Lop_BLE_U               ((IOI_cbr  RL_Branch  Lat1bb)) )
+	Lop_BLE_U_FS    <CBR>           (Lop_BLE_U_FS            ((IOI_cbr  RL_Branch  Lat1bb)) )
+
+	Lop_BEQ_F       <CBR EXCEPT>    (Lop_BEQ_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BEQ_F_FS    <CBR EXCEPT>    (Lop_BEQ_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BNE_F       <CBR EXCEPT>    (Lop_BNE_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BNE_F_FS    <CBR EXCEPT>    (Lop_BNE_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGT_F       <CBR EXCEPT>    (Lop_BGT_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGT_F_FS    <CBR EXCEPT>    (Lop_BGT_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGE_F       <CBR EXCEPT>    (Lop_BGE_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGE_F_FS    <CBR EXCEPT>    (Lop_BGE_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLT_F       <CBR EXCEPT>    (Lop_BLT_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLT_F_FS    <CBR EXCEPT>    (Lop_BLT_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLE_F       <CBR EXCEPT>    (Lop_BLE_F               ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLE_F_FS    <CBR EXCEPT>    (Lop_BLE_F_FS            ((IOI_cbr  RL_Branch  Lat3bb)) )
+
+	Lop_BEQ_F2      <CBR EXCEPT>    (Lop_BEQ_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BEQ_F2_FS   <CBR EXCEPT>    (Lop_BEQ_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BNE_F2      <CBR EXCEPT>    (Lop_BNE_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BNE_F2_FS   <CBR EXCEPT>    (Lop_BNE_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGT_F2      <CBR EXCEPT>    (Lop_BGT_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGT_F2_FS   <CBR EXCEPT>    (Lop_BGT_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGE_F2      <CBR EXCEPT>    (Lop_BGE_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BGE_F2_FS   <CBR EXCEPT>    (Lop_BGE_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLT_F2      <CBR EXCEPT>    (Lop_BLT_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLT_F2_FS   <CBR EXCEPT>    (Lop_BLT_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLE_F2      <CBR EXCEPT>    (Lop_BLE_F2              ((IOI_cbr  RL_Branch  Lat3bb)) )
+	Lop_BLE_F2_FS   <CBR EXCEPT>    (Lop_BLE_F2_FS           ((IOI_cbr  RL_Branch  Lat3bb)) )
+
+# Integer ALU instructions
+
+	Lop_MOV	                        (Lop_MOV                 ((IOI_mov RL_IAlu  Lat1)) )
+	Lop_ABS	                        (Lop_ABS                 ((IOI_mov RL_IAlu  Lat1)) )
+	
+    	Lop_OR	                        (Lop_OR                  ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_AND	                        (Lop_AND                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_XOR	                        (Lop_XOR                 ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_NOR	                        (Lop_NOR                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_NAND                        (Lop_NAND                ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_NXOR                        (Lop_NXOR                ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_OR_NOT                      (Lop_OR_NOT              ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_AND_NOT                     (Lop_AND_NOT             ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_OR_COMPL                    (Lop_OR_COMPL            ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_AND_COMPL                   (Lop_AND_COMPL           ((IOI_Std3  RL_IAlu  Lat1)) )
+
+	Lop_LSL	                        (Lop_LSL                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_LSR	                        (Lop_LSR                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_ASR	                        (Lop_ASR                 ((IOI_Std3  RL_IAlu  Lat1)) )
+
+	Lop_ADD	                        (Lop_ADD                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_ADD_U                       (Lop_ADD_U               ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_SUB	                        (Lop_SUB                 ((IOI_Std3  RL_IAlu  Lat1)) )
+	Lop_SUB_U                       (Lop_SUB_U               ((IOI_Std3  RL_IAlu  Lat1)) )
+	
+				    
+# Integer comparison instructions
+
+    	Lop_EQ	                        (Lop_EQ                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_NE	                        (Lop_NE                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_GT	                        (Lop_GT                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_GT_U                        (Lop_GT_U                ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_GE	                        (Lop_GE                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_GE_U                        (Lop_GE_U                ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_LT	                        (Lop_LT                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_LT_U                        (Lop_LT_U                ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_LE	                        (Lop_LE                  ((IOI_Std3  RL_IAlu  Lat1)) )
+    	Lop_LE_U                        (Lop_LE_U                ((IOI_Std3  RL_IAlu  Lat1)) )
+
+# Misc integer instructions
+
+	Lop_MUL	                     (Lop_MUL                 ((IOI_Std3  RL_IMul  Lat3)) )
+	Lop_MUL_U                    (Lop_MUL_U               ((IOI_Std3  RL_IMul  Lat3)) )
+	Lop_DIV	        <EXCEPT>        (Lop_DIV                 ((IOI_Std3  RL_IDiv  Lat10)) )
+	Lop_DIV_U       <EXCEPT>        (Lop_DIV_U               ((IOI_Std3  RL_IDiv  Lat10)) )
+	Lop_REM	        <EXCEPT>        (Lop_REM                 ((IOI_Std3  RL_IDiv  Lat10)) )
+	Lop_REM_U       <EXCEPT>        (Lop_REM_U               ((IOI_Std3  RL_IDiv  Lat10)) )
+	Lop_MUL_ADD                     (Lop_MUL_ADD             ((IOI_Std5  RL_IMul  Lat3)) )
+	Lop_MUL_ADD_U                   (Lop_MUL_ADD_U           ((IOI_Std5  RL_IMul  Lat3)) )
+	Lop_MUL_SUB                     (Lop_MUL_SUB             ((IOI_Std5  RL_IMul  Lat3)) )
+	Lop_MUL_SUB_U                   (Lop_MUL_SUB_U           ((IOI_Std5  RL_IMul  Lat3)) )
+	Lop_MUL_SUB_REV                 (Lop_MUL_SUB_REV         ((IOI_Std5  RL_IMul  Lat3)) )
+	Lop_MUL_SUB_REV_U               (Lop_MUL_SUB_REV_U       ((IOI_Std5  RL_IMul  Lat3)) )
+	
+# Floating point ALU instructions
+
+	Lop_MOV_F    		        (Lop_MOV_F               ((IOI_mov   RL_FPAlu  Lat1)) )
+	Lop_MOV_F2    		        (Lop_MOV_F2              ((IOI_mov   RL_FPAlu  Lat1)) )
+        Lop_ABS_F       <EXCEPT>        (Lop_ABS_F               ((IOI_mov   RL_FPAlu  Lat1)) )
+        Lop_ABS_F2      <EXCEPT>        (Lop_ABS_F2              ((IOI_mov   RL_FPAlu  Lat1)) )
+
+
+      	Lop_ADD_F       <EXCEPT>   	(Lop_ADD_F               ((IOI_Std3  RL_FPAlu  Lat3)) )
+      	Lop_ADD_F2      <EXCEPT>   	(Lop_ADD_F2              ((IOI_Std3  RL_FPAlu  Lat3)) )
+      	Lop_SUB_F       <EXCEPT>   	(Lop_SUB_F               ((IOI_Std3  RL_FPAlu  Lat3)) )
+      	Lop_SUB_F2      <EXCEPT>   	(Lop_SUB_F2              ((IOI_Std3  RL_FPAlu  Lat3)) )
+
+# Floating point comparison instructions
+
+	Lop_EQ_F        <EXCEPT>  	(Lop_EQ_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_EQ_F2       <EXCEPT>  	(Lop_EQ_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_NE_F        <EXCEPT>  	(Lop_NE_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_NE_F2       <EXCEPT>  	(Lop_NE_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_GT_F        <EXCEPT>  	(Lop_GT_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_GT_F2       <EXCEPT>  	(Lop_GT_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_GE_F        <EXCEPT>  	(Lop_GE_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_GE_F2       <EXCEPT>  	(Lop_GE_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_LT_F        <EXCEPT>  	(Lop_LT_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_LT_F2       <EXCEPT>  	(Lop_LT_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_LE_F        <EXCEPT>  	(Lop_LE_F                ((IOI_Std3  RL_FPAlu  Lat3)) )
+	Lop_LE_F2       <EXCEPT>  	(Lop_LE_F2               ((IOI_Std3  RL_FPAlu  Lat3)) )
+
+# Float point conversion instructions
+
+    	Lop_I_F	        <EXCEPT>	(Lop_I_F                 ((IOI_mov   RL_FPAlu  Lat3)) )
+    	Lop_F_I	        <EXCEPT>	(Lop_F_I                 ((IOI_mov   RL_FPAlu  Lat3)) )
+    	Lop_I_F2        <EXCEPT>	(Lop_I_F2                ((IOI_mov   RL_FPAlu  Lat3)) )
+    	Lop_F2_I        <EXCEPT>	(Lop_F2_I                ((IOI_mov   RL_FPAlu  Lat3)) )
+    	Lop_F_F2        <EXCEPT>	(Lop_F_F2                ((IOI_mov   RL_FPAlu  Lat3)) )
+    	Lop_F2_F        <EXCEPT>	(Lop_F2_F                ((IOI_mov   RL_FPAlu  Lat3)) )
+
+# Misc floating point instructions 
+
+	Lop_MUL_F       <EXCEPT>	(Lop_MUL_F          	 ((IOI_Std3  RL_FPMul  Lat3)) )
+	Lop_MUL_F2      <EXCEPT>	(Lop_MUL_F2     	 ((IOI_Std3  RL_FPMul  Lat3)) )
+	Lop_DIV_F       <EXCEPT>	(Lop_DIV_F	         ((IOI_Std3  RL_FPDiv  Lat10)) )
+	Lop_DIV_F2      <EXCEPT>	(Lop_DIV_F2	         ((IOI_Std3  RL_FPDiv  Lat10)) )
+	Lop_MUL_ADD_F   <EXCEPT>        (Lop_MUL_ADD_F	         ((IOI_Std5  RL_FPMul  Lat3)) )
+	Lop_MUL_ADD_F2  <EXCEPT>        (Lop_MUL_ADD_F2	         ((IOI_Std5  RL_FPMul  Lat3)) )
+	Lop_MUL_SUB_F   <EXCEPT>        (Lop_MUL_SUB_F	         ((IOI_Std5  RL_FPMul  Lat3)) )
+	Lop_MUL_SUB_REV_F  <EXCEPT>     (Lop_MUL_SUB_REV_F	 ((IOI_Std5  RL_FPMul  Lat3)) )
+	Lop_MUL_SUB_F2  <EXCEPT>        (Lop_MUL_SUB_F2	         ((IOI_Std5  RL_FPMul  Lat3)) )
+	Lop_MUL_SUB_REV_F2 <EXCEPT>     (Lop_MUL_SUB_REV_F2	 ((IOI_Std5  RL_FPMul  Lat3)) )
+        Lop_SQRT_F       <EXCEPT>       (Lop_SQRT_F              ((IOI_Std3  RL_FPDiv  Lat10)) )
+        Lop_SQRT_F2      <EXCEPT>       (Lop_SQRT_F2             ((IOI_Std3  RL_FPDiv  Lat10)) )
+
+	
+# Load instructions
+
+	Lop_LD_UC	<LOAD EXCEPT>	(Lop_LD_UC               ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_UC	<LOAD EXCEPT>	(Lop_LD_PRE_UC           ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_UC	<LOAD EXCEPT>	(Lop_LD_POST_UC          ((IOI_load2 RL_Load Lat2mb)) )
+
+	Lop_LD_C	<LOAD EXCEPT>	(Lop_LD_C                ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_C	<LOAD EXCEPT>	(Lop_LD_PRE_C            ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_C	<LOAD EXCEPT>	(Lop_LD_POST_C           ((IOI_load2 RL_Load Lat2mb)) )
+	
+	Lop_LD_UC2	<LOAD EXCEPT>	(Lop_LD_UC2              ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_UC2	<LOAD EXCEPT>	(Lop_LD_PRE_UC2          ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_UC2	<LOAD EXCEPT>	(Lop_LD_POST_UC2         ((IOI_load2 RL_Load Lat2mb)) )
+
+	Lop_LD_C2	<LOAD EXCEPT>	(Lop_LD_C2               ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_C2	<LOAD EXCEPT>	(Lop_LD_PRE_C2           ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_C2	<LOAD EXCEPT>	(Lop_LD_POST_C2          ((IOI_load2 RL_Load Lat2mb)) )
+	
+	Lop_LD_I	<LOAD EXCEPT>	(Lop_LD_I                ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_I	<LOAD EXCEPT>	(Lop_LD_PRE_I            ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_I	<LOAD EXCEPT>	(Lop_LD_POST_I           ((IOI_load2 RL_Load Lat2mb)) )
+	
+	Lop_LD_F	<LOAD EXCEPT>	(Lop_LD_F                ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_F	<LOAD EXCEPT>	(Lop_LD_PRE_F            ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_F	<LOAD EXCEPT>	(Lop_LD_POST_F           ((IOI_load2 RL_Load Lat2mb)) )
+	
+	Lop_LD_F2	<LOAD EXCEPT>	(Lop_LD_F2               ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_LD_PRE_F2	<LOAD EXCEPT>	(Lop_LD_PRE_F2           ((IOI_load2 RL_Load Lat2mb)) )
+	Lop_LD_POST_F2	<LOAD EXCEPT>	(Lop_LD_POST_F2          ((IOI_load2 RL_Load Lat2mb)) )
+	
+# Store instructions
+
+	Lop_ST_C	<STORE EXCEPT>	(Lop_ST_C                ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_ST_PRE_C	<STORE EXCEPT>	(Lop_ST_PRE_C            ((IOI_store2 RL_Store Lat1mb)) )
+	Lop_ST_POST_C	<STORE EXCEPT>	(Lop_ST_POST_C           ((IOI_store2 RL_Store Lat1mb)) )
+	
+	Lop_ST_C2	<STORE EXCEPT>	(Lop_ST_C2               ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_ST_PRE_C2	<STORE EXCEPT>	(Lop_ST_PRE_C2           ((IOI_store2 RL_Store Lat1mb)) )
+	Lop_ST_POST_C2	<STORE EXCEPT>	(Lop_ST_POST_C2          ((IOI_store2 RL_Store Lat1mb)) )
+	
+	Lop_ST_I	<STORE EXCEPT>	(Lop_ST_I                ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_ST_PRE_I	<STORE EXCEPT>	(Lop_ST_PRE_I            ((IOI_store2 RL_Store Lat1mb)) )
+	Lop_ST_POST_I	<STORE EXCEPT>	(Lop_ST_POST_I           ((IOI_store2 RL_Store Lat1mb)) )
+	
+	Lop_ST_F	<STORE EXCEPT>	(Lop_ST_F                ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_ST_PRE_F	<STORE EXCEPT>	(Lop_ST_PRE_F            ((IOI_store2 RL_Store Lat1mb)) )
+	Lop_ST_POST_F	<STORE EXCEPT>	(Lop_ST_POST_F           ((IOI_store2 RL_Store Lat1mb)) )
+	
+	Lop_ST_F2	<STORE EXCEPT>	(Lop_ST_F2               ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_ST_PRE_F2	<STORE EXCEPT>	(Lop_ST_PRE_F2           ((IOI_store2 RL_Store Lat1mb)) )
+	Lop_ST_POST_F2	<STORE EXCEPT>	(Lop_ST_POST_F2          ((IOI_store2 RL_Store Lat1mb)) )
+
+# Predicate setting instructions
+
+	Lop_PRED_CLEAR                  (Lop_PRED_CLEAR		 ((IOI_predclr RL_IAlu Lat1)) )
+	Lop_PRED_SET                    (Lop_PRED_SET		 ((IOI_predclr RL_IAlu Lat1)) )
+	Lop_PRED_COPY                   (Lop_PRED_COPY		 ((IOI_predcopy RL_IAlu Lat1)) )
+
+	Lop_PRED_LD	<LOAD EXCEPT>	(Lop_PRED_LD		 ((IOI_load1 RL_Load Lat2ma)) )
+	Lop_PRED_LD_BLK	<LOAD EXCEPT>	(Lop_PRED_LD_BLK	 ((IOI_load1 RL_Load Lat2ma)) )
+
+	Lop_PRED_ST	<STORE EXCEPT>	(Lop_PRED_ST		 ((IOI_store1 RL_Store Lat1ma)) )
+	Lop_PRED_ST_BLK	<STORE EXCEPT>	(Lop_PRED_ST_BLK	 ((IOI_store1 RL_Store Lat1ma)) )
+
+	Lop_PRED_EQ			(Lop_PRED_EQ		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_NE			(Lop_PRED_NE		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_GT			(Lop_PRED_GT		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_GT_U			(Lop_PRED_GT_U		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_GE			(Lop_PRED_GE		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_GE_U			(Lop_PRED_GE_U		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_LT			(Lop_PRED_LT		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_LT_U			(Lop_PRED_LT_U		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_LE			(Lop_PRED_LE		 ((IOI_predcmp RL_IAlu Lat1p)) )
+	Lop_PRED_LE_U			(Lop_PRED_LE_U		 ((IOI_predcmp RL_IAlu Lat1p)) )
+
+	Lop_PRED_EQ_F2	<EXCEPT>	(Lop_PRED_EQ_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_NE_F2	<EXCEPT>	(Lop_PRED_NE_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_GT_F2	<EXCEPT>	(Lop_PRED_GT_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_GE_F2	<EXCEPT>	(Lop_PRED_GE_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_LT_F2	<EXCEPT>	(Lop_PRED_LT_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_LE_F2	<EXCEPT>	(Lop_PRED_LE_F2		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+
+	Lop_PRED_EQ_F	<EXCEPT>	(Lop_PRED_EQ_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_NE_F	<EXCEPT>	(Lop_PRED_NE_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_GT_F	<EXCEPT>	(Lop_PRED_GT_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_GE_F	<EXCEPT>	(Lop_PRED_GE_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_LT_F	<EXCEPT>	(Lop_PRED_LT_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+	Lop_PRED_LE_F	<EXCEPT>	(Lop_PRED_LE_F		 ((IOI_predcmp RL_FPAlu Lat3p)) )
+
+        Lop_CMOV                        (Lop_CMOV                ((IOI_cmov RL_IAlu  Lat1)) )
+        Lop_CMOV_COM                    (Lop_CMOV_COM            ((IOI_cmov RL_IAlu  Lat1)) )
+        Lop_CMOV_F                      (Lop_CMOV_F              ((IOI_cmov RL_FPAlu Lat1)) )
+        Lop_CMOV_COM_F                  (Lop_CMOV_COM_F          ((IOI_cmov RL_FPAlu Lat1)) )
+        Lop_CMOV_F2                     (Lop_CMOV_F2             ((IOI_cmov RL_FPAlu Lat1)) )
+        Lop_CMOV_COM_F2                 (Lop_CMOV_COM_F2         ((IOI_cmov RL_FPAlu Lat1)) )
+
+        Lop_SELECT                      (Lop_SELECT              ((IOI_select RL_IAlu  Lat1)) )
+        Lop_SELECT_F                    (Lop_SELECT_F            ((IOI_select RL_FPAlu Lat1)) )
+        Lop_SELECT_F2                   (Lop_SELECT_F2           ((IOI_select RL_FPAlu Lat1)) )
+
+end)

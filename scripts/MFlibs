@@ -1,0 +1,498 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+###############################################################################
+ #
+ # Copyright Notices/Identification of Licensor(s) of
+ # Original Software in the File
+ #
+ # Copyright 1990-1999 The Board of Trustees of the University of Illinois
+ # Contact: Research and Technology Management Office,
+ # University of Illinois at Urbana-Champaign;
+ # FAX: 217-244-3716, or email: rtmo@uiuc.edu
+ #
+ # All rights reserved by the foregoing, respectively.
+ #
+ # This is licensed software.  The software license agreement with
+ # the University of Illinois specifies the terms and conditions
+ # for use and redistribution.
+ #
+###############################################################################
+#  Created by Patrick R. Eaton, David I. August, Wen-mei Hwu
+#  Minor enhancement to use IMPACT_BUILD_TYPE by John Gyllenhaal 9/99
+
+#  MFlibs
+#  This perl script can be used to alter given makefiles to allow
+#  developers to link their executables to a variety of libraries 
+#  in a variety of locations.
+
+#  Count the command line arguments
+$arg_c = 0 ;
+foreach $arg (@ARGV) {
+	$arg_c++ ;
+}
+
+#  Do a priliminary check for correct usage by making sure the correct 
+#  number of arguments (0 or 1) has been passed.  If not, punt because 
+#  they are not even close.
+if (($arg_c != 1) && ($arg_c != 0 )) {
+	print "Invalid usage.  Use -h for help.\n" ;
+	exit() ;
+}
+
+#  Use IMPACT_BUILD_TYPE to determine default buildtype -JCG 9/99
+$buildtype = eval($ENV{"IMPACT_BUILD_TYPE"}."_c") ;
+$makefile = eval("Makefile_"."$buildtype") ;
+
+#  Parse the command line arguments.
+foreach $arg (@ARGV) {
+        # If it is not an -option, use as build type. -JCG 9/99
+	if ($arg !~ /-.*/) {
+		$makefile = eval("Makefile_"."$ARGV[0]") ;
+		$buildtype = $ARGV[0] ;
+	}
+        elsif (($arg eq "-H") || ($arg eq "-h") || ($arg eq "-?")) {
+		print "usage:  MFlibs [buildtype] [-[?hH]] \n" ;
+		print "   valid buildtypes:  $buildtype, ${buildtype}xx, etc.\n" ;
+		print "   If no arguments are given, script will \n" ;
+		print "   default to $buildtype (edits $makefile). \n" ;
+                exit() ;
+        }
+        else {
+                print "Invalid switch, $arg.  Use -h for help.\n" ;
+                exit() ;
+        }
+        $arg_index++ ;
+}
+
+#  Get the value of IMPACT_ROOT from the environment for later.
+$impact_root = $ENV{"IMPACT_ROOT"} ;
+if ($impact_root eq "") {
+	print "IMPACT_ROOT is not defined in the environment.  " ;
+	print "Cannot execute script. \n" ;
+	exit() ;
+}
+
+#  Get the value of IMPACT_REL_PATH from the environment for later.
+$impact_rel_path = $ENV{"IMPACT_REL_PATH"} ;
+if ($impact_rel_path eq "") {
+	print "IMPACT_REL_PATH is not defined in the environment.  " ;
+	print "Cannot execute script. \n" ;
+	exit() ;
+}
+
+#  Initialize menu-option--make sure it is not 'q'.
+$menu_option = "" ;
+
+while ($menu_option ne "q") {
+	#  clear screen for esthetics
+	system("clear") ;
+
+	print "\n\n" ;
+	print "This script can be used to edit the slave " ;
+	print "makefiles to direct the \n" ;
+	print "compilation process to link from libraries " ;
+	print "in various locations.  \n\n" ;
+	print "You are currently editing $makefile. \n\n" ;
+	print "According to your environment, your key " ;
+	print "IMPACT directories are: \n" ;
+	print "     IMPACT_ROOT = $impact_root \n" ;
+	print "     IMPACT_REL_PATH = $impact_rel_path \n" ;
+	print "Subsequent references to 'release' will " ;
+	print "correspond to IMPACT_REL_PATH \n" ;
+	print "and allusions to 'development' will refer to " ;
+	print "IMPACT_ROOT. \n\n" ;
+	print "All changes that you make can be undone by " ;
+	print "recreating the slave makefiles. \n\n\n" ;
+
+	#  Open, for reading, the makefile to be processed.
+	open(IN,"$makefile") || die "Error:  cannot open $makefile ".
+                                    "for reading" ;
+
+	#  Create, for writing, the file to which output will be written.
+	open(OUT,">$makefile".".lib_editor") || die "Error:  cannot create ".
+                                                    "$makefile".".lib_editor" ;
+
+	#  Copy the makefile into the temp file up to the 'LIBS = ' line.
+	while (<IN>) {
+		if (m#^LIBS = #) {
+			last ;
+		}
+		print OUT "$_" ;
+	}
+
+	#  Save line of interest to variables.
+	$libsline = $_ ;
+	($libs,$liblist) = split/ = / ;
+
+	#  Get rid of pesky new line. 
+	chop($liblist) ;
+
+	#  Split $liblist into an array.
+	@liblist = split(/ /,$liblist) ;
+
+	#  Assign the length of liblist to $length.
+	$length = @liblist ;
+
+	#  Initialize the counter.
+	$libnum = 1 ;
+
+	#  Print header to screen.
+	$~ = new_header ;
+	write STDOUT ;
+
+	#  Print out the chart.
+	while ($libnum <= $length) {
+		$libname = @liblist[$libnum - 1] ;
+
+		#  Reinitialize all status variables.
+		$def_r = $def_d = $rel = $dev = $other = "" ;
+
+		#  Trace the location to which the lib is currently pointing.
+		#  Check to see if lib is in path form (not default).
+		if ($libname =~ /.*\/lib/) {
+			#  It explicitly lists a development path.
+			if ($libname =~ /$impact_root\/lib\/$buildtype/) {
+				$dev = "X" ;
+				@lib_loc[$libnum - 1] = "dev" ;
+			}
+			#  It explicitly lists the release path.
+			elsif ($libname =~ 
+                                        /$impact_rel_path\/lib\/$buildtype/)  {
+				$rel = "X" ;
+				@lib_loc[$libnum - 1] = "rel" ;
+			}
+			#  It points someplace weird.
+			else {
+				$other = "X" ; 
+				@lib_loc[$libnum - 1] = "other" ;
+			}
+		}
+		else {
+			#  It is going to a default location.
+			if (-e "$impact_root/lib/$buildtype/$libname") {
+				#  It is defaulting to a development path.
+				$def_d = "X" ;
+				@lib_loc[$libnum - 1] = "def_d" ;
+			}
+			else {
+				#  It is defaulting to the release path.
+				$def_r = "X" ;
+				@lib_loc[$libnum - 1] = "def_r" ;
+			}
+		}
+
+		#  Extract the base name.
+		$libname =~ s/.*\/([a-zA-Z]*)\.a/\1\.a/ ;
+
+		#  Use the formats to print out.
+		$~ = new_libout ;
+		write STDOUT ;
+
+		#  Print separator format every three lines.
+		if (!($libnum % 3)) {
+			$~ = new_separator ;
+			write STDOUT ;
+		}
+
+		$libnum++ ;
+	}
+
+	if ($libnum == 1) {
+		print "     There are no libraries to be linked " ;
+		print "with this module. \n\n" ;
+	}
+
+	print "\n" ;
+	print "     (a)dd a library \n" ;
+	print "     (c)hange library's link source \n" ;
+	print "     (r)emove a library \n" ;
+	print "     (q)uit \n" ;
+	print ">>>  Please make your selection:  " ;
+	$menu_option = <STDIN> ;
+	#  Get rid of new line.
+	chop($menu_option) ;
+
+	#  Add a library.
+	if ($menu_option eq "a") {
+		print "\n" ;
+		print ">>>  Enter the name of the library you wish to add \n" ;
+		print "     in the form 'lib<base_name>.a:  " ;
+		$newlib = <STDIN> ;
+		@liblist[$length] = $newlib ;
+	}
+
+	#  Change a library.
+	if ($menu_option eq "c") {
+		#  Get lib number.
+		do {
+			print ">>>  Enter the number for the library " ;
+			print "which you with to change:  " ;
+			$changenum = <STDIN> ;
+		} until (($changenum > 0) && ($changenum <= $length)) ;
+
+		#  Compute lib_base_name.
+		$lib_base_name = @liblist[$changenum - 1] ;
+		$lib_base_name =~ s/.*\/([a-zA-Z]*)\.a/\1\.a/ ;
+		
+		print " \n" ;
+		print "     From where would you like to link " ;
+		print "this library ($lib_base_name)? \n" ;
+
+		#  Give them only the options that make sense.
+		if ((@lib_loc[$changenum - 1] ne "def_r") && 
+                    (@lib_loc[$changenum - 1] ne "def_d")) {
+			print "        1)  The default path. \n" ;
+		}
+		else {
+			print "        XX \n" ;
+		}
+		if (@lib_loc[$changenum - 1] ne "def_r") {
+			print "        2)  The default path, ensuring " ;
+			print "no development copy. \n" ;
+		}
+		else {
+			print "        XX \n" ;
+		}
+		if (@lib_loc[$changenum - 1] ne "rel") {
+			print "        3)  The release path explicitly. \n" ;
+		}
+		else {
+			print "        XX \n" ;
+		}
+		if (@lib_loc[$changenum - 1] ne "dev") {
+			print "        4)  The development path " ;
+			print "explicitly.  \n" ;
+		}
+		else {
+			print "        XX \n" ;
+		}
+		print "        5)  A location other than the development " ;
+		print "or release path. \n" ;
+
+		#  Get option number.
+                do {
+                        print ">>>  Enter the number of the option " ;
+			print "you desire:  " ;
+                        $optionnum = <STDIN> ;
+                } until (($optionnum > 0) && ($optionnum <= 5)) ;
+
+		print "\n" ;
+
+		#  Default path--set to base name, let make do the path search.
+		if ($optionnum == 1) {
+			@liblist[$changenum - 1] = $lib_base_name ;
+		}
+
+		#  Default path (delete any development library).
+		if ($optionnum == 2) {
+			print "Any compiled version of this library " ;
+			print "in your development \n" ;
+			print "path will be deleted to accomodate " ;
+			print "this option. \n" ;
+			print "Is this really OK to delete \n" ;
+			print "$impact_root/lib/$buildtype/$lib_base_name " ;
+			print "(y/n)?  " ;
+			$yesorno = <STDIN> ;
+			chop($yesorno) ;
+			if ($yesorno eq "y") {
+				$tmp_libname = "\'".$impact_root."/lib/".
+                                     $buildtype."/".$lib_base_name."\'" ;
+				if (-e eval($tmp_libname)) {
+					unlink(eval($tmp_libname)) ;
+				}
+				@liblist[$changenum - 1] = $lib_base_name ;
+			}
+		}
+
+		#  Point explicitly to release path.
+		if ($optionnum == 3) {
+			print "Library, $lib_base_name, will " ;
+			print "now explicitly \n" ;
+			print "link to $impact_rel_path/lib/$buildtype/" ;
+			print "$lib_base_name. \n" ;
+			@liblist[$changenum - 1] = "$impact_rel_path/lib/".
+                                                   "$buildtype/$lib_base_name" ;
+		}
+
+		#  Point explicitly to development path.
+		if ($optionnum == 4) {
+			print "Library, $lib_base_name, " ;
+			print "will now explicitly \n" ;
+			print "link to $impact_root/lib/$buildtype/" ;
+			print "$lib_base_name. \n" ;
+			@liblist[$changenum - 1] = "$impact_root/lib/".
+                                                   "$buildtype/$lib_base_name" ;
+		}
+
+		#  Point to a user-specified location.
+		if ($optionnum == 5) {
+			print "Library, $lib_base_name, currently links to \n" ;
+			print "@liblist[$changenum - 1]. \n" ;
+			print "Enter the new link path (including file name) " ;
+			print "or <ENTER> \n" ;
+			print "to leave unchanged: " ;
+			$new_path = <STDIN> ;
+			chop($new_path) ;
+			while ((! -e $new_path) && (length($new_path) > 0)) {
+				print "$new_path.",length($new_path),". \n" ;
+				print "$lib_base_name is not present in " ;
+				print "that path. \n" ;
+				print "Enter the new link path including " ;
+				print "file name or <ENTER> \n" ;
+				print "to leave unchanged: " ;
+				$new_path = <STDIN> ;
+				chop($new_path) ;
+			} 
+			if (length($new_path)) {
+				print "Library, $lib_base_name, will link \n" ;
+				print "to $new_path. \n " ;
+				@liblist[$changenum - 1] = "$new_path" ;
+			}
+			else {
+				print "The link path for $lib_base_name \n";
+				print "has remained unchanged. \n" ;
+			}
+		}
+
+		print ">>>  Press <ENTER> to proceed.  " ;
+		<STDIN> ;
+
+	}
+
+	#  Remove a library.
+	if ($menu_option eq "r") {
+                #  Get lib number.
+                do {
+                        print ">>>  Enter the number for the " ;
+			print "library which you with to change:  " ;
+                        $removenum = <STDIN> ;
+                } until (($removenum > 0) && ($removenum <= $length)) ;
+
+		@liblist[$removenum - 1] = @liblist[$length - 1] ;
+		@liblist[$length - 1] = '' ;
+	}
+
+	#  Write the line back to the makefile.
+	print OUT "LIBS =" ;
+	foreach $printlib (@liblist) {
+		print OUT " $printlib" ;
+	}
+	print OUT "\n" ;
+
+	#  Copy the remainder of the makefile to the temp file.
+	while (<IN>) {
+		print OUT "$_" ;
+	}
+
+	#  Remove the original makefile.
+	unlink($makefile) ;
+	#  Rename the altered file to the name of the old makefile.
+	rename("$makefile".".lib_editor","$makefile") ;
+
+}
+
+#  terminate (script complete)
+exit(0) ;
+
+
+#
+#
+#  subroutines and format definitions
+#
+#
+
+#  Format definition for display to screen.
+format header = 
+    Name of Library        Default (R)   Default (D)     Release     Development
+==--====================---===========---===========---===========---===========
+.
+
+format new_header =
+    Name of Library         Default    Default    Release    Develop     Other
+                             (rel)      (dev)
+==--====================---=========--=========--=========--=========--=========
+.
+
+format separator = 
+==--====================---===========---===========---===========---===========
+.
+
+format new_separator = 
+==--====================---=========--=========--=========--=========--=========
+.
+
+format libout =
+@>  @<<<<<<<<<<<<<<<<<<<       @||           @||           @||           @||
+$libnum,$libname,$def_r,$def_d,$rel,$dev
+.
+
+format new_libout =
+@>  @<<<<<<<<<<<<<<<<<<<      @||        @||        @||        @||        @||
+$libnum,$libname,$def_r,$def_d,$rel,$dev,$other
+.
+
+#  Used in parsing the command line arguments.
+sub find_in_array {
+        local($findval,@findarr) = @_ ;
+        $found = 0 ;
+        foreach $ele (@findarr) {
+                if ($ele eq $findval) {
+                        $found = 1 ;
+                }
+        }
+        $found ;
+}
+

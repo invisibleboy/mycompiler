@@ -1,0 +1,302 @@
+\section{cudd\-Zdd\-Lin.c File Reference}
+\label{cuddZddLin_8c}\index{cuddZddLin.c@{cuddZddLin.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CUDD\_\-SWAP\_\-MOVE}~0
+\item 
+\#define \bf{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}~1
+\item 
+\#define \bf{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}~2
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int cudd\-Zdd\-Linear\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))
+\item 
+static \bf{Move} $\ast$cudd\-Zdd\-Linear\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves))
+\item 
+static \bf{Move} $\ast$cudd\-Zdd\-Linear\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves))
+\item 
+static int cudd\-Zdd\-Linear\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))
+\item 
+static \bf{Move} $\ast$cudd\-Zdd\-Undo\-Moves \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves))
+\item 
+int \bf{cudd\-Zdd\-Linear\-Sifting} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+int \bf{cudd\-Zdd\-Linear\-In\-Place} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+static int \bf{cudd\-Zdd\-Linear\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static \bf{Move} $\ast$ \bf{cudd\-Zdd\-Linear\-Up} (\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves)
+\item 
+static \bf{Move} $\ast$ \bf{cudd\-Zdd\-Linear\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves)
+\item 
+static int \bf{cudd\-Zdd\-Linear\-Backward} (\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves)
+\item 
+static \bf{Move} $\ast$ \bf{cudd\-Zdd\-Undo\-Moves} (\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Lin.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+int $\ast$ \bf{zdd\_\-entry}
+\item 
+int \bf{zdd\-Total\-Number\-Swapping}
+\item 
+static int \bf{zdd\-Total\-Number\-Linear\-Tr}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{empty}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!CUDD_INVERSE_TRANSFORM_MOVE@{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}}
+\index{CUDD_INVERSE_TRANSFORM_MOVE@{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE~2}\label{cuddZddLin_8c_ba489a328bfc7cfdcc189ef5b756c6fe}
+
+
+
+
+Definition at line 46 of file cudd\-Zdd\-Lin.c.\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!CUDD_LINEAR_TRANSFORM_MOVE@{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}}
+\index{CUDD_LINEAR_TRANSFORM_MOVE@{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE~1}\label{cuddZddLin_8c_3641f0f0d659d0f7838928dc28685423}
+
+
+
+
+Definition at line 45 of file cudd\-Zdd\-Lin.c.\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!CUDD_SWAP_MOVE@{CUDD\_\-SWAP\_\-MOVE}}
+\index{CUDD_SWAP_MOVE@{CUDD\_\-SWAP\_\-MOVE}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-SWAP\_\-MOVE~0}\label{cuddZddLin_8c_d9998d613072978041d3b01acdfd40d0}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Zdd\-Lin.c}{p.}{cuddZddLin_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Procedures for dynamic variable ordering of ZDDs.]
+
+Description [Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Linear\-Sifting()}{p.}{cuddZddLin_8c_03240bfcc17024895c43dfaf899ed46a} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Linear\-In\-Place()}{p.}{cuddZddLin_8c_ef38304472e4621312aad47de9e7cba1} \item cudd\-Zdd\-Liner\-Aux() \item \doxyref{cudd\-Zdd\-Linear\-Up()}{p.}{cuddZddLin_8c_0b6f193b9f18115f47aa6bdf09324579} \item \doxyref{cudd\-Zdd\-Linear\-Down()}{p.}{cuddZddLin_8c_77a8ab2cccfb993c3d0c9592fe690ef1} \item \doxyref{cudd\-Zdd\-Linear\-Backward()}{p.}{cuddZddLin_8c_67c5e1ca558f87d8447bfe8fe64a305d} \item \doxyref{cudd\-Zdd\-Undo\-Moves()}{p.}{cuddZddLin_8c_b5fa920c296c1fc386beb18004979c38} \end{itemize}
+]
+
+See\-Also [\doxyref{cudd\-Linear.c}{p.}{cuddLinear_8c} \doxyref{cudd\-Zdd\-Reord.c}{p.}{cuddZddReord_8c}]
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 44 of file cudd\-Zdd\-Lin.c.
+
+\subsection{Function Documentation}
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Undo\-Moves ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_fbd2fb48baf2c5d94c1d19ce77ba37db}
+
+
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Zdd\-Linear\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_055bfa53f8542db00599be663b09db8b}
+
+
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Linear\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_e8a62e3a9fb00d67ad76870a6d3b1249}
+
+
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Linear\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_bd228702607f2345c958ea5b9fea31a8}
+
+
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Zdd\-Linear\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_2c4cd36bb6c3aef0ff50e3085affa210}
+
+
+Automatic\-Start \index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearAux@{cuddZddLinearAux}}
+\index{cuddZddLinearAux@{cuddZddLinearAux}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Zdd\-Linear\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_50676cdc8f1a9b86dd6847fbd8a8181c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries.]
+
+Description [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries. Finds the best position and does the required changes. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 551 of file cudd\-Zdd\-Lin.c.
+
+References assert, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Dealloc\-Node, cudd\-Zdd\-Linear\-Backward(), cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), cudd\-Zdd\-Undo\-Moves(), Dd\-Subtable::keys, Dd\-Manager::keys\-Z, Move::next, result, Dd\-Manager::subtable\-Z, Move::x, and Move::y.
+
+Referenced by cudd\-Zdd\-Linear\-Sifting().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearBackward@{cuddZddLinearBackward}}
+\index{cuddZddLinearBackward@{cuddZddLinearBackward}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Zdd\-Linear\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em size}, \bf{Move} $\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_67c5e1ca558f87d8447bfe8fe64a305d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the ZDD heap to the position giving the minimum size.]
+
+Description [Given a set of moves, returns the ZDD heap to the position giving the minimum size. In case of ties, returns to the closest position giving the minimum size. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 847 of file cudd\-Zdd\-Lin.c.
+
+References Move::next, and Move::size.
+
+Referenced by cudd\-Zdd\-Linear\-Aux().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearDown@{cuddZddLinearDown}}
+\index{cuddZddLinearDown@{cuddZddLinearDown}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Linear\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-High}, \bf{Move} $\ast$ {\em prev\-Moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_77a8ab2cccfb993c3d0c9592fe690ef1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable down and applies the XOR transformation.]
+
+Description [Sifts a variable down. Moves x down until either it reaches the bound (x\-High) or the size of the ZDD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 763 of file cudd\-Zdd\-Lin.c.
+
+References CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-OUT\_\-OF\_\-MEM, CUDD\_\-SWAP\_\-MOVE, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Linear\-In\-Place(), cudd\-Zdd\-Next\-High(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Dd\-Manager::keys\-Z, Dd\-Manager::max\-Growth, Move::next, Move::size, size, Move::x, and Move::y.
+
+Referenced by cudd\-Zdd\-Linear\-Aux().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearInPlace@{cuddZddLinearInPlace}}
+\index{cuddZddLinearInPlace@{cuddZddLinearInPlace}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Linear\-In\-Place (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddZddLin_8c_ef38304472e4621312aad47de9e7cba1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Linearly combines two adjacent variables.]
+
+Description [Linearly combines two adjacent variables. It assumes that no dead nodes are present on entry to this procedure. The procedure then guarantees that no dead nodes will be present when it terminates. cudd\-Zdd\-Linear\-In\-Place assumes that x $<$ y. Returns the number of keys in the table if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Swap\-In\-Place cudd\-Linear\-In\-Place] 
+
+Definition at line 225 of file cudd\-Zdd\-Lin.c.
+
+References assert, cudd\-E, cudd\-Sat\-Dec, cudd\-T, cudd\-Zdd\-Next\-High(), Dd\-Subtable::dead, empty, Dd\-Node::index, Dd\-Manager::invperm\-Z, Dd\-Subtable::keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Subtable::slots, Dd\-Manager::subtable\-Z, and zdd\-Total\-Number\-Linear\-Tr.
+
+Referenced by cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), and cudd\-Zdd\-Undo\-Moves().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearSifting@{cuddZddLinearSifting}}
+\index{cuddZddLinearSifting@{cuddZddLinearSifting}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Linear\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddZddLin_8c_03240bfcc17024895c43dfaf899ed46a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implementation of the linear sifting algorithm for ZDDs.]
+
+Description [Implementation of the linear sifting algorithm for ZDDs. Assumes that no dead nodes are present. \begin{enumerate}
+\item Order all the variables according to the number of entries in each unique table. \item Sift the variable up and down and applies the XOR transformation, remembering each time the total size of the DD heap. \item Select the best permutation. \item Repeat 3 and 4 for all variables. \end{enumerate}
+Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 126 of file cudd\-Zdd\-Lin.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, cudd\-Zdd\-Linear\-Aux(), cudd\-Zdd\-Unique\-Compare(), dd\-Min, empty, Dd\-Manager::error\-Code, FREE, Dd\-Subtable::keys, Dd\-Manager::keys\-Z, Dd\-Manager::perm\-Z, qsort(), result, Dd\-Manager::sift\-Max\-Swap, Dd\-Manager::sift\-Max\-Var, size, Dd\-Manager::size\-Z, Dd\-Manager::subtable\-Z, zdd\_\-entry, zdd\-Total\-Number\-Swapping, and Dd\-Manager::zero.
+
+Referenced by zdd\-Reorder\-Children().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddLinearUp@{cuddZddLinearUp}}
+\index{cuddZddLinearUp@{cuddZddLinearUp}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Linear\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em y}, int {\em x\-Low}, \bf{Move} $\ast$ {\em prev\-Moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_0b6f193b9f18115f47aa6bdf09324579}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable up applying the XOR transformation.]
+
+Description [Sifts a variable up applying the XOR transformation. Moves y up until either it reaches the bound (x\-Low) or the size of the ZDD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 678 of file cudd\-Zdd\-Lin.c.
+
+References CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-OUT\_\-OF\_\-MEM, CUDD\_\-SWAP\_\-MOVE, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Linear\-In\-Place(), cudd\-Zdd\-Next\-Low(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Dd\-Manager::keys\-Z, Dd\-Manager::max\-Growth, Move::next, Move::size, size, Move::x, and Move::y.
+
+Referenced by cudd\-Zdd\-Linear\-Aux().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!cuddZddUndoMoves@{cuddZddUndoMoves}}
+\index{cuddZddUndoMoves@{cuddZddUndoMoves}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ cudd\-Zdd\-Undo\-Moves (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Move} $\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_b5fa920c296c1fc386beb18004979c38}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the ZDD heap to the order in effect before the moves.]
+
+Description [Given a set of moves, returns the ZDD heap to the order in effect before the moves. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 895 of file cudd\-Zdd\-Lin.c.
+
+References CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE, CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-SWAP\_\-MOVE, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Linear\-In\-Place(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Move::next, size, Move::x, and Move::y.
+
+Referenced by cudd\-Zdd\-Linear\-Aux().
+
+\subsection{Variable Documentation}
+\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Lin.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 63 of file cudd\-Zdd\-Lin.c.\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!empty@{empty}}
+\index{empty@{empty}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{empty}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_092e08fde10f52f05b0ced3e49877e0f}
+
+
+
+
+Definition at line 69 of file cudd\-Zdd\-Lin.c.
+
+Referenced by Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Diff\-Const(), Cudd\_\-zdd\-Print\-Debug(), Cudd\_\-zdd\-Reduce\-Heap(), Cudd\_\-zdd\-Shuffle\-Heap(), cudd\-Zdd\-Align\-To\-Bdd(), cudd\-Zdd\-Change\-Aux(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), cudd\-Zdd\-Diff(), cudd\-Zdd\-Intersect(), cudd\-Zdd\-Ite(), cudd\-Zdd\-Linear\-In\-Place(), cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Subset0(), cudd\-Zdd\-Subset1(), cudd\-Zdd\-Swap\-In\-Place(), cudd\-Zdd\-Symm\-Check(), cudd\-Zdd\-Union(), zdd\_\-subset0\_\-aux(), zdd\_\-subset1\_\-aux(), and zdd\-Var\-To\-Const().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!zdd_entry@{zdd\_\-entry}}
+\index{zdd_entry@{zdd\_\-entry}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{zdd\_\-entry}}\label{cuddZddLin_8c_a0599c2dcd414ef2e7aba7bfda706210}
+
+
+
+
+Definition at line 79 of file cudd\-Zdd\-Reord.c.
+
+Referenced by cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Sifting(), cudd\-Zdd\-Symm\-Sifting(), cudd\-Zdd\-Symm\-Sifting\-Conv(), and cudd\-Zdd\-Unique\-Compare().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!zddTotalNumberLinearTr@{zddTotalNumberLinearTr}}
+\index{zddTotalNumberLinearTr@{zddTotalNumberLinearTr}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{zdd\-Total\-Number\-Linear\-Tr}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddLin_8c_25713645ba5f7c6f0d1970812d002c77}
+
+
+
+
+Definition at line 68 of file cudd\-Zdd\-Lin.c.
+
+Referenced by cudd\-Zdd\-Linear\-In\-Place().\index{cuddZddLin.c@{cudd\-Zdd\-Lin.c}!zddTotalNumberSwapping@{zddTotalNumberSwapping}}
+\index{zddTotalNumberSwapping@{zddTotalNumberSwapping}!cuddZddLin.c@{cudd\-Zdd\-Lin.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{zdd\-Total\-Number\-Swapping}}\label{cuddZddLin_8c_b8b03940fac775015e5f354cc5d3037f}
+
+
+
+
+Definition at line 81 of file cudd\-Zdd\-Reord.c.

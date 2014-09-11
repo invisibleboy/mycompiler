@@ -1,0 +1,1163 @@
+\section{ml\_\-hpl\_\-pd.c File Reference}
+\label{ml__hpl__pd_8c}\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include $<$machine/m\_\-spec.h$>$}\par
+{\tt \#include $<$machine/m\_\-hpl\_\-pd.h$>$}\par
+{\tt \#include $<$machine/m\_\-hppa.h$>$}\par
+{\tt \#include $<$machine/m\_\-sparc.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{JWS\_\-NEW\_\-STACK\_\-MODEL}
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-DOUBLE}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX}~64
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-PLAYDOH\_\-SIZE\_\-INT)
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-RET\_\-I32}~15
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-RET\_\-I64}~15
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-RET\_\-ST}~15
+\item 
+\#define \bf{M\_\-PLAYDOH\_\-RET\_\-F}~4
+\item 
+\#define \bf{zero\_\-offset}(a)
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-playdoh\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-playdoh\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-playdoh\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-playdoh\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-playdoh\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-playdoh\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-playdoh\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-playdoh\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-playdoh\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-playdoh\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-playdoh\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-playdoh\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-playdoh\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-playdoh\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-playdoh\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-playdoh\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-playdoh\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-playdoh\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-playdoh\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-playdoh\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-playdoh\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-playdoh\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-playdoh\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$base\_\-macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-playdoh\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-playdoh\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-playdoh\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-playdoh\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-playdoh\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-playdoh\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-playdoh\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-playdoh\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-playdoh\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-playdoh\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-playdoh\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-playdoh\_\-fragile\_\-macro\_\-set} ()
+\item 
+int \bf{M\_\-playdoh\_\-dataflow\_\-macro} (int id)
+\item 
+int \bf{M\_\-playdoh\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-playdoh} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-playdoh} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-playdoh} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-playdoh} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-playdoh} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-num\_\-registers\_\-playdoh} (int ctype)
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-playdoh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-playdoh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-playdoh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-playdoh} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-opc\_\-from\_\-proc\_\-opc\_\-playdoh} (int proc\_\-opc)
+\item 
+int \bf{M\_\-base\_\-displ\_\-load\_\-opcode} (int proc\_\-opc)
+\item 
+int \bf{M\_\-sign\_\-extend\_\-load\_\-opcode} (int proc\_\-opc)
+\item 
+int \bf{M\_\-base\_\-displ\_\-store\_\-opcode} (int proc\_\-opc)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{M\_\-playdoh\_\-model}
+\item 
+\bf{Set} \bf{Set\_\-playdoh\_\-fragile\_\-macro} = \bf{NULL}
+\item 
+int \bf{M\_\-playdoh\_\-dbl\_\-offset} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__hpl__pd_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__hpl__pd_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!JWS_NEW_STACK_MODEL@{JWS\_\-NEW\_\-STACK\_\-MODEL}}
+\index{JWS_NEW_STACK_MODEL@{JWS\_\-NEW\_\-STACK\_\-MODEL}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define JWS\_\-NEW\_\-STACK\_\-MODEL}\label{ml__hpl__pd_8c_da7b5b77b5ce6aa95a106ce13e96e685}
+
+
+
+
+Definition at line 74 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__hpl__pd_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__hpl__pd_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_BIT@{M\_\-PLAYDOH\_\-ALIGN\_\-BIT}}
+\index{M_PLAYDOH_ALIGN_BIT@{M\_\-PLAYDOH\_\-ALIGN\_\-BIT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-BIT~1}\label{ml__hpl__pd_8c_3a6d27ce46b21151f63f32b4d40721a8}
+
+
+
+
+Definition at line 119 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_BLOCK@{M\_\-PLAYDOH\_\-ALIGN\_\-BLOCK}}
+\index{M_PLAYDOH_ALIGN_BLOCK@{M\_\-PLAYDOH\_\-ALIGN\_\-BLOCK}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-BLOCK~-1}\label{ml__hpl__pd_8c_3d05220b1d37b2503453ff94d82c54b4}
+
+
+
+
+Definition at line 129 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_CHAR@{M\_\-PLAYDOH\_\-ALIGN\_\-CHAR}}
+\index{M_PLAYDOH_ALIGN_CHAR@{M\_\-PLAYDOH\_\-ALIGN\_\-CHAR}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-CHAR~8}\label{ml__hpl__pd_8c_38547657aede2b6658514d361b62eaa7}
+
+
+
+
+Definition at line 120 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_DOUBLE@{M\_\-PLAYDOH\_\-ALIGN\_\-DOUBLE}}
+\index{M_PLAYDOH_ALIGN_DOUBLE@{M\_\-PLAYDOH\_\-ALIGN\_\-DOUBLE}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-DOUBLE~32}\label{ml__hpl__pd_8c_01269740306673bfebab02b790c8427f}
+
+
+
+
+Definition at line 125 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_FLOAT@{M\_\-PLAYDOH\_\-ALIGN\_\-FLOAT}}
+\index{M_PLAYDOH_ALIGN_FLOAT@{M\_\-PLAYDOH\_\-ALIGN\_\-FLOAT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-FLOAT~32}\label{ml__hpl__pd_8c_2569f26e77dfe112483c623fdcb5f96b}
+
+
+
+
+Definition at line 124 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_INT@{M\_\-PLAYDOH\_\-ALIGN\_\-INT}}
+\index{M_PLAYDOH_ALIGN_INT@{M\_\-PLAYDOH\_\-ALIGN\_\-INT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-INT~32}\label{ml__hpl__pd_8c_174012a1e7493c2c0ce04b47fa29acdc}
+
+
+
+
+Definition at line 122 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_LONG@{M\_\-PLAYDOH\_\-ALIGN\_\-LONG}}
+\index{M_PLAYDOH_ALIGN_LONG@{M\_\-PLAYDOH\_\-ALIGN\_\-LONG}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-LONG~32}\label{ml__hpl__pd_8c_9c5fdfa322744c39828a7c96054ce308}
+
+
+
+
+Definition at line 123 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_MAX@{M\_\-PLAYDOH\_\-ALIGN\_\-MAX}}
+\index{M_PLAYDOH_ALIGN_MAX@{M\_\-PLAYDOH\_\-ALIGN\_\-MAX}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-MAX~64}\label{ml__hpl__pd_8c_8d32b315279594b4571125c3bb22fac1}
+
+
+
+
+Definition at line 130 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_POINTER@{M\_\-PLAYDOH\_\-ALIGN\_\-POINTER}}
+\index{M_PLAYDOH_ALIGN_POINTER@{M\_\-PLAYDOH\_\-ALIGN\_\-POINTER}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-POINTER~32}\label{ml__hpl__pd_8c_f57306ea41cf3fdb191de879b9583484}
+
+
+
+
+Definition at line 126 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_SHORT@{M\_\-PLAYDOH\_\-ALIGN\_\-SHORT}}
+\index{M_PLAYDOH_ALIGN_SHORT@{M\_\-PLAYDOH\_\-ALIGN\_\-SHORT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-SHORT~16}\label{ml__hpl__pd_8c_b4418792aa96431e7a114feeac5dbcc3}
+
+
+
+
+Definition at line 121 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_STRUCT@{M\_\-PLAYDOH\_\-ALIGN\_\-STRUCT}}
+\index{M_PLAYDOH_ALIGN_STRUCT@{M\_\-PLAYDOH\_\-ALIGN\_\-STRUCT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-STRUCT~-1}\label{ml__hpl__pd_8c_e4335774db8d8a152f282b40302eef31}
+
+
+
+
+Definition at line 128 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_UNION@{M\_\-PLAYDOH\_\-ALIGN\_\-UNION}}
+\index{M_PLAYDOH_ALIGN_UNION@{M\_\-PLAYDOH\_\-ALIGN\_\-UNION}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-UNION~-1}\label{ml__hpl__pd_8c_6dad3693b43034997b5a2cc91f11deb2}
+
+
+
+
+Definition at line 127 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_ALIGN_VOID@{M\_\-PLAYDOH\_\-ALIGN\_\-VOID}}
+\index{M_PLAYDOH_ALIGN_VOID@{M\_\-PLAYDOH\_\-ALIGN\_\-VOID}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-ALIGN\_\-VOID~-1}\label{ml__hpl__pd_8c_29fd3fa3b75eabd1cd82bcbf60b33285}
+
+
+
+
+Definition at line 118 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_FLT_BASE@{M\_\-PLAYDOH\_\-FLT\_\-BASE}}
+\index{M_PLAYDOH_FLT_BASE@{M\_\-PLAYDOH\_\-FLT\_\-BASE}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-FLT\_\-BASE~4}\label{ml__hpl__pd_8c_7d5253befd163007c95a279065e59769}
+
+
+
+
+Definition at line 139 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-fnvar\_\-layout(), and M\_\-playdoh\_\-layout\_\-fnvar().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_INT_BASE@{M\_\-PLAYDOH\_\-INT\_\-BASE}}
+\index{M_PLAYDOH_INT_BASE@{M\_\-PLAYDOH\_\-INT\_\-BASE}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-INT\_\-BASE~0}\label{ml__hpl__pd_8c_f65abd31e4baccb96916ecaadf574e19}
+
+
+
+
+Definition at line 138 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-fnvar\_\-layout(), and M\_\-playdoh\_\-layout\_\-fnvar().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_MAX_FNVAR_REG@{M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_PLAYDOH_MAX_FNVAR_REG@{M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__hpl__pd_8c_e99e841bedfacb02282b56d15a814d56}
+
+
+
+
+Definition at line 133 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-fnvar\_\-layout(), and M\_\-playdoh\_\-layout\_\-fnvar().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_RET_F@{M\_\-PLAYDOH\_\-RET\_\-F}}
+\index{M_PLAYDOH_RET_F@{M\_\-PLAYDOH\_\-RET\_\-F}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-RET\_\-F~4}\label{ml__hpl__pd_8c_8c6cc57a883e83680b51cc8bbe9dc03b}
+
+
+
+
+Definition at line 144 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-return\_\-register().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_RET_I32@{M\_\-PLAYDOH\_\-RET\_\-I32}}
+\index{M_PLAYDOH_RET_I32@{M\_\-PLAYDOH\_\-RET\_\-I32}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-RET\_\-I32~15}\label{ml__hpl__pd_8c_b16fc7a6ba7112181bf6eef1edbb46c0}
+
+
+
+
+Definition at line 141 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-return\_\-register().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_RET_I64@{M\_\-PLAYDOH\_\-RET\_\-I64}}
+\index{M_PLAYDOH_RET_I64@{M\_\-PLAYDOH\_\-RET\_\-I64}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-RET\_\-I64~15}\label{ml__hpl__pd_8c_23b1ab704e3ff0e06c62af59e577f83b}
+
+
+
+
+Definition at line 142 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-return\_\-register().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_RET_ST@{M\_\-PLAYDOH\_\-RET\_\-ST}}
+\index{M_PLAYDOH_RET_ST@{M\_\-PLAYDOH\_\-RET\_\-ST}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-RET\_\-ST~15}\label{ml__hpl__pd_8c_95db1aef8bf1cb69d579f0724234caa9}
+
+
+
+
+Definition at line 143 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-structure\_\-pointer().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_BIT@{M\_\-PLAYDOH\_\-SIZE\_\-BIT}}
+\index{M_PLAYDOH_SIZE_BIT@{M\_\-PLAYDOH\_\-SIZE\_\-BIT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-BIT~1}\label{ml__hpl__pd_8c_4531b24f92567ccc075799e29bda3c99}
+
+
+
+
+Definition at line 105 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_BLOCK@{M\_\-PLAYDOH\_\-SIZE\_\-BLOCK}}
+\index{M_PLAYDOH_SIZE_BLOCK@{M\_\-PLAYDOH\_\-SIZE\_\-BLOCK}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-BLOCK~-1}\label{ml__hpl__pd_8c_7a2542d0056fb3a397c077736010cbb4}
+
+
+
+
+Definition at line 115 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_CHAR@{M\_\-PLAYDOH\_\-SIZE\_\-CHAR}}
+\index{M_PLAYDOH_SIZE_CHAR@{M\_\-PLAYDOH\_\-SIZE\_\-CHAR}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-CHAR~8}\label{ml__hpl__pd_8c_2d48f3c6f016736b4a42ca096919971b}
+
+
+
+
+Definition at line 106 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_DOUBLE@{M\_\-PLAYDOH\_\-SIZE\_\-DOUBLE}}
+\index{M_PLAYDOH_SIZE_DOUBLE@{M\_\-PLAYDOH\_\-SIZE\_\-DOUBLE}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-DOUBLE~64}\label{ml__hpl__pd_8c_aa48187ee18408a3320aa9a13a3ea235}
+
+
+
+
+Definition at line 111 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_FLOAT@{M\_\-PLAYDOH\_\-SIZE\_\-FLOAT}}
+\index{M_PLAYDOH_SIZE_FLOAT@{M\_\-PLAYDOH\_\-SIZE\_\-FLOAT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-FLOAT~32}\label{ml__hpl__pd_8c_8362b170ae7f5fe8fd55de4bbb01c968}
+
+
+
+
+Definition at line 110 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_INT@{M\_\-PLAYDOH\_\-SIZE\_\-INT}}
+\index{M_PLAYDOH_SIZE_INT@{M\_\-PLAYDOH\_\-SIZE\_\-INT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-INT~32}\label{ml__hpl__pd_8c_51da0bba37a2655343e60a7d19e7212f}
+
+
+
+
+Definition at line 108 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_LONG@{M\_\-PLAYDOH\_\-SIZE\_\-LONG}}
+\index{M_PLAYDOH_SIZE_LONG@{M\_\-PLAYDOH\_\-SIZE\_\-LONG}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-LONG~32}\label{ml__hpl__pd_8c_db65c7fbc04b0ece7f2f5dc50abda224}
+
+
+
+
+Definition at line 109 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_MAX@{M\_\-PLAYDOH\_\-SIZE\_\-MAX}}
+\index{M_PLAYDOH_SIZE_MAX@{M\_\-PLAYDOH\_\-SIZE\_\-MAX}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-MAX~64}\label{ml__hpl__pd_8c_b8761d0eec5d112545a0bc5aec238bb3}
+
+
+
+
+Definition at line 116 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_POINTER@{M\_\-PLAYDOH\_\-SIZE\_\-POINTER}}
+\index{M_PLAYDOH_SIZE_POINTER@{M\_\-PLAYDOH\_\-SIZE\_\-POINTER}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-POINTER~32}\label{ml__hpl__pd_8c_16d9bf9e7917f54f1cba52aba6af93e7}
+
+
+
+
+Definition at line 112 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_SHORT@{M\_\-PLAYDOH\_\-SIZE\_\-SHORT}}
+\index{M_PLAYDOH_SIZE_SHORT@{M\_\-PLAYDOH\_\-SIZE\_\-SHORT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-SHORT~16}\label{ml__hpl__pd_8c_cbd04f1e0b37db2d0093d8da516f81a2}
+
+
+
+
+Definition at line 107 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_STRUCT@{M\_\-PLAYDOH\_\-SIZE\_\-STRUCT}}
+\index{M_PLAYDOH_SIZE_STRUCT@{M\_\-PLAYDOH\_\-SIZE\_\-STRUCT}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-STRUCT~-1}\label{ml__hpl__pd_8c_723f3c1187168c978dc8fff144ae2c32}
+
+
+
+
+Definition at line 114 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_UNION@{M\_\-PLAYDOH\_\-SIZE\_\-UNION}}
+\index{M_PLAYDOH_SIZE_UNION@{M\_\-PLAYDOH\_\-SIZE\_\-UNION}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-UNION~-1}\label{ml__hpl__pd_8c_e40af03c885b0cf303f353cec1b08ccb}
+
+
+
+
+Definition at line 113 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SIZE_VOID@{M\_\-PLAYDOH\_\-SIZE\_\-VOID}}
+\index{M_PLAYDOH_SIZE_VOID@{M\_\-PLAYDOH\_\-SIZE\_\-VOID}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SIZE\_\-VOID~0}\label{ml__hpl__pd_8c_3eac43ed02569d47d467404d7da5964e}
+
+
+
+
+Definition at line 104 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_PLAYDOH_SMALL_STRUCT_MAX@{M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_PLAYDOH_SMALL_STRUCT_MAX@{M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX~64}\label{ml__hpl__pd_8c_02870c1424ba9e44089fa5f45ea89160}
+
+
+
+
+Definition at line 134 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-fnvar\_\-layout(), and M\_\-playdoh\_\-layout\_\-fnvar().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-PLAYDOH\_\-SIZE\_\-INT)}\label{ml__hpl__pd_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 135 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__hpl__pd_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                   ((a->src[1]->ctype&0x30)==0x00)))||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__hpl__pd_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__hpl__pd_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!zero_offset@{zero\_\-offset}}
+\index{zero_offset@{zero\_\-offset}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define zero\_\-offset(a)}\label{ml__hpl__pd_8c_04722f33d5049c5277f0a9dc628ebf62}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[1]->type==L_OPERAND_IMMED) &&\
+                                 ((a->src[1]->ctype&0x30)==0x00)&&\
+                                 (a->src[1]->value.i == 0))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-starcore(), and M\_\-num\_\-oper\_\-required\_\-for\_\-tahoe().
+
+\subsection{Function Documentation}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_base_displ_load_opcode@{M\_\-base\_\-displ\_\-load\_\-opcode}}
+\index{M_base_displ_load_opcode@{M\_\-base\_\-displ\_\-load\_\-opcode}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-base\_\-displ\_\-load\_\-opcode (int {\em proc\_\-opc})}\label{ml__hpl__pd_8c_eda289e31b38e91a23a4c13ffae4a03e}
+
+
+
+
+Definition at line 5816 of file ml\_\-hpl\_\-pd.c.
+
+References PLAYDOHop\_\-FLG\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLG\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLG\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLG\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLG\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLG\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLG\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLG\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLG\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLG\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLG\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLG\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLG\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLG\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLG\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLG\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLG\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLG\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLG\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLG\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLG\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLG\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLG\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLG\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLG\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLG\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLG\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLG\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLG\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLG\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLG\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLG\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLM\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLM\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLM\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLM\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLM\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLM\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLM\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLM\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLM\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLM\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLM\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLM\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLM\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLM\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLM\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLM\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLM\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLM\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLM\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLM\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLM\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLM\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLM\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLM\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLM\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLM\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLM\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLM\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLM\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLM\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLM\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLM\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C3, and PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-V1.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_base_displ_store_opcode@{M\_\-base\_\-displ\_\-store\_\-opcode}}
+\index{M_base_displ_store_opcode@{M\_\-base\_\-displ\_\-store\_\-opcode}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-base\_\-displ\_\-store\_\-opcode (int {\em proc\_\-opc})}\label{ml__hpl__pd_8c_9f0df325e031621b23dc5100dcd703de}
+
+
+
+
+Definition at line 6290 of file ml\_\-hpl\_\-pd.c.
+
+References PLAYDOHop\_\-FSG\_\-D\_\-C1, PLAYDOHop\_\-FSG\_\-D\_\-C2, PLAYDOHop\_\-FSG\_\-D\_\-C3, PLAYDOHop\_\-FSG\_\-D\_\-V1, PLAYDOHop\_\-FSG\_\-S\_\-C1, PLAYDOHop\_\-FSG\_\-S\_\-C2, PLAYDOHop\_\-FSG\_\-S\_\-C3, PLAYDOHop\_\-FSG\_\-S\_\-V1, PLAYDOHop\_\-FSM\_\-D\_\-C1, PLAYDOHop\_\-FSM\_\-D\_\-C2, PLAYDOHop\_\-FSM\_\-D\_\-C3, PLAYDOHop\_\-FSM\_\-D\_\-V1, PLAYDOHop\_\-FSM\_\-S\_\-C1, PLAYDOHop\_\-FSM\_\-S\_\-C2, PLAYDOHop\_\-FSM\_\-S\_\-C3, PLAYDOHop\_\-FSM\_\-S\_\-V1, PLAYDOHop\_\-SG\_\-B\_\-C1, PLAYDOHop\_\-SG\_\-B\_\-C2, PLAYDOHop\_\-SG\_\-B\_\-C3, PLAYDOHop\_\-SG\_\-B\_\-V1, PLAYDOHop\_\-SG\_\-H\_\-C1, PLAYDOHop\_\-SG\_\-H\_\-C2, PLAYDOHop\_\-SG\_\-H\_\-C3, PLAYDOHop\_\-SG\_\-H\_\-V1, PLAYDOHop\_\-SG\_\-Q\_\-C1, PLAYDOHop\_\-SG\_\-Q\_\-C2, PLAYDOHop\_\-SG\_\-Q\_\-C3, PLAYDOHop\_\-SG\_\-Q\_\-V1, PLAYDOHop\_\-SG\_\-W\_\-C1, PLAYDOHop\_\-SG\_\-W\_\-C2, PLAYDOHop\_\-SG\_\-W\_\-C3, PLAYDOHop\_\-SG\_\-W\_\-V1, PLAYDOHop\_\-SM\_\-B\_\-C1, PLAYDOHop\_\-SM\_\-B\_\-C2, PLAYDOHop\_\-SM\_\-B\_\-C3, PLAYDOHop\_\-SM\_\-B\_\-V1, PLAYDOHop\_\-SM\_\-H\_\-C1, PLAYDOHop\_\-SM\_\-H\_\-C2, PLAYDOHop\_\-SM\_\-H\_\-C3, PLAYDOHop\_\-SM\_\-H\_\-V1, PLAYDOHop\_\-SM\_\-Q\_\-C1, PLAYDOHop\_\-SM\_\-Q\_\-C2, PLAYDOHop\_\-SM\_\-Q\_\-C3, PLAYDOHop\_\-SM\_\-Q\_\-V1, PLAYDOHop\_\-SM\_\-W\_\-C1, PLAYDOHop\_\-SM\_\-W\_\-C2, PLAYDOHop\_\-SM\_\-W\_\-C3, and PLAYDOHop\_\-SM\_\-W\_\-V1.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_conflicting_operands_playdoh@{M\_\-conflicting\_\-operands\_\-playdoh}}
+\index{M_conflicting_operands_playdoh@{M\_\-conflicting\_\-operands\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-playdoh (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__hpl__pd_8c_54a0db73512c89a67f0af2cc6423c1fa}
+
+
+
+
+Definition at line 3980 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, Mspec\_\-num\_\-flt\_\-callee\_\-reg, Mspec\_\-num\_\-flt\_\-caller\_\-reg, Mspec\_\-num\_\-int\_\-callee\_\-reg, Mspec\_\-num\_\-int\_\-caller\_\-reg, and Mspec\_\-num\_\-prd\_\-callee\_\-reg.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_define_macros_playdoh@{M\_\-define\_\-macros\_\-playdoh}}
+\index{M_define_macros_playdoh@{M\_\-define\_\-macros\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-playdoh (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__hpl__pd_8c_2ffe4fc6b506961a1c795626147d70a7}
+
+
+
+
+Definition at line 1811 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-add\_\-symbol, M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, PLAYDOH\_\-MAC\_\-ESC, PLAYDOH\_\-MAC\_\-FONE, PLAYDOH\_\-MAC\_\-FZERO, PLAYDOH\_\-MAC\_\-LC, PLAYDOH\_\-MAC\_\-PRED\_\-ALL\_\-ROT, PLAYDOH\_\-MAC\_\-PRED\_\-ALL\_\-STATIC, PLAYDOH\_\-MAC\_\-PRED\_\-FALSE, PLAYDOH\_\-MAC\_\-PRED\_\-TRUE, PLAYDOH\_\-MAC\_\-PV\_\-0, PLAYDOH\_\-MAC\_\-PV\_\-1, PLAYDOH\_\-MAC\_\-PV\_\-2, PLAYDOH\_\-MAC\_\-PV\_\-3, PLAYDOH\_\-MAC\_\-PV\_\-4, PLAYDOH\_\-MAC\_\-PV\_\-5, PLAYDOH\_\-MAC\_\-PV\_\-6, PLAYDOH\_\-MAC\_\-PV\_\-7, PLAYDOH\_\-MAC\_\-RETADDR, PLAYDOH\_\-MAC\_\-RRB, PLAYDOH\_\-MAC\_\-TEMPREG, PLAYDOH\_\-MAC\_\-TRUE\_\-SP, and PLAYDOH\_\-MAC\_\-ZERO.
+
+Referenced by M\_\-define\_\-macros().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_define_opcode_name_playdoh@{M\_\-define\_\-opcode\_\-name\_\-playdoh}}
+\index{M_define_opcode_name_playdoh@{M\_\-define\_\-opcode\_\-name\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-playdoh (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__hpl__pd_8c_07973b7581803a3453297a052f5cdced}
+
+
+
+
+Definition at line 1904 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-add\_\-symbol, PLAYDOHop\_\-BRCF, PLAYDOHop\_\-BRCT, PLAYDOHop\_\-BRDVF, PLAYDOHop\_\-BRDVI, PLAYDOHop\_\-BRESTORE, PLAYDOHop\_\-BRF\_\-B\_\-B\_\-B, PLAYDOHop\_\-BRF\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRF\_\-B\_\-F\_\-B, PLAYDOHop\_\-BRF\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRF\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-B\_\-F, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-F, PLAYDOHop\_\-BRL, PLAYDOHop\_\-BRLC, PLAYDOHop\_\-BRU, PLAYDOHop\_\-BRW\_\-B\_\-B\_\-B, PLAYDOHop\_\-BRW\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRW\_\-B\_\-F\_\-B, PLAYDOHop\_\-BRW\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRW\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-B\_\-F, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-F, PLAYDOHop\_\-BSAVE, PLAYDOHop\_\-CMPR\_\-EV, PLAYDOHop\_\-CMPR\_\-FALSE, PLAYDOHop\_\-CMPR\_\-NSV, PLAYDOHop\_\-CMPR\_\-OD, PLAYDOHop\_\-CMPR\_\-SV, PLAYDOHop\_\-CMPR\_\-TRUE, PLAYDOHop\_\-EXTRSB, PLAYDOHop\_\-EXTRSH, PLAYDOHop\_\-FCMPR\_\-D\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-D\_\-TRUE, PLAYDOHop\_\-FCMPR\_\-S\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-S\_\-TRUE, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDV\_\-D, PLAYDOHop\_\-FLDV\_\-S, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FMPYADDN\_\-D, PLAYDOHop\_\-FMPYADDN\_\-S, PLAYDOHop\_\-FRESTORE\_\-D, PLAYDOHop\_\-FRESTORE\_\-S, PLAYDOHop\_\-FS\_\-D\_\-C1, PLAYDOHop\_\-FS\_\-D\_\-C2, PLAYDOHop\_\-FS\_\-D\_\-C3, PLAYDOHop\_\-FS\_\-D\_\-V1, PLAYDOHop\_\-FS\_\-S\_\-C1, PLAYDOHop\_\-FS\_\-S\_\-C2, PLAYDOHop\_\-FS\_\-S\_\-C3, PLAYDOHop\_\-FS\_\-S\_\-V1, PLAYDOHop\_\-FSAVE\_\-D, PLAYDOHop\_\-FSAVE\_\-S, PLAYDOHop\_\-FSI\_\-D\_\-C1, PLAYDOHop\_\-FSI\_\-D\_\-C2, PLAYDOHop\_\-FSI\_\-D\_\-C3, PLAYDOHop\_\-FSI\_\-D\_\-V1, PLAYDOHop\_\-FSI\_\-S\_\-C1, PLAYDOHop\_\-FSI\_\-S\_\-C2, PLAYDOHop\_\-FSI\_\-S\_\-C3, PLAYDOHop\_\-FSI\_\-S\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDCM, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDV\_\-B, PLAYDOHop\_\-LDV\_\-H, PLAYDOHop\_\-LDV\_\-Q, PLAYDOHop\_\-LDV\_\-W, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-M\_\-NO\_\-OP, PLAYDOHop\_\-MOVEBB, PLAYDOHop\_\-MOVECG, PLAYDOHop\_\-MOVEFG\_\-L, PLAYDOHop\_\-MOVEFG\_\-U, PLAYDOHop\_\-MOVEGBP, PLAYDOHop\_\-MOVEGC, PLAYDOHop\_\-MOVEGCM, PLAYDOHop\_\-MOVEGF\_\-L, PLAYDOHop\_\-MOVEGF\_\-U, PLAYDOHop\_\-MOVEGG, PLAYDOHop\_\-MOVELB, PLAYDOHop\_\-MOVELBS, PLAYDOHop\_\-MOVELBX, PLAYDOHop\_\-MOVELF, PLAYDOHop\_\-MOVELFS, PLAYDOHop\_\-MOVELG, PLAYDOHop\_\-MOVELGS, PLAYDOHop\_\-MOVELGX, PLAYDOHop\_\-MOVEPG, PLAYDOHop\_\-PBRA, PLAYDOHop\_\-PBRAL, PLAYDOHop\_\-PBRALBS, PLAYDOHop\_\-PBRR, PLAYDOHop\_\-PBRRL, PLAYDOHop\_\-PBRRLBS, PLAYDOHop\_\-RESTORE, PLAYDOHop\_\-S\_\-B\_\-C1, PLAYDOHop\_\-S\_\-B\_\-C2, PLAYDOHop\_\-S\_\-B\_\-C3, PLAYDOHop\_\-S\_\-B\_\-V1, PLAYDOHop\_\-S\_\-H\_\-C1, PLAYDOHop\_\-S\_\-H\_\-C2, PLAYDOHop\_\-S\_\-H\_\-C3, PLAYDOHop\_\-S\_\-H\_\-V1, PLAYDOHop\_\-S\_\-Q\_\-C1, PLAYDOHop\_\-S\_\-Q\_\-C2, PLAYDOHop\_\-S\_\-Q\_\-C3, PLAYDOHop\_\-S\_\-Q\_\-V1, PLAYDOHop\_\-S\_\-W\_\-C1, PLAYDOHop\_\-S\_\-W\_\-C2, PLAYDOHop\_\-S\_\-W\_\-C3, PLAYDOHop\_\-S\_\-W\_\-V1, PLAYDOHop\_\-SAVE, PLAYDOHop\_\-SH1ADDL, PLAYDOHop\_\-SH2ADDL, PLAYDOHop\_\-SH3ADDL, PLAYDOHop\_\-SI\_\-B\_\-C1, PLAYDOHop\_\-SI\_\-B\_\-C2, PLAYDOHop\_\-SI\_\-B\_\-C3, PLAYDOHop\_\-SI\_\-B\_\-V1, PLAYDOHop\_\-SI\_\-H\_\-C1, PLAYDOHop\_\-SI\_\-H\_\-C2, PLAYDOHop\_\-SI\_\-H\_\-C3, PLAYDOHop\_\-SI\_\-H\_\-V1, PLAYDOHop\_\-SI\_\-Q\_\-C1, PLAYDOHop\_\-SI\_\-Q\_\-C2, PLAYDOHop\_\-SI\_\-Q\_\-C3, PLAYDOHop\_\-SI\_\-Q\_\-V1, PLAYDOHop\_\-SI\_\-W\_\-C1, PLAYDOHop\_\-SI\_\-W\_\-C2, PLAYDOHop\_\-SI\_\-W\_\-C3, PLAYDOHop\_\-SI\_\-W\_\-V1, PLAYDOHop\_\-VEXTRSB, PLAYDOHop\_\-VEXTRSH, PLAYDOHop\_\-VFL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFS\_\-D\_\-C1, PLAYDOHop\_\-VFS\_\-S\_\-C1, PLAYDOHop\_\-VFSE\_\-D\_\-C1, PLAYDOHop\_\-VFSE\_\-S\_\-C1, PLAYDOHop\_\-VL\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VS\_\-B\_\-C1, PLAYDOHop\_\-VS\_\-H\_\-C1, PLAYDOHop\_\-VS\_\-W\_\-C1, PLAYDOHop\_\-VSE\_\-B\_\-C1, PLAYDOHop\_\-VSE\_\-H\_\-C1, PLAYDOHop\_\-VSE\_\-W\_\-C1, PLAYDOHopcode\_\-BRCF, PLAYDOHopcode\_\-BRCT, PLAYDOHopcode\_\-BRDVF, PLAYDOHopcode\_\-BRDVI, PLAYDOHopcode\_\-BRESTORE, PLAYDOHopcode\_\-BRF\_\-B\_\-B\_\-B, PLAYDOHopcode\_\-BRF\_\-B\_\-B\_\-F, PLAYDOHopcode\_\-BRF\_\-B\_\-F\_\-B, PLAYDOHopcode\_\-BRF\_\-B\_\-F\_\-F, PLAYDOHopcode\_\-BRF\_\-F\_\-B\_\-B, PLAYDOHopcode\_\-BRF\_\-F\_\-B\_\-F, PLAYDOHopcode\_\-BRF\_\-F\_\-F\_\-B, PLAYDOHopcode\_\-BRF\_\-F\_\-F\_\-F, PLAYDOHopcode\_\-BRL, PLAYDOHopcode\_\-BRLC, PLAYDOHopcode\_\-BRU, PLAYDOHopcode\_\-BRW\_\-B\_\-B\_\-B, PLAYDOHopcode\_\-BRW\_\-B\_\-B\_\-F, PLAYDOHopcode\_\-BRW\_\-B\_\-F\_\-B, PLAYDOHopcode\_\-BRW\_\-B\_\-F\_\-F, PLAYDOHopcode\_\-BRW\_\-F\_\-B\_\-B, PLAYDOHopcode\_\-BRW\_\-F\_\-B\_\-F, PLAYDOHopcode\_\-BRW\_\-F\_\-F\_\-B, PLAYDOHopcode\_\-BRW\_\-F\_\-F\_\-F, PLAYDOHopcode\_\-BSAVE, PLAYDOHopcode\_\-CMPR\_\-EV, PLAYDOHopcode\_\-CMPR\_\-FALSE, PLAYDOHopcode\_\-CMPR\_\-NSV, PLAYDOHopcode\_\-CMPR\_\-OD, PLAYDOHopcode\_\-CMPR\_\-SV, PLAYDOHopcode\_\-CMPR\_\-TRUE, PLAYDOHopcode\_\-EXTRSB, PLAYDOHopcode\_\-EXTRSH, PLAYDOHopcode\_\-FCMPR\_\-D\_\-FALSE, PLAYDOHopcode\_\-FCMPR\_\-D\_\-TRUE, PLAYDOHopcode\_\-FCMPR\_\-S\_\-FALSE, PLAYDOHopcode\_\-FCMPR\_\-S\_\-TRUE, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDV\_\-D, PLAYDOHopcode\_\-FLDV\_\-S, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FMPYADDN\_\-D, PLAYDOHopcode\_\-FMPYADDN\_\-S, PLAYDOHopcode\_\-FRESTORE\_\-D, PLAYDOHopcode\_\-FRESTORE\_\-S, PLAYDOHopcode\_\-FS\_\-D\_\-C1, PLAYDOHopcode\_\-FS\_\-D\_\-C2, PLAYDOHopcode\_\-FS\_\-D\_\-C3, PLAYDOHopcode\_\-FS\_\-D\_\-V1, PLAYDOHopcode\_\-FS\_\-S\_\-C1, PLAYDOHopcode\_\-FS\_\-S\_\-C2, PLAYDOHopcode\_\-FS\_\-S\_\-C3, PLAYDOHopcode\_\-FS\_\-S\_\-V1, PLAYDOHopcode\_\-FSAVE\_\-D, PLAYDOHopcode\_\-FSAVE\_\-S, PLAYDOHopcode\_\-FSI\_\-D\_\-C1, PLAYDOHopcode\_\-FSI\_\-D\_\-C2, PLAYDOHopcode\_\-FSI\_\-D\_\-C3, PLAYDOHopcode\_\-FSI\_\-D\_\-V1, PLAYDOHopcode\_\-FSI\_\-S\_\-C1, PLAYDOHopcode\_\-FSI\_\-S\_\-C2, PLAYDOHopcode\_\-FSI\_\-S\_\-C3, PLAYDOHopcode\_\-FSI\_\-S\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDCM, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDV\_\-B, PLAYDOHopcode\_\-LDV\_\-H, PLAYDOHopcode\_\-LDV\_\-Q, PLAYDOHopcode\_\-LDV\_\-W, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-M\_\-NO\_\-OP, PLAYDOHopcode\_\-MOVEBB, PLAYDOHopcode\_\-MOVECG, PLAYDOHopcode\_\-MOVEFG\_\-L, PLAYDOHopcode\_\-MOVEFG\_\-U, PLAYDOHopcode\_\-MOVEGBP, PLAYDOHopcode\_\-MOVEGC, PLAYDOHopcode\_\-MOVEGCM, PLAYDOHopcode\_\-MOVEGF\_\-L, PLAYDOHopcode\_\-MOVEGF\_\-U, PLAYDOHopcode\_\-MOVEGG, PLAYDOHopcode\_\-MOVELB, PLAYDOHopcode\_\-MOVELBS, PLAYDOHopcode\_\-MOVELBX, PLAYDOHopcode\_\-MOVELF, PLAYDOHopcode\_\-MOVELFS, PLAYDOHopcode\_\-MOVELG, PLAYDOHopcode\_\-MOVELGS, PLAYDOHopcode\_\-MOVELGX, PLAYDOHopcode\_\-MOVEPG, PLAYDOHopcode\_\-PBRA, PLAYDOHopcode\_\-PBRAL, PLAYDOHopcode\_\-PBRALBS, PLAYDOHopcode\_\-PBRR, PLAYDOHopcode\_\-PBRRL, PLAYDOHopcode\_\-PBRRLBS, PLAYDOHopcode\_\-RESTORE, PLAYDOHopcode\_\-S\_\-B\_\-C1, PLAYDOHopcode\_\-S\_\-B\_\-C2, PLAYDOHopcode\_\-S\_\-B\_\-C3, PLAYDOHopcode\_\-S\_\-B\_\-V1, PLAYDOHopcode\_\-S\_\-H\_\-C1, PLAYDOHopcode\_\-S\_\-H\_\-C2, PLAYDOHopcode\_\-S\_\-H\_\-C3, PLAYDOHopcode\_\-S\_\-H\_\-V1, PLAYDOHopcode\_\-S\_\-Q\_\-C1, PLAYDOHopcode\_\-S\_\-Q\_\-C2, PLAYDOHopcode\_\-S\_\-Q\_\-C3, PLAYDOHopcode\_\-S\_\-Q\_\-V1, PLAYDOHopcode\_\-S\_\-W\_\-C1, PLAYDOHopcode\_\-S\_\-W\_\-C2, PLAYDOHopcode\_\-S\_\-W\_\-C3, PLAYDOHopcode\_\-S\_\-W\_\-V1, PLAYDOHopcode\_\-SAVE, PLAYDOHopcode\_\-SH1ADDL, PLAYDOHopcode\_\-SH2ADDL, PLAYDOHopcode\_\-SH3ADDL, PLAYDOHopcode\_\-SI\_\-B\_\-C1, PLAYDOHopcode\_\-SI\_\-B\_\-C2, PLAYDOHopcode\_\-SI\_\-B\_\-C3, PLAYDOHopcode\_\-SI\_\-B\_\-V1, PLAYDOHopcode\_\-SI\_\-H\_\-C1, PLAYDOHopcode\_\-SI\_\-H\_\-C2, PLAYDOHopcode\_\-SI\_\-H\_\-C3, PLAYDOHopcode\_\-SI\_\-H\_\-V1, PLAYDOHopcode\_\-SI\_\-Q\_\-C1, PLAYDOHopcode\_\-SI\_\-Q\_\-C2, PLAYDOHopcode\_\-SI\_\-Q\_\-C3, PLAYDOHopcode\_\-SI\_\-Q\_\-V1, PLAYDOHopcode\_\-SI\_\-W\_\-C1, PLAYDOHopcode\_\-SI\_\-W\_\-C2, PLAYDOHopcode\_\-SI\_\-W\_\-C3, PLAYDOHopcode\_\-SI\_\-W\_\-V1, PLAYDOHopcode\_\-VEXTRSB, PLAYDOHopcode\_\-VEXTRSH, PLAYDOHopcode\_\-VFL\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-VFL\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-VFLE\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-VFLE\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-VFS\_\-D\_\-C1, PLAYDOHopcode\_\-VFS\_\-S\_\-C1, PLAYDOHopcode\_\-VFSE\_\-D\_\-C1, PLAYDOHopcode\_\-VFSE\_\-S\_\-C1, PLAYDOHopcode\_\-VL\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-VL\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-VL\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-VS\_\-B\_\-C1, PLAYDOHopcode\_\-VS\_\-H\_\-C1, PLAYDOHopcode\_\-VS\_\-W\_\-C1, PLAYDOHopcode\_\-VSE\_\-B\_\-C1, PLAYDOHopcode\_\-VSE\_\-H\_\-C1, and PLAYDOHopcode\_\-VSE\_\-W\_\-C1.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_get_macro_name_playdoh@{M\_\-get\_\-macro\_\-name\_\-playdoh}}
+\index{M_get_macro_name_playdoh@{M\_\-get\_\-macro\_\-name\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-playdoh (int {\em id})}\label{ml__hpl__pd_8c_94f3726f92d0d5e66ebf3cb556f15ee5}
+
+
+
+
+Definition at line 1844 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, PLAYDOH\_\-MAC\_\-ESC, PLAYDOH\_\-MAC\_\-FONE, PLAYDOH\_\-MAC\_\-FZERO, PLAYDOH\_\-MAC\_\-LC, PLAYDOH\_\-MAC\_\-PRED\_\-ALL\_\-ROT, PLAYDOH\_\-MAC\_\-PRED\_\-ALL\_\-STATIC, PLAYDOH\_\-MAC\_\-PRED\_\-FALSE, PLAYDOH\_\-MAC\_\-PRED\_\-TRUE, PLAYDOH\_\-MAC\_\-PV\_\-0, PLAYDOH\_\-MAC\_\-PV\_\-1, PLAYDOH\_\-MAC\_\-PV\_\-2, PLAYDOH\_\-MAC\_\-PV\_\-3, PLAYDOH\_\-MAC\_\-PV\_\-4, PLAYDOH\_\-MAC\_\-PV\_\-5, PLAYDOH\_\-MAC\_\-PV\_\-6, PLAYDOH\_\-MAC\_\-PV\_\-7, PLAYDOH\_\-MAC\_\-RETADDR, PLAYDOH\_\-MAC\_\-RRB, PLAYDOH\_\-MAC\_\-TEMPREG, PLAYDOH\_\-MAC\_\-TRUE\_\-SP, and PLAYDOH\_\-MAC\_\-ZERO.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_get_opcode_name_playdoh@{M\_\-get\_\-opcode\_\-name\_\-playdoh}}
+\index{M_get_opcode_name_playdoh@{M\_\-get\_\-opcode\_\-name\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-playdoh (int {\em id})}\label{ml__hpl__pd_8c_daeb434f560167a3cdbc02e359267527}
+
+
+
+
+Definition at line 2537 of file ml\_\-hpl\_\-pd.c.
+
+References PLAYDOHop\_\-BRCF, PLAYDOHop\_\-BRCT, PLAYDOHop\_\-BRDVF, PLAYDOHop\_\-BRDVI, PLAYDOHop\_\-BRESTORE, PLAYDOHop\_\-BRF\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRF\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRF\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-F, PLAYDOHop\_\-BRL, PLAYDOHop\_\-BRLC, PLAYDOHop\_\-BRU, PLAYDOHop\_\-BRW\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRW\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRW\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-F, PLAYDOHop\_\-BSAVE, PLAYDOHop\_\-CMPR\_\-EV, PLAYDOHop\_\-CMPR\_\-FALSE, PLAYDOHop\_\-CMPR\_\-OD, PLAYDOHop\_\-CMPR\_\-TRUE, PLAYDOHop\_\-EXTRSB, PLAYDOHop\_\-EXTRSH, PLAYDOHop\_\-FCMPR\_\-D\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-D\_\-TRUE, PLAYDOHop\_\-FCMPR\_\-S\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-S\_\-TRUE, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDV\_\-D, PLAYDOHop\_\-FLDV\_\-S, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FMPYADDN\_\-D, PLAYDOHop\_\-FMPYADDN\_\-S, PLAYDOHop\_\-FRESTORE\_\-D, PLAYDOHop\_\-FRESTORE\_\-S, PLAYDOHop\_\-FS\_\-D\_\-C1, PLAYDOHop\_\-FS\_\-D\_\-C2, PLAYDOHop\_\-FS\_\-D\_\-C3, PLAYDOHop\_\-FS\_\-D\_\-V1, PLAYDOHop\_\-FS\_\-S\_\-C1, PLAYDOHop\_\-FS\_\-S\_\-C2, PLAYDOHop\_\-FS\_\-S\_\-C3, PLAYDOHop\_\-FS\_\-S\_\-V1, PLAYDOHop\_\-FSAVE\_\-D, PLAYDOHop\_\-FSAVE\_\-S, PLAYDOHop\_\-FSI\_\-D\_\-C1, PLAYDOHop\_\-FSI\_\-D\_\-C2, PLAYDOHop\_\-FSI\_\-D\_\-C3, PLAYDOHop\_\-FSI\_\-D\_\-V1, PLAYDOHop\_\-FSI\_\-S\_\-C1, PLAYDOHop\_\-FSI\_\-S\_\-C2, PLAYDOHop\_\-FSI\_\-S\_\-C3, PLAYDOHop\_\-FSI\_\-S\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDCM, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDV\_\-B, PLAYDOHop\_\-LDV\_\-H, PLAYDOHop\_\-LDV\_\-Q, PLAYDOHop\_\-LDV\_\-W, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-M\_\-NO\_\-OP, PLAYDOHop\_\-MOVEBB, PLAYDOHop\_\-MOVECG, PLAYDOHop\_\-MOVEFG\_\-L, PLAYDOHop\_\-MOVEFG\_\-U, PLAYDOHop\_\-MOVEGBP, PLAYDOHop\_\-MOVEGC, PLAYDOHop\_\-MOVEGCM, PLAYDOHop\_\-MOVEGF\_\-L, PLAYDOHop\_\-MOVEGF\_\-U, PLAYDOHop\_\-MOVEGG, PLAYDOHop\_\-MOVELB, PLAYDOHop\_\-MOVELBS, PLAYDOHop\_\-MOVELBX, PLAYDOHop\_\-MOVELF, PLAYDOHop\_\-MOVELFS, PLAYDOHop\_\-MOVELG, PLAYDOHop\_\-MOVELGS, PLAYDOHop\_\-MOVELGX, PLAYDOHop\_\-MOVEPG, PLAYDOHop\_\-PBRA, PLAYDOHop\_\-PBRAL, PLAYDOHop\_\-PBRALBS, PLAYDOHop\_\-PBRR, PLAYDOHop\_\-PBRRL, PLAYDOHop\_\-PBRRLBS, PLAYDOHop\_\-RESTORE, PLAYDOHop\_\-S\_\-B\_\-C1, PLAYDOHop\_\-S\_\-B\_\-C2, PLAYDOHop\_\-S\_\-B\_\-C3, PLAYDOHop\_\-S\_\-B\_\-V1, PLAYDOHop\_\-S\_\-H\_\-C1, PLAYDOHop\_\-S\_\-H\_\-C2, PLAYDOHop\_\-S\_\-H\_\-C3, PLAYDOHop\_\-S\_\-H\_\-V1, PLAYDOHop\_\-S\_\-Q\_\-C1, PLAYDOHop\_\-S\_\-Q\_\-C2, PLAYDOHop\_\-S\_\-Q\_\-C3, PLAYDOHop\_\-S\_\-Q\_\-V1, PLAYDOHop\_\-S\_\-W\_\-C1, PLAYDOHop\_\-S\_\-W\_\-C2, PLAYDOHop\_\-S\_\-W\_\-C3, PLAYDOHop\_\-S\_\-W\_\-V1, PLAYDOHop\_\-SAVE, PLAYDOHop\_\-SH1ADDL, PLAYDOHop\_\-SH2ADDL, PLAYDOHop\_\-SH3ADDL, PLAYDOHop\_\-SI\_\-B\_\-C1, PLAYDOHop\_\-SI\_\-B\_\-C2, PLAYDOHop\_\-SI\_\-B\_\-C3, PLAYDOHop\_\-SI\_\-B\_\-V1, PLAYDOHop\_\-SI\_\-H\_\-C1, PLAYDOHop\_\-SI\_\-H\_\-C2, PLAYDOHop\_\-SI\_\-H\_\-C3, PLAYDOHop\_\-SI\_\-H\_\-V1, PLAYDOHop\_\-SI\_\-Q\_\-C1, PLAYDOHop\_\-SI\_\-Q\_\-C2, PLAYDOHop\_\-SI\_\-Q\_\-C3, PLAYDOHop\_\-SI\_\-Q\_\-V1, PLAYDOHop\_\-SI\_\-W\_\-C1, PLAYDOHop\_\-SI\_\-W\_\-C2, PLAYDOHop\_\-SI\_\-W\_\-C3, PLAYDOHop\_\-SI\_\-W\_\-V1, PLAYDOHop\_\-VEXTRSB, PLAYDOHop\_\-VEXTRSH, PLAYDOHop\_\-VFL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFS\_\-D\_\-C1, PLAYDOHop\_\-VFS\_\-S\_\-C1, PLAYDOHop\_\-VFSE\_\-D\_\-C1, PLAYDOHop\_\-VFSE\_\-S\_\-C1, PLAYDOHop\_\-VL\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VS\_\-B\_\-C1, PLAYDOHop\_\-VS\_\-H\_\-C1, PLAYDOHop\_\-VS\_\-W\_\-C1, PLAYDOHop\_\-VSE\_\-B\_\-C1, PLAYDOHop\_\-VSE\_\-H\_\-C1, PLAYDOHop\_\-VSE\_\-W\_\-C1, PLAYDOHopcode\_\-BRCF, PLAYDOHopcode\_\-BRCT, PLAYDOHopcode\_\-BRDVF, PLAYDOHopcode\_\-BRDVI, PLAYDOHopcode\_\-BRESTORE, PLAYDOHopcode\_\-BRF\_\-B\_\-B\_\-F, PLAYDOHopcode\_\-BRF\_\-B\_\-F\_\-F, PLAYDOHopcode\_\-BRF\_\-F\_\-B\_\-B, PLAYDOHopcode\_\-BRF\_\-F\_\-F\_\-B, PLAYDOHopcode\_\-BRF\_\-F\_\-F\_\-F, PLAYDOHopcode\_\-BRL, PLAYDOHopcode\_\-BRLC, PLAYDOHopcode\_\-BRU, PLAYDOHopcode\_\-BRW\_\-B\_\-B\_\-F, PLAYDOHopcode\_\-BRW\_\-B\_\-F\_\-F, PLAYDOHopcode\_\-BRW\_\-F\_\-B\_\-B, PLAYDOHopcode\_\-BRW\_\-F\_\-F\_\-B, PLAYDOHopcode\_\-BRW\_\-F\_\-F\_\-F, PLAYDOHopcode\_\-BSAVE, PLAYDOHopcode\_\-CMPR\_\-EV, PLAYDOHopcode\_\-CMPR\_\-FALSE, PLAYDOHopcode\_\-CMPR\_\-OD, PLAYDOHopcode\_\-CMPR\_\-TRUE, PLAYDOHopcode\_\-EXTRSB, PLAYDOHopcode\_\-EXTRSH, PLAYDOHopcode\_\-FCMPR\_\-D\_\-FALSE, PLAYDOHopcode\_\-FCMPR\_\-D\_\-TRUE, PLAYDOHopcode\_\-FCMPR\_\-S\_\-FALSE, PLAYDOHopcode\_\-FCMPR\_\-S\_\-TRUE, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FL\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FL\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDS\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLDSI\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FLDV\_\-D, PLAYDOHopcode\_\-FLDV\_\-S, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C1\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C2\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-C3\_\-V1, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C1, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C2, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-C3, PLAYDOHopcode\_\-FLI\_\-D\_\-V1\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C1\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C2\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-C3\_\-V1, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C1, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C2, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-C3, PLAYDOHopcode\_\-FLI\_\-S\_\-V1\_\-V1, PLAYDOHopcode\_\-FMPYADDN\_\-D, PLAYDOHopcode\_\-FMPYADDN\_\-S, PLAYDOHopcode\_\-FRESTORE\_\-D, PLAYDOHopcode\_\-FRESTORE\_\-S, PLAYDOHopcode\_\-FS\_\-D\_\-C1, PLAYDOHopcode\_\-FS\_\-D\_\-C2, PLAYDOHopcode\_\-FS\_\-D\_\-C3, PLAYDOHopcode\_\-FS\_\-D\_\-V1, PLAYDOHopcode\_\-FS\_\-S\_\-C1, PLAYDOHopcode\_\-FS\_\-S\_\-C2, PLAYDOHopcode\_\-FS\_\-S\_\-C3, PLAYDOHopcode\_\-FS\_\-S\_\-V1, PLAYDOHopcode\_\-FSAVE\_\-D, PLAYDOHopcode\_\-FSAVE\_\-S, PLAYDOHopcode\_\-FSI\_\-D\_\-C1, PLAYDOHopcode\_\-FSI\_\-D\_\-C2, PLAYDOHopcode\_\-FSI\_\-D\_\-C3, PLAYDOHopcode\_\-FSI\_\-D\_\-V1, PLAYDOHopcode\_\-FSI\_\-S\_\-C1, PLAYDOHopcode\_\-FSI\_\-S\_\-C2, PLAYDOHopcode\_\-FSI\_\-S\_\-C3, PLAYDOHopcode\_\-FSI\_\-S\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-L\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDCM, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LDS\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LDSI\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-LDV\_\-B, PLAYDOHopcode\_\-LDV\_\-H, PLAYDOHopcode\_\-LDV\_\-Q, PLAYDOHopcode\_\-LDV\_\-W, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-B\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-H\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-Q\_\-V1\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C1\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C2\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-C3\_\-V1, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C1, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C2, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-C3, PLAYDOHopcode\_\-LI\_\-W\_\-V1\_\-V1, PLAYDOHopcode\_\-M\_\-NO\_\-OP, PLAYDOHopcode\_\-MOVEBB, PLAYDOHopcode\_\-MOVECG, PLAYDOHopcode\_\-MOVEFG\_\-L, PLAYDOHopcode\_\-MOVEFG\_\-U, PLAYDOHopcode\_\-MOVEGBP, PLAYDOHopcode\_\-MOVEGC, PLAYDOHopcode\_\-MOVEGCM, PLAYDOHopcode\_\-MOVEGF\_\-L, PLAYDOHopcode\_\-MOVEGF\_\-U, PLAYDOHopcode\_\-MOVEGG, PLAYDOHopcode\_\-MOVELB, PLAYDOHopcode\_\-MOVELBS, PLAYDOHopcode\_\-MOVELBX, PLAYDOHopcode\_\-MOVELF, PLAYDOHopcode\_\-MOVELFS, PLAYDOHopcode\_\-MOVELG, PLAYDOHopcode\_\-MOVELGS, PLAYDOHopcode\_\-MOVELGX, PLAYDOHopcode\_\-MOVEPG, PLAYDOHopcode\_\-PBRA, PLAYDOHopcode\_\-PBRAL, PLAYDOHopcode\_\-PBRALBS, PLAYDOHopcode\_\-PBRR, PLAYDOHopcode\_\-PBRRL, PLAYDOHopcode\_\-PBRRLBS, PLAYDOHopcode\_\-RESTORE, PLAYDOHopcode\_\-S\_\-B\_\-C1, PLAYDOHopcode\_\-S\_\-B\_\-C2, PLAYDOHopcode\_\-S\_\-B\_\-C3, PLAYDOHopcode\_\-S\_\-B\_\-V1, PLAYDOHopcode\_\-S\_\-H\_\-C1, PLAYDOHopcode\_\-S\_\-H\_\-C2, PLAYDOHopcode\_\-S\_\-H\_\-C3, PLAYDOHopcode\_\-S\_\-H\_\-V1, PLAYDOHopcode\_\-S\_\-Q\_\-C1, PLAYDOHopcode\_\-S\_\-Q\_\-C2, PLAYDOHopcode\_\-S\_\-Q\_\-C3, PLAYDOHopcode\_\-S\_\-Q\_\-V1, PLAYDOHopcode\_\-S\_\-W\_\-C1, PLAYDOHopcode\_\-S\_\-W\_\-C2, PLAYDOHopcode\_\-S\_\-W\_\-C3, PLAYDOHopcode\_\-S\_\-W\_\-V1, PLAYDOHopcode\_\-SAVE, PLAYDOHopcode\_\-SH1ADDL, PLAYDOHopcode\_\-SH2ADDL, PLAYDOHopcode\_\-SH3ADDL, PLAYDOHopcode\_\-SI\_\-B\_\-C1, PLAYDOHopcode\_\-SI\_\-B\_\-C2, PLAYDOHopcode\_\-SI\_\-B\_\-C3, PLAYDOHopcode\_\-SI\_\-B\_\-V1, PLAYDOHopcode\_\-SI\_\-H\_\-C1, PLAYDOHopcode\_\-SI\_\-H\_\-C2, PLAYDOHopcode\_\-SI\_\-H\_\-C3, PLAYDOHopcode\_\-SI\_\-H\_\-V1, PLAYDOHopcode\_\-SI\_\-Q\_\-C1, PLAYDOHopcode\_\-SI\_\-Q\_\-C2, PLAYDOHopcode\_\-SI\_\-Q\_\-C3, PLAYDOHopcode\_\-SI\_\-Q\_\-V1, PLAYDOHopcode\_\-SI\_\-W\_\-C1, PLAYDOHopcode\_\-SI\_\-W\_\-C2, PLAYDOHopcode\_\-SI\_\-W\_\-C3, PLAYDOHopcode\_\-SI\_\-W\_\-V1, PLAYDOHopcode\_\-VEXTRSB, PLAYDOHopcode\_\-VEXTRSH, PLAYDOHopcode\_\-VFL\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-VFL\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-VFLE\_\-D\_\-C1\_\-C1, PLAYDOHopcode\_\-VFLE\_\-S\_\-C1\_\-C1, PLAYDOHopcode\_\-VFS\_\-D\_\-C1, PLAYDOHopcode\_\-VFS\_\-S\_\-C1, PLAYDOHopcode\_\-VFSE\_\-D\_\-C1, PLAYDOHopcode\_\-VFSE\_\-S\_\-C1, PLAYDOHopcode\_\-VL\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-VL\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-VL\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-B\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-H\_\-C1\_\-C1, PLAYDOHopcode\_\-VLE\_\-W\_\-C1\_\-C1, PLAYDOHopcode\_\-VS\_\-B\_\-C1, PLAYDOHopcode\_\-VS\_\-H\_\-C1, PLAYDOHopcode\_\-VS\_\-W\_\-C1, PLAYDOHopcode\_\-VSE\_\-B\_\-C1, PLAYDOHopcode\_\-VSE\_\-H\_\-C1, and PLAYDOHopcode\_\-VSE\_\-W\_\-C1.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_is_stack_operand_playdoh@{M\_\-is\_\-stack\_\-operand\_\-playdoh}}
+\index{M_is_stack_operand_playdoh@{M\_\-is\_\-stack\_\-operand\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-playdoh (L\_\-Operand $\ast$ {\em operand})}\label{ml__hpl__pd_8c_de3b4e27d7ba3212eda5946a706379d1}
+
+
+
+
+Definition at line 3864 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_is_unsafe_macro_playdoh@{M\_\-is\_\-unsafe\_\-macro\_\-playdoh}}
+\index{M_is_unsafe_macro_playdoh@{M\_\-is\_\-unsafe\_\-macro\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-playdoh (L\_\-Operand $\ast$ {\em operand})}\label{ml__hpl__pd_8c_f94b6da343544a0cca9062e9aff5c2c0}
+
+
+
+
+Definition at line 3889 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_num_oper_required_for_playdoh@{M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh}}
+\index{M_num_oper_required_for_playdoh@{M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__hpl__pd_8c_c21dbc641e9d5e5926b5aa0e58a404a6}
+
+
+
+
+Definition at line 3694 of file ml\_\-hpl\_\-pd.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-pos\_\-int\_\-inc, M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_num_registers_playdoh@{M\_\-num\_\-registers\_\-playdoh}}
+\index{M_num_registers_playdoh@{M\_\-num\_\-registers\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-playdoh (int {\em ctype})}\label{ml__hpl__pd_8c_9e8bd35b8e3fe0de9005905a02549004}
+
+
+
+
+Definition at line 3846 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-num\_\-registers().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_opc_from_proc_opc_playdoh@{M\_\-opc\_\-from\_\-proc\_\-opc\_\-playdoh}}
+\index{M_opc_from_proc_opc_playdoh@{M\_\-opc\_\-from\_\-proc\_\-opc\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-opc\_\-from\_\-proc\_\-opc\_\-playdoh (int {\em proc\_\-opc})}\label{ml__hpl__pd_8c_b0c0c181883da4c1ce076a7f997e9eb9}
+
+
+
+
+Definition at line 4176 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), PLAYDOHop\_\-BRCF, PLAYDOHop\_\-BRCT, PLAYDOHop\_\-BRDVF, PLAYDOHop\_\-BRDVI, PLAYDOHop\_\-BRESTORE, PLAYDOHop\_\-BRF\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRF\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRF\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRF\_\-F\_\-F\_\-F, PLAYDOHop\_\-BRL, PLAYDOHop\_\-BRLC, PLAYDOHop\_\-BRU, PLAYDOHop\_\-BRW\_\-B\_\-B\_\-F, PLAYDOHop\_\-BRW\_\-B\_\-F\_\-F, PLAYDOHop\_\-BRW\_\-F\_\-B\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-B, PLAYDOHop\_\-BRW\_\-F\_\-F\_\-F, PLAYDOHop\_\-BSAVE, PLAYDOHop\_\-CMPR\_\-EV, PLAYDOHop\_\-CMPR\_\-FALSE, PLAYDOHop\_\-CMPR\_\-OD, PLAYDOHop\_\-CMPR\_\-TRUE, PLAYDOHop\_\-EXTRSB, PLAYDOHop\_\-EXTRSH, PLAYDOHop\_\-FCMPR\_\-D\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-D\_\-TRUE, PLAYDOHop\_\-FCMPR\_\-S\_\-FALSE, PLAYDOHop\_\-FCMPR\_\-S\_\-TRUE, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FL\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDS\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLDSI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FLDV\_\-D, PLAYDOHop\_\-FLDV\_\-S, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-D\_\-V1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C1\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C2\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-C3\_\-V1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C1, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C2, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-C3, PLAYDOHop\_\-FLI\_\-S\_\-V1\_\-V1, PLAYDOHop\_\-FMPYADDN\_\-D, PLAYDOHop\_\-FMPYADDN\_\-S, PLAYDOHop\_\-FRESTORE\_\-D, PLAYDOHop\_\-FRESTORE\_\-S, PLAYDOHop\_\-FS\_\-D\_\-C1, PLAYDOHop\_\-FS\_\-D\_\-C2, PLAYDOHop\_\-FS\_\-D\_\-C3, PLAYDOHop\_\-FS\_\-D\_\-V1, PLAYDOHop\_\-FS\_\-S\_\-C1, PLAYDOHop\_\-FS\_\-S\_\-C2, PLAYDOHop\_\-FS\_\-S\_\-C3, PLAYDOHop\_\-FS\_\-S\_\-V1, PLAYDOHop\_\-FSAVE\_\-D, PLAYDOHop\_\-FSAVE\_\-S, PLAYDOHop\_\-FSI\_\-D\_\-C1, PLAYDOHop\_\-FSI\_\-D\_\-C2, PLAYDOHop\_\-FSI\_\-D\_\-C3, PLAYDOHop\_\-FSI\_\-D\_\-V1, PLAYDOHop\_\-FSI\_\-S\_\-C1, PLAYDOHop\_\-FSI\_\-S\_\-C2, PLAYDOHop\_\-FSI\_\-S\_\-C3, PLAYDOHop\_\-FSI\_\-S\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-L\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-L\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-L\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-L\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDCM, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDS\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LDSI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LDV\_\-B, PLAYDOHop\_\-LDV\_\-H, PLAYDOHop\_\-LDV\_\-Q, PLAYDOHop\_\-LDV\_\-W, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LG\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LI\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LM\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-M\_\-NO\_\-OP, PLAYDOHop\_\-MOVEBB, PLAYDOHop\_\-MOVECG, PLAYDOHop\_\-MOVEFG\_\-L, PLAYDOHop\_\-MOVEFG\_\-U, PLAYDOHop\_\-MOVEGBP, PLAYDOHop\_\-MOVEGC, PLAYDOHop\_\-MOVEGCM, PLAYDOHop\_\-MOVEGF\_\-L, PLAYDOHop\_\-MOVEGF\_\-U, PLAYDOHop\_\-MOVEGG, PLAYDOHop\_\-MOVELB, PLAYDOHop\_\-MOVELBS, PLAYDOHop\_\-MOVELBX, PLAYDOHop\_\-MOVELF, PLAYDOHop\_\-MOVELFS, PLAYDOHop\_\-MOVELG, PLAYDOHop\_\-MOVELGS, PLAYDOHop\_\-MOVELGX, PLAYDOHop\_\-MOVEPG, PLAYDOHop\_\-PBRA, PLAYDOHop\_\-PBRAL, PLAYDOHop\_\-PBRALBS, PLAYDOHop\_\-PBRR, PLAYDOHop\_\-PBRRL, PLAYDOHop\_\-PBRRLBS, PLAYDOHop\_\-RESTORE, PLAYDOHop\_\-S\_\-B\_\-C1, PLAYDOHop\_\-S\_\-B\_\-C2, PLAYDOHop\_\-S\_\-B\_\-C3, PLAYDOHop\_\-S\_\-B\_\-V1, PLAYDOHop\_\-S\_\-H\_\-C1, PLAYDOHop\_\-S\_\-H\_\-C2, PLAYDOHop\_\-S\_\-H\_\-C3, PLAYDOHop\_\-S\_\-H\_\-V1, PLAYDOHop\_\-S\_\-Q\_\-C1, PLAYDOHop\_\-S\_\-Q\_\-C2, PLAYDOHop\_\-S\_\-Q\_\-C3, PLAYDOHop\_\-S\_\-Q\_\-V1, PLAYDOHop\_\-S\_\-W\_\-C1, PLAYDOHop\_\-S\_\-W\_\-C2, PLAYDOHop\_\-S\_\-W\_\-C3, PLAYDOHop\_\-S\_\-W\_\-V1, PLAYDOHop\_\-SAVE, PLAYDOHop\_\-SG\_\-B\_\-C1, PLAYDOHop\_\-SG\_\-B\_\-C2, PLAYDOHop\_\-SG\_\-B\_\-C3, PLAYDOHop\_\-SG\_\-B\_\-V1, PLAYDOHop\_\-SG\_\-H\_\-C1, PLAYDOHop\_\-SG\_\-H\_\-C2, PLAYDOHop\_\-SG\_\-H\_\-C3, PLAYDOHop\_\-SG\_\-H\_\-V1, PLAYDOHop\_\-SG\_\-Q\_\-C1, PLAYDOHop\_\-SG\_\-Q\_\-C2, PLAYDOHop\_\-SG\_\-Q\_\-C3, PLAYDOHop\_\-SG\_\-Q\_\-V1, PLAYDOHop\_\-SG\_\-W\_\-C1, PLAYDOHop\_\-SG\_\-W\_\-C2, PLAYDOHop\_\-SG\_\-W\_\-C3, PLAYDOHop\_\-SG\_\-W\_\-V1, PLAYDOHop\_\-SH1ADDL, PLAYDOHop\_\-SH2ADDL, PLAYDOHop\_\-SH3ADDL, PLAYDOHop\_\-SI\_\-B\_\-C1, PLAYDOHop\_\-SI\_\-B\_\-C2, PLAYDOHop\_\-SI\_\-B\_\-C3, PLAYDOHop\_\-SI\_\-B\_\-V1, PLAYDOHop\_\-SI\_\-H\_\-C1, PLAYDOHop\_\-SI\_\-H\_\-C2, PLAYDOHop\_\-SI\_\-H\_\-C3, PLAYDOHop\_\-SI\_\-H\_\-V1, PLAYDOHop\_\-SI\_\-Q\_\-C1, PLAYDOHop\_\-SI\_\-Q\_\-C2, PLAYDOHop\_\-SI\_\-Q\_\-C3, PLAYDOHop\_\-SI\_\-Q\_\-V1, PLAYDOHop\_\-SI\_\-W\_\-C1, PLAYDOHop\_\-SI\_\-W\_\-C2, PLAYDOHop\_\-SI\_\-W\_\-C3, PLAYDOHop\_\-SI\_\-W\_\-V1, PLAYDOHop\_\-SM\_\-B\_\-C1, PLAYDOHop\_\-SM\_\-B\_\-C2, PLAYDOHop\_\-SM\_\-B\_\-C3, PLAYDOHop\_\-SM\_\-B\_\-V1, PLAYDOHop\_\-SM\_\-H\_\-C1, PLAYDOHop\_\-SM\_\-H\_\-C2, PLAYDOHop\_\-SM\_\-H\_\-C3, PLAYDOHop\_\-SM\_\-H\_\-V1, PLAYDOHop\_\-SM\_\-Q\_\-C1, PLAYDOHop\_\-SM\_\-Q\_\-C2, PLAYDOHop\_\-SM\_\-Q\_\-C3, PLAYDOHop\_\-SM\_\-Q\_\-V1, PLAYDOHop\_\-SM\_\-W\_\-C1, PLAYDOHop\_\-SM\_\-W\_\-C2, PLAYDOHop\_\-SM\_\-W\_\-C3, PLAYDOHop\_\-SM\_\-W\_\-V1, PLAYDOHop\_\-VEXTRSB, PLAYDOHop\_\-VEXTRSH, PLAYDOHop\_\-VFL\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFL\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-D\_\-C1\_\-C1, PLAYDOHop\_\-VFLE\_\-S\_\-C1\_\-C1, PLAYDOHop\_\-VFS\_\-D\_\-C1, PLAYDOHop\_\-VFS\_\-S\_\-C1, PLAYDOHop\_\-VFSE\_\-D\_\-C1, PLAYDOHop\_\-VFSE\_\-S\_\-C1, PLAYDOHop\_\-VL\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VL\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-VLE\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-VS\_\-B\_\-C1, PLAYDOHop\_\-VS\_\-H\_\-C1, PLAYDOHop\_\-VS\_\-W\_\-C1, PLAYDOHop\_\-VSE\_\-B\_\-C1, PLAYDOHop\_\-VSE\_\-H\_\-C1, and PLAYDOHop\_\-VSE\_\-W\_\-C1.
+
+Referenced by M\_\-opc\_\-from\_\-proc\_\-opc().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_oper_supported_in_arch_playdoh@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-playdoh}}
+\index{M_oper_supported_in_arch_playdoh@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-playdoh (int {\em opc})}\label{ml__hpl__pd_8c_cb796e1dfbe723c436c49e603182625d}
+
+
+
+
+Definition at line 3642 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_operand_type_playdoh@{M\_\-operand\_\-type\_\-playdoh}}
+\index{M_operand_type_playdoh@{M\_\-operand\_\-type\_\-playdoh}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-playdoh (L\_\-Operand $\ast$ {\em operand})}\label{ml__hpl__pd_8c_d7b4150de8ad05afd52a981f345e1b1f}
+
+
+
+
+Definition at line 3903 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-p, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_array_align@{M\_\-playdoh\_\-array\_\-align}}
+\index{M_playdoh_array_align@{M\_\-playdoh\_\-array\_\-align}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__hpl__pd_8c_c3a0eec9a0a7b1c434594445ff2f2d71}
+
+
+
+
+Definition at line 512 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-array\_\-align().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_array_layout@{M\_\-playdoh\_\-array\_\-layout}}
+\index{M_playdoh_array_layout@{M\_\-playdoh\_\-array\_\-layout}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__hpl__pd_8c_df0539c60f634f095d4112740198ae1d}
+
+
+
+
+Definition at line 499 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-array\_\-layout().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_array_size@{M\_\-playdoh\_\-array\_\-size}}
+\index{M_playdoh_array_size@{M\_\-playdoh\_\-array\_\-size}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__hpl__pd_8c_c99a547b6d78ec0af0e0a2ccf5c96230}
+
+
+
+
+Definition at line 526 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_bit_char@{M\_\-playdoh\_\-bit\_\-char}}
+\index{M_playdoh_bit_char@{M\_\-playdoh\_\-bit\_\-char}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hpl__pd_8c_387e78103b37cacc598646f50a2577e6}
+
+
+
+
+Definition at line 226 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-BIT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-BIT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_bit_int@{M\_\-playdoh\_\-bit\_\-int}}
+\index{M_playdoh_bit_int@{M\_\-playdoh\_\-bit\_\-int}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hpl__pd_8c_d507aa40f886ada5767c8793963f829b}
+
+
+
+
+Definition at line 188 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-BIT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-BIT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_bit_long@{M\_\-playdoh\_\-bit\_\-long}}
+\index{M_playdoh_bit_long@{M\_\-playdoh\_\-bit\_\-long}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hpl__pd_8c_cfa1f7add421804732bdcaf1b7bd6d15}
+
+
+
+
+Definition at line 169 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-BIT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-BIT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_bit_short@{M\_\-playdoh\_\-bit\_\-short}}
+\index{M_playdoh_bit_short@{M\_\-playdoh\_\-bit\_\-short}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hpl__pd_8c_02acab129ae6b9bbf1e7348fdd128c2a}
+
+
+
+
+Definition at line 207 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-BIT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-BIT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_call_type@{M\_\-playdoh\_\-call\_\-type}}
+\index{M_playdoh_call_type@{M\_\-playdoh\_\-call\_\-type}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hpl__pd_8c_ce9de15085873026b09e38ac6d6514b4}
+
+
+
+
+Definition at line 396 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-double(), M\_\-playdoh\_\-float(), M\_\-playdoh\_\-int(), M\_\-playdoh\_\-llong(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, M\_\-playdoh\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_call_type2@{M\_\-playdoh\_\-call\_\-type2}}
+\index{M_playdoh_call_type2@{M\_\-playdoh\_\-call\_\-type2}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hpl__pd_8c_4ab4d548a5ec53628196b3cab02b27dd}
+
+
+
+
+Definition at line 443 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-char(), M\_\-playdoh\_\-double(), M\_\-playdoh\_\-float(), M\_\-playdoh\_\-int(), M\_\-playdoh\_\-llong(), M\_\-playdoh\_\-long(), M\_\-playdoh\_\-model, M\_\-playdoh\_\-pointer(), M\_\-playdoh\_\-short(), M\_\-PLAYDOH\_\-V1, M\_\-playdoh\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_cb_label_name@{M\_\-playdoh\_\-cb\_\-label\_\-name}}
+\index{M_playdoh_cb_label_name@{M\_\-playdoh\_\-cb\_\-label\_\-name}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__hpl__pd_8c_1ee71aed79c4b895c80695629e3fe073}
+
+
+
+
+Definition at line 1436 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_dataflow_macro@{M\_\-playdoh\_\-dataflow\_\-macro}}
+\index{M_playdoh_dataflow_macro@{M\_\-playdoh\_\-dataflow\_\-macro}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-dataflow\_\-macro (int {\em id})}\label{ml__hpl__pd_8c_5e4d9ef05638e59297bec9a426bdff76}
+
+
+
+
+Definition at line 1778 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_double@{M\_\-playdoh\_\-double}}
+\index{M_playdoh_double@{M\_\-playdoh\_\-double}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__hpl__pd_8c_a726eedb0635ce651933c8b58be9eafe}
+
+
+
+
+Definition at line 262 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-DOUBLE, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-DOUBLE, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double(), M\_\-playdoh\_\-call\_\-type(), M\_\-playdoh\_\-call\_\-type2(), M\_\-playdoh\_\-eval\_\-type(), and M\_\-playdoh\_\-eval\_\-type2().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_eval_type@{M\_\-playdoh\_\-eval\_\-type}}
+\index{M_playdoh_eval_type@{M\_\-playdoh\_\-eval\_\-type}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hpl__pd_8c_21b90627827c6a1b572b992b985858ce}
+
+
+
+
+Definition at line 297 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-double(), M\_\-playdoh\_\-float(), M\_\-playdoh\_\-int(), M\_\-playdoh\_\-llong(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, M\_\-playdoh\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_eval_type2@{M\_\-playdoh\_\-eval\_\-type2}}
+\index{M_playdoh_eval_type2@{M\_\-playdoh\_\-eval\_\-type2}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hpl__pd_8c_0be5fb86588f43be08fd1bc5a7584829}
+
+
+
+
+Definition at line 342 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-char(), M\_\-playdoh\_\-double(), M\_\-playdoh\_\-float(), M\_\-playdoh\_\-int(), M\_\-playdoh\_\-llong(), M\_\-playdoh\_\-long(), M\_\-playdoh\_\-model, M\_\-playdoh\_\-pointer(), M\_\-playdoh\_\-short(), M\_\-PLAYDOH\_\-V1, M\_\-playdoh\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_float@{M\_\-playdoh\_\-float}}
+\index{M_playdoh_float@{M\_\-playdoh\_\-float}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__hpl__pd_8c_fefcb24abd713c1081964e52d9f44529}
+
+
+
+
+Definition at line 245 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-FLOAT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-FLOAT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float(), M\_\-playdoh\_\-call\_\-type(), M\_\-playdoh\_\-call\_\-type2(), M\_\-playdoh\_\-eval\_\-type(), and M\_\-playdoh\_\-eval\_\-type2().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_fn_label_name@{M\_\-playdoh\_\-fn\_\-label\_\-name}}
+\index{M_playdoh_fn_label_name@{M\_\-playdoh\_\-fn\_\-label\_\-name}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-playdoh\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__hpl__pd_8c_453736e60fc78894dc1a0a579a750106}
+
+
+
+
+Definition at line 1559 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_fn_name_from_label@{M\_\-playdoh\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_playdoh_fn_name_from_label@{M\_\-playdoh\_\-fn\_\-name\_\-from\_\-label}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-playdoh\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__hpl__pd_8c_8359fd4ab3e87a2ff7cf97abd741c27d}
+
+
+
+
+Definition at line 1581 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_fnvar_layout@{M\_\-playdoh\_\-fnvar\_\-layout}}
+\index{M_playdoh_fnvar_layout@{M\_\-playdoh\_\-fnvar\_\-layout}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__hpl__pd_8c_c9828dfc92b0accba1a7a207e1b499d4}
+
+
+
+
+Definition at line 1062 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PLAYDOH\_\-ALIGN\_\-INT, M\_\-PLAYDOH\_\-ALIGN\_\-MAX, M\_\-PLAYDOH\_\-FLT\_\-BASE, M\_\-PLAYDOH\_\-INT\_\-BASE, M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-INT, M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-PLAYDOH\_\-V1, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_fragile_macro@{M\_\-playdoh\_\-fragile\_\-macro}}
+\index{M_playdoh_fragile_macro@{M\_\-playdoh\_\-fragile\_\-macro}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__hpl__pd_8c_b08feb4f13bb726b71a4be96a8a9d95c}
+
+
+
+
+Definition at line 1599 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_fragile_macro_set@{M\_\-playdoh\_\-fragile\_\-macro\_\-set}}
+\index{M_playdoh_fragile_macro_set@{M\_\-playdoh\_\-fragile\_\-macro\_\-set}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-playdoh\_\-fragile\_\-macro\_\-set (void)}\label{ml__hpl__pd_8c_513d2a28e837623e40e7479e0ac39941}
+
+
+
+
+Definition at line 1627 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, Set\_\-add(), and Set\_\-playdoh\_\-fragile\_\-macro.
+
+Referenced by M\_\-fragile\_\-macro\_\-set().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_is_cb_label@{M\_\-playdoh\_\-is\_\-cb\_\-label}}
+\index{M_playdoh_is_cb_label@{M\_\-playdoh\_\-is\_\-cb\_\-label}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__hpl__pd_8c_678d6462c7ebe8e343e2e73c6d11a817}
+
+
+
+
+Definition at line 1449 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_is_jumptbl_label@{M\_\-playdoh\_\-is\_\-jumptbl\_\-label}}
+\index{M_playdoh_is_jumptbl_label@{M\_\-playdoh\_\-is\_\-jumptbl\_\-label}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__hpl__pd_8c_87f2f993d8cdf2bf23a2945e51ad7e47}
+
+
+
+
+Definition at line 1476 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-JUMPTBL\_\-BASE\_\-NAME, M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_jumptbl_label_name@{M\_\-playdoh\_\-jumptbl\_\-label\_\-name}}
+\index{M_playdoh_jumptbl_label_name@{M\_\-playdoh\_\-jumptbl\_\-label\_\-name}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__hpl__pd_8c_d6189b87d37f8f493d876ffac491a270}
+
+
+
+
+Definition at line 1463 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-JUMPTBL\_\-BASE\_\-NAME, M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_layout_fnvar@{M\_\-playdoh\_\-layout\_\-fnvar}}
+\index{M_playdoh_layout_fnvar@{M\_\-playdoh\_\-layout\_\-fnvar}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__hpl__pd_8c_2cfdd8166897c97bc5dd08cac92e3e1e}
+
+
+
+
+Definition at line 826 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, List\_\-next(), List\_\-start(), M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PLAYDOH\_\-ALIGN\_\-INT, M\_\-PLAYDOH\_\-ALIGN\_\-MAX, M\_\-PLAYDOH\_\-FLT\_\-BASE, M\_\-PLAYDOH\_\-INT\_\-BASE, M\_\-PLAYDOH\_\-MAX\_\-FNVAR\_\-REG, M\_\-PLAYDOH\_\-SIZE\_\-INT, M\_\-PLAYDOH\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Type::size, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_lvar_layout@{M\_\-playdoh\_\-lvar\_\-layout}}
+\index{M_playdoh_lvar_layout@{M\_\-playdoh\_\-lvar\_\-layout}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__hpl__pd_8c_f432282662a79e7ea7ebbc454a43d816}
+
+
+
+
+Definition at line 1371 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-MAX, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_no_short_int@{M\_\-playdoh\_\-no\_\-short\_\-int}}
+\index{M_playdoh_no_short_int@{M\_\-playdoh\_\-no\_\-short\_\-int}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-no\_\-short\_\-int (void)}\label{ml__hpl__pd_8c_7796cbeb61efe1fdf38bad6b7480e496}
+
+
+
+
+Definition at line 1422 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-INT, M\_\-PLAYDOH\_\-SIZE\_\-SHORT, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_pointer@{M\_\-playdoh\_\-pointer}}
+\index{M_playdoh_pointer@{M\_\-playdoh\_\-pointer}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__hpl__pd_8c_849b764ac1110af853ad996076ad9793}
+
+
+
+
+Definition at line 279 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-POINTER, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-POINTER, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-playdoh\_\-call\_\-type2(), M\_\-playdoh\_\-eval\_\-type2(), and M\_\-pointer().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_return_register@{M\_\-playdoh\_\-return\_\-register}}
+\index{M_playdoh_return_register@{M\_\-playdoh\_\-return\_\-register}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__hpl__pd_8c_0710238b14ebf3f6b41e6d931dfd6564}
+
+
+
+
+Definition at line 1531 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-RET\_\-F, M\_\-PLAYDOH\_\-RET\_\-I32, M\_\-PLAYDOH\_\-RET\_\-I64, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-return\_\-register().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_struct_align@{M\_\-playdoh\_\-struct\_\-align}}
+\index{M_playdoh_struct_align@{M\_\-playdoh\_\-struct\_\-align}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hpl__pd_8c_a2d256cf4d80591be32c95347f64b1d8}
+
+
+
+
+Definition at line 731 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-CHAR, M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-struct\_\-align().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_struct_layout@{M\_\-playdoh\_\-struct\_\-layout}}
+\index{M_playdoh_struct_layout@{M\_\-playdoh\_\-struct\_\-layout}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__hpl__pd_8c_f828cbba402137fa0a4b87a204b67723}
+
+
+
+
+Definition at line 636 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-CHAR, M\_\-PLAYDOH\_\-SIZE\_\-INT, M\_\-PLAYDOH\_\-SIZE\_\-LONG, M\_\-PLAYDOH\_\-SIZE\_\-SHORT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_struct_size@{M\_\-playdoh\_\-struct\_\-size}}
+\index{M_playdoh_struct_size@{M\_\-playdoh\_\-struct\_\-size}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__hpl__pd_8c_4958ab51908dc3657789fc7d1b17a53d}
+
+
+
+
+Definition at line 758 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-CHAR, M\_\-PLAYDOH\_\-ALIGN\_\-LONG, M\_\-PLAYDOH\_\-ALIGN\_\-SHORT, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-INT, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-struct\_\-size().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_structure_pointer@{M\_\-playdoh\_\-structure\_\-pointer}}
+\index{M_playdoh_structure_pointer@{M\_\-playdoh\_\-structure\_\-pointer}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-structure\_\-pointer (int {\em purpose})}\label{ml__hpl__pd_8c_079bbbce47aaeafb64d6cf9d660995ef}
+
+
+
+
+Definition at line 1517 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-RET\_\-ST, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_subroutine_call@{M\_\-playdoh\_\-subroutine\_\-call}}
+\index{M_playdoh_subroutine_call@{M\_\-playdoh\_\-subroutine\_\-call}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-subroutine\_\-call (int {\em opc})}\label{ml__hpl__pd_8c_71079daa25f97ae94201913119a1a1b8}
+
+
+
+
+Definition at line 1794 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_union_align@{M\_\-playdoh\_\-union\_\-align}}
+\index{M_playdoh_union_align@{M\_\-playdoh\_\-union\_\-align}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hpl__pd_8c_d8dae1943e72b94fa5bc2a12bae63d56}
+
+
+
+
+Definition at line 568 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-CHAR, M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-union\_\-align().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_union_layout@{M\_\-playdoh\_\-union\_\-layout}}
+\index{M_playdoh_union_layout@{M\_\-playdoh\_\-union\_\-layout}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__hpl__pd_8c_a1215ef769852204c83875900623c433}
+
+
+
+
+Definition at line 550 of file ml\_\-hpl\_\-pd.c.
+
+References M\_\-assert(), M\_\-playdoh\_\-model, and M\_\-PLAYDOH\_\-V1.
+
+Referenced by M\_\-union\_\-layout().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_union_size@{M\_\-playdoh\_\-union\_\-size}}
+\index{M_playdoh_union_size@{M\_\-playdoh\_\-union\_\-size}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-playdoh\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hpl__pd_8c_eb6ad20ac50f223bff7c4ff468181281}
+
+
+
+
+Definition at line 596 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-CHAR, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-V1, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_void@{M\_\-playdoh\_\-void}}
+\index{M_playdoh_void@{M\_\-playdoh\_\-void}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-playdoh\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__hpl__pd_8c_e56cc2373c61771191400d794129f728}
+
+
+
+
+Definition at line 152 of file ml\_\-hpl\_\-pd.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-PLAYDOH\_\-ALIGN\_\-VOID, M\_\-playdoh\_\-model, M\_\-PLAYDOH\_\-SIZE\_\-VOID, M\_\-PLAYDOH\_\-V1, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-playdoh\_\-call\_\-type(), M\_\-playdoh\_\-call\_\-type2(), M\_\-playdoh\_\-eval\_\-type(), M\_\-playdoh\_\-eval\_\-type2(), and M\_\-void().\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_sign_extend_load_opcode@{M\_\-sign\_\-extend\_\-load\_\-opcode}}
+\index{M_sign_extend_load_opcode@{M\_\-sign\_\-extend\_\-load\_\-opcode}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sign\_\-extend\_\-load\_\-opcode (int {\em proc\_\-opc})}\label{ml__hpl__pd_8c_5b7e38eee945ef7a9fd5408225a88cbd}
+
+
+
+
+Definition at line 6081 of file ml\_\-hpl\_\-pd.c.
+
+References PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LGX\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LGX\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LGX\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LGX\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LGX\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LGX\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LGX\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LGX\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LGX\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LGX\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LGX\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LGX\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LGX\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LGX\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LGX\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LGX\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LMX\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LMX\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LMX\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LMX\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LMX\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LMX\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LMX\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LMX\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LMX\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LMX\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LMX\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LMX\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LMX\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LMX\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LMX\_\-W\_\-V1\_\-C3, PLAYDOHop\_\-LMX\_\-W\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-C3, PLAYDOHop\_\-LX\_\-B\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-C3, PLAYDOHop\_\-LX\_\-H\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-Q\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-Q\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-Q\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-Q\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-Q\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-Q\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-Q\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-Q\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-Q\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-Q\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-Q\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-Q\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-Q\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-Q\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-Q\_\-V1\_\-C3, PLAYDOHop\_\-LX\_\-Q\_\-V1\_\-V1, PLAYDOHop\_\-LX\_\-W\_\-C1\_\-C1, PLAYDOHop\_\-LX\_\-W\_\-C1\_\-C2, PLAYDOHop\_\-LX\_\-W\_\-C1\_\-C3, PLAYDOHop\_\-LX\_\-W\_\-C1\_\-V1, PLAYDOHop\_\-LX\_\-W\_\-C2\_\-C1, PLAYDOHop\_\-LX\_\-W\_\-C2\_\-C2, PLAYDOHop\_\-LX\_\-W\_\-C2\_\-C3, PLAYDOHop\_\-LX\_\-W\_\-C2\_\-V1, PLAYDOHop\_\-LX\_\-W\_\-C3\_\-C1, PLAYDOHop\_\-LX\_\-W\_\-C3\_\-C2, PLAYDOHop\_\-LX\_\-W\_\-C3\_\-C3, PLAYDOHop\_\-LX\_\-W\_\-C3\_\-V1, PLAYDOHop\_\-LX\_\-W\_\-V1\_\-C1, PLAYDOHop\_\-LX\_\-W\_\-V1\_\-C2, PLAYDOHop\_\-LX\_\-W\_\-V1\_\-C3, and PLAYDOHop\_\-LX\_\-W\_\-V1\_\-V1.
+
+\subsection{Variable Documentation}
+\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_dbl_offset@{M\_\-playdoh\_\-dbl\_\-offset}}
+\index{M_playdoh_dbl_offset@{M\_\-playdoh\_\-dbl\_\-offset}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-playdoh\_\-dbl\_\-offset} = 0}\label{ml__hpl__pd_8c_bf7fc3fb653baafe2a91de719c33d5c8}
+
+
+
+
+Definition at line 3938 of file ml\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!M_playdoh_model@{M\_\-playdoh\_\-model}}
+\index{M_playdoh_model@{M\_\-playdoh\_\-model}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-playdoh\_\-model}}\label{ml__hpl__pd_8c_bed36a6b8524426f321bd8de6c12bdb9}
+
+
+
+
+Definition at line 98 of file mi\_\-hpl\_\-pd.c.\index{ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}!Set_playdoh_fragile_macro@{Set\_\-playdoh\_\-fragile\_\-macro}}
+\index{Set_playdoh_fragile_macro@{Set\_\-playdoh\_\-fragile\_\-macro}!ml_hpl_pd.c@{ml\_\-hpl\_\-pd.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{Set\_\-playdoh\_\-fragile\_\-macro} = \bf{NULL}}\label{ml__hpl__pd_8c_d3048f84650d62c469cf9e7075dba4b5}
+
+
+
+
+Definition at line 101 of file ml\_\-hpl\_\-pd.c.
+
+Referenced by M\_\-playdoh\_\-fragile\_\-macro\_\-set().

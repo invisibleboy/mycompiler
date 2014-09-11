@@ -1,0 +1,115 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Generates a IMPACT-specific .lmdes and .lmdes2 file from a .hmdes file
+#   Expects an version1 hmdes file and generates a version1 and version2
+#   lmdes file
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script written by John Gyllenhaal 2/96
+
+
+# set up environment with default values:
+STRUCTURE="/home/bajor/gyllen/impact/src/convert_hmdes/structure_IMPACT.lmdes2";
+DEFS=""
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed argument
+if [ $# -ge 2 ]; then
+    HMDES="$1";
+    LMDES="$2";
+
+    # skip the 2 set arguments
+    shift 2;
+else
+    VALID_ARGS=0;
+fi
+
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-D*)
+	    DEFS="${DEFS} ${OPTION}";;
+
+	*)
+	    echo "Error: Unknown option '$OPTION'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: Lmdes_build2  hmdes_file_name lmdes_file_name [-Ddefine_name=value]';
+    echo '> ';
+    echo '> Generates BOTH an IMPACT-specific .lmdes AND .lmdes2 file';
+    exit 0200;
+fi;
+
+
+# Generate the .lmdes file
+Lmdes_build ${HMDES} ${LMDES} ${DEFS}
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+
+# Generate the .lmdes2 file
+echo "  ${HMDES} -> ${LMDES}2"
+hmdesc ${HMDES} -version1 -o ${LMDES}2  ${DEFS}
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi

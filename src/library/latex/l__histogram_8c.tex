@@ -1,0 +1,240 @@
+\section{l\_\-histogram.c File Reference}
+\label{l__histogram_8c}\index{l_histogram.c@{l\_\-histogram.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$library/l\_\-histogram.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{NUM\_\-HIST\_\-PRINT}~10
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Histogram} $\ast$ \bf{L\_\-create\_\-histogram} (char $\ast$\bf{name}, int init\_\-size)
+\item 
+void \bf{L\_\-delete\_\-histogram} (\bf{L\_\-Histogram} $\ast$hist)
+\item 
+void \bf{L\_\-realloc\_\-histogram\_\-data} (\bf{L\_\-Histogram} $\ast$hist, int \bf{entry})
+\item 
+void \bf{L\_\-update\_\-histogram} (\bf{L\_\-Histogram} $\ast$hist, int \bf{entry}, double val)
+\item 
+void \bf{L\_\-clear\_\-histogram} (\bf{L\_\-Histogram} $\ast$hist)
+\item 
+void \bf{L\_\-scale\_\-histogram\_\-entries} (\bf{L\_\-Histogram} $\ast$hist, double scale)
+\item 
+void \bf{L\_\-copy\_\-histogram} (\bf{L\_\-Histogram} $\ast$dest, \bf{L\_\-Histogram} $\ast$src)
+\item 
+void \bf{L\_\-add\_\-histograms} (\bf{L\_\-Histogram} $\ast$dest, \bf{L\_\-Histogram} $\ast$src1, \bf{L\_\-Histogram} $\ast$src2)
+\item 
+static void \bf{L\_\-print\_\-histogram\_\-all\_\-entries} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist)
+\item 
+static void \bf{L\_\-print\_\-histogram\_\-grouped\_\-values} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist)
+\item 
+static void \bf{L\_\-print\_\-histogram\_\-grouped\_\-percentages} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist)
+\item 
+static void \bf{L\_\-print\_\-histogram\_\-individual\_\-percentages} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist, double sum)
+\item 
+static void \bf{L\_\-print\_\-histogram\_\-average\_\-value} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist)
+\item 
+void \bf{L\_\-print\_\-histogram} (FILE $\ast$\bf{F}, \bf{L\_\-Histogram} $\ast$hist, int \bf{mode}, double sum)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{L\_\-histogram\_\-pool} = NULL
+\item 
+static int \bf{hist\_\-print} [NUM\_\-HIST\_\-PRINT]
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_histogram.c@{l\_\-histogram.c}!NUM_HIST_PRINT@{NUM\_\-HIST\_\-PRINT}}
+\index{NUM_HIST_PRINT@{NUM\_\-HIST\_\-PRINT}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NUM\_\-HIST\_\-PRINT~10}\label{l__histogram_8c_af08d60e759fc9158114206e072ba860}
+
+
+
+
+Definition at line 342 of file l\_\-histogram.c.
+
+Referenced by L\_\-print\_\-histogram\_\-grouped\_\-values().
+
+\subsection{Function Documentation}
+\index{l_histogram.c@{l\_\-histogram.c}!L_add_histograms@{L\_\-add\_\-histograms}}
+\index{L_add_histograms@{L\_\-add\_\-histograms}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-histograms (\bf{L\_\-Histogram} $\ast$ {\em dest}, \bf{L\_\-Histogram} $\ast$ {\em src1}, \bf{L\_\-Histogram} $\ast$ {\em src2})}\label{l__histogram_8c_d7a785830793f8439039d15fc6b34306}
+
+
+
+
+Definition at line 237 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-realloc\_\-histogram\_\-data(), NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.\index{l_histogram.c@{l\_\-histogram.c}!L_clear_histogram@{L\_\-clear\_\-histogram}}
+\index{L_clear_histogram@{L\_\-clear\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-clear\_\-histogram (\bf{L\_\-Histogram} $\ast$ {\em hist})}\label{l__histogram_8c_fda268df98c4256f508d178e93cae75e}
+
+
+
+
+Definition at line 185 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.\index{l_histogram.c@{l\_\-histogram.c}!L_copy_histogram@{L\_\-copy\_\-histogram}}
+\index{L_copy_histogram@{L\_\-copy\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-copy\_\-histogram (\bf{L\_\-Histogram} $\ast$ {\em dest}, \bf{L\_\-Histogram} $\ast$ {\em src})}\label{l__histogram_8c_6acd9401da26009bbc8dac37cc870832}
+
+
+
+
+Definition at line 217 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-realloc\_\-histogram\_\-data(), NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.\index{l_histogram.c@{l\_\-histogram.c}!L_create_histogram@{L\_\-create\_\-histogram}}
+\index{L_create_histogram@{L\_\-create\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Histogram}$\ast$ L\_\-create\_\-histogram (char $\ast$ {\em name}, int {\em init\_\-size})}\label{l__histogram_8c_26baf7ecd630d5d344b1b385b11b4370}
+
+
+
+
+Definition at line 66 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), L\_\-DEFAULT\_\-HISTOGRAM\_\-SIZE, L\_\-histogram\_\-pool, L\_\-MAX\_\-HISTOGRAM\_\-SIZE, L\_\-Histogram::name, NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.\index{l_histogram.c@{l\_\-histogram.c}!L_delete_histogram@{L\_\-delete\_\-histogram}}
+\index{L_delete_histogram@{L\_\-delete\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-delete\_\-histogram (\bf{L\_\-Histogram} $\ast$ {\em hist})}\label{l__histogram_8c_ce5a89ddb2e5c6bb37fc8cb817f78dfe}
+
+
+
+
+Definition at line 106 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, \_\-L\_\-Alloc\_\-Pool::free, L\_\-free(), L\_\-histogram\_\-pool, L\_\-Histogram::name, and NULL.\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram@{L\_\-print\_\-histogram}}
+\index{L_print_histogram@{L\_\-print\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-print\_\-histogram (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist}, int {\em mode}, double {\em sum})}\label{l__histogram_8c_d6f17fb66a8bca281cb50d0a9778647e}
+
+
+
+
+Definition at line 605 of file l\_\-histogram.c.
+
+References I\_\-punt(), L\_\-PRINT\_\-ALL\_\-ENTRIES, L\_\-PRINT\_\-AVERAGE\_\-VALUE, L\_\-PRINT\_\-GROUPED\_\-PERCENTAGES, L\_\-PRINT\_\-GROUPED\_\-VALUES, L\_\-print\_\-histogram\_\-all\_\-entries(), L\_\-print\_\-histogram\_\-average\_\-value(), L\_\-print\_\-histogram\_\-grouped\_\-percentages(), L\_\-print\_\-histogram\_\-grouped\_\-values(), L\_\-print\_\-histogram\_\-individual\_\-percentages(), L\_\-PRINT\_\-INDIVIDUAL\_\-PERCENTAGES, and NULL.\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram_all_entries@{L\_\-print\_\-histogram\_\-all\_\-entries}}
+\index{L_print_histogram_all_entries@{L\_\-print\_\-histogram\_\-all\_\-entries}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-print\_\-histogram\_\-all\_\-entries (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist})\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_2e01f05ca006f2cee2f9be7bb3f4e02b}
+
+
+
+
+Definition at line 284 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, L\_\-Histogram::name, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.
+
+Referenced by L\_\-print\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram_average_value@{L\_\-print\_\-histogram\_\-average\_\-value}}
+\index{L_print_histogram_average_value@{L\_\-print\_\-histogram\_\-average\_\-value}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-print\_\-histogram\_\-average\_\-value (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist})\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_4341d96dfcf721f272a0e7cdb6ee4fd4}
+
+
+
+
+Definition at line 554 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, L\_\-MAX\_\-HISTOGRAM\_\-SIZE, L\_\-Histogram::name, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.
+
+Referenced by L\_\-print\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram_grouped_percentages@{L\_\-print\_\-histogram\_\-grouped\_\-percentages}}
+\index{L_print_histogram_grouped_percentages@{L\_\-print\_\-histogram\_\-grouped\_\-percentages}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-print\_\-histogram\_\-grouped\_\-percentages (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist})\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_8ce9bf71a7dc14c367fffa53eea2dee4}
+
+
+
+
+Definition at line 429 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-Histogram::name, and L\_\-Histogram::size.
+
+Referenced by L\_\-print\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram_grouped_values@{L\_\-print\_\-histogram\_\-grouped\_\-values}}
+\index{L_print_histogram_grouped_values@{L\_\-print\_\-histogram\_\-grouped\_\-values}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-print\_\-histogram\_\-grouped\_\-values (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist})\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_c9ac124db3832f738e15c73a57c985e6}
+
+
+
+
+Definition at line 357 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, hist\_\-print, L\_\-Histogram::name, NUM\_\-HIST\_\-PRINT, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.
+
+Referenced by L\_\-print\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_print_histogram_individual_percentages@{L\_\-print\_\-histogram\_\-individual\_\-percentages}}
+\index{L_print_histogram_individual_percentages@{L\_\-print\_\-histogram\_\-individual\_\-percentages}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-print\_\-histogram\_\-individual\_\-percentages (FILE $\ast$ {\em F}, \bf{L\_\-Histogram} $\ast$ {\em hist}, double {\em sum})\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_f579e94ebf046b4687fbf55498d2e393}
+
+
+
+
+Definition at line 499 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-Histogram::name, and L\_\-Histogram::size.
+
+Referenced by L\_\-print\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_realloc_histogram_data@{L\_\-realloc\_\-histogram\_\-data}}
+\index{L_realloc_histogram_data@{L\_\-realloc\_\-histogram\_\-data}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-realloc\_\-histogram\_\-data (\bf{L\_\-Histogram} $\ast$ {\em hist}, int {\em entry})}\label{l__histogram_8c_6f58af10cab84e0960b7fa00f88908a1}
+
+
+
+
+Definition at line 127 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, \_\-L\_\-Alloc\_\-Pool::free, I\_\-punt(), L\_\-MAX\_\-HISTOGRAM\_\-SIZE, and L\_\-Histogram::size.
+
+Referenced by L\_\-add\_\-histograms(), L\_\-copy\_\-histogram(), and L\_\-update\_\-histogram().\index{l_histogram.c@{l\_\-histogram.c}!L_scale_histogram_entries@{L\_\-scale\_\-histogram\_\-entries}}
+\index{L_scale_histogram_entries@{L\_\-scale\_\-histogram\_\-entries}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-scale\_\-histogram\_\-entries (\bf{L\_\-Histogram} $\ast$ {\em hist}, double {\em scale})}\label{l__histogram_8c_a1cdf4d279477d701637e1461c4c29c3}
+
+
+
+
+Definition at line 201 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.\index{l_histogram.c@{l\_\-histogram.c}!L_update_histogram@{L\_\-update\_\-histogram}}
+\index{L_update_histogram@{L\_\-update\_\-histogram}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-update\_\-histogram (\bf{L\_\-Histogram} $\ast$ {\em hist}, int {\em entry}, double {\em val})}\label{l__histogram_8c_16b10fa8c905eba042950f47899b88e2}
+
+
+
+
+Definition at line 164 of file l\_\-histogram.c.
+
+References L\_\-Histogram::data, I\_\-punt(), L\_\-MAX\_\-HISTOGRAM\_\-SIZE, L\_\-realloc\_\-histogram\_\-data(), NULL, L\_\-Histogram::over\_\-max\_\-data, and L\_\-Histogram::size.
+
+\subsection{Variable Documentation}
+\index{l_histogram.c@{l\_\-histogram.c}!hist_print@{hist\_\-print}}
+\index{hist_print@{hist\_\-print}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{hist\_\-print}[NUM\_\-HIST\_\-PRINT]\hspace{0.3cm}{\tt  [static]}}\label{l__histogram_8c_2a3e2512e486858225365aeed752bf4d}
+
+
+\textbf{Initial value:}
+
+\begin{Code}\begin{verbatim} {
+  0,
+  1,
+  2,
+  4,
+  8,
+  16,
+  32,
+  64,
+  128,
+  256
+}
+\end{verbatim}\end{Code}
+
+
+Definition at line 343 of file l\_\-histogram.c.
+
+Referenced by L\_\-print\_\-histogram\_\-grouped\_\-values().\index{l_histogram.c@{l\_\-histogram.c}!L_histogram_pool@{L\_\-histogram\_\-pool}}
+\index{L_histogram_pool@{L\_\-histogram\_\-pool}!l_histogram.c@{l\_\-histogram.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{L\_\-histogram\_\-pool} = NULL}\label{l__histogram_8c_92e771723b6a34740126beb49e8344f8}
+
+
+
+
+Definition at line 63 of file l\_\-histogram.c.
+
+Referenced by L\_\-create\_\-histogram(), and L\_\-delete\_\-histogram().

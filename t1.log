@@ -1,0 +1,222 @@
+./parms/LGLOBAL_DEFAULTS:    use_loop_iter = yes;		# safe, if DOALL loops marked, mem ops in
+./parms/LGLOBAL_DEFAULTS:#   loop detection parameters
+./parms/LGLOBAL_DEFAULTS:    static_loop_iter_count = 10;	# static weight associated with each level
+./parms/LGLOBAL_DEFAULTS:					# of loop nesting
+./parms/LGLOBAL_DEFAULTS:    debug_loop = off;			# print debugging info for loop analysis
+./parms/LGLOBAL_DEFAULTS:    debug_inner_loop = off;		# print debugging info for inner loop an
+./parms/LMARKPIPE_DEFAULTS:# default parameters ofr loop marking library.
+./parms/LMARKPIPE_DEFAULTS:       mark_multi_exit_loops = yes;         # pipeline loops w/ multiple exits
+./parms/LMARKPIPE_DEFAULTS:       print_marking_statistics = yes;      # Print statistics on loop
+./parms/LMARKPIPE_DEFAULTS:                                            # invocation of the loop for
+./parms/LMARKPIPE_DEFAULTS:					    # software pipelined loops
+./parms/LMARKPIPE_DEFAULTS:	                                    # used to make the loop body into
+./parms/Makefile.am:	parms/PLOOP_DEFAULTS \
+./parms/LOPTI_DEFAULTS:  #     level 3 = local+global+jump opti, level 4 = local+global+jump+loop
+./parms/LOPTI_DEFAULTS:    do_jump_br_swap = yes;		# swap loop/fallthru branches
+./parms/LOPTI_DEFAULTS:    allow_jump_expansion_of_pcode_loops = yes; # all br target exp of loop bodies
+./parms/LOPTI_DEFAULTS:  # Loop optimization switches
+./parms/LOPTI_DEFAULTS:    do_loop_opti = yes;			# disable ALL loop opti if "no"
+./parms/LOPTI_DEFAULTS:    do_loop_br_simp = yes;		# simplify loop back branches
+./parms/LOPTI_DEFAULTS:    do_loop_inv_code_rem = yes;		# invariant code removal
+./parms/LOPTI_DEFAULTS:    do_loop_global_var_mig = yes;	# global variable migration
+./parms/LOPTI_DEFAULTS:    do_loop_ind_var_str_red = yes;	# induction variable strength reduction
+./parms/LOPTI_DEFAULTS:    do_loop_ind_var_reinit = yes;	# induction variable reinitialization
+./parms/LOPTI_DEFAULTS:    do_loop_ind_var_elim = yes;		# induction variable elimination
+./parms/LOPTI_DEFAULTS:    do_dead_loop_rem = no;         	# ADA 4/6/95: dead loop removal
+./parms/LOPTI_DEFAULTS:    preserve_loop_var = yes;		# do NOT eliminate the loop variable
+./parms/LOPTI_DEFAULTS:    do_longword_loop_opti = no;		# convert char or short operand based
+./parms/LOPTI_DEFAULTS:					# loop to long based loop.
+./parms/LOPTI_DEFAULTS:    debug_loop_opti = no;		# print out debug info for loop opti
+./parms/LOPTI_DEFAULTS:    ignore_sync_arcs_for_loop_inv_migration = no;
+./parms/PCODE_DEFAULTS:$gen_loop_prags$ = yes;
+./parms/PCODE_DEFAULTS:$gen_loop_sim_prags$ = no;
+./parms/PCODE_DEFAULTS:$stat_loop_weight$ = 10.0;
+./parms/PCODE_DEFAULTS:$C_loop_conv$ = no;
+./parms/PCODE_DEFAULTS:    hcode_static_loop_weight = $stat_loop_weight$;     # estimated loop iters
+./parms/PCODE_DEFAULTS:    generate_hcode_loop_prags = $gen_loop_prags$;      # only for Hcode format
+./parms/PCODE_DEFAULTS:    generate_hcode_loop_sim_prags = $gen_loop_sim_prags$;# only for Hcode format
+./parms/PCODE_DEFAULTS:                                                     # loops in Hcode output
+./parms/PCODE_DEFAULTS:    # 			   (into array subscripts and parloop bounds)
+./parms/PCODE_DEFAULTS:    #        option 'p' -> don't forward substitute into parloop bounds
+./parms/PCODE_DEFAULTS:    do_loop_conversion_on_C = $C_loop_conv$;  # should we conv loops to 
+./parms/PCODE_DEFAULTS:					      # Parloops for C.
+./parms/PCODE_DEFAULTS:    do_loop_conv_if_unpromoted_iter_var = yes;   # Should we conv loops in which
+./parms/PCODE_DEFAULTS:                                        # for Parloops
+./parms/PCODE_DEFAULTS:    dd_calc_top_level_dep = no; 	# Calculate top level (non-loop carried)
+./parms/PCODE_DEFAULTS:    dd_calc_intra_expr_dep = no;	# Calculate non-loop carried intra-
+./parms/PCODE_DEFAULTS:					# loop-carried deps generated. Must 
+./parms/PCODE_DEFAULTS:    dd_fwd_sub_outside_parloops = no;   # do forward sub in Serloops, and top
+./parms/PCODE_DEFAULTS:    debug_CF_loop_summ = no;
+./parms/PCODE_DEFAULTS:    debug_CF_loop_flow = no;
+./parms/PCODE_DEFAULTS:    only_1d_omega = no;		# only do omega for inner-most loop
+./parms/LSUPERSCALAR_DEFAULTS:    do_loop_classic_opti = yes;		  # controls the indented optis below
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_inv_code_rem = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_global_var_mig = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_op_fold = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_dead_code = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_ind_var_elim = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_ind_var_elim2 = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_ind_reinit = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        do_super_loop_post_inc_conv = yes;
+./parms/LSUPERSCALAR_DEFAULTS:    mark_softpipe_loops = no;             # mark loops to be targeted for
+./parms/LSUPERSCALAR_DEFAULTS:    do_loop_unroll = yes;
+./parms/LSUPERSCALAR_DEFAULTS:        unroll_only_marked_loops = no;
+./parms/LSUPERSCALAR_DEFAULTS:        allow_extra_unrolling_for_small_loops = yes;
+./parms/LSUPERSCALAR_DEFAULTS:	# unrolling for softpipe loops
+./parms/LSUPERSCALAR_DEFAULTS:        unroll_with_remainder_loop = no;  # make a second copy of unrolled loop
+./parms/LSUPERSCALAR_DEFAULTS:                                          #  and remove the copies of the loop
+./parms/LSUPERSCALAR_DEFAULTS:                                          #  back branch from original loop. 
+./parms/LSUPERSCALAR_DEFAULTS:        unroll_pipelined_loops = no;      # allow unrolling for loops that
+./parms/LSUPERSCALAR_DEFAULTS:        push_comp_code_out_of_softpipe_loops = yes;
+./parms/LSUPERSCALAR_DEFAULTS:                                          # separate cb for loops marked 
+./parms/LSUPERSCALAR_DEFAULTS:    do_peel_opt = yes;			  # optimize peeled loops
+./parms/LSUPERSCALAR_DEFAULTS:    allow_expansion_of_loops = yes;
+./parms/LSUPERSCALAR_DEFAULTS:    debug_loop_classic_opti = no;
+./parms/LSUPERSCALAR_DEFAULTS:    debug_loop_unroll = no;
+./parms/LHPL_PD_DEFAULTS:    breakup_single_bb_loops = yes;
+./parms/STD_PARMS.IPF-ITANIUM:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.IPF-ITANIUM:   allow_expansion_of_loops = yes;
+./parms/STD_PARMS.IPF-ITANIUM:   unroll_pipelined_loops = no;
+./parms/STD_PARMS.IPF-ITANIUM:   allow_extra_unrolling_for_small_loops = no;
+./parms/LCODE_DEFAULTS:    run_loop_detection = no;            # test out loop det
+./parms/MCODE_DEFAULTS:                                   # Software pipeline loops marked with the
+./parms/MCODE_DEFAULTS:                                   # marked loops.
+./parms/STD_PARMS.IMPACT:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.IMPACT:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.IMPACT:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.IMPACT:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.IMPACT:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.IMPACT:    max_preload_const_per_loop = 16; 
+./parms/LTAHOE_DEFAULTS:   print_iteration = yes;                  # iteration in unrolled loops 
+./parms/STD_PARMS.IMPACT.1_0:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.IMPACT.1_0:    max_preload_const_per_loop = 16; 
+./parms/STD_PARMS.IMPACT.1_0:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.IMPACT~:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.IMPACT~:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.IMPACT~:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.IMPACT~:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.IMPACT~:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.IMPACT~:    max_preload_const_per_loop = 16; 
+./parms/STD_PARMS.compile_benchmark:(Ploop $impact_baseline_parms$
+./parms/LSOFTPIPE_DEFAULTS:# parms that affect phase 1 loop preparation only
+./parms/LSOFTPIPE_DEFAULTS:                                          # end of the loop to the top
+./parms/LSOFTPIPE_DEFAULTS:                                          # of the loop to eliminate cross-
+./parms/LSOFTPIPE_DEFAULTS:       check_loops_in_phase1 = yes;       # Recheck suitability of loops
+./parms/LSOFTPIPE_DEFAULTS:                                          # the loop unsuitable.
+./parms/LSOFTPIPE_DEFAULTS:#       code_schema = remainder_loop;    
+./parms/LSOFTPIPE_DEFAULTS:				# remainder_loop (not currently supported)
+./parms/LSOFTPIPE_DEFAULTS:	                                    # used to make the loop body into
+./parms/LSOFTPIPE_DEFAULTS:       compact_branch_path_opers = no;      # Compact opers on which loop back
+./parms/LSOFTPIPE_DEFAULTS:                                            # invoked for counted loops without
+./parms/LSOFTPIPE_DEFAULTS:                                            # pipelined loops in softpipe.stats
+./parms/LSOFTPIPE_DEFAULTS:       print_iteration_schedule = no;       # for each loop, print the final
+./parms/LSOFTPIPE_DEFAULTS:                                            # to file loop.schedules
+./parms/LSOFTPIPE_DEFAULTS:       print_schedules_for_debug = no;      # for each loop, print the schedule
+./parms/LSOFTPIPE_DEFAULTS:                                            # loop.schedules at various
+./parms/LSOFTPIPE_DEFAULTS:       print_MVE_summary = no;              # for each loop, print the length
+./parms/LSOFTPIPE_DEFAULTS:       compute_loop_reg_pressure = no;      # information about the 
+./parms/LSOFTPIPE_DEFAULTS:       add_spill_attributes = no;           # pipelined loop.
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    do_loop_classic_opti = yes;		  # controls the indented optis below
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_inv_code_rem = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_global_var_mig = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_op_fold = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_dead_code = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_ind_var_elim = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_ind_var_elim2 = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_ind_reinit = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        do_super_loop_post_inc_conv = yes;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    mark_softpipe_loops = no;             # mark loops to be targeted for
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    do_loop_unroll = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        unroll_only_marked_loops = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        allow_extra_unrolling_for_small_loops = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:	# unrolling for softpipe loops
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        unroll_with_remainder_loop = no;  # make a second copy of unrolled loop
+./parms/LSUPERSCALAR_DEFAULTS.ARM:                                          #  and remove the copies of the loop
+./parms/LSUPERSCALAR_DEFAULTS.ARM:                                          #  back branch from original loop. 
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        unroll_pipelined_loops = no;      # allow unrolling for loops that
+./parms/LSUPERSCALAR_DEFAULTS.ARM:        push_comp_code_out_of_softpipe_loops = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:                                          # separate cb for loops marked 
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    do_peel_opt = no;			  # optimize peeled loops
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    allow_expansion_of_loops = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    debug_loop_classic_opti = no;
+./parms/LSUPERSCALAR_DEFAULTS.ARM:    debug_loop_unroll = no;
+./parms/LSTARCORE_DEFAULTS:   print_iteration = yes;                  # iteration in unrolled loops 
+./parms/STD_PARMS.SC140:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.SC140:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.SC140:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.SC140:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.SC140:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.SC140:    max_preload_const_per_loop = 16; 
+./parms/LSIM_DEFAULTS:	# iterations of a loop.
+./parms/LSIM_DEFAULTS:	# cause performance degradation in benchmarks with tight loops and more
+./parms/STD_PARMS.ARM:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.ARM:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.ARM:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.ARM:(Ploop $impact_baseline_parms$
+./parms/LREGALLOC_DEFAULTS:    #  set to "no", static estimates based upon loop nesting level
+./parms/LREGALLOC_DEFAULTS:       # If register allocation appears to be in an infinite loop
+./parms/LHOTSPOT_DEFAULTS:  TGU_loop_unrolling = yes;
+./parms/LHPPA_DEFAULTS:       # up to "max_preload_const_per_loop" constants out of loop
+./parms/LHPPA_DEFAULTS:       max_preload_const_per_loop = 6;
+./parms/LHPPA_DEFAULTS:       #  the increment of the loop induction variable and the backedge
+./parms/STD_PARMS.WIMS16:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.WIMS16:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.WIMS16:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.WIMS16:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.WIMS16:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.WIMS16:    max_preload_const_per_loop = 16; 
+./parms/PPROBE_DEFAULTS:   insert_loop_probe = no;
+./parms/PPROBE_DEFAULTS:   annotate_loop = no;
+./parms/STD_PARMS.ROAR:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.ROAR:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.ROAR:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.ROAR:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.ROAR:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.ROAR:    max_preload_const_per_loop = 16; 
+./parms/STD_PARMS:(Ploop $impact_baseline_parms$
+./parms/LENCODE_DEFAULTS:    encode_loop_info = no;	# Profile loop iterations
+./parms/LENCODE_DEFAULTS:    encode_sim_loop_info = no;	# Encode info for object tracing in Lsim
+./parms/LENCODE_DEFAULTS:    # loop_nest_file contains per-function loop nesting info
+./parms/LENCODE_DEFAULTS:    do_loop_nest_info = no;
+./parms/LENCODE_DEFAULTS:    loop_nest_file_name = LOOP_NESTS;
+./parms/LBLOCK_DEFAULTS:    # (d) loop peeling
+./parms/LBLOCK_DEFAULTS:        # Enable loop peeling to occur
+./parms/LBLOCK_DEFAULTS:        # Allow peeling of partial loop bodies according to hyperblock
+./parms/LBLOCK_DEFAULTS:        # loop selection heuristics
+./parms/LBLOCK_DEFAULTS:        # Maximum size that a peeled loop may become.
+./parms/LBLOCK_DEFAULTS:        # Maximum number of peels a peeled loop may become.
+./parms/LBLOCK_DEFAULTS:        # Minimum fraction of the dynamic invocations of the loop the peeled
+./parms/LBLOCK_DEFAULTS:        # loop must contain for all invocations of the loop.
+./parms/LBLOCK_DEFAULTS:        # Minimum fraction of the dynamic invocations of the loop the peeled
+./parms/LBLOCK_DEFAULTS:        # loop must contain only looking at invocations that iterate
+./parms/LBLOCK_DEFAULTS:        # Minimum fraction of the dynamic invocations of the loop that adding
+./parms/LBLOCK_DEFAULTS:    # (e) Loop collapsing
+./parms/LBLOCK_DEFAULTS:    #     weight outer loops into larger inner loops for improved HB formation
+./parms/LBLOCK_DEFAULTS:    do_loop_collapsing = no;
+./parms/LBLOCK_DEFAULTS:    # (i.e. loop peeling).  This option is intended to help debug
+./parms/STD_PARMS.IPF-MCKINLEY:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.IPF-MCKINLEY:   allow_expansion_of_loops = yes;
+./parms/STD_PARMS.IPF-MCKINLEY:   unroll_pipelined_loops = no;
+./parms/STD_PARMS.IPF-MCKINLEY:   allow_extra_unrolling_for_small_loops = no;
+./parms/PLOOP_DEFAULTS:# start Ploop command-line parameters
+./parms/PLOOP_DEFAULTS:$loop_transforms$ = ;
+./parms/PLOOP_DEFAULTS:(Ploop declaration
+./parms/PLOOP_DEFAULTS:    loop_transformation_list = $loop_transforms$;
+./parms/PLOOP_DEFAULTS:    # LDISTR[mos]       -> loop distribution
+./parms/PLOOP_DEFAULTS:    # LINTER[os]        -> loop interchange
+./parms/PLOOP_DEFAULTS:    # LREVER[s]         -> loop reversal
+./parms/PLOOP_DEFAULTS:    # LSKEW[s]          -> loop skewing
+./parms/PLOOP_DEFAULTS:    # LDOSUP[s]         -> doserial to dosuper loop conversion
+./parms/PLOOP_DEFAULTS:    # LDOPAR[s]         -> doserial to doall/doacross loop marking,
+./parms/STD_PARMS.WIMS:    allow_expansion_of_loops = yes;
+./parms/STD_PARMS.WIMS:    # maximum number of times can ever unroll this loop, reduce
+./parms/STD_PARMS.WIMS:    # allow the optimizer to unroll small loops a few extra times
+./parms/STD_PARMS.WIMS:    allow_extra_unrolling_for_small_loops = yes;
+./parms/STD_PARMS.WIMS:(Ploop $rel_parms$/PLOOP_DEFAULTS
+./parms/STD_PARMS.WIMS:    max_preload_const_per_loop = 16; 
+./parms/LTRACE_DEFAULTS:$allow_expansion_of_loops$ = no;
+./parms/LTRACE_DEFAULTS:    do_loop_opti = yes;
+./parms/LTRACE_DEFAULTS:    do_loop_opti2 = yes;
+./parms/LTRACE_DEFAULTS:    allow_expansion_of_loops = $allow_expansion_of_loops$;
+./parms/LTRACE_DEFAULTS:    debug_loop_opti = no;
+./parms/LTRACE_DEFAULTS:    debug_loop_opti2 = no;

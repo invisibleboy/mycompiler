@@ -1,0 +1,139 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# (Parameters for probing sparc, version 1.0, October 1994) 
+#
+# Parameters for probing sparc 
+#
+$rel_parms$ = $IMPACT_REL_PATH$/parms;
+
+# machine specific stuff
+$arch$ = sparc;
+$model$ = elc;
+$lmdes$ = /home/romulus/sabrina/impact/src/Lsparc/mdes/SPARC_VIKING.lmdes;
+
+$probe_type$ = simulation;
+
+(architecture
+    arch = $arch$; 
+    model = $model$;
+    lmdes = $lmdes$
+end) 
+
+# I/O stuff
+(file $rel_parms$/LFILE_DEFAULTS
+    input_file_name = stdin;
+    output_file_name = stdout;
+    filelist_file_name = ;
+end)
+
+# Code generator sections
+(Mcode $rel_parms$/MCODE_DEFAULTS
+    print_lcode = no;
+    do_prepass_sched = no;
+    do_machine_opt = no;
+    do_peephole_opt = yes;
+end)
+
+(Lsparc $rel_parms$/LSPARC_DEFAULTS
+    insert_probes = yes;
+    mask_exceptions = no;
+    support_probing = yes;
+    predicate_emulation = yes;
+    parallelize_branches = yes;
+    emulate_viking=yes;
+end)
+
+(Scheduler $rel_parms$/LSCHEDULE_DEFAULTS
+    do_fill_squashing_branches = no;
+    do_fill_nonsquashing_branches = no;
+    do_postpass_scheduling = no;
+    do_fill_unfilled_branches = yes;
+end)
+
+
+# Lcode sections
+(global $rel_parms$/LGLOBAL_DEFAULTS
+    check_data_struct_alloc = no;
+    warn_parm_not_defined = no;
+end)
+
+# performance sections
+(Lprobe $rel_parms$/LPROBE_DEFAULTS
+	phase = 3;		# Only used for Lprobe, not Lhppa
+	probe_for = $probe_type$;
+	trace_target = mcode;
+end)
+
+(Lencode $rel_parms$/LENCODE_DEFAULTS
+	encode_for = $probe_type$;
+end)
+
+#
+# Need the following parameters sections declared in order to use defaults
+#
+(Lcode $rel_parms$/LCODE_DEFAULTS
+end)
+
+(Regalloc $rel_parms$/LREGALLOC_DEFAULTS
+    macro_allocation=no;
+end)
+
+(Dependence $rel_parms$/LDEPENDENCE_DEFAULTS
+end)
+
+(Mopti $rel_parms$/MOPTI_DEFAULTS
+end)
+
+(Lprofile $rel_parms$/LPROFILE_DEFAULTS
+end)
+
+(Lprofile_utilities $rel_parms$/LPROF_UTIL_DEFAULTS
+end)
+
+# End of parameter settings

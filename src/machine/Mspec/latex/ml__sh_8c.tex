@@ -1,0 +1,931 @@
+\section{ml\_\-sh.c File Reference}
+\label{ml__sh_8c}\index{ml_sh.c@{ml\_\-sh.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-spec.h\char`\"{}}\par
+{\tt \#include \char`\"{}m\_\-sh.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-SH\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-SH\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-SH\_\-SMALL\_\-STRUCT\_\-MAX}~128
+\item 
+\#define \bf{M\_\-SH\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{M\_\-SH\_\-PARAM\_\-FP\_\-OFFSET}~0
+\item 
+\#define \bf{M\_\-SH\_\-IN\_\-BASE}~4
+\item 
+\#define \bf{M\_\-SH\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-SH\_\-OUT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-SH\_\-RET\_\-IN}~0
+\item 
+\#define \bf{M\_\-SH\_\-RET\_\-OUT}~0
+\item 
+\#define \bf{M\_\-SH\_\-RET\_\-F}~0
+\item 
+\#define \bf{M\_\-SH\_\-ST}~0
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-sh\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-sh\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sh\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sh\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sh\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-sh\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-sh\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-sh\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-sh\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sh\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sh\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-sh\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-sh\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-sh\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-sh\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-sh\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-sh\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-sh\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-sh\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-sh\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-sh\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-sh\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-sh\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-sh\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-sh\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-sh\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-sh\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-sh\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-sh\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-sh\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-sh\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-sh\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-sh\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+void \bf{M\_\-define\_\-macros\_\-sh} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+int \bf{M\_\-sh\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-sh\_\-fragile\_\-macro\_\-set} ()
+\item 
+int \bf{M\_\-sh\_\-dataflow\_\-macro} (int id)
+\item 
+int \bf{M\_\-sh\_\-subroutine\_\-call} (int opc)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-sh} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sh} (int opc)
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-sh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-sh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-sh} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-operand\_\-type\_\-sh} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-sh} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-sh} (int ctype)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_BIT@{M\_\-SH\_\-ALIGN\_\-BIT}}
+\index{M_SH_ALIGN_BIT@{M\_\-SH\_\-ALIGN\_\-BIT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-BIT~1}\label{ml__sh_8c_40c1e72de37abc92d2b31c5724c6f68d}
+
+
+
+
+Definition at line 100 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_BLOCK@{M\_\-SH\_\-ALIGN\_\-BLOCK}}
+\index{M_SH_ALIGN_BLOCK@{M\_\-SH\_\-ALIGN\_\-BLOCK}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-BLOCK~-1}\label{ml__sh_8c_220b9e5143c48593bbe9419df625921b}
+
+
+
+
+Definition at line 110 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_CHAR@{M\_\-SH\_\-ALIGN\_\-CHAR}}
+\index{M_SH_ALIGN_CHAR@{M\_\-SH\_\-ALIGN\_\-CHAR}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-CHAR~8}\label{ml__sh_8c_9cf68cca329fc8d0e2fb3c1f1931e5ec}
+
+
+
+
+Definition at line 101 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_DOUBLE@{M\_\-SH\_\-ALIGN\_\-DOUBLE}}
+\index{M_SH_ALIGN_DOUBLE@{M\_\-SH\_\-ALIGN\_\-DOUBLE}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-DOUBLE~64}\label{ml__sh_8c_60953e49baa79004e5bb60abd25ddafe}
+
+
+
+
+Definition at line 106 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_FLOAT@{M\_\-SH\_\-ALIGN\_\-FLOAT}}
+\index{M_SH_ALIGN_FLOAT@{M\_\-SH\_\-ALIGN\_\-FLOAT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-FLOAT~32}\label{ml__sh_8c_287c4fcf703477d667fa674c928a87d3}
+
+
+
+
+Definition at line 105 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_INT@{M\_\-SH\_\-ALIGN\_\-INT}}
+\index{M_SH_ALIGN_INT@{M\_\-SH\_\-ALIGN\_\-INT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-INT~32}\label{ml__sh_8c_ea3738b9e691c593029340d04d6ef82d}
+
+
+
+
+Definition at line 103 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_LONG@{M\_\-SH\_\-ALIGN\_\-LONG}}
+\index{M_SH_ALIGN_LONG@{M\_\-SH\_\-ALIGN\_\-LONG}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-LONG~32}\label{ml__sh_8c_37f10235f78448be301019a167a45bbf}
+
+
+
+
+Definition at line 104 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_MAX@{M\_\-SH\_\-ALIGN\_\-MAX}}
+\index{M_SH_ALIGN_MAX@{M\_\-SH\_\-ALIGN\_\-MAX}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-MAX~64}\label{ml__sh_8c_4e881268fa91db34b855fb03219a4576}
+
+
+
+
+Definition at line 111 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_POINTER@{M\_\-SH\_\-ALIGN\_\-POINTER}}
+\index{M_SH_ALIGN_POINTER@{M\_\-SH\_\-ALIGN\_\-POINTER}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-POINTER~32}\label{ml__sh_8c_4d1c2fb4334926fac82ae56d16873bab}
+
+
+
+
+Definition at line 107 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_SHORT@{M\_\-SH\_\-ALIGN\_\-SHORT}}
+\index{M_SH_ALIGN_SHORT@{M\_\-SH\_\-ALIGN\_\-SHORT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-SHORT~16}\label{ml__sh_8c_86e4b0c9e8a4d992efe1f3ac5c8ad8cf}
+
+
+
+
+Definition at line 102 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_STRUCT@{M\_\-SH\_\-ALIGN\_\-STRUCT}}
+\index{M_SH_ALIGN_STRUCT@{M\_\-SH\_\-ALIGN\_\-STRUCT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-STRUCT~-1}\label{ml__sh_8c_b1b82150c9d53f7a4edd358ae55a4f54}
+
+
+
+
+Definition at line 109 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_UNION@{M\_\-SH\_\-ALIGN\_\-UNION}}
+\index{M_SH_ALIGN_UNION@{M\_\-SH\_\-ALIGN\_\-UNION}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-UNION~-1}\label{ml__sh_8c_4c9b2257a53d753098db2cc6d1b03f20}
+
+
+
+
+Definition at line 108 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ALIGN_VOID@{M\_\-SH\_\-ALIGN\_\-VOID}}
+\index{M_SH_ALIGN_VOID@{M\_\-SH\_\-ALIGN\_\-VOID}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ALIGN\_\-VOID~-1}\label{ml__sh_8c_a8948a7128c00b026cac58a9000e4e9a}
+
+
+
+
+Definition at line 99 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_FLT_BASE@{M\_\-SH\_\-FLT\_\-BASE}}
+\index{M_SH_FLT_BASE@{M\_\-SH\_\-FLT\_\-BASE}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-FLT\_\-BASE~4}\label{ml__sh_8c_44db1d3112e4bea8f4a00158c9dc2655}
+
+
+
+
+Definition at line 124 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_IN_BASE@{M\_\-SH\_\-IN\_\-BASE}}
+\index{M_SH_IN_BASE@{M\_\-SH\_\-IN\_\-BASE}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-IN\_\-BASE~4}\label{ml__sh_8c_9855423f22bab7123e1c6e9ba0e6407b}
+
+
+
+
+Definition at line 123 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-fnvar\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_MAX_FNVAR_REG@{M\_\-SH\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_SH_MAX_FNVAR_REG@{M\_\-SH\_\-MAX\_\-FNVAR\_\-REG}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__sh_8c_1c5cf2daf08367469b681e7524ece98e}
+
+
+
+
+Definition at line 117 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-fnvar\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_OUT_BASE@{M\_\-SH\_\-OUT\_\-BASE}}
+\index{M_SH_OUT_BASE@{M\_\-SH\_\-OUT\_\-BASE}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-OUT\_\-BASE~4}\label{ml__sh_8c_234b6bffa3a988f125d841700a9b8517}
+
+
+
+
+Definition at line 125 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-fnvar\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_PARAM_FP_OFFSET@{M\_\-SH\_\-PARAM\_\-FP\_\-OFFSET}}
+\index{M_SH_PARAM_FP_OFFSET@{M\_\-SH\_\-PARAM\_\-FP\_\-OFFSET}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-PARAM\_\-FP\_\-OFFSET~0}\label{ml__sh_8c_9945a6b38d4b290014a3d6f2398e362c}
+
+
+
+
+Definition at line 120 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_RET_F@{M\_\-SH\_\-RET\_\-F}}
+\index{M_SH_RET_F@{M\_\-SH\_\-RET\_\-F}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-RET\_\-F~0}\label{ml__sh_8c_7dd0799721d94fe03ba6c26b6ba2c49f}
+
+
+
+
+Definition at line 129 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-return\_\-register().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_RET_IN@{M\_\-SH\_\-RET\_\-IN}}
+\index{M_SH_RET_IN@{M\_\-SH\_\-RET\_\-IN}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-RET\_\-IN~0}\label{ml__sh_8c_a0b19b6d13d3485e5742eb5082c72369}
+
+
+
+
+Definition at line 127 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-return\_\-register().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_RET_OUT@{M\_\-SH\_\-RET\_\-OUT}}
+\index{M_SH_RET_OUT@{M\_\-SH\_\-RET\_\-OUT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-RET\_\-OUT~0}\label{ml__sh_8c_3639982c9173b4bf9bf3e7aa228d603b}
+
+
+
+
+Definition at line 128 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-return\_\-register().\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_BIT@{M\_\-SH\_\-SIZE\_\-BIT}}
+\index{M_SH_SIZE_BIT@{M\_\-SH\_\-SIZE\_\-BIT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-BIT~1}\label{ml__sh_8c_7e4fec49315746414e841a2844b869a3}
+
+
+
+
+Definition at line 86 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_BLOCK@{M\_\-SH\_\-SIZE\_\-BLOCK}}
+\index{M_SH_SIZE_BLOCK@{M\_\-SH\_\-SIZE\_\-BLOCK}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-BLOCK~-1}\label{ml__sh_8c_0d03b9af347795c70dfba16570f95e75}
+
+
+
+
+Definition at line 96 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_CHAR@{M\_\-SH\_\-SIZE\_\-CHAR}}
+\index{M_SH_SIZE_CHAR@{M\_\-SH\_\-SIZE\_\-CHAR}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-CHAR~8}\label{ml__sh_8c_338eea8edbe507eaed0333c4bfd70a0c}
+
+
+
+
+Definition at line 87 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_DOUBLE@{M\_\-SH\_\-SIZE\_\-DOUBLE}}
+\index{M_SH_SIZE_DOUBLE@{M\_\-SH\_\-SIZE\_\-DOUBLE}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-DOUBLE~64}\label{ml__sh_8c_b00a49d04b64376849f4f5cff3bdafb7}
+
+
+
+
+Definition at line 92 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_FLOAT@{M\_\-SH\_\-SIZE\_\-FLOAT}}
+\index{M_SH_SIZE_FLOAT@{M\_\-SH\_\-SIZE\_\-FLOAT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-FLOAT~32}\label{ml__sh_8c_427c4246977236a6f1bd6be35c15f9cb}
+
+
+
+
+Definition at line 91 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_INT@{M\_\-SH\_\-SIZE\_\-INT}}
+\index{M_SH_SIZE_INT@{M\_\-SH\_\-SIZE\_\-INT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-INT~32}\label{ml__sh_8c_9971ae92edff3a015f04b64d0a54a377}
+
+
+
+
+Definition at line 89 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_LONG@{M\_\-SH\_\-SIZE\_\-LONG}}
+\index{M_SH_SIZE_LONG@{M\_\-SH\_\-SIZE\_\-LONG}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-LONG~32}\label{ml__sh_8c_bc3a2d65048ca6800772f7074c9f6b5c}
+
+
+
+
+Definition at line 90 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_MAX@{M\_\-SH\_\-SIZE\_\-MAX}}
+\index{M_SH_SIZE_MAX@{M\_\-SH\_\-SIZE\_\-MAX}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-MAX~64}\label{ml__sh_8c_ad57ce4440ec34fadc908fc3438ff250}
+
+
+
+
+Definition at line 97 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_POINTER@{M\_\-SH\_\-SIZE\_\-POINTER}}
+\index{M_SH_SIZE_POINTER@{M\_\-SH\_\-SIZE\_\-POINTER}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-POINTER~32}\label{ml__sh_8c_3341f7851672d1e42595feb2c758be65}
+
+
+
+
+Definition at line 93 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_SHORT@{M\_\-SH\_\-SIZE\_\-SHORT}}
+\index{M_SH_SIZE_SHORT@{M\_\-SH\_\-SIZE\_\-SHORT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-SHORT~16}\label{ml__sh_8c_207d31330b907dc729e460440062a76f}
+
+
+
+
+Definition at line 88 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_STRUCT@{M\_\-SH\_\-SIZE\_\-STRUCT}}
+\index{M_SH_SIZE_STRUCT@{M\_\-SH\_\-SIZE\_\-STRUCT}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-STRUCT~-1}\label{ml__sh_8c_9a914c548390072bbc2c92f08dc5e6d2}
+
+
+
+
+Definition at line 95 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_UNION@{M\_\-SH\_\-SIZE\_\-UNION}}
+\index{M_SH_SIZE_UNION@{M\_\-SH\_\-SIZE\_\-UNION}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-UNION~-1}\label{ml__sh_8c_afdc908e9f1da6534e156e73b30f3fe1}
+
+
+
+
+Definition at line 94 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SIZE_VOID@{M\_\-SH\_\-SIZE\_\-VOID}}
+\index{M_SH_SIZE_VOID@{M\_\-SH\_\-SIZE\_\-VOID}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SIZE\_\-VOID~0}\label{ml__sh_8c_8239610ba10fd736802be5a3e83ffee1}
+
+
+
+
+Definition at line 85 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_SMALL_STRUCT_MAX@{M\_\-SH\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_SH_SMALL_STRUCT_MAX@{M\_\-SH\_\-SMALL\_\-STRUCT\_\-MAX}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-SMALL\_\-STRUCT\_\-MAX~128}\label{ml__sh_8c_17e9df7e1c9e4c8203862d06cb6c93fd}
+
+
+
+
+Definition at line 112 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_SH_ST@{M\_\-SH\_\-ST}}
+\index{M_SH_ST@{M\_\-SH\_\-ST}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-SH\_\-ST~0}\label{ml__sh_8c_078cf124e13ab93baa422d4fc3e7b81b}
+
+
+
+
+Definition at line 131 of file ml\_\-sh.c.
+
+Referenced by M\_\-sh\_\-structure\_\-pointer().
+
+\subsection{Function Documentation}
+\index{ml_sh.c@{ml\_\-sh.c}!M_conflicting_operands_sh@{M\_\-conflicting\_\-operands\_\-sh}}
+\index{M_conflicting_operands_sh@{M\_\-conflicting\_\-operands\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-sh (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__sh_8c_d2727b3ac02e4028cefb7ad7a021ae0a}
+
+
+
+
+Definition at line 1225 of file ml\_\-sh.c.
+
+References I\_\-punt(), and M\_\-assert().
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_sh.c@{ml\_\-sh.c}!M_define_macros_sh@{M\_\-define\_\-macros\_\-sh}}
+\index{M_define_macros_sh@{M\_\-define\_\-macros\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-sh (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__sh_8c_e9100476b339222b55e32457d5f1ae1a}
+
+
+
+
+Definition at line 980 of file ml\_\-sh.c.
+
+References L\_\-SH\_\-MAC\_\-ALLOC, L\_\-SH\_\-MAC\_\-CALLEE, L\_\-SH\_\-MAC\_\-CALLER, L\_\-SH\_\-MAC\_\-LEAF, L\_\-SH\_\-MAC\_\-PR, L\_\-SH\_\-MAC\_\-SR, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros().\index{ml_sh.c@{ml\_\-sh.c}!M_get_macro_name_sh@{M\_\-get\_\-macro\_\-name\_\-sh}}
+\index{M_get_macro_name_sh@{M\_\-get\_\-macro\_\-name\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-sh (int {\em id})}\label{ml__sh_8c_f24bd33e76bbaed279abf488b0706bb2}
+
+
+
+
+Definition at line 1065 of file ml\_\-sh.c.
+
+References L\_\-SH\_\-MAC\_\-ALLOC, L\_\-SH\_\-MAC\_\-CALLEE, L\_\-SH\_\-MAC\_\-CALLER, L\_\-SH\_\-MAC\_\-LEAF, L\_\-SH\_\-MAC\_\-PR, and L\_\-SH\_\-MAC\_\-SR.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_sh.c@{ml\_\-sh.c}!M_is_stack_operand_sh@{M\_\-is\_\-stack\_\-operand\_\-sh}}
+\index{M_is_stack_operand_sh@{M\_\-is\_\-stack\_\-operand\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-sh (L\_\-Operand $\ast$ {\em operand})}\label{ml__sh_8c_88ed83827378c9bba80cda3d07304db6}
+
+
+
+
+Definition at line 1124 of file ml\_\-sh.c.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_sh.c@{ml\_\-sh.c}!M_is_unsafe_macro_sh@{M\_\-is\_\-unsafe\_\-macro\_\-sh}}
+\index{M_is_unsafe_macro_sh@{M\_\-is\_\-unsafe\_\-macro\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-sh (L\_\-Operand $\ast$ {\em operand})}\label{ml__sh_8c_f997d65c0a0b45cbdd7b4cdd8093bc8c}
+
+
+
+
+Definition at line 1137 of file ml\_\-sh.c.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_sh.c@{ml\_\-sh.c}!M_num_oper_required_for_sh@{M\_\-num\_\-oper\_\-required\_\-for\_\-sh}}
+\index{M_num_oper_required_for_sh@{M\_\-num\_\-oper\_\-required\_\-for\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-sh (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__sh_8c_ce5d1c89e44517211b2fbeaf36ad8a38}
+
+
+
+
+Definition at line 1153 of file ml\_\-sh.c.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_sh.c@{ml\_\-sh.c}!M_num_registers_sh@{M\_\-num\_\-registers\_\-sh}}
+\index{M_num_registers_sh@{M\_\-num\_\-registers\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-sh (int {\em ctype})}\label{ml__sh_8c_9236ee4b265c482fbe59f1c30986ff8c}
+
+
+
+
+Definition at line 1370 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SH\_\-1, and M\_\-SH\_\-2.
+
+Referenced by M\_\-num\_\-registers().\index{ml_sh.c@{ml\_\-sh.c}!M_oper_supported_in_arch_sh@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sh}}
+\index{M_oper_supported_in_arch_sh@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-sh (int {\em opc})}\label{ml__sh_8c_bd9c30adefdfc96784dd6c7f33cb1385}
+
+
+
+
+Definition at line 1095 of file ml\_\-sh.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_sh.c@{ml\_\-sh.c}!M_operand_type_sh@{M\_\-operand\_\-type\_\-sh}}
+\index{M_operand_type_sh@{M\_\-operand\_\-type\_\-sh}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-sh (L\_\-Operand $\ast$ {\em operand})}\label{ml__sh_8c_aa248ce48a1eb7004120fbee41ce7943}
+
+
+
+
+Definition at line 1197 of file ml\_\-sh.c.
+
+References M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_array_align@{M\_\-sh\_\-array\_\-align}}
+\index{M_sh_array_align@{M\_\-sh\_\-array\_\-align}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__sh_8c_39abd95c38c7c922d1032828df4eca7c}
+
+
+
+
+Definition at line 388 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_array_layout@{M\_\-sh\_\-array\_\-layout}}
+\index{M_sh_array_layout@{M\_\-sh\_\-array\_\-layout}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__sh_8c_95f29e34821a94e543b2e09572eb90cd}
+
+
+
+
+Definition at line 382 of file ml\_\-sh.c.
+
+Referenced by M\_\-array\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_array_size@{M\_\-sh\_\-array\_\-size}}
+\index{M_sh_array_size@{M\_\-sh\_\-array\_\-size}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__sh_8c_f2e85f083ef84514b3728d9daab2af20}
+
+
+
+
+Definition at line 394 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_bit_char@{M\_\-sh\_\-bit\_\-char}}
+\index{M_sh_bit_char@{M\_\-sh\_\-bit\_\-char}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sh_8c_a7e1e7a635253b088f131522efb56442}
+
+
+
+
+Definition at line 181 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-BIT, M\_\-SH\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_bit_int@{M\_\-sh\_\-bit\_\-int}}
+\index{M_sh_bit_int@{M\_\-sh\_\-bit\_\-int}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sh_8c_5b1c167235d1da910fe5061cdfc7c946}
+
+
+
+
+Definition at line 157 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-BIT, M\_\-SH\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_bit_long@{M\_\-sh\_\-bit\_\-long}}
+\index{M_sh_bit_long@{M\_\-sh\_\-bit\_\-long}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sh_8c_63b5f196e1f41bda218a0aea42881c7e}
+
+
+
+
+Definition at line 145 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-BIT, M\_\-SH\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_bit_short@{M\_\-sh\_\-bit\_\-short}}
+\index{M_sh_bit_short@{M\_\-sh\_\-bit\_\-short}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__sh_8c_8df4d70c8155e78ce835733438caf26e}
+
+
+
+
+Definition at line 169 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-BIT, M\_\-SH\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_call_type@{M\_\-sh\_\-call\_\-type}}
+\index{M_sh_call_type@{M\_\-sh\_\-call\_\-type}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sh_8c_f3f5facc03dbe7ce158824e90db437a4}
+
+
+
+
+Definition at line 302 of file ml\_\-sh.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_call_type2@{M\_\-sh\_\-call\_\-type2}}
+\index{M_sh_call_type2@{M\_\-sh\_\-call\_\-type2}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sh_8c_7e81b132d025b2e7cb5fecf3bc3feadc}
+
+
+
+
+Definition at line 339 of file ml\_\-sh.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_cb_label_name@{M\_\-sh\_\-cb\_\-label\_\-name}}
+\index{M_sh_cb_label_name@{M\_\-sh\_\-cb\_\-label\_\-name}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__sh_8c_5336e99237f6e7db25b0df9a947c375c}
+
+
+
+
+Definition at line 876 of file ml\_\-sh.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_dataflow_macro@{M\_\-sh\_\-dataflow\_\-macro}}
+\index{M_sh_dataflow_macro@{M\_\-sh\_\-dataflow\_\-macro}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-dataflow\_\-macro (int {\em id})}\label{ml__sh_8c_dac0d1a86686d0675f40ea5c845443d4}
+
+
+
+
+Definition at line 1034 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SH\_\-1, and M\_\-SH\_\-2.
+
+Referenced by M\_\-dataflow\_\-macro().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_double@{M\_\-sh\_\-double}}
+\index{M_sh_double@{M\_\-sh\_\-double}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__sh_8c_7059b5e28cecb9852fc8d0798301f6f2}
+
+
+
+
+Definition at line 203 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SH\_\-ALIGN\_\-DOUBLE, M\_\-SH\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_eval_type@{M\_\-sh\_\-eval\_\-type}}
+\index{M_sh_eval_type@{M\_\-sh\_\-eval\_\-type}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sh_8c_7b4b1a2e3ff0183b6f5a8d2187bf9472}
+
+
+
+
+Definition at line 225 of file ml\_\-sh.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_eval_type2@{M\_\-sh\_\-eval\_\-type2}}
+\index{M_sh_eval_type2@{M\_\-sh\_\-eval\_\-type2}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__sh_8c_c19e498e738a8bb5e303fd567644a243}
+
+
+
+
+Definition at line 259 of file ml\_\-sh.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_float@{M\_\-sh\_\-float}}
+\index{M_sh_float@{M\_\-sh\_\-float}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__sh_8c_435788f46e0ae40e29fb2a08d0e5424b}
+
+
+
+
+Definition at line 193 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SH\_\-ALIGN\_\-FLOAT, M\_\-SH\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_fn_label_name@{M\_\-sh\_\-fn\_\-label\_\-name}}
+\index{M_sh_fn_label_name@{M\_\-sh\_\-fn\_\-label\_\-name}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-sh\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__sh_8c_17526deefd8f7a8b2003447c631246c2}
+
+
+
+
+Definition at line 953 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_sh_fn_name_from_label@{M\_\-sh\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_sh_fn_name_from_label@{M\_\-sh\_\-fn\_\-name\_\-from\_\-label}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-sh\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__sh_8c_d02080c87f351e3b4c285e437912a591}
+
+
+
+
+Definition at line 966 of file ml\_\-sh.c.\index{ml_sh.c@{ml\_\-sh.c}!M_sh_fnvar_layout@{M\_\-sh\_\-fnvar\_\-layout}}
+\index{M_sh_fnvar_layout@{M\_\-sh\_\-fnvar\_\-layout}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__sh_8c_a69d78fb760ca80d4afed8e4232196a7}
+
+
+
+
+Definition at line 686 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-SH\_\-ALIGN\_\-MAX, M\_\-SH\_\-IN\_\-BASE, M\_\-SH\_\-MAX\_\-FNVAR\_\-REG, M\_\-SH\_\-OUT\_\-BASE, M\_\-SH\_\-SIZE\_\-INT, M\_\-SH\_\-SIZE\_\-POINTER, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout(), and M\_\-sh\_\-layout\_\-fnvar().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_fragile_macro@{M\_\-sh\_\-fragile\_\-macro}}
+\index{M_sh_fragile_macro@{M\_\-sh\_\-fragile\_\-macro}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__sh_8c_ee2a00d6153a6bbf4db6f2ad164422cb}
+
+
+
+
+Definition at line 991 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SH\_\-1, and M\_\-SH\_\-2.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_fragile_macro_set@{M\_\-sh\_\-fragile\_\-macro\_\-set}}
+\index{M_sh_fragile_macro_set@{M\_\-sh\_\-fragile\_\-macro\_\-set}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-sh\_\-fragile\_\-macro\_\-set ()}\label{ml__sh_8c_9976636730a2cb3c898f497672b4ae7d}
+
+
+
+
+Definition at line 1018 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SH\_\-1, M\_\-SH\_\-2, and NULL.
+
+Referenced by M\_\-fragile\_\-macro\_\-set().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_is_cb_label@{M\_\-sh\_\-is\_\-cb\_\-label}}
+\index{M_sh_is_cb_label@{M\_\-sh\_\-is\_\-cb\_\-label}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__sh_8c_65448f776a10b0e627aa2002ba8bcc41}
+
+
+
+
+Definition at line 882 of file ml\_\-sh.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_is_jumptbl_label@{M\_\-sh\_\-is\_\-jumptbl\_\-label}}
+\index{M_sh_is_jumptbl_label@{M\_\-sh\_\-is\_\-jumptbl\_\-label}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__sh_8c_20c05e67a4f84001f8991217ca1f4093}
+
+
+
+
+Definition at line 895 of file ml\_\-sh.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_jumptbl_label_name@{M\_\-sh\_\-jumptbl\_\-label\_\-name}}
+\index{M_sh_jumptbl_label_name@{M\_\-sh\_\-jumptbl\_\-label\_\-name}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__sh_8c_57ef07dfc1f52b28ef9ab0be4b0c8046}
+
+
+
+
+Definition at line 888 of file ml\_\-sh.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_layout_fnvar@{M\_\-sh\_\-layout\_\-fnvar}}
+\index{M_sh_layout_fnvar@{M\_\-sh\_\-layout\_\-fnvar}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__sh_8c_21bdc6be810e4aa377bc8734303ba126}
+
+
+
+
+Definition at line 629 of file ml\_\-sh.c.
+
+References List\_\-next(), List\_\-size(), List\_\-start(), M\_\-sh\_\-fnvar\_\-layout(), \_\-struct\_\-M\_\-Param::mode, mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Param::su\_\-ereg, and \_\-struct\_\-M\_\-Param::su\_\-sreg.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_lvar_layout@{M\_\-sh\_\-lvar\_\-layout}}
+\index{M_sh_lvar_layout@{M\_\-sh\_\-lvar\_\-layout}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__sh_8c_79ec1e4dda5ba4cbe92f9990b61a6e19}
+
+
+
+
+Definition at line 829 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-MAX, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_no_short_int@{M\_\-sh\_\-no\_\-short\_\-int}}
+\index{M_sh_no_short_int@{M\_\-sh\_\-no\_\-short\_\-int}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-no\_\-short\_\-int (void)}\label{ml__sh_8c_f811ced2c8723497d2a089fd4bf24e0d}
+
+
+
+
+Definition at line 870 of file ml\_\-sh.c.
+
+References M\_\-SH\_\-SIZE\_\-INT, and M\_\-SH\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_pointer@{M\_\-sh\_\-pointer}}
+\index{M_sh_pointer@{M\_\-sh\_\-pointer}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__sh_8c_f379a676b1a2d9b6acb4e3ab2280d743}
+
+
+
+
+Definition at line 213 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SH\_\-ALIGN\_\-POINTER, M\_\-SH\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_return_register@{M\_\-sh\_\-return\_\-register}}
+\index{M_sh_return_register@{M\_\-sh\_\-return\_\-register}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__sh_8c_e7f7b08c2a13de2ec22822c1ea1c2bf0}
+
+
+
+
+Definition at line 929 of file ml\_\-sh.c.
+
+References M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-SH\_\-RET\_\-F, M\_\-SH\_\-RET\_\-IN, M\_\-SH\_\-RET\_\-OUT, M\_\-TYPE\_\-DOUBLE, and M\_\-TYPE\_\-FLOAT.
+
+Referenced by M\_\-return\_\-register().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_struct_align@{M\_\-sh\_\-struct\_\-align}}
+\index{M_sh_struct_align@{M\_\-sh\_\-struct\_\-align}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sh_8c_db0c41a755057f015d9343208a7f877b}
+
+
+
+
+Definition at line 547 of file ml\_\-sh.c.
+
+References M\_\-SH\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_struct_layout@{M\_\-sh\_\-struct\_\-layout}}
+\index{M_sh_struct_layout@{M\_\-sh\_\-struct\_\-layout}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__sh_8c_11e8c23a78204ef9d4016643a149a58d}
+
+
+
+
+Definition at line 466 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-CHAR, M\_\-SH\_\-ALIGN\_\-INT, M\_\-SH\_\-SIZE\_\-CHAR, M\_\-SH\_\-SIZE\_\-INT, M\_\-SH\_\-SIZE\_\-LONG, M\_\-SH\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::nbits.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_struct_size@{M\_\-sh\_\-struct\_\-size}}
+\index{M_sh_struct_size@{M\_\-sh\_\-struct\_\-size}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__sh_8c_bc23426ae0714651d0c225d3ad29ebc8}
+
+
+
+
+Definition at line 566 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-SH\_\-ALIGN\_\-CHAR, M\_\-SH\_\-ALIGN\_\-INT, M\_\-SH\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, and M\_\-TYPE\_\-BIT\_\-LONG.
+
+Referenced by M\_\-struct\_\-size().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_structure_pointer@{M\_\-sh\_\-structure\_\-pointer}}
+\index{M_sh_structure_pointer@{M\_\-sh\_\-structure\_\-pointer}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-structure\_\-pointer (int {\em purpose})}\label{ml__sh_8c_6209ea8c8d083f24d1c154f9939a402d}
+
+
+
+
+Definition at line 923 of file ml\_\-sh.c.
+
+References M\_\-SH\_\-ST.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_subroutine_call@{M\_\-sh\_\-subroutine\_\-call}}
+\index{M_sh_subroutine_call@{M\_\-sh\_\-subroutine\_\-call}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-subroutine\_\-call (int {\em opc})}\label{ml__sh_8c_895bc24c27d58fe71769a3dbef15abb6}
+
+
+
+
+Definition at line 1049 of file ml\_\-sh.c.
+
+References M\_\-assert(), M\_\-model, M\_\-SH\_\-1, and M\_\-SH\_\-2.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_union_align@{M\_\-sh\_\-union\_\-align}}
+\index{M_sh_union_align@{M\_\-sh\_\-union\_\-align}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sh_8c_0aaef67e02f1053679530eb4adbe0a84}
+
+
+
+
+Definition at line 418 of file ml\_\-sh.c.
+
+References M\_\-SH\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_union_layout@{M\_\-sh\_\-union\_\-layout}}
+\index{M_sh_union_layout@{M\_\-sh\_\-union\_\-layout}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__sh_8c_fb401d4a3045cb87e02bbe2f7f50f928}
+
+
+
+
+Definition at line 407 of file ml\_\-sh.c.
+
+Referenced by M\_\-union\_\-layout().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_union_size@{M\_\-sh\_\-union\_\-size}}
+\index{M_sh_union_size@{M\_\-sh\_\-union\_\-size}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-sh\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__sh_8c_00a63818df8d75dd91dab35d3507ef13}
+
+
+
+
+Definition at line 437 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SH\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_sh.c@{ml\_\-sh.c}!M_sh_void@{M\_\-sh\_\-void}}
+\index{M_sh_void@{M\_\-sh\_\-void}!ml_sh.c@{ml\_\-sh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-sh\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__sh_8c_5ac022b280bb8009d4c3744963b6951b}
+
+
+
+
+Definition at line 135 of file ml\_\-sh.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-SH\_\-ALIGN\_\-VOID, M\_\-SH\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().

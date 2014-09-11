@@ -1,0 +1,342 @@
+\section{md\_\-compiler.h File Reference}
+\label{md__compiler_8h}\index{md_compiler.h@{md\_\-compiler.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$stdarg.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$library/mbuf.h$>$}\par
+{\tt \#include $<$library/mfile.h$>$}\par
+{\tt \#include $<$library/md.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Fptr}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MAXARGS}~100
+\item 
+\#define \bf{SECTION\_\-START}~\char`\"{}\{\char`\"{}
+\item 
+\#define \bf{SECTION\_\-END}~\char`\"{}\}\char`\"{}
+\item 
+\#define \bf{FIELD\_\-START}~\char`\"{}(\char`\"{}
+\item 
+\#define \bf{FIELD\_\-END}~\char`\"{})\char`\"{}
+\item 
+\#define \bf{ENTRY\_\-START}~\char`\"{}(\char`\"{}
+\item 
+\#define \bf{ENTRY\_\-END}~\char`\"{})\char`\"{}
+\item 
+\#define \bf{LINK\_\-START}~\char`\"{}(\char`\"{}
+\item 
+\#define \bf{LINK\_\-END}~\char`\"{})\char`\"{}
+\item 
+\#define \bf{CREATE\_\-SECTION}~\char`\"{}CREATE\char`\"{}
+\item 
+\#define \bf{TERMINATOR}~\char`\"{};\char`\"{}
+\item 
+\#define \bf{KLEENE\_\-STAR}~\char`\"{}$\ast$\char`\"{}
+\item 
+\#define \bf{OR\_\-MARKER}~\char`\"{}$|$\char`\"{}
+\item 
+\#define \bf{REPLACE\_\-FIELD}~\char`\"{}!\char`\"{}
+\item 
+\#define \bf{CONCAT\_\-FIELD}~\char`\"{}$|$$|$\char`\"{}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{Fpeekc} (\bf{Fptr} $\ast$fptr)
+\item 
+int \bf{Fgetc} (\bf{Fptr} $\ast$fptr)
+\item 
+void \bf{Fadvance\_\-to\_\-next\_\-token} (\bf{Fptr} $\ast$fptr)
+\item 
+int \bf{is\_\-md\_\-ident} (char $\ast$ident)
+\item 
+void \bf{Ferror} (\bf{Fptr} $\ast$fptr, char $\ast$fmt,...)
+\item 
+void \bf{v\-Ferror} (\bf{Fptr} $\ast$fptr, char $\ast$fmt, va\_\-list args)
+\item 
+void \bf{L\_\-punt} (char $\ast$fmt,...)
+\item 
+\bf{MD} $\ast$ \bf{build\_\-md} (FILE $\ast$in, char $\ast$\bf{input\_\-file\_\-name})
+\item 
+int \bf{check\_\-md\_\-for\_\-ambiguous\_\-links} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{build\_\-field\_\-decl} (\bf{MD} $\ast$md, \bf{MD\_\-Section} $\ast$section, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+void \bf{build\_\-entry} (\bf{MD\_\-Section} $\ast$section, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+void \bf{build\_\-element} (\bf{MD\_\-Field} $\ast$field, \bf{MD\_\-Element\_\-Req} $\ast$element\_\-req, int element\_\-index, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{md_compiler.h@{md\_\-compiler.h}!CONCAT_FIELD@{CONCAT\_\-FIELD}}
+\index{CONCAT_FIELD@{CONCAT\_\-FIELD}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CONCAT\_\-FIELD~\char`\"{}$|$$|$\char`\"{}}\label{md__compiler_8h_5836ed34fa554df2ff49d0eef31bd88a}
+
+
+
+
+Definition at line 101 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry().\index{md_compiler.h@{md\_\-compiler.h}!CREATE_SECTION@{CREATE\_\-SECTION}}
+\index{CREATE_SECTION@{CREATE\_\-SECTION}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CREATE\_\-SECTION~\char`\"{}CREATE\char`\"{}}\label{md__compiler_8h_99eda2c85fadad91c0314c01cb00276a}
+
+
+
+
+Definition at line 94 of file md\_\-compiler.h.\index{md_compiler.h@{md\_\-compiler.h}!ENTRY_END@{ENTRY\_\-END}}
+\index{ENTRY_END@{ENTRY\_\-END}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ENTRY\_\-END~\char`\"{})\char`\"{}}\label{md__compiler_8h_a979764be06bb7bdf7f69857b1600713}
+
+
+
+
+Definition at line 89 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry().\index{md_compiler.h@{md\_\-compiler.h}!ENTRY_START@{ENTRY\_\-START}}
+\index{ENTRY_START@{ENTRY\_\-START}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ENTRY\_\-START~\char`\"{}(\char`\"{}}\label{md__compiler_8h_caed8d0d130b5f5ae31d159672796994}
+
+
+
+
+Definition at line 88 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry().\index{md_compiler.h@{md\_\-compiler.h}!FIELD_END@{FIELD\_\-END}}
+\index{FIELD_END@{FIELD\_\-END}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIELD\_\-END~\char`\"{})\char`\"{}}\label{md__compiler_8h_135c2f21d955e76e6b67a2ffb392fd43}
+
+
+
+
+Definition at line 86 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry(), and build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!FIELD_START@{FIELD\_\-START}}
+\index{FIELD_START@{FIELD\_\-START}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FIELD\_\-START~\char`\"{}(\char`\"{}}\label{md__compiler_8h_7fbfa64753ca50463cbe92c1f585fa3b}
+
+
+
+
+Definition at line 85 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry(), and build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!KLEENE_STAR@{KLEENE\_\-STAR}}
+\index{KLEENE_STAR@{KLEENE\_\-STAR}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define KLEENE\_\-STAR~\char`\"{}$\ast$\char`\"{}}\label{md__compiler_8h_a32f5750538c8896fc03c7f60baf8a46}
+
+
+
+
+Definition at line 97 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry(), and build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!LINK_END@{LINK\_\-END}}
+\index{LINK_END@{LINK\_\-END}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINK\_\-END~\char`\"{})\char`\"{}}\label{md__compiler_8h_51e12815879251fd7ab9d0133b8866c6}
+
+
+
+
+Definition at line 92 of file md\_\-compiler.h.
+
+Referenced by build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!LINK_START@{LINK\_\-START}}
+\index{LINK_START@{LINK\_\-START}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LINK\_\-START~\char`\"{}(\char`\"{}}\label{md__compiler_8h_230377f04a83fc1294f21bf7ddbf02d7}
+
+
+
+
+Definition at line 91 of file md\_\-compiler.h.
+
+Referenced by build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!MAXARGS@{MAXARGS}}
+\index{MAXARGS@{MAXARGS}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \bf{MAXARGS}~100}\label{md__compiler_8h_41101847771d39a4f0a7f9395061c629}
+
+
+
+
+Definition at line 66 of file md\_\-compiler.h.\index{md_compiler.h@{md\_\-compiler.h}!OR_MARKER@{OR\_\-MARKER}}
+\index{OR_MARKER@{OR\_\-MARKER}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define OR\_\-MARKER~\char`\"{}$|$\char`\"{}}\label{md__compiler_8h_a174135ccbe6da5bc1a46fd65f48e3d1}
+
+
+
+
+Definition at line 98 of file md\_\-compiler.h.
+
+Referenced by build\_\-field\_\-decl().\index{md_compiler.h@{md\_\-compiler.h}!REPLACE_FIELD@{REPLACE\_\-FIELD}}
+\index{REPLACE_FIELD@{REPLACE\_\-FIELD}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-FIELD~\char`\"{}!\char`\"{}}\label{md__compiler_8h_3cb7b88246cabacf6a03c9a5c76f8c90}
+
+
+
+
+Definition at line 100 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry().\index{md_compiler.h@{md\_\-compiler.h}!SECTION_END@{SECTION\_\-END}}
+\index{SECTION_END@{SECTION\_\-END}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SECTION\_\-END~\char`\"{}\}\char`\"{}}\label{md__compiler_8h_d5aae763518d851c59598275848e999a}
+
+
+
+
+Definition at line 83 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry(), and build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!SECTION_START@{SECTION\_\-START}}
+\index{SECTION_START@{SECTION\_\-START}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SECTION\_\-START~\char`\"{}\{\char`\"{}}\label{md__compiler_8h_62f1bc5976cd195e942d569ea9bcb5ec}
+
+
+
+
+Definition at line 82 of file md\_\-compiler.h.
+
+Referenced by build\_\-field\_\-decl(), and build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!TERMINATOR@{TERMINATOR}}
+\index{TERMINATOR@{TERMINATOR}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TERMINATOR~\char`\"{};\char`\"{}}\label{md__compiler_8h_9957e6bff526d6cefef9b0b4eb1c6501}
+
+
+
+
+Definition at line 96 of file md\_\-compiler.h.
+
+Referenced by build\_\-entry(), and build\_\-field\_\-decl().
+
+\subsection{Function Documentation}
+\index{md_compiler.h@{md\_\-compiler.h}!build_element@{build\_\-element}}
+\index{build_element@{build\_\-element}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-element (\bf{MD\_\-Field} $\ast$ {\em field}, \bf{MD\_\-Element\_\-Req} $\ast$ {\em element\_\-req}, int {\em element\_\-index}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8h_de61fda8263e72bad493eade04a924c8}
+
+
+
+
+Definition at line 1281 of file md\_\-compiler.c.
+
+References build\_\-double(), build\_\-int(), copy\_\-Mbuf\_\-buf(), MD\_\-Field::decl, MD\_\-Element\_\-Req::desc, MD\_\-Field::entry, entry, Ferror(), Fis\_\-token\_\-char(), L\_\-punt(), MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-BLOCK, MD\_\-DOUBLE, MD\_\-find\_\-entry, MD\_\-INT, MD\_\-LINK, MD\_\-set\_\-block, MD\_\-set\_\-double, MD\_\-set\_\-int, MD\_\-set\_\-link, MD\_\-set\_\-string, MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Entry::section, strip\_\-backslashes(), strip\_\-first\_\-and\_\-last\_\-char(), and MD\_\-Element\_\-Req::type.
+
+Referenced by build\_\-entry().\index{md_compiler.h@{md\_\-compiler.h}!build_entry@{build\_\-entry}}
+\index{build_entry@{build\_\-entry}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8h_4a74b90f11f6771e28a937a67442c253}
+
+
+
+
+Definition at line 1472 of file md\_\-compiler.c.
+
+References build\_\-element(), CONCAT\_\-FIELD, copy\_\-Mbuf\_\-buf(), MD\_\-Field::decl, MD\_\-Element\_\-Req::desc, entry, ENTRY\_\-END, ENTRY\_\-START, Ferror(), Fget\_\-token(), FIELD\_\-END, FIELD\_\-START, is\_\-md\_\-ident(), KLEENE\_\-STAR, MD\_\-Element\_\-Req::kleene\_\-starred, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, match\_\-Mbuf(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-field(), MD\_\-find\_\-entry, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, REPLACE\_\-FIELD, MD\_\-Field\_\-Decl::require, SECTION\_\-END, strip\_\-backslashes(), strip\_\-first\_\-and\_\-last\_\-char(), and TERMINATOR.
+
+Referenced by build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!build_field_decl@{build\_\-field\_\-decl}}
+\index{build_field_decl@{build\_\-field\_\-decl}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-field\_\-decl (\bf{MD} $\ast$ {\em md}, \bf{MD\_\-Section} $\ast$ {\em section}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8h_0449f410c0cc6716a3783605146dcaf9}
+
+
+
+
+Definition at line 940 of file md\_\-compiler.c.
+
+References copy\_\-Mbuf\_\-buf(), Ferror(), Fget\_\-token(), FIELD\_\-END, FIELD\_\-START, is\_\-md\_\-ident(), KLEENE\_\-STAR, LINK\_\-END, LINK\_\-START, match\_\-Mbuf(), MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-new\_\-field\_\-decl(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-require\_\-block(), MD\_\-require\_\-double(), MD\_\-require\_\-int(), MD\_\-require\_\-multi\_\-target\_\-link(), MD\_\-require\_\-string(), MD\_\-REQUIRED\_\-FIELD, NULL, OR\_\-MARKER, SECTION\_\-START, and TERMINATOR.
+
+Referenced by build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!build_md@{build\_\-md}}
+\index{build_md@{build\_\-md}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD}$\ast$ build\_\-md (FILE $\ast$ {\em in}, char $\ast$ {\em input\_\-file\_\-name})}\label{md__compiler_8h_3c0442d466df2078d29749bbff847c0d}
+
+
+
+
+Definition at line 789 of file md\_\-compiler.c.
+
+References build\_\-entry(), build\_\-field\_\-decl(), check\_\-md\_\-for\_\-ambiguous\_\-links(), copy\_\-Mbuf\_\-buf(), create\_\-Fptr(), create\_\-Mbuf(), create\_\-Mfile(), Ferror(), Fget\_\-token(), free\_\-Fptr(), free\_\-Mbuf(), free\_\-Mfile(), is\_\-md\_\-ident(), L\_\-punt(), match\_\-Mbuf(), MD\_\-check\_\-md(), MD\_\-find\_\-section, MD\_\-new\_\-md(), MD\_\-new\_\-section(), MD::name, NULL, SECTION\_\-END, and SECTION\_\-START.
+
+Referenced by main().\index{md_compiler.h@{md\_\-compiler.h}!check_md_for_ambiguous_links@{check\_\-md\_\-for\_\-ambiguous\_\-links}}
+\index{check_md_for_ambiguous_links@{check\_\-md\_\-for\_\-ambiguous\_\-links}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int check\_\-md\_\-for\_\-ambiguous\_\-links (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{md__compiler_8h_5dc602835cc716539a36da4c7fe7fa45}
+
+
+
+
+Definition at line 1735 of file md\_\-compiler.c.
+
+References MD\_\-Field::element, entry, MD\_\-Section::field\_\-decl, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element::l, L\_\-punt(), MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::max\_\-field\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-entry, MD\_\-first\_\-entry(), MD\_\-first\_\-section(), MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-next\_\-section(), MD\_\-Section::name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Entry::section, MD\_\-Element\_\-Req::type, and MD\_\-Element::value.
+
+Referenced by build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!Fadvance_to_next_token@{Fadvance\_\-to\_\-next\_\-token}}
+\index{Fadvance_to_next_token@{Fadvance\_\-to\_\-next\_\-token}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Fadvance\_\-to\_\-next\_\-token (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8h_de728546c62e9c27434f5e16b9581308}
+
+
+
+
+Definition at line 598 of file md\_\-compiler.c.
+
+References Fptr::checkpoint, Fget\_\-line\_\-directive(), Fgetc(), Fpeekc(), move\_\-Mptr(), Fptr::mptr, Mptr\_\-pos(), and Fptr::source\_\-line.
+
+Referenced by Fget\_\-token().\index{md_compiler.h@{md\_\-compiler.h}!Ferror@{Ferror}}
+\index{Ferror@{Ferror}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Ferror (\bf{Fptr} $\ast$ {\em fptr}, char $\ast$ {\em fmt},  {\em ...})}\label{md__compiler_8h_761c4386743ac261985b813ab1a8040c}
+
+
+
+
+Definition at line 391 of file md\_\-compiler.c.
+
+References v\-Ferror().
+
+Referenced by build\_\-element(), build\_\-entry(), build\_\-field\_\-decl(), build\_\-md(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.h@{md\_\-compiler.h}!Fgetc@{Fgetc}}
+\index{Fgetc@{Fgetc}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fgetc (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8h_50725b05de9292d7eb2eaa36a6d6fdcb}
+
+
+
+
+Definition at line 478 of file md\_\-compiler.c.
+
+References Mgetc(), and Fptr::mptr.
+
+Referenced by Fadvance\_\-to\_\-next\_\-token(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.h@{md\_\-compiler.h}!Fpeekc@{Fpeekc}}
+\index{Fpeekc@{Fpeekc}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fpeekc (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8h_c06c4367d84d0b622fea24b7c6702f47}
+
+
+
+
+Definition at line 469 of file md\_\-compiler.c.
+
+References Mpeekc(), and Fptr::mptr.
+
+Referenced by Fadvance\_\-to\_\-next\_\-token(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.h@{md\_\-compiler.h}!is_md_ident@{is\_\-md\_\-ident}}
+\index{is_md_ident@{is\_\-md\_\-ident}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-md\_\-ident (char $\ast$ {\em ident})}\label{md__compiler_8h_39ca8b26d2e0c556d2146f76b6c1f51a}
+
+
+
+
+Definition at line 771 of file md\_\-compiler.c.
+
+Referenced by build\_\-entry(), build\_\-field\_\-decl(), and build\_\-md().\index{md_compiler.h@{md\_\-compiler.h}!L_punt@{L\_\-punt}}
+\index{L_punt@{L\_\-punt}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-punt (char $\ast$ {\em fmt},  {\em ...})}\label{md__compiler_8h_c8ccfa451c1bd1740a1b720ba5b4c3a9}
+
+
+
+
+Definition at line 1839 of file md\_\-compiler.c.
+
+Referenced by build\_\-element(), build\_\-md(), check\_\-md\_\-for\_\-ambiguous\_\-links(), create\_\-Fptr(), and main().\index{md_compiler.h@{md\_\-compiler.h}!vFerror@{vFerror}}
+\index{vFerror@{vFerror}!md_compiler.h@{md\_\-compiler.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void v\-Ferror (\bf{Fptr} $\ast$ {\em fptr}, char $\ast$ {\em fmt}, va\_\-list {\em args})}\label{md__compiler_8h_d52c3f1409f7b9a5f521e34fa8c866a3}
+
+
+
+
+Definition at line 400 of file md\_\-compiler.c.
+
+References Mline::buf, Fptr::checkpoint, get\_\-Mbuf\_\-buf(), len\_\-of\_\-Mbuf(), Mline::line\_\-no, Mptr::mfile, Mptr::mline, Mfile::name, NULL, Mptr::pos, print\_\-buf\_\-with\_\-arrow(), Fptr::source\_\-line, and Fptr::source\_\-name.
+
+Referenced by Ferror().

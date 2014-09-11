@@ -1,0 +1,387 @@
+\section{cudd\-Symmetry.c File Reference}
+\label{cuddSymmetry_8c}\index{cuddSymmetry.c@{cuddSymmetry.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MV\_\-OOM}~(\bf{Move} $\ast$)1L
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int dd\-Symm\-Unique\-Compare \bf{ARGS} ((int $\ast$ptr\-X, int $\ast$ptr\-Y))
+\item 
+static int dd\-Symm\-Sifting\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))
+\item 
+static \bf{Move} $\ast$dd\-Symm\-Sifting\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low))
+\item 
+static \bf{Move} $\ast$dd\-Symm\-Sifting\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High))
+\item 
+static int dd\-Symm\-Group\-Move \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves))
+\item 
+static int dd\-Symm\-Group\-Move\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y))
+\item 
+static int dd\-Symm\-Sifting\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}))
+\item 
+static void dd\-Symm\-Summary \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower, int upper, int $\ast$symvars, int $\ast$symgroups))
+\item 
+void \bf{Cudd\_\-Symm\-Profile} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+int \bf{cudd\-Symm\-Check} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+int \bf{cudd\-Symm\-Sifting} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+int \bf{cudd\-Symm\-Sifting\-Conv} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{dd\-Symm\-Unique\-Compare} (int $\ast$ptr\-X, int $\ast$ptr\-Y)
+\item 
+static int \bf{dd\-Symm\-Sifting\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static int \bf{dd\-Symm\-Sifting\-Conv\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Symm\-Sifting\-Up} (\bf{Dd\-Manager} $\ast$table, int y, int x\-Low)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Symm\-Sifting\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\-High)
+\item 
+static int \bf{dd\-Symm\-Group\-Move} (\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves)
+\item 
+static int \bf{dd\-Symm\-Group\-Move\-Backward} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+static int \bf{dd\-Symm\-Sifting\-Backward} (\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size})
+\item 
+static void \bf{dd\-Symm\-Summary} (\bf{Dd\-Manager} $\ast$table, int lower, int upper, int $\ast$symvars, int $\ast$symgroups)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Symmetry.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int $\ast$ \bf{entry}
+\item 
+int \bf{dd\-Total\-Number\-Swapping}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!MV_OOM@{MV\_\-OOM}}
+\index{MV_OOM@{MV\_\-OOM}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MV\_\-OOM~(\bf{Move} $\ast$)1L}\label{cuddSymmetry_8c_f87a89c37346f8ca3f0e26910827d07b}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Symmetry.c}{p.}{cuddSymmetry_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for symmetry-based variable reordering.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-Symm\-Profile()}{p.}{cuddSymmetry_8c_83fd2716996fec765f23ec7bca30f14b} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Symm\-Check()}{p.}{cuddSymmetry_8c_23afa87c3a2b034ed77d613510958a42} \item \doxyref{cudd\-Symm\-Sifting()}{p.}{cuddSymmetry_8c_8a7e7ba2e8fb65399112bd5b7fd71ad4} \item \doxyref{cudd\-Symm\-Sifting\-Conv()}{p.}{cuddSymmetry_8c_26500cac5e214614917e48563a2fd133} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dd\-Symm\-Unique\-Compare()}{p.}{cuddSymmetry_8c_f21d70ca7208a3cedbbe5ddce484a47f} \item \doxyref{dd\-Symm\-Sifting\-Aux()}{p.}{cuddSymmetry_8c_326020bc7248d59f7071ea7385ab8675} \item \doxyref{dd\-Symm\-Sifting\-Conv\-Aux()}{p.}{cuddSymmetry_8c_97aad05c931ad4d824c1f0e0465e19a0} \item \doxyref{dd\-Symm\-Sifting\-Up()}{p.}{cuddSymmetry_8c_408afc41350855361599f159c147a17d} \item \doxyref{dd\-Symm\-Sifting\-Down()}{p.}{cuddSymmetry_8c_dbc10db91fb2596ce3f5052be32a9e90} \item \doxyref{dd\-Symm\-Group\-Move()}{p.}{cuddSymmetry_8c_e06b0c1b19f1f09c404653af5de77813} \item \doxyref{dd\-Symm\-Group\-Move\-Backward()}{p.}{cuddSymmetry_8c_3d55ace1226f0f37354f68d1cd3d18aa} \item \doxyref{dd\-Symm\-Sifting\-Backward()}{p.}{cuddSymmetry_8c_af81d04b305a23ba1b7f5d1346e29fd7} \item \doxyref{dd\-Symm\-Summary()}{p.}{cuddSymmetry_8c_8b47dce35b7ef8ce6b59bce79999ad02} \end{itemize}
+]
+
+Author [Shipra Panda, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 50 of file cudd\-Symmetry.c.
+
+Referenced by dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Sifting\-Conv\-Aux(), dd\-Symm\-Sifting\-Down(), and dd\-Symm\-Sifting\-Up().
+
+\subsection{Function Documentation}
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Symm\-Summary ARGS ((\bf{Dd\-Manager} $\ast$table, int lower, int upper, int $\ast$symvars, int $\ast$symgroups))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_204540d68ced5ed782b44562918c09ac}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Sifting\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_0b3e885fd9a6042057b2ac9b4b3c863d}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Group\-Move\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_7b2b684417ba94c23115d56ceafa5957}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Group\-Move ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_cec5f1dd966ff514e744043e0d416a31}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Symm\-Sifting\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_217be32a914d72ae31930891befa705e}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Symm\-Sifting\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_45189cc2d3e895de612fa83c96b311ed}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Sifting\-Conv\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_3e7a131c6bd2a4fe2c1f930526b196e6}
+
+
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Unique\-Compare ARGS ((int $\ast$ptr\-X, int $\ast$ptr\-Y))\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_52efd6c31f32f9669479aa812f2a9180}
+
+
+Automatic\-Start \index{cuddSymmetry.c@{cudd\-Symmetry.c}!Cudd_SymmProfile@{Cudd\_\-SymmProfile}}
+\index{Cudd_SymmProfile@{Cudd\_\-SymmProfile}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Symm\-Profile (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddSymmetry_8c_83fd2716996fec765f23ec7bca30f14b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints statistics on symmetric variables.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 113 of file cudd\-Symmetry.c.
+
+References assert, Dd\-Manager::invperm, Dd\-Subtable::next, and Dd\-Manager::subtables.\index{cuddSymmetry.c@{cudd\-Symmetry.c}!cuddSymmCheck@{cuddSymmCheck}}
+\index{cuddSymmCheck@{cuddSymmCheck}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Symm\-Check (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddSymmetry_8c_23afa87c3a2b034ed77d613510958a42}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks for symmetry of x and y.]
+
+Description [Checks for symmetry of x and y. Ignores projection functions, unless they are isolated. Returns 1 in case of symmetry; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 163 of file cudd\-Symmetry.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-T, DD\_\-ONE, Dd\-Node::index, Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::slots, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Sifting\-Down(), and dd\-Symm\-Sifting\-Up().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!cuddSymmSifting@{cuddSymmSifting}}
+\index{cuddSymmSifting@{cuddSymmSifting}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Symm\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddSymmetry_8c_8a7e7ba2e8fb65399112bd5b7fd71ad4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Symmetric sifting algorithm.]
+
+Description [Symmetric sifting algorithm. Assumes that no dead nodes are present. \begin{enumerate}
+\item Order all the variables according to the number of entries in each unique subtable. \item Sift the variable up and down, remembering each time the total size of the DD heap and grouping variables that are symmetric. \item Select the best permutation. \item Repeat 3 and 4 for all variables. \end{enumerate}
+Returns 1 plus the number of symmetric variables if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Symm\-Sifting\-Conv] 
+
+Definition at line 299 of file cudd\-Symmetry.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, dd\-Min, dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Summary(), dd\-Symm\-Unique\-Compare(), dd\-Total\-Number\-Swapping, entry, Dd\-Manager::error\-Code, FREE, Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Subtable::keys, Dd\-Subtable::next, Dd\-Manager::perm, qsort(), result, Dd\-Manager::sift\-Max\-Swap, Dd\-Manager::sift\-Max\-Var, Dd\-Manager::size, size, and Dd\-Manager::subtables.
+
+Referenced by dd\-Reorder\-Children().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!cuddSymmSiftingConv@{cuddSymmSiftingConv}}
+\index{cuddSymmSiftingConv@{cuddSymmSiftingConv}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Symm\-Sifting\-Conv (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddSymmetry_8c_26500cac5e214614917e48563a2fd133}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Symmetric sifting to convergence algorithm.]
+
+Description [Symmetric sifting to convergence algorithm. Assumes that no dead nodes are present. \begin{enumerate}
+\item Order all the variables according to the number of entries in each unique subtable. \item Sift the variable up and down, remembering each time the total size of the DD heap and grouping variables that are symmetric. \item Select the best permutation. \item Repeat 3 and 4 for all variables. \item Repeat 1-4 until no further improvement. \end{enumerate}
+Returns 1 plus the number of symmetric variables if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Symm\-Sifting] 
+
+Definition at line 414 of file cudd\-Symmetry.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, dd\-Min, dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Sifting\-Conv\-Aux(), dd\-Symm\-Summary(), dd\-Symm\-Unique\-Compare(), dd\-Total\-Number\-Swapping, entry, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Subtable::next, Dd\-Manager::perm, qsort(), result, Dd\-Manager::sift\-Max\-Swap, Dd\-Manager::sift\-Max\-Var, Dd\-Manager::size, size, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Exact(), and dd\-Reorder\-Children().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmGroupMove@{ddSymmGroupMove}}
+\index{ddSymmGroupMove@{ddSymmGroupMove}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Group\-Move (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y}, \bf{Move} $\ast$$\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_e06b0c1b19f1f09c404653af5de77813}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two groups.]
+
+Description [Swaps two groups. x is assumed to be the bottom variable of the first group. y is assumed to be the top variable of the second group. Updates the list of moves. Returns the number of keys in the table if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1437 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Dynamic\-Alloc\-Node(), cudd\-Swap\-In\-Place(), Move::next, Dd\-Subtable::next, Move::size, size, Dd\-Manager::subtables, Move::x, and Move::y.
+
+Referenced by dd\-Symm\-Sifting\-Down(), and dd\-Symm\-Sifting\-Up().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmGroupMoveBackward@{ddSymmGroupMoveBackward}}
+\index{ddSymmGroupMoveBackward@{ddSymmGroupMoveBackward}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Group\-Move\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_3d55ace1226f0f37354f68d1cd3d18aa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Undoes the swap of two groups.]
+
+Description [Undoes the swap of two groups. x is assumed to be the bottom variable of the first group. y is assumed to be the top variable of the second group. Returns the number of keys in the table if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1518 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), Dd\-Subtable::next, size, and Dd\-Manager::subtables.\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSiftingAux@{ddSymmSiftingAux}}
+\index{ddSymmSiftingAux@{ddSymmSiftingAux}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Sifting\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_326020bc7248d59f7071ea7385ab8675}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries.]
+
+Description [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries. Finds the best position and does the required changes. Assumes that x is not part of a symmetry group. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 606 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Next\-High(), cudd\-Symm\-Check(), dd\-Symm\-Sifting\-Backward(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), Dd\-Manager::isolated, Dd\-Manager::keys, MV\_\-OOM, Move::next, Dd\-Subtable::next, result, Dd\-Manager::subtables, Move::x, and Move::y.
+
+Referenced by cudd\-Symm\-Sifting(), and cudd\-Symm\-Sifting\-Conv().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSiftingBackward@{ddSymmSiftingBackward}}
+\index{ddSymmSiftingBackward@{ddSymmSiftingBackward}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Sifting\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Move} $\ast$ {\em moves}, int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_af81d04b305a23ba1b7f5d1346e29fd7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the DD heap to the position giving the minimum size.]
+
+Description [Given a set of moves, returns the DD heap to the position giving the minimum size. In case of ties, returns to the closest position giving the minimum size. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1589 of file cudd\-Symmetry.c.
+
+References Move::next, and Move::size.
+
+Referenced by dd\-Symm\-Sifting\-Aux(), and dd\-Symm\-Sifting\-Conv\-Aux().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSiftingConvAux@{ddSymmSiftingConvAux}}
+\index{ddSymmSiftingConvAux@{ddSymmSiftingConvAux}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Sifting\-Conv\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_97aad05c931ad4d824c1f0e0465e19a0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries.]
+
+Description [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries. Finds the best position and does the required changes. Assumes that x is either an isolated variable, or it is the bottom of a symmetry group. All symmetries may not have been found, because of exceeded growth limit. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 904 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Next\-High(), dd\-Symm\-Sifting\-Backward(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), Dd\-Manager::isolated, Dd\-Manager::keys, MV\_\-OOM, Move::next, Dd\-Subtable::next, result, Dd\-Manager::subtables, Move::x, and Move::y.
+
+Referenced by cudd\-Symm\-Sifting\-Conv().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSiftingDown@{ddSymmSiftingDown}}
+\index{ddSymmSiftingDown@{ddSymmSiftingDown}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Symm\-Sifting\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_dbc10db91fb2596ce3f5052be32a9e90}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves x down until either it reaches the bound (x\-High) or the size of the DD heap increases too much.]
+
+Description [Moves x down until either it reaches the bound (x\-High) or the size of the DD heap increases too much. Assumes that x is the bottom of a symmetry group. Checks x for symmetry to the adjacent variables. If symmetry is found, the symmetry group of x is merged with the symmetry group of the other variable. Returns the set of moves in case of success; MV\_\-OOM if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 1299 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-High(), cudd\-Swap\-In\-Place(), cudd\-Symm\-Check(), cudd\-Test\-Interact(), dd\-Symm\-Group\-Move(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, MV\_\-OOM, Move::next, Dd\-Subtable::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Symm\-Sifting\-Aux(), and dd\-Symm\-Sifting\-Conv\-Aux().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSiftingUp@{ddSymmSiftingUp}}
+\index{ddSymmSiftingUp@{ddSymmSiftingUp}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Symm\-Sifting\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em y}, int {\em x\-Low})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_408afc41350855361599f159c147a17d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves x up until either it reaches the bound (x\-Low) or the size of the DD heap increases too much.]
+
+Description [Moves x up until either it reaches the bound (x\-Low) or the size of the DD heap increases too much. Assumes that x is the top of a symmetry group. Checks x for symmetry to the adjacent variables. If symmetry is found, the symmetry group of x is merged with the symmetry group of the other variable. Returns the set of moves in case of success; MV\_\-OOM if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 1157 of file cudd\-Symmetry.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), cudd\-Symm\-Check(), cudd\-Test\-Interact(), dd\-Symm\-Group\-Move(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, MV\_\-OOM, Move::next, Dd\-Subtable::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Symm\-Sifting\-Aux(), and dd\-Symm\-Sifting\-Conv\-Aux().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmSummary@{ddSymmSummary}}
+\index{ddSymmSummary@{ddSymmSummary}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Symm\-Summary (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper}, int $\ast$ {\em symvars}, int $\ast$ {\em symgroups})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_8b47dce35b7ef8ce6b59bce79999ad02}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts numbers of symmetric variables and symmetry groups.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 1633 of file cudd\-Symmetry.c.
+
+References assert, Dd\-Subtable::next, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Symm\-Sifting(), and cudd\-Symm\-Sifting\-Conv().\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddSymmUniqueCompare@{ddSymmUniqueCompare}}
+\index{ddSymmUniqueCompare@{ddSymmUniqueCompare}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Symm\-Unique\-Compare (int $\ast$ {\em ptr\-X}, int $\ast$ {\em ptr\-Y})\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_f21d70ca7208a3cedbbe5ddce484a47f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function used by qsort.]
+
+Description [Comparison function used by qsort to order the variables according to the number of keys in the subtables. Returns the difference in number of keys between the two variables being compared.]
+
+Side\-Effects [None] 
+
+Definition at line 578 of file cudd\-Symmetry.c.
+
+References entry.
+
+Referenced by cudd\-Symm\-Sifting(), and cudd\-Symm\-Sifting\-Conv().
+
+\subsection{Variable Documentation}
+\index{cuddSymmetry.c@{cudd\-Symmetry.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Symmetry.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 65 of file cudd\-Symmetry.c.\index{cuddSymmetry.c@{cudd\-Symmetry.c}!ddTotalNumberSwapping@{ddTotalNumberSwapping}}
+\index{ddTotalNumberSwapping@{ddTotalNumberSwapping}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{dd\-Total\-Number\-Swapping}}\label{cuddSymmetry_8c_1860a312dbd8ab2ab829b1a3beed31d9}
+
+
+
+
+Definition at line 78 of file cudd\-Reorder.c.\index{cuddSymmetry.c@{cudd\-Symmetry.c}!entry@{entry}}
+\index{entry@{entry}!cuddSymmetry.c@{cudd\-Symmetry.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{entry}\hspace{0.3cm}{\tt  [static]}}\label{cuddSymmetry_8c_ef8c63519ad43f7d8c5f40f8807b886e}
+
+
+
+
+Definition at line 68 of file cudd\-Symmetry.c.

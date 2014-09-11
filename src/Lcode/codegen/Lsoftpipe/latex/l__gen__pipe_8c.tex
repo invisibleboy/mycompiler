@@ -1,0 +1,248 @@
+\section{l\_\-gen\_\-pipe.c File Reference}
+\label{l__gen__pipe_8c}\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-mve.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-sync.h\char`\"{}}\par
+{\tt \#include $<$Lcode/r\_\-regalloc.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{UNKNOWN\_\-WEIGHT}~0
+\item 
+\#define \bf{FALL\_\-THRU\_\-EPI}~0
+\item 
+\#define \bf{TARGET\_\-EPI}~1
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{Lpipe\_\-rem\_\-loop\_\-gen} (L\_\-Func $\ast$fn, L\_\-Oper $\ast$loop\_\-incr, int ii, int unroll, int stage\_\-count)
+\item 
+static void \bf{Lpipe\_\-gen\_\-epi} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$\bf{header\_\-cb}, L\_\-Oper $\ast$exit\_\-branch, L\_\-Cb $\ast$fall\_\-thru\_\-cb, int epi\_\-type, int ii, int unroll, int stage\_\-count)
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-find\_\-exit\_\-branch\_\-copy} (L\_\-Oper $\ast$exit\_\-branch, L\_\-Oper $\ast$first\_\-oper, L\_\-Oper $\ast$last\_\-oper)
+\item 
+static void \bf{Lpipe\_\-gen\_\-partial\_\-epi} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$\bf{header\_\-cb}, L\_\-Oper $\ast$exit\_\-branch, L\_\-Cb $\ast$fall\_\-thru\_\-cb, int ii, int unroll, int stage\_\-count)
+\item 
+void \bf{M\_\-starcore\_\-negate\_\-compare} (L\_\-Oper $\ast$)
+\item 
+void \bf{Lpipe\_\-multi\_\-epi\_\-gen} (L\_\-Func $\ast$fn, int stage\_\-count, L\_\-Oper $\ast$loop\_\-back\_\-br, int ii, int unroll)
+\item 
+static void \bf{Lpipe\_\-remove\_\-comp\_\-code\_\-block} (L\_\-Cb $\ast$ssa\_\-cb)
+\item 
+static void \bf{Lpipe\_\-remove\_\-epilogue} (L\_\-Func $\ast$fn, L\_\-Oper $\ast$exit, L\_\-Cb $\ast$pipe\_\-cb, L\_\-Cb $\ast$epilogue\_\-cb, L\_\-Cb $\ast$fall\_\-thru\_\-cb, int epi\_\-type)
+\item 
+void \bf{Lpipe\_\-remove\_\-empty\_\-epilogues} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$\bf{header\_\-cb})
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-gen\_\-epilogue\_\-counter} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb, int i, int top)
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-gen\_\-loop\_\-counter} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb, int i, int top)
+\item 
+static void \bf{Lpipe\_\-change\_\-branch\_\-dir} (L\_\-Oper $\ast$branch, L\_\-Cb $\ast$target)
+\item 
+static void \bf{Lpipe\_\-gen\_\-partial\_\-epi\_\-rot} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$\bf{header\_\-cb}, L\_\-Oper $\ast$exit\_\-branch, L\_\-Cb $\ast$fall\_\-thru\_\-cb, int ii, int stage\_\-count)
+\item 
+static void \bf{Lpipe\_\-gen\_\-epi\_\-rot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, L\_\-Oper $\ast$exit\_\-branch, L\_\-Cb $\ast$fall\_\-thru\_\-cb, int epi\_\-type)
+\item 
+void \bf{Lpipe\_\-multi\_\-epi\_\-gen\_\-rot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, L\_\-Oper $\ast$loop\_\-back\_\-br)
+\item 
+void \bf{Lpipe\_\-kernel\_\-gen\_\-rot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, L\_\-Oper $\ast$loop\_\-back\_\-br)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!FALL_THRU_EPI@{FALL\_\-THRU\_\-EPI}}
+\index{FALL_THRU_EPI@{FALL\_\-THRU\_\-EPI}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FALL\_\-THRU\_\-EPI~0}\label{l__gen__pipe_8c_5a0660410880f0cbe74ab9e1554b2e65}
+
+
+
+
+Definition at line 67 of file l\_\-gen\_\-pipe.c.
+
+Referenced by Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-epi\_\-rot(), Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-multi\_\-epi\_\-gen(), and Lpipe\_\-remove\_\-empty\_\-epilogues().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!TARGET_EPI@{TARGET\_\-EPI}}
+\index{TARGET_EPI@{TARGET\_\-EPI}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TARGET\_\-EPI~1}\label{l__gen__pipe_8c_e4186ebd15ff2109e517a995ff3d27bd}
+
+
+
+
+Definition at line 68 of file l\_\-gen\_\-pipe.c.
+
+Referenced by Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-epi\_\-rot(), Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-remove\_\-empty\_\-epilogues(), and Lpipe\_\-remove\_\-epilogue().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!UNKNOWN_WEIGHT@{UNKNOWN\_\-WEIGHT}}
+\index{UNKNOWN_WEIGHT@{UNKNOWN\_\-WEIGHT}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define UNKNOWN\_\-WEIGHT~0}\label{l__gen__pipe_8c_c697651b01b512ea5feb51514bde3b69}
+
+
+
+
+Definition at line 65 of file l\_\-gen\_\-pipe.c.
+
+Referenced by Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi\_\-rot(), Lpipe\_\-multi\_\-epi\_\-gen(), and Lpipe\_\-rem\_\-loop().
+
+\subsection{Function Documentation}
+\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_change_branch_dir@{Lpipe\_\-change\_\-branch\_\-dir}}
+\index{Lpipe_change_branch_dir@{Lpipe\_\-change\_\-branch\_\-dir}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-change\_\-branch\_\-dir (L\_\-Oper $\ast$ {\em branch}, L\_\-Cb $\ast$ {\em target})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_0bec54aba5a2d1f6b74452f61bc4964d}
+
+
+
+
+Definition at line 1384 of file l\_\-gen\_\-pipe.c.
+
+Referenced by Lpipe\_\-gen\_\-epi\_\-rot(), and Lpipe\_\-gen\_\-partial\_\-epi\_\-rot().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_find_exit_branch_copy@{Lpipe\_\-find\_\-exit\_\-branch\_\-copy}}
+\index{Lpipe_find_exit_branch_copy@{Lpipe\_\-find\_\-exit\_\-branch\_\-copy}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-find\_\-exit\_\-branch\_\-copy (L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Oper $\ast$ {\em first\_\-oper}, L\_\-Oper $\ast$ {\em last\_\-oper})}\label{l__gen__pipe_8c_e170c12c10c855baea6d432483bb8f47}
+
+
+
+
+Definition at line 544 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-slot, Lpipe\_\-ignore\_\-kernel\_\-inst, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-gen\_\-partial\_\-epi(), and Lpipe\_\-gen\_\-partial\_\-epi\_\-rot().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_epi@{Lpipe\_\-gen\_\-epi}}
+\index{Lpipe_gen_epi@{Lpipe\_\-gen\_\-epi}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-epi (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em header\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Cb $\ast$ {\em fall\_\-thru\_\-cb}, int {\em epi\_\-type}, int {\em ii}, int {\em unroll}, int {\em stage\_\-count})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_2674fb9325b92361e2fe22b6bad6ceb0}
+
+
+
+
+Definition at line 347 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::exit\_\-weight, FALL\_\-THRU\_\-EPI, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-ignore\_\-kernel\_\-inst, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, TARGET\_\-EPI, UNKNOWN\_\-WEIGHT, and \_\-Softpipe\_\-Op\_\-Info::unrolled\_\-iter\_\-num.
+
+Referenced by Lpipe\_\-multi\_\-epi\_\-gen().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_epi_rot@{Lpipe\_\-gen\_\-epi\_\-rot}}
+\index{Lpipe_gen_epi_rot@{Lpipe\_\-gen\_\-epi\_\-rot}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-epi\_\-rot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Cb $\ast$ {\em fall\_\-thru\_\-cb}, int {\em epi\_\-type})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_5526a678946eac6147b0fa7128e53215}
+
+
+
+
+Definition at line 1598 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::exit\_\-weight, FALL\_\-THRU\_\-EPI, header\_\-cb, SM\_\-Cb::II, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, L\_\-annotate\_\-oper(), SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-change\_\-branch\_\-dir(), Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-ignore\_\-kernel\_\-inst, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, SM\_\-Cb::stages, and TARGET\_\-EPI.
+
+Referenced by Lpipe\_\-kernel\_\-gen\_\-rot().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_epilogue_counter@{Lpipe\_\-gen\_\-epilogue\_\-counter}}
+\index{Lpipe_gen_epilogue_counter@{Lpipe\_\-gen\_\-epilogue\_\-counter}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-gen\_\-epilogue\_\-counter (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb}, int {\em i}, int {\em top})}\label{l__gen__pipe_8c_7be730411e03e5b53f8cf5cb5f54109b}
+
+
+
+
+Definition at line 1323 of file l\_\-gen\_\-pipe.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), M\_\-native\_\-int\_\-register\_\-ctype(), and M\_\-return\_\-epilogue\_\-cntr\_\-register().
+
+Referenced by Lpipe\_\-kernel\_\-gen\_\-rot().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_loop_counter@{Lpipe\_\-gen\_\-loop\_\-counter}}
+\index{Lpipe_gen_loop_counter@{Lpipe\_\-gen\_\-loop\_\-counter}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-gen\_\-loop\_\-counter (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb}, int {\em i}, int {\em top})}\label{l__gen__pipe_8c_33334914647461bc2c86d8527bee4f8e}
+
+
+
+
+Definition at line 1353 of file l\_\-gen\_\-pipe.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), M\_\-native\_\-int\_\-register\_\-ctype(), and M\_\-return\_\-loop\_\-cntr\_\-register().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_partial_epi@{Lpipe\_\-gen\_\-partial\_\-epi}}
+\index{Lpipe_gen_partial_epi@{Lpipe\_\-gen\_\-partial\_\-epi}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-partial\_\-epi (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em header\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Cb $\ast$ {\em fall\_\-thru\_\-cb}, int {\em ii}, int {\em unroll}, int {\em stage\_\-count})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_da8391af357e6351d97848a628f5fe5a}
+
+
+
+
+Definition at line 581 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-find\_\-exit\_\-branch\_\-copy(), Lpipe\_\-ignore\_\-kernel\_\-inst, prologue\_\-cb, \_\-Softpipe\_\-Op\_\-Info::prologue\_\-stage, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, UNKNOWN\_\-WEIGHT, and \_\-Softpipe\_\-Op\_\-Info::unrolled\_\-iter\_\-num.
+
+Referenced by Lpipe\_\-multi\_\-epi\_\-gen().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_gen_partial_epi_rot@{Lpipe\_\-gen\_\-partial\_\-epi\_\-rot}}
+\index{Lpipe_gen_partial_epi_rot@{Lpipe\_\-gen\_\-partial\_\-epi\_\-rot}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-partial\_\-epi\_\-rot (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em header\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Cb $\ast$ {\em fall\_\-thru\_\-cb}, int {\em ii}, int {\em stage\_\-count})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_9377572e449c670f48d1f004429378d0}
+
+
+
+
+Definition at line 1396 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-change\_\-branch\_\-dir(), Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-find\_\-exit\_\-branch\_\-copy(), Lpipe\_\-ignore\_\-kernel\_\-inst, prologue\_\-cb, \_\-Softpipe\_\-Op\_\-Info::prologue\_\-stage, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, and UNKNOWN\_\-WEIGHT.\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_kernel_gen_rot@{Lpipe\_\-kernel\_\-gen\_\-rot}}
+\index{Lpipe_kernel_gen_rot@{Lpipe\_\-kernel\_\-gen\_\-rot}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-kernel\_\-gen\_\-rot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, L\_\-Oper $\ast$ {\em loop\_\-back\_\-br})}\label{l__gen__pipe_8c_719224974bbbb1c9845b638a30cedd93}
+
+
+
+
+Definition at line 2061 of file l\_\-gen\_\-pipe.c.
+
+References FALL\_\-THRU\_\-EPI, header\_\-cb, L\_\-annotate\_\-oper(), SM\_\-Cb::lcode\_\-fn, Lpipe\_\-gen\_\-epi\_\-rot(), Lpipe\_\-gen\_\-epilogue\_\-counter(), Lpipe\_\-gen\_\-uncond\_\-pred\_\-define(), Lpipe\_\-ignore\_\-kernel\_\-inst, preheader\_\-cb, prologue\_\-cb, R\_\-get\_\-rot\_\-regs(), SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, SM\_\-Cb::stages, and TARGET\_\-EPI.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_multi_epi_gen@{Lpipe\_\-multi\_\-epi\_\-gen}}
+\index{Lpipe_multi_epi_gen@{Lpipe\_\-multi\_\-epi\_\-gen}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-multi\_\-epi\_\-gen (L\_\-Func $\ast$ {\em fn}, int {\em stage\_\-count}, L\_\-Oper $\ast$ {\em loop\_\-back\_\-br}, int {\em ii}, int {\em unroll})}\label{l__gen__pipe_8c_aab08a046531a4539e4a0dbb0f861007}
+
+
+
+
+Definition at line 759 of file l\_\-gen\_\-pipe.c.
+
+References FALL\_\-THRU\_\-EPI, header\_\-cb, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-adjust\_\-syncs\_\-for\_\-prologue(), Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi(), Lpipe\_\-ignore\_\-kernel\_\-inst, M\_\-arch, M\_\-STARCORE, M\_\-starcore\_\-negate\_\-compare(), preheader\_\-cb, prologue\_\-cb, \_\-Softpipe\_\-Op\_\-Info::prologue\_\-stage, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, TARGET\_\-EPI, UNKNOWN\_\-WEIGHT, and \_\-Softpipe\_\-Op\_\-Info::unrolled\_\-iter\_\-num.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_multi_epi_gen_rot@{Lpipe\_\-multi\_\-epi\_\-gen\_\-rot}}
+\index{Lpipe_multi_epi_gen_rot@{Lpipe\_\-multi\_\-epi\_\-gen\_\-rot}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-multi\_\-epi\_\-gen\_\-rot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, L\_\-Oper $\ast$ {\em loop\_\-back\_\-br})}\label{l__gen__pipe_8c_730dc4cccecf03f47801ce2b86ebb338}
+
+
+
+
+Definition at line 1774 of file l\_\-gen\_\-pipe.c.
+
+References SM\_\-Cb::II, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-get\_\-pro\_\-reg(), Lpipe\_\-ignore\_\-kernel\_\-inst, preheader\_\-cb, prologue\_\-cb, \_\-Softpipe\_\-Op\_\-Info::prologue\_\-stage, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, and SM\_\-Cb::stages.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_rem_loop_gen@{Lpipe\_\-rem\_\-loop\_\-gen}}
+\index{Lpipe_rem_loop_gen@{Lpipe\_\-rem\_\-loop\_\-gen}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-rem\_\-loop\_\-gen (L\_\-Func $\ast$ {\em fn}, L\_\-Oper $\ast$ {\em loop\_\-incr}, int {\em ii}, int {\em unroll}, int {\em stage\_\-count})}\label{l__gen__pipe_8c_cf8d2344c93cfbe701567693dc65e006}
+
+
+
+
+Definition at line 108 of file l\_\-gen\_\-pipe.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, header\_\-cb, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, Lpipe\_\-adjust\_\-syncs\_\-for\_\-epilogue(), Lpipe\_\-adjust\_\-syncs\_\-for\_\-prologue(), Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-find\_\-loop\_\-back\_\-br(), Lpipe\_\-ignore\_\-kernel\_\-inst, preheader\_\-cb, prologue\_\-cb, \_\-Softpipe\_\-Op\_\-Info::prologue\_\-stage, remainder\_\-cb, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_remove_comp_code_block@{Lpipe\_\-remove\_\-comp\_\-code\_\-block}}
+\index{Lpipe_remove_comp_code_block@{Lpipe\_\-remove\_\-comp\_\-code\_\-block}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-remove\_\-comp\_\-code\_\-block (L\_\-Cb $\ast$ {\em ssa\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_adcda83dc0d7fe6f138348970f5fee5b}
+
+
+
+
+Definition at line 1147 of file l\_\-gen\_\-pipe.c.
+
+References exit\_\-cb.
+
+Referenced by Lpipe\_\-remove\_\-empty\_\-epilogues().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_remove_empty_epilogues@{Lpipe\_\-remove\_\-empty\_\-epilogues}}
+\index{Lpipe_remove_empty_epilogues@{Lpipe\_\-remove\_\-empty\_\-epilogues}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-remove\_\-empty\_\-epilogues (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em header\_\-cb})}\label{l__gen__pipe_8c_5b2118879870ec2987266350b965aa44}
+
+
+
+
+Definition at line 1206 of file l\_\-gen\_\-pipe.c.
+
+References FALL\_\-THRU\_\-EPI, Lpipe\_\-remove\_\-comp\_\-code\_\-block(), Lpipe\_\-remove\_\-epilogue(), prologue\_\-cb, and TARGET\_\-EPI.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!Lpipe_remove_epilogue@{Lpipe\_\-remove\_\-epilogue}}
+\index{Lpipe_remove_epilogue@{Lpipe\_\-remove\_\-epilogue}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-remove\_\-epilogue (L\_\-Func $\ast$ {\em fn}, L\_\-Oper $\ast$ {\em exit}, L\_\-Cb $\ast$ {\em pipe\_\-cb}, L\_\-Cb $\ast$ {\em epilogue\_\-cb}, L\_\-Cb $\ast$ {\em fall\_\-thru\_\-cb}, int {\em epi\_\-type})\hspace{0.3cm}{\tt  [static]}}\label{l__gen__pipe_8c_e6db76f9944ace66b43330c69c01141d}
+
+
+
+
+Definition at line 1180 of file l\_\-gen\_\-pipe.c.
+
+References TARGET\_\-EPI.
+
+Referenced by Lpipe\_\-remove\_\-empty\_\-epilogues().\index{l_gen_pipe.c@{l\_\-gen\_\-pipe.c}!M_starcore_negate_compare@{M\_\-starcore\_\-negate\_\-compare}}
+\index{M_starcore_negate_compare@{M\_\-starcore\_\-negate\_\-compare}!l_gen_pipe.c@{l\_\-gen\_\-pipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-starcore\_\-negate\_\-compare (L\_\-Oper $\ast$)}\label{l__gen__pipe_8c_342fb7dd4cac19f8ee85a2eafcca5b6a}
+
+

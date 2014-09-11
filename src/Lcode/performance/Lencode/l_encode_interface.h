@@ -1,0 +1,94 @@
+/*****************************************************************************\
+ *
+ *		      Illinois Open Source License
+ *                     University of Illinois/NCSA
+ *                         Open Source License
+ *
+ * Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+ * All rights reserved.
+ *
+ * Developed by:             
+ *
+ *		IMPACT Research Group
+ *
+ *		University of Illinois at Urbana-Champaign
+ *
+ *              http://www.crhc.uiuc.edu/IMPACT
+ *              http://www.gelato.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal with the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimers.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimers in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the names of the IMPACT Research Group, the University of
+ * Illinois, nor the names of its contributors may be used to endorse
+ * or promote products derived from this Software without specific
+ * prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+ *
+\*****************************************************************************/
+/*****************************************************************************
+ * 
+ * DEFINES COMMON TO Lencode and Lsim
+ *
+ * Author: John Gyllenhaal, Wen-mei Hwu
+ *      Creation Date:  1993
+\*****************************************************************************/
+#ifndef L_ENCODE_INTERFACE_H
+#define L_ENCODE_INTERFACE_H
+
+#include <config.h>
+
+/* eoperand flags */
+#define REGISTER_OPERAND		0x00000001
+#define PREDICATE_OPERAND		0x00000002
+
+/* eop flags */
+/* Other flags defined in s_main.h (make sure they do not conflict)*/
+#define SIM_EXIT_POINT			0x00000001
+#define MCB_ATTR			0x00000002
+#define BRANCH_PREDICTED_TAKEN		0x00000004
+#define BRANCH_PREDICTED_FALLTHRU	0x00000008
+#define START_PACKET			0x00000010
+#define END_PACKET			0x00000020
+#define STATS_ON_ATTR			0x00000040
+#define STATS_OFF_ATTR			0x00000080
+#define NON_TRAPPING			0x00000100
+#define PROMOTED			0x00000200
+#define SPECULATIVE			0x00000400
+#define	PRED_DEF			0x00000800 /* JCG 6/8/95 */
+#define FORCE_SIM_ON			0x00001000
+#define FORCE_SIM_OFF			0x00002000
+#define IMPLICIT_MEMORY_OP		0x00004000
+#define STOP_SIM			0x00008000
+
+/* playdoh flags*/
+#define PLAYDOH_TCHS_V1			0x00000010
+#define PLAYDOH_TCHS_C1			0x00000020
+#define PLAYDOH_TCHS_C2			0x00000040
+#define PLAYDOH_TCHS_C3			0x00000080
+#define PLAYDOH_SCHS_V1			0x00000001
+#define PLAYDOH_SCHS_C1			0x00000002
+#define PLAYDOH_SCHS_C2			0x00000004
+#define PLAYDOH_SCHS_C3			0x00000008
+#define PLAYDOH_PREFETCH		0x00000100
+#endif
+

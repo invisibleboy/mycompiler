@@ -1,0 +1,1373 @@
+\section{md.h File Reference}
+\label{md_8h}\index{md.h@{md.h}}
+{\tt \#include $<$stdio.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{MD\_\-Symbol}
+\item 
+struct \bf{MD\_\-Symbol\_\-Table}
+\item 
+struct \bf{MD}
+\item 
+struct \bf{MD\_\-Section}
+\item 
+struct \bf{MD\_\-Element\_\-Req}
+\item 
+struct \bf{MD\_\-Field\_\-Decl}
+\item 
+struct \bf{MD\_\-Entry}
+\item 
+struct \bf{MD\_\-Block}
+\item 
+struct \bf{MD\_\-Element}
+\item 
+struct \bf{MD\_\-Field}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MD\_\-INT}~1
+\item 
+\#define \bf{MD\_\-DOUBLE}~2
+\item 
+\#define \bf{MD\_\-STRING}~3
+\item 
+\#define \bf{MD\_\-LINK}~4
+\item 
+\#define \bf{MD\_\-BLOCK}~5
+\item 
+\#define \bf{MD\_\-OPTIONAL\_\-ELEMENTS}~-1
+\item 
+\#define \bf{MD\_\-num\_\-sections}(md)~((md) $\rightarrow$ section\_\-table $\rightarrow$ symbol\_\-count)
+\item 
+\#define \bf{MD\_\-find\_\-section}(md, \bf{name})~((\bf{MD\_\-Section} $\ast$)\_\-MD\_\-find\_\-symbol\_\-data((md) $\rightarrow$ section\_\-table, \bf{name}))
+\item 
+\#define \bf{MD\_\-delete\_\-section}(section)
+\item 
+\#define \bf{MD\_\-num\_\-entries}(section)~((section) $\rightarrow$ entry\_\-table $\rightarrow$ symbol\_\-count)
+\item 
+\#define \bf{MD\_\-find\_\-entry}(section, \bf{name})~((\bf{MD\_\-Entry} $\ast$)\_\-MD\_\-find\_\-symbol\_\-data((section) $\rightarrow$ entry\_\-table, \bf{name}))
+\item 
+\#define \bf{MD\_\-delete\_\-entry}(\bf{entry})
+\item 
+\#define \bf{MD\_\-num\_\-field\_\-decls}(section)~((section) $\rightarrow$ field\_\-decl\_\-table $\rightarrow$ symbol\_\-count)
+\item 
+\#define \bf{MD\_\-max\_\-field\_\-index}(section)~((section) $\rightarrow$ max\_\-field\_\-index)
+\item 
+\#define \bf{MD\_\-find\_\-field\_\-decl}(section, \bf{name})
+\item 
+\#define \bf{MD\_\-find\_\-field}(\bf{entry}, field\_\-decl)~((\bf{entry}) $\rightarrow$ field[(field\_\-decl) $\rightarrow$ field\_\-index])
+\item 
+\#define \bf{MD\_\-num\_\-elements}(field)~((field) $\rightarrow$ max\_\-element\_\-index + 1)
+\item 
+\#define \bf{MD\_\-max\_\-element\_\-index}(field)~((field) $\rightarrow$ max\_\-element\_\-index)
+\item 
+\#define \bf{MD\_\-set\_\-int}(field, index, value)~\_\-MD\_\-set\_\-int(field, index, value)
+\item 
+\#define \bf{MD\_\-get\_\-int}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.i)
+\item 
+\#define \bf{MD\_\-set\_\-double}(field, index, value)~\_\-MD\_\-set\_\-double(field, index, value)
+\item 
+\#define \bf{MD\_\-get\_\-double}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.d)
+\item 
+\#define \bf{MD\_\-set\_\-string}(field, index, value)~\_\-MD\_\-set\_\-string(field, index, value)
+\item 
+\#define \bf{MD\_\-get\_\-string}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.s)
+\item 
+\#define \bf{MD\_\-set\_\-block}(field, index, size, ptr)~\_\-MD\_\-set\_\-block(field, index, size, ptr)
+\item 
+\#define \bf{MD\_\-get\_\-block\_\-size}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.b.size)
+\item 
+\#define \bf{MD\_\-get\_\-block\_\-ptr}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.b.ptr)
+\item 
+\#define \bf{MD\_\-set\_\-link}(field, index, value)~\_\-MD\_\-set\_\-link(field, index, value)
+\item 
+\#define \bf{MD\_\-get\_\-link}(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.l)
+\item 
+\#define \bf{MD\_\-set\_\-section\_\-ext}(section, ext)~((section) $\rightarrow$ user\_\-ext = (void $\ast$)(ext))
+\item 
+\#define \bf{MD\_\-get\_\-section\_\-ext}(section)~((section) $\rightarrow$ user\_\-ext)
+\item 
+\#define \bf{MD\_\-set\_\-entry\_\-ext}(\bf{entry}, ext)~((\bf{entry}) $\rightarrow$ user\_\-ext = (void $\ast$)(ext))
+\item 
+\#define \bf{MD\_\-get\_\-entry\_\-ext}(\bf{entry})~((\bf{entry}) $\rightarrow$ user\_\-ext)
+\item 
+\#define \bf{MD\_\-check\_\-section}(out, section)~\_\-MD\_\-check\_\-section(out, section, \char`\"{}MD\_\-check\_\-section\char`\"{})
+\item 
+\#define \bf{MD\_\-check\_\-entry}(out, \bf{entry})~\_\-MD\_\-check\_\-entry(out, \bf{entry}, \char`\"{}MD\_\-check\_\-entry\char`\"{})
+\item 
+\#define \bf{MD\_\-check\_\-field}(out, field)~\_\-MD\_\-check\_\-field(out, field, \char`\"{}MD\_\-check\_\-field\char`\"{})
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \bf{MD\_\-FIELD\_\-TYPE} \{ \bf{MD\_\-REQUIRED\_\-FIELD} =  1, 
+\bf{MD\_\-OPTIONAL\_\-FIELD} =  2
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{MD} $\ast$ \bf{MD\_\-new\_\-md} (char $\ast$\bf{name}, int num\_\-sections)
+\item 
+int \bf{MD\_\-check\_\-md} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{MD\_\-delete\_\-md} (\bf{MD} $\ast$md)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{MD\_\-new\_\-section} (\bf{MD} $\ast$md, char $\ast$\bf{name}, int num\_\-entries, int num\_\-fields)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{MD\_\-first\_\-section} (\bf{MD} $\ast$md)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{MD\_\-last\_\-section} (\bf{MD} $\ast$md)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{MD\_\-next\_\-section} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{MD\_\-prev\_\-section} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{MD\_\-new\_\-field\_\-decl} (\bf{MD\_\-Section} $\ast$section, char $\ast$\bf{name}, \bf{MD\_\-FIELD\_\-TYPE} field\_\-type)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{MD\_\-first\_\-field\_\-decl} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{MD\_\-last\_\-field\_\-decl} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{MD\_\-next\_\-field\_\-decl} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{MD\_\-prev\_\-field\_\-decl} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+void \bf{MD\_\-require\_\-int} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index)
+\item 
+void \bf{MD\_\-require\_\-double} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index)
+\item 
+void \bf{MD\_\-require\_\-string} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index)
+\item 
+void \bf{MD\_\-require\_\-block} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index)
+\item 
+void \bf{MD\_\-require\_\-link} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index, \bf{MD\_\-Section} $\ast$section)
+\item 
+void \bf{MD\_\-require\_\-multi\_\-target\_\-link} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index, int section\_\-array\_\-size, \bf{MD\_\-Section} $\ast$$\ast$section\_\-array)
+\item 
+void \bf{MD\_\-kleene\_\-star\_\-requirement} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int element\_\-index)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{MD\_\-new\_\-entry} (\bf{MD\_\-Section} $\ast$section, char $\ast$\bf{name})
+\item 
+void \bf{MD\_\-rename\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$new\_\-name)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{MD\_\-first\_\-entry} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{MD\_\-last\_\-entry} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{MD\_\-next\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{MD\_\-prev\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{MD\_\-new\_\-field} (\bf{MD\_\-Entry} $\ast$\bf{entry}, \bf{MD\_\-Field\_\-Decl} $\ast$decl, int num\_\-elements)
+\item 
+void \bf{MD\_\-delete\_\-field} (\bf{MD\_\-Field} $\ast$field)
+\item 
+void \bf{MD\_\-delete\_\-field\_\-decl} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+void \bf{MD\_\-delete\_\-element} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+\bf{MD} $\ast$ \bf{MD\_\-read\_\-md} (FILE $\ast$in, char $\ast$\bf{name})
+\item 
+void \bf{MD\_\-write\_\-md} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{MD\_\-print\_\-md} (FILE $\ast$out, \bf{MD} $\ast$md, int page\_\-width)
+\item 
+void \bf{MD\_\-print\_\-md\_\-declarations} (FILE $\ast$out, \bf{MD} $\ast$md, int page\_\-width)
+\item 
+void \bf{MD\_\-print\_\-md\_\-template} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{MD\_\-print\_\-section} (FILE $\ast$out, \bf{MD\_\-Section} $\ast$section, int page\_\-width)
+\item 
+void \bf{MD\_\-print\_\-section\_\-template} (FILE $\ast$out, \bf{MD\_\-Section} $\ast$section)
+\item 
+void \bf{MD\_\-print\_\-field\_\-decl} (FILE $\ast$out, \bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl, int page\_\-width)
+\item 
+void \bf{MD\_\-print\_\-entry} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$\bf{entry}, int page\_\-width)
+\item 
+void \bf{MD\_\-print\_\-entry\_\-template} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+void \bf{MD\_\-delete\_\-symbol} (\bf{MD\_\-Symbol} $\ast$symbol, void($\ast$free\_\-routine)(void $\ast$))
+\item 
+void $\ast$ \bf{\_\-MD\_\-find\_\-symbol\_\-data} (\bf{MD\_\-Symbol\_\-Table} $\ast$table, char $\ast$\bf{name})
+\item 
+int \bf{\_\-MD\_\-num\_\-sections} (\bf{MD} $\ast$md)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{\_\-MD\_\-find\_\-section} (\bf{MD} $\ast$md, char $\ast$\bf{name})
+\item 
+void $\ast$ \bf{\_\-MD\_\-set\_\-section\_\-ext} (\bf{MD\_\-Section} $\ast$section, void $\ast$ext)
+\item 
+void $\ast$ \bf{\_\-MD\_\-get\_\-section\_\-ext} (\bf{MD\_\-Section} $\ast$section)
+\item 
+void \bf{\_\-MD\_\-free\_\-section} (\bf{MD\_\-Section} $\ast$section)
+\item 
+void \bf{\_\-MD\_\-delete\_\-section} (\bf{MD\_\-Section} $\ast$section)
+\item 
+int \bf{\_\-MD\_\-check\_\-section} (FILE $\ast$out, \bf{MD\_\-Section} $\ast$section, char $\ast$caller\_\-name)
+\item 
+int \bf{\_\-MD\_\-num\_\-entries} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{\_\-MD\_\-find\_\-entry} (\bf{MD\_\-Section} $\ast$section, char $\ast$\bf{name})
+\item 
+void $\ast$ \bf{\_\-MD\_\-set\_\-entry\_\-ext} (\bf{MD\_\-Entry} $\ast$\bf{entry}, void $\ast$ext)
+\item 
+void $\ast$ \bf{\_\-MD\_\-get\_\-entry\_\-ext} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+void \bf{\_\-MD\_\-free\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+void \bf{\_\-MD\_\-delete\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+int \bf{\_\-MD\_\-check\_\-entry} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$caller\_\-name)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{\_\-MD\_\-find\_\-field\_\-decl} (\bf{MD\_\-Section} $\ast$section, char $\ast$\bf{name})
+\item 
+void \bf{\_\-MD\_\-free\_\-field\_\-decl} (\bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+int \bf{\_\-MD\_\-num\_\-field\_\-decls} (\bf{MD\_\-Section} $\ast$section)
+\item 
+int \bf{\_\-MD\_\-max\_\-field\_\-index} (\bf{MD\_\-Section} $\ast$section)
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{\_\-MD\_\-find\_\-field} (\bf{MD\_\-Entry} $\ast$\bf{entry}, \bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+int \bf{\_\-MD\_\-check\_\-field} (FILE $\ast$out, \bf{MD\_\-Field} $\ast$field, char $\ast$caller\_\-name)
+\item 
+int \bf{\_\-MD\_\-num\_\-elements} (\bf{MD\_\-Field} $\ast$field)
+\item 
+int \bf{\_\-MD\_\-max\_\-element\_\-index} (\bf{MD\_\-Field} $\ast$field)
+\item 
+void \bf{\_\-MD\_\-set\_\-int} (\bf{MD\_\-Field} $\ast$field, int index, int value)
+\item 
+void \bf{\_\-MD\_\-set\_\-int\_\-type\_\-checking} (\bf{MD\_\-Field} $\ast$field, int index, int value)
+\item 
+int \bf{\_\-MD\_\-get\_\-int} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+void \bf{\_\-MD\_\-set\_\-double} (\bf{MD\_\-Field} $\ast$field, int index, double value)
+\item 
+void \bf{\_\-MD\_\-set\_\-double\_\-type\_\-checking} (\bf{MD\_\-Field} $\ast$field, int index, double value)
+\item 
+double \bf{\_\-MD\_\-get\_\-double} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+void \bf{\_\-MD\_\-set\_\-string} (\bf{MD\_\-Field} $\ast$field, int index, char $\ast$value)
+\item 
+void \bf{\_\-MD\_\-set\_\-string\_\-type\_\-checking} (\bf{MD\_\-Field} $\ast$field, int index, char $\ast$value)
+\item 
+char $\ast$ \bf{\_\-MD\_\-get\_\-string} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+void \bf{\_\-MD\_\-set\_\-block} (\bf{MD\_\-Field} $\ast$field, int index, unsigned int size, void $\ast$ptr)
+\item 
+void \bf{\_\-MD\_\-set\_\-block\_\-type\_\-checking} (\bf{MD\_\-Field} $\ast$field, int index, unsigned int size, void $\ast$ptr)
+\item 
+int \bf{\_\-MD\_\-get\_\-block\_\-size} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+void $\ast$ \bf{\_\-MD\_\-get\_\-block\_\-ptr} (\bf{MD\_\-Field} $\ast$field, int index)
+\item 
+void \bf{\_\-MD\_\-set\_\-link} (\bf{MD\_\-Field} $\ast$field, int index, \bf{MD\_\-Entry} $\ast$value)
+\item 
+void \bf{\_\-MD\_\-set\_\-link\_\-type\_\-checking} (\bf{MD\_\-Field} $\ast$field, int index, \bf{MD\_\-Entry} $\ast$value)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{\_\-MD\_\-get\_\-link} (\bf{MD\_\-Field} $\ast$field, int index)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{md.h@{md.h}!MD_BLOCK@{MD\_\-BLOCK}}
+\index{MD_BLOCK@{MD\_\-BLOCK}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-BLOCK~5}\label{md_8h_d432eb5ac32386d17ee7307ab83c451c}
+
+
+
+
+Definition at line 109 of file md.h.
+
+Referenced by \_\-MD\_\-get\_\-block\_\-ptr(), \_\-MD\_\-get\_\-block\_\-size(), \_\-MD\_\-set\_\-block(), \_\-MD\_\-set\_\-double(), \_\-MD\_\-set\_\-int(), \_\-MD\_\-set\_\-link(), \_\-MD\_\-set\_\-string(), MD\_\-delete\_\-element(), MD\_\-delete\_\-field(), MD\_\-print\_\-entry(), MD\_\-require\_\-block(), and MD\_\-write\_\-md().\index{md.h@{md.h}!MD_check_entry@{MD\_\-check\_\-entry}}
+\index{MD_check_entry@{MD\_\-check\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-check\_\-entry(out, \bf{entry})~\_\-MD\_\-check\_\-entry(out, \bf{entry}, \char`\"{}MD\_\-check\_\-entry\char`\"{})}\label{md_8h_b23d543dfe7d87d59d787e98f4dc99c2}
+
+
+
+
+Definition at line 458 of file md.h.\index{md.h@{md.h}!MD_check_field@{MD\_\-check\_\-field}}
+\index{MD_check_field@{MD\_\-check\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-check\_\-field(out, field)~\_\-MD\_\-check\_\-field(out, field, \char`\"{}MD\_\-check\_\-field\char`\"{})}\label{md_8h_bff3ad7ae0ad8ef33f2577a7b1d97f5e}
+
+
+
+
+Definition at line 460 of file md.h.\index{md.h@{md.h}!MD_check_section@{MD\_\-check\_\-section}}
+\index{MD_check_section@{MD\_\-check\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-check\_\-section(out, section)~\_\-MD\_\-check\_\-section(out, section, \char`\"{}MD\_\-check\_\-section\char`\"{})}\label{md_8h_17bc2b59f9083662c2d1350f3309875d}
+
+
+
+
+Definition at line 456 of file md.h.\index{md.h@{md.h}!MD_delete_entry@{MD\_\-delete\_\-entry}}
+\index{MD_delete_entry@{MD\_\-delete\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-delete\_\-entry(\bf{entry})}\label{md_8h_d90f29f9c1e93c7269b8cd426ef3a563}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(MD_delete_symbol(((MD_Entry *)(entry))->symbol, \
+                              (void (*)(void *))_MD_free_entry))
+\end{verbatim}\end{Code}
+
+
+Definition at line 360 of file md.h.\index{md.h@{md.h}!MD_delete_section@{MD\_\-delete\_\-section}}
+\index{MD_delete_section@{MD\_\-delete\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-delete\_\-section(section)}\label{md_8h_08352a575c1acec7e8daf48cc1f06902}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(MD_delete_symbol(((MD_Section *)(section))->symbol, \
+                              (void (*)(void *))_MD_free_section))
+\end{verbatim}\end{Code}
+
+
+Definition at line 351 of file md.h.\index{md.h@{md.h}!MD_DOUBLE@{MD\_\-DOUBLE}}
+\index{MD_DOUBLE@{MD\_\-DOUBLE}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-DOUBLE~2}\label{md_8h_d613c66d34f25d733291ba6118f1e2cd}
+
+
+
+
+Definition at line 106 of file md.h.
+
+Referenced by \_\-MD\_\-get\_\-double(), \_\-MD\_\-set\_\-double(), MD\_\-print\_\-entry(), MD\_\-require\_\-double(), and MD\_\-write\_\-md().\index{md.h@{md.h}!MD_find_entry@{MD\_\-find\_\-entry}}
+\index{MD_find_entry@{MD\_\-find\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-find\_\-entry(section, \bf{name})~((\bf{MD\_\-Entry} $\ast$)\_\-MD\_\-find\_\-symbol\_\-data((section) $\rightarrow$ entry\_\-table, \bf{name}))}\label{md_8h_ed997dd6e6244f22cfadf1befbd1a630}
+
+
+
+
+Definition at line 357 of file md.h.\index{md.h@{md.h}!MD_find_field@{MD\_\-find\_\-field}}
+\index{MD_find_field@{MD\_\-find\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-find\_\-field(\bf{entry}, field\_\-decl)~((\bf{entry}) $\rightarrow$ field[(field\_\-decl) $\rightarrow$ field\_\-index])}\label{md_8h_1124821854f50740cfaecb6394234b80}
+
+
+
+
+Definition at line 373 of file md.h.\index{md.h@{md.h}!MD_find_field_decl@{MD\_\-find\_\-field\_\-decl}}
+\index{MD_find_field_decl@{MD\_\-find\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-find\_\-field\_\-decl(section, \bf{name})}\label{md_8h_10402535f4e3b94b1e0d75ca22cd9eae}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((MD_Field_Decl *)_MD_find_symbol_data((section)->field_decl_table, \
+                                                 name))
+\end{verbatim}\end{Code}
+
+
+Definition at line 369 of file md.h.\index{md.h@{md.h}!MD_find_section@{MD\_\-find\_\-section}}
+\index{MD_find_section@{MD\_\-find\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-find\_\-section(md, \bf{name})~((\bf{MD\_\-Section} $\ast$)\_\-MD\_\-find\_\-symbol\_\-data((md) $\rightarrow$ section\_\-table, \bf{name}))}\label{md_8h_ea84fd9204301dda7014a2374251db76}
+
+
+
+
+Definition at line 347 of file md.h.\index{md.h@{md.h}!MD_get_block_ptr@{MD\_\-get\_\-block\_\-ptr}}
+\index{MD_get_block_ptr@{MD\_\-get\_\-block\_\-ptr}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-block\_\-ptr(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.b.ptr)}\label{md_8h_b5269d9b285f713cf3e029d1d1c27743}
+
+
+
+
+Definition at line 392 of file md.h.\index{md.h@{md.h}!MD_get_block_size@{MD\_\-get\_\-block\_\-size}}
+\index{MD_get_block_size@{MD\_\-get\_\-block\_\-size}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-block\_\-size(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.b.size)}\label{md_8h_18681562c51f0eebead43729f5285b93}
+
+
+
+
+Definition at line 390 of file md.h.\index{md.h@{md.h}!MD_get_double@{MD\_\-get\_\-double}}
+\index{MD_get_double@{MD\_\-get\_\-double}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-double(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.d)}\label{md_8h_649cf2eb5f9d69a1c2902fbb1718e63e}
+
+
+
+
+Definition at line 383 of file md.h.\index{md.h@{md.h}!MD_get_entry_ext@{MD\_\-get\_\-entry\_\-ext}}
+\index{MD_get_entry_ext@{MD\_\-get\_\-entry\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-entry\_\-ext(\bf{entry})~((\bf{entry}) $\rightarrow$ user\_\-ext)}\label{md_8h_81e16c0e641fcd4961ec220f5d482e8c}
+
+
+
+
+Definition at line 402 of file md.h.\index{md.h@{md.h}!MD_get_int@{MD\_\-get\_\-int}}
+\index{MD_get_int@{MD\_\-get\_\-int}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-int(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.i)}\label{md_8h_4d8e575b183c6a55bec1296f8a890db6}
+
+
+
+
+Definition at line 380 of file md.h.\index{md.h@{md.h}!MD_get_link@{MD\_\-get\_\-link}}
+\index{MD_get_link@{MD\_\-get\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-link(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.l)}\label{md_8h_fd7bc44d273ab835db24cfb8ad5f31a6}
+
+
+
+
+Definition at line 396 of file md.h.\index{md.h@{md.h}!MD_get_section_ext@{MD\_\-get\_\-section\_\-ext}}
+\index{MD_get_section_ext@{MD\_\-get\_\-section\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-section\_\-ext(section)~((section) $\rightarrow$ user\_\-ext)}\label{md_8h_8a7206e5263d2a363630e378dba39803}
+
+
+
+
+Definition at line 399 of file md.h.\index{md.h@{md.h}!MD_get_string@{MD\_\-get\_\-string}}
+\index{MD_get_string@{MD\_\-get\_\-string}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-get\_\-string(field, index)~((field) $\rightarrow$ element[index] $\rightarrow$ value.s)}\label{md_8h_071dc413a821b518ca716a2a4fdb638a}
+
+
+
+
+Definition at line 386 of file md.h.\index{md.h@{md.h}!MD_INT@{MD\_\-INT}}
+\index{MD_INT@{MD\_\-INT}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-INT~1}\label{md_8h_1bae96f31ca512cf27a95ab6f96f4d89}
+
+
+
+
+Definition at line 105 of file md.h.
+
+Referenced by \_\-MD\_\-get\_\-int(), \_\-MD\_\-set\_\-int(), MD\_\-print\_\-entry(), MD\_\-require\_\-int(), and MD\_\-write\_\-md().\index{md.h@{md.h}!MD_LINK@{MD\_\-LINK}}
+\index{MD_LINK@{MD\_\-LINK}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-LINK~4}\label{md_8h_832ab6cc636240c071152b8bd2824ff9}
+
+
+
+
+Definition at line 108 of file md.h.
+
+Referenced by \_\-MD\_\-check\_\-field(), \_\-MD\_\-free\_\-field\_\-decl(), \_\-MD\_\-get\_\-link(), \_\-MD\_\-set\_\-link(), MD\_\-check\_\-setting(), MD\_\-print\_\-entry(), MD\_\-require\_\-link(), MD\_\-require\_\-multi\_\-target\_\-link(), and MD\_\-write\_\-md().\index{md.h@{md.h}!MD_max_element_index@{MD\_\-max\_\-element\_\-index}}
+\index{MD_max_element_index@{MD\_\-max\_\-element\_\-index}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-max\_\-element\_\-index(field)~((field) $\rightarrow$ max\_\-element\_\-index)}\label{md_8h_4cf11644283a4d46fb0651b48c598d2b}
+
+
+
+
+Definition at line 377 of file md.h.\index{md.h@{md.h}!MD_max_field_index@{MD\_\-max\_\-field\_\-index}}
+\index{MD_max_field_index@{MD\_\-max\_\-field\_\-index}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-max\_\-field\_\-index(section)~((section) $\rightarrow$ max\_\-field\_\-index)}\label{md_8h_27b3fe7b97990ee32e688495cd29d7c1}
+
+
+
+
+Definition at line 367 of file md.h.\index{md.h@{md.h}!MD_num_elements@{MD\_\-num\_\-elements}}
+\index{MD_num_elements@{MD\_\-num\_\-elements}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-num\_\-elements(field)~((field) $\rightarrow$ max\_\-element\_\-index + 1)}\label{md_8h_07dccd50803a2853d8d3d13f1b026261}
+
+
+
+
+Definition at line 376 of file md.h.\index{md.h@{md.h}!MD_num_entries@{MD\_\-num\_\-entries}}
+\index{MD_num_entries@{MD\_\-num\_\-entries}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-num\_\-entries(section)~((section) $\rightarrow$ entry\_\-table $\rightarrow$ symbol\_\-count)}\label{md_8h_8147bf28dfbbf6ce27e9ecb06e6806fd}
+
+
+
+
+Definition at line 355 of file md.h.\index{md.h@{md.h}!MD_num_field_decls@{MD\_\-num\_\-field\_\-decls}}
+\index{MD_num_field_decls@{MD\_\-num\_\-field\_\-decls}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-num\_\-field\_\-decls(section)~((section) $\rightarrow$ field\_\-decl\_\-table $\rightarrow$ symbol\_\-count)}\label{md_8h_b405ce465c85d74746867b5e59b9e5b4}
+
+
+
+
+Definition at line 364 of file md.h.\index{md.h@{md.h}!MD_num_sections@{MD\_\-num\_\-sections}}
+\index{MD_num_sections@{MD\_\-num\_\-sections}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-num\_\-sections(md)~((md) $\rightarrow$ section\_\-table $\rightarrow$ symbol\_\-count)}\label{md_8h_48feb292fe2cf27ce730eb62b9d08221}
+
+
+
+
+Definition at line 346 of file md.h.\index{md.h@{md.h}!MD_OPTIONAL_ELEMENTS@{MD\_\-OPTIONAL\_\-ELEMENTS}}
+\index{MD_OPTIONAL_ELEMENTS@{MD\_\-OPTIONAL\_\-ELEMENTS}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-OPTIONAL\_\-ELEMENTS~-1}\label{md_8h_c15a807bd62acbd79af8b6023c59cef9}
+
+
+
+
+Definition at line 119 of file md.h.\index{md.h@{md.h}!MD_set_block@{MD\_\-set\_\-block}}
+\index{MD_set_block@{MD\_\-set\_\-block}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-block(field, index, size, ptr)~\_\-MD\_\-set\_\-block(field, index, size, ptr)}\label{md_8h_30362daccaa98444f1e578c99d7b9c7f}
+
+
+
+
+Definition at line 388 of file md.h.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_set_double@{MD\_\-set\_\-double}}
+\index{MD_set_double@{MD\_\-set\_\-double}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-double(field, index, value)~\_\-MD\_\-set\_\-double(field, index, value)}\label{md_8h_c47e98c68b31487a4b7958ca8be2f337}
+
+
+
+
+Definition at line 382 of file md.h.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_set_entry_ext@{MD\_\-set\_\-entry\_\-ext}}
+\index{MD_set_entry_ext@{MD\_\-set\_\-entry\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-entry\_\-ext(\bf{entry}, ext)~((\bf{entry}) $\rightarrow$ user\_\-ext = (void $\ast$)(ext))}\label{md_8h_12db2a7c7d8e148e52ce59f2cbecdcff}
+
+
+
+
+Definition at line 401 of file md.h.\index{md.h@{md.h}!MD_set_int@{MD\_\-set\_\-int}}
+\index{MD_set_int@{MD\_\-set\_\-int}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-int(field, index, value)~\_\-MD\_\-set\_\-int(field, index, value)}\label{md_8h_d3609a2cbc1a05b0cffb684d3dbbd573}
+
+
+
+
+Definition at line 379 of file md.h.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_set_link@{MD\_\-set\_\-link}}
+\index{MD_set_link@{MD\_\-set\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-link(field, index, value)~\_\-MD\_\-set\_\-link(field, index, value)}\label{md_8h_c1642c81252810b1792fac58dfb79777}
+
+
+
+
+Definition at line 395 of file md.h.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_set_section_ext@{MD\_\-set\_\-section\_\-ext}}
+\index{MD_set_section_ext@{MD\_\-set\_\-section\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-section\_\-ext(section, ext)~((section) $\rightarrow$ user\_\-ext = (void $\ast$)(ext))}\label{md_8h_94d6ecb4c2091939af6de77685791a2f}
+
+
+
+
+Definition at line 398 of file md.h.\index{md.h@{md.h}!MD_set_string@{MD\_\-set\_\-string}}
+\index{MD_set_string@{MD\_\-set\_\-string}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-set\_\-string(field, index, value)~\_\-MD\_\-set\_\-string(field, index, value)}\label{md_8h_ce4e2520515e16050f27d7b86196e82a}
+
+
+
+
+Definition at line 385 of file md.h.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_STRING@{MD\_\-STRING}}
+\index{MD_STRING@{MD\_\-STRING}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MD\_\-STRING~3}\label{md_8h_00aaba1fc61d6e7046112b9477287b70}
+
+
+
+
+Definition at line 107 of file md.h.
+
+Referenced by \_\-MD\_\-get\_\-string(), \_\-MD\_\-set\_\-block(), \_\-MD\_\-set\_\-double(), \_\-MD\_\-set\_\-int(), \_\-MD\_\-set\_\-link(), \_\-MD\_\-set\_\-string(), MD\_\-delete\_\-element(), MD\_\-delete\_\-field(), MD\_\-print\_\-entry(), MD\_\-require\_\-string(), and MD\_\-write\_\-md().
+
+\subsection{Enumeration Type Documentation}
+\index{md.h@{md.h}!MD_FIELD_TYPE@{MD\_\-FIELD\_\-TYPE}}
+\index{MD_FIELD_TYPE@{MD\_\-FIELD\_\-TYPE}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{MD\_\-FIELD\_\-TYPE}}\label{md_8h_f759e9ac9fe5b3112dd641e85448a170}
+
+
+\begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{MD_REQUIRED_FIELD@{MD\_\-REQUIRED\_\-FIELD}!md.h@{md.h}}\index{md.h@{md.h}!MD_REQUIRED_FIELD@{MD\_\-REQUIRED\_\-FIELD}}\item[{\em 
+MD\_\-REQUIRED\_\-FIELD\label{md_8h_f759e9ac9fe5b3112dd641e85448a170072d545f4ce74ce4e3b35bde0a1deeb7}
+}]\index{MD_OPTIONAL_FIELD@{MD\_\-OPTIONAL\_\-FIELD}!md.h@{md.h}}\index{md.h@{md.h}!MD_OPTIONAL_FIELD@{MD\_\-OPTIONAL\_\-FIELD}}\item[{\em 
+MD\_\-OPTIONAL\_\-FIELD\label{md_8h_f759e9ac9fe5b3112dd641e85448a1703a4bc4ce323d1338a2504d2e9874564d}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 112 of file md.h.
+
+\subsection{Function Documentation}
+\index{md.h@{md.h}!_MD_check_entry@{\_\-MD\_\-check\_\-entry}}
+\index{_MD_check_entry@{\_\-MD\_\-check\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-check\_\-entry (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em caller\_\-name})}\label{md_8h_5f7bc3cc69f39e3690dbdae2cd1d6507}
+
+
+
+
+Definition at line 2767 of file md.c.
+
+References \_\-MD\_\-check\_\-field(), entry, MD\_\-Section::field\_\-decl, MD\_\-Section::max\_\-field\_\-index, MD\_\-REQUIRED\_\-FIELD, MD\_\-warn(), MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, and MD\_\-Field\_\-Decl::type.
+
+Referenced by \_\-MD\_\-check\_\-section().\index{md.h@{md.h}!_MD_check_field@{\_\-MD\_\-check\_\-field}}
+\index{_MD_check_field@{\_\-MD\_\-check\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-check\_\-field (FILE $\ast$ {\em out}, \bf{MD\_\-Field} $\ast$ {\em field}, char $\ast$ {\em caller\_\-name})}\label{md_8h_e357e99d4f9c07917d1bc2e4c6859381}
+
+
+
+
+Definition at line 4414 of file md.c.
+
+References MD\_\-Field::decl, MD\_\-Element\_\-Req::desc, MD\_\-Field::element, MD\_\-Field::entry, entry, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element::l, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-LINK, MD\_\-type\_\-name, MD\_\-warn(), MD\_\-Entry::name, MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Entry::section, MD\_\-Element\_\-Req::type, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-check\_\-entry().\index{md.h@{md.h}!_MD_check_section@{\_\-MD\_\-check\_\-section}}
+\index{_MD_check_section@{\_\-MD\_\-check\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-check\_\-section (FILE $\ast$ {\em out}, \bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em caller\_\-name})}\label{md_8h_89a6fbf3ae7039a7f31768a50b21c521}
+
+
+
+
+Definition at line 2412 of file md.c.
+
+References \_\-MD\_\-check\_\-entry(), MD\_\-Symbol::data, entry, MD\_\-Section::entry\_\-table, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-Symbol::next\_\-symbol, and NULL.
+
+Referenced by MD\_\-check\_\-md().\index{md.h@{md.h}!_MD_delete_entry@{\_\-MD\_\-delete\_\-entry}}
+\index{_MD_delete_entry@{\_\-MD\_\-delete\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-delete\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_0acfdbe44ed962417ea0fcbe76f5d1cb}
+
+
+
+
+Definition at line 2745 of file md.c.
+
+References \_\-MD\_\-free\_\-entry(), entry, and MD\_\-delete\_\-symbol().\index{md.h@{md.h}!_MD_delete_section@{\_\-MD\_\-delete\_\-section}}
+\index{_MD_delete_section@{\_\-MD\_\-delete\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-delete\_\-section (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_3db8411a7ee9c1f869c23accc535913d}
+
+
+
+
+Definition at line 2389 of file md.c.
+
+References \_\-MD\_\-free\_\-section(), MD\_\-delete\_\-symbol(), and MD\_\-Section::symbol.\index{md.h@{md.h}!_MD_find_entry@{\_\-MD\_\-find\_\-entry}}
+\index{_MD_find_entry@{\_\-MD\_\-find\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ \_\-MD\_\-find\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em name})}\label{md_8h_60d979ae5e7bf8577536835680cce03f}
+
+
+
+
+Definition at line 2594 of file md.c.
+
+References \_\-MD\_\-find\_\-symbol\_\-data(), and MD\_\-Section::entry\_\-table.\index{md.h@{md.h}!_MD_find_field@{\_\-MD\_\-find\_\-field}}
+\index{_MD_find_field@{\_\-MD\_\-find\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ \_\-MD\_\-find\_\-field (\bf{MD\_\-Entry} $\ast$ {\em entry}, \bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{md_8h_60bb9dccadf40350e60bd27f6ecf7992}
+
+
+
+
+Definition at line 4331 of file md.c.
+
+References entry, MD\_\-Field\_\-Decl::field\_\-index, MD\_\-punt(), MD\_\-Section::name, MD\_\-Field\_\-Decl::name, and MD\_\-Field\_\-Decl::section.\index{md.h@{md.h}!_MD_find_field_decl@{\_\-MD\_\-find\_\-field\_\-decl}}
+\index{_MD_find_field_decl@{\_\-MD\_\-find\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ \_\-MD\_\-find\_\-field\_\-decl (\bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em name})}\label{md_8h_121697787a08e7fbea3f858c99f44bb5}
+
+
+
+
+Definition at line 3440 of file md.c.
+
+References \_\-MD\_\-find\_\-symbol\_\-data(), and MD\_\-Section::field\_\-decl\_\-table.\index{md.h@{md.h}!_MD_find_section@{\_\-MD\_\-find\_\-section}}
+\index{_MD_find_section@{\_\-MD\_\-find\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ \_\-MD\_\-find\_\-section (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name})}\label{md_8h_25ff9b27e19281657cfe776a8fea4fcf}
+
+
+
+
+Definition at line 2245 of file md.c.
+
+References \_\-MD\_\-find\_\-symbol\_\-data(), and MD::section\_\-table.\index{md.h@{md.h}!_MD_find_symbol_data@{\_\-MD\_\-find\_\-symbol\_\-data}}
+\index{_MD_find_symbol_data@{\_\-MD\_\-find\_\-symbol\_\-data}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-find\_\-symbol\_\-data (\bf{MD\_\-Symbol\_\-Table} $\ast$ {\em table}, char $\ast$ {\em name})}\label{md_8h_ed3cb8a2f399ad9ce8d7da6df35f8e81}
+
+
+
+
+Definition at line 650 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::hash, MD\_\-Symbol\_\-Table::hash\_\-mask, MD\_\-Symbol::hash\_\-val, MD\_\-hash\_\-string(), MD\_\-Symbol::name, MD\_\-Symbol::next\_\-hash, and NULL.
+
+Referenced by \_\-MD\_\-find\_\-entry(), \_\-MD\_\-find\_\-field\_\-decl(), and \_\-MD\_\-find\_\-section().\index{md.h@{md.h}!_MD_free_entry@{\_\-MD\_\-free\_\-entry}}
+\index{_MD_free_entry@{\_\-MD\_\-free\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-free\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_95e36d143db61b0f52862cad546ac8c1}
+
+
+
+
+Definition at line 2704 of file md.c.
+
+References entry, L\_\-free(), MD\_\-delete\_\-field(), MD\_\-Entry\_\-pool, and NULL.
+
+Referenced by \_\-MD\_\-delete\_\-entry(), and \_\-MD\_\-free\_\-section().\index{md.h@{md.h}!_MD_free_field_decl@{\_\-MD\_\-free\_\-field\_\-decl}}
+\index{_MD_free_field_decl@{\_\-MD\_\-free\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-free\_\-field\_\-decl (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{md_8h_a84268ad28784171bc614463e1ca7061}
+
+
+
+
+Definition at line 3529 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-Section::field\_\-decl, MD\_\-Field\_\-Decl::field\_\-index, L\_\-free(), MD\_\-Element\_\-Req::link, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-Element\_\-Req\_\-pool, MD\_\-Field\_\-Decl\_\-pool, MD\_\-LINK, MD\_\-Field\_\-Decl::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Field\_\-Decl::section, and MD\_\-Element\_\-Req::type.
+
+Referenced by \_\-MD\_\-free\_\-section(), and MD\_\-delete\_\-field\_\-decl().\index{md.h@{md.h}!_MD_free_section@{\_\-MD\_\-free\_\-section}}
+\index{_MD_free_section@{\_\-MD\_\-free\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-free\_\-section (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_520a6f281d2970d87bc14e775ff06dfc}
+
+
+
+
+Definition at line 2353 of file md.c.
+
+References \_\-MD\_\-free\_\-entry(), \_\-MD\_\-free\_\-field\_\-decl(), MD\_\-Section::entry\_\-table, MD\_\-Section::field\_\-decl, MD\_\-Section::field\_\-decl\_\-table, L\_\-free(), MD\_\-delete\_\-symbol\_\-table(), MD\_\-Section\_\-pool, MD\_\-Section::name, and NULL.
+
+Referenced by \_\-MD\_\-delete\_\-section(), and MD\_\-delete\_\-md().\index{md.h@{md.h}!_MD_get_block_ptr@{\_\-MD\_\-get\_\-block\_\-ptr}}
+\index{_MD_get_block_ptr@{\_\-MD\_\-get\_\-block\_\-ptr}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-get\_\-block\_\-ptr (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_898294195d5f245139109c36c97ca8fb}
+
+
+
+
+Definition at line 5178 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-punt(), MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Block::ptr, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_get_block_size@{\_\-MD\_\-get\_\-block\_\-size}}
+\index{_MD_get_block_size@{\_\-MD\_\-get\_\-block\_\-size}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-get\_\-block\_\-size (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_297b39db0c2c0711d95d59a929f8b7e0}
+
+
+
+
+Definition at line 5145 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-punt(), MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Entry::section, MD\_\-Block::size, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_get_double@{\_\-MD\_\-get\_\-double}}
+\index{_MD_get_double@{\_\-MD\_\-get\_\-double}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \_\-MD\_\-get\_\-double (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_8e92a04e4f935b09887e5d2a19edbdfc}
+
+
+
+
+Definition at line 4901 of file md.c.
+
+References MD\_\-Element::d, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Section::md, MD\_\-DOUBLE, MD\_\-punt(), MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_get_entry_ext@{\_\-MD\_\-get\_\-entry\_\-ext}}
+\index{_MD_get_entry_ext@{\_\-MD\_\-get\_\-entry\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-get\_\-entry\_\-ext (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_2001829b3be52003a3b15a88869247e2}
+
+
+
+
+Definition at line 2690 of file md.c.
+
+References entry.\index{md.h@{md.h}!_MD_get_int@{\_\-MD\_\-get\_\-int}}
+\index{_MD_get_int@{\_\-MD\_\-get\_\-int}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-get\_\-int (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_529416a7ce86534b43b997b3b95f18b6}
+
+
+
+
+Definition at line 4789 of file md.c.
+
+References MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Element::i, MD\_\-Section::md, MD\_\-INT, MD\_\-punt(), MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_get_link@{\_\-MD\_\-get\_\-link}}
+\index{_MD_get_link@{\_\-MD\_\-get\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ \_\-MD\_\-get\_\-link (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_5a91daf1e0a99ee2f0ba4155360689d1}
+
+
+
+
+Definition at line 5300 of file md.c.
+
+References MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Element::l, MD\_\-Section::md, MD\_\-LINK, MD\_\-punt(), MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_get_section_ext@{\_\-MD\_\-get\_\-section\_\-ext}}
+\index{_MD_get_section_ext@{\_\-MD\_\-get\_\-section\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-get\_\-section\_\-ext (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_72ad4026d2364185ce238f2bee2a62a5}
+
+
+
+
+Definition at line 2339 of file md.c.
+
+References MD\_\-Section::user\_\-ext.\index{md.h@{md.h}!_MD_get_string@{\_\-MD\_\-get\_\-string}}
+\index{_MD_get_string@{\_\-MD\_\-get\_\-string}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \_\-MD\_\-get\_\-string (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_74fa33246115a2b9e727b11d2783feb2}
+
+
+
+
+Definition at line 5014 of file md.c.
+
+References MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Section::md, MD\_\-punt(), MD\_\-STRING, MD\_\-type\_\-name, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!_MD_max_element_index@{\_\-MD\_\-max\_\-element\_\-index}}
+\index{_MD_max_element_index@{\_\-MD\_\-max\_\-element\_\-index}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-max\_\-element\_\-index (\bf{MD\_\-Field} $\ast$ {\em field})}\label{md_8h_a9c7f86c59d6fb77e8822c00293520ea}
+
+
+
+
+Definition at line 4690 of file md.c.
+
+References MD\_\-Field::max\_\-element\_\-index.\index{md.h@{md.h}!_MD_max_field_index@{\_\-MD\_\-max\_\-field\_\-index}}
+\index{_MD_max_field_index@{\_\-MD\_\-max\_\-field\_\-index}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-max\_\-field\_\-index (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_4e2d0c00831d31248181c8fc6fbc0ed9}
+
+
+
+
+Definition at line 3427 of file md.c.
+
+References MD\_\-Section::max\_\-field\_\-index.\index{md.h@{md.h}!_MD_num_elements@{\_\-MD\_\-num\_\-elements}}
+\index{_MD_num_elements@{\_\-MD\_\-num\_\-elements}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-num\_\-elements (\bf{MD\_\-Field} $\ast$ {\em field})}\label{md_8h_7c591f0f380fc4ed36172e5c7899d831}
+
+
+
+
+Definition at line 4675 of file md.c.
+
+References MD\_\-Field::max\_\-element\_\-index.\index{md.h@{md.h}!_MD_num_entries@{\_\-MD\_\-num\_\-entries}}
+\index{_MD_num_entries@{\_\-MD\_\-num\_\-entries}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-num\_\-entries (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_53bb3a6d3dc32c0b516ce53f754e9883}
+
+
+
+
+Definition at line 2581 of file md.c.
+
+References MD\_\-Section::entry\_\-table, and MD\_\-Symbol\_\-Table::symbol\_\-count.\index{md.h@{md.h}!_MD_num_field_decls@{\_\-MD\_\-num\_\-field\_\-decls}}
+\index{_MD_num_field_decls@{\_\-MD\_\-num\_\-field\_\-decls}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-num\_\-field\_\-decls (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_d6c49bb99aa6ccf2592fd5d82ca02f73}
+
+
+
+
+Definition at line 3414 of file md.c.
+
+References MD\_\-Section::field\_\-decl\_\-table, and MD\_\-Symbol\_\-Table::symbol\_\-count.\index{md.h@{md.h}!_MD_num_sections@{\_\-MD\_\-num\_\-sections}}
+\index{_MD_num_sections@{\_\-MD\_\-num\_\-sections}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \_\-MD\_\-num\_\-sections (\bf{MD} $\ast$ {\em md})}\label{md_8h_46121d9a23458a3803dc0bcb64ef2197}
+
+
+
+
+Definition at line 2232 of file md.c.
+
+References MD::section\_\-table, and MD\_\-Symbol\_\-Table::symbol\_\-count.\index{md.h@{md.h}!_MD_set_block@{\_\-MD\_\-set\_\-block}}
+\index{_MD_set_block@{\_\-MD\_\-set\_\-block}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-block (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, unsigned int {\em size}, void $\ast$ {\em ptr})}\label{md_8h_b820bf467a714a58efebf2bc8daeab0c}
+
+
+
+
+Definition at line 5044 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, MD\_\-Element::element\_\-index, MD\_\-Field::entry, MD\_\-Element::field, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Block::size, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-set\_\-block\_\-type\_\-checking().\index{md.h@{md.h}!_MD_set_block_type_checking@{\_\-MD\_\-set\_\-block\_\-type\_\-checking}}
+\index{_MD_set_block_type_checking@{\_\-MD\_\-set\_\-block\_\-type\_\-checking}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-block\_\-type\_\-checking (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, unsigned int {\em size}, void $\ast$ {\em ptr})}\label{md_8h_72fc988aad2171bf077dbd6fd5c46233}
+
+
+
+
+Definition at line 5124 of file md.c.
+
+References \_\-MD\_\-set\_\-block(), and MD\_\-check\_\-setting().\index{md.h@{md.h}!_MD_set_double@{\_\-MD\_\-set\_\-double}}
+\index{_MD_set_double@{\_\-MD\_\-set\_\-double}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-double (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, double {\em value})}\label{md_8h_00ed6c7ae245360476f3bdff84af5e4a}
+
+
+
+
+Definition at line 4818 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Element::d, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, MD\_\-Element::element\_\-index, MD\_\-Field::entry, MD\_\-Element::field, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-DOUBLE, MD\_\-Element\_\-pool, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-set\_\-double\_\-type\_\-checking().\index{md.h@{md.h}!_MD_set_double_type_checking@{\_\-MD\_\-set\_\-double\_\-type\_\-checking}}
+\index{_MD_set_double_type_checking@{\_\-MD\_\-set\_\-double\_\-type\_\-checking}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-double\_\-type\_\-checking (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, double {\em value})}\label{md_8h_52b524532a8c1924943ca7e6108e35bc}
+
+
+
+
+Definition at line 4881 of file md.c.
+
+References \_\-MD\_\-set\_\-double(), and MD\_\-check\_\-setting().\index{md.h@{md.h}!_MD_set_entry_ext@{\_\-MD\_\-set\_\-entry\_\-ext}}
+\index{_MD_set_entry_ext@{\_\-MD\_\-set\_\-entry\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-set\_\-entry\_\-ext (\bf{MD\_\-Entry} $\ast$ {\em entry}, void $\ast$ {\em ext})}\label{md_8h_2aa83a9864c4b791e5724a9d343f3e1d}
+
+
+
+
+Definition at line 2675 of file md.c.
+
+References entry.\index{md.h@{md.h}!_MD_set_int@{\_\-MD\_\-set\_\-int}}
+\index{_MD_set_int@{\_\-MD\_\-set\_\-int}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-int (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, int {\em value})}\label{md_8h_78638c962f83ab4e8c35c2aa92d23a1f}
+
+
+
+
+Definition at line 4705 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, MD\_\-Element::element\_\-index, MD\_\-Field::entry, MD\_\-Element::field, MD\_\-Element::i, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-INT, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-set\_\-int\_\-type\_\-checking().\index{md.h@{md.h}!_MD_set_int_type_checking@{\_\-MD\_\-set\_\-int\_\-type\_\-checking}}
+\index{_MD_set_int_type_checking@{\_\-MD\_\-set\_\-int\_\-type\_\-checking}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-int\_\-type\_\-checking (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, int {\em value})}\label{md_8h_0766b9d66dabf361dc6964439f5b47b7}
+
+
+
+
+Definition at line 4769 of file md.c.
+
+References \_\-MD\_\-set\_\-int(), and MD\_\-check\_\-setting().\index{md.h@{md.h}!_MD_set_link@{\_\-MD\_\-set\_\-link}}
+\index{_MD_set_link@{\_\-MD\_\-set\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-link (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, \bf{MD\_\-Entry} $\ast$ {\em value})}\label{md_8h_313759f9d424ac4215a0ae45b06a4fa6}
+
+
+
+
+Definition at line 5208 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, MD\_\-Element::element\_\-index, MD\_\-Field::entry, MD\_\-Element::field, MD\_\-Element::l, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-LINK, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-set\_\-link\_\-type\_\-checking().\index{md.h@{md.h}!_MD_set_link_type_checking@{\_\-MD\_\-set\_\-link\_\-type\_\-checking}}
+\index{_MD_set_link_type_checking@{\_\-MD\_\-set\_\-link\_\-type\_\-checking}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-link\_\-type\_\-checking (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, \bf{MD\_\-Entry} $\ast$ {\em value})}\label{md_8h_70b4137a6c4c120aeaab956c4eba9788}
+
+
+
+
+Definition at line 5280 of file md.c.
+
+References \_\-MD\_\-set\_\-link(), and MD\_\-check\_\-setting().\index{md.h@{md.h}!_MD_set_section_ext@{\_\-MD\_\-set\_\-section\_\-ext}}
+\index{_MD_set_section_ext@{\_\-MD\_\-set\_\-section\_\-ext}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ \_\-MD\_\-set\_\-section\_\-ext (\bf{MD\_\-Section} $\ast$ {\em section}, void $\ast$ {\em ext})}\label{md_8h_c741671ef8a14e97c76a08ae4aaea7a6}
+
+
+
+
+Definition at line 2324 of file md.c.
+
+References MD\_\-Section::user\_\-ext.\index{md.h@{md.h}!_MD_set_string@{\_\-MD\_\-set\_\-string}}
+\index{_MD_set_string@{\_\-MD\_\-set\_\-string}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-string (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, char $\ast$ {\em value})}\label{md_8h_58dfee0212f8877f158eefeddd2490fd}
+
+
+
+
+Definition at line 4931 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, MD\_\-Element::element\_\-index, MD\_\-Field::entry, MD\_\-Element::field, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-strdup(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-set\_\-string\_\-type\_\-checking().\index{md.h@{md.h}!_MD_set_string_type_checking@{\_\-MD\_\-set\_\-string\_\-type\_\-checking}}
+\index{_MD_set_string_type_checking@{\_\-MD\_\-set\_\-string\_\-type\_\-checking}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-MD\_\-set\_\-string\_\-type\_\-checking (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index}, char $\ast$ {\em value})}\label{md_8h_13db3b075bd2cebd2d5bac2f3ad51216}
+
+
+
+
+Definition at line 4994 of file md.c.
+
+References \_\-MD\_\-set\_\-string(), and MD\_\-check\_\-setting().\index{md.h@{md.h}!MD_check_md@{MD\_\-check\_\-md}}
+\index{MD_check_md@{MD\_\-check\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int MD\_\-check\_\-md (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{md_8h_c8488b1c9a90e9b52187a89338183b2c}
+
+
+
+
+Definition at line 888 of file md.c.
+
+References \_\-MD\_\-check\_\-section(), MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-Symbol::next\_\-symbol, NULL, and MD::section\_\-table.\index{md.h@{md.h}!MD_delete_element@{MD\_\-delete\_\-element}}
+\index{MD_delete_element@{MD\_\-delete\_\-element}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-delete\_\-element (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em index})}\label{md_8h_323c95e323e8e32f489e998a83f87c53}
+
+
+
+
+Definition at line 5326 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::element, L\_\-free(), MD\_\-Field::max\_\-element\_\-index, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-STRING, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Element::type, and MD\_\-Element::value.\index{md.h@{md.h}!MD_delete_field@{MD\_\-delete\_\-field}}
+\index{MD_delete_field@{MD\_\-delete\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-delete\_\-field (\bf{MD\_\-Field} $\ast$ {\em field})}\label{md_8h_a6e7b63f7fd6d15327aff3b6e0c6ff61}
+
+
+
+
+Definition at line 4353 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Field::element, L\_\-free(), MD\_\-Field::max\_\-element\_\-index, MD\_\-BLOCK, MD\_\-Element\_\-pool, MD\_\-STRING, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by \_\-MD\_\-free\_\-entry(), and MD\_\-delete\_\-field\_\-decl().\index{md.h@{md.h}!MD_delete_field_decl@{MD\_\-delete\_\-field\_\-decl}}
+\index{MD_delete_field_decl@{MD\_\-delete\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-delete\_\-field\_\-decl (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{md_8h_76528f257b1781ee2ed2d2d7ebdae9b0}
+
+
+
+
+Definition at line 3578 of file md.c.
+
+References \_\-MD\_\-free\_\-field\_\-decl(), MD\_\-Symbol::data, entry, MD\_\-Section::entry\_\-table, MD\_\-Field\_\-Decl::field\_\-index, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-delete\_\-field(), MD\_\-delete\_\-symbol(), MD\_\-Symbol::next\_\-symbol, NULL, MD\_\-Field\_\-Decl::section, and MD\_\-Field\_\-Decl::symbol.\index{md.h@{md.h}!MD_delete_md@{MD\_\-delete\_\-md}}
+\index{MD_delete_md@{MD\_\-delete\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-delete\_\-md (\bf{MD} $\ast$ {\em md})}\label{md_8h_99c47f09ca8903d26efed1efe24e352e}
+
+
+
+
+Definition at line 826 of file md.c.
+
+References \_\-MD\_\-free\_\-section(), \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::free, L\_\-free(), L\_\-free\_\-alloc\_\-pool(), MD\_\-delete\_\-symbol\_\-table(), MD\_\-Element\_\-pool, MD\_\-Element\_\-Req\_\-pool, MD\_\-Entry\_\-pool, MD\_\-Field\_\-Decl\_\-pool, MD\_\-Field\_\-pool, MD\_\-pool, MD\_\-Section\_\-pool, MD\_\-Symbol\_\-pool, MD\_\-Symbol\_\-Table\_\-pool, MD::name, NULL, and MD::section\_\-table.\index{md.h@{md.h}!MD_delete_symbol@{MD\_\-delete\_\-symbol}}
+\index{MD_delete_symbol@{MD\_\-delete\_\-symbol}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-delete\_\-symbol (\bf{MD\_\-Symbol} $\ast$ {\em symbol}, void($\ast$)(void $\ast$) {\em free\_\-routine})}\label{md_8h_90ee89ec501eb28072b0766dec0dd5fc}
+
+
+
+
+Definition at line 677 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::hash, MD\_\-Symbol\_\-Table::hash\_\-mask, MD\_\-Symbol::hash\_\-val, MD\_\-Symbol\_\-Table::head\_\-symbol, L\_\-free(), MD\_\-Symbol\_\-pool, MD\_\-Symbol::next\_\-hash, MD\_\-Symbol::next\_\-symbol, NULL, MD\_\-Symbol::prev\_\-hash, MD\_\-Symbol::prev\_\-symbol, MD\_\-Symbol\_\-Table::symbol\_\-count, MD\_\-Symbol::table, and MD\_\-Symbol\_\-Table::tail\_\-symbol.
+
+Referenced by \_\-MD\_\-delete\_\-entry(), \_\-MD\_\-delete\_\-section(), and MD\_\-delete\_\-field\_\-decl().\index{md.h@{md.h}!MD_first_entry@{MD\_\-first\_\-entry}}
+\index{MD_first_entry@{MD\_\-first\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ MD\_\-first\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_665a6d3a42e627dd69abb473cdc4aade}
+
+
+
+
+Definition at line 2605 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Section::entry\_\-table, MD\_\-Symbol\_\-Table::head\_\-symbol, and NULL.
+
+Referenced by MD\_\-print\_\-md\_\-declarations().\index{md.h@{md.h}!MD_first_field_decl@{MD\_\-first\_\-field\_\-decl}}
+\index{MD_first_field_decl@{MD\_\-first\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ MD\_\-first\_\-field\_\-decl (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_ec8db6e1a71d3ca153e81e270872e8a4}
+
+
+
+
+Definition at line 3452 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Section::field\_\-decl\_\-table, MD\_\-Symbol\_\-Table::head\_\-symbol, and NULL.\index{md.h@{md.h}!MD_first_section@{MD\_\-first\_\-section}}
+\index{MD_first_section@{MD\_\-first\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ MD\_\-first\_\-section (\bf{MD} $\ast$ {\em md})}\label{md_8h_80898363bd87b2073facc7280db90304}
+
+
+
+
+Definition at line 2255 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::head\_\-symbol, NULL, and MD::section\_\-table.
+
+Referenced by MD\_\-print\_\-md\_\-declarations().\index{md.h@{md.h}!MD_kleene_star_requirement@{MD\_\-kleene\_\-star\_\-requirement}}
+\index{MD_kleene_star_requirement@{MD\_\-kleene\_\-star\_\-requirement}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-kleene\_\-star\_\-requirement (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index})}\label{md_8h_b337c713035473e4b06c4125538f2a99}
+
+
+
+
+Definition at line 4149 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-Element\_\-Req::kleene\_\-starred, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-Section::md, MD\_\-concat\_\-strings(), MD\_\-punt(), MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Element\_\-Req::require\_\-index, and MD\_\-Field\_\-Decl::section.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_last_entry@{MD\_\-last\_\-entry}}
+\index{MD_last_entry@{MD\_\-last\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ MD\_\-last\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_15e07021cd847b69992db2c5f4bc0f4e}
+
+
+
+
+Definition at line 2622 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Section::entry\_\-table, NULL, and MD\_\-Symbol\_\-Table::tail\_\-symbol.\index{md.h@{md.h}!MD_last_field_decl@{MD\_\-last\_\-field\_\-decl}}
+\index{MD_last_field_decl@{MD\_\-last\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ MD\_\-last\_\-field\_\-decl (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_16c0da1adb82de9cb915f918f89298e0}
+
+
+
+
+Definition at line 3469 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Section::field\_\-decl\_\-table, NULL, and MD\_\-Symbol\_\-Table::tail\_\-symbol.\index{md.h@{md.h}!MD_last_section@{MD\_\-last\_\-section}}
+\index{MD_last_section@{MD\_\-last\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ MD\_\-last\_\-section (\bf{MD} $\ast$ {\em md})}\label{md_8h_67bb9c0b436d73924f512e5399865d94}
+
+
+
+
+Definition at line 2271 of file md.c.
+
+References MD\_\-Symbol::data, NULL, MD::section\_\-table, and MD\_\-Symbol\_\-Table::tail\_\-symbol.\index{md.h@{md.h}!MD_new_entry@{MD\_\-new\_\-entry}}
+\index{MD_new_entry@{MD\_\-new\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ MD\_\-new\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em name})}\label{md_8h_9f8fe13898aae1fcebba90fa026a3318}
+
+
+
+
+Definition at line 2499 of file md.c.
+
+References entry, MD\_\-Section::entry\_\-table, MD\_\-Section::field\_\-array\_\-size, L\_\-alloc(), MD\_\-Section::md, MD\_\-add\_\-symbol(), MD\_\-Entry\_\-pool, MD\_\-punt(), MD\_\-strdup(), and NULL.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_new_field@{MD\_\-new\_\-field}}
+\index{MD_new_field@{MD\_\-new\_\-field}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ MD\_\-new\_\-field (\bf{MD\_\-Entry} $\ast$ {\em entry}, \bf{MD\_\-Field\_\-Decl} $\ast$ {\em decl}, int {\em num\_\-elements})}\label{md_8h_fbc882977f12979165e7d5903d2272be}
+
+
+
+
+Definition at line 4220 of file md.c.
+
+References MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::element\_\-array\_\-size, entry, MD\_\-Field::entry, MD\_\-Field\_\-Decl::field\_\-index, L\_\-alloc(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-pool, MD\_\-punt(), MD\_\-resize\_\-element\_\-array(), MD\_\-Field\_\-Decl::name, and NULL.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_new_field_decl@{MD\_\-new\_\-field\_\-decl}}
+\index{MD_new_field_decl@{MD\_\-new\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ MD\_\-new\_\-field\_\-decl (\bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em name}, \bf{MD\_\-FIELD\_\-TYPE} {\em field\_\-type})}\label{md_8h_dbb60e2a637334eb1c028ae19d8fd7a6}
+
+
+
+
+Definition at line 3240 of file md.c.
+
+References MD\_\-Section::field\_\-array\_\-size, MD\_\-Section::field\_\-decl, MD\_\-Section::field\_\-decl\_\-table, MD\_\-Field\_\-Decl::field\_\-index, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, L\_\-alloc(), MD\_\-Section::max\_\-field\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-add\_\-symbol(), MD\_\-Field\_\-Decl\_\-pool, MD\_\-resize\_\-field\_\-arrays(), MD\_\-strdup(), MD\_\-Field\_\-Decl::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Field\_\-Decl::require\_\-array\_\-size, MD\_\-Field\_\-Decl::section, MD\_\-Field\_\-Decl::symbol, and MD\_\-Field\_\-Decl::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_new_md@{MD\_\-new\_\-md}}
+\index{MD_new_md@{MD\_\-new\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD}$\ast$ MD\_\-new\_\-md (char $\ast$ {\em name}, int {\em num\_\-sections})}\label{md_8h_2074850b98f8fb845094a223994c8e4d}
+
+
+
+
+Definition at line 772 of file md.c.
+
+References L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), MD\_\-Element\_\-pool, MD\_\-Element\_\-Req\_\-pool, MD\_\-Entry\_\-pool, MD\_\-Field\_\-Decl\_\-pool, MD\_\-Field\_\-pool, MD\_\-new\_\-symbol\_\-table(), MD\_\-pool, MD\_\-punt(), MD\_\-Section\_\-pool, MD\_\-strdup(), MD\_\-Symbol\_\-pool, MD\_\-Symbol\_\-Table\_\-pool, MD::name, NULL, and MD::section\_\-table.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_new_section@{MD\_\-new\_\-section}}
+\index{MD_new_section@{MD\_\-new\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ MD\_\-new\_\-section (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name}, int {\em num\_\-entries}, int {\em num\_\-fields})}\label{md_8h_21a0861671d703189c6506f9583453a0}
+
+
+
+
+Definition at line 2166 of file md.c.
+
+References MD\_\-Section::entry\_\-table, MD\_\-Section::field\_\-array\_\-size, MD\_\-Section::field\_\-decl, MD\_\-Section::field\_\-decl\_\-table, L\_\-alloc(), MD\_\-Section::max\_\-field\_\-index, MD\_\-Section::md, MD\_\-add\_\-symbol(), MD\_\-concat\_\-strings(), MD\_\-new\_\-symbol\_\-table(), MD\_\-resize\_\-field\_\-arrays(), MD\_\-Section\_\-pool, MD\_\-strdup(), MD\_\-Section::name, NULL, MD::section\_\-table, MD\_\-Section::symbol, and MD\_\-Section::user\_\-ext.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_next_entry@{MD\_\-next\_\-entry}}
+\index{MD_next_entry@{MD\_\-next\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ MD\_\-next\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_f91910c190e1e376321633ee24e235c0}
+
+
+
+
+Definition at line 2639 of file md.c.
+
+References MD\_\-Symbol::data, entry, and NULL.
+
+Referenced by MD\_\-print\_\-md\_\-declarations().\index{md.h@{md.h}!MD_next_field_decl@{MD\_\-next\_\-field\_\-decl}}
+\index{MD_next_field_decl@{MD\_\-next\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ MD\_\-next\_\-field\_\-decl (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{md_8h_a1591f954c0b8b00c6a22356c02024ff}
+
+
+
+
+Definition at line 3486 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol::next\_\-symbol, NULL, and MD\_\-Field\_\-Decl::symbol.\index{md.h@{md.h}!MD_next_section@{MD\_\-next\_\-section}}
+\index{MD_next_section@{MD\_\-next\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ MD\_\-next\_\-section (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_e663f86a14d893405f3f150ba80ba952}
+
+
+
+
+Definition at line 2288 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol::next\_\-symbol, NULL, and MD\_\-Section::symbol.
+
+Referenced by MD\_\-print\_\-md\_\-declarations().\index{md.h@{md.h}!MD_prev_entry@{MD\_\-prev\_\-entry}}
+\index{MD_prev_entry@{MD\_\-prev\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ MD\_\-prev\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_17c27e55e9e4df9522f5c06ba887c978}
+
+
+
+
+Definition at line 2656 of file md.c.
+
+References MD\_\-Symbol::data, entry, and NULL.\index{md.h@{md.h}!MD_prev_field_decl@{MD\_\-prev\_\-field\_\-decl}}
+\index{MD_prev_field_decl@{MD\_\-prev\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ MD\_\-prev\_\-field\_\-decl (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{md_8h_b410b1bc9335083a48061a2eb1b92eab}
+
+
+
+
+Definition at line 3503 of file md.c.
+
+References MD\_\-Symbol::data, NULL, MD\_\-Symbol::prev\_\-symbol, and MD\_\-Field\_\-Decl::symbol.\index{md.h@{md.h}!MD_prev_section@{MD\_\-prev\_\-section}}
+\index{MD_prev_section@{MD\_\-prev\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ MD\_\-prev\_\-section (\bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_63f1cd43f3bfeb9a85ccbfeeebdd5b04}
+
+
+
+
+Definition at line 2305 of file md.c.
+
+References MD\_\-Symbol::data, NULL, MD\_\-Symbol::prev\_\-symbol, and MD\_\-Section::symbol.\index{md.h@{md.h}!MD_print_entry@{MD\_\-print\_\-entry}}
+\index{MD_print_entry@{MD\_\-print\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-entry (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em entry}, int {\em page\_\-width})}\label{md_8h_abcdd59628e0ae0a22502255751bdc72}
+
+
+
+
+Definition at line 2848 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Element::d, MD\_\-Symbol::data, MD\_\-Field::element, entry, MD\_\-Section::field\_\-decl\_\-table, MD\_\-Field\_\-Decl::field\_\-index, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-Element::i, MD\_\-Element::l, MD\_\-Field::max\_\-element\_\-index, MD\_\-BLOCK, MD\_\-DOUBLE, MD\_\-INT, MD\_\-legal\_\-ident(), MD\_\-LINK, MD\_\-punt(), MD\_\-STRING, MD\_\-Entry::name, MD\_\-Field\_\-Decl::name, MD\_\-Symbol::next\_\-symbol, NULL, MD\_\-Block::ptr, MD\_\-Element::s, MD\_\-Block::size, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by MD\_\-print\_\-section().\index{md.h@{md.h}!MD_print_entry_template@{MD\_\-print\_\-entry\_\-template}}
+\index{MD_print_entry_template@{MD\_\-print\_\-entry\_\-template}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-entry\_\-template (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em entry})}\label{md_8h_fa54d4b65e66f3155ce7a585a76e7244}
+
+
+
+
+Definition at line 3190 of file md.c.
+
+References entry, and MD\_\-legal\_\-ident().
+
+Referenced by MD\_\-print\_\-section\_\-template().\index{md.h@{md.h}!MD_print_field_decl@{MD\_\-print\_\-field\_\-decl}}
+\index{MD_print_field_decl@{MD\_\-print\_\-field\_\-decl}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-field\_\-decl (FILE $\ast$ {\em out}, \bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em page\_\-width})}\label{md_8h_da54c72928268acad4526ab846aa837d}
+
+
+
+
+Definition at line 3620 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-Section::md, MD\_\-OPTIONAL\_\-FIELD, MD\_\-punt(), MD\_\-REQUIRED\_\-FIELD, MD\_\-Field\_\-Decl::name, MD\_\-Field\_\-Decl::require, MD\_\-Field\_\-Decl::section, and MD\_\-Field\_\-Decl::type.
+
+Referenced by MD\_\-print\_\-section().\index{md.h@{md.h}!MD_print_md@{MD\_\-print\_\-md}}
+\index{MD_print_md@{MD\_\-print\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-md (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md}, int {\em page\_\-width})}\label{md_8h_a9df1e553926805d90c54daf8439c069}
+
+
+
+
+Definition at line 1985 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-print\_\-section(), MD::name, MD\_\-Symbol::next\_\-symbol, NULL, and MD::section\_\-table.\index{md.h@{md.h}!MD_print_md_declarations@{MD\_\-print\_\-md\_\-declarations}}
+\index{MD_print_md_declarations@{MD\_\-print\_\-md\_\-declarations}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-md\_\-declarations (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md}, int {\em page\_\-width})}\label{md_8h_f8bca4aa4b831162fb2d76ba4a86d6aa}
+
+
+
+
+Definition at line 2024 of file md.c.
+
+References entry, MD\_\-first\_\-entry(), MD\_\-first\_\-section(), MD\_\-legal\_\-ident(), MD\_\-next\_\-entry(), MD\_\-next\_\-section(), MD\_\-Entry::name, MD\_\-Section::name, MD::name, and NULL.\index{md.h@{md.h}!MD_print_md_template@{MD\_\-print\_\-md\_\-template}}
+\index{MD_print_md_template@{MD\_\-print\_\-md\_\-template}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-md\_\-template (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{md_8h_e43e8860ec5bd7831ec8dcbcd9b23cab}
+
+
+
+
+Definition at line 2127 of file md.c.
+
+References MD\_\-Symbol::data, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-print\_\-section\_\-template(), MD::name, MD\_\-Symbol::next\_\-symbol, NULL, and MD::section\_\-table.\index{md.h@{md.h}!MD_print_section@{MD\_\-print\_\-section}}
+\index{MD_print_section@{MD\_\-print\_\-section}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-section (FILE $\ast$ {\em out}, \bf{MD\_\-Section} $\ast$ {\em section}, int {\em page\_\-width})}\label{md_8h_217d18bf9ce0a2e4033baeea403c5943}
+
+
+
+
+Definition at line 2439 of file md.c.
+
+References MD\_\-Symbol::data, entry, MD\_\-Section::entry\_\-table, MD\_\-Section::field\_\-decl\_\-table, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-print\_\-entry(), MD\_\-print\_\-field\_\-decl(), MD\_\-Section::name, MD\_\-Symbol::next\_\-symbol, and NULL.
+
+Referenced by MD\_\-print\_\-md().\index{md.h@{md.h}!MD_print_section_template@{MD\_\-print\_\-section\_\-template}}
+\index{MD_print_section_template@{MD\_\-print\_\-section\_\-template}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-print\_\-section\_\-template (FILE $\ast$ {\em out}, \bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_5f1363196bcb1701bd18fbceee1495d7}
+
+
+
+
+Definition at line 2474 of file md.c.
+
+References MD\_\-Symbol::data, entry, MD\_\-Section::entry\_\-table, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-print\_\-entry\_\-template(), MD\_\-Section::name, MD\_\-Symbol::next\_\-symbol, and NULL.
+
+Referenced by MD\_\-print\_\-md\_\-template().\index{md.h@{md.h}!MD_read_md@{MD\_\-read\_\-md}}
+\index{MD_read_md@{MD\_\-read\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD}$\ast$ MD\_\-read\_\-md (FILE $\ast$ {\em in}, char $\ast$ {\em name})}\label{md_8h_0574c5322b5fd565ffc5adfc2e6e8614}
+
+
+
+
+Definition at line 1251 of file md.c.
+
+References MD\_\-Buf::buf, entry, L\_\-create\_\-alloc\_\-pool(), L\_\-free\_\-alloc\_\-pool(), MD\_\-Buf\_\-pool, MD\_\-delete\_\-buf(), MD\_\-kleene\_\-star\_\-requirement(), MD\_\-new\_\-buf(), MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-new\_\-md(), MD\_\-new\_\-section(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-punt(), MD\_\-read\_\-block(), MD\_\-read\_\-consume\_\-comments(), MD\_\-read\_\-double(), MD\_\-read\_\-int(), MD\_\-read\_\-nl(), MD\_\-read\_\-sp(), MD\_\-read\_\-string(), MD\_\-require\_\-block(), MD\_\-require\_\-double(), MD\_\-require\_\-int(), MD\_\-require\_\-multi\_\-target\_\-link(), MD\_\-require\_\-string(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-block, MD\_\-set\_\-double, MD\_\-set\_\-int, MD\_\-set\_\-link, MD\_\-set\_\-string, MD\_\-Section::name, and NULL.\index{md.h@{md.h}!MD_rename_entry@{MD\_\-rename\_\-entry}}
+\index{MD_rename_entry@{MD\_\-rename\_\-entry}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-rename\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em new\_\-name})}\label{md_8h_21f5e11ef45622d57325c409ba6a486c}
+
+
+
+
+Definition at line 2556 of file md.c.
+
+References entry, MD\_\-rename\_\-symbol(), and MD\_\-strdup().\index{md.h@{md.h}!MD_require_block@{MD\_\-require\_\-block}}
+\index{MD_require_block@{MD\_\-require\_\-block}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-block (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index})}\label{md_8h_0d7c1b6c82b809db593340365c706367}
+
+
+
+
+Definition at line 3937 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-BLOCK, MD\_\-new\_\-element\_\-req(), MD\_\-strdup(), and MD\_\-Element\_\-Req::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_require_double@{MD\_\-require\_\-double}}
+\index{MD_require_double@{MD\_\-require\_\-double}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-double (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index})}\label{md_8h_8138319398084eee4e558c2e19824d9f}
+
+
+
+
+Definition at line 3883 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-DOUBLE, MD\_\-new\_\-element\_\-req(), MD\_\-strdup(), and MD\_\-Element\_\-Req::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_require_int@{MD\_\-require\_\-int}}
+\index{MD_require_int@{MD\_\-require\_\-int}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-int (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index})}\label{md_8h_c62eab6c660919a2250857aaffaddebb}
+
+
+
+
+Definition at line 3856 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-INT, MD\_\-new\_\-element\_\-req(), MD\_\-strdup(), and MD\_\-Element\_\-Req::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_require_link@{MD\_\-require\_\-link}}
+\index{MD_require_link@{MD\_\-require\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-link (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index}, \bf{MD\_\-Section} $\ast$ {\em section})}\label{md_8h_cf268a6735d036c0166261196439a452}
+
+
+
+
+Definition at line 3966 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Section::md, MD\_\-LINK, MD\_\-new\_\-element\_\-req(), MD\_\-punt(), MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::section, and MD\_\-Element\_\-Req::type.\index{md.h@{md.h}!MD_require_multi_target_link@{MD\_\-require\_\-multi\_\-target\_\-link}}
+\index{MD_require_multi_target_link@{MD\_\-require\_\-multi\_\-target\_\-link}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-multi\_\-target\_\-link (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index}, int {\em section\_\-array\_\-size}, \bf{MD\_\-Section} $\ast$$\ast$ {\em section\_\-array})}\label{md_8h_6db7feb559876c9ccc075a0756c4fb93}
+
+
+
+
+Definition at line 4037 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Section::md, MD\_\-LINK, MD\_\-new\_\-element\_\-req(), MD\_\-punt(), MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::section, and MD\_\-Element\_\-Req::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_require_string@{MD\_\-require\_\-string}}
+\index{MD_require_string@{MD\_\-require\_\-string}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-require\_\-string (\bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl}, int {\em element\_\-index})}\label{md_8h_a96bd277bec6297de1464775cba610de}
+
+
+
+
+Definition at line 3910 of file md.c.
+
+References MD\_\-Element\_\-Req::desc, MD\_\-new\_\-element\_\-req(), MD\_\-strdup(), MD\_\-STRING, and MD\_\-Element\_\-Req::type.
+
+Referenced by MD\_\-read\_\-md().\index{md.h@{md.h}!MD_write_md@{MD\_\-write\_\-md}}
+\index{MD_write_md@{MD\_\-write\_\-md}!md.h@{md.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void MD\_\-write\_\-md (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{md_8h_08198a382f6e7b587c2a239dcb3af660}
+
+
+
+
+Definition at line 1624 of file md.c.
+
+References MD\_\-Element::b, MD\_\-Element::d, MD\_\-Symbol::data, MD\_\-Field::element, entry, MD\_\-Section::entry\_\-table, MD\_\-Section::field\_\-decl\_\-table, MD\_\-Field\_\-Decl::field\_\-index, MD\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-Element::i, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element::l, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::max\_\-field\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-BLOCK, MD\_\-DOUBLE, MD\_\-INT, MD\_\-LINK, MD\_\-OPTIONAL\_\-FIELD, MD\_\-punt(), MD\_\-REQUIRED\_\-FIELD, MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Section::name, MD\_\-Symbol::next\_\-symbol, NULL, MD\_\-Block::ptr, MD\_\-Field\_\-Decl::require, MD\_\-Element::s, MD::section\_\-table, MD\_\-Block::size, MD\_\-Entry::symbol, MD\_\-Symbol\_\-Table::symbol\_\-count, MD\_\-Symbol::symbol\_\-id, MD\_\-Element::type, MD\_\-Element\_\-Req::type, MD\_\-Field\_\-Decl::type, and MD\_\-Element::value.

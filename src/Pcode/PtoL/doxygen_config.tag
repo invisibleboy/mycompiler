@@ -1,0 +1,8 @@
+# src/Pcode/PtoL/doxygen_config.tag
+@INCLUDE = ../../Doxyfile
+PROJECT_NAME = PtoL
+GENERATE_TAGFILE = PtoL.tag
+GENERATE_HTML = NO
+GENERATE_LATEX = NO
+QUIET = YES
+WARNINGS = NO

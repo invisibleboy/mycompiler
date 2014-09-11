@@ -1,0 +1,215 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# (Impact, version 1.0,  November 1993) 
+#
+# Standard parameter file
+#
+
+#
+# Macros to base other parameters on.
+# May be used anywhere.  Expressions consisting of (,),+,-,*,/ are now
+# supported for integer parameters.
+#
+# These macros may be set to other values from the command line with
+# the -Pmacro_name=macro_value option. (ie. -Parch=impact)
+#
+
+$rel_parms$ = $IMPACT_REL_PATH$/parms;
+
+# machine specific stuff
+$arch$ = hppa;
+$model$ = playdoh_mcode;
+$lmdes$ = $IMPACT_ROOT$/mdes/Lhppa/PA_7100.lmdes;
+
+$probe_type$ = simulation;
+
+$HPUX_VERSION$ = 10;
+
+(architecture
+    arch = $arch$; 
+    model = $model$;
+    lmdes = $lmdes$
+end) 
+
+# I/O stuff
+(file $rel_parms$/LFILE_DEFAULTS
+    input_file_name = stdin;
+    output_file_name = stdout;
+    filelist_file_name = ;
+end)
+
+# High-level sections
+(Pcode $rel_parms$/PCODE_DEFAULTS
+end)
+
+(PtoL $rel_parms$/PTOL_DEFAULTS
+end)
+
+# Code generator sections
+(Mcode $rel_parms$/MCODE_DEFAULTS
+    phase = 7;
+    do_machine_opt = no;
+    do_software_pipelining = no;
+    do_prepass_sched = no;
+    do_register_allocation = yes;
+    do_postpass_code_annotation = yes;
+    do_peephole_opt = yes;
+    do_postpass_sched = yes;
+end)
+
+(Lsparc $rel_parms$/LSPARC_DEFAULTS
+end)
+
+(Lhppa $rel_parms$/LHPPA_DEFAULTS
+    insert_probes = yes;
+    hpux_version = $HPUX_VERSION$;
+    sign_extend_in_phase3 = yes;
+    parallelize_label_loads = yes;
+    support_probing = yes;
+    #mark_phase1 = no;
+    mark_phase1 = yes;
+    predicated_lcode = yes;
+    emulate_assuming_unit_latency = yes;
+    emulate_assuming_mutex_branches = no;
+    do_filter_HP_swp_code = no;
+    preserve_lcode_ids = yes;
+
+end)
+
+(Lamd $rel_parms$/LAMD_DEFAULTS
+end)
+
+#(Limpact $rel_parms$/LIMPACT_DEFAULTS
+#end)
+
+(Lhpl_pd $rel_parms$/LHPL_PD_DEFAULTS
+end)
+
+(Lx86 $rel_parms$/LX86_DEFAULTS
+end)
+
+(Regalloc $rel_parms$/LREGALLOC_DEFAULTS
+    macro_allocation=no;
+end)
+
+(Scheduler $rel_parms$/LSCHEDULE_DEFAULTS
+    do_postpass_scheduling = no;
+    do_fill_squashing_branches = no;
+    do_fill_nonsquashing_branches = no;
+    do_fill_unfilled_branches = yes;
+end)
+
+(Dependence $rel_parms$/LDEPENDENCE_DEFAULTS
+end)
+
+(Mopti $rel_parms$/MOPTI_DEFAULTS
+end)
+
+# Lcode sections
+(global $rel_parms$/LGLOBAL_DEFAULTS
+     check_data_struct_alloc = no;
+     warn_parm_not_defined = no;
+end)
+
+(Lcode $rel_parms$/LCODE_DEFAULTS
+end)
+
+# optimization sections
+(Lopti $rel_parms$/LOPTI_DEFAULTS
+end)
+
+(Lsuperblock $rel_parms$/LSUPERBLOCK_DEFAULTS
+end)
+
+(Lsuperscalar $rel_parms$/LSUPERSCALAR_DEFAULTS
+end)
+
+(Ltrace $rel_parms$/LTRACE_DEFAULTS
+end)
+
+(Lsafe $rel_parms$/LSAFE_DEFAULTS
+end)
+
+# performance sections
+(Lprobe $rel_parms$/LPROBE_DEFAULTS
+        probe_for = $probe_type$;
+end)
+
+(Lencode $rel_parms$/LENCODE_DEFAULTS
+        encode_for = $probe_type$;
+end)
+
+(Lprofile_utilities $rel_parms$/LPROF_UTIL_DEFAULTS
+end)
+
+(Lsim $rel_parms$/LSIM_DEFAULTS
+end)
+
+(Lpretty $rel_parms$/LPRETTY_DEFAULTS
+end)
+
+(Lmix $rel_parms$/LMIX_DEFAULTS
+end)
+
+(Lx86trace $rel_parms$/LX86TRACE_DEFAULTS
+end)
+
+(Lannotate $rel_parms$/LANNOTATE_DEFAULTS
+end)
+
+(Lanalysis $rel_parms$/LANALYSIS_DEFAULTS
+end)
+
+(Lprofile $rel_parms$/LPROFILE_DEFAULTS
+end)
+
+(Ldiff_trace $rel_parms$/LDIFF_TRACE_DEFAULTS
+end)
+
+# End of parameter settings

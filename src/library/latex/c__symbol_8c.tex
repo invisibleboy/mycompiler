@@ -1,0 +1,273 @@
+\section{c\_\-symbol.c File Reference}
+\label{c__symbol_8c}\index{c_symbol.c@{c\_\-symbol.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$library/c\_\-symbol.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{C\_\-INVALID\_\-SYMBOL}~-1
+\item 
+\#define \bf{C\_\-DELETED\_\-SYMBOL}~-2
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{C\_\-Symbol} \bf{find\_\-symbol} (\bf{Sym\-Tbl} tbl, char $\ast$\bf{name}, int type, int new\_\-entry)
+\item 
+static int \bf{find\_\-empty\_\-entry} (\bf{Sym\-Tbl} tbl, char $\ast$\bf{name}, int type, int new\_\-entry)
+\item 
+int \bf{C\_\-open} (int max\_\-size, int \bf{mode})
+\item 
+void \bf{C\_\-delete\_\-tbl} (int tbl\_\-id)
+\item 
+void \bf{C\_\-clear} (int tbl\_\-id)
+\item 
+void \bf{C\_\-clear\_\-free\_\-all} (int tbl\_\-id)
+\item 
+void \bf{C\_\-clear\_\-free\_\-name} (int tbl\_\-id)
+\item 
+void \bf{C\_\-clear\_\-attr} (int tbl\_\-id)
+\item 
+void \bf{C\_\-update} (int tbl\_\-id, char $\ast$\bf{name}, int type, \bf{Integer} value, \bf{Pointer} ptr)
+\item 
+int \bf{C\_\-find} (int tbl\_\-id, char $\ast$\bf{name}, int type, \bf{Integer} $\ast$value, \bf{Pointer} $\ast$ptr)
+\item 
+int \bf{C\_\-full} (int tbl\_\-id, char $\ast$\bf{name}, int type)
+\item 
+int \bf{C\_\-delete} (int tbl\_\-id, char $\ast$\bf{name}, int type)
+\item 
+int \bf{C\_\-forall} (int tbl\_\-id, \bf{C\_\-Function} fn)
+\item 
+int \bf{C\_\-find\_\-index} (int tbl\_\-id, void $\ast$ptr)
+\item 
+\bf{Pointer} \bf{C\_\-find\_\-from\_\-index} (int tbl\_\-id, int index)
+\item 
+int \bf{C\_\-open\_\-name\_\-table} (int max\_\-size)
+\item 
+char $\ast$ \bf{C\_\-unique\_\-name} (int tbl\_\-id, char $\ast$\bf{name})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{\_\-Sym\-Tbl} \bf{TBL} [C\_\-MAX\_\-SYMBOL\_\-TABLE] = \{ \{ 0 \} \}
+\item 
+static int \bf{next\_\-tbl} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{c_symbol.c@{c\_\-symbol.c}!C_DELETED_SYMBOL@{C\_\-DELETED\_\-SYMBOL}}
+\index{C_DELETED_SYMBOL@{C\_\-DELETED\_\-SYMBOL}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define C\_\-DELETED\_\-SYMBOL~-2}\label{c__symbol_8c_bf5e249efc890415e31c975dbfadd0b2}
+
+
+
+
+Definition at line 82 of file c\_\-symbol.c.
+
+Referenced by C\_\-delete(), find\_\-empty\_\-entry(), and find\_\-symbol().\index{c_symbol.c@{c\_\-symbol.c}!C_INVALID_SYMBOL@{C\_\-INVALID\_\-SYMBOL}}
+\index{C_INVALID_SYMBOL@{C\_\-INVALID\_\-SYMBOL}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define C\_\-INVALID\_\-SYMBOL~-1}\label{c__symbol_8c_7a35993923e366f01538efcd5d2eff91}
+
+
+
+
+Definition at line 81 of file c\_\-symbol.c.
+
+Referenced by C\_\-clear(), C\_\-clear\_\-free\_\-all(), C\_\-clear\_\-free\_\-name(), C\_\-delete(), C\_\-delete\_\-tbl(), C\_\-find(), C\_\-unique\_\-name(), C\_\-update(), find\_\-empty\_\-entry(), and find\_\-symbol().
+
+\subsection{Function Documentation}
+\index{c_symbol.c@{c\_\-symbol.c}!C_clear@{C\_\-clear}}
+\index{C_clear@{C\_\-clear}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-clear (int {\em tbl\_\-id})}\label{c__symbol_8c_2c6a25544c7672e28467bbcd9b55a579}
+
+
+Clear a symbol table. 
+
+Definition at line 422 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.
+
+Referenced by C2\_\-kill\_\-scope\_\-above(), and C2\_\-scope\_\-in().\index{c_symbol.c@{c\_\-symbol.c}!C_clear_attr@{C\_\-clear\_\-attr}}
+\index{C_clear_attr@{C\_\-clear\_\-attr}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-clear\_\-attr (int {\em tbl\_\-id})}\label{c__symbol_8c_ec887c3f5afd02e24ba755048268e0e0}
+
+
+Clear a symbol table. 
+
+Definition at line 502 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, and \_\-C\_\-Symbol::value.
+
+Referenced by C2\_\-reset\_\-attribute().\index{c_symbol.c@{c\_\-symbol.c}!C_clear_free_all@{C\_\-clear\_\-free\_\-all}}
+\index{C_clear_free_all@{C\_\-clear\_\-free\_\-all}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-clear\_\-free\_\-all (int {\em tbl\_\-id})}\label{c__symbol_8c_dc760e695d2d45490fa60d1984cb2d59}
+
+
+Clear a symbol table and free all fields 
+
+Definition at line 448 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{c_symbol.c@{c\_\-symbol.c}!C_clear_free_name@{C\_\-clear\_\-free\_\-name}}
+\index{C_clear_free_name@{C\_\-clear\_\-free\_\-name}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-clear\_\-free\_\-name (int {\em tbl\_\-id})}\label{c__symbol_8c_b358a580d5e4af034117efd93533d1cf}
+
+
+Clear a symbol table and free name fields 
+
+Definition at line 476 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{c_symbol.c@{c\_\-symbol.c}!C_delete@{C\_\-delete}}
+\index{C_delete@{C\_\-delete}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-delete (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type})}\label{c__symbol_8c_65764557639df2713c9f127da4ffa222}
+
+
+Delete a symbol in the symbol table. 
+
+Definition at line 586 of file c\_\-symbol.c.
+
+References C\_\-assert(), C\_\-DELETED\_\-SYMBOL, C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, find\_\-symbol(), TBL, and \_\-C\_\-Symbol::type.\index{c_symbol.c@{c\_\-symbol.c}!C_delete_tbl@{C\_\-delete\_\-tbl}}
+\index{C_delete_tbl@{C\_\-delete\_\-tbl}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-delete\_\-tbl (int {\em tbl\_\-id})}\label{c__symbol_8c_90b255ee5e4782d9fe4d241b3b5c4379}
+
+
+Delete a symbol table, leaving ptr to C\_\-Symbol NULL 
+
+Definition at line 390 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{c_symbol.c@{c\_\-symbol.c}!C_find@{C\_\-find}}
+\index{C_find@{C\_\-find}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-find (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type}, \bf{Integer} $\ast$ {\em value}, \bf{Pointer} $\ast$ {\em ptr})}\label{c__symbol_8c_25fbe8c538d064e4a59ec2fb2598a1d5}
+
+
+Find a symbol in the symbol table. 
+
+Definition at line 540 of file c\_\-symbol.c.
+
+References C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, find\_\-symbol(), \_\-C\_\-Symbol::ptr, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.
+
+Referenced by C2\_\-find\_\-global\_\-symbol(), C2\_\-find\_\-local\_\-symbol(), and C2\_\-find\_\-symbol().\index{c_symbol.c@{c\_\-symbol.c}!C_find_from_index@{C\_\-find\_\-from\_\-index}}
+\index{C_find_from_index@{C\_\-find\_\-from\_\-index}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pointer} C\_\-find\_\-from\_\-index (int {\em tbl\_\-id}, int {\em index})}\label{c__symbol_8c_3b66fec0ccf9115ed3cfa0bf166c6344}
+
+
+
+
+Definition at line 671 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, and TBL.\index{c_symbol.c@{c\_\-symbol.c}!C_find_index@{C\_\-find\_\-index}}
+\index{C_find_index@{C\_\-find\_\-index}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-find\_\-index (int {\em tbl\_\-id}, void $\ast$ {\em ptr})}\label{c__symbol_8c_bafb54deffd152722f44aa5bab194a6f}
+
+
+
+
+Definition at line 646 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, and \_\-C\_\-Symbol::type.\index{c_symbol.c@{c\_\-symbol.c}!C_forall@{C\_\-forall}}
+\index{C_forall@{C\_\-forall}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-forall (int {\em tbl\_\-id}, \bf{C\_\-Function} {\em fn})}\label{c__symbol_8c_dce0ead9ac62b8796f3ec67b8dcd2012}
+
+
+Traverse a symbol table. 
+
+Definition at line 608 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-MAX\_\-SYMBOL\_\-TABLE, \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.
+
+Referenced by C2\_\-forall(), and C2\_\-forall\_\-global().\index{c_symbol.c@{c\_\-symbol.c}!C_full@{C\_\-full}}
+\index{C_full@{C\_\-full}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-full (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type})}\label{c__symbol_8c_b5f3bc613574a44dae7d72a5a97b2f5c}
+
+
+Find a empty slot in the symbol table. 
+
+Definition at line 573 of file c\_\-symbol.c.
+
+References C\_\-assert(), C\_\-MAX\_\-SYMBOL\_\-TABLE, find\_\-empty\_\-entry(), and TBL.\index{c_symbol.c@{c\_\-symbol.c}!C_open@{C\_\-open}}
+\index{C_open@{C\_\-open}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-open (int {\em max\_\-size}, int {\em mode})}\label{c__symbol_8c_9e31694a4ba6f29b591504e7442671af}
+
+
+Create a new symbol table. 
+
+get next table
+
+allocate a table 
+
+Definition at line 297 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-MATCH\_\-BY\_\-AND\_\-TYPE, C\_\-MATCH\_\-BY\_\-EXACT\_\-TYPE, C\_\-MAX\_\-SYMBOL\_\-TABLE, next\_\-tbl, NULL, and TBL.
+
+Referenced by C2\_\-init\_\-scope(), and C\_\-open\_\-name\_\-table().\index{c_symbol.c@{c\_\-symbol.c}!C_open_name_table@{C\_\-open\_\-name\_\-table}}
+\index{C_open_name_table@{C\_\-open\_\-name\_\-table}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int C\_\-open\_\-name\_\-table (int {\em max\_\-size})}\label{c__symbol_8c_72acbcb8e0206c293a730449e97a2e9e}
+
+
+Create a name table 
+
+Definition at line 686 of file c\_\-symbol.c.
+
+References C\_\-MATCH\_\-BY\_\-EXACT\_\-TYPE, and C\_\-open().\index{c_symbol.c@{c\_\-symbol.c}!C_unique_name@{C\_\-unique\_\-name}}
+\index{C_unique_name@{C\_\-unique\_\-name}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ C\_\-unique\_\-name (int {\em tbl\_\-id}, char $\ast$ {\em name})}\label{c__symbol_8c_040c25b4616d473be8eff35b29ea1982}
+
+
+
+
+Definition at line 691 of file c\_\-symbol.c.
+
+References C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, C\_\-strsave(), find\_\-symbol(), \_\-C\_\-Symbol::name, TBL, and \_\-C\_\-Symbol::type.\index{c_symbol.c@{c\_\-symbol.c}!C_update@{C\_\-update}}
+\index{C_update@{C\_\-update}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void C\_\-update (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type}, \bf{Integer} {\em value}, \bf{Pointer} {\em ptr})}\label{c__symbol_8c_13838f31c0fd9fb771ca279c949b65dd}
+
+
+Add a new symbol in the symbol table. 
+
+Definition at line 519 of file c\_\-symbol.c.
+
+References C\_\-assert(), C\_\-INVALID\_\-SYMBOL, C\_\-MAX\_\-SYMBOL\_\-TABLE, C\_\-strsave(), find\_\-symbol(), \_\-C\_\-Symbol::name, \_\-C\_\-Symbol::ptr, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.
+
+Referenced by C2\_\-update\_\-global\_\-symbol(), C2\_\-update\_\-local\_\-symbol(), and C2\_\-update\_\-symbol().\index{c_symbol.c@{c\_\-symbol.c}!find_empty_entry@{find\_\-empty\_\-entry}}
+\index{find_empty_entry@{find\_\-empty\_\-entry}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int find\_\-empty\_\-entry (\bf{Sym\-Tbl} {\em tbl}, char $\ast$ {\em name}, int {\em type}, int {\em new\_\-entry})\hspace{0.3cm}{\tt  [static]}}\label{c__symbol_8c_ca2159f943181843eac538b2428f7c0d}
+
+
+
+
+Definition at line 211 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-DELETED\_\-SYMBOL, C\_\-INVALID\_\-SYMBOL, C\_\-MATCH\_\-BY\_\-EXACT\_\-TYPE, C\_\-strlen(), \_\-Sym\-Tbl::mode, mode, \_\-C\_\-Symbol::name, \_\-Sym\-Tbl::size, and \_\-C\_\-Symbol::type.
+
+Referenced by C\_\-full().\index{c_symbol.c@{c\_\-symbol.c}!find_symbol@{find\_\-symbol}}
+\index{find_symbol@{find\_\-symbol}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{C\_\-Symbol} find\_\-symbol (\bf{Sym\-Tbl} {\em tbl}, char $\ast$ {\em name}, int {\em type}, int {\em new\_\-entry})\hspace{0.3cm}{\tt  [static]}}\label{c__symbol_8c_5f67c9007676a17cb9da613fc79e995c}
+
+
+
+
+Definition at line 109 of file c\_\-symbol.c.
+
+References \_\-Sym\-Tbl::array, C\_\-assert(), C\_\-DELETED\_\-SYMBOL, C\_\-INVALID\_\-SYMBOL, C\_\-MATCH\_\-BY\_\-EXACT\_\-TYPE, C\_\-strlen(), \_\-Sym\-Tbl::mode, mode, \_\-C\_\-Symbol::name, NULL, \_\-Sym\-Tbl::size, TBL, and \_\-C\_\-Symbol::type.
+
+Referenced by C\_\-delete(), C\_\-find(), C\_\-unique\_\-name(), and C\_\-update().
+
+\subsection{Variable Documentation}
+\index{c_symbol.c@{c\_\-symbol.c}!next_tbl@{next\_\-tbl}}
+\index{next_tbl@{next\_\-tbl}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{next\_\-tbl} = 0\hspace{0.3cm}{\tt  [static]}}\label{c__symbol_8c_8f6d5fcc8b0f003fcb0ac869a190bc2f}
+
+
+
+
+Definition at line 105 of file c\_\-symbol.c.\index{c_symbol.c@{c\_\-symbol.c}!TBL@{TBL}}
+\index{TBL@{TBL}!c_symbol.c@{c\_\-symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{\_\-Sym\-Tbl} \bf{TBL}[C\_\-MAX\_\-SYMBOL\_\-TABLE] = \{ \{ 0 \} \}}\label{c__symbol_8c_46b7c6724daa2c733e85cd7a6fde560a}
+
+
+
+
+Definition at line 104 of file c\_\-symbol.c.

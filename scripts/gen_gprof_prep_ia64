@@ -1,0 +1,143 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#   Name: gen_gprof_prep_ia64
+#
+#   Prepares .s files for Itanium for gprof profiling.
+#
+#   Usage: gen_gprof_prep_ia64 *.s
+#   Produces: *.sp
+#
+#   Script written by Erik Nystrom and Matthew Merten
+#   Code snippets reverse engineered from 'gcc -pg -S'
+
+#!/bin/sh
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+
+printf "Inserting _mcount probes:\n";
+
+foreach $param (@ARGV) {
+
+    print("Processing file: $param\n");
+
+    open (INFILE, ${param}) || die "Can't open input file: ${param}\n";
+    open (OUTFILE, ">${param}p") || die "Can't open output file: ${param}p\n";
+
+    $srch = 0;
+
+    $fn = 0;
+
+    while (<INFILE>) {
+
+	if (/.proc\s+(\S+)\#/) {
+	    $curproc = $1;
+	    $srch = 1;
+
+
+	}
+
+	if (!$sup) {
+	    print OUTFILE $_;
+	} else {
+	    $buf = $buf . $_;
+	}
+
+	if ($srch) {
+	    if (/::/) {
+		$sup = 1;
+	    print OUTFILE "\t// GPROF STUB\n" .
+		"\t.section .data\n" .
+       	        "\t.align 8\n.LP$fn:\n" .
+	       	"\tdata8\t0\n" . 
+	      	"\t.section .text\n" .
+       		"\t// END GPROF STUB\n";
+	    }
+
+	    if (/alloc.*(\d),\s*\d+,\s*\d+,\s*\d+/) {
+		$in = $1;
+
+		print OUTFILE "\t// GPROF STUB\n" .
+			"\talloc\tout0 = ar.pfs,8,0,4,0\n" .
+			"\taddl\tout3 = \@gprel(.LP$fn), gp ;;\n" .
+			"\tmov\tout1 = gp\n" .
+			"\tmov\tout2 = b0\n" .
+			"\tbr.call.sptk.many\tb0 = _mcount ;;\n" .
+			"\t// END GPROF STUB\n";
+
+		print OUTFILE $buf;
+
+		$buf = undef;
+
+		$srch = 0;
+		$sup = 0;
+		$fn++;
+	    }
+	}
+
+
+    }
+
+    print OUTFILE "\t.type\t_mcount#, \@function\n\t.global\t_mcount#\n";
+
+    close (INFILE);
+    close (OUTFILE);
+}
+
+print "Done.\n";
+exit(0);
+
+
+
+
+
+
+

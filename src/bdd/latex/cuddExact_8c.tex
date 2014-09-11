@@ -1,0 +1,475 @@
+\section{cudd\-Exact.c File Reference}
+\label{cuddExact_8c}\index{cuddExact.c@{cuddExact.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int get\-Max\-Binomial \bf{ARGS} ((int n))
+\item 
+static int gcd \bf{ARGS} ((int x, int y))
+\item 
+static \bf{Dd\-Half\-Word} $\ast$$\ast$get\-Matrix \bf{ARGS} ((int rows, int cols))
+\item 
+static void free\-Matrix \bf{ARGS} ((\bf{Dd\-Half\-Word} $\ast$$\ast$matrix))
+\item 
+static int get\-Level\-Keys \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int l))
+\item 
+static int dd\-Shuffle \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$permutation, int lower, int upper))
+\item 
+static int dd\-Sift\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low))
+\item 
+static int update\-UB \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int old\-Bound, \bf{Dd\-Half\-Word} $\ast$best\-Order, int lower, int upper))
+\item 
+static int dd\-Count\-Roots \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))
+\item 
+static void dd\-Clear\-Global \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower, int maxlevel))
+\item 
+static int compute\-LB \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int roots, int cost, int lower, int upper, int level))
+\item 
+static int update\-Entry \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int level, int cost, \bf{Dd\-Half\-Word} $\ast$$\ast$orders, int $\ast$costs, int subsets, char $\ast$mask, int lower, int upper))
+\item 
+static void push\-Down \bf{ARGS} ((\bf{Dd\-Half\-Word} $\ast$order, int j, int level))
+\item 
+static int check\-Symm\-Info \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$symm\-Info, int index, int level))
+\item 
+int \bf{cudd\-Exact} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{get\-Max\-Binomial} (int n)
+\item 
+static int \bf{gcd} (int x, int y)
+\item 
+static \bf{Dd\-Half\-Word} $\ast$$\ast$ \bf{get\-Matrix} (int rows, int cols)
+\item 
+static void \bf{free\-Matrix} (\bf{Dd\-Half\-Word} $\ast$$\ast$matrix)
+\item 
+static int \bf{get\-Level\-Keys} (\bf{Dd\-Manager} $\ast$table, int l)
+\item 
+static int \bf{dd\-Shuffle} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$permutation, int lower, int upper)
+\item 
+static int \bf{dd\-Sift\-Up} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low)
+\item 
+static int \bf{update\-UB} (\bf{Dd\-Manager} $\ast$table, int old\-Bound, \bf{Dd\-Half\-Word} $\ast$best\-Order, int lower, int upper)
+\item 
+static int \bf{dd\-Count\-Roots} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static void \bf{dd\-Clear\-Global} (\bf{Dd\-Manager} $\ast$table, int lower, int maxlevel)
+\item 
+static int \bf{compute\-LB} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int roots, int cost, int lower, int upper, int level)
+\item 
+static int \bf{update\-Entry} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int level, int cost, \bf{Dd\-Half\-Word} $\ast$$\ast$orders, int $\ast$costs, int subsets, char $\ast$mask, int lower, int upper)
+\item 
+static void \bf{push\-Down} (\bf{Dd\-Half\-Word} $\ast$order, int j, int level)
+\item 
+static \bf{Dd\-Half\-Word} $\ast$ \bf{init\-Symm\-Info} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{check\-Symm\-Info} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$symm\-Info, int index, int level)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Exact.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int check\-Symm\-Info ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$symm\-Info, int index, int level))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_e1bc51574328fe7954444cbc903d7c89}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void push\-Down ARGS ((\bf{Dd\-Half\-Word} $\ast$order, int j, int level))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_b896a7dd007f3f31cb385f3e366ccc04}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-Entry ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int level, int cost, \bf{Dd\-Half\-Word} $\ast$$\ast$orders, int $\ast$costs, int subsets, char $\ast$mask, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_9b5d4a74064e02d7532ee97e07fac9d7}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int compute\-LB ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$order, int roots, int cost, int lower, int upper, int level))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_c1b5428809e1b353ca71c58e08a33be4}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Global ARGS ((\bf{Dd\-Manager} $\ast$table, int lower, int maxlevel))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_22e74cbb84332beefe4d59d5fcddf26f}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Count\-Roots ARGS ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_e60b1949254d14fc25400ee7dacb574d}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-UB ARGS ((\bf{Dd\-Manager} $\ast$table, int old\-Bound, \bf{Dd\-Half\-Word} $\ast$best\-Order, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_c9a32a7bbc9cf2d0c4cccc52a32cf5d5}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sift\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_372f97f7fe69d0fbc62fe7aad0b9d980}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Shuffle ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Half\-Word} $\ast$permutation, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_8242d9c655b5871d4a791af7e1151de0}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int get\-Level\-Keys ARGS ((\bf{Dd\-Manager} $\ast$table, int l))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_f452dd1f1c89073df9055ff114f97aeb}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void free\-Matrix ARGS ((\bf{Dd\-Half\-Word} $\ast$$\ast$matrix))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_26cd0d4cd4c6486b5ad0b74e813ba1dd}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Half\-Word}$\ast$$\ast$ get\-Matrix ARGS ((int rows, int cols))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_a043bccd81b425a4a17f376824f95de6}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int gcd ARGS ((int x, int y))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_bbabf9800f896d0f1cb82de7900c7fe4}
+
+
+\index{cuddExact.c@{cudd\-Exact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int get\-Max\-Binomial ARGS ((int n))\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_fa119d663a76e41493c2b8b933ca0fe2}
+
+
+Automatic\-Start \index{cuddExact.c@{cudd\-Exact.c}!checkSymmInfo@{checkSymmInfo}}
+\index{checkSymmInfo@{checkSymmInfo}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int check\-Symm\-Info (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Half\-Word} $\ast$ {\em symm\-Info}, int {\em index}, int {\em level})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_c8f5de785d6630bc4f2153755dbc9175}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Check symmetry condition.]
+
+Description [Check whether a variable is the one with the highest index among those belonging to a symmetry group that are in the top part of the BDD.]
+
+Side\-Effects [None]
+
+See\-Also [init\-Symm\-Info] 
+
+Definition at line 989 of file cudd\-Exact.c.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!computeLB@{computeLB}}
+\index{computeLB@{computeLB}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int compute\-LB (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Half\-Word} $\ast$ {\em order}, int {\em roots}, int {\em cost}, int {\em lower}, int {\em upper}, int {\em level})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_5edd4a7f4fb8bb5aeef67e77b18b2bfe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes a lower bound on the size of a BDD.]
+
+Description [Computes a lower bound on the size of a BDD from the following factors: \begin{itemize}
+\item size of the lower part of it; \item size of the part of the upper part not subjected to reordering; \item number of roots in the part of the BDD subjected to reordering; \item variable in the support of the roots in the upper part of the BDD subjected to reordering. \begin{itemize}
+\end{itemize}
+
+
+Side\-Effects [None]
+
+See\-Also [] \end{itemize}
+
+
+Definition at line 798 of file cudd\-Exact.c.
+
+References get\-Level\-Keys(), Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Node::ref, Dd\-Manager::size, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!cuddExact@{cuddExact}}
+\index{cuddExact@{cuddExact}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Exact (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddExact_8c_ad1bbbe0b734963912f4af7c6884c654}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Exact variable ordering algorithm.]
+
+Description [Exact variable ordering algorithm. Finds an optimum order for the variables between lower and upper. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 125 of file cudd\-Exact.c.
+
+References ALLOC, check\-Symm\-Info(), compute\-LB(), Dd\-Manager::constants, CUDD\_\-MEMORY\_\-OUT, cudd\-Symm\-Sifting\-Conv(), dd\-Count\-Roots(), dd\-Shuffle(), Dd\-Manager::error\-Code, FREE, free\-Matrix(), get\-Level\-Keys(), get\-Matrix(), get\-Max\-Binomial(), init\-Symm\-Info(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Subtable::keys, push\-Down(), result, Dd\-Manager::size, size, Dd\-Manager::subtables, update\-Entry(), update\-UB(), and Dd\-Manager::vars.
+
+Referenced by dd\-Reorder\-Children().\index{cuddExact.c@{cudd\-Exact.c}!ddClearGlobal@{ddClearGlobal}}
+\index{ddClearGlobal@{ddClearGlobal}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Global (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em maxlevel})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_98f18f030b7f886714a67adbd67e9998}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Scans the DD and clears the LSB of the next pointers.]
+
+Description [Scans the DD and clears the LSB of the next pointers. The LSB of the next pointers are used as markers to tell whether a node was reached. Once the roots are counted, these flags are reset.]
+
+Side\-Effects [None]
+
+See\-Also [dd\-Count\-Roots] 
+
+Definition at line 746 of file cudd\-Exact.c.
+
+References Cudd\_\-Regular, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Subtable::slots, and Dd\-Manager::subtables.\index{cuddExact.c@{cudd\-Exact.c}!ddCountRoots@{ddCountRoots}}
+\index{ddCountRoots@{ddCountRoots}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Count\-Roots (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_6d16cfd4281eefc5ba910eee48ba7738}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of roots.]
+
+Description [Counts the number of roots at the levels between lower and upper. The computation is based on breadth-first search. A node is a root if it is not reachable from any previously visited node. (All the nodes at level lower are therefore considered roots.) The visited flag uses the LSB of the next pointer. Returns the root count. The roots that are constant nodes are always ignored.]
+
+Side\-Effects [None]
+
+See\-Also [dd\-Clear\-Global] 
+
+Definition at line 673 of file cudd\-Exact.c.
+
+References Cudd\_\-Complement, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Regular, cudd\-E, cudd\-T, Dd\-Node::index, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::perm, Dd\-Subtable::slots, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!ddShuffle@{ddShuffle}}
+\index{ddShuffle@{ddShuffle}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Shuffle (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Half\-Word} $\ast$ {\em permutation}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_a844070376bbc546ebb3c0e525ba07de}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders variables according to a given permutation.]
+
+Description [Reorders variables according to a given permutation. The i-th permutation array contains the index of the variable that should be brought to the i-th level. dd\-Shuffle assumes that no dead nodes are present and that the interaction matrix is properly initialized. The reordering is achieved by a series of upward sifts. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 516 of file cudd\-Exact.c.
+
+References dd\-Sift\-Up(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Manager::keys, numvars, Dd\-Manager::perm, result, Dd\-Manager::size, and util\_\-cpu\_\-time().
+
+Referenced by Cudd\_\-Shuffle\-Heap(), cudd\-Bdd\-Align\-To\-Zdd(), and cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!ddSiftUp@{ddSiftUp}}
+\index{ddSiftUp@{ddSiftUp}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Sift\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_455b1aacb79f33883b83423cc76cbb81}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves one variable up.]
+
+Description [Takes a variable from position x and sifts it up to position x\-Low; x\-Low should be less than or equal to x. Returns 1 if successful; 0 otherwise]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 596 of file cudd\-Exact.c.
+
+References cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), and size.
+
+Referenced by dd\-Shuffle().\index{cuddExact.c@{cudd\-Exact.c}!freeMatrix@{freeMatrix}}
+\index{freeMatrix@{freeMatrix}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void free\-Matrix (\bf{Dd\-Half\-Word} $\ast$$\ast$ {\em matrix})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_e61a29ea2e8e94b45114dbb698e14ac7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees a two-dimensional matrix allocated by get\-Matrix.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [get\-Matrix] 
+
+Definition at line 461 of file cudd\-Exact.c.
+
+References FREE.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!gcd@{gcd}}
+\index{gcd@{gcd}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int gcd (int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_b0e0064d9bf36b31206df3c08e4a66d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the gcd of two integers.]
+
+Description [Returns the gcd of two integers. Uses the binary GCD algorithm described in Cormen, Leiserson, and Rivest.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 374 of file cudd\-Exact.c.
+
+Referenced by get\-Max\-Binomial().\index{cuddExact.c@{cudd\-Exact.c}!getLevelKeys@{getLevelKeys}}
+\index{getLevelKeys@{getLevelKeys}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int get\-Level\-Keys (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em l})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_d829ee379117400b55d9b61100bb1252}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of nodes at one level of a unique table.]
+
+Description [Returns the number of nodes at one level of a unique table. The projection function, if isolated, is not counted.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 484 of file cudd\-Exact.c.
+
+References Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Node::ref, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by compute\-LB(), and cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!getMatrix@{getMatrix}}
+\index{getMatrix@{getMatrix}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Half\-Word}$\ast$$\ast$ get\-Matrix (int {\em rows}, int {\em cols})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_b18ff31ce607dcf47ebb3677f3b62bdb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Allocates a two-dimensional matrix of ints.]
+
+Description [Allocates a two-dimensional matrix of ints. Returns the pointer to the matrix if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [free\-Matrix] 
+
+Definition at line 429 of file cudd\-Exact.c.
+
+References ALLOC.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!getMaxBinomial@{getMaxBinomial}}
+\index{getMaxBinomial@{getMaxBinomial}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int get\-Max\-Binomial (int {\em n})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_8d6e0a9b3d8a765f0f3cf2be553345a6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the maximum value of (n choose k) for a given n.]
+
+Description [Computes the maximum value of (n choose k) for a given n. The maximum value occurs for k = n/2 when n is even, or k = (n-1)/2 when n is odd. The algorithm used in this procedure is quite inefficient, but it avoids intermediate overflow problems. Returns the computed value if successful; -1 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 324 of file cudd\-Exact.c.
+
+References ALLOC, FREE, gcd(), and result.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!initSymmInfo@{initSymmInfo}}
+\index{initSymmInfo@{initSymmInfo}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Half\-Word}$\ast$ init\-Symm\-Info (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_c27b513ba31ce86b8c9d2fce9f24ab58}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Gathers symmetry information.]
+
+Description [Translates the symmetry information stored in the next field of each subtable from level to indices. This procedure is called immediately after symmetric sifting, so that the next fields are correct. By translating this informaton in terms of indices, we make it independent of subsequent reorderings. THe format used is the same of the next fields: a circular list where each variable points to the next variable in the same symmetry group. Only the entries between lower and upper are considered. The procedure returns a pointer to an array holding the symmetry information if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [check\-Symm\-Info] 
+
+Definition at line 953 of file cudd\-Exact.c.
+
+References ALLOC, Dd\-Manager::invperm, Dd\-Subtable::next, Dd\-Manager::size, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!pushDown@{pushDown}}
+\index{pushDown@{pushDown}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void push\-Down (\bf{Dd\-Half\-Word} $\ast$ {\em order}, int {\em j}, int {\em level})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_0ec84c1fdcebf2d286f5cef9d3b62bba}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Pushes a variable in the order down to position \char`\"{}level.\char`\"{}]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 915 of file cudd\-Exact.c.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!updateEntry@{updateEntry}}
+\index{updateEntry@{updateEntry}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-Entry (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Half\-Word} $\ast$ {\em order}, int {\em level}, int {\em cost}, \bf{Dd\-Half\-Word} $\ast$$\ast$ {\em orders}, int $\ast$ {\em costs}, int {\em subsets}, char $\ast$ {\em mask}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_1aea48f39cf3fc954265e75add695e09}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Updates entry for a subset.]
+
+Description [Updates entry for a subset. Finds the subset, if it exists. If the new order for the subset has lower cost, or if the subset did not exist, it stores the new order and cost. Returns the number of subsets currently in the table.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 862 of file cudd\-Exact.c.
+
+References Dd\-Manager::invperm, and size.
+
+Referenced by cudd\-Exact().\index{cuddExact.c@{cudd\-Exact.c}!updateUB@{updateUB}}
+\index{updateUB@{updateUB}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-UB (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em old\-Bound}, \bf{Dd\-Half\-Word} $\ast$ {\em best\-Order}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_9d386cef8cb99c379b531af014d0d745}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Updates the upper bound and saves the best order seen so far.]
+
+Description [Updates the upper bound and saves the best order seen so far. Returns the current value of the upper bound.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 631 of file cudd\-Exact.c.
+
+References Dd\-Manager::invperm, Dd\-Manager::isolated, and Dd\-Manager::keys.
+
+Referenced by cudd\-Exact().
+
+\subsection{Variable Documentation}
+\index{cuddExact.c@{cudd\-Exact.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddExact.c@{cudd\-Exact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Exact.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddExact_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Exact.c}{p.}{cuddExact_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for exact variable reordering.]
+
+Description [External procedures included in this file: \begin{itemize}
+\end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Exact()}{p.}{cuddExact_8c_ad1bbbe0b734963912f4af7c6884c654} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{get\-Max\-Binomial()}{p.}{cuddExact_8c_8d6e0a9b3d8a765f0f3cf2be553345a6} \item \doxyref{gcd()}{p.}{cuddExact_8c_b0e0064d9bf36b31206df3c08e4a66d8} \item \doxyref{get\-Matrix()}{p.}{cuddExact_8c_b18ff31ce607dcf47ebb3677f3b62bdb} \item \doxyref{free\-Matrix()}{p.}{cuddExact_8c_e61a29ea2e8e94b45114dbb698e14ac7} \item \doxyref{get\-Level\-Keys()}{p.}{cuddExact_8c_d829ee379117400b55d9b61100bb1252} \item \doxyref{dd\-Shuffle()}{p.}{cuddExact_8c_a844070376bbc546ebb3c0e525ba07de} \item \doxyref{dd\-Sift\-Up()}{p.}{cuddExact_8c_455b1aacb79f33883b83423cc76cbb81} \item \doxyref{update\-UB()}{p.}{cuddExact_8c_9d386cef8cb99c379b531af014d0d745} \item \doxyref{dd\-Count\-Roots()}{p.}{cuddExact_8c_6d16cfd4281eefc5ba910eee48ba7738} \item \doxyref{dd\-Clear\-Global()}{p.}{cuddExact_8c_98f18f030b7f886714a67adbd67e9998} \item \doxyref{compute\-LB()}{p.}{cuddExact_8c_5edd4a7f4fb8bb5aeef67e77b18b2bfe} \item \doxyref{update\-Entry()}{p.}{cuddExact_8c_1aea48f39cf3fc954265e75add695e09} \item \doxyref{push\-Down()}{p.}{cuddExact_8c_0ec84c1fdcebf2d286f5cef9d3b62bba} \item \doxyref{init\-Symm\-Info()}{p.}{cuddExact_8c_c27b513ba31ce86b8c9d2fce9f24ab58} \end{itemize}
+]
+
+Author [Cheng Hua, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 66 of file cudd\-Exact.c.

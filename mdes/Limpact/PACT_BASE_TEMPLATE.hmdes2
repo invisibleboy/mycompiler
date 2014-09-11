@@ -1,0 +1,918 @@
+/*****************************************************************************\
+ *
+ *		      Illinois Open Source License
+ *                     University of Illinois/NCSA
+ *                         Open Source License
+ *
+ * Copyright (c) 2002, The University of Illinois at Urbana-Champaign.
+ * All rights reserved.
+ *
+ * Developed by:             
+ *
+ *		IMPACT Research Group
+ *
+ *		University of Illinois at Urbana-Champaign
+ *
+ *              http://www.crhc.uiuc.edu/IMPACT
+ *              http://www.gelato.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal with the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimers.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimers in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the names of the IMPACT Research Group, the University of
+ * Illinois, nor the names of its contributors may be used to endorse
+ * or promote products derived from this Software without specific
+ * prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+ *
+\*****************************************************************************/
+/*****************************************************************************\
+ *
+ *  File:  IMPACT_SIMPLE_TEMPLATE.hmdes2
+ *
+ *  Description:  Simple machine description template for wide-variety of 
+ *                experimental processors that execute IMPACT's Lcode.
+ *                This simplified template does not model register ports and
+ *                uses a fairly simple function unit model.  It is designed
+ *                to be relatively easy to understand and modify.  
+ * 
+ *  Note: For hmdes2 documentation (slightly out-of-date), see:
+ * 
+ *          HMDES Version 2 Specification 
+ *          John C. Gyllenhaal, Wen-mei W. Hwu and B. Ramakrishna Rau
+ *          IMPACT Technical report, IMPACT-96-03, 
+ *          University of Illinois, Urbana IL. 1996.
+ *          http://www.crhc.uiuc.edu/IMPACT/ftp/report/impact-96-03.hmdes2.pdf
+ *
+ *  Note: Although IMPACT's and HPL's (Elcor) machine descriptions share a 
+ *        common host language "MD" (aka as "dabble" at HPL), they are not 
+ *        currently compatible with each other.  This machine description 
+ *        cannot be used with Trimaran's Elcor-based scheduler and Elcor's
+ *        machine descriptions cannot be used with IMPACT-based schedulers.
+ *        
+ *  Creation Date :  June 1999
+ *
+ *  Author:  John C. Gyllenhaal, Wen-mei Hwu
+ *
+ *  Revisions:
+ *
+\*****************************************************************************/
+
+/* Read in the IMPACT's expected structure for this .hmdes2 file */
+$include "${IMPACT_REL_PATH}/mdes/structure/structure_IMPACT.hmdes2"
+
+/* 
+ * Processor resource configuration parameters. 
+ */
+
+$def WIDTH              8
+$def NUM_IALUS          ${WIDTH}
+$def NUM_FALUS          ${WIDTH}
+$def NUM_DIVS           ${WIDTH}
+$def NUM_MEM_UNITS      ${WIDTH}
+$def NUM_BRANCHES       ${WIDTH}
+$def NUM_CHK            ${WIDTH}
+$def LOAD_LAT		2
+
+/*
+ * Cycle in which UBR / CBR load source predicate.  Setting to 1 instead
+ * of 0 yields a 0-cycle-delay between pred defines and branches.
+ */
+$def PBDELAY            1
+
+/* 
+ * Processor issue-rule configuration parameters. 
+ */
+$def BRANCHES_AT_END    1  // If 1, places branches at end of each instr packet
+$def NON_TRAPPING_OPS   1  // If 1, allow general speculation
+
+
+/* 
+ * Scheduling 'slots' are used by the scheduler to determine ordering of 
+ * operations within an operation packet (operations scheduled to execute 
+ * in the same cycle).  The 'decoder' resources are used by this machine
+ * description to set the maximum number of operations that can be issued 
+ * per cycle (WIDTH).  The 'branch' resources are used by this
+ * machine description to set the maximum number of branches that can
+ * be issued per cycle (NUM_BRANCHES).
+ *
+ * If there are no constraints on operation ordering within the packet
+ * (i.e., branches can be scheduled anywhere), we will create the same
+ * number of slots as decoders.  
+ *
+ *   Example SS_3G_2BX (3-issue, 2 branches anywhere):
+ *          slot0: any operation (branch or non-branch)
+ *          slot1: any operation 
+ *          slot2: any operation 
+ *       decoder1: any operation
+ *       decoder2: any operation
+ *       decoder3: any operation
+ *        branch1: any branch
+ *        branch2: any branch
+ *
+ *
+ * If branches must be placed at the end, but there is only one branch,
+ * we still create the same number of slots as decoders and just
+ * require branches to use the last slot.
+ *
+ *   Example SS_3G_1BL (3-issue, 1 branch last):
+ *          slot0: non-branch operation 
+ *          slot1: non-branch operation 
+ *          slot2: any operation 
+ *       decoder1: any operation
+ *       decoder2: any operation
+ *       decoder3: any operation
+ *        branch1: any branch
+ *
+ * If branches must be placed at the end, but there are more than one branch,
+ * we need to create more slots than decoders, in order to force branches
+ * to the end.  Although there are more slots in this case, the decoders
+ * still limit the operations per cycle (to WIDTH).
+ *
+ *   Example SS_3G_2BL (3-issue, 2 branches last):
+ *          slot0: non-branch operation   <- add1
+ *          slot1: non-brancH operation   <- (not used)
+ *          slot2: any operation          <- branch1
+ *          slot3: branch operation       <- branch2
+ *       decoder1: any operation          <- add1
+ *       decoder2: any operation          <- branch1
+ *       decoder3: any operation          <- branch2
+ *        branch1: any branch             <- branch1
+ *        branch2: any branch             <- branch2
+ *
+ *  Example of why using the same number of slots does not work for SS_3G_2BL:
+ *          slot0: non-branch operation   <- add1
+ *          slot1: any operation          <- branch1
+ *          slot2: any operation          <- add2    (*not allowed*)
+ *       decoder1: any operation          <- add1
+ *       decoder2: any operation          <- branch1
+ *       decoder3: any operation          <- add2
+ *        branch1: any branch             <- branch1
+ *        branch2: any branch             <- (not used)
+ * 
+ * In the SS_3G_2BL example, it is *still* a three issue processor even
+ * though it has four issue slots!
+ *
+ * For historical reasons, the scheduler tools expect the slots to be
+ * numbered slot0,...slotN.
+ */
+$if (${BRANCHES_AT_END} == 1)
+{
+    /* Create the minimum number of slots that allow us to force
+     * branches to the end of the operation packet.
+     */
+    $def LAST_SLOT $={ (${WIDTH}-1) + (${NUM_BRANCHES}-1) }
+}
+$else
+{
+    /* Otherwise, just create one slot per decoder */
+    $def LAST_SLOT $={${WIDTH}-1}
+}
+
+
+/* Section for passing parameters to IMPACT's scheduler and 
+ * lmdes2_customizer 
+ */
+SECTION Parameter
+{
+  /* Used by lmdes2_customizer to assign integer numbers to many of the
+   * strings in this machine description, such as Lop_ADD, Label, REG
+   * EXCEPT, LOAD, etc.
+   */
+  customization_headers
+                (value("${IMPACT_ROOT}/include/Lcode/l_opc.h"
+                       "${IMPACT_ROOT}/include/Lcode/l_flags.h"
+                       "${IMPACT_ROOT}/include/Lcode/limpact_phase1.h"
+                       "${IMPACT_ROOT}/include/machine/m_spec.h"
+                       "${IMPACT_ROOT}/include/machine/m_impact.h"));
+
+  /* Phased out in version 2.31, but should always be set to "superscalar" 
+   * for backward compatibilty and so lmdes2_customizer does not complain.
+   * It is OK to set this to superscalar when targeting an EPIC processor!
+   */
+  processor_model (value("superscalar"));
+
+}
+
+/* Convert the scheduler operand types (NULL, p, i, f, f2, Label, and Lit)
+ * into the short name (A) that will be used to describe 
+ * the operation format mapping entries in Operation_Format.
+ */
+SECTION Field_Type
+{
+  /* Names the scheduler (thru Mspec) will use to describe the operands */
+  NULL ();                              // No operand allowed
+  p ();                                 // Predicate register operand 
+  i ();                                 // Integer register operand 
+  f ();                                 // Float register operand 
+  f2 ();                                // Double register operand 
+  Label ();                             // Generic label literal
+  Lit ();			        // Generic non-label literal
+  REG (compatible_with (i f f2));      // Generic register operand
+
+  /* Remap and group the names above into one letter names for ease of use 
+   * below in Operation Format.  Since not modeling register port usage
+   * in this template, just map everything to 'A'.
+   */
+  A (compatible_with (NULL p i f f2 Label Lit REG)); // Anything allowed
+}
+
+/* Define all the operation formats supported in the target machine.
+ *
+ * All entrys are in the form:
+ *   P0_D0D1_S0S1S2  
+ *
+ * where:
+ *   P0       is the pred[0] operand specifier 
+ *   D0       is the dest[0] operand specifier 
+ *   D1       is the dest[1] operand specifier 
+ *   S0       is the src[0] operand specifier 
+ *   S1       is the src[1] operand specifier 
+ *   S2       is the src[2] operand specifier 
+ *   
+ * Since in this template, we are not modeling register port usage, only
+ * one operation format is needed (significantly simplifying the rest of
+ * the machine description).
+ */
+SECTION Operation_Format
+{
+  A_AAAA_AAAAAA                       (pred (A) dest (A A A A) src (A A A A A A));
+}
+
+
+/*
+ *  Declare the processor resources that we wish to model.
+ *
+ *  Note: The resource names (such as decoder1) are *not* keywords.
+ *        Renaming all the resources to r1, r2, r3... r30 (and 
+ *        their references) will yield the exact same schedule.
+ *
+ *  Note: You can use as many or few resources as desired in order
+ *        to model the processor's execution constraints.  Typically,
+ *        we don't model anything that doesn't add execution constraints
+ *        (e.g., pipeline stages in fully-pipelined function units, etc.).
+ *         
+ *
+ *  Note: The 'slot' field is used to associate slot ids with particular
+ *        resource names.  For simplicity, we assign slot id 0, to slot0,
+ *        etc.  Not defining the 'slot' field indicates that this is 
+ *        a non-slot (i.e., normal) resource.
+ *        For example, to associate scheduler slot 3, with resource 
+ *        'my_slot_3':
+ *           my_slot_3 (slot(3));
+ */
+SECTION Resource
+{
+  /* Slots are used to control how operations are scheduled within the
+   * same cycle (instruction packet).  For historical reasons, slots
+   * are numbered starting from 0 (the first slot in the packet).
+   */
+  $for (I in $0..${LAST_SLOT})
+  {
+      slot${I} (slot(${I}));
+  }
+
+  /* Decoders are used to limit the number of operations that can
+   * issue in one cycle.
+   */
+  $for (I in $1..${WIDTH})
+  {
+      decoder${I} ();
+  }
+
+  /* Create the various functional units for this machine
+   * Note: All these units are assumed to be fully pipelined, so
+   *       we only need to model the first stage.
+   */
+  $for (I in $1..${NUM_IALUS})
+  {
+      ialu${I} ();
+  }
+
+  $for (I in $1..${NUM_CHK})
+  {
+      chk${I} ();
+  }
+
+  $for (I in $1..${NUM_FALUS})
+  {
+      falu${I} ();
+  }
+
+  $for (I in $1..${NUM_DIVS})
+  {
+      div${I} ();
+  } 
+
+  $for (I in $1..${NUM_BRANCHES})
+  {
+      branch${I} ();
+  }
+
+  $for (I in $1..${NUM_MEM_UNITS})
+  {
+      mem${I} ();
+  }
+}
+
+/*
+ * Specify the possible times in the pipeline the resources can be 
+ * used.  Here is the time mapping used in this machine description
+ * for resource usages:
+ * 
+ *   0 -> Fetch stage
+ *   1 -> Decode stage
+ *   2 -> First execution stage
+ *   3 -> Second execution stage and write-back stage for latency 1 ops
+ *   4 -> Third execution stage and write-back stage for latency 2 ops
+ *   etc.
+ */
+SECTION Resource_Usage
+{
+
+  /*
+   * Fetch stage
+   */    
+  $for (I in $0..${LAST_SLOT})
+  {
+      RU_slot${I}_t0_0 (use(slot${I}) time (0));
+  }
+
+
+  /*
+   * Decoder stage
+   */
+  $for (I in $1..${WIDTH})
+  {
+      RU_decoder${I}_t1_1 (use(decoder${I}) time (1));
+  }
+
+
+  /*
+   * First execution stage
+   */
+  $for (I in $1..${NUM_IALUS})
+  {
+      RU_ialu${I}_t2_2 (use(ialu${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_CHK})
+  {
+      RU_chk${I}_t2_2 (use(chk${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_FALUS})
+  {
+      RU_falu${I}_t2_2 (use(falu${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_DIVS})
+  {
+      RU_div${I}_t2_2 (use(div${I}) time (2));
+  }	
+
+  $for (I in $1..${NUM_BRANCHES})
+  {
+      RU_branch${I}_t2_2 (use(branch${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_MEM_UNITS})
+  {
+      RU_mem${I}_t2_2 (use(mem${I}) time (2));
+  }
+
+  /*
+   * Second execution stage and write-back stage for latency 1 ops
+   * etc.
+   */
+  /*
+   * We are assuming fully-pipelined functional units, so later
+   * stages do not need to be modeled.  We are not modeling register
+   * ports, so the write-backs don't need to be modeled.
+   */
+}
+
+/* Group together resource usages that should always be used together.
+ * None necessary for this simplified machine description.
+ */
+SECTION Resource_Unit
+{ 
+}
+
+/* Create options where any one of the options may be selected.
+ * For example, any one of the declared IALUs may be used.
+ *
+ * Note: Table options are used to create the OR part of AND/OR-trees.
+ */
+SECTION Table_Option
+{
+  /* Use any "normal" slot for non-branch operations. */
+  any_normal_slot_t0_0 
+  (
+      one_of($for (I in $0..(${WIDTH}-1)) {RU_slot${I}_t0_0 })
+  );
+
+  /* If placing branches at end, branches can only use the last normal
+   * slot and the extra slots after the normal slots (if 2 or more branches).
+   */
+  $if (${BRANCHES_AT_END} == 1)
+  {
+      any_branch_slot_t0_0
+      (
+          one_of($for (I in $(${WIDTH}-1)..${LAST_SLOT}){RU_slot${I}_t0_0 })
+      );
+  }
+  /* Otherwise, can place branch in any normal slot, just like non-branch ops*/
+  $else
+  {
+      any_branch_slot_t0_0 
+      (
+          one_of($for (I in $0..(${WIDTH}-1)) {RU_slot${I}_t0_0 })
+      );
+  }
+
+  /* 
+   * Allow any of the decoders to be used. 
+   * This resource use limits the processor's issue width, not slots.
+   */
+  any_decoder_t1_1 
+  (
+      one_of($for (I in $1..${WIDTH}){RU_decoder${I}_t1_1 })
+  );
+
+  /* 
+   * Allow any of the declared functional units to be used 
+   */
+  any_ialu_t2_2 
+  (
+      one_of($for (I in $1..${NUM_IALUS}) {RU_ialu${I}_t2_2 })
+  );
+
+  any_chk_t2_2
+  (
+      one_of($for (I in $1..${NUM_CHK}) {RU_chk${I}_t2_2 })
+  );
+
+  any_falu_t2_2 
+  (
+      one_of($for (I in $1..${NUM_FALUS}) {RU_falu${I}_t2_2 })
+  );
+
+  any_div_t2_2
+  (
+      one_of($for (I in $1..${NUM_DIVS}) {RU_div${I}_t2_2 })
+  );
+
+  any_mem_t2_2 
+  (
+      one_of($for (I in $1..${NUM_MEM_UNITS}) {RU_mem${I}_t2_2 })
+  );
+
+  any_branch_t2_2 
+  (
+      one_of($for (I in $1..${NUM_BRANCHES}) {RU_branch${I}_t2_2 })
+  );
+}
+
+/* Create the AND-OR trees that describes the how the processor resources
+ * are used as the operation executes.  This is the AND part of the
+ * AND/OR-tree representation for reservation tables.
+ *
+ * Any mixture of Table_Option, Resource_Unit, and Resource Usage entries
+ * may be specified in the 'use' field.
+ */
+SECTION Reservation_Table
+{
+  /* Simplifying assumption, ialu can execute all integer operations */
+  RL_IAlu       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_ialu_t2_2));
+  RL_Chk      (use(any_normal_slot_t0_0 any_decoder_t1_1 any_chk_t2_2));
+  RL_IMul       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_ialu_t2_2));
+  RL_INOP       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_ialu_t2_2));
+
+  /* Simplifying assumption, falu can execute all floating-point operations */
+  RL_FAlu       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_2));
+  RL_FMul       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_2));
+	
+  /* Divider is a seperate functional unit */ 	
+  RL_Div       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_div_t2_2));
+
+  /* Simplifying assumption, mem unit can execute all memory operations */
+  RL_Load       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_mem_t2_2));
+  RL_Store      (use(any_normal_slot_t0_0 any_decoder_t1_1 any_mem_t2_2));
+
+  /* Branches use branch slots (set above based on branch placement rules) 
+   * but otherwise act like normal operations.
+   */
+  RL_Branch     (use(any_branch_slot_t0_0 any_decoder_t1_1 any_branch_t2_2));
+  RL_JSR        (use(any_branch_slot_t0_0 any_decoder_t1_1 any_branch_t2_2));
+}
+
+/* Declare all the times that operands (s0, d1, etc) can be read/written to.
+ * These are used to determine register flow dependence latencies.
+ * 
+ * "Sync" operands (ss0, sd0, etc.) are used to determine memory, control, 
+ * and synchronization flow dependence latencies.
+ */
+SECTION Operand_Latency
+{
+  /* Declare all the times source operands can be read.
+   * Time 0 (for latencies) is assumed to be just before the first
+   * execution stage (when most source operands are read).
+   */
+  $for (I in 0 1) 
+  {
+      s${I}       (time(${I}));
+      p${I}       (time(${I}));
+  }
+
+  /* Declare all the times destination operands can be written to.
+   * Given the above assumption, this should be set to the operation latency.
+   * (Since the flow-dependence distance with be (dest_lat - src_lat).
+   */
+  $def LATENCIES {1 2 3 15}
+  $for (I in ${LATENCIES}) 
+  {
+      d${I}       (time(${I}));
+  }
+
+  /* Declare all the times sync source operands can be read. */
+  $for (I in 0) 
+  {
+      ss${I}      (time(${I}));
+  }
+
+  /* Declare all the times sync dest operands can be written to. */
+  $for (I in 0) 
+  {
+      sd${I}      (time(${I}));
+  }
+}
+
+/* Declare all the operation latency combinations allowed.
+ * The flow-dependence distance between two operands are determined
+ * with (dest_lat - src_lat).  So if dest_lat = 2, and src_lat = 0,
+ * a flow dependence with a two-cycle latency will be added.
+ */
+SECTION Operation_Latency
+{
+  /* Simplifying assumption, assume all sources are read at time 0, and
+   * destinations are written at their latency.  Assume all flow dependences
+   * between dependent memory and branch operations are 0 cycles.
+   */  
+  $for (I in ${LATENCIES}) 
+  {
+      Lat${I}     (dest(d${I} d${I} d${I} d${I})
+                   src(s0 s0 s0 s0 s0 s0)
+                   pred(p0)
+                   mem_dest(sd0)
+                   ctrl_dest(sd0)
+                   sync_dest(sd0)
+                   mem_src(ss0)
+                   ctrl_src(ss0)
+                   sync_src(ss0));               
+  }
+
+  LatDP1	(dest(d1 d1 d1 d1)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p${PBDELAY})
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));	
+	
+  LatLd         (dest(d${LOAD_LAT} d${LOAD_LAT} d${LOAD_LAT} d${LOAD_LAT})
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));               
+}
+
+/* This section's entries group together an operation format, 
+ * reservation table,and an operation latency entry. 
+ * The requirements for all three entries need to be met in order for 
+ * the operation to be scheduled.
+ *
+ * Since we can model all the resource usage options with a single 
+ * AND/OR-tree-based reservation table and we have only one operation 
+ * format, we need only one scheduling alternative per operation type 
+ * to model resource constraints.
+ *
+ * However, if general speculation is enabled, create silent versions
+ * of operations that can except.
+ */
+SECTION Scheduling_Alternative
+{
+  ALT_IAlu     (format(A_AAAA_AAAAAA) resv (RL_IAlu) latency(Lat1));
+  ALT_IMul     (format(A_AAAA_AAAAAA) resv (RL_IAlu) latency(Lat2));
+  ALT_IDiv     (format(A_AAAA_AAAAAA) resv (RL_Div) latency(Lat15));
+  ALT_INOP     (format(A_AAAA_AAAAAA) resv (RL_IAlu) latency(Lat1));
+  ALT_CHECK    (format(A_AAAA_AAAAAA) resv (RL_Chk) latency(Lat1));
+  ALT_FAlu     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat3));
+  ALT_FMul     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat3));
+  ALT_FDiv     (format(A_AAAA_AAAAAA) resv (RL_Div) latency(Lat15));
+  ALT_Load     (format(A_AAAA_AAAAAA) resv (RL_Load) latency(LatLd));
+  ALT_Store    (format(A_AAAA_AAAAAA) resv (RL_Store) latency(Lat1));
+  ALT_Branch   (format(A_AAAA_AAAAAA) resv (RL_Branch) latency(LatDP1));
+  ALT_JSR      (format(A_AAAA_AAAAAA) resv (RL_JSR) latency(Lat1));
+
+  /* Create silent versions of operations if non-trapping operations
+   * are specified as being supported.
+   */
+  $if(${NON_TRAPPING_OPS} == 1) 
+  {
+    ALT_IDiv_S (format(A_AAAA_AAAAAA) resv (RL_Div) latency(Lat15) flags(SILENT));
+    ALT_FAlu_S (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat3) flags(SILENT));
+    ALT_FMul_S (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat3) flags(SILENT));
+    ALT_FDiv_S (format(A_AAAA_AAAAAA) resv (RL_Div) latency(Lat15) flags(SILENT));
+    ALT_Load_S (format(A_AAAA_AAAAAA) resv (RL_Load) latency(LatLd) flags(SILENT));
+  }
+}
+
+/* This section entries groups together all the scheduling alternatives
+ * for each operation type.  In this simplified machine description, it
+ * is used only to add silent (non-trapping) versions of operations.
+ */
+SECTION Operation
+{
+  OP_IAlu       (alt(ALT_IAlu));    
+  OP_IMul       (alt(ALT_IMul));     
+  OP_IDiv       (alt(ALT_IDiv));     
+  OP_INOP       (alt(ALT_INOP));
+  OP_CHECK      (alt(ALT_CHECK));     
+  OP_FAlu       (alt(ALT_FAlu));     
+  OP_FMul       (alt(ALT_FMul));    
+  OP_FDiv       (alt(ALT_FDiv));     
+  OP_Load       (alt(ALT_Load));    
+  OP_Store      (alt(ALT_Store));   
+  OP_Branch     (alt(ALT_Branch));   
+  OP_JSR        (alt(ALT_JSR));     
+
+  /* Add silent versions to above (excepting) alternative lists,
+   *  if non-trapping operations are specified as being supported.
+   */
+  $if(${NON_TRAPPING_OPS} == 1) 
+  {
+    OP_IDiv     (alt||(ALT_IDiv_S));     
+    OP_FMul     (alt||(ALT_FMul_S));    
+    OP_FAlu     (alt||(ALT_FAlu_S));     
+    OP_FDiv     (alt||(ALT_FDiv_S));     
+    OP_Load     (alt||(ALT_Load_S));    
+  }
+}
+
+
+/* This section maps Lcode operations to scheduling alternatives (thru
+ * Operation entries).  It also describes to the scheduler and register
+ * allocator some properties of the operation (which they use instead
+ * of Lcode library calls).  It is very important to get these flags correct,
+ * otherwise the operation will be treated incorrectly and illegal
+ * schedules might result (i.e., must mark loads, stores, branches, etc.
+ * properly).
+ */
+SECTION IMPACT_Operation
+{
+  /* Compiler directives, the IGNORE flag tells the scheduler to ignore
+   * them (not schedule them, draw dependences to them, etc.) and put them 
+   * at the top of the cb after scheduling.  Just use OP_INOP since 
+   * something is needed.)
+   */
+  $for (OPC in Lop_DEFINE Lop_ALLOC Lop_PROLOGUE Lop_SIM_DIR Lop_BOUNDARY)
+  {
+      ${OPC}      (op(OP_INOP) flags (IGNORE));
+  }
+
+  /* EPILOGUE is a special compiler directive that must go just before
+   * the RTS (i.e, cannot move to top), so mark as SYNC operation
+   * (nothing will be able to move past it).
+   */
+  Lop_EPILOGUE  (op(OP_INOP) flags(SYNC));
+
+  /* INTRINSIC is a special opcode representing add-on instructions
+   * that can be emulated with C function calls.
+   */
+  Lop_INTRINSIC  (op(OP_INOP));
+
+  /* Don't expect any no-ops, however better define */
+  Lop_NO_OP     (op(OP_INOP));
+
+  /* General check */
+  Lop_CHECK     (op(OP_CHECK) flags (CHK));
+
+  /* Jump subroutine opcodes, must be marked with JSR flag! */
+  $for (OPC in Lop_JSR Lop_JSR_FS)
+  {
+      ${OPC}      (op(OP_JSR) flags (JSR));
+  }
+
+  /* Return to subroutines opcodes, must be marked with RTS flag! */
+  $for (OPC in Lop_RTS Lop_RTS_FS)
+  {
+      ${OPC}      (op(OP_JSR) flags (RTS));
+  }
+
+  /* Unconditinal jump opcodes, must be marked with JMP flag! */
+  $for (OPC in Lop_JUMP Lop_JUMP_FS Lop_JUMP_RG Lop_JUMP_RG_FS)
+  {
+      ${OPC}      (op(OP_Branch) flags (JMP));
+  }
+
+  /* Conditional jump opcodes, must be marked with CBR flag!
+   * Assume branch unit can compare any type of operand.
+   */
+  $for (OPC in Lop_BR Lop_BR_F Lop_BEQ Lop_BEQ_FS Lop_BNE Lop_BNE_FS
+               Lop_BGT Lop_BGT_FS Lop_BGE Lop_BGE_FS
+               Lop_BLT Lop_BLT_FS Lop_BLE Lop_BLE_FS
+               Lop_BGT_U Lop_BGT_U_FS Lop_BGE_U Lop_BGE_U_FS
+               Lop_BLT_U Lop_BLT_U_FS Lop_BLE_U Lop_BLE_U_FS
+               Lop_BEQ_F Lop_BEQ_F_FS Lop_BNE_F Lop_BNE_F_FS
+               Lop_BGT_F Lop_BGT_F_FS Lop_BGE_F Lop_BGE_F_FS
+               Lop_BLT_F Lop_BLT_F_FS Lop_BLE_F Lop_BLE_F_FS
+               Lop_BEQ_F2 Lop_BEQ_F2_FS Lop_BNE_F2 Lop_BNE_F2_FS
+               Lop_BGT_F2 Lop_BGT_F2_FS Lop_BGE_F2 Lop_BGE_F2_FS
+               Lop_BLT_F2 Lop_BLT_F2_FS Lop_BLE_F2 Lop_BLE_F2_FS)
+  {
+      ${OPC}      (op(OP_Branch) flags (CBR));
+  }
+
+  /* Remap instruction
+   */
+  $for (OPC in Lop_REMAP)
+  {
+     ${OPC}      (op(OP_Branch));
+  }
+
+  /* Integer Ialu operations, no flags needed */
+  $for (OPC in Lop_MOV Lop_ABS Lop_OR Lop_AND 
+               Lop_XOR Lop_NOR Lop_NAND Lop_NXOR      
+               Lop_OR_NOT Lop_AND_NOT Lop_OR_COMPL Lop_AND_COMPL 
+               Lop_LSL Lop_LSR Lop_ASR Lop_ADD
+               Lop_ADD_SAT Lop_ADD_SAT_U
+               Lop_SUB_SAT Lop_SUB_SAT_U
+               Lop_SAT Lop_SAT_U
+               Lop_ADD_U Lop_SUB Lop_SUB_U Lop_RCMP Lop_EQ
+               Lop_NE Lop_GT Lop_GT_U Lop_GE Lop_GE_U 
+               Lop_LT Lop_LT_U Lop_LE Lop_LE_U
+	       Lop_EXTRACT_C Lop_EXTRACT_C2 Lop_EXTRACT Lop_EXTRACT_U Lop_DEPOSIT
+               Lop_SXT_C Lop_SXT_C2 Lop_SXT_I
+               Lop_ZXT_C Lop_ZXT_C2 Lop_ZXT_I
+               Lop_LSLADD)
+  {
+      ${OPC}      (op(OP_IAlu));
+  }
+
+  /* Integer multiple operations, no flags needed.
+   * Simplified, treat multiply_add ops, etc same as multiply.
+   */
+  $for (OPC in Lop_MUL Lop_MUL_U Lop_MUL_ADD Lop_MUL_ADD_U Lop_MUL_SAT Lop_MUL_SAT_U
+               Lop_L_MAC Lop_L_MSU Lop_MUL_SUB Lop_MUL_SUB_U Lop_MUL_SUB_REV 
+	       Lop_MUL_SUB_REV_U)
+  {
+      ${OPC}      (op(OP_IMul));
+  }
+
+  /* Integer divide operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_DIV Lop_DIV_U Lop_REM Lop_REM_U)
+  {
+      ${OPC}      (op(OP_IDiv) flags (EXCEPT));
+  }
+
+  /* Floating-point moves, cannot except */
+  Lop_MOV_F     (op(OP_FAlu));
+  Lop_MOV_F2    (op(OP_FAlu));
+
+  /* Floating-point alu operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_RCMP_F Lop_ABS_F Lop_ABS_F2 Lop_ADD_F Lop_ADD_F2
+               Lop_SUB_F Lop_SUB_F2 Lop_EQ_F Lop_EQ_F2
+               Lop_NE_F Lop_NE_F2 Lop_GT_F Lop_GT_F2
+               Lop_GE_F Lop_GE_F2 Lop_LT_F Lop_LT_F2
+               Lop_LE_F Lop_LE_F2 Lop_I_F Lop_F_I
+               Lop_I_F2 Lop_F2_I Lop_F_F2 Lop_F2_F)
+  {
+      ${OPC}      (op(OP_FAlu) flags (EXCEPT));
+  }
+
+  /* Floating-point multiple operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   * Simplified, treat multiply_add ops, etc same as multiply.
+   */
+  $for (OPC in Lop_MUL_F Lop_MUL_F2 Lop_MUL_ADD_F Lop_MUL_ADD_F2
+               Lop_MUL_SUB_F Lop_MUL_SUB_REV_F 
+               Lop_MUL_SUB_F2 Lop_MUL_SUB_REV_F2)
+  {
+      ${OPC}      (op(OP_FMul) flags (EXCEPT));
+  }
+
+  /* Floating-point divide operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   * Simplified, treat sqrt ops, etc same as divide.
+   */
+  $for (OPC in Lop_DIV_F Lop_DIV_F2 Lop_SQRT_F Lop_SQRT_F2)
+  {
+      ${OPC}      (op(OP_FDiv) flags (EXCEPT));
+  }
+
+  /* Loop over the possible data types for memory operations */
+  $for (TYPE in C C2 I Q F F2)
+  {
+    /* Load memory opcodes, must be marked with EXCEPT LOAD flag! 
+     * Will not speculate above branch unless one of the scheduling
+     * alternatives is a SILENT version.
+     * Pre and post increment loads (LD_PRE, LD_POST) are not currently 
+     * supported (as of IMPACT release 2.32).
+     */
+     Lop_LD_${TYPE} (op(OP_Load) flags (EXCEPT LOAD));
+
+
+    /* Store memory opcodes, must be marked with EXCEPT STORE flag! 
+     * Pre and post increment stores (ST_PRE, ST_POST) are not currently 
+     * supported (as of IMPACT release 2.32).
+     */
+     Lop_ST_${TYPE} (op(OP_Store) flags (EXCEPT STORE));
+  }
+
+  /* Unsigned character/short loads (there are no unsigned stores) */
+  Lop_LD_UC       (op(OP_Load) flags (EXCEPT LOAD));
+  Lop_LD_UC2      (op(OP_Load) flags (EXCEPT LOAD));
+  Lop_LD_UI       (op(OP_Load) flags (EXCEPT LOAD));
+
+  /* Predicate load/store operations */
+  Lop_PRED_LD     (op(OP_Load) flags(EXCEPT LOAD));
+  Lop_PRED_ST     (op(OP_Store) flags(EXCEPT STORE));
+
+  /* Load/store block of 32 predicate registers (used by register allocator) */
+  Lop_PRED_LD_BLK (op(OP_Load) flags(NOSPEC EXCEPT LOAD));
+  Lop_PRED_ST_BLK (op(OP_Store) flags(NOSPEC EXCEPT STORE));
+
+  /* PRED_CLEAR and PRED_SET clears/sets a single predicate, primarily for 
+   * the convenence of the compiler writer. They need to be folded into
+   * later predicate definitions (via optimizations) and the rest converted 
+   * into operations that set/clear multiple predicates (perhaps up to 32) 
+   * in a single operation.  Since these pred clear/set optimizations are
+   * not currently supported (as of IMPACT release 2.32), make an aggressive 
+   * assumption that they are free and ignore their cost by treating them 
+   * as compiler directives.  (The alternative, to treat them as regular 
+   * operations is way too conservative, since many of them can be folded 
+   * in with later predicate definitions (thus eliminated) and the rest
+   * can be converted into at least predicate definitions (which allow
+   * setting two predicates per operation).
+   */
+  Lop_PRED_CLEAR(op(OP_IAlu) flags(IGNORE));
+  Lop_PRED_SET  (op(OP_IAlu) flags(IGNORE));
+
+  /* Predicate definition opcodes using integer comparisons.
+   * No flags needed. 
+   */
+  $for (OPC in Lop_CMP Lop_PRED_EQ Lop_PRED_NE Lop_PRED_GT Lop_PRED_GT_U 
+               Lop_PRED_GE Lop_PRED_GE_U Lop_PRED_LT Lop_PRED_LT_U
+               Lop_PRED_LE Lop_PRED_LE_U)
+  {
+      ${OPC}      (op(OP_IAlu));
+  }
+
+  /* Predicate definition opcodes using floating-point comparisons.
+   * EXCEPT flag must be specified. Will not speculate above branch
+   * unless one of the scheduling alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_CMP_F Lop_PRED_EQ_F2 Lop_PRED_NE_F2 Lop_PRED_GT_F2 Lop_PRED_GE_F2
+               Lop_PRED_LT_F2 Lop_PRED_LE_F2 Lop_PRED_EQ_F Lop_PRED_NE_F
+               Lop_PRED_GT_F Lop_PRED_GE_F Lop_PRED_LT_F Lop_PRED_LE_F)
+  {
+      ${OPC}      (op(OP_FAlu) flags (EXCEPT));
+  }
+}
+
+
+

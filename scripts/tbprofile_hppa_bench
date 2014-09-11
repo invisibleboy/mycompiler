@@ -1,0 +1,120 @@
+#!/bin/sh -f
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+#
+# Submits a profile request to HP Task Broker (ImpactProf)
+# 
+# Note: Task Broker is available on the HP Workstations.
+
+ARCH=`host_arch`
+
+ARCH=`host_arch`
+if test "$?" != 0; then echo "Terminating: error in arch ($ARCH)"; exit 1;fi
+
+case $ARCH in
+    hppa)
+        VALID_ARCH=1;;
+
+    *)
+        VALID_ARCH=0;;
+esac
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 1 ]; then
+    DIR="$1";
+
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+if [ $VALID_ARCH -eq 0 -o $VALID_ARGS -eq 0 ]; then
+
+    if [ $VALID_ARCH -eq 0 ]; then
+        echo ' ';
+        echo '==> This can only be run on a hppa machine '
+        echo ' ';
+    fi
+
+    #
+    # Display usage for gen_profiled_hppa
+    #
+    gen_profiled_hppa
+
+    exit 0200;
+
+fi;
+
+#
+# Grab all remaining arguments and pass them to gen_profiled_hppa
+#
+ARGS=$*
+
+export DIR
+export ARGS
+
+rm -rf ${DIR}/tbsim.out
+
+tbid=`tsub -t ${DIR}  \
+	   -b -s ImpactProf  \
+	   -o ${DIR}/tbprof.out  \
+  	   -e ${DIR}/tbprof.out /dev/null`
+
+twait $LOGNAME.$tbid
+
+if [ -x /usr/bin/mailx ] ; then
+    mailx -s "$LOGNAME.$tbid completed" $LOGNAME  < ${DIR}/tbprof.out
+else
+    mail -s "$LOGNAME.$tbid completed" $LOGNAME  < ${DIR}/tbprof.out
+fi

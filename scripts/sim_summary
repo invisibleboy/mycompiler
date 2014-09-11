@@ -1,0 +1,1689 @@
+#!/usr/local/bin/perl
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       This script combines multiple .sim files into a single output file
+#       and recalculates statistics based on the combined values.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by Chris Shannon, Dan Connors (7/27/00)
+#
+
+use Class::Struct;
+
+# Print out usage information when no arguments are specified
+if ($#ARGV < 1) {
+  printf STDERR 
+    ("> Usage: sim_summary -i input.sim [options] > output.sim\n");
+  printf STDERR 
+    ("> \n");
+  printf STDERR
+    ("> Combines each file precursored by a '-i' and prints to STDOUT.\n");
+  printf STDERR
+    ("> \n");
+  printf STDERR
+    ("> Outputs all configuration and stats with no options specified.\n");
+  printf STDERR
+    ("> \n");
+  printf STDERR
+    ("> Zero or more of the following options may be specified:\n");
+  printf STDERR
+    (">   -btb_config     output only BTB configuration info\n");
+  printf STDERR
+    (">   -icache_config  output only ICACHE configuration info\n");
+  printf STDERR
+    (">   -dcache_config  output only DCACHE configuration info\n");
+  printf STDERR
+    (">   -btb_stats      output only BTB simulation stats\n");
+  printf STDERR
+    (">   -icache_stats   output only ICACHE simulation stats\n");
+  printf STDERR
+    (">   -dcache_stats   output only DCACHE simulation stats\n");
+  printf STDERR
+    (">   -btb            output BTB configuration and simulation stats\n");
+  printf STDERR
+    (">   -icache         output ICACHE configuration and simulation stats\n");
+  printf STDERR
+    (">   -dcache         output DCACHE configuration and simulation stats\n");
+  printf STDERR
+    (">   -time           output only TIME simulation stats\n");
+  printf STDERR
+    (">   -perf           output only PERFORMANCE stats\n");
+  printf STDERR
+    (">   -misc           output only stats for MCB, ALAT, BUS, STATIC\n"); 
+  printf STDERR
+    (">                   SUPERSCALAR PROCESSOR, PROCESSOR UTILIZATION,\n"); 
+  printf STDERR
+    (">                   PROGRAM, NON-TRAPPING LOADS, and INSTRUCTION MIX\n");
+  printf STDERR
+    (">   -config         output all configuration info\n");
+  printf STDERR
+    (">   -stats          output all simulation stats\n");
+
+  exit;
+}
+
+# Keeps track of sections for selective printing
+struct Outline_info => {
+  Name => '$',
+  Start => '$',
+  End => '$',
+};
+
+# Stores each important line's data from original file
+struct Bench_Stat_info => {
+  Name => '$',
+  Value => '$',
+};
+
+# Reads in an input .sim file and creates an array of arrays of
+# Bench_Stat_info structs for important entries.
+sub get_input {
+  local ($handle,$simfile) = @_;
+  local @table;
+  
+  $counter = 0;
+  $section_count = 0;
+  %assoc_array = ();
+
+  while (<$handle>) {
+    
+    # Read in each line of input file and store important information
+    
+    my $b = Bench_Stat_info->new();
+    my $title = Outline_info->new();
+
+    # Matches all lines starting with a decimal number and ending with '.'
+    if (/\s(\d+\.\d+)\s((((\S+)\s)*)(\S+)(\D)\.)\n/) {
+      $b->Name($2);
+      $b->Value($1);
+      @table[$counter] = $b;
+      $assoc_array{$b->Name} = $counter;
+      
+      $counter++;
+    }
+    # Matches all lines starting with an integer number and ending with '.'
+    elsif (/\s(\d+)\s((((\S+)\s)*)(\S+)(\D)\.)\n/) {
+      $b->Name($2);
+      $b->Value($1);
+      if ($b->Name eq "cycles in program simulated.") {
+	@cycles[$numfilekeys] = $b->Value;
+      }
+      
+      @table[$counter] = $b;
+      $assoc_array{$b->Name} = $counter;
+      
+      $counter++;
+    }
+    # Matches all lines starting with a string and ending with '.'
+    elsif (/(\S+)\s((((\S+)\s)*)(\S+)(\D)\.)\n/) {
+      $b->Name($2);
+      $b->Value($1);
+      
+      # handle special cases to match output sim file to input sim files
+      if ($b->Value eq "Do" && $b->Name =~/not\s((((\S+)\s)*)(\S+)\.)/){
+	$b->Value("Do not");
+	$b->Name($1);
+      }
+      elsif ($b->Value eq "DOES" && $b->Name =~/NOT\s((((\S+)\s)*)(\S+)\.)/){
+	$b->Value("DOES NOT");
+	$b->Name($1);
+      }
+      elsif ($b->Value eq "(no" && $b->Name =~/info\)\s((((\S+)\s)*)(\S+)\.)/){
+	$b->Value("(no info)");
+	$b->Name($1);
+      }
+      elsif ($b->Value eq "'promoted'"){
+	$b->Value("#          ");
+	$b->Name("'promoted' includes speculative promoted instructions.");
+      }
+      elsif ($b->Value eq "'speculative'"){
+	$b->Value("#          ");
+	$b->Name("'speculative' excludes speculative promoted instructions.");
+      }
+      
+      @table[$counter] = $b;
+      $assoc_array{$b->Name} = $counter;
+      
+      $counter++;
+    }
+    # Matches special case with reverse order and not ending in '.'
+    elsif (/(superscalar\sconfiguration:\s\s)\s(((\S+)\s)*(\S+))/) {
+      $b->Name($1);
+      $b->Value($2);
+      
+      @table[$counter] = $b;
+      $assoc_array{$b->Name} = $counter;
+      
+      $counter++;
+    }
+    # Record section headers starting with '#'
+    elsif (/(\#\s(\S+\s)*(\S+):)/) {
+      $title->Name($1);
+      @outline[$section_count] = $title;
+      $assoc_array{$title->Name} = $section_count;
+
+      $section_count++;
+    }
+    
+  }
+  @files[$numfilekeys] = [ @table ];
+  $numfilekeys++;
+}
+
+# Based on each section header, determines the range for which the section
+# is valid.  This is used when printing specific sections.
+sub build_outline {
+  local $i;
+
+  $i = $assoc_array{"# SAMPLING CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"sample model."});
+  $outline[$i]->End($assoc_array{"trace promoted predicate (pred[1]) values (set by trace format)."});
+
+  $i = $assoc_array{"# PROGRAM CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"functions in program."});
+  $outline[$i]->End($assoc_array{"default latency delta factor."});
+
+  $i = $assoc_array{"# GENERAL PROCESSOR CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"processor model specified."});
+  $outline[$i]->End($assoc_array{"processor type specified."});
+
+  $i = $assoc_array{"# SUPERSCALAR PROCESSOR CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"superscalar configuration:  "});
+  $outline[$i]->End($assoc_array
+		    {"flush pipe on untraced jsr (2 cycle penalty)."});
+
+  $i = $assoc_array{"# BTB CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"BTB model."});
+  $outline[$i]->End($assoc_array{"BTB return stack size."});
+
+  $i = $assoc_array{"# MCB CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"MCB model."});
+  $outline[$i]->End($assoc_array{"MCB model."});
+
+  $i = $assoc_array{"# ALAT CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"ALAT model."});
+  $outline[$i]->End($assoc_array{"ALAT model."});
+
+  $i = $assoc_array{"# MEMORY CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"cycle memory latency."});
+  $outline[$i]->End($assoc_array{"page buffer size (in pages)."});
+
+  $i = $assoc_array{"# BUS CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"transaction bus model."});
+  $outline[$i]->End($assoc_array{"streaming support (forwarding miss data as it comes in)."});
+
+  $i = $assoc_array{"# ICACHE CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"icache model."});
+  $outline[$i]->End($assoc_array{"icache miss latency (calculated)."});
+
+  $i = $assoc_array{"# DCACHE CONFIGURATION:"};
+  $outline[$i]->Start($assoc_array{"dcache model."});
+  $outline[$i]->End($assoc_array{"dcache page table size."});
+
+  $i = $assoc_array{"# BTB:"};
+  $outline[$i]->Start($assoc_array{"BTB simulation model."});
+  $outline[$i]->End($assoc_array{"BTB incorrect ret predictions."});
+
+  $i = $assoc_array{"# BTB SUMMARY:"};
+  $outline[$i]->Start($assoc_array{"BTB cond hit ratio."});
+  $outline[$i]->End($assoc_array{"BTB overall hit ratio."});
+
+  $i = $assoc_array{"# MCB:"};
+  $outline[$i]->Start($assoc_array{"MCB simulation model."});
+  $outline[$i]->End($assoc_array{"MCB simulation model."});
+
+  $i = $assoc_array{"# ALAT:"};
+  $outline[$i]->Start($assoc_array{"ALAT simulation model."});
+  $outline[$i]->End($assoc_array{"ALAT simulation model."});
+
+  $i = $assoc_array{"# ICACHE:"};
+  $outline[$i]->Start($assoc_array{"icache simulation model."});
+  $outline[$i]->End($assoc_array{"icache hit ratio."});
+
+  $i = $assoc_array{"# DCACHE:"};
+  $outline[$i]->Start($assoc_array{"dcache simulation model."});
+  $outline[$i]->End($assoc_array{"dcache cycles blocked waiting for a store to complete."});
+
+  $i = $assoc_array{"# DCACHE PREFETCHES:"};
+  $outline[$i]->Start($assoc_array{"prefetch requests."});
+  $outline[$i]->End($assoc_array{"prefetch requests."});
+
+  $i = $assoc_array{"# DCACHE MEM_COPY:"};
+  $outline[$i]->Start($assoc_array{"dcache mem_copy directives."});
+  $outline[$i]->End($assoc_array{"dcache mem_copy directives."});
+
+  $i = $assoc_array{"# DCACHE TLB STATS:"};
+  $outline[$i]->Start($assoc_array{"total dcache TLB lookups."});
+  $outline[$i]->End($assoc_array{"total dcache pages accessed."});
+
+  $i = $assoc_array{"# DCACHE SUMMARY:"};
+  $outline[$i]->Start($assoc_array{"dcache total read hit ratio."});
+  $outline[$i]->End($assoc_array{"dcache off-path read-write hit ratio (no off-path writes)."});
+
+  $i = $assoc_array{"# BUS:"};
+  $outline[$i]->Start($assoc_array{"bus cycles simulated."});
+  $outline[$i]->End($assoc_array{"percent bus utilization."});
+
+  $i = $assoc_array{"# STATIC SUPERSCALAR PROCESSOR:"};
+  $outline[$i]->Start($assoc_array{"loads bypassed dcache by using a pending store's data."});
+  $outline[$i]->End($assoc_array{"instructions squashed during simulation."});
+
+  $i = $assoc_array{"# PROCESSOR UTILIZATION (includes off-path and pred squashed ops):"};
+  $outline[$i]->Start($assoc_array
+		      {"percent of the time issued 0 instructions."});
+  $outline[$i]->End($assoc_array
+		    {"operations were unclassified (for the above stats)."});
+
+  $i = $assoc_array{"# PROGRAM:"};
+  $outline[$i]->Start($assoc_array{"trace words read."});
+  $outline[$i]->End($assoc_array
+		    {"superscalar datas free at end of simulation."});
+
+  $i = $assoc_array{"# TIME:"};
+  $outline[$i]->Start($assoc_array{"minutes total execution time."});
+  $outline[$i]->End($assoc_array{"ending nice value for Simulator."});
+
+  $i = $assoc_array{"# NON-TRAPPING LOADS:"};
+  $outline[$i]->Start($assoc_array{"total load instructions simulated."});
+  $outline[$i]->End($assoc_array
+		    {"unmarked non-trapping loads that added buffer page."});
+
+  $i = $assoc_array{"# INSTRUCTION MIX:"};
+  $outline[$i]->Start($assoc_array{"branch instructions simulated."});
+  $outline[$i]->End($assoc_array
+		    {"percent of promoted predicated instructions squashed."});
+
+  $i = $assoc_array{"# PERFORMANCE SUMMARY:"};
+  $outline[$i]->Start($assoc_array{"cycles in program simulated."});
+  $outline[$i]->End($assoc_array{"total estimated execution time for program (in cycles)."});
+
+}
+
+# Adds all valid integer fields of input files together, skipping the 
+# configuration fields and adding the minutes fields.  These results are
+# stored in the $files[0] position (which is destructive).
+sub add_input {
+  local $i,$j;
+
+  for $j ($assoc_array{"BTB simulation model."} .. $counter-1) {
+    $temp = 0;
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      if ($files[0][$j]->Name =~ /minutes/) {
+	for $i (0 .. $numfilekeys-1) {
+	  $temp += $files[$i][$j]->Value;
+	}
+	$files[0][$j]->Value($temp);
+      }
+    }
+    
+    elsif ($files[0][$j]->Value =~ /(\d+)/) {
+      if ($files[0][$j]->Name !~ /nice\svalue\sfor\sSimulator/) {
+	for $i (0 .. $numfilekeys-1) {
+	  $temp += $files[$i][$j]->Value;
+	}
+	$files[0][$j]->Value($temp);
+	# Save cycles information for later calculations.
+	if ($files[0][$j]->Name eq "cycles in program simulated.") {
+	  $total_cycles = $files[0][$j]->Value;
+	}
+      }
+    }
+  }
+}
+
+# Since the integer values are now added together, each decimal statistic
+# must be recomputed based on new values.
+sub recalculate_ratios() {
+
+  if($files[0][$assoc_array
+	       {"BTB conditional branch predictions."}]->Value > 0){
+    $temp=$files[0][$assoc_array
+		    {"BTB incorrect conditional branch predictions."}]->Value /
+          $files[0][$assoc_array
+		    {"BTB conditional branch predictions."}]->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array{"BTB cond hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"BTB cond hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array
+	       {"BTB predicated uncond (jsr,jmp) branch predictions."}]
+                ->Value > 0){
+    $temp=$files[0][$assoc_array
+		    {"BTB incorrect predicated uncond branch predictions."}]
+                     ->Value /
+          $files[0][$assoc_array
+		    {"BTB predicated uncond (jsr,jmp) branch predictions."}]
+	             ->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"BTB predicated uncond (jsr,jmp) hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"BTB predicated uncond (jsr,jmp) hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"BTB jmp predictions."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"BTB incorrect jmp predictions."}]->Value /
+          $files[0][$assoc_array{"BTB jmp predictions."}]->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"BTB uncond hit ratio (excludes calls&returns)."}]
+               ->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"BTB uncond hit ratio (excludes calls&returns)."}]
+               ->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"BTB call predictions."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"BTB incorrect call predictions."}]->Value /
+          $files[0][$assoc_array{"BTB call predictions."}]->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array{"BTB call hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"BTB call hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"BTB ret predictions."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"BTB incorrect ret predictions."}]->Value /
+          $files[0][$assoc_array{"BTB ret predictions."}]->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array{"BTB ret hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"BTB ret hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"BTB predictions were made."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"BTB predictions were correct."}]->Value /
+          $files[0][$assoc_array{"BTB predictions were made."}]->Value;
+    $temp *= 100;
+    $files[0][$assoc_array{"BTB overall hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"BTB overall hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"icache requests."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"icache hits."}]->Value /
+          $files[0][$assoc_array{"icache requests."}]->Value;
+    $temp *= 100;
+    $files[0][$assoc_array{"icache hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"icache hit ratio."}]->Value(0.00);
+  }
+
+  $total_reads=$files[0][$assoc_array
+			 {"dcache total read hits (on and off-path)."}]
+                          ->Value +
+               $files[0][$assoc_array
+			 {"dcache total read misses (on and off-path)."}]
+		          ->Value;
+  if($total_reads > 0){
+    $read_hits=$files[0][$assoc_array
+			 {"dcache total read hits (on and off-path)."}]->Value;
+    $temp=$read_hits / $total_reads;
+    $temp *= 100;
+    $files[0][$assoc_array{"dcache total read hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"dcache total read hit ratio."}]->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"dcache on-path load requests."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"dcache on-path read hits."}]->Value /
+          $files[0][$assoc_array{"dcache on-path load requests."}]->Value;
+    $temp *= 100;
+    $files[0][$assoc_array{"dcache on-path read hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"dcache on-path read hit ratio."}]->Value(0.00);
+  }
+
+  $off_requests = $files[0][$assoc_array
+			    {"dcache off-path load requests."}]->Value;
+  if($off_requests > 0){
+    $off_hits = $files[0][$assoc_array{"dcache off-path read hits."}]->Value;
+    $temp= $off_hits / $off_requests;
+    $temp *= 100;
+    $files[0][$assoc_array{"dcache off-path read hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"dcache off-path read hit ratio."}]->Value(0.00);
+  }
+
+  $store_requests = $files[0][$assoc_array{"dcache store requests (only on-path stores reach dcache)."}]->Value;
+  if($store_requests > 0){
+    $write_hits = $files[0][$assoc_array{"dcache write hits (only on-path stores reach dcache)."}]->Value;
+    $temp= $write_hits / $store_requests;
+    $temp *= 100;
+    $files[0][$assoc_array{"dcache write hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"dcache write hit ratio."}]->Value(0.00);
+  }
+
+  if(($total_reads + $store_requests) > 0){
+    $total_requests = $total_reads + $store_requests;
+    $total_hits = $read_hits + $write_hits;
+    $temp = $total_hits / $total_requests;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"dcache total read-write hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"dcache total read-write hit ratio."}]->Value(0.00);
+  }
+
+  if(($total_requests - $off_requests) > 0){
+    $temp = ($total_hits - $off_hits) / ($total_requests - $off_requests);;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"dcache on-path read-write hit ratio."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"dcache on-path read-write hit ratio."}]->Value(0.00);
+  }
+
+  if($off_requests > 0){
+    $temp = $off_hits / $off_requests;;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"dcache off-path read-write hit ratio (no off-path writes)."}]
+               ->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"dcache off-path read-write hit ratio (no off-path writes)."}]
+               ->Value(0.00);
+  }
+
+  if($files[0][$assoc_array{"bus cycles simulated."}]->Value > 0){
+    $temp=$files[0][$assoc_array{"bus cycles unused."}]->Value /
+          $files[0][$assoc_array{"bus cycles simulated."}]->Value;
+    $temp = 1 - $temp;
+    $temp *= 100;
+    $files[0][$assoc_array{"percent bus utilization."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"percent bus utilization."}]->Value(0.00);
+  }
+
+  for $j ($assoc_array{"percent of the time issued 0 instructions."} .. 
+	  $assoc_array{"percent of the time issued 8 cache directives."}){
+    $temp = 0;
+
+    for $k (0 .. $numfilekeys - 1){
+      $temp += $cycles[$k] * $files[$k][$j]->Value;
+    }
+    $temp = $temp / $total_cycles;
+    $files[0][$j]->Value($temp);
+  }
+
+  if($files[0][$assoc_array
+	       {"total predicated instructions simulated."}]->Value > 0){
+    $pred_squashed=$files[0][$assoc_array
+			     {"total pred squashed instructions simulated."}]
+                              ->Value;
+    $temp=$pred_squashed / 
+          $files[0][$assoc_array
+		    {"total predicated instructions simulated."}]->Value;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"percent of all predicated instructions squashed."}]
+               ->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"percent of all predicated instructions squashed."}]
+               ->Value(0.00);
+  }
+
+  if($files[0][$assoc_array
+	       {"promoted predicated instructions simulated."}]->Value > 0){
+    $temp=$files[0][$assoc_array
+		    {"promoted pred squashed instructions simulated."}]->Value;
+    $temp=$temp / 
+          $files[0][$assoc_array
+		    {"promoted predicated instructions simulated."}]->Value;
+    $temp *= 100;
+    $files[0][$assoc_array
+	      {"percent of promoted predicated instructions squashed."}]
+               ->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array
+	      {"percent of promoted predicated instructions squashed."}]
+               ->Value(0.00);
+  }
+
+  if($total_cycles > 0){
+    $simmed = $files[0][$assoc_array
+			{"instructions in program simulated on path."}]->Value;
+    $temp= $simmed / $total_cycles;
+    $files[0][$assoc_array{"total IPC for program."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"total IPC for program."}]->Value(0.00);
+  }
+
+  if($total_cycles > 0){
+    $temp= ($simmed - $pred_squashed) / $total_cycles;
+    $files[0][$assoc_array{"executed IPC for program."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"executed IPC for program."}]->Value(0.00);
+  }
+
+  if($total_cycles > 0){
+    $temp= $pred_squashed / $total_cycles;
+    $files[0][$assoc_array{"pred squashed IPC for program."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"pred squashed IPC for program."}]->Value(0.00);
+  }
+
+  $skipped = $files[0][$assoc_array
+		       {"instructions in program skipped on path."}]->Value;
+  if(($simmed + $skipped) > 0){
+    $temp= $simmed / ($simmed + $skipped);
+    $temp *= 100;
+    $files[0][$assoc_array{"percent of program was simulated."}]->Value($temp);
+  }
+  else{
+    $files[0][$assoc_array{"percent of program was simulated."}]->Value(0.00);
+  }  
+  
+}
+
+# Each printing routine prints only its specific section to maintain
+# flexibility.
+sub print_sampling_config {
+  local $i,$j;
+
+  printf("# SAMPLING CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# SAMPLING CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "use function ids instead of addresses.") {
+      printf("\n");
+    }
+    if ($files[0][$j]->Name =~ /trace\spromoted\spredicate/) {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_program_config {
+  local $i,$j;
+
+  printf("# PROGRAM CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# PROGRAM CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "memory latency scale factor.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_gen_proc_config {
+  local $i,$j;
+
+  printf("# GENERAL PROCESSOR CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# GENERAL PROCESSOR CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_super_proc_config {
+  local $i,$j;
+
+  printf("# SUPERSCALAR PROCESSOR CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# SUPERSCALAR PROCESSOR CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name =~ /prevent\soff-path\srequests/) {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /superscalar\sconfiguration/) {
+      printf("%12s %s\n",$files[0][$j]->Name,$files[0][$j]->Value);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_btb_config {
+  local $i,$j;
+
+  printf("# BTB CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# BTB CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_mcb_config {
+  local $i,$j;
+
+  printf("# MCB CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# MCB CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_alat_config {
+  local $i,$j;
+
+  printf("# ALAT CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# ALAT CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_mem_config {
+  local $i,$j;
+
+  printf("# MEMORY CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# MEMORY CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_bus_config {
+  local $i,$j;
+
+  printf("# BUS CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# BUS CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_icache_config {
+  local $i,$j;
+
+  printf("# ICACHE CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# ICACHE CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_dcache_config {
+  local $i,$j;
+
+  printf("# DCACHE CONFIGURATION:\n\n");
+
+  $i = $assoc_array{"# DCACHE CONFIGURATION:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "dcache first-level TLB size.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_btb_stats {
+  local $i,$j;
+
+  printf("# BTB:\n\n");
+
+  $i = $assoc_array{"# BTB:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "BTB conditional branch predictions.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n\n# BTB SUMMARY:\n\n");
+
+  $i = $assoc_array{"# BTB SUMMARY:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_mcb_stats {
+  local $i,$j;
+
+  printf("# MCB:\n\n");
+
+  $i = $assoc_array{"# MCB:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_alat_stats {
+  local $i,$j;
+
+  printf("# ALAT:\n\n");
+
+  $i = $assoc_array{"# ALAT:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_icache_stats {
+  local $i,$j;
+
+  printf("# ICACHE:\n\n");
+
+  $i = $assoc_array{"# ICACHE:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_dcache_stats {
+  local $i,$j;
+
+  printf("# DCACHE:\n\n");
+
+  $i = $assoc_array{"# DCACHE:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n# DCACHE PREFETCHES:\n\n");
+
+  $i = $assoc_array{"# DCACHE PREFETCHES:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n# DCACHE MEM_COPY:\n\n");
+
+  $i = $assoc_array{"# DCACHE MEM_COPY:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n# DCACHE TLB STATS:\n\n");
+
+  $i = $assoc_array{"# DCACHE TLB STATS:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n# DCACHE SUMMARY:\n\n");
+
+  $i = $assoc_array{"# DCACHE SUMMARY:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_bus_stats {
+  local $i,$j;
+
+  printf("# BUS:\n\n");
+
+  $i = $assoc_array{"# BUS:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_static_super_proc_stats {
+  local $i,$j;
+
+  printf("# STATIC SUPERSCALAR PROCESSOR:\n\n");
+
+  $i = $assoc_array{"# STATIC SUPERSCALAR PROCESSOR:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_proc_util_stats {
+  local $i,$j;
+
+  printf("# PROCESSOR UTILIZATION (includes off-path and pred squashed ops):\n");
+
+  $i = $assoc_array{"# PROCESSOR UTILIZATION (includes off-path and pred squashed ops):"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name =~ /percent\sof\sthe\stime\sissued\s0/) {
+      printf("\n");
+    }
+    if ($files[0][$j]->Name =~ /operations\swere\sunclassified/) {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_program_stats {
+  local $i,$j;
+
+  printf("# PROGRAM:\n\n");
+
+  $i = $assoc_array{"# PROGRAM:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_time_stats {
+  local $i,$j;
+
+  printf("# TIME:\n\n");
+
+  $i = $assoc_array{"# TIME:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_non_trapping_stats {
+  local $i,$j;
+
+  printf("\n# NON-TRAPPING LOADS:\n\n");
+
+  $i = $assoc_array{"# NON-TRAPPING LOADS:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name =~ /speculative\spromoted\sinstructions/) {
+      printf("\n");
+    }
+    if ($files[0][$j]->Name eq "unmarked load instructions simulated.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /speculative\spromoted\sinstructions/) {
+      printf("%11s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_mix_stats {
+  local $i,$j;
+
+  printf("# INSTRUCTION MIX:\n\n");
+
+  $i = $assoc_array{"# INSTRUCTION MIX:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "total predicated instructions simulated.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+sub print_performance_stats {
+  local $i,$j;
+
+  printf("# PERFORMANCE SUMMARY:\n\n");
+
+  $i = $assoc_array{"# PERFORMANCE SUMMARY:"};
+  for $j ($outline[$i]->Start .. $outline[$i]->End) {
+    if ($files[0][$j]->Name eq "total IPC for program.") {
+      printf("\n");
+    }
+
+    if ($files[0][$j]->Value =~ /((\d+)\.(\d+))/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /hit\sratio/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /percent/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /minutes/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Name =~ /IPC/) {
+      printf("%12.2f %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    elsif ($files[0][$j]->Value =~ /\W(\d+)/) {
+      printf("%12u %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+    else {
+      printf("%12s %s\n",$files[0][$j]->Value,$files[0][$j]->Name);
+    }
+  }
+  printf("\n");
+}
+
+##############################################################################
+# MAIN                                                                       #
+##############################################################################
+
+# Initialize all printing flags to 0.
+$sampling_config = 0;
+$program_config = 0;
+$gen_proc_config = 0;
+$super_proc_config = 0;
+$btb_config = 0;
+$mcb_config = 0;
+$alat_config = 0;
+$mem_config = 0;
+$bus_config = 0;
+$icache_config = 0;
+$dcache_config = 0;
+$btb_stats = 0;
+$mcb_stats = 0;
+$alat_stats = 0;
+$icache_stats = 0;
+$dcache_stats = 0;
+$bus_stats = 0;
+$static_super_proc_stats = 0;
+$proc_util_stats = 0;
+$program_stats = 0;
+$time_stats = 0;
+$non_trapping_stats = 0;
+$mix_stats = 0;
+$performance_stats = 0;
+# Assume we will print everything
+$print_all = 1;
+
+while ($_ = $ARGV[0], /^-/) {
+  shift;
+  
+  # For each option, clear print_all flag and set appropriate printing flags
+  if (/-btb_config/) {
+    $print_all = 0;
+    $btb_config = 1;
+  }
+  elsif (/-btb_stats/) {
+    $print_all = 0;
+    $btb_stats = 1;
+  }
+  elsif (/-btb/) {
+    $print_all = 0;
+    $btb_config = 1;
+    $btb_stats = 1;
+  }
+  elsif (/-icache_config/) {
+    $print_all = 0;
+    $icache_config = 1;
+  }
+  elsif (/-icache_stats/) {
+    $print_all = 0;
+    $icache_stats = 1;
+  }
+  elsif (/-icache/) {
+    $print_all = 0;
+    $icache_config = 1;
+    $icache_stats = 1;
+  }
+  elsif (/-dcache_config/) {
+    $print_all = 0;
+    $dcache_config = 1;
+  }
+  elsif (/-dcache_stats/) {
+    $print_all = 0;
+    $dcache_stats = 1;
+  }
+  elsif (/-dcache/) {
+    $print_all = 0;
+    $dcache_config = 1;
+    $dcache_stats = 1;
+  }
+  elsif (/-time/) {
+    $print_all = 0;
+    $time_stats = 1;
+  }
+  elsif (/-perf/) {
+    $print_all = 0;
+    $performance_stats = 1;
+  }
+  elsif (/-misc/) {
+    $print_all = 0;
+    $mcb_stats = 1;
+    $alat_stats = 1;
+    $bus_stats = 1;
+    $static_super_proc_stats = 1;
+    $proc_util_stats = 1;
+    $program_stats = 1;
+    $non_trapping_stats = 1;
+    $mix_stats = 1;
+  }
+  elsif (/-config/) {
+    $print_all = 0;
+    $sampling_config = 1;
+    $program_config = 1;
+    $gen_proc_config = 1;
+    $super_proc_config = 1;
+    $btb_config = 1;
+    $mcb_config = 1;
+    $alat_config = 1;
+    $mem_config = 1;
+    $bus_config = 1;
+    $icache_config = 1;
+    $dcache_config = 1;
+  }
+  elsif (/-stats/) {
+    $print_all = 0;
+    $btb_stats = 1;
+    $mcb_stats = 1;
+    $alat_stats = 1;
+    $icache_stats = 1;
+    $dcache_stats = 1;
+    $bus_stats = 1;
+    $static_super_proc_stats = 1;
+    $proc_util_stats = 1;
+    $program_stats = 1;
+    $time_stats = 1;
+    $non_trapping_stats = 1;
+    $mix_stats = 1;
+    $performance_stats = 1;
+  }
+  # Open up a new file and read in the information
+  elsif (/-i/) {
+    $in_file = shift;
+    open (INFILE, $in_file) || die "Can't open input file: $in_file.";
+    $input = INFILE;
+    get_input($input,$in_file);
+    close ($input);
+  }
+}
+
+build_outline();
+add_input();
+recalculate_ratios();
+
+# If print_all hasn't been cleared, no options were specified and everything
+# should be printed.
+if ($print_all) {
+  $sampling_config = 1;
+  $program_config = 1;
+  $gen_proc_config = 1;
+  $super_proc_config = 1;
+  $btb_config = 1;
+  $mcb_config = 1;
+  $alat_config = 1;
+  $mem_config = 1;
+  $bus_config = 1;
+  $icache_config = 1;
+  $dcache_config = 1;
+  $btb_stats = 1;
+  $mcb_stats = 1;
+  $alat_stats = 1;
+  $icache_stats = 1;
+  $dcache_stats = 1;
+  $bus_stats = 1;
+  $static_super_proc_stats = 1;
+  $proc_util_stats = 1;
+  $program_stats = 1;
+  $time_stats = 1;
+  $non_trapping_stats = 1;
+  $mix_stats = 1;
+  $performance_stats = 1;
+}
+
+# Check flag and call appropriate printing routine for each section.
+if ($sampling_config) {
+  print_sampling_config();
+}
+if ($program_config) {
+  print_program_config();
+}
+if ($gen_proc_config) {
+  print_gen_proc_config();
+}
+if ($super_proc_config) {
+  print_super_proc_config();
+}
+if ($btb_config) {
+  print_btb_config();
+}
+if ($mcb_config) {
+  print_mcb_config();
+}
+if ($alat_config) {
+  print_alat_config();
+}
+if ($mem_config) {
+  print_mem_config();
+}
+if ($bus_config) {
+  print_bus_config();
+}
+if ($icache_config) {
+  print_icache_config();
+}
+if ($dcache_config) {
+  print_dcache_config();
+}
+if ($print_all) {
+  printf("# END CONFIGURATION\n\n");
+  printf("# SIMULATOR RESULTS:\n\n");
+}
+if ($btb_stats) {
+  print_btb_stats();
+}
+if ($mcb_stats) {
+  print_mcb_stats();
+}
+if ($alat_stats) {
+  print_alat_stats();
+}
+if ($icache_stats) {
+  print_icache_stats();
+}
+if ($dcache_stats) {
+  print_dcache_stats();
+}
+if ($bus_stats) {
+  print_bus_stats();
+}
+if ($static_super_proc_stats) {
+  print_static_super_proc_stats();
+}
+if ($proc_util_stats) {
+  print_proc_util_stats();
+}
+if ($program_stats) {
+  print_program_stats();
+}
+if ($time_stats) {
+  print_time_stats();
+}
+if ($non_trapping_stats) {
+  print_non_trapping_stats();
+}
+if ($mix_stats) {
+  print_mix_stats();
+}
+if ($performance_stats) {
+  print_performance_stats();
+}

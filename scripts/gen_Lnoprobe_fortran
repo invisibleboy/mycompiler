@@ -1,0 +1,349 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#       Generates executable that generates a trace for 
+#       mcode simulation, profiling, or cache simulation hp-pa code generator
+#       Also generates an encoded mcode file if for simulation or profiling
+#
+#	Usage: gen_Lprobe directory probe_type base_name [start_phase] < list
+#
+#       probe_type may be simulation, profiling or address_trace
+#	start_phase is the starting code generator phase (1, 2, or 4)
+#                   (defaults to 2)
+#
+#       Gerenerates $base_name$.probed, $base_name$.encoded
+#
+#	Written by John Gyllenhaal
+
+
+ARCH=`arch`
+#if test "$?" != 0; then echo "Terminating: error in arch ($ARCH)"; exit 1;fi
+
+if [ $ARCH = hppa ]; then
+        VALID_ARCH=1;
+	ARCH_PARMS="\
+		-p ${IMPACT_REL_PATH}/parms/STD_PARMS \
+		-Parch=hppa -Pmodel=PA_7100 \
+		-Plmdes=${IMPACT_REL_PATH}/mdes/Lhppa/PA_7100.lmdes "
+	CC_COMMAND="cc -z +a -Wl,-a,archive " 
+	TRACE_LIB="/home/scorpius/impact/lib/libhptrace.a /home/rigel3/impcc/bench/perfect/lib_hp/TIMERS_DUMB.o  /home/rigel3/impcc/bench/perfect/lib_hp/libF77.a  /home/rigel3/impcc/bench/perfect/lib_hp/libI77.a -L/home/scorpius/impact/lib -lemul"
+	START_PHASE="2";
+elif [  $ARCH = "x86" ]; then
+        VALID_ARCH=1;
+        ARCH_PARMS="\
+		-p ${IMPACT_REL_PATH}/parms/STD_PARMS \
+		-Parch=x86 \
+		-Pmodel=486 \
+		-Plmdes=${IMPACT_REL_PATH}/mdes/Lx86/X86_486.lmdes "
+	CC_COMMAND="cc " 
+	TRACE_LIB="/home/helium/impact/lib/libx86trace.a"
+	START_PHASE="4";
+else
+        VALID_ARCH=0;
+fi
+
+if [ $# -eq 3 -a  $VALID_ARCH -eq 1 ]; then
+	PREFIX="$1";
+        PROBE_TYPE="$2";
+	BASE_NAME="$3";
+	EXEC_NAME=${BASE_NAME}.probed;
+
+elif [ $# -eq 4 -a  $VALID_ARCH -eq 1 ]; then
+	PREFIX="$1";
+        PROBE_TYPE="$2";
+	BASE_NAME="$3";
+	EXEC_NAME=${BASE_NAME}.probed;
+	START_PHASE="$4";
+else
+
+if [ $VALID_ARCH -eq 0 ]; then
+   echo ' ';
+   echo '==> This should be run on a HP 755 (Alderaan, or Scorpius) or';
+   echo '==>                    or a x86 (Helium). ';
+   echo ' ';
+fi
+	echo '> Usage: gen_Lprobe dir probe_type base_name [start_phase] < "list"';
+	echo '> ';
+	echo '> Generates an probed executable for mcode tracing';
+	echo '> probe_type may be simulation, profiling, address_trace, or x86_trace';
+	echo '> base_name is used to generate base_name.probed, base_name.encoded, etc.'
+	echo '> start_phase phase to start codegenerator at:'
+	echo '>            1 or 2 for hppa (default 2), or 4 for x86 (default 4)'
+	exit 0200;
+fi;
+
+
+if [ $PROBE_TYPE = "simulation" ]; then
+    	echo "> Probing for simulation";
+elif [ $PROBE_TYPE = "x86_trace" ]; then
+    	echo "> Probing for x86_trace";
+elif [ $PROBE_TYPE = "profiling" ]; then
+    	echo "> Probing for profiling";
+elif [ $PROBE_TYPE = "address_trace" ]; then
+    	echo "> Probing for address trace generation";
+else
+    echo '> Invalid probe type: (Try simulation, profiling, or address_trace)';
+    exit 0200;
+fi;
+
+if [ $ARCH = hppa ]; then
+	if [ $START_PHASE != "1" -a $START_PHASE != "2" ]; then
+		echo "start_phase of '$START_PHASE' not supported by hppa (use 1 or 2)"
+		exit 0200
+	fi
+
+elif [  $ARCH = "x86" ]; then
+
+	if [ $START_PHASE != "4" ]; then
+		echo "start_phase of '$START_PHASE' not supported by x86 (only 4 is supported)"
+		exit 0200
+	fi
+fi
+
+
+LPROBE_PARMS=" \
+	-Pprobe_for=${PROBE_TYPE} "
+
+if [ $START_PHASE = "1" ]; then 
+	LPROBE_PARMS="${LPROBE_PARMS} -Ptrace_target=lcode "
+else
+	LPROBE_PARMS="${LPROBE_PARMS} -Ptrace_target=mcode "
+fi
+
+GLOBAL_PARMS=" \
+	-Pcheck_data_struct_alloc=no "
+
+MCODE_PARMS=" \
+        -Pprint_lcode=no \
+	-Pdo_prepass_sched=no \
+	-Pdo_machine_opt=no \
+	-Pdo_peephole_opt=yes "
+
+SCHEDULER_PARMS="\
+	-Pdo_fill_squashing_branches=no \
+	-Pdo_fill_nonsquashing_branches=no "
+
+LENCODE_PARMS=" \
+	-Pcheck_data_struct_alloc=no \
+        -Pencode_for=$PROBE_TYPE"
+
+# All Lhppa optimizations except parallelize_label_loads must be off.
+# set mark_phase1 even though wont be used unless do phase1
+LHPPA_PARMS=" \
+	${GLOBAL_PARMS} \
+	${MCODE_PARMS} \
+	${SCHEDULER_PARMS} \
+	${LPROBE_PARMS} \
+	-Pconstant_preloading=no \
+	-Ppredicated_lcode=yes \
+        -Psupport_probing=yes \
+	-Pinsert_probes=no \
+	-Pparallelize_label_loads=yes \
+	-Psign_extend_in_phase3=yes \
+	-Pdo_postpass_scheduling=no \
+	-Fdo_fill_unfilled_branches=yes \
+	-Pmark_phase1=yes"
+
+LX86_PARMS=" \
+        ${GLOBAL_PARMS} \
+        ${MCODE_PARMS} \
+	-Fmax_dest_operand=3 \
+	-Fmax_src_operand=4 "
+
+LX86P2_PARMS=" \
+	${LX86_PARMS} \
+	-Pdo_postpass_scheduling=no \
+	-Fdo_fill_unfilled_branches=no"
+
+
+rm -f ${PREFIX}/${EXEC_NAME}
+rm -f ${PREFIX}/${BASE_NAME}.encoded
+rm -f ${PREFIX}/${BASE_NAME}.binmap
+rm -f ${PREFIX}/${BASE_NAME}.binsource
+rm -f ${PREFIX}/${BASE_NAME}.obj_list
+
+while read FILE;
+do
+
+	echo "> processing $PREFIX/$FILE for ${PROBE_TYPE}"
+#	FILEOUT=`echo $FILE | awk -F. '{print $1}'`
+	FILEOUT=`echo $FILE | \
+	awk -F. '{if ($(NF) == "p") NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+
+# Do not process empty files
+if [ -s $FILE ]; then
+
+# Encode lcode files if doing simulation or profiling
+if [ $PROBE_TYPE != "address_trace" ]; then
+	Lencode \
+	${ARCH_PARMS} \
+	${LENCODE_PARMS} \
+        -i ${PREFIX}/${FILE} \
+        -o stdout >> ${PREFIX}/${BASE_NAME}.encoded
+fi;
+
+
+if [ $ARCH = hppa ]; then
+	
+	if [ $START_PHASE = "1" ]; then
+		PHASE_PARMS="-Pphase=7";
+	else
+		PHASE_PARMS="-Pphase=6";
+	fi
+
+	Lhppa \
+	${ARCH_PARMS} \
+        ${LHPPA_PARMS} \
+	-i ${PREFIX}/${FILE} \
+        -o ${PREFIX}/${FILEOUT}.s \
+	${PHASE_PARMS}
+
+elif [  $ARCH = "x86" ]; then
+
+	if [ $START_PHASE = "1" ]; then
+
+		Lx86 \
+		${ARCH_PARMS} \
+       		${SCHEDULER_PARMS} \
+        	${LX86P2_PARMS} \
+        	-i ${PREFIX}/${FILE} \
+        	-o ${PREFIX}/${FILEOUT}.mco \
+        	-Pphase=3
+		BASE_FILE=${FILEOUT}.mco;
+
+	elif [ $START_PHASE = "2" ]; then
+
+		Lx86 \
+		${ARCH_PARMS} \
+       		${SCHEDULER_PARMS} \
+        	${LX86P2_PARMS} \
+        	-i ${PREFIX}/${FILE} \
+        	-o ${PREFIX}/${FILEOUT}.mco \
+        	-Pphase=2
+		BASE_FILE=${FILEOUT}.mco;
+	else
+		BASE_FILE=${FILE};
+	fi
+
+	if  [ $PROBE_TYPE = "x86_trace" ]; then
+        	Lx86 \
+		${ARCH_PARMS} \
+       		 ${LX86_PARMS} \
+       	 	-i ${PREFIX}/${BASE_FILE} \
+        	-o ${PREFIX}/${FILEOUT}.s \
+        	-Pphase=4
+		if test "$?" != 0; then 
+			echo "Terminating: non-zero exit code"; exit 1;fi
+		
+		rm -f ${PREFIX}/${FILEOUT}.o
+
+		cat ${PREFIX}/${FILEOUT}.s >> ${PREFIX}/${BASE_NAME}.binsource;
+
+		${CC_COMMAND} -c ${PREFIX}/${FILEOUT}.s \
+		-o ${PREFIX}/${FILEOUT}.o
+		if test "$?" != 0; then 
+			echo "Terminating: non-zero exit code"; exit 1;fi
+
+
+		
+		dis ${PREFIX}/${FILEOUT}.o > ${PREFIX}/${FILEOUT}.dis	
+		if test "$?" != 0; then 
+			echo "Terminating: non-zero exit code"; exit 1;fi
+
+		Lx86trace \
+		${ARCH_PARMS} \
+		-i ${PREFIX}/${BASE_FILE} \
+		>> ${PREFIX}/${BASE_NAME}.binmap
+		if test "$?" != 0; then 
+			echo "Terminating: non-zero exit code"; exit 1;fi
+
+		rm -f ${PREFIX}/${FILEOUT}.o ${PREFIX}/${FILEOUT}.s 
+#	 	rm -f ${PREFIX}/${FILEOUT}.dis
+	fi
+
+        Lprobe \
+	${ARCH_PARMS} \
+        ${LPROBE_PARMS} \
+        -i ${PREFIX}/${BASE_FILE} \
+        -o ${PREFIX}/${FILEOUT}.pmco \
+        -Pphase=3
+
+        Lx86 \
+	${ARCH_PARMS} \
+        ${LX86_PARMS} \
+        -i ${PREFIX}/${FILEOUT}.pmco \
+        -o ${PREFIX}/${FILEOUT}.s \
+        -Pphase=4
+
+fi
+
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+
+  	echo "${PREFIX}/${FILEOUT}.o \c" >> ${PREFIX}/${BASE_NAME}.obj_list
+
+
+	${CC_COMMAND} -c ${PREFIX}/${FILEOUT}.s \
+	-o ${PREFIX}/${FILEOUT}.o
+
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+
+fi;
+done;
+
+/bin/sh -c "${CC_COMMAND} -o ${PREFIX}/${EXEC_NAME} \
+	`cat ${PREFIX}/${BASE_NAME}.obj_list` \
+	${TRACE_LIB} \
+	-lc -lm -lcurses"
+
+/bin/sh -c "Lsimaddr_build \
+	${PREFIX}/${EXEC_NAME} ${PREFIX}/${BASE_NAME}.encoded ${PREFIX}/${BASE_NAME}.addr_list"
+
+echo "> done";
+

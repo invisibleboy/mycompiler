@@ -1,0 +1,751 @@
+\section{md\_\-preprocessor.c File Reference}
+\label{md__preprocessor_8c}\index{md_preprocessor.c@{md\_\-preprocessor.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}md\_\-preprocessor.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{print\_\-usage} (char $\ast$fmt,...)
+\item 
+void \bf{read\_\-command\_\-line\_\-parameters} (int argc, char $\ast$$\ast$arg\_\-ptr)
+\item 
+void \bf{L\_\-punt} (char $\ast$fmt,...)
+\item 
+void \bf{Perror} (\bf{Pptr} $\ast$pptr, char $\ast$fmt,...)
+\item 
+void \bf{Pputc} (\bf{Pptr} $\ast$pptr, int ch)
+\item 
+int \bf{main} (int argc, char $\ast$$\ast$argv, char $\ast$$\ast$envp)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-body} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Pptr} $\ast$ \bf{skip\_\-body} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-def\_\-directive} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-undef\_\-directive} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Value\_\-List} $\ast$ \bf{get\_\-for\_\-value\_\-list} (\bf{Pptr} $\ast$pptr, \bf{Pptr} $\ast$placemark)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-for\_\-directive} (\bf{Pptr} $\ast$pptr, \bf{Pptr} $\ast$placemark)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-if\_\-directive} (\bf{Pptr} $\ast$pptr, \bf{Pptr} $\ast$placemark)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-include\_\-directive} (\bf{Pptr} $\ast$pptr, \bf{Pptr} $\ast$placemark)
+\item 
+\bf{Pptr} $\ast$ \bf{process\_\-directive} (\bf{Pptr} $\ast$pptr)
+\item 
+char $\ast$ \bf{Pget\_\-alnum\_\-string} (\bf{Pptr} $\ast$pptr)
+\item 
+char $\ast$ \bf{Pget\_\-identifier} (\bf{Pptr} $\ast$pptr)
+\item 
+char $\ast$ \bf{Pget\_\-stripped\_\-line} (\bf{Pptr} $\ast$pptr)
+\item 
+char $\ast$ \bf{Pget\_\-quoted\_\-string} (\bf{Pptr} $\ast$pptr, int strip\_\-quotes)
+\item 
+char $\ast$ \bf{Pget\_\-for\_\-string} (\bf{Pptr} $\ast$pptr)
+\item 
+char $\ast$ \bf{Pget\_\-bounded\_\-string} (\bf{Pptr} $\ast$pptr)
+\item 
+void \bf{Pskip\_\-whitespace} (\bf{Pptr} $\ast$pptr)
+\item 
+void \bf{Pskip\_\-whitespace\_\-no\_\-nl} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Pptr} $\ast$ \bf{create\_\-Pptr} (\bf{Mfile} $\ast$mfile)
+\item 
+\bf{Pptr} $\ast$ \bf{copy\_\-Pptr} (\bf{Pptr} $\ast$orig\_\-pptr)
+\item 
+void \bf{move\_\-Pptr} (\bf{Pptr} $\ast$old\_\-pptr, \bf{Pptr} $\ast$new\_\-pptr)
+\item 
+void \bf{free\_\-Pptr} (\bf{Pptr} $\ast$pptr)
+\item 
+void \bf{Pexpand\_\-directive} (\bf{Pptr} $\ast$source\_\-pptr)
+\item 
+int \bf{Pexpand\_\-text} (\bf{Pptr} $\ast$pptr)
+\item 
+int \bf{Pgetc} (\bf{Pptr} $\ast$pptr)
+\item 
+int \bf{Ppeekc} (\bf{Pptr} $\ast$pptr)
+\item 
+int \bf{Pcalc\_\-C\_\-int\_\-expr} (\bf{Pptr} $\ast$pptr, int current\_\-precedence)
+\item 
+int \bf{Pcalc\_\-C\_\-int\_\-factor} (\bf{Pptr} $\ast$pptr)
+\item 
+double \bf{Pcalc\_\-C\_\-float\_\-expr} (\bf{Pptr} $\ast$pptr, int current\_\-precedence)
+\item 
+double \bf{Pcalc\_\-C\_\-float\_\-factor} (\bf{Pptr} $\ast$pptr)
+\item 
+\bf{Pdef} $\ast$ \bf{create\_\-Pdef} (char $\ast$\bf{name}, char $\ast$val, int allow\_\-implicit\_\-replacement, int level)
+\item 
+void \bf{free\_\-Pdef} (void $\ast$def\_\-v)
+\item 
+void \bf{add\_\-Pdef} (char $\ast$\bf{name}, char $\ast$val, int allow\_\-implicit\_\-replacement, int level)
+\item 
+void \bf{delete\_\-Pdef} (char $\ast$\bf{name})
+\item 
+char $\ast$ \bf{Plookup} (char $\ast$\bf{name}, int implicit\_\-replacement)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ \bf{out}
+\item 
+\bf{Mfile} $\ast$ \bf{current\_\-file}
+\item 
+\bf{Psymbol\_\-Table} $\ast$ \bf{Pdef\_\-table} = \bf{NULL}
+\item 
+\bf{Psymbol\_\-Table} $\ast$ \bf{Mfile\_\-table} = \bf{NULL}
+\item 
+int \bf{allow\_\-text\_\-replacement} = 1
+\item 
+int \bf{disable\_\-implicit\_\-text\_\-replacement} = 0
+\item 
+\bf{Mbuf} $\ast$ \bf{temp\_\-mbuf} = \bf{NULL}
+\item 
+\bf{Mbuf} $\ast$ \bf{pptr\_\-mbuf} = \bf{NULL}
+\item 
+\bf{Pptr} $\ast$ \bf{temp\_\-placemark} = \bf{NULL}
+\item 
+\bf{Mptr} $\ast$ \bf{expand\_\-placemark} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Pptr\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Pdef\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{String\_\-Node\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Value\_\-List\_\-pool} = \bf{NULL}
+\item 
+char $\ast$ \bf{program\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}
+\item 
+int \bf{using\_\-stdin} = 0
+\item 
+int \bf{print\_\-line\_\-directives} = 1
+\item 
+int \bf{print\_\-alloc\_\-usage} = 0
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{md_preprocessor.c@{md\_\-preprocessor.c}!add_Pdef@{add\_\-Pdef}}
+\index{add_Pdef@{add\_\-Pdef}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-Pdef (char $\ast$ {\em name}, char $\ast$ {\em val}, int {\em allow\_\-implicit\_\-replacement}, int {\em level})}\label{md__preprocessor_8c_a664d54fd7aa40b97a202097ac127738}
+
+
+
+
+Definition at line 3492 of file md\_\-preprocessor.c.
+
+References add\_\-Psymbol(), Pdef::allow\_\-implicit\_\-replacement, create\_\-Pdef(), Psymbol::data, find\_\-Psymbol(), Pdef::level, NULL, Pdef\_\-table, and Pdef::val.
+
+Referenced by main(), process\_\-def\_\-directive(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!copy_Pptr@{copy\_\-Pptr}}
+\index{copy_Pptr@{copy\_\-Pptr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ copy\_\-Pptr (\bf{Pptr} $\ast$ {\em orig\_\-pptr})}\label{md__preprocessor_8c_f0da883268c1e42b311b6d8673f6206e}
+
+
+
+
+Definition at line 2149 of file md\_\-preprocessor.c.
+
+References adds\_\-to\_\-Mbuf(), copy\_\-Mptr(), create\_\-Mbuf(), Pptr::expanded, Pptr::expanded\_\-pos, get\_\-Mbuf\_\-buf(), L\_\-alloc(), Pptr::mptr, Pptr\_\-pool, Pptr::quoted, and Pptr::scanned.
+
+Referenced by Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), and process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!create_Pdef@{create\_\-Pdef}}
+\index{create_Pdef@{create\_\-Pdef}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pdef}$\ast$ create\_\-Pdef (char $\ast$ {\em name}, char $\ast$ {\em val}, int {\em allow\_\-implicit\_\-replacement}, int {\em level})}\label{md__preprocessor_8c_cf9d96a6259b42e99198e03a423214d7}
+
+
+
+
+Definition at line 3470 of file md\_\-preprocessor.c.
+
+References Pdef::allow\_\-implicit\_\-replacement, L\_\-alloc(), Pdef::level, Pdef::name, Pdef\_\-pool, and Pdef::val.
+
+Referenced by add\_\-Pdef().\index{md_preprocessor.c@{md\_\-preprocessor.c}!create_Pptr@{create\_\-Pptr}}
+\index{create_Pptr@{create\_\-Pptr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ create\_\-Pptr (\bf{Mfile} $\ast$ {\em mfile})}\label{md__preprocessor_8c_03c35a85124487f604fced1fd4cb1413}
+
+
+
+
+Definition at line 2133 of file md\_\-preprocessor.c.
+
+References create\_\-Mbuf(), create\_\-Mptr(), Pptr::expanded, Pptr::expanded\_\-pos, L\_\-alloc(), Pptr::mptr, Pptr\_\-pool, Pptr::quoted, and Pptr::scanned.
+
+Referenced by main(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!delete_Pdef@{delete\_\-Pdef}}
+\index{delete_Pdef@{delete\_\-Pdef}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void delete\_\-Pdef (char $\ast$ {\em name})}\label{md__preprocessor_8c_3cde2100eec552f5ae6db0940aef4d34}
+
+
+
+
+Definition at line 3521 of file md\_\-preprocessor.c.
+
+References delete\_\-Psymbol(), find\_\-Psymbol(), free\_\-Pdef(), NULL, and Pdef\_\-table.
+
+Referenced by process\_\-undef\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!free_Pdef@{free\_\-Pdef}}
+\index{free_Pdef@{free\_\-Pdef}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Pdef (void $\ast$ {\em def\_\-v})}\label{md__preprocessor_8c_89ffda2e246f0a64495be522f05cbadd}
+
+
+
+
+Definition at line 3482 of file md\_\-preprocessor.c.
+
+References L\_\-free(), Pdef::name, Pdef\_\-pool, and Pdef::val.
+
+Referenced by delete\_\-Pdef(), and main().\index{md_preprocessor.c@{md\_\-preprocessor.c}!free_Pptr@{free\_\-Pptr}}
+\index{free_Pptr@{free\_\-Pptr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Pptr (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_4640aa292e2cee439780e0e2c231b8ed}
+
+
+
+
+Definition at line 2189 of file md\_\-preprocessor.c.
+
+References Pptr::expanded, free\_\-Mbuf(), free\_\-Mptr(), L\_\-free(), Pptr::mptr, and Pptr\_\-pool.
+
+Referenced by main(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), process\_\-directive(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!get_for_value_list@{get\_\-for\_\-value\_\-list}}
+\index{get_for_value_list@{get\_\-for\_\-value\_\-list}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Value\_\-List}$\ast$ get\_\-for\_\-value\_\-list (\bf{Pptr} $\ast$ {\em pptr}, \bf{Pptr} $\ast$ {\em placemark})}\label{md__preprocessor_8c_358bcc55e8945163d5b09dd2e3165a4e}
+
+
+
+
+Definition at line 1091 of file md\_\-preprocessor.c.
+
+References Value\_\-List::allow\_\-implicit\_\-replacement, disable\_\-implicit\_\-text\_\-replacement, Value\_\-List::first\_\-value, L\_\-alloc(), Value\_\-List::last\_\-value, move\_\-Pptr(), Value\_\-List::name, String\_\-Node::next, NULL, Perror(), Pget\_\-for\_\-string(), Pget\_\-identifier(), Pgetc(), Ppeekc(), Pskip\_\-whitespace(), String\_\-Node::string, String\_\-Node\_\-pool, Value\_\-List::value\_\-count, and Value\_\-List\_\-pool.
+
+Referenced by process\_\-for\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!L_punt@{L\_\-punt}}
+\index{L_punt@{L\_\-punt}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-punt (char $\ast$ {\em fmt},  {\em ...})}\label{md__preprocessor_8c_c8ccfa451c1bd1740a1b720ba5b4c3a9}
+
+
+
+
+Definition at line 353 of file md\_\-preprocessor.c.
+
+Referenced by main(), move\_\-Pptr(), Pget\_\-bounded\_\-string(), and process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!main@{main}}
+\index{main@{main}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int main (int {\em argc}, char $\ast$$\ast$ {\em argv}, char $\ast$$\ast$ {\em envp})}\label{md__preprocessor_8c_647f21a28344e1d9c643f4115516d7c9}
+
+
+
+
+Definition at line 586 of file md\_\-preprocessor.c.
+
+References add\_\-Pdef(), add\_\-Psymbol(), create\_\-Mbuf(), create\_\-Mfile(), create\_\-Mptr(), create\_\-Pptr(), create\_\-Psymbol\_\-Table(), current\_\-file, expand\_\-placemark, free\_\-Mbuf(), free\_\-Mfile(), free\_\-Mptr(), free\_\-Pdef(), free\_\-Pptr(), free\_\-Psymbol\_\-Table(), input\_\-file\_\-name, L\_\-create\_\-alloc\_\-pool(), L\_\-free\_\-alloc\_\-pool(), L\_\-print\_\-alloc\_\-info(), L\_\-punt(), Mbuf\_\-pool, Mfile\_\-pool, Mfile\_\-table, Mline\_\-pool, Mptr\_\-pool, name, NULL, out, output\_\-file\_\-name, Pdef\_\-pool, Pdef\_\-table, Pgetc(), Ppeekc(), pptr\_\-mbuf, Pptr\_\-pool, Pputc(), print\_\-alloc\_\-usage, process\_\-body(), Psymbol\_\-pool, Psymbol\_\-Table\_\-pool, read\_\-command\_\-line\_\-parameters(), String\_\-Node\_\-pool, temp\_\-mbuf, temp\_\-placemark, using\_\-stdin, and Value\_\-List\_\-pool.\index{md_preprocessor.c@{md\_\-preprocessor.c}!move_Pptr@{move\_\-Pptr}}
+\index{move_Pptr@{move\_\-Pptr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void move\_\-Pptr (\bf{Pptr} $\ast$ {\em old\_\-pptr}, \bf{Pptr} $\ast$ {\em new\_\-pptr})}\label{md__preprocessor_8c_657cab1ededb1d24f0f14f022bcd094d}
+
+
+
+
+Definition at line 2171 of file md\_\-preprocessor.c.
+
+References adds\_\-to\_\-Mbuf(), clear\_\-Mbuf(), Pptr::expanded, Pptr::expanded\_\-pos, get\_\-Mbuf\_\-buf(), L\_\-punt(), move\_\-Mptr(), Pptr::mptr, Pptr::quoted, and Pptr::scanned.
+
+Referenced by get\_\-for\_\-value\_\-list(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-quoted\_\-string(), process\_\-def\_\-directive(), process\_\-for\_\-directive(), and process\_\-if\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pcalc_C_float_expr@{Pcalc\_\-C\_\-float\_\-expr}}
+\index{Pcalc_C_float_expr@{Pcalc\_\-C\_\-float\_\-expr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Pcalc\_\-C\_\-float\_\-expr (\bf{Pptr} $\ast$ {\em pptr}, int {\em current\_\-precedence})}\label{md__preprocessor_8c_9f2325391833230381496bb431bd6787}
+
+
+
+
+Definition at line 3102 of file md\_\-preprocessor.c.
+
+References copy\_\-Pptr(), free\_\-Pptr(), move\_\-Pptr(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Perror(), Pgetc(), Ppeekc(), and Pskip\_\-whitespace().
+
+Referenced by Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), and Pexpand\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pcalc_C_float_factor@{Pcalc\_\-C\_\-float\_\-factor}}
+\index{Pcalc_C_float_factor@{Pcalc\_\-C\_\-float\_\-factor}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Pcalc\_\-C\_\-float\_\-factor (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_d5d57d0445efaf105fc993c973500e88}
+
+
+
+
+Definition at line 3272 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), copy\_\-Pptr(), create\_\-Mbuf(), free\_\-Mbuf(), free\_\-Pptr(), get\_\-Mbuf\_\-buf(), move\_\-Pptr(), Pcalc\_\-C\_\-float\_\-expr(), Perror(), Pgetc(), Ppeekc(), and Pskip\_\-whitespace().
+
+Referenced by Pcalc\_\-C\_\-float\_\-expr().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pcalc_C_int_expr@{Pcalc\_\-C\_\-int\_\-expr}}
+\index{Pcalc_C_int_expr@{Pcalc\_\-C\_\-int\_\-expr}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Pcalc\_\-C\_\-int\_\-expr (\bf{Pptr} $\ast$ {\em pptr}, int {\em current\_\-precedence})}\label{md__preprocessor_8c_d0cd379c806bdf45c36a3f8fe9f28201}
+
+
+
+
+Definition at line 2777 of file md\_\-preprocessor.c.
+
+References copy\_\-Pptr(), free\_\-Pptr(), move\_\-Pptr(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Perror(), Pgetc(), Ppeekc(), and Pskip\_\-whitespace().
+
+Referenced by Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), and process\_\-if\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pcalc_C_int_factor@{Pcalc\_\-C\_\-int\_\-factor}}
+\index{Pcalc_C_int_factor@{Pcalc\_\-C\_\-int\_\-factor}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Pcalc\_\-C\_\-int\_\-factor (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_be976f6287689c26f1804b05a5604e1c}
+
+
+
+
+Definition at line 2950 of file md\_\-preprocessor.c.
+
+References copy\_\-Pptr(), free\_\-Pptr(), move\_\-Pptr(), Pcalc\_\-C\_\-int\_\-expr(), Perror(), Pgetc(), Ppeekc(), and Pskip\_\-whitespace().
+
+Referenced by Pcalc\_\-C\_\-int\_\-expr(), and Pexpand\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Perror@{Perror}}
+\index{Perror@{Perror}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Perror (\bf{Pptr} $\ast$ {\em pptr}, char $\ast$ {\em fmt},  {\em ...})}\label{md__preprocessor_8c_beffca6eda4a1c83ca9e7f1dd401fd99}
+
+
+
+
+Definition at line 373 of file md\_\-preprocessor.c.
+
+References Mline::buf, Mbuf::buf, Mbuf::cur\_\-len, Pptr::expanded, Mline::line\_\-no, Mbackupc(), Mptr::mfile, Mptr::mline, Pptr::mptr, Mfile::name, NULL, and Mptr::pos.
+
+Referenced by get\_\-for\_\-value\_\-list(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-identifier(), Pget\_\-quoted\_\-string(), process\_\-def\_\-directive(), process\_\-directive(), process\_\-for\_\-directive(), process\_\-if\_\-directive(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pexpand_directive@{Pexpand\_\-directive}}
+\index{Pexpand_directive@{Pexpand\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pexpand\_\-directive (\bf{Pptr} $\ast$ {\em source\_\-pptr})}\label{md__preprocessor_8c_f266761f9b2875c8e336313034133ea1}
+
+
+
+
+Definition at line 2203 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), adds\_\-to\_\-Mbuf(), allow\_\-text\_\-replacement, copy\_\-Pptr(), create\_\-Mbuf(), disable\_\-implicit\_\-text\_\-replacement, Pptr::expanded, Pptr::expanded\_\-pos, free\_\-Mbuf(), free\_\-Pptr(), get\_\-Mbuf\_\-buf(), Merror(), Mgetc(), move\_\-Mptr(), Mpeekc(), Pptr::mptr, NULL, Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Perror(), Pgetc(), Plookup(), Ppeekc(), Pskip\_\-whitespace(), and Pptr::scanned.
+
+Referenced by Pexpand\_\-text().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pexpand_text@{Pexpand\_\-text}}
+\index{Pexpand_text@{Pexpand\_\-text}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Pexpand\_\-text (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_96dc9d0c7b4e9f7872132290d1cf3ac7}
+
+
+
+
+Definition at line 2542 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), adds\_\-to\_\-Mbuf(), allow\_\-text\_\-replacement, clear\_\-Mbuf(), Mbuf::cur\_\-len, disable\_\-implicit\_\-text\_\-replacement, expand\_\-placemark, Pptr::expanded, Pptr::expanded\_\-pos, get\_\-Mbuf\_\-buf(), Merror(), Mgetc(), move\_\-Mptr(), Mpeekc(), Pptr::mptr, Mptr\_\-pos(), NULL, Pexpand\_\-directive(), Plookup(), pptr\_\-mbuf, Pptr::quoted, and Pptr::scanned.
+
+Referenced by Pgetc(), and Ppeekc().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_alnum_string@{Pget\_\-alnum\_\-string}}
+\index{Pget_alnum_string@{Pget\_\-alnum\_\-string}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-alnum\_\-string (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_c229bcda9d9321b3abe143a15e46b6ac}
+
+
+
+
+Definition at line 1758 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), Pgetc(), Ppeekc(), and temp\_\-mbuf.
+
+Referenced by process\_\-directive(), and process\_\-if\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_bounded_string@{Pget\_\-bounded\_\-string}}
+\index{Pget_bounded_string@{Pget\_\-bounded\_\-string}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-bounded\_\-string (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_dc875874dad3e9abb6cb02d654e5e897}
+
+
+
+
+Definition at line 2034 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), L\_\-punt(), move\_\-Pptr(), Perror(), Pgetc(), Ppeekc(), Pskip\_\-whitespace\_\-no\_\-nl(), temp\_\-mbuf, and temp\_\-placemark.
+
+Referenced by Pget\_\-for\_\-string(), and process\_\-def\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_for_string@{Pget\_\-for\_\-string}}
+\index{Pget_for_string@{Pget\_\-for\_\-string}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-for\_\-string (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_01d6d37758718ad06459891e48ecac32}
+
+
+
+
+Definition at line 1936 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), move\_\-Pptr(), Perror(), Pget\_\-bounded\_\-string(), Pget\_\-quoted\_\-string(), Pgetc(), Ppeekc(), Pskip\_\-whitespace\_\-no\_\-nl(), temp\_\-mbuf, and temp\_\-placemark.
+
+Referenced by get\_\-for\_\-value\_\-list().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_identifier@{Pget\_\-identifier}}
+\index{Pget_identifier@{Pget\_\-identifier}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-identifier (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_10640d24558b93d50dbd5118414cff80}
+
+
+
+
+Definition at line 1784 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), Perror(), Pgetc(), Ppeekc(), and temp\_\-mbuf.
+
+Referenced by get\_\-for\_\-value\_\-list(), process\_\-def\_\-directive(), and process\_\-undef\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_quoted_string@{Pget\_\-quoted\_\-string}}
+\index{Pget_quoted_string@{Pget\_\-quoted\_\-string}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-quoted\_\-string (\bf{Pptr} $\ast$ {\em pptr}, int {\em strip\_\-quotes})}\label{md__preprocessor_8c_71c841602201ec9872d251a9445ba27b}
+
+
+
+
+Definition at line 1852 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), move\_\-Pptr(), Perror(), Pgetc(), Ppeekc(), Pskip\_\-whitespace\_\-no\_\-nl(), temp\_\-mbuf, and temp\_\-placemark.
+
+Referenced by Pget\_\-for\_\-string(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pget_stripped_line@{Pget\_\-stripped\_\-line}}
+\index{Pget_stripped_line@{Pget\_\-stripped\_\-line}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Pget\_\-stripped\_\-line (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_d3ce20c32087bcde00f8e7d94653ddde}
+
+
+
+
+Definition at line 1821 of file md\_\-preprocessor.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), Pgetc(), Ppeekc(), Pskip\_\-whitespace\_\-no\_\-nl(), strip\_\-Mbuf(), and temp\_\-mbuf.
+
+Referenced by process\_\-def\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pgetc@{Pgetc}}
+\index{Pgetc@{Pgetc}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Pgetc (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_b8460f9e0b884163e92dad174040ead0}
+
+
+
+
+Definition at line 2732 of file md\_\-preprocessor.c.
+
+References get\_\-Mbuf\_\-buf(), and Pexpand\_\-text().
+
+Referenced by get\_\-for\_\-value\_\-list(), main(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), Pget\_\-alnum\_\-string(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-identifier(), Pget\_\-quoted\_\-string(), Pget\_\-stripped\_\-line(), process\_\-body(), process\_\-def\_\-directive(), process\_\-directive(), process\_\-for\_\-directive(), process\_\-if\_\-directive(), process\_\-include\_\-directive(), Pskip\_\-whitespace(), Pskip\_\-whitespace\_\-no\_\-nl(), and skip\_\-body().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Plookup@{Plookup}}
+\index{Plookup@{Plookup}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Plookup (char $\ast$ {\em name}, int {\em implicit\_\-replacement})}\label{md__preprocessor_8c_8ac3ceff2e23da42c21150cfc5d3ff21}
+
+
+
+
+Definition at line 3535 of file md\_\-preprocessor.c.
+
+References Pdef::allow\_\-implicit\_\-replacement, Psymbol::data, find\_\-Psymbol(), NULL, Pdef\_\-table, and Pdef::val.
+
+Referenced by Pexpand\_\-directive(), and Pexpand\_\-text().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Ppeekc@{Ppeekc}}
+\index{Ppeekc@{Ppeekc}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Ppeekc (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_5b05ec5cf990254459f0b332eb08b6cd}
+
+
+
+
+Definition at line 2755 of file md\_\-preprocessor.c.
+
+References get\_\-Mbuf\_\-buf(), and Pexpand\_\-text().
+
+Referenced by get\_\-for\_\-value\_\-list(), main(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), Pget\_\-alnum\_\-string(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-identifier(), Pget\_\-quoted\_\-string(), Pget\_\-stripped\_\-line(), process\_\-body(), process\_\-def\_\-directive(), process\_\-for\_\-directive(), process\_\-if\_\-directive(), process\_\-include\_\-directive(), Pskip\_\-whitespace(), Pskip\_\-whitespace\_\-no\_\-nl(), and skip\_\-body().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pputc@{Pputc}}
+\index{Pputc@{Pputc}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pputc (\bf{Pptr} $\ast$ {\em pptr}, int {\em ch})}\label{md__preprocessor_8c_d8d34f9d84875158116eecfd1f6a0c14}
+
+
+
+
+Definition at line 503 of file md\_\-preprocessor.c.
+
+References Mline::line\_\-no, Mptr::mfile, Mptr::mline, Pptr::mptr, Mfile::name, NULL, out, and print\_\-line\_\-directives.
+
+Referenced by main(), process\_\-body(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!print_usage@{print\_\-usage}}
+\index{print_usage@{print\_\-usage}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-usage (char $\ast$ {\em fmt},  {\em ...})}\label{md__preprocessor_8c_62ac7a1cfa066f61a3317977c936b8f2}
+
+
+
+
+Definition at line 154 of file md\_\-preprocessor.c.
+
+References NULL, and program\_\-name.
+
+Referenced by read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_body@{process\_\-body}}
+\index{process_body@{process\_\-body}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-body (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_3c40c88a57af572f6e543e31a4b55768}
+
+
+
+
+Definition at line 763 of file md\_\-preprocessor.c.
+
+References Pgetc(), Ppeekc(), Pputc(), and process\_\-directive().
+
+Referenced by main(), process\_\-if\_\-directive(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_def_directive@{process\_\-def\_\-directive}}
+\index{process_def_directive@{process\_\-def\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-def\_\-directive (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_fdaaf0c08b62cd43e5837509c73874ce}
+
+
+
+
+Definition at line 944 of file md\_\-preprocessor.c.
+
+References add\_\-Pdef(), disable\_\-implicit\_\-text\_\-replacement, move\_\-Pptr(), name, Perror(), Pget\_\-bounded\_\-string(), Pget\_\-identifier(), Pget\_\-stripped\_\-line(), Pgetc(), Ppeekc(), Pskip\_\-whitespace\_\-no\_\-nl(), and temp\_\-placemark.
+
+Referenced by process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_directive@{process\_\-directive}}
+\index{process_directive@{process\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-directive (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_9fedc647fa9d620c00f1cf9cd84f2da4}
+
+
+
+
+Definition at line 1648 of file md\_\-preprocessor.c.
+
+References copy\_\-Pptr(), free\_\-Pptr(), L\_\-punt(), Perror(), Pget\_\-alnum\_\-string(), Pgetc(), process\_\-def\_\-directive(), process\_\-for\_\-directive(), process\_\-if\_\-directive(), process\_\-include\_\-directive(), and process\_\-undef\_\-directive().
+
+Referenced by process\_\-body().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_for_directive@{process\_\-for\_\-directive}}
+\index{process_for_directive@{process\_\-for\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-for\_\-directive (\bf{Pptr} $\ast$ {\em pptr}, \bf{Pptr} $\ast$ {\em placemark})}\label{md__preprocessor_8c_79a2bf4e345e50554d0015b3fcdb30e3}
+
+
+
+
+Definition at line 1205 of file md\_\-preprocessor.c.
+
+References get\_\-for\_\-value\_\-list(), move\_\-Pptr(), Value\_\-List::name, Value\_\-List::next\_\-list, NULL, Perror(), Pgetc(), Ppeekc(), Pskip\_\-whitespace(), and Value\_\-List::value\_\-count.
+
+Referenced by process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_if_directive@{process\_\-if\_\-directive}}
+\index{process_if_directive@{process\_\-if\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-if\_\-directive (\bf{Pptr} $\ast$ {\em pptr}, \bf{Pptr} $\ast$ {\em placemark})}\label{md__preprocessor_8c_232036d58bb8ca96bb75ebc2d0cdf197}
+
+
+
+
+Definition at line 1393 of file md\_\-preprocessor.c.
+
+References move\_\-Pptr(), Pcalc\_\-C\_\-int\_\-expr(), Perror(), Pget\_\-alnum\_\-string(), Pgetc(), Ppeekc(), process\_\-body(), Pskip\_\-whitespace(), and skip\_\-body().
+
+Referenced by process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_include_directive@{process\_\-include\_\-directive}}
+\index{process_include_directive@{process\_\-include\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-include\_\-directive (\bf{Pptr} $\ast$ {\em pptr}, \bf{Pptr} $\ast$ {\em placemark})}\label{md__preprocessor_8c_e93958001f8a6c56febf0557b9f3f7a3}
+
+
+
+
+Definition at line 1560 of file md\_\-preprocessor.c.
+
+References add\_\-Psymbol(), create\_\-Mfile(), create\_\-Pptr(), Psymbol::data, find\_\-Psymbol(), free\_\-Pptr(), Mfile\_\-table, Pptr::mptr, Mfile::name, NULL, Perror(), Pget\_\-quoted\_\-string(), Pgetc(), Mptr::pos, Ppeekc(), Pputc(), process\_\-body(), and Pskip\_\-whitespace\_\-no\_\-nl().
+
+Referenced by process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!process_undef_directive@{process\_\-undef\_\-directive}}
+\index{process_undef_directive@{process\_\-undef\_\-directive}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ process\_\-undef\_\-directive (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_c772ab2dc884637e79614531f700b0d3}
+
+
+
+
+Definition at line 1062 of file md\_\-preprocessor.c.
+
+References delete\_\-Pdef(), disable\_\-implicit\_\-text\_\-replacement, name, Pget\_\-identifier(), and Pskip\_\-whitespace\_\-no\_\-nl().
+
+Referenced by process\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pskip_whitespace@{Pskip\_\-whitespace}}
+\index{Pskip_whitespace@{Pskip\_\-whitespace}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pskip\_\-whitespace (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_c1fa9396790747922ef69a79f8c21e8c}
+
+
+
+
+Definition at line 2105 of file md\_\-preprocessor.c.
+
+References Pgetc(), and Ppeekc().
+
+Referenced by get\_\-for\_\-value\_\-list(), Pcalc\_\-C\_\-float\_\-expr(), Pcalc\_\-C\_\-float\_\-factor(), Pcalc\_\-C\_\-int\_\-expr(), Pcalc\_\-C\_\-int\_\-factor(), Pexpand\_\-directive(), process\_\-for\_\-directive(), and process\_\-if\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pskip_whitespace_no_nl@{Pskip\_\-whitespace\_\-no\_\-nl}}
+\index{Pskip_whitespace_no_nl@{Pskip\_\-whitespace\_\-no\_\-nl}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Pskip\_\-whitespace\_\-no\_\-nl (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_f80ca7eae5033482494d22ef8ecdfbfb}
+
+
+
+
+Definition at line 2118 of file md\_\-preprocessor.c.
+
+References Pgetc(), and Ppeekc().
+
+Referenced by Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-quoted\_\-string(), Pget\_\-stripped\_\-line(), process\_\-def\_\-directive(), process\_\-include\_\-directive(), and process\_\-undef\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}}
+\index{read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void read\_\-command\_\-line\_\-parameters (int {\em argc}, char $\ast$$\ast$ {\em arg\_\-ptr})}\label{md__preprocessor_8c_b5ad1e75f3e95a8372855846f911efe1}
+
+
+
+
+Definition at line 193 of file md\_\-preprocessor.c.
+
+References add\_\-Pdef(), bypass\_\-alloc\_\-routines, input\_\-file\_\-name, name, NULL, output\_\-file\_\-name, print\_\-alloc\_\-usage, print\_\-line\_\-directives, print\_\-usage(), program\_\-name, and using\_\-stdin.
+
+Referenced by main().\index{md_preprocessor.c@{md\_\-preprocessor.c}!skip_body@{skip\_\-body}}
+\index{skip_body@{skip\_\-body}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ skip\_\-body (\bf{Pptr} $\ast$ {\em pptr})}\label{md__preprocessor_8c_29c698ea791dfee82424f8393cf5d814}
+
+
+
+
+Definition at line 858 of file md\_\-preprocessor.c.
+
+References allow\_\-text\_\-replacement, Pgetc(), and Ppeekc().
+
+Referenced by process\_\-if\_\-directive().
+
+\subsection{Variable Documentation}
+\index{md_preprocessor.c@{md\_\-preprocessor.c}!allow_text_replacement@{allow\_\-text\_\-replacement}}
+\index{allow_text_replacement@{allow\_\-text\_\-replacement}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{allow\_\-text\_\-replacement} = 1}\label{md__preprocessor_8c_ec53c8fb29375671fc5e7ab14c42371e}
+
+
+
+
+Definition at line 116 of file md\_\-preprocessor.c.
+
+Referenced by Pexpand\_\-directive(), Pexpand\_\-text(), and skip\_\-body().\index{md_preprocessor.c@{md\_\-preprocessor.c}!current_file@{current\_\-file}}
+\index{current_file@{current\_\-file}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mfile}$\ast$ \bf{current\_\-file}}\label{md__preprocessor_8c_e691226eaa6fb3edc17ff2d541e1ce55}
+
+
+
+
+Definition at line 107 of file md\_\-preprocessor.c.\index{md_preprocessor.c@{md\_\-preprocessor.c}!disable_implicit_text_replacement@{disable\_\-implicit\_\-text\_\-replacement}}
+\index{disable_implicit_text_replacement@{disable\_\-implicit\_\-text\_\-replacement}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{disable\_\-implicit\_\-text\_\-replacement} = 0}\label{md__preprocessor_8c_05d4fa71ca0b0662c39ceab758ce15d4}
+
+
+
+
+Definition at line 127 of file md\_\-preprocessor.c.
+
+Referenced by get\_\-for\_\-value\_\-list(), Pexpand\_\-directive(), Pexpand\_\-text(), process\_\-def\_\-directive(), and process\_\-undef\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!expand_placemark@{expand\_\-placemark}}
+\index{expand_placemark@{expand\_\-placemark}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mptr}$\ast$ \bf{expand\_\-placemark} = \bf{NULL}}\label{md__preprocessor_8c_d1c53c5ecf7324077480c8560900b248}
+
+
+
+
+Definition at line 135 of file md\_\-preprocessor.c.
+
+Referenced by main(), and Pexpand\_\-text().\index{md_preprocessor.c@{md\_\-preprocessor.c}!input_file_name@{input\_\-file\_\-name}}
+\index{input_file_name@{input\_\-file\_\-name}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}}\label{md__preprocessor_8c_a91ff4ee3ee60baee9c097d4da3e3d18}
+
+
+
+
+Definition at line 146 of file md\_\-preprocessor.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Mfile_table@{Mfile\_\-table}}
+\index{Mfile_table@{Mfile\_\-table}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Psymbol\_\-Table}$\ast$ \bf{Mfile\_\-table} = \bf{NULL}}\label{md__preprocessor_8c_134cbad6e978db177d4d05dff9fd74d2}
+
+
+
+
+Definition at line 111 of file md\_\-preprocessor.c.
+
+Referenced by main(), and process\_\-include\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!out@{out}}
+\index{out@{out}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{out}}\label{md__preprocessor_8c_1277960b5f2b37137fe9b0b5a1ea0beb}
+
+
+
+
+Definition at line 104 of file md\_\-preprocessor.c.
+
+Referenced by main(), and Pputc().\index{md_preprocessor.c@{md\_\-preprocessor.c}!output_file_name@{output\_\-file\_\-name}}
+\index{output_file_name@{output\_\-file\_\-name}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}}\label{md__preprocessor_8c_cdcd0d11bb729145f180d52a0755cddf}
+
+
+
+
+Definition at line 147 of file md\_\-preprocessor.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pdef_pool@{Pdef\_\-pool}}
+\index{Pdef_pool@{Pdef\_\-pool}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Pdef\_\-pool} = \bf{NULL}}\label{md__preprocessor_8c_8f8faa045221340e2f32e6bb958db91b}
+
+
+
+
+Definition at line 139 of file md\_\-preprocessor.c.
+
+Referenced by create\_\-Pdef(), free\_\-Pdef(), and main().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pdef_table@{Pdef\_\-table}}
+\index{Pdef_table@{Pdef\_\-table}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Psymbol\_\-Table}$\ast$ \bf{Pdef\_\-table} = \bf{NULL}}\label{md__preprocessor_8c_97741975f920c10105047ce529cf052a}
+
+
+
+
+Definition at line 110 of file md\_\-preprocessor.c.
+
+Referenced by add\_\-Pdef(), delete\_\-Pdef(), main(), and Plookup().\index{md_preprocessor.c@{md\_\-preprocessor.c}!pptr_mbuf@{pptr\_\-mbuf}}
+\index{pptr_mbuf@{pptr\_\-mbuf}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mbuf}$\ast$ \bf{pptr\_\-mbuf} = \bf{NULL}}\label{md__preprocessor_8c_a66fcb8ee43325dd5745131d0eca2b57}
+
+
+
+
+Definition at line 131 of file md\_\-preprocessor.c.
+
+Referenced by main(), and Pexpand\_\-text().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Pptr_pool@{Pptr\_\-pool}}
+\index{Pptr_pool@{Pptr\_\-pool}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Pptr\_\-pool} = \bf{NULL}}\label{md__preprocessor_8c_c132912a82b79461cb2c962ae4c525df}
+
+
+
+
+Definition at line 138 of file md\_\-preprocessor.c.
+
+Referenced by copy\_\-Pptr(), create\_\-Pptr(), free\_\-Pptr(), and main().\index{md_preprocessor.c@{md\_\-preprocessor.c}!print_alloc_usage@{print\_\-alloc\_\-usage}}
+\index{print_alloc_usage@{print\_\-alloc\_\-usage}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{print\_\-alloc\_\-usage} = 0}\label{md__preprocessor_8c_bb8d45b771d5af70f76be0bc93f5baae}
+
+
+
+
+Definition at line 150 of file md\_\-preprocessor.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!print_line_directives@{print\_\-line\_\-directives}}
+\index{print_line_directives@{print\_\-line\_\-directives}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{print\_\-line\_\-directives} = 1}\label{md__preprocessor_8c_51f80c177dc5130d3f3804774080d22c}
+
+
+
+
+Definition at line 149 of file md\_\-preprocessor.c.
+
+Referenced by Pputc(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!program_name@{program\_\-name}}
+\index{program_name@{program\_\-name}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{program\_\-name} = \bf{NULL}}\label{md__preprocessor_8c_289c5900d90626d909f0a85d5a0ed61d}
+
+
+
+
+Definition at line 143 of file md\_\-preprocessor.c.
+
+Referenced by print\_\-usage(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!String_Node_pool@{String\_\-Node\_\-pool}}
+\index{String_Node_pool@{String\_\-Node\_\-pool}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{String\_\-Node\_\-pool} = \bf{NULL}}\label{md__preprocessor_8c_d47ec2b1abf9cb9d0128bc3fc27d94c5}
+
+
+
+
+Definition at line 140 of file md\_\-preprocessor.c.
+
+Referenced by get\_\-for\_\-value\_\-list(), and main().\index{md_preprocessor.c@{md\_\-preprocessor.c}!temp_mbuf@{temp\_\-mbuf}}
+\index{temp_mbuf@{temp\_\-mbuf}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mbuf}$\ast$ \bf{temp\_\-mbuf} = \bf{NULL}}\label{md__preprocessor_8c_bcfb4b06283a7a8a72bf5c01c75b4e35}
+
+
+
+
+Definition at line 130 of file md\_\-preprocessor.c.
+
+Referenced by main(), Pget\_\-alnum\_\-string(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-identifier(), Pget\_\-quoted\_\-string(), and Pget\_\-stripped\_\-line().\index{md_preprocessor.c@{md\_\-preprocessor.c}!temp_placemark@{temp\_\-placemark}}
+\index{temp_placemark@{temp\_\-placemark}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Pptr}$\ast$ \bf{temp\_\-placemark} = \bf{NULL}}\label{md__preprocessor_8c_bc1de95fe5c53717a01e4d0edca5f40a}
+
+
+
+
+Definition at line 134 of file md\_\-preprocessor.c.
+
+Referenced by main(), Pget\_\-bounded\_\-string(), Pget\_\-for\_\-string(), Pget\_\-quoted\_\-string(), and process\_\-def\_\-directive().\index{md_preprocessor.c@{md\_\-preprocessor.c}!using_stdin@{using\_\-stdin}}
+\index{using_stdin@{using\_\-stdin}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{using\_\-stdin} = 0}\label{md__preprocessor_8c_bc340a0cfa46e3f25a4d1adab28331c0}
+
+
+
+
+Definition at line 148 of file md\_\-preprocessor.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_preprocessor.c@{md\_\-preprocessor.c}!Value_List_pool@{Value\_\-List\_\-pool}}
+\index{Value_List_pool@{Value\_\-List\_\-pool}!md_preprocessor.c@{md\_\-preprocessor.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Value\_\-List\_\-pool} = \bf{NULL}}\label{md__preprocessor_8c_cb94a38a26e21dc0042efb3fe66cc3ac}
+
+
+
+
+Definition at line 141 of file md\_\-preprocessor.c.
+
+Referenced by get\_\-for\_\-value\_\-list(), and main().

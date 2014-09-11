@@ -1,0 +1,2055 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	This script compiles a benchmark using IMPACT public release
+#       1.0 functionality.  
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script written by John Gyllenhaal 4/29/98
+#
+
+# Assume the IMPACT environment has been properly set up
+VALID_ENV=1;
+
+# Determine if IMPACT_REL_PATH environment variable has been defined
+release="${IMPACT_REL_PATH}"
+if [ "$release" = "" ] ; then
+    echo "The environment variable IMPACT_REL_PATH is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_REL_PATH exists
+elif [ ! -d ${IMPACT_REL_PATH} ]; then
+    echo "The directory IMPACT_REL_PATH = ${IMPACT_REL_PATH} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Determine if IMPACT_ROOT environment variable has been defined
+root="${IMPACT_ROOT}"
+if [ "$root" = "" ] ; then
+    echo "The environment variable IMPACT_ROOT is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_ROOT exists
+elif [ ! -d ${IMPACT_ROOT} ]; then
+    echo "The directory IMPACT_ROOT = ${IMPACT_ROOT} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Only the HP-UX platform is supported by this script and this release 
+ARCH=`host_arch`
+if test "$?" != 0; then 
+    echo "Error executing 'host_arch' ($ARCH)";
+    VALID_ARCH=0;
+else
+    case $ARCH in
+        hppa)
+            VALID_ARCH=1;;
+        *)
+            VALID_ARCH=0;;
+    esac
+fi
+
+
+# Set up environment with default values
+USE_KRC_MODE=0;
+PREPROCESSOR_OPTIONS=""
+
+PARMS_FILE="${IMPACT_REL_PATH}/parms/STD_PARMS.compile_benchmark";
+NOCLEAN=0;
+SAFER_OPTI=0;
+FASTER_OPTI=0;
+SAFER_SCHED=0;
+FASTER_SCHED=0;
+USE_PRESETS=0;
+USE_DATABASES=1;
+NO_INLINING=0;
+PINLINE_OVERRIDES="";
+OPTI_DISAMBIG_OVERRIDES="";
+LSUPERSCALAR_OVERRIDES="";
+SCHED_DISAMBIG_OVERRIDES="";
+LIMPACT_OVERRIDES="";
+LPLAYDOH_OVERRIDES="";
+DO_FRONTEND=1;
+DO_BACKEND=1;
+USE_OLD_FRONTEND=0;
+DO_CLASSICAL_OPTI_PATH=1;
+DO_SUPERBLOCK_PATH=1;
+DO_HYPERBLOCK_PATH=1;
+PROFILE_OPTIONS="";
+INFO_SCRIPT_SPECIFIED=0;
+NEW_INFO_SCRIPT="";
+LMDES2_SPECIFIED=0;
+LMDES2="";
+USE_LPLAYDOH=0;
+TRIMARAN_MODE=0;
+TIME="time"
+
+# In order to get -setup, etc. to work properly, I need to break up
+# the '-setup' and the "text", so that the "text" can be presented
+# as one argument to gen_Pprofiled_hppa and gen_profiled_hppa.
+# The -ignore command tells these scripts to silently ignore "text". 
+SETUP_CMD="-ignore";
+SETUP_TEXT="";
+PREFIX_CMD="-ignore";
+PREFIX_TEXT="";
+ARGS_CMD="-ignore";
+ARGS_TEXT="";
+CHECK_CMD="-ignore";
+CHECK_TEXT="";
+CLEANUP_CMD="-ignore";
+CLEANUP_TEXT="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    BENCHMARK="$1";
+    BASENAME="$1";
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-krc)
+	    echo "> Source is K&R C";
+	    USE_KRC_MODE=1;;
+
+        -p)
+	    NEW_PARMS="$1";
+	    shift;
+            echo "> Will use '${NEW_PARMS}' for everything (except profiling)";
+	    if [ ! -f ${NEW_PARMS} ]; then
+               echo "Error: ${NEW_PARMS} not found!"
+               VALID_ARGS=0;
+            fi
+            PARMS_FILE="${NEW_PARMS}";;
+
+        -noclean|-no_clean)
+            echo "> Will save ALL the intermediate files using gen_tar";
+	    NOCLEAN=1;;
+
+        -notimes|-no_times)
+            echo "> Will suppress the time measurements on intermediate steps";
+	    TIME="";;
+
+
+        -use_presets)
+            echo "> Will use benchmark-specific preset settings (if available)";
+            USE_PRESETS=1;;
+
+        -safer_opti)
+            echo "> Using safer memory disambig settings during opti (reduces performance).";
+	    SAFER_OPTI=1;;
+
+        -safer_sched)
+            echo "> Using safer memory disambig settings during sched (reduces performance).";
+            SAFER_SCHED=1;;
+	    
+        -faster_opti)
+            echo "> Using less-aggressive ILP optimizations settings (reduces performance)";
+            FASTER_OPTI=1;;
+
+        -faster_sched)
+            echo "> Using less-aggressive pred dataflow during sched & reg alloc (reduces perf)";
+            FASTER_SCHED=1;;
+
+        -no_inlining)
+            echo "> Preventing function inlining (significantly reduces performance)";
+	    NO_INLINING=1;
+            PINLINE_OVERRIDES="$PINLINE_OVERRIDES -Fregroup_only=yes";;
+
+        -classical_only)
+            echo "> Using classical opti (no ILP opti, non-predicated) path only.";
+	    DO_CLASSICAL_OPTI_PATH=1;
+            DO_SUPERBLOCK_PATH=0;
+	    DO_HYPERBLOCK_PATH=0;;
+
+        -superblock_only)
+            echo "> Using superblock (non-predicated) path only.";
+	    DO_CLASSICAL_OPTI_PATH=0;
+            DO_SUPERBLOCK_PATH=1;
+	    DO_HYPERBLOCK_PATH=0;;
+
+        -hyperblock_only)
+            echo "> Using hyperblock (predicated) path only.";
+	    DO_CLASSICAL_OPTI_PATH=0;
+            DO_SUPERBLOCK_PATH=0;
+	    DO_HYPERBLOCK_PATH=1;;
+
+        -frontend_only)
+            echo "> Will do only the frontend, generating ${BENCHMARK}_[O,S,HS].tar.gz's";
+	    if [ $DO_FRONTEND -eq 0 ];then
+                echo "> Error: May not specify both -frontend_only and -backend_only!";
+		VALID_ARGS=0;
+            fi
+            DO_BACKEND=0;;
+
+        -backend_only)
+            echo "> Will do only the backend, using existing ${BENCHMARK}_[O,S,HS].tar.gz's";
+	    if [ $DO_BACKEND -eq 0 ];then
+                echo "> Error: May not specify both -frontend_only and -backend_only!";
+		VALID_ARGS=0;
+            fi
+            DO_FRONTEND=0;;
+
+        -old_frontend)
+	    echo "> Will use the no-longer-supported non-edg frontend.";
+	    USE_OLD_FRONTEND=1;;
+
+        -target)
+            LMDES2="$1";
+            shift;
+            echo "> Using the following machine description for scheduling:"
+            echo ">   ${LMDES2}"
+            echo " "
+            if [ ! -f ${LMDES2} ]; then
+                echo "ERROR: ${LMDES2} not found!";
+                echo " ";
+                VALID_ARGS=0;
+            fi
+            LMDES2_SPECIFIED=1;;
+
+        -Lplaydoh)
+            echo "> Using the Lplaydoh path to schedule and register allocate the 'assembly'"
+            USE_LPLAYDOH=1;;
+
+        -trimaran)
+            echo "> Will generate Lplaydoh phase 1 .mc files for use by Trimaran/Elcor'"
+            TRIMARAN_MODE=1;;
+
+	-info)
+            NEW_INFO_SCRIPT="$1";
+	    shift;
+            echo "> Using bench info database '${NEW_INFO_SCRIPT}'"
+	    # Make sure info script exists 
+            if [ ! -f ${NEW_INFO_SCRIPT} ]; then
+                echo "ERROR: ${NEW_INFO_SCRIPT} not found!";
+                echo " ";
+                VALID_ARGS=0;
+            fi
+            INFO_SCRIPT_SPECIFIED=1;;
+
+        -bench)
+           BENCHMARK="$1";
+           shift;
+	   case $BENCHMARK in
+               NONE)
+                  echo "> Bypassing bench info databases (print_training_info, etc.)";;
+               *)
+                  echo "> Using settings for '${BENCHMARK}' instead of for '${BASENAME}";;
+           esac;;
+
+        -setup)
+            echo " Setup text set to '$1'";
+            SETUP_CMD="-setup";
+            SETUP_TEXT="$1";
+            shift;;
+
+        -prefix)
+            echo " Prefixing '$1' to profile exec command";
+            PREFIX_CMD="-prefix";
+            PREFIX_TEXT="$1";
+            shift;;
+
+        -args)
+            echo " Args set to '$1'";
+            ARGS_CMD="-args";
+            ARGS_TEXT="$1";
+            shift;;
+
+        -check)
+            echo " Check text set to '$1'";
+            CHECK_CMD="-check";
+            CHECK_TEXT="$1";
+            shift;;
+
+        -cleanup)
+            echo " Cleanup text set to '$1'";
+            CLEANUP_CMD="-cleanup";
+            CLEANUP_TEXT="$1";
+            shift;;
+
+        -L*)
+            echo "> Will add '${OPTION}' to the link command during profiling";
+            PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";;
+
+        -l*)
+            echo "> Will add '${OPTION}' to the link command during profiling";
+            PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";;
+
+        -I*)
+            echo "> Adding '$OPTION' to the preprocessor command";
+            PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} ${OPTION}";;
+
+        -D*)
+            echo "> Adding '$OPTION' to the preprocessor command";
+            PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} ${OPTION}";;
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+# If specified, the benchmark command must be before everything except
+# -info
+case $BENCHMARK in
+   NONE)
+     # Do nothing for NONE
+     ;;
+
+   *)
+     PROFILE_OPTIONS="-bench ${BENCHMARK} ${PROFILE_OPTIONS}";;
+esac
+
+# If specified, the info script must be the first option!
+if [ $INFO_SCRIPT_SPECIFIED -eq 1 ]; then
+    PROFILE_OPTIONS="-info ${NEW_INFO_SCRIPT} ${PROFILE_OPTIONS}";
+fi
+
+
+# Make sure benchmark is in the benchmark info scripts 
+# Assume benchmark info present
+VALID_BENCHMARK=1;
+
+# Don't bother with more tests if already in an error state or
+# if the "NONE" benchmark was specified 
+if [ $VALID_ENV -eq 1 -a $VALID_ARGS -eq 1 -a "$BENCHMARK" != "NONE" ]; then
+   # If each info scripts is present (Trimaran only uses print_training_info)
+   # make sure this benchmark is in it.  May be overkill, but they might as
+   # well add the info now.
+   for INFO_SCRIPT in "${IMPACT_REL_PATH}/scripts/print_training_info" \
+	              "${IMPACT_REL_PATH}/scripts/print_trace_info_new" \
+	              "${IMPACT_REL_PATH}/scripts/print_trace_info_spiff"
+   do
+       # If script exists
+       if [ -f ${INFO_SCRIPT} ]; then
+           
+           # Get the arguments for the benchmark
+           ARGS=`${INFO_SCRIPT} ARGS ${BENCHMARK}`
+      
+           # Make sure benchmark info in script
+           if test "$?" != 0; then
+               echo "ERROR: '${BENCHMARK}' benchmark information not in"
+	       echo "       ${INFO_SCRIPT}"
+               echo " ";
+               VALID_BENCHMARK=0;
+          fi
+       fi
+   done
+
+   if [ $VALID_BENCHMARK -eq 0 ]; then
+               echo "=====> The bench info tutorial describes how to add a benchmark"
+               echo "       to these benchmark info script(s)."
+               echo " ";
+               echo "       NOTE: That in IMPACT release 1.0, print_trace_info_new and";
+               echo "             print_trace_info_spiff are linked to print_training_info!";
+               echo "             These files can be split up if different settings are desired.";
+               echo " ";
+   fi
+
+   # Make sure print_training_info is present!
+   INFO1="${IMPACT_REL_PATH}/scripts/print_training_info";
+   if [ ! -f ${INFO1} ]; then
+      echo "Error: ${INFO1} not found!"
+      echo " "
+      VALID_BENCHMARK=0;
+   fi
+fi
+
+# If users has selected -use_presets, set options to "reasonable" settings
+# (and also what have passed our regression tests).  Feel free to add
+# your benchmark settings here also.  Don't bother changing presets
+# if already in error conditions.
+if [ $USE_PRESETS -eq 1 -a $VALID_ENV -eq 1 -a $VALID_ARGS -eq 1 ]; then
+
+    echo " "
+
+    case $BENCHMARK in
+        
+        099.go|126.gcc)
+            echo "> Preset: Using safer memory disambig settings during opti (for correctness).";
+            echo "> Preset: Using safer memory disambig settings during sched (for correctness).";
+            echo "> Preset: Using less-aggressive ILP optimizations settings (reduces memory)";
+            echo " "
+	    SAFER_OPTI=1;
+	    SAFER_SCHED=1;
+            FASTER_OPTI=1;;
+
+        085.cc1|085.gcc)
+            echo "> Preset: Using less-aggressive ILP optimizations settings (reduces memory)";
+            echo " "
+            FASTER_OPTI=1;;
+
+        134.perl)
+            if [ ! -f qsort.c ]; then
+               echo " "
+               echo "> WARNING: IMPACT tracing tools do not support call-backs from libraries.";
+               echo ">          The jumble input for 134.perl uses qsort() with a call back.";
+               echo ">          The current work around is to compile in qsort.c from 008.espresso.";
+               echo ">          Without the source to qsort, 134.perl may not work for jumble.";
+               echo " "
+            fi
+            echo "> Preset: Using less-aggressive ILP optimizations settings (reduces memory)";
+            echo " "
+            FASTER_OPTI=1;;
+
+        124.m88ksim|129.compress|130.li|132.ijpeg|147.vortex)
+            echo "> Preset: Default settings best for this benchmark";
+            echo " ";;
+
+        022.li|023.eqntott|026.compress|052.alvinn|056.ear)
+            echo "> Preset: Default settings best for this benchmark";
+            echo " ";;
+
+        072.sc)        
+            echo "> Preset: Adding '-I.' to the preprocessor command";
+            echo "> Preset: Otherwise, default settings best for this benchmark";
+            echo " ";
+            PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} -I.";;
+
+        008.espresso|tbl|grep)
+            echo "> Preset: Source is K&R C";
+            echo "> Preset: Otherwise, default settings best for this benchmark";
+            USE_KRC_MODE=1;;
+
+        cccp)
+            echo "> Preset: Source is K&R C";
+            USE_KRC_MODE=1;
+            echo "> Preset: Using less-aggressive pred dataflow for sched/reg_alloc (reduces mem)";
+            echo " "
+            FASTER_SCHED=1;;
+	    
+
+        lex)
+            echo "> IMPORTANT NOTE: #include of .c files is not supported in this script."
+            echo ">                 The benchmark source for lex we have does this, so this"
+            echo ">                 script will not work unless these files are renamed."
+            echo "> Preset: Source is K&R C";
+            echo "> Preset: Otherwise, default settings best for this benchmark";
+            USE_KRC_MODE=1;;
+
+	cmp|eqn|qsort|wc|yacc|test_install)
+            echo "> Preset: Default settings best for this benchmark";
+            echo " ";;
+
+        NONE)
+            echo '> Skipping presets due to "-bench NONE"';;
+
+        *)
+           echo "Warning: no presets set up for ${BENCHMARK}.  Ignoring -use_presets flag.";;
+   
+    esac
+fi
+
+
+
+# Allow -safer_opti to be specified in presets or on the command line
+if [ $SAFER_OPTI -eq 1 ]; then
+    OPTI_DISAMBIG_OVERRIDES="${OPTI_DISAMBIG_OVERRIDES} \
+        -Flabel_and_reg_access_indep=no \
+	-Fdiff_data_types_indep=no";
+fi
+
+# Allow -faster_opti to be specified in presets or on the command line
+if [ $FASTER_OPTI -eq 1 ]; then
+    LSUPERSCALAR_OVERRIDES="${LSUPERSCALAR_OVERRIDES} \
+        -Fallow_backedge_exp=no \
+	-Fallow_expansion_of_loops=no \
+	-Fmax_unroll_allowed=8 \
+	-Fallow_extra_unrolling_for_small_loops=no";
+fi
+
+# Allow -safer_sched to be specified in presets or on the command line
+if [ $SAFER_SCHED -eq 1 ]; then
+    SCHED_DISAMBIG_OVERRIDES="${SCHED_DISAMBIG_OVERRIDES} \
+        -Flabel_and_reg_access_indep=no \
+        -Fdiff_data_types_indep=no";
+fi
+
+# Allow -faster_sched to be specified in presets or on the command line
+if [ $FASTER_SCHED -eq 1 ]; then
+    SCHED_DISAMBIG_OVERRIDES="${SCHED_DISAMBIG_OVERRIDES} \
+        -Fdf_max_pred_paths=20";
+fi
+
+# If doing hyperblocks, gen_Lhyper points at a particular .lmdes2 file for
+# dependence height information (resource information DOES NOT MATTER).
+# Make sure this file exists.
+# 11/07/02 REK Changing to IMPACT_ROOT so this works with the new automake
+#              split source/build directories.  Since IMPACT_REL_PATH and
+#              IMPACT_ROOT have traditionally been set to the same directory,
+#              they are interchangable in the old context, so this should
+#              work with both the Imakefile scheme and the new automake one.
+lhyper_parms="${IMPACT_ROOT}/mdes/Limpact/IMPACT_8G.lmdes2"
+if [ ! -f ${lhyper_parms} ]; then
+    echo " "
+    echo "ERROR: The following .lmdes2 file is necessary and could not be found:"
+    echo "  ${lhyper_parms}"
+    echo " "
+    echo "   This .lmdes2 file is used by gen_Lhyper to calculate dependence"
+    echo "   heights (processor resources are ignored).  Please copy an Lcode"
+    echo "   compatible .lmdes2 file (that has the appropriate dependence delays)"
+    echo "   to the above location."
+    echo " "
+    VALID_ENV=0;
+fi
+
+
+# Make sure parameter file specified exists
+if [ $VALID_ARGS -eq 1 -a ! -f ${PARMS_FILE} ]; then
+    echo " "
+    echo "ERROR: The following baseline parameter file could not be found:"
+    echo "  ${PARMS_FILE}"
+    echo " "
+    echo "  One solution is to the '-p parms_file' option to pick a different file."
+    echo " "
+    VALID_ENV=0;
+fi
+
+# If doing backend only, make sure necessary tar.gz files exist
+if [ $DO_FRONTEND -eq 0 -a $VALID_ARGS -eq 1 -a $VALID_ENV -eq 1 ]; then
+
+    if [ $DO_CLASSICAL_OPTI_PATH -eq 1 ]; then
+        if [ ! -f ${BASENAME}_O.tar.gz ]; then
+            echo " ";
+            echo "ERROR: ${BASENAME}_O.tar.gz not found!";
+            echo "       This file necessary if doing only backend part for classical opti path.";
+            echo " ";
+            VALID_ENV=0;
+        fi
+    fi
+
+    if [ $DO_SUPERBLOCK_PATH -eq 1 ]; then
+        if [ ! -f ${BASENAME}_S.tar.gz ] ; then
+            echo " ";
+            echo "ERROR: ${BASENAME}_S.tar.gz not found!";
+            echo "       This file necessary if doing only backend part for superblock path.";
+            echo " ";
+            VALID_ENV=0;
+        fi
+    fi
+
+    if [ $DO_HYPERBLOCK_PATH -eq 1 ]; then
+        if [ ! -f ${BASENAME}_HS.tar.gz ] ; then
+            echo " ";
+            echo "ERROR: ${BASENAME}_HS.tar.gz not found!";
+            echo "       This file necessary if doing only backend part for hyperblock path.";
+            echo " ";
+            VALID_ENV=0;
+        fi
+    fi
+fi
+
+# If have trimaran release, user must specify -trimaran on the command
+# line.  (Forcing the user to do this will allow them to use the full
+# impact public release seamlessly with the Trimaran release.)
+if [ $TRIMARAN_MODE -eq 0 ]; then
+   
+    # The Trimaran release does not include the performance subdirectory
+    if [ ! -d ${IMPACT_REL_PATH}/src/Lcode/performance ]; then
+        echo " ";
+        echo "> ERROR: Users of the Trimaran version of IMPACT must specify '-trimaran'";
+        echo ">        on the command line.  This will make it easier for future IMPACT";
+        echo ">        releases to be compatible with Trimaran/Elcor.";
+        echo "   "
+        VALID_ARGS=0;
+    fi
+fi
+
+
+
+if [ $VALID_ARCH -eq 0 -o $VALID_ARGS -eq 0 -o $VALID_ENV -eq 0 -o \
+     $VALID_BENCHMARK -eq 0 ]; then
+
+    if [ $VALID_ARCH -eq 0 ]; then
+        echo ' ';
+        echo '==> This should be run on a machine running HP-UX 10.2'
+        echo ' ';
+    fi
+
+
+    echo ' ';
+    echo '> Usage: compile_benchmark benchmark [options]';
+    echo '> ';
+    echo '> Generates ILP-optimized "assembly" from the benchmark'\''s .c files in the';
+    echo '> current directory using the IMPACT compiler (essentially "cc +O4 *.c").  This'
+    echo '> source is initially profiled to drive inlining and optimizations.  The final'
+    echo '> "assembly" is profiled to verify correctness and to allow static analysis.';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -krc             Source is K&R c';
+    echo '>   -Dname=def       Define name to the preprocessor';
+    echo '>   -Idir            Adds "dir" to include search path';
+    echo '>   -Ldir            Adds "dir" to library search path';
+    echo '>   -llibrary        Use the library named "library" when linking';
+    echo '>   -p parm_file     Use "parm_file" instead of STD_PARMS.IMPACT.1_0'
+    echo '>   -noclean         Saves ALL the intermediate files using gen_tar';
+    echo '>   -use_presets     Uses regression tested settings for SPEC int92 & 95';
+    echo '>   -safer_opti      Uses "safer" memory disambiguation settings during opti';
+    echo '>   -faster_opti     Scales back ILP optimizations to reduce compile time';
+    echo '>   -safer_sched     Uses "safer" memory disambiguation settings during sched';
+    echo '>   -faster_sched    Scales back pred dataflow during sched and reg alloc';
+    echo '>   -no_inlining     Prevents function inlining (default mid-level inlining)';
+    echo '>   -classical_only  Use classical opti (no ILP opti) path only (default all)';
+    echo '>   -superblock_only Use superblock (non-predicated) path only (default all)';
+    echo '>   -hyperblock_only Use hyperblock (predicated) path only (default all)';
+    echo '>   -frontend_only   Do frontend only, generating bench_[O,S,HS].tar.gz'\''s'
+    echo '>   -backend_only    Do backend only, using existing bench_[O,S,HS].tar.gz'\''s'
+    echo '>   -target "lmdes2" Schedule using "lmdes2" (default HP_8G_1BR.lmdes2)';
+    echo '>   -Lplaydoh        Schedule, etc. with Lplaydoh (default Lhppa/Limpact path)';
+    echo '>   -trimaran        Generate Lplaydoh Ph1 .mc files for use by Trimaran/Elcor';
+    echo '>   -old_frontend    Use old (phased out) frontend for testing purposes';
+    echo '>   -no_times        Suppress time measurements on the intermediate steps.';
+
+    echo '> ';
+    echo '>   -info  "name"    Use "name" instead of the default bench "info" databases';
+    echo '>   -bench "name"    Uses input, etc. for "name" instead of for "benchmark"';
+    echo '>   -bench  NONE     Bypass print_training_info, etc.  Use settings below:';
+    echo '>   -setup   "text"  Runs "text" to setup profile run';
+    echo '>   -prefix  "text"  Prefixes "text" to profile_exec_command';
+    echo '>   -args    "text"  Sets profile execution arguments to "text"';
+    echo '>   -check   "text"  Runs "text" to check output';
+    echo '>   -cleanup "text"  Runs "text" to cleanup after profile run';
+    echo '> '
+
+
+ 
+
+    exit 0200;
+fi;
+
+############################################################################
+#       Starting compilation
+############################################################################
+
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Compiling ${BASENAME}";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo " ";
+
+    # Print date to help determine when compilation started & Completed  
+    echo "> Compilation started on:"
+    START_DATE=`date +"%X %x"`;
+    date
+
+############################################################################
+#       Override user's STD_PARMS_FILE setting
+############################################################################
+
+    echo " ";
+    echo "> Setting STD_PARMS_FILE to:"
+    echo ">   ${PARMS_FILE}";
+    echo " ";
+    STD_PARMS_FILE="${PARMS_FILE}";
+    export STD_PARMS_FILE;
+    echo " ";
+
+############################################################################
+#       Override lmdes2 setting for Limpact or Lplaydoh
+############################################################################
+    
+    # Don't check existence of lmdes2 files in Trimaran mode (unnecessary)
+    if [ $TRIMARAN_MODE -eq 0 ]; then
+        # If using the default Lhppa phase1 + Limpact path
+        if [ $USE_LPLAYDOH -eq 0 ]; then
+            # Use default Limpact_hppa .lmdes2 file if one is not specified
+            if [ $LMDES2_SPECIFIED -eq 0 ]; then
+		# 11/07/02 REK Changing to IMPACT_ROOT so this works with the
+		#              new automake split source/build directories.  
+		#              Since IMPACT_REL_PATH and IMPACT_ROOT have
+		#              traditionally been set to the same directory,
+		#              they are interchangable in the old context, so
+		#              this should work with both the Imakefile scheme
+		#              and the new automake one.
+                LMDES2="${IMPACT_ROOT}/mdes/Limpact_hppa/HP_8G_1BR.lmdes2";
+                echo "> Using the following default Limpact_hppa machine description for scheduling:"
+                echo ">   ${LMDES2}";
+                echo " ";
+                if [ ! -f ${LMDES2} ]; then
+                    echo "ERROR: ${LMDES2} not found!";
+                    echo "       Use '-target \"lmdes2\"' to pick a different Limpact_hppa .lmdes2 file.";
+                    echo " ";
+		    exit 0200;
+                fi      
+            fi
+            LIMPACT_OVERRIDES="${LIMPACT_OVERRIDES} -Flmdes=${LMDES2}";
+
+        # else if using Lplaydoh
+        else
+            # Use default Lplaydoh .lmdes2 file if one is not specified
+            if [ $LMDES2_SPECIFIED -eq 0 ]; then
+		# 11/07/02 REK Changing to IMPACT_ROOT so this works with the
+		#              new automake split source/build directories.  
+		#              Since IMPACT_REL_PATH and IMPACT_ROOT have
+		#              traditionally been set to the same directory,
+		#              they are interchangable in the old context, so
+		#              this should work with both the Imakefile scheme
+		#              and the new automake one.
+                LMDES2="${IMPACT_ROOT}/mdes/Lplaydoh/PLAYDOH_8G_1BR.lmdes2";
+                echo "> Using the following default Lplaydoh machine description for scheduling:"
+                echo ">   ${LMDES2}";
+                echo " ";
+                if [ ! -f ${LMDES2} ]; then
+                    echo "ERROR: ${LMDES2} not found!";
+                    echo "       Use '-target \"lmdes2\"' to pick a different Lplaydoh .lmdes2 file.";
+                    echo " ";
+                    exit 0200;
+                fi      
+            fi
+           LPLAYDOH_OVERRIDES="${LPLAYDOH_OVERRIDES} -Flmdes=${LMDES2}";
+      fi
+   fi
+
+############################################################################
+#       Run the EDG front-end
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+# Skip this step if the old, unsupported front end is desired
+if [ $DO_FRONTEND -eq 1 -a $USE_OLD_FRONTEND -eq 0 ]; then
+    echo " ";
+    echo "> Running the EDG front-end on the source files";
+    echo " ";
+    rm -f *.pc *.nm
+
+    if [ $USE_KRC_MODE -eq 1 ] ; then
+        eccp-hp-krc ${PREPROCESSOR_OPTIONS} *.c;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    else
+        eccp-hp ${PREPROCESSOR_OPTIONS} *.c
+        if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pc files in ${BASENAME}_pc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pc;
+
+        echo " ";
+        echo "> Saving the .nm files in ${BASENAME}_nm.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} nm;
+    fi
+
+    rm -f *.nm;
+fi
+
+############################################################################
+#       Run the old, unsupported, non-EDG front-end
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+# Only run this step if the old, unsupported front end is desired
+# This step is provided for internal debugging only.  It will not
+# work in the public release!
+if [ $DO_FRONTEND -eq 1 -a $USE_OLD_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Running the old, unsupported, non-EDG front-end on the source files";
+    echo " ";
+    rm -f *.pc *.nm cfiles
+
+    if [ $USE_KRC_MODE -eq 1 ] ; then
+        ls *.c > cfiles
+        gen_ChtoP-hp-krc . ${PREPROCESSOR_OPTIONS} < cfiles;
+        if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    else
+        ls *.c > cfiles
+        gen_ChtoP-hp . ${PREPROCESSOR_OPTIONS} < cfiles
+        if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pc files in ${BASENAME}_pc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pc;
+    fi
+
+    rm -f *.nm cfiles;
+fi
+
+############################################################################
+#       Perform Pcode flattening
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Performing Pcode flattening";
+    echo " ";
+    rm -f *.pcf
+
+    ls *.pc > pc_files;
+    gen_PtoP-flatten . < pc_files;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pcf files in ${BASENAME}_pcf.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pcf;
+    fi
+
+    rm -f *.pc;
+    rm -f pc_files;
+fi
+
+############################################################################
+#       Perform Pcode profiling
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Performing Pcode profiling using settings for ${BENCHMARK}";
+    echo " ";
+    rm -f *.pcf.p
+
+    ${TIME} gen_Pprofiled_hppa . -ext pcf -noflatten ${PROFILE_OPTIONS} \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Pcode profiling failed for ${BASENAME}, we recommend:";
+       echo " ";
+       echo "  1) Verifying that the directory contains all and only the .c files"
+       echo "     for this benchmark.";
+       echo "  2) Verifying that any required extra, non .c, files are present.";
+       echo "  3) Verifying that the link and preprocessor commands are correct.";
+       echo " ";
+       echo "Note: For some benchmarks, only a subset of the .c files supplied"
+       echo "      may be present for compilation with this script.";
+       echo " ";
+       case ${BENCHMARK} in
+          072.sc)
+             echo "Hint: If 072.sc failed linking to curses, get the curses 'stubs' from SPEC";;
+ 
+          085.cc1)
+             echo "Hint: For 085.cc1 the *.def files are required to be present.";;
+          085.gcc)
+             echo "Hint: For 085.gcc, we only compile the 085.cc1 part (and call it 085.cc1).";
+             echo "      For 085.cc1 the *.def files are required to be present.";;
+          099.go)
+             echo "Hint: For 099.go the *.pro files are required to be present.";;
+
+          124.m88ksim)
+             echo "Hint: For 124.m88ksim, getopt.[ch] and whichend.[ch] should not be present.";;
+
+          126.gcc)
+             echo "Hint: For 126.gcc, *.def and src.alt/alloca.c are required to be present.";;
+
+          132.ijpeg)
+             echo "Hint: For 132.ijpeg, the files jmemdos.c, jmemansi.c, jmemname.c,";
+             echo "      rdjpgcom.c, and wrjpgcom.c should not be present.";;
+          
+       esac
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pcf.p files in ${BASENAME}_pcf.p.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pcf.p;
+    fi
+
+    rm -f *.pcf;
+fi
+
+
+############################################################################
+#       Perform Pcode file splitting
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Performing  Pcode file splitting";
+    echo " ";
+    rm -f *.pcs *.pch
+
+    ls *.pcf.p > p_files;
+    gen_Psplit p_files;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pcs files in ${BASENAME}_pcs.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pcs;
+
+        echo " ";
+        echo "> Saving the .pch files in ${BASENAME}_pch.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pch;
+    fi
+
+    rm -f p_files;
+    rm -f *.pcf.p;
+fi
+
+
+############################################################################
+#       Perform aggressive inlining on Pcode files
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    if [ $NO_INLINING -eq 0 ]; then
+        echo "> Performing Pcode inlining";
+    else
+        echo "> Performing Pcode inlining (but nothing will actually be inlined)";
+    fi
+    echo " ";
+    rm -f *.pci
+
+    ${TIME} gen_Pinline "${PINLINE_OVERRIDES}";
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pci files in ${BASENAME}_pci.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pci;
+
+        echo " ";
+        echo "> Saving the .pch files in ${BASENAME}_pch.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} pch;
+    else
+        rm -f impact_mapping impact_filelist;
+    fi
+
+    # 126.gcc overwhelms 'rm -f *.pcs', so do in parts.
+    rm -f f_*0.pcs
+    rm -f f_*1.pcs
+    rm -f f_*2.pcs
+    rm -f f_*3.pcs
+    rm -f f_*4.pcs
+    rm -f f_*5.pcs
+    rm -f f_*6.pcs
+    rm -f f_*7.pcs
+    rm -f f_*8.pcs
+    rm -f f_*9.pcs
+    rm -f *.pcs
+fi
+
+############################################################################
+#       Convert Pcode files to Hcode
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Converting Pcode files to Hcode files"
+    echo " ";
+    rm -f *.hc *.hch *.hc.stat
+ 
+    ls *.pci > pci_files;
+    gen_PtoH . < pci_files;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .hc files in ${BASENAME}_hc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} hc;
+
+        echo " ";
+        echo "> Saving the .hch files in ${BASENAME}_hch.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} hch;
+
+        echo " ";
+        echo "> Saving the .hc.stat files in ${BASENAME}_hc.stat.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} hc.stat;
+
+    # Trimaran's emulator requires .hc files, so save them if in this mode
+    # This should no longer be necessary after conversion to new method
+    # of generating this info in the Lcode section.
+    elif [ $TRIMARAN_MODE -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .hc files in ${BASENAME}_hc.tar.gz for Trimaran's use";
+        echo " ";
+        gen_tar ${BASENAME} hc;
+
+        echo " ";
+        echo "> Saving the .hch files in ${BASENAME}_hch.tar.gz for Trimaran's use";
+        echo " ";
+        gen_tar ${BASENAME} hch;
+    fi
+
+    rm -f pci_files;
+    rm -f *.pci;
+    rm -f *.pch;
+fi
+
+
+############################################################################
+#       Convert Hcode files to Lcode
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Converting Hcode files to Lcode files"
+    echo " ";
+    rm -f *.lc
+
+    ls *.hc > hc_files;
+    gen_HtoL . hppa pa-7100 < hc_files;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .lc files in ${BASENAME}_lc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} lc;
+    fi
+
+    if [ $TRIMARAN_MODE -eq 1 ]; then
+        # New and "improved" approach of feeding the Trimaran simulator
+        # the program's prototype and data info.
+        #
+        # Use grep to extract structure and data declarations.
+        # In the lcode phase, prototypes will be deduced for each
+        # function defined and called.
+        echo " ";
+        echo "> Building ${BASENAME}.simu_info for Trimaran's simulator's use";
+	rm -f ${BASENAME}.simu_info ${BASENAME}.temp_simu_info ;
+
+        # Everything in struct.hch is needed.
+        cp struct.hch ${BASENAME}.temp_simu_info;
+
+        # Strip out all function prototypes and the "INCLUDE" to get
+        # externs for data variables.
+        grep -v ')((F ((FPARAM' extern.hch | grep -v ')((F))' | \
+            grep -v '(INCLUDE' >> ${BASENAME}.temp_simu_info;
+
+        # Strip out the "INCLUDE" to get data variable definitions
+	grep -v '(INCLUDE' data.hc  >> ${BASENAME}.temp_simu_info;
+
+        # Deduce the function prototypes for each function defined and called
+        # from the lcode files.
+        cat *.lc | Lbuild_prototype_info >> ${BASENAME}.temp_simu_info;
+	if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+        # Pass through Hcode to get "consistent" Hcode (many parenthesis
+        # are optional, and three different output routines are used
+        # to generate the above files.  This is give Hcode output format files.
+        # (It also detects Hcode format errors by above routines.)
+        Hcode -i ${BASENAME}.temp_simu_info -o ${BASENAME}.simu_info;
+	if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+	# Remove temp file and "stat" file produced by Hcode
+        rm -f ${BASENAME}.temp_simu_info ${BASENAME}.simu_info.stat;
+    fi
+	  
+    rm -f hc_files;
+    rm -f *.hc;
+    rm -f *.hch;
+    rm -f *.hc.stat;
+fi
+
+############################################################################
+#       Lopti
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+# (Instead, just unzip ${BASENAME}_O.tar.gz)
+if [ $DO_FRONTEND -eq 1 ]; then
+    echo " ";
+    echo "> Running Lopti on *.lc files";
+    echo " ";
+    rm -f *.O
+
+    ls *.lc > file;
+
+    ${TIME} gen_Lopti . hppa pa-7100 4 "${OPTI_DISAMBIG_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    
+    # Always keep .O files, useful as a baseline for performance
+    echo " ";
+    echo "> Saving the .O files in ${BASENAME}_O.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME} O;
+
+    rm -f *.lc;
+    rm -f file;
+
+    # If doing frontend only, remove .O files 
+    if [ $DO_BACKEND -eq 0 ]; then
+        echo " "
+        echo "> Skipping backend for .O files"
+	echo " "
+        rm -f *.O;
+    fi
+fi
+
+# If -backend_only specified (and doing classical opti path), just 
+# unzip ${BASENAME}_O.tar.gz
+if [ $DO_FRONTEND -eq 0 -a $DO_CLASSICAL_OPTI_PATH -eq 1 ]; then
+    echo " ";
+    echo "> Skipping frontend, restoring the .O files from ${BASENAME}_O.tar.gz";
+    echo " ";
+    rm -f *.O;
+    gen_untar ${BASENAME} O;
+
+fi
+
+############################################################################
+#       Schedule .O files after running thru Lhppa phase 1
+############################################################################
+
+# Do this section only if doing classical opti path, not using Lplaydoh and 
+# not in Trimaran mode
+if [ $DO_BACKEND -eq 1 -a $DO_CLASSICAL_OPTI_PATH -eq 1 -a \
+     $USE_LPLAYDOH -eq 0 -a $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Running Lhppa phase1 on .O files to get enhanced HP-PA instruction set";
+    echo " ";
+    rm -f *.mc
+
+    ls *.O > file;
+    gen_Lhppa . pa-7100 1 < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .mc files in ${BASENAME}_O_mc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_O mc;
+    fi
+
+    rm -f *.O;
+
+
+    echo " ";
+    echo "> Scheduling and register allocating .mc files (from .O) using Limpact"
+    echo " ";
+    rm -f *.im
+
+    ls *.mc > file;
+    ${TIME} gen_Limpact . hp-mcode 6 "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .im files in ${BASENAME}_O_im.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_O im;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.mc
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.im.p
+
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} -fastreg -ext im \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+
+
+    echo " ";
+    echo "> Saving the .im.p files (profiled "assembly") in ${BASENAME}_O_im.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_O im.p;
+
+    rm -f *.im
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_O_im.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_O_im.p.stat;
+
+    ls *.im.p > file;
+    gen_Lstatic . impact hp-mcode "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_O_im.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.im.p;
+fi
+
+
+############################################################################
+#       Schedule .O files using Lplaydoh instead of default path
+############################################################################
+
+# Do this section only if doing classical opti path AND using Lplaydoh and 
+# not in Trimaran mode (Trimaran mode has higher precedence than Lplaydoh)
+if [ $DO_BACKEND -eq 1 -a $DO_CLASSICAL_OPTI_PATH -eq 1 -a \
+     $USE_LPLAYDOH -eq 1 -a $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Scheduling and register allocating .O files using Lplaydoh"
+    echo " ";
+    rm -f *.pl
+
+    ls *.O > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Although mdes specifies vliw, assume vliw has interlocking to prevent
+    # some "non-portable" no-op insertion from being done.
+    ${TIME} gen_Lplaydoh . v1-hp 7 "-Fuse_sync_arcs=yes \
+	     -Fvliw_has_interlocking=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pl files in ${BASENAME}_O_pl.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_O pl;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.O;
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.pl.p
+
+    # Assume playdoh code is valid if executed sequentially.
+    # Note that the -playdoh option is not support in public release 1.0.
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} \
+        -playdoh_seq -fastreg -ext pl \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+
+
+    echo " ";
+    echo "> Saving the .pl.p files (profiled "assembly") in ${BASENAME}_O_pl.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_O pl.p;
+
+    rm -f *.pl
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_O_pl.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_O_pl.p.stat;
+
+    ls *.pl.p > file;
+    gen_Lstatic . playdoh v1-hp "-Fuse_sync_arcs=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_O_pl.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.pl.p;
+fi
+
+
+############################################################################
+#       Generate Lplaydoh .mc files from .O files for use by Trimaran/Elcor
+############################################################################
+
+# Do this section only if doing classical opti path AND in Trimaran mode.
+# If -Lplaydoh is also specified, trimaran mode overrides it.
+if [ $DO_BACKEND -eq 1 -a $DO_CLASSICAL_OPTI_PATH -eq 1 -a \
+     $TRIMARAN_MODE -eq 1 ]; then
+
+    echo " ";
+    echo "> Converting .O files to .mc files using Lplaydoh for use by Trimaran/Elcor"
+    echo " ";
+    rm -f *.mc
+
+    ls *.O > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Run only phase 1 to get .mc files with the generated sync-arcs.
+    ${TIME} gen_Lplaydoh . v1-hp 1 "${SCHED_DISAMBIG_OVERRIDES} \
+	${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    rm -f *.O;
+
+    echo " ";
+    echo "> Saving the Lplaydoh's .mc files in ${BASENAME}_O_trimaran_mc.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_O_trimaran mc;
+
+    rm -f *.mc
+    rm -f file;
+fi
+
+
+###########################################################################
+#       Lsuperscalar (on .O files)
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+# (Instead, just unzip ${BASENAME}_S.tar.gz)
+if [ $DO_FRONTEND -eq 1 -a $DO_SUPERBLOCK_PATH -eq 1 ]; then
+    echo " ";
+    echo "> Running Lsuperscalar on .O files";
+    echo " ";
+    rm -f *.S
+
+    # Assume .O files were deleted above in classical opti path
+    rm -f *.O
+    gen_untar ${BASENAME} O;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    ls *.O > file;
+    ${TIME} gen_Lsuperscalar . hppa pa-7100 "${OPTI_DISAMBIG_OVERRIDES} \
+         ${LSUPERSCALAR_OVERRIDES}" < file;
+    if test "$?" != 0; then 
+        echo " ";
+        echo " Lsuperscalar failed for ${BASENAME}.";
+        echo " "
+        echo " If Lsuperscalar ran out of memory, consider using the -faster_opti flag";
+        echo " (if not already specified or defaulted to).";
+        echo " ";
+        echo "Exiting: non-zero exit code"; 
+        exit 1;
+    fi
+
+    # Always keep .S files, can take a while to generate
+    echo " ";
+    echo "> Saving the .S files in ${BASENAME}_S.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME} S;
+
+    rm file;
+    rm -f *.O;
+
+    # If doing frontend only, remove .S files 
+    if [ $DO_BACKEND -eq 0 ]; then
+        echo " "
+        echo "> Skipping backend for .S files"
+	echo " "
+        rm -f *.S;
+    fi
+fi
+
+# If -backend_only specified (and doing superblock path), just 
+# unzip ${BASENAME}_S.tar.gz
+if [ $DO_FRONTEND -eq 0 -a $DO_SUPERBLOCK_PATH -eq 1 ]; then
+    echo " ";
+    echo "> Skipping frontend, restoring the .S files from ${BASENAME}_S.tar.gz";
+    echo " ";
+    rm -f *.S;
+    gen_untar ${BASENAME} S;
+fi
+
+############################################################################
+#       Schedule .S files after running thru Lhppa phase 1
+############################################################################
+
+# Do this section only if doing superblock path, not using Lplaydoh and 
+# not in Trimaran mode
+if [ $DO_BACKEND -eq 1 -a $DO_SUPERBLOCK_PATH -eq 1 -a $USE_LPLAYDOH -eq 0 -a \
+     $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Running Lhppa phase1 on .S files to get enhanced HP-PA instruction set";
+    echo " ";
+    rm -f *.mc
+
+    ls *.S > file;
+    gen_Lhppa . pa-7100 1 < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .mc files in ${BASENAME}_S_mc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_S mc;
+    fi
+
+    rm -f *.S;
+
+
+    echo " ";
+    echo "> Scheduling and register allocating .mc files (from .S) using Limpact"
+    echo " ";
+    rm -f *.im
+
+    ls *.mc > file;
+    ${TIME} gen_Limpact . hp-mcode 6 "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .im files in ${BASENAME}_S_im.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_S im;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.mc
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.im.p
+
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} -fastreg -ext im \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+
+
+    echo " ";
+    echo "> Saving the .im.p files (profiled "assembly") in ${BASENAME}_S_im.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_S im.p;
+
+    rm -f *.im
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_S_im.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_S_im.p.stat;
+
+    ls *.im.p > file;
+    gen_Lstatic . impact hp-mcode "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_S_im.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.im.p;
+fi
+
+
+############################################################################
+#       Schedule .S files using Lplaydoh instead of default path
+############################################################################
+
+# Do this section only if doing superblock path AND using Lplaydoh and 
+# not in Trimaran mode (Trimaran mode has higher precedence than Lplaydoh)
+if [ $DO_BACKEND -eq 1 -a $DO_SUPERBLOCK_PATH -eq 1 -a $USE_LPLAYDOH -eq 1 -a \
+     $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Scheduling and register allocating .S files using Lplaydoh"
+    echo " ";
+    rm -f *.pl
+
+    ls *.S > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Although mdes specifies vliw, assume vliw has interlocking to prevent
+    # some "non-portable" no-op insertion from being done.
+    ${TIME} gen_Lplaydoh . v1-hp 7 "-Fuse_sync_arcs=yes \
+	     -Fvliw_has_interlocking=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pl files in ${BASENAME}_S_pl.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_S pl;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.S;
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.pl.p
+
+    # Assume playdoh code is valid if executed sequentially.
+    # Note that the -playdoh option is not support in public release 1.0.
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} \
+        -playdoh_seq -fastreg -ext pl \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+
+
+    echo " ";
+    echo "> Saving the .pl.p files (profiled "assembly") in ${BASENAME}_S_pl.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_S pl.p;
+
+    rm -f *.pl
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_S_pl.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_S_pl.p.stat;
+
+    ls *.pl.p > file;
+    gen_Lstatic . playdoh v1-hp "-Fuse_sync_arcs=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_S_pl.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.pl.p;
+fi
+
+
+############################################################################
+#       Generate Lplaydoh .mc files from .S files for use by Trimaran/Elcor
+############################################################################
+
+# Do this section only if doing superblock path AND in Trimaran mode.
+# If -Lplaydoh is also specified, trimaran mode overrides it.
+if [ $DO_BACKEND -eq 1 -a $DO_SUPERBLOCK_PATH -eq 1 -a \
+     $TRIMARAN_MODE -eq 1 ]; then
+
+    echo " ";
+    echo "> Converting .S files to .mc files using Lplaydoh for use by Trimaran/Elcor"
+    echo " ";
+    rm -f *.mc
+
+    ls *.S > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Run only phase 1 to get .mc files with the generated sync-arcs.
+    ${TIME} gen_Lplaydoh . v1-hp 1 "${SCHED_DISAMBIG_OVERRIDES} \
+		${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    rm -f *.S;
+
+    echo " ";
+    echo "> Saving the Lplaydoh's .mc files in ${BASENAME}_S_trimaran_mc.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_S_trimaran mc;
+
+    rm -f *.mc
+    rm -f file;
+fi
+
+
+
+############################################################################
+#       Lhyper (on .O files)
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+if [ $DO_FRONTEND -eq 1 -a $DO_HYPERBLOCK_PATH -eq 1 ]; then
+
+    echo " ";
+    echo "> Running Lhyper on .O files to create hyperblocks"
+    echo " ";
+    rm -f *.H
+
+    # Assume .O files were deleted above in superscalar path
+    rm -f *.O
+    gen_untar ${BASENAME} O;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    ls *.O > file;
+    ${TIME} gen_Lhyper . impact hp-lcode "${OPTI_DISAMBIG_OVERRIDES} \
+            ${LHYPER_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .H files in ${BASENAME}_H.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME} H;
+    fi
+
+    rm -f file;
+    rm -f *.O;
+
+fi
+
+############################################################################
+#       Lsuperscalar .H files
+############################################################################
+
+# Skip this step if -backend_only specified on the command line
+# (Instead, just unzip ${BASENAME}_HS.tar.gz)
+if [ $DO_FRONTEND -eq 1 -a $DO_HYPERBLOCK_PATH -eq 1 ]; then
+
+    echo " ";
+    echo "> Running Lsuperscalar on .H files"
+    echo " ";
+    rm -f *.HS
+
+    ls *.H > file;
+    # do_branch_combining and pred_exec_support creates predicates.
+    # Should only be turned on when predicate execution is desired.
+    ${TIME} gen_LsuperscalarH . hppa pa-7100 "${OPTI_DISAMBIG_OVERRIDES} \
+           -Fdo_branch_combining=yes -Fpred_exec_support=yes \
+           ${LSUPERSCALAR_OVERRIDES}" < file;
+    if test "$?" != 0; then 
+        echo " ";
+        echo " Lsuperscalar failed for ${BASENAME}.";
+        echo " ";
+        echo " If Lsuperscalar ran out of memory, consider using the -faster_opti flag";
+        echo " (if not already specified or defaulted to).";
+        echo " ";
+        echo "Exiting: non-zero exit code"; 
+        exit 1;
+    fi
+
+    # Always keep .HS files, can take a while to generate
+    echo " ";
+    echo "> Saving the .HS files in ${BASENAME}_HS.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME} HS;
+
+    rm -f file;
+    rm -f *.H;
+
+    # If doing frontend only, remove .HS files 
+    if [ $DO_BACKEND -eq 0 ]; then
+        echo " "
+        echo "> Skipping backend for .HS files"
+	echo " "
+        rm -f *.HS;
+    fi
+fi
+
+# If -backend_only specified (and doing hyperblock path), just 
+# unzip ${BASENAME}_HS.tar.gz
+if [ $DO_FRONTEND -eq 0 -a $DO_HYPERBLOCK_PATH -eq 1 ]; then
+    echo " ";
+    echo "> Skipping frontend, restoring the .HS files from ${BASENAME}_HS.tar.gz";
+    echo " ";
+    rm -f *.HS;
+    gen_untar ${BASENAME} HS;
+fi
+
+############################################################################
+#       Schedule .HS files after running thru Lhppa phase 1
+############################################################################
+
+# Do this section only if doing hyperblock path, not using Lplaydoh and 
+# not in Trimaran mode
+if [ $DO_BACKEND -eq 1 -a $DO_HYPERBLOCK_PATH -eq 1 -a $USE_LPLAYDOH -eq 0 -a \
+     $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Running Lhppa phase1 on .HS files to get enhanced HP-PA instruction set";
+    echo " ";
+    rm -f *.mc
+
+    ls *.HS > file;
+    gen_Lhppa . pa-7100 1 < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .mc files in ${BASENAME}_HS_mc.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_HS mc;
+    fi
+
+    rm -f *.HS;
+
+
+    echo " ";
+    echo "> Scheduling and register allocating .mc files (from .HS) using Limpact"
+    echo " ";
+    rm -f *.im
+
+    ls *.mc > file;
+    ${TIME} gen_Limpact . hp-mcode 6 "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .im files in ${BASENAME}_HS_im.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_HS im;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.mc
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.im.p
+
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} -fastreg -ext im \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+    echo " ";
+    echo "> Saving the .im.p files (profiled "assembly") in ${BASENAME}_HS_im.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_HS im.p;
+
+    rm -f *.im
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_HS_im.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_HS_im.p.stat;
+
+    ls *.im.p > file;
+    gen_Lstatic . impact hp-mcode "${SCHED_DISAMBIG_OVERRIDES} \
+             ${LIMPACT_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_HS_im.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.im.p;
+fi
+
+############################################################################
+#       Schedule .HS files using Lplaydoh instead of default path
+############################################################################
+
+# Do this section only if doing hyperblock path AND using Lplaydoh and 
+# not in Trimaran mode (Trimaran mode has higher precedence than Lplaydoh)
+if [ $DO_BACKEND -eq 1 -a $DO_HYPERBLOCK_PATH -eq 1 -a $USE_LPLAYDOH -eq 1 -a \
+     $TRIMARAN_MODE -eq 0 ]; then
+
+    echo " ";
+    echo "> Scheduling and register allocating .HS files using Lplaydoh"
+    echo " ";
+    rm -f *.pl
+
+    ls *.HS > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Although mdes specifies vliw, assume vliw has interlocking to prevent
+    # some "non-portable" no-op insertion from being done.
+    ${TIME} gen_Lplaydoh . v1-hp 7 "-Fuse_sync_arcs=yes \
+	     -Fvliw_has_interlocking=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+        echo " ";
+        echo "> Saving the .pl files in ${BASENAME}_HS_pl.tar.gz";
+        echo " ";
+        gen_tar ${BASENAME}_HS pl;
+    fi
+
+    # Static analysis info invalid, since profile info corrupt due to opti
+    rm -f IMPACT_001;
+    rm -f *.HS;
+
+    echo " ";
+    echo "> Profiling final "assembly" to verify output correctness"
+    echo " ";
+    rm -f *.pl.p
+
+    # Assume playdoh code is valid if executed sequentially.
+    # Note that the -playdoh option is not support in public release 1.0.
+    ${TIME} gen_profiled_hppa . ${PROFILE_OPTIONS} \
+        -playdoh_seq -fastreg -ext pl \
+        $SETUP_CMD "$SETUP_TEXT" $PREFIX_CMD "$PREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    if test "$?" != 0; then 
+       echo " "
+       echo "Lcode profiling failed for ${BASENAME}.  We recommend:"
+       echo " ";
+       echo "  1) Checking for error messages in previous compilation steps."
+       echo "  2) Trying the -safer_opti, -safer_sched flags";
+       echo "  3) Trying the -faster_opti flag if you ran out of memory in a prev step";
+       echo " "
+       echo "Note: This version of IMPACT tracing tools does not support call backs from";
+       echo "      libraries.  Compiling in source code (i.e., qsort.c from 008.espresso)";
+       echo "      is the current work around.";
+       echo " "
+       echo "Note: see the debugging tutorial for more suggestions."
+       echo " "
+       case ${BENCHMARK} in
+          134.perl)
+              echo "For 134.perl, we require qsort source code to be compiled in."
+              echo "We recommend qsort.c from 008.espresso (only affects jumble input).";;
+       esac
+
+       echo " ";
+       echo "Exiting: non-zero exit code"; 
+       exit 1;
+    fi
+
+
+
+    echo " ";
+    echo "> Saving the .pl.p files (profiled "assembly") in ${BASENAME}_HS_pl.p.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_HS pl.p;
+
+    rm -f *.pl
+
+    echo " ";
+    echo "> Writing profile-based static performance estimate to ${BASENAME}_HS_pl.p.stat";
+    echo " ";
+    rm -f IMPACT_001.sum ${BASENAME}_HS_pl.p.stat;
+
+    ls *.pl.p > file;
+    gen_Lstatic . playdoh v1-hp "-Fuse_sync_arcs=yes \
+             ${SCHED_DISAMBIG_OVERRIDES} ${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    mv IMPACT_001.sum ${BASENAME}_HS_pl.p.stat;
+    rm -f IMPACT_001;
+    rm -f file;
+    rm -f *.pl.p;
+fi
+
+############################################################################
+#       Generate Lplaydoh .mc files from .HS files for use by Trimaran/Elcor
+############################################################################
+
+# Do this section only if doing superblock path AND in Trimaran mode.
+# If -Lplaydoh is also specified, trimaran mode overrides it.
+if [ $DO_BACKEND -eq 1 -a $DO_SUPERBLOCK_PATH -eq 1 -a \
+     $TRIMARAN_MODE -eq 1 ]; then
+
+    echo " ";
+    echo "> Converting .HS files to .mc files using Lplaydoh for use by Trimaran/Elcor"
+    echo " ";
+    rm -f *.mc
+
+    ls *.HS > file;
+    # Use "unsafe" flag-based sync arcs that Lplaydoh automatically generates.
+    # Run only phase 1 to get .mc files with the generated sync-arcs.
+    ${TIME} gen_Lplaydoh . v1-hp 1 "${SCHED_DISAMBIG_OVERRIDES} \
+	${LPLAYDOH_OVERRIDES}" < file;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+    rm -f *.HS;
+
+    echo " ";
+    echo "> Saving the Lplaydoh's .mc files in ${BASENAME}_HS_trimaran_mc.tar.gz";
+    echo " ";
+    gen_tar ${BASENAME}_HS_trimaran mc;
+
+    rm -f *.mc
+    rm -f file;
+fi
+
+
+
+############################################################################
+#       Done, whew!
+############################################################################
+    
+    # Print date to help determine when compilation started & completed  
+    echo "> Compilation finished on:"
+    END_DATE=`date +"%X %x"`;
+    date
+    echo " "
+    echo "Compiled ${BASENAME} from $START_DATE to $END_DATE";
+    echo " "
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Done with ${BASENAME}";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+

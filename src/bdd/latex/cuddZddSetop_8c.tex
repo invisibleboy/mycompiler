@@ -1,0 +1,446 @@
+\section{cudd\-Zdd\-Setop.c File Reference}
+\label{cuddZddSetop_8c}\index{cuddZddSetop.c@{cuddZddSetop.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$zdd\_\-subset1\_\-aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$zvar))
+\item 
+static void zdd\-Var\-To\-Const \bf{ARGS} ((\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$base, \bf{Dd\-Node} $\ast$\bf{empty}))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Ite} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Union} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Intersect} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Diff} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Diff\-Const} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Subset1} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Subset0} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Change} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Ite} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Union} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Intersect} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Diff} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Change\-Aux} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$zvar)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Subset1} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Subset0} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Change} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zdd\_\-subset1\_\-aux} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$zvar)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zdd\_\-subset0\_\-aux} (\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$zvar)
+\item 
+static void \bf{zdd\-Var\-To\-Const} (\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$base, \bf{Dd\-Node} $\ast$\bf{empty})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Setop.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Var\-To\-Const ARGS ((\bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$gp, \bf{Dd\-Node} $\ast$$\ast$hp, \bf{Dd\-Node} $\ast$base, \bf{Dd\-Node} $\ast$\bf{empty}))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_1a5aa061f71ccf10a7946537d5f11820}
+
+
+\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ zdd\_\-subset1\_\-aux ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$zvar))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_8cd0c42fd32bcd8d2d07cb1c6ddf4657}
+
+
+Automatic\-Start \index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddChange@{Cudd\_\-zddChange}}
+\index{Cudd_zddChange@{Cudd\_\-zddChange}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Change (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_f1e29f906fd682376f4b15676c840fe2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Substitutes a variable with its complement in a ZDD.]
+
+Description [Substitutes a variable with its complement in a ZDD. returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 356 of file cudd\-Zdd\-Setop.c.
+
+References CUDD\_\-MAXINDEX, cudd\-Zdd\-Change(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddDiff@{Cudd\_\-zddDiff}}
+\index{Cudd_zddDiff@{Cudd\_\-zddDiff}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Diff (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_dc73fc58a0086966fcec55169951b61d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the difference of two ZDDs.]
+
+Description [Computes the difference of two ZDDs. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Diff\-Const] 
+
+Definition at line 201 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Diff(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddDiffConst@{Cudd\_\-zddDiffConst}}
+\index{Cudd_zddDiffConst@{Cudd\_\-zddDiffConst}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Diff\-Const (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_59302de6443444bd5a0cc69e0eb09533}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the inclusion test for ZDDs (P implies Q).]
+
+Description [Inclusion test for ZDDs (P implies Q). No new nodes are generated by this procedure. Returns empty if true; a valid pointer different from empty or DD\_\-NON\_\-CONSTANT otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Diff] 
+
+Definition at line 231 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-E, cudd\-Is\-Constant, cudd\-T, cudd\-Zdd\-Diff(), DD\_\-NON\_\-CONSTANT, DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddIntersect@{Cudd\_\-zddIntersect}}
+\index{Cudd_zddIntersect@{Cudd\_\-zddIntersect}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Intersect (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_8be281a73703e9d817bb3e497e35d0fd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the intersection of two ZDDs.]
+
+Description [Computes the intersection of two ZDDs. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 172 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Intersect(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddIte@{Cudd\_\-zddIte}}
+\index{Cudd_zddIte@{Cudd\_\-zddIte}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Ite (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddZddSetop_8c_41777e8aa4a688ac964ea2564e5ae4be}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the ITE of three ZDDs.]
+
+Description [Computes the ITE of three ZDDs. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 113 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Ite(), and Dd\-Manager::reordered.
+
+Referenced by cudd\-Zdd\-Ite().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddSubset0@{Cudd\_\-zddSubset0}}
+\index{Cudd_zddSubset0@{Cudd\_\-zddSubset0}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Subset0 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_d0822a83d4fd25d1e68969fe283886ac}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the negative cofactor of a ZDD w.r.t. a variable.]
+
+Description [Computes the negative cofactor of a ZDD w.r.t. a variable. In terms of combinations, the result is the set of all combinations in which the variable is negated. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Subset1] 
+
+Definition at line 326 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Subset0(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddSubset1@{Cudd\_\-zddSubset1}}
+\index{Cudd_zddSubset1@{Cudd\_\-zddSubset1}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Subset1 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_6ca2965bda4c37d1dbb881325644804b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the positive cofactor of a ZDD w.r.t. a variable.]
+
+Description [Computes the positive cofactor of a ZDD w.r.t. a variable. In terms of combinations, the result is the set of all combinations in which the variable is asserted. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Subset0] 
+
+Definition at line 294 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Subset1(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!Cudd_zddUnion@{Cudd\_\-zddUnion}}
+\index{Cudd_zddUnion@{Cudd\_\-zddUnion}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Union (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_5fc0f519f9a3aa14a3ee376c3e65e13b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the union of two ZDDs.]
+
+Description [Computes the union of two ZDDs. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 143 of file cudd\-Zdd\-Setop.c.
+
+References cudd\-Zdd\-Union(), and Dd\-Manager::reordered.\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddChange@{cuddZddChange}}
+\index{cuddZddChange@{cuddZddChange}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Change (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_ac8284fcb0a1c924bd9362ab90d194a7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Substitutes a variable with its complement in a ZDD.]
+
+Description [Substitutes a variable with its complement in a ZDD. returns a pointer to the result if successful; NULL otherwise. cudd\-Zdd\-Change performs the same function as Cudd\_\-zdd\-Change, but does not restart if reordering has taken place. Therefore it can be called from within a recursive procedure.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Change] 
+
+Definition at line 930 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), cudd\-Zdd\-Change\-Aux(), DD\_\-ONE, and DD\_\-ZERO.
+
+Referenced by Cudd\_\-zdd\-Change().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddChangeAux@{cuddZddChangeAux}}
+\index{cuddZddChangeAux@{cuddZddChangeAux}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Change\-Aux (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em zvar})}\label{cuddZddSetop_8c_aca76fe4ed2c4316c53afcf996e6ae20}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Change.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 759 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ONE, DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.
+
+Referenced by cudd\-Zdd\-Change().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddDiff@{cuddZddDiff}}
+\index{cuddZddDiff@{cuddZddDiff}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Diff (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_6af3c223536b1c0cf632f4e3cd7e5e2d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Diff.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 678 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-NON\_\-CONSTANT, DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.
+
+Referenced by Cudd\_\-zdd\-Diff(), and Cudd\_\-zdd\-Diff\-Const().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddIntersect@{cuddZddIntersect}}
+\index{cuddZddIntersect@{cuddZddIntersect}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Intersect (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_985332f0d24772bc916a46f2b3465b53}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Intersect.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 604 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.
+
+Referenced by Cudd\_\-zdd\-Intersect(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Weak\-Div(), and cudd\-Zdd\-Weak\-Div\-F().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddIte@{cuddZddIte}}
+\index{cuddZddIte@{cuddZddIte}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Ite (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddZddSetop_8c_b0441bafcc095a43788d491e762b790c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Ite.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 391 of file cudd\-Zdd\-Setop.c.
+
+References CUDD\_\-MAXINDEX, Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-zdd\-Ite(), cudd\-Cache\-Insert(), cudd\-Cache\-Lookup\-Zdd(), cudd\-Deref, cudd\-E, cudd\-IZ, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ONE, DD\_\-ZERO, dd\-Min, empty, Dd\-Node::index, Dd\-Manager::univ, and zdd\-Var\-To\-Const().
+
+Referenced by Cudd\_\-zdd\-Ite().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddSubset0@{cuddZddSubset0}}
+\index{cuddZddSubset0@{cuddZddSubset0}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Subset0 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_7f3e9b7302820781160c550d08667d3c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the negative cofactor of a ZDD w.r.t. a variable.]
+
+Description [Computes the negative cofactor of a ZDD w.r.t. a variable. In terms of combinations, the result is the set of all combinations in which the variable is negated. Returns a pointer to the result if successful; NULL otherwise. cudd\-Zdd\-Subset0 performs the same function as Cudd\_\-zdd\-Subset0, but does not restart if reordering has taken place. Therefore it can be called from within a recursive procedure.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Subset1 Cudd\_\-zdd\-Subset0] 
+
+Definition at line 882 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), DD\_\-ONE, DD\_\-ZERO, empty, and zdd\_\-subset0\_\-aux().
+
+Referenced by Cudd\_\-zdd\-Subset0(), cudd\-Zdd\-Get\-Cofactors2(), and cudd\-Zdd\-Get\-Cofactors3().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddSubset1@{cuddZddSubset1}}
+\index{cuddZddSubset1@{cuddZddSubset1}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Subset1 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em P}, int {\em var})}\label{cuddZddSetop_8c_54688fe7f1014c1e871ab5966d9e948e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the positive cofactor of a ZDD w.r.t. a variable.]
+
+Description [Computes the positive cofactor of a ZDD w.r.t. a variable. In terms of combinations, the result is the set of all combinations in which the variable is asserted. Returns a pointer to the result if successful; NULL otherwise. cudd\-Zdd\-Subset1 performs the same function as Cudd\_\-zdd\-Subset1, but does not restart if reordering has taken place. Therefore it can be called from within a recursive procedure.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Subset0 Cudd\_\-zdd\-Subset1] 
+
+Definition at line 833 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), DD\_\-ONE, DD\_\-ZERO, empty, and zdd\_\-subset1\_\-aux().
+
+Referenced by Cudd\_\-zdd\-Subset1(), cudd\-Zdd\-Get\-Cofactors2(), and cudd\-Zdd\-Get\-Cofactors3().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!cuddZddUnion@{cuddZddUnion}}
+\index{cuddZddUnion@{cuddZddUnion}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Union (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em Q})}\label{cuddZddSetop_8c_f13034436631370bd5c24e9f8e58e38b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Union.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 516 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ZERO, empty, and Dd\-Manager::perm\-Z.
+
+Referenced by Cudd\_\-zdd\-Union(), cudd\-Zdd\-Get\-Node\-IVO(), cudd\-Zdd\-Product(), and cudd\-Zdd\-Unate\-Product().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!zdd_subset0_aux@{zdd\_\-subset0\_\-aux}}
+\index{zdd_subset0_aux@{zdd\_\-subset0\_\-aux}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ zdd\_\-subset0\_\-aux (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em zvar})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_270b5dbc0d21fb8cd56112fb678eb4bc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Subset0.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1040 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ONE, DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.
+
+Referenced by cudd\-Zdd\-Subset0().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!zdd_subset1_aux@{zdd\_\-subset1\_\-aux}}
+\index{zdd_subset1_aux@{zdd\_\-subset1\_\-aux}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ zdd\_\-subset1\_\-aux (\bf{Dd\-Manager} $\ast$ {\em zdd}, \bf{Dd\-Node} $\ast$ {\em P}, \bf{Dd\-Node} $\ast$ {\em zvar})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_53ff77e0e29fcfa213e80634d1adeffb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Subset1.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 971 of file cudd\-Zdd\-Setop.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Zdd\-Get\-Node(), DD\_\-ONE, DD\_\-ZERO, empty, Dd\-Node::index, and Dd\-Manager::perm\-Z.
+
+Referenced by cudd\-Zdd\-Subset1().\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!zddVarToConst@{zddVarToConst}}
+\index{zddVarToConst@{zddVarToConst}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Var\-To\-Const (\bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em gp}, \bf{Dd\-Node} $\ast$$\ast$ {\em hp}, \bf{Dd\-Node} $\ast$ {\em base}, \bf{Dd\-Node} $\ast$ {\em empty})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_d2dafff2305d86535c48b50fdf425f4e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Replaces variables with constants if possible (part of canonical form).]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1112 of file cudd\-Zdd\-Setop.c.
+
+References empty.
+
+Referenced by cudd\-Zdd\-Ite().
+
+\subsection{Variable Documentation}
+\index{cuddZddSetop.c@{cudd\-Zdd\-Setop.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddZddSetop.c@{cudd\-Zdd\-Setop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Setop.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddSetop_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Zdd\-Setop.c}{p.}{cuddZddSetop_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Set operations on ZDDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-zdd\-Ite()}{p.}{cuddZddSetop_8c_41777e8aa4a688ac964ea2564e5ae4be} \item \doxyref{Cudd\_\-zdd\-Union()}{p.}{cuddZddSetop_8c_5fc0f519f9a3aa14a3ee376c3e65e13b} \item \doxyref{Cudd\_\-zdd\-Intersect()}{p.}{cuddZddSetop_8c_8be281a73703e9d817bb3e497e35d0fd} \item \doxyref{Cudd\_\-zdd\-Diff()}{p.}{cuddZddSetop_8c_dc73fc58a0086966fcec55169951b61d} \item \doxyref{Cudd\_\-zdd\-Diff\-Const()}{p.}{cuddZddSetop_8c_59302de6443444bd5a0cc69e0eb09533} \item \doxyref{Cudd\_\-zdd\-Subset1()}{p.}{cuddZddSetop_8c_6ca2965bda4c37d1dbb881325644804b} \item \doxyref{Cudd\_\-zdd\-Subset0()}{p.}{cuddZddSetop_8c_d0822a83d4fd25d1e68969fe283886ac} \item \doxyref{Cudd\_\-zdd\-Change()}{p.}{cuddZddSetop_8c_f1e29f906fd682376f4b15676c840fe2} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Ite()}{p.}{cuddZddSetop_8c_b0441bafcc095a43788d491e762b790c} \item \doxyref{cudd\-Zdd\-Union()}{p.}{cuddZddSetop_8c_f13034436631370bd5c24e9f8e58e38b} \item \doxyref{cudd\-Zdd\-Intersect()}{p.}{cuddZddSetop_8c_985332f0d24772bc916a46f2b3465b53} \item \doxyref{cudd\-Zdd\-Diff()}{p.}{cuddZddSetop_8c_6af3c223536b1c0cf632f4e3cd7e5e2d} \item \doxyref{cudd\-Zdd\-Change\-Aux()}{p.}{cuddZddSetop_8c_aca76fe4ed2c4316c53afcf996e6ae20} \item \doxyref{cudd\-Zdd\-Subset1()}{p.}{cuddZddSetop_8c_54688fe7f1014c1e871ab5966d9e948e} \item \doxyref{cudd\-Zdd\-Subset0()}{p.}{cuddZddSetop_8c_7f3e9b7302820781160c550d08667d3c} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{zdd\_\-subset1\_\-aux()}{p.}{cuddZddSetop_8c_53ff77e0e29fcfa213e80634d1adeffb} \item \doxyref{zdd\_\-subset0\_\-aux()}{p.}{cuddZddSetop_8c_270b5dbc0d21fb8cd56112fb678eb4bc} \item \doxyref{zdd\-Var\-To\-Const()}{p.}{cuddZddSetop_8c_d2dafff2305d86535c48b50fdf425f4e} \end{itemize}
+]
+
+See\-Also []
+
+Author [Hyong-Kyoon Shin, In-Ho Moon]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 74 of file cudd\-Zdd\-Setop.c.

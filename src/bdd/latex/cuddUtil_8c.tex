@@ -1,0 +1,1304 @@
+\section{cudd\-Util.c File Reference}
+\label{cuddUtil_8c}\index{cuddUtil.c@{cuddUtil.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Dd\-Gen}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CUDD\_\-GEN\_\-CUBES}~0
+\item 
+\#define \bf{CUDD\_\-GEN\_\-NODES}~1
+\item 
+\#define \bf{CUDD\_\-GEN\_\-EMPTY}~0
+\item 
+\#define \bf{CUDD\_\-GEN\_\-NONEMPTY}~1
+\item 
+\#define \bf{MODULUS1}~2147483563
+\item 
+\#define \bf{LEQA1}~40014
+\item 
+\#define \bf{LEQQ1}~53668
+\item 
+\#define \bf{LEQR1}~12211
+\item 
+\#define \bf{MODULUS2}~2147483399
+\item 
+\#define \bf{LEQA2}~40692
+\item 
+\#define \bf{LEQQ2}~52774
+\item 
+\#define \bf{LEQR2}~3791
+\item 
+\#define \bf{STAB\_\-SIZE}~64
+\item 
+\#define \bf{STAB\_\-DIV}~(1 + (MODULUS1 - 1) / STAB\_\-SIZE)
+\item 
+\#define \bf{bang}(f)~((Cudd\_\-Is\-Complement(f)) ? '!' : ' ')
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int dp2 \bf{ARGS} ((\bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$t))
+\item 
+static void dd\-Print\-Minterm\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$list))
+\item 
+static int dd\-Dag\-Int \bf{ARGS} ((\bf{Dd\-Node} $\ast$n))
+\item 
+static int cudd\-Estimate\-Cofactor \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$table, \bf{Dd\-Node} $\ast$node, int i, int phase, \bf{Dd\-Node} $\ast$$\ast$ptr))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Unique\-Lookup \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique, intindex, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E))
+\item 
+static int cudd\-Estimate\-Cofactor\-Simple \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, int i))
+\item 
+static double dd\-Count\-Minterm\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))
+\item 
+static double dd\-Count\-Path\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table))
+\item 
+static void dd\-Support\-Step \bf{ARGS} ((\bf{Dd\-Node} $\ast$f, int $\ast$support))
+\item 
+static void dd\-Clear\-Flag \bf{ARGS} ((\bf{Dd\-Node} $\ast$f))
+\item 
+static int dd\-Pick\-Arbitrary\-Minterms \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars, int nminterms, char $\ast$$\ast$string))
+\item 
+int \bf{Cudd\_\-Print\-Minterm} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node)
+\item 
+int \bf{Cudd\_\-Print\-Debug} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int n, int pr)
+\item 
+int \bf{Cudd\_\-Dag\-Size} (\bf{Dd\-Node} $\ast$node)
+\item 
+int \bf{Cudd\_\-Estimate\-Cofactor} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int i, int phase)
+\item 
+int \bf{Cudd\_\-Estimate\-Cofactor\-Simple} (\bf{Dd\-Node} $\ast$node, int i)
+\item 
+int \bf{Cudd\_\-Sharing\-Size} (\bf{Dd\-Node} $\ast$$\ast$node\-Array, int n)
+\item 
+double \bf{Cudd\_\-Count\-Minterm} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars)
+\item 
+double \bf{Cudd\_\-Count\-Path} (\bf{Dd\-Node} $\ast$node)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Support} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+int \bf{Cudd\_\-Support\-Size} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Vector\-Support} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$F, int n)
+\item 
+int \bf{Cudd\_\-Vector\-Support\-Size} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$F, int n)
+\item 
+int \bf{Cudd\_\-Classify\-Support} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$common, \bf{Dd\-Node} $\ast$$\ast$only\-F, \bf{Dd\-Node} $\ast$$\ast$only\-G)
+\item 
+int \bf{Cudd\_\-Count\-Leaves} (\bf{Dd\-Node} $\ast$node)
+\item 
+int \bf{Cudd\_\-bdd\-Pick\-One\-Cube} (\bf{Dd\-Manager} $\ast$ddm, \bf{Dd\-Node} $\ast$node, char $\ast$string)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Pick\-One\-Minterm} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n)
+\item 
+\bf{Dd\-Node} $\ast$$\ast$ \bf{Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n, int k)
+\item 
+\bf{Dd\-Gen} $\ast$ \bf{Cudd\_\-First\-Cube} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value)
+\item 
+int \bf{Cudd\_\-Next\-Cube} (\bf{Dd\-Gen} $\ast$gen, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Compute\-Cube} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$vars, int $\ast$phase, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Compute\-Cube} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$vars, int $\ast$phase, int n)
+\item 
+\bf{Dd\-Gen} $\ast$ \bf{Cudd\_\-First\-Node} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$node)
+\item 
+int \bf{Cudd\_\-Next\-Node} (\bf{Dd\-Gen} $\ast$gen, \bf{Dd\-Node} $\ast$$\ast$node)
+\item 
+int \bf{Cudd\_\-Gen\-Free} (\bf{Dd\-Gen} $\ast$gen)
+\item 
+int \bf{Cudd\_\-Is\-Gen\-Empty} (\bf{Dd\-Gen} $\ast$gen)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Indices\-To\-Cube} (\bf{Dd\-Manager} $\ast$dd, int $\ast$array, int n)
+\item 
+void \bf{Cudd\_\-Print\-Version} (FILE $\ast$fp)
+\item 
+double \bf{Cudd\_\-Average\-Distance} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+long \bf{Cudd\_\-Random} ()
+\item 
+void \bf{Cudd\_\-Srandom} (long seed)
+\item 
+double \bf{Cudd\_\-Density} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars)
+\item 
+void \bf{Cudd\_\-Out\-Of\-Mem} (long \bf{size})
+\item 
+int \bf{cudd\-P} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+enum \bf{st\_\-retval} \bf{cudd\-St\-Countfree} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\item 
+int \bf{cudd\-Collect\-Nodes} (\bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$visited)
+\item 
+static int \bf{dp2} (\bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$t)
+\item 
+static void \bf{dd\-Print\-Minterm\-Aux} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$list)
+\item 
+static int \bf{dd\-Dag\-Int} (\bf{Dd\-Node} $\ast$n)
+\item 
+static int \bf{cudd\-Estimate\-Cofactor} (\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$table, \bf{Dd\-Node} $\ast$node, int i, int phase, \bf{Dd\-Node} $\ast$$\ast$ptr)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Unique\-Lookup} (\bf{Dd\-Manager} $\ast$unique, int index, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E)
+\item 
+static int \bf{cudd\-Estimate\-Cofactor\-Simple} (\bf{Dd\-Node} $\ast$node, int i)
+\item 
+static double \bf{dd\-Count\-Minterm\-Aux} (\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table)
+\item 
+static double \bf{dd\-Count\-Path\-Aux} (\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table)
+\item 
+static void \bf{dd\-Support\-Step} (\bf{Dd\-Node} $\ast$f, int $\ast$support)
+\item 
+static void \bf{dd\-Clear\-Flag} (\bf{Dd\-Node} $\ast$f)
+\item 
+static int \bf{dd\-Leaves\-Int} (\bf{Dd\-Node} $\ast$n)
+\item 
+static int \bf{dd\-Pick\-Arbitrary\-Minterms} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars, int nminterms, char $\ast$$\ast$string)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Util.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{background}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\item 
+static long \bf{cudd\-Rand} = 0
+\item 
+static long \bf{cudd\-Rand2}
+\item 
+static long \bf{shuffle\-Select}
+\item 
+static long \bf{shuffle\-Table} [STAB\_\-SIZE]
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddUtil.c@{cudd\-Util.c}!bang@{bang}}
+\index{bang@{bang}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define bang(f)~((Cudd\_\-Is\-Complement(f)) ? '!' : ' ')}\label{cuddUtil_8c_6c2c4a63badba1daf2d17524b546d120}
+
+
+
+
+Definition at line 149 of file cudd\-Util.c.
+
+Referenced by dp2().\index{cuddUtil.c@{cudd\-Util.c}!CUDD_GEN_CUBES@{CUDD\_\-GEN\_\-CUBES}}
+\index{CUDD_GEN_CUBES@{CUDD\_\-GEN\_\-CUBES}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-GEN\_\-CUBES~0}\label{cuddUtil_8c_5ce7f741a7374cbadf24433560ef2079}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Util.c}{p.}{cuddUtil_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Utility functions.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Print\-Minterm()}{p.}{cuddUtil_8c_eab82cceadafa2b81083e0467c102526} \item \doxyref{Cudd\_\-Print\-Debug()}{p.}{cuddUtil_8c_1e46a1b9147411ce547a2e03305d6c22} \item \doxyref{Cudd\_\-Dag\-Size()}{p.}{cuddUtil_8c_95cf613390a7dbeaad14b3963d68de24} \item \doxyref{Cudd\_\-Estimate\-Cofactor()}{p.}{cuddUtil_8c_bc492a365b6e11544b5b2bda4ac76a34} \item \doxyref{Cudd\_\-Estimate\-Cofactor\-Simple()}{p.}{cuddUtil_8c_3e23b2111b9f214571866c6e88035a9d} \item \doxyref{Cudd\_\-Sharing\-Size()}{p.}{cuddUtil_8c_49d57cfc6ede9ae452a40779b58a3bac} \item \doxyref{Cudd\_\-Count\-Minterm()}{p.}{cuddUtil_8c_a1f187be7f86701d59f924860970a0b9} \item \doxyref{Cudd\_\-Count\-Path()}{p.}{cuddUtil_8c_95929aeb92541971db3e5798920e6882} \item \doxyref{Cudd\_\-Support()}{p.}{cuddUtil_8c_9e1f8e5b8efe97330f8650e1378ad172} \item \doxyref{Cudd\_\-Support\-Size()}{p.}{cuddUtil_8c_0e7cde5c4dfd8832de07de9b31e9469e} \item \doxyref{Cudd\_\-Vector\-Support()}{p.}{cuddUtil_8c_8f6cf8a1719f76a3e121e7f61c406d5b} \item \doxyref{Cudd\_\-Vector\-Support\-Size()}{p.}{cuddUtil_8c_66da9c2c22b9bbb31120bd0a28fbf83c} \item \doxyref{Cudd\_\-Classify\-Support()}{p.}{cuddUtil_8c_2caf3183bbb7822b76bacd8b70aebc94} \item \doxyref{Cudd\_\-Count\-Leaves()}{p.}{cuddUtil_8c_2af4867b046a794f5db312c69922790d} \item \doxyref{Cudd\_\-bdd\-Pick\-One\-Cube()}{p.}{cuddUtil_8c_dcc47738ff8b49602d4e1442fd55576f} \item \doxyref{Cudd\_\-bdd\-Pick\-One\-Minterm()}{p.}{cuddUtil_8c_57f68528887c0feb428d010c2173a59b} \item \doxyref{Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms()}{p.}{cuddUtil_8c_57c4e8e8d0b9ec3101e117629a2a459d} \item \doxyref{Cudd\_\-First\-Cube()}{p.}{cuddUtil_8c_139d8dd64955ecf3e2fd4c5d6ceeebb4} \item \doxyref{Cudd\_\-Next\-Cube()}{p.}{cuddUtil_8c_05f1698806d45eaba7f4a5721dd5c3c8} \item \doxyref{Cudd\_\-bdd\-Compute\-Cube()}{p.}{cuddUtil_8c_b538e936fe0bdfe380f0ad2ecd2c6581} \item \doxyref{Cudd\_\-add\-Compute\-Cube()}{p.}{cuddUtil_8c_2e7d0901cba492671c25ee816510867c} \item \doxyref{Cudd\_\-First\-Node()}{p.}{cuddUtil_8c_0cbbad0f18b5767a4924ff6b069bbc7f} \item \doxyref{Cudd\_\-Next\-Node()}{p.}{cuddUtil_8c_627f04ddcd448e741233d5bc16562171} \item \doxyref{Cudd\_\-Gen\-Free()}{p.}{cuddUtil_8c_a16a8509f9959aff3a0c553a0427e656} \item \doxyref{Cudd\_\-Is\-Gen\-Empty()}{p.}{cuddUtil_8c_46290c6915c9d64fbe24a3faf40ced5d} \item \doxyref{Cudd\_\-Indices\-To\-Cube()}{p.}{cuddUtil_8c_2815667bcad915fac2620161a577c46b} \item \doxyref{Cudd\_\-Print\-Version()}{p.}{cuddUtil_8c_cd64fd5ed246def2ad791e7b0ddeec2b} \item \doxyref{Cudd\_\-Average\-Distance()}{p.}{cuddUtil_8c_142a0af9f50ad2f6430d354193497c16} \item \doxyref{Cudd\_\-Random()}{p.}{cuddUtil_8c_33b586e809a936a79b3d5e086d5a8c47} \item \doxyref{Cudd\_\-Srandom()}{p.}{cuddUtil_8c_a90de9057062381cbb8f367f67a7094f} \item \doxyref{Cudd\_\-Density()}{p.}{cuddUtil_8c_31d6258d2a451f8d852941de13d623dc} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-P()}{p.}{cuddUtil_8c_4bbc595b0dac192924c21ee5fadc8383} \item \doxyref{cudd\-St\-Countfree()}{p.}{cuddUtil_8c_a19f5abe781eca37ede28a3af994c48a} \item \doxyref{cudd\-Collect\-Nodes()}{p.}{cuddUtil_8c_2cf3fcfdf91a36cd66978d4f7201c468} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dp2()}{p.}{cuddUtil_8c_e1bb2b11af79f722fec44a3853626c5c} \item \doxyref{dd\-Print\-Minterm\-Aux()}{p.}{cuddUtil_8c_3af7ecd96899781204300c0164b30799} \item \doxyref{dd\-Dag\-Int()}{p.}{cuddUtil_8c_2bfa54017e8ca22ee3ad1da33c079d3a} \item \doxyref{dd\-Count\-Minterm\-Aux()}{p.}{cuddUtil_8c_75d721efc7f713e5013c08e69dac735b} \item \doxyref{dd\-Count\-Path\-Aux()}{p.}{cuddUtil_8c_eba3952a88467bdbd83cb4e06f1fe7a2} \item \doxyref{dd\-Support\-Step()}{p.}{cuddUtil_8c_83031f46206023ac78fea5a34d7547cf} \item \doxyref{dd\-Clear\-Flag()}{p.}{cuddUtil_8c_b69f928c3cca42f5b1330803de1d9199} \item \doxyref{dd\-Leaves\-Int()}{p.}{cuddUtil_8c_947e1124a73ac4cc1867ad1263b5305a} \item \doxyref{dd\-Pick\-Arbitrary\-Minterms()}{p.}{cuddUtil_8c_a809bfd1adf107190cf7513566db0395} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 82 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-First\-Cube(), and Cudd\_\-Gen\-Free().\index{cuddUtil.c@{cudd\-Util.c}!CUDD_GEN_EMPTY@{CUDD\_\-GEN\_\-EMPTY}}
+\index{CUDD_GEN_EMPTY@{CUDD\_\-GEN\_\-EMPTY}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-GEN\_\-EMPTY~0}\label{cuddUtil_8c_f6e16b94ae740c9ff3e892570d867abe}
+
+
+
+
+Definition at line 84 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-First\-Cube(), Cudd\_\-First\-Node(), Cudd\_\-Is\-Gen\-Empty(), Cudd\_\-Next\-Cube(), and Cudd\_\-Next\-Node().\index{cuddUtil.c@{cudd\-Util.c}!CUDD_GEN_NODES@{CUDD\_\-GEN\_\-NODES}}
+\index{CUDD_GEN_NODES@{CUDD\_\-GEN\_\-NODES}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-GEN\_\-NODES~1}\label{cuddUtil_8c_826464fd6a16ada9547cf94a1f72063f}
+
+
+
+
+Definition at line 83 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-First\-Node(), and Cudd\_\-Gen\-Free().\index{cuddUtil.c@{cudd\-Util.c}!CUDD_GEN_NONEMPTY@{CUDD\_\-GEN\_\-NONEMPTY}}
+\index{CUDD_GEN_NONEMPTY@{CUDD\_\-GEN\_\-NONEMPTY}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-GEN\_\-NONEMPTY~1}\label{cuddUtil_8c_709a721c2b9cb6017423ba5fbd32c648}
+
+
+
+
+Definition at line 85 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-First\-Node(), and Cudd\_\-Next\-Cube().\index{cuddUtil.c@{cudd\-Util.c}!LEQA1@{LEQA1}}
+\index{LEQA1@{LEQA1}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQA1~40014}\label{cuddUtil_8c_d536bbe3cf7c563beb632f9a2873ee74}
+
+
+
+
+Definition at line 89 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!LEQA2@{LEQA2}}
+\index{LEQA2@{LEQA2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQA2~40692}\label{cuddUtil_8c_1234a96cbc700be724f6b7123eee73b2}
+
+
+
+
+Definition at line 93 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!LEQQ1@{LEQQ1}}
+\index{LEQQ1@{LEQQ1}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQQ1~53668}\label{cuddUtil_8c_e51c8d2df6537ba8ca17782d2551cd39}
+
+
+
+
+Definition at line 90 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!LEQQ2@{LEQQ2}}
+\index{LEQQ2@{LEQQ2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQQ2~52774}\label{cuddUtil_8c_3922e3cbb3f5a996cdec86b57fd9cebb}
+
+
+
+
+Definition at line 94 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!LEQR1@{LEQR1}}
+\index{LEQR1@{LEQR1}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQR1~12211}\label{cuddUtil_8c_9dbaa4f61345fe29372903e5f46296ce}
+
+
+
+
+Definition at line 91 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!LEQR2@{LEQR2}}
+\index{LEQR2@{LEQR2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LEQR2~3791}\label{cuddUtil_8c_cc94b275fe971a3b3fa4f0961e3ddafd}
+
+
+
+
+Definition at line 95 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!MODULUS1@{MODULUS1}}
+\index{MODULUS1@{MODULUS1}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MODULUS1~2147483563}\label{cuddUtil_8c_4b0bfe94cfc1d904f790b73ccbbcb618}
+
+
+
+
+Definition at line 88 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!MODULUS2@{MODULUS2}}
+\index{MODULUS2@{MODULUS2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MODULUS2~2147483399}\label{cuddUtil_8c_a18fd420e3aea20f837650582dd0ec2d}
+
+
+
+
+Definition at line 92 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!STAB_DIV@{STAB\_\-DIV}}
+\index{STAB_DIV@{STAB\_\-DIV}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define STAB\_\-DIV~(1 + (MODULUS1 - 1) / STAB\_\-SIZE)}\label{cuddUtil_8c_2f73d503bb99c5e8d750f9152caa5926}
+
+
+
+
+Definition at line 97 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!STAB_SIZE@{STAB\_\-SIZE}}
+\index{STAB_SIZE@{STAB\_\-SIZE}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define STAB\_\-SIZE~64}\label{cuddUtil_8c_b2d303f24064e7fe8aa868d2e8850ab2}
+
+
+
+
+Definition at line 96 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Srandom().
+
+\subsection{Function Documentation}
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Pick\-Arbitrary\-Minterms ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars, int nminterms, char $\ast$$\ast$string))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_57022ce97b3897d9d3080c7c1844a768}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Flag ARGS ((\bf{Dd\-Node} $\ast$f))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_a7ea71c9ce639a3cfd37badf6ed8719d}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Support\-Step ARGS ((\bf{Dd\-Node} $\ast$f, int $\ast$support))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_709d0d997a557b76d9ec79f68c087131}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double dd\-Count\-Path\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_806fa55cf98e7cde4afa6ecea6ab84d7}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double dd\-Count\-Minterm\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_3e484ddab9b25c4d3264489828461b96}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Estimate\-Cofactor\-Simple ARGS ((\bf{Dd\-Node} $\ast$node, int i))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_10f13db40894ce4b6d7c2c4b145c1bbe}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Unique\-Lookup ARGS ((\bf{Dd\-Manager} $\ast$unique, intindex, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_1d03473316f5255dbd87188e3369aa2b}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Estimate\-Cofactor ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$table, \bf{Dd\-Node} $\ast$node, int i, int phase, \bf{Dd\-Node} $\ast$$\ast$ptr))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_1bee99cdf5881fcbbb222e2ffa7edd6f}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Dag\-Int ARGS ((\bf{Dd\-Node} $\ast$n))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_1c9b96159cf915a0d866ec08bbc324fd}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Print\-Minterm\-Aux ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$list))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_5a626724a315c5c4e88e41fcdcbbd228}
+
+
+\index{cuddUtil.c@{cudd\-Util.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dp2 ARGS ((\bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$t))\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_292b5b266d0e228af25c7783eaa211c6}
+
+
+Automatic\-Start \index{cuddUtil.c@{cudd\-Util.c}!Cudd_addComputeCube@{Cudd\_\-addComputeCube}}
+\index{Cudd_addComputeCube@{Cudd\_\-addComputeCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Compute\-Cube (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em vars}, int $\ast$ {\em phase}, int {\em n})}\label{cuddUtil_8c_2e7d0901cba492671c25ee816510867c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the cube of an array of ADD variables.]
+
+Description [Computes the cube of an array of ADD variables. If non-null, the phase argument indicates which literal of each variable should appear in the cube. If phase$\backslash$[i$\backslash$] is nonzero, then the positive literal is used. If phase is NULL, the cube is positive unate. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-bdd\-Compute\-Cube] 
+
+Definition at line 1534 of file cudd\-Util.c.
+
+References Cudd\_\-add\-Ite(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, DD\_\-ONE, DD\_\-ZERO, and zero.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_AverageDistance@{Cudd\_\-AverageDistance}}
+\index{Cudd_AverageDistance@{Cudd\_\-AverageDistance}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Average\-Distance (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddUtil_8c_142a0af9f50ad2f6430d354193497c16}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the average distance between adjacent nodes.]
+
+Description [Computes the average distance between adjacent nodes in the manager. Adjacent nodes are node pairs such that the second node is the then child, else child, or next node in the collision list.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1813 of file cudd\-Util.c.
+
+References Cudd\_\-Regular, cudd\-E, cudd\-T, dd\-Abs, Dd\-Subtable::nodelist, scan, Dd\-Manager::size, Dd\-Subtable::slots, and Dd\-Manager::subtables.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_bddComputeCube@{Cudd\_\-bddComputeCube}}
+\index{Cudd_bddComputeCube@{Cudd\_\-bddComputeCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Compute\-Cube (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em vars}, int $\ast$ {\em phase}, int {\em n})}\label{cuddUtil_8c_b538e936fe0bdfe380f0ad2ecd2c6581}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the cube of an array of BDD variables.]
+
+Description [Computes the cube of an array of BDD variables. If non-null, the phase argument indicates which literal of each variable should appear in the cube. If phase$\backslash$[i$\backslash$] is nonzero, then the positive literal is used. If phase is NULL, the cube is positive unate. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Compute\-Cube Cudd\_\-Indices\-To\-Cube] 
+
+Definition at line 1484 of file cudd\-Util.c.
+
+References Cudd\_\-bdd\-And(), Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, and DD\_\-ONE.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_bddPickArbitraryMinterms@{Cudd\_\-bddPickArbitraryMinterms}}
+\index{Cudd_bddPickArbitraryMinterms@{Cudd\_\-bddPickArbitraryMinterms}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$$\ast$ Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vars}, int {\em n}, int {\em k})}\label{cuddUtil_8c_57c4e8e8d0b9ec3101e117629a2a459d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Picks k on-set minterms evenly distributed from given DD.]
+
+Description [Picks k on-set minterms evenly distributed from given DD. The minterms are in terms of {\tt vars}. The array {\tt vars} should contain at least all variables in the support of {\tt f}; if this condition is not met the minterms built by this procedure may not be contained in {\tt f}. Builds a BDD for the minterms and returns a pointer to it if successful; NULL otherwise. There are three reasons why the procedure may fail: \begin{itemize}
+\item It may run out of memory; \item the function {\tt f} may be the constant 0; \item the minterms may not be contained in {\tt f}. \end{itemize}
+]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Pick\-One\-Minterm Cudd\_\-bdd\-Pick\-One\-Cube] 
+
+Definition at line 1081 of file cudd\-Util.c.
+
+References ALLOC, Cudd\_\-bdd\-Ite(), Cudd\_\-bdd\-Leq(), Cudd\_\-Count\-Minterm(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Random(), Cudd\_\-Read\-One(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, dd\-Pick\-Arbitrary\-Minterms(), Dd\-Manager::error\-Code, FREE, result, Dd\-Manager::size, size, strcmp(), strcpy(), and zero.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_bddPickOneCube@{Cudd\_\-bddPickOneCube}}
+\index{Cudd_bddPickOneCube@{Cudd\_\-bddPickOneCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Pick\-One\-Cube (\bf{Dd\-Manager} $\ast$ {\em ddm}, \bf{Dd\-Node} $\ast$ {\em node}, char $\ast$ {\em string})}\label{cuddUtil_8c_dcc47738ff8b49602d4e1442fd55576f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Picks one on-set cube randomly from the given DD.]
+
+Description [Picks one on-set cube randomly from the given DD. The cube is written into an array of characters. The array must have at least as many entries as there are variables. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Pick\-One\-Minterm] 
+
+Definition at line 902 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Random(), Cudd\_\-Regular, cudd\-E, cudd\-T, DD\_\-ONE, Dd\-Node::index, one, and Dd\-Manager::size.
+
+Referenced by Cudd\_\-bdd\-Pick\-One\-Minterm().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_bddPickOneMinterm@{Cudd\_\-bddPickOneMinterm}}
+\index{Cudd_bddPickOneMinterm@{Cudd\_\-bddPickOneMinterm}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Pick\-One\-Minterm (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vars}, int {\em n})}\label{cuddUtil_8c_57f68528887c0feb428d010c2173a59b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Picks one on-set minterm randomly from the given DD.]
+
+Description [Picks one on-set minterm randomly from the given DD. The minterm is in terms of {\tt vars}. The array {\tt vars} should contain at least all variables in the support of {\tt f}; if this condition is not met the minterm built by this procedure may not be contained in {\tt f}. Builds a BDD for the minterm and returns a pointer to it if successful; NULL otherwise. There are three reasons why the procedure may fail: \begin{itemize}
+\item It may run out of memory; \item the function {\tt f} may be the constant 0; \item the minterm may not be contained in {\tt f}. \end{itemize}
+]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Pick\-One\-Cube] 
+
+Definition at line 978 of file cudd\-Util.c.
+
+References ALLOC, Cudd\_\-bdd\-Ite(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Pick\-One\-Cube(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Random(), Cudd\_\-Read\-One(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, Dd\-Manager::error\-Code, FREE, result, Dd\-Manager::size, size, and zero.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_ClassifySupport@{Cudd\_\-ClassifySupport}}
+\index{Cudd_ClassifySupport@{Cudd\_\-ClassifySupport}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Classify\-Support (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$$\ast$ {\em common}, \bf{Dd\-Node} $\ast$$\ast$ {\em only\-F}, \bf{Dd\-Node} $\ast$$\ast$ {\em only\-G})}\label{cuddUtil_8c_2caf3183bbb7822b76bacd8b70aebc94}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Classifies the variables in the support of two DDs.]
+
+Description [Classifies the variables in the support of two DDs {\tt f} and {\tt g}, depending on whther they appear in both DDs, only in {\tt f}, or only in {\tt g}. Returns 1 successful; 0 otherwise.]
+
+Side\-Effects [The cubes of the three classes of variables are returned as side effects.]
+
+See\-Also [Cudd\_\-Support Cudd\_\-Vector\-Support] 
+
+Definition at line 766 of file cudd\-Util.c.
+
+References ALLOC, Cudd\_\-bdd\-And(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-ONE, dd\-Clear\-Flag(), dd\-Max, dd\-Support\-Step(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Manager::one, Dd\-Manager::size, size, and Dd\-Manager::size\-Z.
+
+Referenced by Cudd\_\-bdd\-Restrict().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_CountLeaves@{Cudd\_\-CountLeaves}}
+\index{Cudd_CountLeaves@{Cudd\_\-CountLeaves}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Count\-Leaves (\bf{Dd\-Node} $\ast$ {\em node})}\label{cuddUtil_8c_2af4867b046a794f5db312c69922790d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of leaves in a DD.]
+
+Description [Counts the number of leaves in a DD. Returns the number of leaves in the DD rooted at node if successful; CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Print\-Debug] 
+
+Definition at line 875 of file cudd\-Util.c.
+
+References Cudd\_\-Regular, dd\-Clear\-Flag(), and dd\-Leaves\-Int().
+
+Referenced by Cudd\_\-Print\-Debug().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_CountMinterm@{Cudd\_\-CountMinterm}}
+\index{Cudd_CountMinterm@{Cudd\_\-CountMinterm}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Count\-Minterm (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars})}\label{cuddUtil_8c_a1f187be7f86701d59f924860970a0b9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of minterms of a DD.]
+
+Description [Counts the number of minterms of a DD. The function is assumed to depend on nvars variables. The minterm count is represented as a double, to allow for a larger number of variables. Returns the number of minterms of the function rooted at node if successful; (double) CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Print\-Debug Cudd\_\-Count\-Path] 
+
+Definition at line 436 of file cudd\-Util.c.
+
+References Dd\-Manager::background, background, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-St\-Countfree(), dd\-Count\-Minterm\-Aux(), Dd\-Manager::error\-Code, max, Dd\-Manager::one, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.
+
+Referenced by Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-Density(), Cudd\_\-Print\-Debug(), and dd\-Pick\-Arbitrary\-Minterms().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_CountPath@{Cudd\_\-CountPath}}
+\index{Cudd_CountPath@{Cudd\_\-CountPath}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Count\-Path (\bf{Dd\-Node} $\ast$ {\em node})}\label{cuddUtil_8c_95929aeb92541971db3e5798920e6882}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of paths of a DD.]
+
+Description [Counts the number of paths of a DD. Paths to all terminal nodes are counted. The path count is represented as a double, to allow for a larger number of variables. Returns the number of paths of the function rooted at node.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Count\-Minterm] 
+
+Definition at line 481 of file cudd\-Util.c.
+
+References CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-St\-Countfree(), dd\-Count\-Path\-Aux(), st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), and st\_\-ptrhash().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_DagSize@{Cudd\_\-DagSize}}
+\index{Cudd_DagSize@{Cudd\_\-DagSize}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Dag\-Size (\bf{Dd\-Node} $\ast$ {\em node})}\label{cuddUtil_8c_95cf613390a7dbeaad14b3963d68de24}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of nodes in a DD.]
+
+Description [Counts the number of nodes in a DD. Returns the number of nodes in the graph rooted at node.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Sharing\-Size Cudd\_\-Print\-Debug] 
+
+Definition at line 301 of file cudd\-Util.c.
+
+References Cudd\_\-Regular, dd\-Clear\-Flag(), and dd\-Dag\-Int().
+
+Referenced by Cudd\_\-add\-Restrict(), Cudd\_\-Apa\-Print\-Density(), Cudd\_\-bdd\-Restrict(), Cudd\_\-bdd\-Squeeze(), Cudd\_\-Density(), Cudd\_\-Print\-Debug(), cudd\-Bdd\-Squeeze(), cudd\-Remap\-Under\-Approx(), cudd\-Under\-Approx(), and gather\-Info().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_Density@{Cudd\_\-Density}}
+\index{Cudd_Density@{Cudd\_\-Density}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Density (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em nvars})}\label{cuddUtil_8c_31d6258d2a451f8d852941de13d623dc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the density of a BDD or ADD.]
+
+Description [Computes the density of a BDD or ADD. The density is the ratio of the number of minterms to the number of nodes. If 0 is passed as number of variables, the number of variables existing in the manager is used. Returns the density if successful; (double) CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Count\-Minterm Cudd\_\-Dag\-Size] 
+
+Definition at line 2008 of file cudd\-Util.c.
+
+References Cudd\_\-Count\-Minterm(), Cudd\_\-Dag\-Size(), CUDD\_\-OUT\_\-OF\_\-MEM, and Dd\-Manager::size.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_EstimateCofactor@{Cudd\_\-EstimateCofactor}}
+\index{Cudd_EstimateCofactor@{Cudd\_\-EstimateCofactor}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Estimate\-Cofactor (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em i}, int {\em phase})}\label{cuddUtil_8c_bc492a365b6e11544b5b2bda4ac76a34}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Estimates the number of nodes in a cofactor of a DD.]
+
+Description [Estimates the number of nodes in a cofactor of a DD. Returns an estimate of the number of nodes in a cofactor of the graph rooted at node with respect to the variable whose index is i. In case of failure, returns CUDD\_\-OUT\_\-OF\_\-MEM. This function uses a refinement of the algorithm of Cabodi et al. (ICCAD96). The refinement allows the procedure to account for part of the recombination that may occur in the part of the cofactor above the cofactoring variable. This procedure does no create any new node. It does keep a small table of results; therefore itmay run out of memory. If this is a concern, one should use Cudd\_\-Estimate\-Cofactor\-Simple, which is faster, does not allocate any memory, but is less accurate.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Dag\-Size Cudd\_\-Estimate\-Cofactor\-Simple] 
+
+Definition at line 336 of file cudd\-Util.c.
+
+References CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-Estimate\-Cofactor(), dd\-Clear\-Flag(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), and st\_\-ptrhash().
+
+Referenced by Cudd\_\-bdd\-Var\-Conj\-Decomp().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_EstimateCofactorSimple@{Cudd\_\-EstimateCofactorSimple}}
+\index{Cudd_EstimateCofactorSimple@{Cudd\_\-EstimateCofactorSimple}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Estimate\-Cofactor\-Simple (\bf{Dd\-Node} $\ast$ {\em node}, int {\em i})}\label{cuddUtil_8c_3e23b2111b9f214571866c6e88035a9d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Estimates the number of nodes in a cofactor of a DD.]
+
+Description [Estimates the number of nodes in a cofactor of a DD. Returns an estimate of the number of nodes in the positive cofactor of the graph rooted at node with respect to the variable whose index is i. This procedure implements with minor changes the algorithm of Cabodi et al. (ICCAD96). It does not allocate any memory, it does not change the state of the manager, and it is fast. However, it has been observed to overestimate the size of the cofactor by as much as a factor of 2.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Dag\-Size] 
+
+Definition at line 375 of file cudd\-Util.c.
+
+References Cudd\_\-Regular, cudd\-Estimate\-Cofactor\-Simple(), and dd\-Clear\-Flag().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_FirstCube@{Cudd\_\-FirstCube}}
+\index{Cudd_FirstCube@{Cudd\_\-FirstCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Gen}$\ast$ Cudd\_\-First\-Cube (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$$\ast$ {\em cube}, CUDD\_\-VALUE\_\-TYPE $\ast$ {\em value})}\label{cuddUtil_8c_139d8dd64955ecf3e2fd4c5d6ceeebb4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the first cube of a decision diagram.]
+
+Description [Defines an iterator on the onset of a decision diagram and finds its first cube. Returns a generator that contains the information necessary to continue the enumeration if successful; NULL otherwise.
+
+A cube is represented as an array of literals, which are integers in \{0, 1, 2\}; 0 represents a complemented literal, 1 represents an uncomplemented literal, and 2 stands for don't care. The enumeration produces a disjoint cover of the function associated with the diagram. The size of the array equals the number of variables in the manager at the time Cudd\_\-First\-Cube is called.
+
+For each cube, a value is also returned. This value is always 1 for a BDD, while it may be different from 1 for an ADD. For BDDs, the offset is the set of cubes whose value is the logical zero. For ADDs, the offset is the set of cubes whose value is the background value. The cubes of the offset are not enumerated.]
+
+Side\-Effects [The first cube and its value are returned as side effects.]
+
+See\-Also [Cudd\_\-Foreach\-Cube Cudd\_\-Next\-Cube Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-First\-Node] 
+
+Definition at line 1268 of file cudd\-Util.c.
+
+References ALLOC, Dd\-Gen::cubes, CUDD\_\-GEN\_\-CUBES, CUDD\_\-GEN\_\-EMPTY, CUDD\_\-MEMORY\_\-OUT, DD\_\-ZERO\_\-VAL, Dd\-Manager::error\-Code, FREE, Dd\-Gen::gen, Dd\-Gen::manager, Dd\-Gen::node, Dd\-Manager::size, Dd\-Gen::stack, Dd\-Gen::status, and Dd\-Gen::type.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_FirstNode@{Cudd\_\-FirstNode}}
+\index{Cudd_FirstNode@{Cudd\_\-FirstNode}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Gen}$\ast$ Cudd\_\-First\-Node (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em node})}\label{cuddUtil_8c_0cbbad0f18b5767a4924ff6b069bbc7f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the first node of a decision diagram.]
+
+Description [Defines an iterator on the nodes of a decision diagram and finds its first node. Returns a generator that contains the information necessary to continue the enumeration if successful; NULL otherwise.]
+
+Side\-Effects [The first node is returned as a side effect.]
+
+See\-Also [Cudd\_\-Foreach\-Node Cudd\_\-Next\-Node Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-First\-Cube] 
+
+Definition at line 1585 of file cudd\-Util.c.
+
+References ALLOC, CUDD\_\-GEN\_\-EMPTY, CUDD\_\-GEN\_\-NODES, CUDD\_\-GEN\_\-NONEMPTY, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Regular, cudd\-Collect\-Nodes(), Dd\-Manager::error\-Code, FREE, Dd\-Gen::gen, Dd\-Gen::manager, Dd\-Gen::node, Dd\-Gen::nodes, st\_\-free\_\-table(), st\_\-gen(), st\_\-init\_\-gen(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), Dd\-Gen::stack, Dd\-Gen::status, and Dd\-Gen::type.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_GenFree@{Cudd\_\-GenFree}}
+\index{Cudd_GenFree@{Cudd\_\-GenFree}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Gen\-Free (\bf{Dd\-Gen} $\ast$ {\em gen})}\label{cuddUtil_8c_a16a8509f9959aff3a0c553a0427e656}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees a CUDD generator.]
+
+Description [Frees a CUDD generator. Always returns 0, so that it can be used in mis-like foreach constructs.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Foreach\-Cube Cudd\_\-Foreach\-Node Cudd\_\-First\-Cube Cudd\_\-Next\-Cube Cudd\_\-First\-Node Cudd\_\-Next\-Node Cudd\_\-Is\-Gen\-Empty] 
+
+Definition at line 1693 of file cudd\-Util.c.
+
+References Dd\-Gen::cubes, CUDD\_\-GEN\_\-CUBES, CUDD\_\-GEN\_\-NODES, FREE, Dd\-Gen::gen, Dd\-Gen::nodes, st\_\-free\_\-gen(), st\_\-free\_\-table(), Dd\-Gen::stack, and Dd\-Gen::type.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_IndicesToCube@{Cudd\_\-IndicesToCube}}
+\index{Cudd_IndicesToCube@{Cudd\_\-IndicesToCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Indices\-To\-Cube (\bf{Dd\-Manager} $\ast$ {\em dd}, int $\ast$ {\em array}, int {\em n})}\label{cuddUtil_8c_2815667bcad915fac2620161a577c46b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds a cube of BDD variables from an array of indices.]
+
+Description [Builds a cube of BDD variables from an array of indices. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Compute\-Cube] 
+
+Definition at line 1752 of file cudd\-Util.c.
+
+References Cudd\_\-bdd\-And(), Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, and DD\_\-ONE.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_IsGenEmpty@{Cudd\_\-IsGenEmpty}}
+\index{Cudd_IsGenEmpty@{Cudd\_\-IsGenEmpty}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Is\-Gen\-Empty (\bf{Dd\-Gen} $\ast$ {\em gen})}\label{cuddUtil_8c_46290c6915c9d64fbe24a3faf40ced5d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Queries the status of a generator.]
+
+Description [Queries the status of a generator. Returns 1 if the generator is empty or NULL; 0 otherswise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Foreach\-Cube Cudd\_\-Foreach\-Node Cudd\_\-First\-Cube Cudd\_\-Next\-Cube Cudd\_\-First\-Node Cudd\_\-Next\-Node Cudd\_\-Gen\-Free] 
+
+Definition at line 1730 of file cudd\-Util.c.
+
+References CUDD\_\-GEN\_\-EMPTY, and Dd\-Gen::status.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_NextCube@{Cudd\_\-NextCube}}
+\index{Cudd_NextCube@{Cudd\_\-NextCube}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Next\-Cube (\bf{Dd\-Gen} $\ast$ {\em gen}, int $\ast$$\ast$ {\em cube}, CUDD\_\-VALUE\_\-TYPE $\ast$ {\em value})}\label{cuddUtil_8c_05f1698806d45eaba7f4a5721dd5c3c8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Generates the next cube of a decision diagram onset.]
+
+Description [Generates the next cube of a decision diagram onset, using generator gen. Returns 0 if the enumeration is completed; 1 otherwise.]
+
+Side\-Effects [The cube and its value are returned as side effects. The generator is modified.]
+
+See\-Also [Cudd\_\-Foreach\-Cube Cudd\_\-First\-Cube Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-Next\-Node] 
+
+Definition at line 1387 of file cudd\-Util.c.
+
+References Dd\-Manager::background, Dd\-Gen::cubes, CUDD\_\-GEN\_\-EMPTY, CUDD\_\-GEN\_\-NONEMPTY, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, cudd\-V, DD\_\-ONE, Dd\-Gen::gen, Dd\-Node::index, Dd\-Gen::manager, Dd\-Gen::stack, and Dd\-Gen::status.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_NextNode@{Cudd\_\-NextNode}}
+\index{Cudd_NextNode@{Cudd\_\-NextNode}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Next\-Node (\bf{Dd\-Gen} $\ast$ {\em gen}, \bf{Dd\-Node} $\ast$$\ast$ {\em node})}\label{cuddUtil_8c_627f04ddcd448e741233d5bc16562171}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the next node of a decision diagram.]
+
+Description [Finds the node of a decision diagram, using generator gen. Returns 0 if the enumeration is completed; 1 otherwise.]
+
+Side\-Effects [The next node is returned as a side effect.]
+
+See\-Also [Cudd\_\-Foreach\-Node Cudd\_\-First\-Node Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-Next\-Cube] 
+
+Definition at line 1660 of file cudd\-Util.c.
+
+References CUDD\_\-GEN\_\-EMPTY, Dd\-Gen::gen, Dd\-Gen::node, Dd\-Gen::nodes, st\_\-gen(), and Dd\-Gen::status.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_OutOfMem@{Cudd\_\-OutOfMem}}
+\index{Cudd_OutOfMem@{Cudd\_\-OutOfMem}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Out\-Of\-Mem (long {\em size})}\label{cuddUtil_8c_3115ee582497df51b35f9893074017a5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Warns that a memory allocation failed.]
+
+Description [Warns that a memory allocation failed. This function can be used as replacement of MMout\_\-of\_\-memory to prevent the safe\_\-mem functions of the util package from exiting when malloc returns NULL. One possible use is in case of discretionary allocations; for instance, the allocation of memory to enlarge the computed table.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2043 of file cudd\-Util.c.
+
+Referenced by cudd\-Cache\-Resize(), cudd\-Hash\-Table\-Resize(), cudd\-Local\-Cache\-Resize(), dd\-Rehash(), dd\-Rehash\-Zdd(), dd\-Reorder\-Postprocess(), hash\-Resize(), and zdd\-Reorder\-Postprocess().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_PrintDebug@{Cudd\_\-PrintDebug}}
+\index{Cudd_PrintDebug@{Cudd\_\-PrintDebug}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Print\-Debug (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em n}, int {\em pr})}\label{cuddUtil_8c_1e46a1b9147411ce547a2e03305d6c22}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints to the standard output a DD and its statistics.]
+
+Description [Prints to the standard output a DD and its statistics. The statistics include the number of nodes, the number of leaves, and the number of minterms. (The number of minterms is the number of assignments to the variables that cause the function to be different from the logical zero (for BDDs) and from the background value (for ADDs.) The statistics are printed if pr $>$ 0. Specifically: \begin{itemize}
+\item pr = 0 : prints nothing \item pr = 1 : prints counts of nodes and minterms \item pr = 2 : prints counts + disjoint sum of product \item pr = 3 : prints counts + list of nodes \item pr $>$ 3 : prints counts + disjoint sum of product + list of nodes \end{itemize}
+Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Dag\-Size Cudd\_\-Count\-Leaves Cudd\_\-Count\-Minterm Cudd\_\-Print\-Minterm] 
+
+Definition at line 241 of file cudd\-Util.c.
+
+References Cudd\_\-Count\-Leaves(), Cudd\_\-Count\-Minterm(), Cudd\_\-Dag\-Size(), Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Print\-Minterm(), cudd\-P(), DD\_\-ONE, and DD\_\-ZERO.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_PrintMinterm@{Cudd\_\-PrintMinterm}}
+\index{Cudd_PrintMinterm@{Cudd\_\-PrintMinterm}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Print\-Minterm (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node})}\label{cuddUtil_8c_eab82cceadafa2b81083e0467c102526}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints a disjoint sum of products.]
+
+Description [Prints a disjoint sum of product cover for the function rooted at node. Each product corresponds to a path from node a leaf node different from the logical zero, and different from the background value. Uses the standard output. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Print\-Debug] 
+
+Definition at line 194 of file cudd\-Util.c.
+
+References ALLOC, Dd\-Manager::background, background, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, dd\-Print\-Minterm\-Aux(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::one, Dd\-Manager::size, and zero.
+
+Referenced by Cudd\_\-Print\-Debug().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_PrintVersion@{Cudd\_\-PrintVersion}}
+\index{Cudd_PrintVersion@{Cudd\_\-PrintVersion}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Print\-Version (FILE $\ast$ {\em fp})}\label{cuddUtil_8c_cd64fd5ed246def2ad791e7b0ddeec2b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the package version number.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1791 of file cudd\-Util.c.
+
+References CUDD\_\-VERSION.\index{cuddUtil.c@{cudd\-Util.c}!Cudd_Random@{Cudd\_\-Random}}
+\index{Cudd_Random@{Cudd\_\-Random}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Random ()}\label{cuddUtil_8c_33b586e809a936a79b3d5e086d5a8c47}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Portable random number generator.]
+
+Description [Portable number generator based on ran2 from \char`\"{}Numerical Recipes in C.\char`\"{} It is a long period ($>$ 2 $\ast$ 10$^\wedge$18) random number generator of L'Ecuyer with Bays-Durham shuffle. Returns a long integer uniformly distributed between 0 and 2147483561 (inclusive of the endpoint values). The ranom generator can be explicitly initialized by calling Cudd\_\-Srandom. If no explicit initialization is performed, then the seed 1 is assumed.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Srandom] 
+
+Definition at line 1907 of file cudd\-Util.c.
+
+References Cudd\_\-Srandom(), cudd\-Rand, cudd\-Rand2, LEQA1, LEQA2, LEQQ1, LEQQ2, LEQR1, LEQR2, MODULUS1, MODULUS2, shuffle\-Select, shuffle\-Table, and STAB\_\-DIV.
+
+Referenced by Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Cube(), Cudd\_\-bdd\-Pick\-One\-Minterm(), cudd\-Annealing(), cudd\-Conjuncts\-Aux(), cudd\-Swapping(), cudd\-Zdd\-Swapping(), rand\_\-int(), random\_\-generator(), and roulette().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_SharingSize@{Cudd\_\-SharingSize}}
+\index{Cudd_SharingSize@{Cudd\_\-SharingSize}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Sharing\-Size (\bf{Dd\-Node} $\ast$$\ast$ {\em node\-Array}, int {\em n})}\label{cuddUtil_8c_49d57cfc6ede9ae452a40779b58a3bac}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of nodes in an array of DDs.]
+
+Description [Counts the number of nodes in an array of DDs. Shared nodes are counted only once. Returns the total number of nodes.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Dag\-Size] 
+
+Definition at line 402 of file cudd\-Util.c.
+
+References Cudd\_\-Regular, dd\-Clear\-Flag(), and dd\-Dag\-Int().
+
+Referenced by Cudd\_\-bdd\-Iter\-Conj\-Decomp().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_Srandom@{Cudd\_\-Srandom}}
+\index{Cudd_Srandom@{Cudd\_\-Srandom}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Srandom (long {\em seed})}\label{cuddUtil_8c_a90de9057062381cbb8f367f67a7094f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializer for the portable random number generator.]
+
+Description [Initializer for the portable number generator based on ran2 in \char`\"{}Numerical Recipes in C.\char`\"{} The input is the seed for the generator. If it is negative, its absolute value is taken as seed. If it is 0, then 1 is taken as seed. The initialized sets up the two recurrences used to generate a long-period stream, and sets up the shuffle table.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Random] 
+
+Definition at line 1970 of file cudd\-Util.c.
+
+References cudd\-Rand, cudd\-Rand2, LEQA1, LEQQ1, LEQR1, MODULUS1, shuffle\-Select, shuffle\-Table, and STAB\_\-SIZE.
+
+Referenced by Cudd\_\-Random().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_Support@{Cudd\_\-Support}}
+\index{Cudd_Support@{Cudd\_\-Support}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Support (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddUtil_8c_9e1f8e5b8efe97330f8650e1378ad172}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the variables on which a DD depends.]
+
+Description [Finds the variables on which a DD depends. Returns a BDD consisting of the product of the variables if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Vector\-Support Cudd\_\-Classify\-Support] 
+
+Definition at line 518 of file cudd\-Util.c.
+
+References ALLOC, Cudd\_\-bdd\-And(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-ONE, dd\-Clear\-Flag(), dd\-Max, dd\-Support\-Step(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Manager::one, Dd\-Manager::size, size, and Dd\-Manager::size\-Z.
+
+Referenced by Cudd\_\-add\-Restrict(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-CProjection(), and Cudd\_\-zdd\-Dump\-Dot().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_SupportSize@{Cudd\_\-SupportSize}}
+\index{Cudd_SupportSize@{Cudd\_\-SupportSize}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Support\-Size (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddUtil_8c_0e7cde5c4dfd8832de07de9b31e9469e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the variables on which a DD depends.]
+
+Description [Counts the variables on which a DD depends. Returns the number of the variables if successful; CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Support] 
+
+Definition at line 585 of file cudd\-Util.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, dd\-Clear\-Flag(), dd\-Max, dd\-Support\-Step(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::size, size, and Dd\-Manager::size\-Z.
+
+Referenced by Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), and cudd\-Conjuncts\-Aux().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_VectorSupport@{Cudd\_\-VectorSupport}}
+\index{Cudd_VectorSupport@{Cudd\_\-VectorSupport}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Vector\-Support (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em F}, int {\em n})}\label{cuddUtil_8c_8f6cf8a1719f76a3e121e7f61c406d5b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the variables on which a set of DDs depends.]
+
+Description [Finds the variables on which a set of DDs depends. The set must contain either BDDs and ADDs, or ZDDs. Returns a BDD consisting of the product of the variables if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Support Cudd\_\-Classify\-Support] 
+
+Definition at line 636 of file cudd\-Util.c.
+
+References ALLOC, Cudd\_\-bdd\-And(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-ONE, dd\-Clear\-Flag(), dd\-Max, dd\-Support\-Step(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Manager::one, Dd\-Manager::size, size, and Dd\-Manager::size\-Z.
+
+Referenced by Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-DDcal(), and Cudd\_\-Dump\-Dot().\index{cuddUtil.c@{cudd\-Util.c}!Cudd_VectorSupportSize@{Cudd\_\-VectorSupportSize}}
+\index{Cudd_VectorSupportSize@{Cudd\_\-VectorSupportSize}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Vector\-Support\-Size (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em F}, int {\em n})}\label{cuddUtil_8c_66da9c2c22b9bbb31120bd0a28fbf83c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the variables on which a set of DDs depends.]
+
+Description [Counts the variables on which a set of DDs depends. The set must contain either BDDs and ADDs, or ZDDs. Returns the number of the variables if successful; CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Vector\-Support Cudd\_\-Support\-Size] 
+
+Definition at line 709 of file cudd\-Util.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, dd\-Clear\-Flag(), dd\-Max, dd\-Support\-Step(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::size, size, and Dd\-Manager::size\-Z.\index{cuddUtil.c@{cudd\-Util.c}!cuddCollectNodes@{cuddCollectNodes}}
+\index{cuddCollectNodes@{cuddCollectNodes}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Collect\-Nodes (\bf{Dd\-Node} $\ast$ {\em f}, \bf{st\_\-table} $\ast$ {\em visited})}\label{cuddUtil_8c_2cf3fcfdf91a36cd66978d4f7201c468}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursively collects all the nodes of a DD in a symbol table.]
+
+Description [Traverses the BDD f and collects all its nodes in a symbol table. f is assumed to be a regular pointer and cudd\-Collect\-Nodes guarantees this assumption in the recursive calls. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2131 of file cudd\-Util.c.
+
+References assert, Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, st\_\-add\_\-direct(), st\_\-is\_\-member, and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-First\-Node(), and Cudd\_\-zdd\-Dump\-Dot().\index{cuddUtil.c@{cudd\-Util.c}!cuddEstimateCofactor@{cuddEstimateCofactor}}
+\index{cuddEstimateCofactor@{cuddEstimateCofactor}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Estimate\-Cofactor (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{st\_\-table} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em i}, int {\em phase}, \bf{Dd\-Node} $\ast$$\ast$ {\em ptr})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_bb135bf14d1a9a4725ec5372ab271490}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Cofactor\-Estimate.]
+
+Description [Performs the recursive step of Cudd\_\-Cofactor\-Estimate. Returns an estimate of the number of nodes in the DD of a cofactor of node. Uses the least significant bit of the next field as visited flag. node is supposed to be regular; the invariant is maintained by this procedure.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2366 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, cudd\-Unique\-Lookup(), dd\-Dag\-Int(), Dd\-Node::index, Dd\-Node::next, Dd\-Manager::perm, Dd\-Node::ref, st\_\-add\_\-direct(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-Estimate\-Cofactor().\index{cuddUtil.c@{cudd\-Util.c}!cuddEstimateCofactorSimple@{cuddEstimateCofactorSimple}}
+\index{cuddEstimateCofactorSimple@{cuddEstimateCofactorSimple}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Estimate\-Cofactor\-Simple (\bf{Dd\-Node} $\ast$ {\em node}, int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_2de9b65852f26110cf7ff447c15d04c7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Cofactor\-Estimate\-Simple.]
+
+Description [Performs the recursive step of Cudd\_\-Cofactor\-Estimate\-Simple. Returns an estimate of the number of nodes in the DD of the positive cofactor of node. Uses the least significant bit of the next field as visited flag. node is supposed to be regular; the invariant is maintained by this procedure.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2527 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, Dd\-Node::index, and Dd\-Node::next.
+
+Referenced by Cudd\_\-Estimate\-Cofactor\-Simple().\index{cuddUtil.c@{cudd\-Util.c}!cuddP@{cuddP}}
+\index{cuddP@{cuddP}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-P (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddUtil_8c_4bbc595b0dac192924c21ee5fadc8383}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints a DD to the standard output. One line per node is printed.]
+
+Description [Prints a DD to the standard output. One line per node is printed. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Print\-Debug] 
+
+Definition at line 2072 of file cudd\-Util.c.
+
+References dp2(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), and st\_\-ptrhash().
+
+Referenced by Cudd\_\-Print\-Debug().\index{cuddUtil.c@{cudd\-Util.c}!cuddStCountfree@{cuddStCountfree}}
+\index{cuddStCountfree@{cuddStCountfree}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{st\_\-retval} cudd\-St\-Countfree (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})}\label{cuddUtil_8c_a19f5abe781eca37ede28a3af994c48a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the memory used to store the minterm counts recorded in the visited table.]
+
+Description [Frees the memory used to store the minterm counts recorded in the visited table. Returns ST\_\-CONTINUE.]
+
+Side\-Effects [None] 
+
+Definition at line 2101 of file cudd\-Util.c.
+
+References FREE, and ST\_\-CONTINUE.
+
+Referenced by Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), and Cudd\_\-Split\-Set().\index{cuddUtil.c@{cudd\-Util.c}!cuddUniqueLookup@{cuddUniqueLookup}}
+\index{cuddUniqueLookup@{cuddUniqueLookup}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Unique\-Lookup (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em index}, \bf{Dd\-Node} $\ast$ {\em T}, \bf{Dd\-Node} $\ast$ {\em E})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_10ea5eee9f91c07601e2c7b8d0d98715}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the unique table for the existence of an internal node.]
+
+Description [Checks the unique table for the existence of an internal node. Returns a pointer to the node if it is in the table; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Unique\-Inter] 
+
+Definition at line 2464 of file cudd\-Util.c.
+
+References assert, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, dd\-Hash, Dd\-Node::index, Dd\-Subtable::nodelist, Dd\-Manager::perm, Dd\-Subtable::shift, Dd\-Manager::size, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Estimate\-Cofactor().\index{cuddUtil.c@{cudd\-Util.c}!ddClearFlag@{ddClearFlag}}
+\index{ddClearFlag@{ddClearFlag}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Flag (\bf{Dd\-Node} $\ast$ {\em f})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_b69f928c3cca42f5b1330803de1d9199}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs a DFS from f, clearing the LSB of the next pointers.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [dd\-Support\-Step dd\-Dag\-Int] 
+
+Definition at line 2722 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, and Dd\-Node::next.
+
+Referenced by Cudd\_\-Classify\-Support(), Cudd\_\-Count\-Leaves(), Cudd\_\-Dag\-Size(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-Estimate\-Cofactor\-Simple(), Cudd\_\-Sharing\-Size(), Cudd\_\-Support(), Cudd\_\-Support\-Size(), Cudd\_\-Vector\-Support(), and Cudd\_\-Vector\-Support\-Size().\index{cuddUtil.c@{cudd\-Util.c}!ddCountMintermAux@{ddCountMintermAux}}
+\index{ddCountMintermAux@{ddCountMintermAux}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double dd\-Count\-Minterm\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, double {\em max}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_75d721efc7f713e5013c08e69dac735b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Count\-Minterm.]
+
+Description [Performs the recursive step of Cudd\_\-Count\-Minterm. It is based on the following identity. Let $|$f$|$ be the number of minterms of f. Then: $<$xmp$>$ $|$f$|$ = ($|$f0$|$+$|$f1$|$)/2 $<$/xmp$>$ where f0 and f1 are the two cofactors of f. Does not use the identity $|$f'$|$ = max - $|$f$|$, to minimize loss of accuracy due to roundoff. Returns the number of minterms of the function rooted at node.]
+
+Side\-Effects [None] 
+
+Definition at line 2567 of file cudd\-Util.c.
+
+References ALLOC, background, Cudd\_\-Is\-Complement, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, FREE, st\_\-add\_\-direct(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by Cudd\_\-Count\-Minterm().\index{cuddUtil.c@{cudd\-Util.c}!ddCountPathAux@{ddCountPathAux}}
+\index{ddCountPathAux@{ddCountPathAux}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double dd\-Count\-Path\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_eba3952a88467bdbd83cb4e06f1fe7a2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Count\-Path.]
+
+Description [Performs the recursive step of Cudd\_\-Count\-Path. It is based on the following identity. Let $|$f$|$ be the number of paths of f. Then: $<$xmp$>$ $|$f$|$ = $|$f0$|$+$|$f1$|$ $<$/xmp$>$ where f0 and f1 are the two cofactors of f. Uses the identity $|$f'$|$ = $|$f$|$, to improve the utilization of the (local) cache. Returns the number of paths of the function rooted at node.]
+
+Side\-Effects [None] 
+
+Definition at line 2635 of file cudd\-Util.c.
+
+References ALLOC, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, FREE, st\_\-add\_\-direct(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-Count\-Path().\index{cuddUtil.c@{cudd\-Util.c}!ddDagInt@{ddDagInt}}
+\index{ddDagInt@{ddDagInt}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Dag\-Int (\bf{Dd\-Node} $\ast$ {\em n})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_2bfa54017e8ca22ee3ad1da33c079d3a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Dag\-Size.]
+
+Description [Performs the recursive step of Cudd\_\-Dag\-Size. Returns the number of nodes in the graph rooted at n.]
+
+Side\-Effects [None] 
+
+Definition at line 2331 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, and Dd\-Node::next.
+
+Referenced by Cudd\_\-Dag\-Size(), Cudd\_\-Sharing\-Size(), and cudd\-Estimate\-Cofactor().\index{cuddUtil.c@{cudd\-Util.c}!ddLeavesInt@{ddLeavesInt}}
+\index{ddLeavesInt@{ddLeavesInt}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Leaves\-Int (\bf{Dd\-Node} $\ast$ {\em n})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_947e1124a73ac4cc1867ad1263b5305a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Count\-Leaves.]
+
+Description [Performs the recursive step of Cudd\_\-Count\-Leaves. Returns the number of leaves in the DD rooted at n.]
+
+Side\-Effects [None] 
+
+Definition at line 2751 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, and Dd\-Node::next.
+
+Referenced by Cudd\_\-Count\-Leaves().\index{cuddUtil.c@{cudd\-Util.c}!ddPickArbitraryMinterms@{ddPickArbitraryMinterms}}
+\index{ddPickArbitraryMinterms@{ddPickArbitraryMinterms}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Pick\-Arbitrary\-Minterms (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars}, int {\em nminterms}, char $\ast$$\ast$ {\em string})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_a809bfd1adf107190cf7513566db0395}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms.]
+
+Side\-Effects [Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms] 
+
+Definition at line 2780 of file cudd\-Util.c.
+
+References Cudd\_\-Count\-Minterm(), Cudd\_\-Is\-Complement, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-T, DD\_\-ONE, Dd\-Node::index, one, and result.
+
+Referenced by Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms().\index{cuddUtil.c@{cudd\-Util.c}!ddPrintMintermAux@{ddPrintMintermAux}}
+\index{ddPrintMintermAux@{ddPrintMintermAux}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Print\-Minterm\-Aux (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em list})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_3af7ecd96899781204300c0164b30799}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Print\-Minterm.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 2277 of file cudd\-Util.c.
+
+References background, Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, cudd\-V, Dd\-Node::index, Dd\-Manager::size, and zero.
+
+Referenced by Cudd\_\-Print\-Minterm().\index{cuddUtil.c@{cudd\-Util.c}!ddSupportStep@{ddSupportStep}}
+\index{ddSupportStep@{ddSupportStep}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Support\-Step (\bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em support})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_83031f46206023ac78fea5a34d7547cf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Support.]
+
+Description [Performs the recursive step of Cudd\_\-Support. Performs a DFS from f. The support is accumulated in supp as a side effect. Uses the LSB of the then pointer as visited flag.]
+
+Side\-Effects [None]
+
+See\-Also [dd\-Clear\-Flag] 
+
+Definition at line 2691 of file cudd\-Util.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, Dd\-Node::index, and Dd\-Node::next.
+
+Referenced by Cudd\_\-Classify\-Support(), Cudd\_\-Support(), Cudd\_\-Support\-Size(), Cudd\_\-Vector\-Support(), and Cudd\_\-Vector\-Support\-Size().\index{cuddUtil.c@{cudd\-Util.c}!dp2@{dp2}}
+\index{dp2@{dp2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dp2 (\bf{Dd\-Node} $\ast$ {\em f}, \bf{st\_\-table} $\ast$ {\em t})\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_e1bb2b11af79f722fec44a3853626c5c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of cudd\-P.]
+
+Description [Performs the recursive step of cudd\-P. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 2185 of file cudd\-Util.c.
+
+References bang, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, cudd\-V, st\_\-add\_\-direct(), st\_\-is\_\-member, and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by cudd\-P().
+
+\subsection{Variable Documentation}
+\index{cuddUtil.c@{cudd\-Util.c}!background@{background}}
+\index{background@{background}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{background}\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_af93dea94cfd93476e9c11d890891aff}
+
+
+
+
+Definition at line 138 of file cudd\-Util.c.\index{cuddUtil.c@{cudd\-Util.c}!cuddRand@{cuddRand}}
+\index{cuddRand@{cuddRand}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{cudd\-Rand} = 0\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_5401614286ba6923de016a43abc37617}
+
+
+
+
+Definition at line 140 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!cuddRand2@{cuddRand2}}
+\index{cuddRand2@{cuddRand2}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{cudd\-Rand2}\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_8e2b851d75e2ae18506df56207fba18e}
+
+
+
+
+Definition at line 141 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Util.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 135 of file cudd\-Util.c.\index{cuddUtil.c@{cudd\-Util.c}!shuffleSelect@{shuffleSelect}}
+\index{shuffleSelect@{shuffleSelect}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{shuffle\-Select}\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_a2d42b930312818f9e36eafdd428b8a2}
+
+
+
+
+Definition at line 142 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!shuffleTable@{shuffleTable}}
+\index{shuffleTable@{shuffleTable}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{shuffle\-Table}[STAB\_\-SIZE]\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_7245623787b25f92a5c129e67ccdb404}
+
+
+
+
+Definition at line 143 of file cudd\-Util.c.
+
+Referenced by Cudd\_\-Random(), and Cudd\_\-Srandom().\index{cuddUtil.c@{cudd\-Util.c}!zero@{zero}}
+\index{zero@{zero}!cuddUtil.c@{cudd\-Util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddUtil_8c_559a95c469bb341bde49e5950629e726}
+
+
+
+
+Definition at line 138 of file cudd\-Util.c.

@@ -1,0 +1,427 @@
+OpenIMPACT build scheme
+
+1. Quick start
+
+To build OpenIMPACT using the automake scheme, run the following
+commands:
+
+ gunzip -c openimpact-xxx.tar.gz | tar xvf -
+ mkdir build
+ cd build
+ ../openimpact-xxx/configure
+ make
+
+Optionally, you can install OpenIMPACT by running:
+
+ make install
+
+OpenIMPACT will be installed in the directory given as the --prefix
+option to configure (/usr/local by default).
+
+OpenIMPACT is completely usable from the build directory if you do not
+wish to install.  Simply source build/init-impact to set your path and
+the necessary environment variables.
+
+After installing OpenIMPACT, source <prefix>/bin/init-impact to set
+your path and environment variables.  For more information, see
+section 1  of the oicc manual.
+
+2. Build details
+
+2.1 configure script
+OpenIMPACT uses a GNU configure script to set up its makefiles.  The
+only arguments the script uses are the standard configure arguments.
+Run 'configure --help' for a list.
+
+2.2 Build directory
+OpenIMPACT can be built in the source directory, but we recommend
+using a separate build directory.  The makefile will generate an
+init-impact script in the build directory that can be sourced to point
+your path into the directory.  Several build directories with
+different compilation options can be maintained from a single source
+directory.  The init-impact script allows you to easily switch between
+build directories.
+
+2.3 Makefile layout and targets
+The OpenIMPACT build system is based around one large makefile to
+build the entire tree.  This makefile is located in the root directory
+of the source tree.  In addition to the standard automake targets, the
+makefile contains targets to build and clean any subset of the tree.
+
+To build everything under a subdirectory, run 'make <dir>'.  For
+example, 'make src/Lcode' or 'make src/Lcode/' builds everything in
+src/Lcode.  Every subdirectory target has a version with a trailing
+slash so that you can use tab completion to select a directory.
+
+To clean everything under a subdirectory, run 'make <dir>/clean'
+
+3. Build system maintenance
+
+3.1 Prerequisites
+
+3.1.1 Utility versions
+ The following utilities are needed to generate the configure script
+and makefiles.
+
+ autoconf 2.54
+ automake 1.7.1
+
+3.1.2 Recommended reading
+ One should be somewhat familiar with GNU Automake before editing one
+of the Makefile.ams.  I recommend reading sections 2.3 (The Uniform
+Naming Scheme) and 2.4 (How derived variables are named) and looking
+at the examples in section 3 (Some example packages) of the GNU
+Autoconf manual (http://www.gnu.org/manual/automake-1.6.1/).  Sections
+9.1 through 9.4 are also useful if you need to write a new Makefile.am
+for a new OpenIMPACT module.
+
+3.2 Makefile.am example
+ As a quick intro, Automake works by listing all programs and
+libraries under special variables, then listing the source files and
+other options under variables for each program or library.  A simple
+Makefile.am might look like this:
+
+ bin_PROGRAMS = foo
+ foo_SOURCES = foo.h foo.c
+ foo_LDADD = -lm
+
+ All programs listed under bin_PROGRAMS will be installed in the bin
+directory when running 'make install'.  For each program listed in
+bin_PROGRAMS, Automake uses the values in <program>_SOURCES,
+<program>_LDADD, and others (See section 9.4 in the Automake manual)
+to figure out how to build the program.
+
+3.3 OpenIMPACT Makefile.am scheme
+
+3.3.1 Makefile.am structure
+ To make things more manageable, the Makefile.am is split across the
+directory tree.  Each directory contains a Makefile.am that only knows
+about the files in that directory.
+
+ To keep things simple, a Makefile.am may only reference files in its
+directory.  If the directory has subdirectories, the Makefile.am may
+include Makefile.ams from immediate subdirectories.  The Makefile.am
+may only reference variables and targets defined in itself or in the
+Makefile.ams in immediate subdirectories.  Using this scheme, program
+and source definitions are passed up from lower directories to the
+parent, and ultimately to the root of the source tree.
+
+3.3.2 Variable naming convention
+ For every <foo>_PROGRAMS (or <foo>_LIBRARIES, etc) variable, automake
+expects a <foo>dir variable to exist to indicate where the programs
+listed should be installed.  Because we want all programs to end up in
+bin, only bin_PROGRAMS is defined.  bin_PROGRAMS is defined in the top
+level Makefile.am.
+
+ Lower level Makefile.ams pass definitions to upper level Makefile.ams
+through the following variables.
+
+ <foo>_PRG  becomes  <foo>_PROGRAMS
+ <foo>_LIB           <foo>_LIBRARIES
+ <foo>_BLT           BUILT_SOURCES
+ <foo>_DAT           <foo>_DATA
+ <foo>_DST           EXTRA_DIST
+
+ If more definitions need to be passed in the future, choose a
+reasonable three letter abbreviation to use.
+
+ Ultimately, there is one large makefile.  This means that all
+variables are global to the source tree.  To avoid name conflicts, we
+use automake's naming convention where all variable names contain the
+names of their parent directories.  In this naming scheme, numbers and
+letters are preserved, but all other characters are replaced with '_'.
+Here is an example tree with prefixes.
+
+ File                           Variables start with
+ Makefile.am                    Typically dictated by Automake
+ src/Makefile.am                src_
+ src/Lcode/Makefile.am          src_Lcode_
+
+ The generated makefile exists in the top level of the source tree, so
+all files need to be specified relative to the top level.
+
+4. Automake scheme for distributing OpenIMPACT
+ To pare down the source tree for distribution, there is a set of
+special Makefile.dist.am files that only include the files necessary
+to build OpenIMPACT for Itanium and the binary for impact-edgcpfe.  Not
+every Makefile.am has a corresponding Makefile.dist.am.  They only
+appear in directories where something needs to be removed from the
+distribution.
+
+ In the top level directory there is a Makefile.dist.am and a
+Makefile.normal.am.  So that the output of automake is named
+Makefile.in for either, Makefile.am is a symlink to one of these
+files.
+
+ The top level Makefile.dist.am defines the C preprocessor symbol
+OPENIMPACT_DISTRIBUTION.  This can be used inside a source file to
+avoid compiling sections that rely on files not included in the
+distribution.
+
+4.1 Setting the distribution version
+ The distribution version is set in configure.ac.  The second argument
+to AC_INIT is the version.  After changing this, run 'autoconf' to
+rebuild the 'configure' script.
+
+4.2 Creating a distribution
+ The procedure for creating the distribution is as follows:
+
+ cd <source tree>
+ ln -sf Makefile.normal.am Makefile.am
+ automake --foreign
+ cd <build tree>
+ <set CC if necessary>
+ # This next step will build the entire compiler including impact-edgcpfe
+ <source tree>/configure ... && make
+ # This next step will build the distribution tarball for
+ # impact-edgcpfe.  <arch> is one of {hp, x86, ia64}
+ make edgdist-<arch>
+ cd <source tree>
+ ln -sf Makefile.dist.am Makefile.am
+ automake --foreign
+ cd <build tree>
+ make dist
+
+ This will create openimpact-<ver>.tar.gz in <build tree>.
+
+5. Adding a new OpenIMPACT module to the automake scheme
+
+5.1 Adding your module to the build system
+ A module's Makefile.am is typically very simple.  It rarely needs to
+do more than define a few variables.  Unless you have a special case,
+there is no need to define complex build targets.  The format is
+documented here as comments to the Makefile.am for
+src/Lcode/tools/Lemulate.  This is a typical simple module.
+
+## src/Lcode/tools/Lemulate/Makefile.am
+## This file is (ultimately) included by the top level Makefile.am, so all
+## files need to be specified relative to the top level directory.
+
+## First, define _PRG and _LIB.  For all subdirectories of src, both
+## must be defined, even if one or more is the empty string.
+src_Lcode_tools_Lemulate_PRG = src/Lcode/tools/Lemulate/Lemulate
+src_Lcode_tools_Lemulate_LIB = 
+
+## Next, define a build target for this directory.  Every Makefile.am
+## defines a target for its own directory.  This allows the user to
+## rebuild everything under a directory by running 'make <path>'.
+## This should simply list any variables defined above.  There should
+## be targets both with and without the trailing slash to allow the
+## use of tab completion.
+src/Lcode/tools/Lemulate src/Lcode/tools/Lemulate/: \
+	$(src_Lcode_tools_Lemulate_PRG)
+
+## A target to support cleaning everything under this subdirectory.
+src/Lcode/tools/Lemulate/clean:
+	rm -f $(top_builddir)/src/Lcode/tools/Lemulate/*.$(OBJEXT)
+	rm -f $(src_Lcode_tools_Lemulate_PRG)
+
+## _SOURCES is a standard Automake variable suffix.  When Automake
+## finds src/Lcode/tools/Lemulate/Lemulate in _PROGRAMS, it will look
+## for src_Lcode_tools_Lemulate_Lemulate_SOURCES to find the source
+## files.  All .c and .h files should be listed here.
+src_Lcode_tools_Lemulate_Lemulate_SOURCES = \
+	src/Lcode/tools/Lemulate/l_emul.c \
+	src/Lcode/tools/Lemulate/l_emul_decl.c \
+	src/Lcode/tools/Lemulate/l_emul_decl.h \
+	src/Lcode/tools/Lemulate/l_emul_emit_builtin.c \
+	src/Lcode/tools/Lemulate/l_emul_emit_builtin.h \
+	src/Lcode/tools/Lemulate/l_emul_emit_data.c \
+	src/Lcode/tools/Lemulate/l_emul_emit_data.h \
+	src/Lcode/tools/Lemulate/l_emul_emit_op.c \
+	src/Lcode/tools/Lemulate/l_emul_emit_operand.c \
+	src/Lcode/tools/Lemulate/l_emul_emit_operand.h \
+	src/Lcode/tools/Lemulate/l_emul_emit_op.h \
+	src/Lcode/tools/Lemulate/l_emul.h \
+	src/Lcode/tools/Lemulate/l_emul_intrinsic.c \
+	src/Lcode/tools/Lemulate/l_emul_intrinsic.h \
+	src/Lcode/tools/Lemulate/l_emul_trace.c \
+	src/Lcode/tools/Lemulate/l_emul_trace.h \
+	src/Lcode/tools/Lemulate/l_emul_util.c \
+	src/Lcode/tools/Lemulate/l_emul_util.h
+
+## _LDADD is another standard Automake variable suffix.  This is used
+## when linking.  Automake can automatically generate dependencies
+## against these libraries if _DEPENDENCIES is not defined.  When it
+## does this, it strips strings starting with -L and -l from the list,
+## so all IMPACT libraries need to be specified as a path to the
+## library.
+src_Lcode_tools_Lemulate_Lemulate_LDADD = -L$(top_builddir)/lib \
+					  $(top_builddir)/lib/libproto.a \
+					  $(top_builddir)/lib/liblcode.a \
+					  $(top_builddir)/lib/libbdd.a \
+					  $(top_builddir)/lib/libmspec.a \
+					  $(top_builddir)/lib/libimpact.a \
+					  $(top_builddir)/lib/liblmdes.a -lm
+
+## _DEPENDENCIES is a standard Automake variable.  Defining this
+## variable disables automatic dependency detection for this target,
+## so you will need to relist dependencies that appear in _LDADD
+## src_Lcode_tools_Lemulate_Lemulate_DEPENDENCIES =
+
+## List any special compiler flags under _CFLAGS.
+## src_Lcode_tools_Lemulate_Lemulate_CFLAGS = 
+
+5.2 Linking your module into the build system
+ First, you need to link your Makefile.am to the one in the parent
+directory.  The Makefile.am from src/Lcode/tools is shown below:
+
+## src/Lcode/tools/Makefile.am
+## This file is (ultimately) included by the top level Makefile.am, so all
+## files need to be specified relative to the top level directory.
+
+## The Makefile.am from each subdirectory is included here.
+include $(srcdir)/src/Lcode/tools/Lbuild_prototype_info/Makefile.am
+include $(srcdir)/src/Lcode/tools/Lemulate/Makefile.am
+include $(srcdir)/src/Lcode/tools/Lstatic/Makefile.am
+include $(srcdir)/src/Lcode/tools/LtoC/Makefile.am
+include $(srcdir)/src/Lcode/tools/Lsplit/Makefile.am
+include $(srcdir)/src/Lcode/tools/Lgp_rel/Makefile.am
+include $(srcdir)/src/Lcode/tools/Linduct/Makefile.am
+
+## This file builds its own _PRG and _LIB variables from the ones
+## defined in each subdirectory.  Add your variables to these lists.
+## You may see other (_BLT, _DST) variables being passed up here as
+## well.
+src_Lcode_tools_PRG = $(src_Lcode_tools_Lbuild_prototype_info_PRG) \
+		      $(src_Lcode_tools_Lemulate_PRG) \
+		      $(src_Lcode_tools_Lstatic_PRG) \
+		      $(src_Lcode_tools_LtoC_PRG) \
+		      $(src_Lcode_tools_Lsplit_PRG) \
+		      $(src_Lcode_tools_Lgp_rel_PRG) \
+		      $(src_Lcode_tools_Linduct_PRG)
+src_Lcode_tools_LIB = $(src_Lcode_tools_Lbuild_prototype_info_LIB) \
+		      $(src_Lcode_tools_Lemulate_LIB) \
+		      $(src_Lcode_tools_Lstatic_LIB) \
+		      $(src_Lcode_tools_LtoC_LIB) \
+		      $(src_Lcode_tools_Lsplit_LIB) \
+		      $(src_Lcode_tools_Lgp_rel_LIB) \
+		      $(src_Lcode_tools_Linduct_LIB)
+
+## The directory build target.  Add your directory to this list.
+src/Lcode/tools src/Lcode/tools/: src/Lcode/tools/Lbuild_prototype_info \
+	src/Lcode/tools/Lemulate src/Lcode/tools/Lstatic src/Lcode/tools/LtoC \
+	src/Lcode/tools/Lsplit src/Lcode/tools/Lgp_rel src/Lcode/tools/Linduct
+
+## A target to support cleaning everything under this subdirectory.
+## Add your directory to this list.
+src/Lcode/tools/clean: \
+        include/clean src/Lcode/tools/Lbuild_prototype_info/clean \
+        src/Lcode/tools/Lemulate/clean src/Lcode/tools/Lstatic/clean \
+        src/Lcode/tools/LtoC/clean src/Lcode/tools/Lsplit/clean \
+        src/Lcode/tools/Lgp_rel/clean src/Lcode/tools/Linduct/clean
+
+5.3 Less commonly used features
+ A quirk of the OpenIMPACT build system is that a top level include
+directory is constructed that constains symlinks to include files in
+lower directories.  This directory is built before any programs and
+included in the search path so that source code can do things like
+'#include <Lcode/Lcode>.  If your module needs to add files to this
+directory, read the next section.
+
+ There are Makefile.am files in include and each subdirectory to
+generate these links.  Portions of include/Lcode/Makefile.am are
+reproduced and commented below.
+
+## include/Lcode/Makefile.am
+## This file is (ultimately) included by the top level Makefile.am, so all
+## files need to be specified relative to the top level directory.
+
+## Since these headers are all symlinks, they all get the _BLT
+## (BUILT_SOURCES) suffix.  Most of them are only needed for building,
+## and not needed after installation, so they are specified with the
+## noinst_ prefix.  
+noinst_include_Lcode_Lemulate_BLT = include/Lcode/l_emul.h
+
+## A directory build target.  There is not actually an Lemulate
+## subdirectory of include/Lcode.  This target is used only to rebuild
+## the Lemulate symlinks.
+include/Lcode/Lemulate: $(noinst_include_Lcode_Lemulate_BLT)
+
+## If you need to install your header when the user does 'make
+## install', you would do something like this.  The _BLT variable does
+## not have a noinst_ prefix, and we need to list the file in the
+## _HEADERS variable.  include_Lcode_HEADERS is an Automake variable,
+## so it is necessary to specify where the headers should be located
+## with include_Lcodedir.  The nodist_ prefix on _HEADERS tells
+## Automake to ignore this file when building the distribution tarball.
+include_Lcodedir = $(prefix)/include/Lcode
+include_Lcode_Lprobe_BLT = include/Lcode/l_trace_interface.h
+nodist_include_Lcode_HEADERS = $(include_Lcode_Lprobe_BLT)
+
+## include_Lcode_BLT collects the _BLT variables to pass up to the
+## Makefile.am in the parent directory.  You need to add your _BLT
+## variable to this list.  Note that there is both a noinst_ and a
+## normal version.
+noinst_include_Lcode_BLT = $(noinst_include_Lcode_Lschedule_BLT) \
+                           $(noinst_include_Lcode_LsoftpipeH_BLT) \
+                           $(noinst_include_Lcode_Ltahoe_BLT) \
+                           $(noinst_include_Lcode_Mopti_ia64_BLT) \
+                           $(noinst_include_Lcode_Mopti_BLT) \
+                           $(noinst_include_Lcode_Regalloc_BLT) \
+                           $(noinst_include_Lcode_Lcode_BLT) \
+                           $(noinst_include_Lcode_Lblock_BLT) \
+                           $(noinst_include_Lcode_Lmarkpipe_BLT) \
+                           $(noinst_include_Lcode_Lopti_BLT) \
+                           $(noinst_include_Lcode_Lsafe_BLT) \
+                           $(noinst_include_Lcode_Lsuperscalar_BLT) \
+                           $(noinst_include_Lcode_Lencode_BLT) \
+                           $(noinst_include_Lcode_Lget_BLT) \
+                           $(noinst_include_Lcode_SMH_BLT) \
+                           $(noinst_include_Lcode_SM_BLT) \
+                           $(noinst_include_Lcode_Lbuild_prototype_info_BLT) \
+                           $(noinst_include_Lcode_Lemulate_BLT) \
+                           $(noinst_include_Lcode_LtoC_BLT)
+include_Lcode_BLT = $(include_Lcode_Lprobe_BLT)
+
+## You need to specify a rule to create the symlinks for your
+## variable.  A typical one is shown below
+$(noinst_include_Lcode_Lemulate_BLT):
+        mkdir -p $(top_builddir)/include/Lcode
+        $(foreach file, $(noinst_include_Lcode_Lemulate_BLT), \
+                ln -sf
+$(abs_srcdir)/src/Lcode/tools/Lemulate/`basename $(file)`
+$(top_builddir)/$(file);)
+
+## Specify a directory style target to make the symlinks for your
+## headers.
+include/Lcode/Lemulate: $(noinst_include_Lcode_Lemulate_BLT)
+
+## Specify a target to clean your symlinks.
+include/Lcode/Lemulate/clean:
+        $(forach file $(noinst_include_Lcode_Lemulate_BLT), \
+                rm -f $(top_builddir)/$(file);)
+
+## Add your directory build target to the real directory build target.
+include/Lcode include/Lcode/: \
+	include/Lcode/Lschedule include/Lcode/LsoftpipeH \
+        include/Lcode/Ltahoe include/Lcode/Mopti_ia64 include/Lcode/Mopti \
+        include/Lcode/Regalloc include/Lcode/Lcode include/Lcode/Lblock \
+        include/Lcode/Lmarkpipe include/Lcode/Lopti include/Lcode/Lsafe \
+        include/Lcode/Lsuperscalar include/Lcode/Lencode include/Lcode/Lget \
+        include/Lcode/Lprobe include/Lcode/SMH include/Lcode/SM \
+        include/Lcode/Lbuild_prototype_info include/Lcode/Lemulate \
+        include/Lcode/LtoC
+
+## Add your clean target to the real directory clean target.
+include/Lcode/clean: \
+                include/Lcode/Lschedule/clean include/Lcode/LsoftpipeH/clean \
+                include/Lcode/Ltahoe/clean include/Lcode/Mopti-ia64/clean \
+                include/Lcode/Mopti/clean include/Lcode/Regalloc/clean \
+                include/Lcode/Lcode/clean include/Lcode/Lblock/clean \
+                include/Lcode/Lmarkpipe/clean include/Lcode/Lopti/clean \
+                include/Lcode/Lsafe/clean include/Lcode/Lsuperscalar/clean \
+                include/Lcode/Lencode/clean include/Lcode/Lget/clean \
+                include/Lcode/Lprobe/clean include/Lcode/SMH/clean \
+                include/Lcode/SM/clean \
+                include/Lcode/Lbuild_prototype_info/clean \
+                include/Lcode/Lemulate/clean include/Lcode/LtoC/clean
+        rmdir --ignore-fail-on-non-empty $(top_builddir)/include/Lcode
+
+ Libraries and binaries are left in the build directory
+(src/Lcode/tools/Lemulate) after building.  When the user does 'make
+install', they get moved into lib or bin.  To make it possible to run
+OpenIMPACT from the build directory, the bin and lib directories have
+Makefile.am files that create symlinks into the build directories as
+programs are built.  The Makefile.am files in bin and lib are very
+similar to the ones under include.

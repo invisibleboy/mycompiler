@@ -1,0 +1,196 @@
+\section{l\_\-alloc\_\-new.h File Reference}
+\label{l__alloc__new_8h}\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-L\_\-Alloc\_\-Pool\_\-Header}
+\item 
+struct \bf{\_\-L\_\-Alloc\_\-Pool}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{L\_\-ALLOC\_\-POOL}(typ)~\bf{L\_\-Alloc\_\-Pool} $\ast$L\_\-alloc\_\-pool\_\-\#\#typ = NULL
+\item 
+\#define \bf{L\_\-INIT\_\-ALLOC\_\-POOL}(typ, sz)
+\item 
+\#define \bf{L\_\-DEINIT\_\-ALLOC\_\-POOL}(typ)
+\item 
+\#define \bf{L\_\-ALLOC}(typ)~(typ $\ast$)L\_\-alloc(L\_\-alloc\_\-pool\_\-\#\#typ)
+\item 
+\#define \bf{L\_\-FREE}(typ, p)~\{L\_\-free(L\_\-alloc\_\-pool\_\-\#\#typ, p),p = NULL;\}
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-L\_\-Alloc\_\-Pool\_\-Header} \bf{L\_\-Alloc\_\-Pool\_\-Header}
+\item 
+typedef \bf{\_\-L\_\-Alloc\_\-Pool} \bf{L\_\-Alloc\_\-Pool}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{L\_\-create\_\-alloc\_\-pool} (char $\ast$, int, int)
+\item 
+void \bf{L\_\-free\_\-alloc\_\-pool} (\bf{L\_\-Alloc\_\-Pool} $\ast$)
+\item 
+void $\ast$ \bf{L\_\-alloc} (\bf{L\_\-Alloc\_\-Pool} $\ast$)
+\item 
+void \bf{L\_\-free} (\bf{L\_\-Alloc\_\-Pool} $\ast$, void $\ast$)
+\item 
+long \bf{L\_\-print\_\-alloc\_\-info} (FILE $\ast$, \bf{L\_\-Alloc\_\-Pool} $\ast$, int)
+\item 
+void \bf{L\_\-summarize\_\-allocation\_\-info} (FILE $\ast$fp)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{bypass\_\-alloc\_\-routines}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_ALLOC@{L\_\-ALLOC}}
+\index{L_ALLOC@{L\_\-ALLOC}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-ALLOC(typ)~(typ $\ast$)L\_\-alloc(L\_\-alloc\_\-pool\_\-\#\#typ)}\label{l__alloc__new_8h_9bf3de54ba957100c399000d14ace572}
+
+
+
+
+Definition at line 93 of file l\_\-alloc\_\-new.h.\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_ALLOC_POOL@{L\_\-ALLOC\_\-POOL}}
+\index{L_ALLOC_POOL@{L\_\-ALLOC\_\-POOL}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-ALLOC\_\-POOL(typ)~\bf{L\_\-Alloc\_\-Pool} $\ast$L\_\-alloc\_\-pool\_\-\#\#typ = NULL}\label{l__alloc__new_8h_dbfa07b4c5fbfb0ccfe3c71b58733977}
+
+
+
+
+Definition at line 86 of file l\_\-alloc\_\-new.h.\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_DEINIT_ALLOC_POOL@{L\_\-DEINIT\_\-ALLOC\_\-POOL}}
+\index{L_DEINIT_ALLOC_POOL@{L\_\-DEINIT\_\-ALLOC\_\-POOL}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEINIT\_\-ALLOC\_\-POOL(typ)}\label{l__alloc__new_8h_aec55c8ebb3a44715795946a2a415ade}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}{ if (L_alloc_pool_##typ) {                  \
+                    L_free_alloc_pool (L_alloc_pool_##typ)                    \
+                    L_alloc_pool_##typ = NULL; }}
+\end{verbatim}\end{Code}
+
+
+Definition at line 90 of file l\_\-alloc\_\-new.h.\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_FREE@{L\_\-FREE}}
+\index{L_FREE@{L\_\-FREE}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-FREE(typ, p)~\{L\_\-free(L\_\-alloc\_\-pool\_\-\#\#typ, p),p = NULL;\}}\label{l__alloc__new_8h_4cf4ac7e89ec7a9860e5d0a0a14edae9}
+
+
+
+
+Definition at line 94 of file l\_\-alloc\_\-new.h.\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_INIT_ALLOC_POOL@{L\_\-INIT\_\-ALLOC\_\-POOL}}
+\index{L_INIT_ALLOC_POOL@{L\_\-INIT\_\-ALLOC\_\-POOL}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-INIT\_\-ALLOC\_\-POOL(typ, sz)}\label{l__alloc__new_8h_8ad2c6e782598309e0d4b4d4f730d9a8}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}{ if (!L_alloc_pool_##typ)                  \
+                    L_alloc_pool_##typ =  L_create_alloc_pool ("typ",         \
+                    sizeof(typ), sz); }
+\end{verbatim}\end{Code}
+
+
+Definition at line 87 of file l\_\-alloc\_\-new.h.
+
+\subsection{Typedef Documentation}
+\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_Alloc_Pool@{L\_\-Alloc\_\-Pool}}
+\index{L_Alloc_Pool@{L\_\-Alloc\_\-Pool}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-L\_\-Alloc\_\-Pool}
+ \bf{L\_\-Alloc\_\-Pool}}\label{l__alloc__new_8h_8b6531fb91f2d9fba3179128e1f9e364}
+
+
+\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_Alloc_Pool_Header@{L\_\-Alloc\_\-Pool\_\-Header}}
+\index{L_Alloc_Pool_Header@{L\_\-Alloc\_\-Pool\_\-Header}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-L\_\-Alloc\_\-Pool\_\-Header}
+ \bf{L\_\-Alloc\_\-Pool\_\-Header}}\label{l__alloc__new_8h_b0098662f08d7359b6f71f79efc7f6ed}
+
+
+
+
+\subsection{Function Documentation}
+\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_alloc@{L\_\-alloc}}
+\index{L_alloc@{L\_\-alloc}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ L\_\-alloc (\bf{L\_\-Alloc\_\-Pool} $\ast$)}\label{l__alloc__new_8h_cc42721dc9fbaf73217c241a82423b40}
+
+
+
+
+Definition at line 229 of file l\_\-alloc\_\-new.c.
+
+References \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::block\_\-list, \_\-L\_\-Alloc\_\-Pool::block\_\-size, \_\-L\_\-Alloc\_\-Pool::blocks\_\-allocated, \_\-L\_\-Alloc\_\-Pool::bypass\_\-routines, \_\-L\_\-Alloc\_\-Pool::element\_\-size, \_\-L\_\-Alloc\_\-Pool::free, \_\-L\_\-Alloc\_\-Pool::head, \_\-L\_\-Alloc\_\-Pool::name, \_\-L\_\-Alloc\_\-Pool\_\-Header::next, NULL, and \_\-L\_\-Alloc\_\-Pool::num\_\-in\_\-block.
+
+Referenced by \_\-MD\_\-set\_\-block(), \_\-MD\_\-set\_\-double(), \_\-MD\_\-set\_\-int(), \_\-MD\_\-set\_\-link(), \_\-MD\_\-set\_\-string(), CHAR\_\-ARRAY\_\-add\_\-symbol(), CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table(), copy\_\-Mptr(), create\_\-Mbuf(), create\_\-Mfile(), create\_\-Mptr(), Graph\_\-create\_\-graph(), Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-create\_\-graph\_\-node\_\-given\_\-id(), Graph\_\-new\_\-graph\_\-equiv\_\-cd(), Hash\-LTable\_\-create(), Hash\-LTable\_\-insert(), Hash\-LTable\_\-update(), Hash\-Table\_\-create(), Hash\-Table\_\-insert(), Hash\-Table\_\-update(), Heap\_\-Insert(), INT\_\-add\_\-symbol(), INT\_\-ARRAY\_\-add\_\-symbol(), INT\_\-ARRAY\_\-new\_\-symbol\_\-table(), INT\_\-new\_\-symbol\_\-table(), L\_\-create\_\-Attr\-Mngr(), L\_\-create\_\-histogram(), L\_\-insert\_\-cb\_\-attr\_\-list(), L\_\-insert\_\-fn\_\-attr\_\-list(), L\_\-insert\_\-op\_\-attr\_\-list(), List\_\-new\_\-list(), List\_\-new\_\-list\_\-element(), MD\_\-add\_\-symbol(), MD\_\-new\_\-buf(), MD\_\-new\_\-element\_\-req(), MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-new\_\-md(), MD\_\-new\_\-section(), MD\_\-new\_\-symbol\_\-table(), New\_\-Stack(), New\_\-Stack\_\-Elmt(), New\-Lint(), New\-Lptr(), New\-Set(), New\-VArray(), New\-Vector(), Push\_\-Bot(), Push\_\-Top(), Set\_\-iterator(), STRING\_\-add\_\-symbol(), and STRING\_\-new\_\-symbol\_\-table().\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_create_alloc_pool@{L\_\-create\_\-alloc\_\-pool}}
+\index{L_create_alloc_pool@{L\_\-create\_\-alloc\_\-pool}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ L\_\-create\_\-alloc\_\-pool (char $\ast$, int, int)}\label{l__alloc__new_8h_50486297fa3e0e5231a908843297c86f}
+
+
+
+
+Definition at line 79 of file l\_\-alloc\_\-new.c.
+
+References active\_\-alloc\_\-pools, \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::block\_\-list, \_\-L\_\-Alloc\_\-Pool::block\_\-size, \_\-L\_\-Alloc\_\-Pool::blocks\_\-allocated, bypass\_\-alloc\_\-routines, \_\-L\_\-Alloc\_\-Pool::bypass\_\-routines, \_\-L\_\-Alloc\_\-Pool::element\_\-size, \_\-L\_\-Alloc\_\-Pool::free, \_\-L\_\-Alloc\_\-Pool::head, \_\-L\_\-Alloc\_\-Pool::name, \_\-L\_\-Alloc\_\-Pool::next, NULL, and \_\-L\_\-Alloc\_\-Pool::num\_\-in\_\-block.
+
+Referenced by CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table(), create\_\-Mbuf(), create\_\-Mfile(), create\_\-Mptr(), Graph\_\-create\_\-graph(), Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-create\_\-graph\_\-node\_\-given\_\-id(), Graph\_\-new\_\-graph\_\-equiv\_\-cd(), Hash\-LTable\_\-create(), Hash\-Table\_\-create(), Heap\_\-Create(), Init\_\-New\-Lint(), Init\_\-New\-Lptr(), INT\_\-ARRAY\_\-new\_\-symbol\_\-table(), INT\_\-new\_\-symbol\_\-table(), L\_\-create\_\-Attr\-Mngr(), L\_\-create\_\-histogram(), List\_\-new\_\-list(), List\_\-new\_\-list\_\-element(), MD\_\-new\_\-md(), MD\_\-read\_\-md(), New\_\-Stack(), New\-Set(), New\-VArray(), New\-Vector(), Set\_\-iterator(), and STRING\_\-new\_\-symbol\_\-table().\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_free@{L\_\-free}}
+\index{L_free@{L\_\-free}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-free (\bf{L\_\-Alloc\_\-Pool} $\ast$, void $\ast$)}\label{l__alloc__new_8h_da797456c2b81499b45e8319426196a9}
+
+
+
+
+Definition at line 305 of file l\_\-alloc\_\-new.c.
+
+References \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::bypass\_\-routines, \_\-L\_\-Alloc\_\-Pool::free, \_\-L\_\-Alloc\_\-Pool::head, \_\-L\_\-Alloc\_\-Pool::name, \_\-L\_\-Alloc\_\-Pool\_\-Header::next, and NULL.
+
+Referenced by \_\-MD\_\-free\_\-entry(), \_\-MD\_\-free\_\-field\_\-decl(), \_\-MD\_\-free\_\-section(), CHAR\_\-ARRAY\_\-delete\_\-symbol(), CHAR\_\-ARRAY\_\-delete\_\-symbol\_\-table(), Clear\_\-Stack(), Delete\_\-Stack(), free\_\-Mbuf(), free\_\-Mfile(), free\_\-Mptr(), Free\_\-Stack(), Free\_\-Stack\_\-Elmt(), Free\-Set(), Free\-VArray(), Free\-Vector(), Graph\_\-free\_\-graph(), Graph\_\-free\_\-graph\_\-arc(), Graph\_\-free\_\-graph\_\-equiv\_\-cd(), Graph\_\-free\_\-graph\_\-node(), Hash\-LTable\_\-free(), Hash\-LTable\_\-free\_\-func(), Hash\-LTable\_\-remove(), Hash\-LTable\_\-reset(), Hash\-LTable\_\-reset\_\-func(), Hash\-Table\_\-free(), Hash\-Table\_\-free\_\-func(), Hash\-Table\_\-remove(), Hash\-Table\_\-reset(), Hash\-Table\_\-reset\_\-func(), Heap\_\-Dispose(), Heap\_\-Extract\-Top(), INT\_\-ARRAY\_\-delete\_\-symbol(), INT\_\-ARRAY\_\-delete\_\-symbol\_\-table(), INT\_\-delete\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), L\_\-delete\_\-histogram(), L\_\-free\_\-Attr(), L\_\-free\_\-Attr\-Mngr(), List\_\-reset(), List\_\-reset\_\-free\_\-ptrs(), MD\_\-delete\_\-buf(), MD\_\-delete\_\-element(), MD\_\-delete\_\-field(), MD\_\-delete\_\-md(), MD\_\-delete\_\-symbol(), MD\_\-delete\_\-symbol\_\-table(), Pop(), Set\_\-end\_\-iterator(), STRING\_\-delete\_\-symbol(), and STRING\_\-delete\_\-symbol\_\-table().\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_free_alloc_pool@{L\_\-free\_\-alloc\_\-pool}}
+\index{L_free_alloc_pool@{L\_\-free\_\-alloc\_\-pool}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-free\_\-alloc\_\-pool (\bf{L\_\-Alloc\_\-Pool} $\ast$)}\label{l__alloc__new_8h_b2b2253a1e6edae1fa73074e2161d171}
+
+
+
+
+Definition at line 166 of file l\_\-alloc\_\-new.c.
+
+References active\_\-alloc\_\-pools, \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::block\_\-list, \_\-L\_\-Alloc\_\-Pool::free, \_\-L\_\-Alloc\_\-Pool::name, \_\-L\_\-Alloc\_\-Pool::next, \_\-L\_\-Alloc\_\-Pool\_\-Header::next, and NULL.
+
+Referenced by MD\_\-delete\_\-md(), and MD\_\-read\_\-md().\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_print_alloc_info@{L\_\-print\_\-alloc\_\-info}}
+\index{L_print_alloc_info@{L\_\-print\_\-alloc\_\-info}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long L\_\-print\_\-alloc\_\-info (FILE $\ast$, \bf{L\_\-Alloc\_\-Pool} $\ast$, int)}\label{l__alloc__new_8h_8f60f151e54e589a7d10693af8e795c3}
+
+
+
+
+Definition at line 352 of file l\_\-alloc\_\-new.c.
+
+References \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::block\_\-size, \_\-L\_\-Alloc\_\-Pool::blocks\_\-allocated, \_\-L\_\-Alloc\_\-Pool::bypass\_\-routines, \_\-L\_\-Alloc\_\-Pool::free, and \_\-L\_\-Alloc\_\-Pool::name.
+
+Referenced by Graph\_\-free\_\-graph(), and L\_\-summarize\_\-allocation\_\-info().\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!L_summarize_allocation_info@{L\_\-summarize\_\-allocation\_\-info}}
+\index{L_summarize_allocation_info@{L\_\-summarize\_\-allocation\_\-info}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-summarize\_\-allocation\_\-info (FILE $\ast$ {\em fp})}\label{l__alloc__new_8h_f1a7e407007f958a74e86a023a071642}
+
+
+
+
+Definition at line 381 of file l\_\-alloc\_\-new.c.
+
+References active\_\-alloc\_\-pools, L\_\-print\_\-alloc\_\-info(), and \_\-L\_\-Alloc\_\-Pool::next.
+
+\subsection{Variable Documentation}
+\index{l_alloc_new.h@{l\_\-alloc\_\-new.h}!bypass_alloc_routines@{bypass\_\-alloc\_\-routines}}
+\index{bypass_alloc_routines@{bypass\_\-alloc\_\-routines}!l_alloc_new.h@{l\_\-alloc\_\-new.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{bypass\_\-alloc\_\-routines}}\label{l__alloc__new_8h_a3b32dfd5d5c937e01c07ffd52c4ecda}
+
+
+
+
+Definition at line 74 of file l\_\-alloc\_\-new.c.
+
+Referenced by L\_\-create\_\-alloc\_\-pool().

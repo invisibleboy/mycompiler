@@ -1,0 +1,383 @@
+\section{cudd\-Anneal.c File Reference}
+\label{cuddAnneal_8c}\index{cuddAnneal.c@{cuddAnneal.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{BETA}~0.6
+\item 
+\#define \bf{ALPHA}~0.90
+\item 
+\#define \bf{EXC\_\-PROB}~0.4
+\item 
+\#define \bf{JUMP\_\-UP\_\-PROB}~0.36
+\item 
+\#define \bf{MAXGEN\_\-RATIO}~15.0
+\item 
+\#define \bf{STOP\_\-TEMP}~1.0
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int stopping\_\-criterion \bf{ARGS} ((int c1, int c2, int c3, int c4, double temp))
+\item 
+static double random\_\-generator \bf{ARGS} (())
+\item 
+static int dd\-Exchange \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y, double temp))
+\item 
+static int dd\-Jumping\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int x\_\-high, double temp))
+\item 
+static \bf{Move} $\ast$dd\-Jumping\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int initial\_\-size))
+\item 
+static \bf{Move} $\ast$dd\-Jumping\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-high, int initial\_\-size))
+\item 
+static int sift\-Backward\-Prob \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}, double temp))
+\item 
+static void copy\-Order \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int $\ast$array, int lower, int upper))
+\item 
+int \bf{cudd\-Annealing} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{stopping\_\-criterion} (int c1, int c2, int c3, int c4, double temp)
+\item 
+static double \bf{random\_\-generator} ()
+\item 
+static int \bf{dd\-Exchange} (\bf{Dd\-Manager} $\ast$table, int x, int y, double temp)
+\item 
+static int \bf{dd\-Jumping\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int x\_\-high, double temp)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Jumping\-Up} (\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int initial\_\-size)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Jumping\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\_\-high, int initial\_\-size)
+\item 
+static int \bf{sift\-Backward\-Prob} (\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}, double temp)
+\item 
+static void \bf{copy\-Order} (\bf{Dd\-Manager} $\ast$table, int $\ast$array, int lower, int upper)
+\item 
+static int \bf{restore\-Order} (\bf{Dd\-Manager} $\ast$table, int $\ast$array, int lower, int upper)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Anneal.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ALPHA@{ALPHA}}
+\index{ALPHA@{ALPHA}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ALPHA~0.90}\label{cuddAnneal_8c_f5abd28c44c29b7397c84f1fec4b1d84}
+
+
+
+
+Definition at line 49 of file cudd\-Anneal.c.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!BETA@{BETA}}
+\index{BETA@{BETA}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BETA~0.6}\label{cuddAnneal_8c_1b996515309fc3c03449912bb33046e3}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Anneal.c}{p.}{cuddAnneal_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Reordering of DDs based on simulated annealing]
+
+Description [Internal procedures included in this file: \begin{itemize}
+\item \doxyref{cudd\-Annealing()}{p.}{cuddAnneal_8c_069882208201ba24a9d4beea7a16e81b} \end{itemize}
+Static procedures included in this file: \begin{itemize}
+\item \doxyref{stopping\_\-criterion()}{p.}{cuddAnneal_8c_5f2b499b6706d3e880ad375ab7eacd03} \item \doxyref{random\_\-generator()}{p.}{cuddAnneal_8c_44cc4649aa6a40dfe6222c022db6ac09} \item \doxyref{dd\-Exchange()}{p.}{cuddAnneal_8c_9f396915e6af5e5923911f5d3a643c31} \item \doxyref{dd\-Jumping\-Aux()}{p.}{cuddAnneal_8c_1fb998e6427d83c1a6f0150e2a17467a} \item \doxyref{dd\-Jumping\-Up()}{p.}{cuddAnneal_8c_3266ccb3ce4c0da0e3c11c0b42947ddd} \item \doxyref{dd\-Jumping\-Down()}{p.}{cuddAnneal_8c_09bcc9bc46f790661ef6549ef5d92daa} \item \doxyref{sift\-Backward\-Prob()}{p.}{cuddAnneal_8c_5d9b489d701c5a7f19ee5f135e80e7ca} \item \doxyref{copy\-Order()}{p.}{cuddAnneal_8c_cad9fa7ce3b1333a9c072bca7dafcbb6} \item \doxyref{restore\-Order()}{p.}{cuddAnneal_8c_baafb7c0229190195fb598d60afb53ff} \end{itemize}
+]
+
+See\-Also []
+
+Author [Jae-Young Jang, Jorgen Sivesind]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 48 of file cudd\-Anneal.c.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!EXC_PROB@{EXC\_\-PROB}}
+\index{EXC_PROB@{EXC\_\-PROB}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EXC\_\-PROB~0.4}\label{cuddAnneal_8c_2c0be8d31945920a5ffb6dae9115cbb8}
+
+
+
+
+Definition at line 50 of file cudd\-Anneal.c.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!JUMP_UP_PROB@{JUMP\_\-UP\_\-PROB}}
+\index{JUMP_UP_PROB@{JUMP\_\-UP\_\-PROB}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define JUMP\_\-UP\_\-PROB~0.36}\label{cuddAnneal_8c_91b8f7055919a427c26d2ca5e5732548}
+
+
+
+
+Definition at line 51 of file cudd\-Anneal.c.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!MAXGEN_RATIO@{MAXGEN\_\-RATIO}}
+\index{MAXGEN_RATIO@{MAXGEN\_\-RATIO}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAXGEN\_\-RATIO~15.0}\label{cuddAnneal_8c_d06617a840460570896838fbc917b0f2}
+
+
+
+
+Definition at line 52 of file cudd\-Anneal.c.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!STOP_TEMP@{STOP\_\-TEMP}}
+\index{STOP_TEMP@{STOP\_\-TEMP}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define STOP\_\-TEMP~1.0}\label{cuddAnneal_8c_325542c76e61adb1cebccf04f755bf52}
+
+
+
+
+Definition at line 53 of file cudd\-Anneal.c.
+
+Referenced by stopping\_\-criterion().
+
+\subsection{Function Documentation}
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int restore\-Order ARGS ((\bf{Dd\-Manager} $\ast$table, int $\ast$array, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_61f2216e84bfc6e9262c4c77216aa4ea}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int sift\-Backward\-Prob ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}, double temp))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_ab489a9a673485de538b7ce9b8b22b6c}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Jumping\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-high, int initial\_\-size))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_87506051a744d9e63c493f266868d808}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Jumping\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int initial\_\-size))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_529f02a72c55bde7555d1978f1313208}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Jumping\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low, int x\_\-high, double temp))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_1fed8498e412447c869c220c940b04fb}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Exchange ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y, double temp))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_a12fabda2da62eedbd49954f0318cb51}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double random\_\-generator ARGS (())\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_9adc3ed6720ffb07044fc576c48579e0}
+
+
+\index{cuddAnneal.c@{cudd\-Anneal.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int stopping\_\-criterion ARGS ((int c1, int c2, int c3, int c4, double temp))\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_60ba4ffa889ef9d7699988fc190e3559}
+
+
+Automatic\-Start \index{cuddAnneal.c@{cudd\-Anneal.c}!copyOrder@{copyOrder}}
+\index{copyOrder@{copyOrder}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void copy\-Order (\bf{Dd\-Manager} $\ast$ {\em table}, int $\ast$ {\em array}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_cad9fa7ce3b1333a9c072bca7dafcbb6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Copies the current variable order to array.]
+
+Description [Copies the current variable order to array. At the same time inverts the permutation.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 730 of file cudd\-Anneal.c.
+
+References Dd\-Manager::invperm.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!cuddAnnealing@{cuddAnnealing}}
+\index{cuddAnnealing@{cuddAnnealing}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Annealing (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddAnneal_8c_069882208201ba24a9d4beea7a16e81b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Get new variable-order by simulated annealing algorithm.]
+
+Description [Get x, y by random selection. Choose either exchange or jump randomly. In case of jump, choose between jump\_\-up and jump\_\-down randomly. Do exchange or jump and get optimal case. Loop until there is no improvement or temperature reaches minimum. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 129 of file cudd\-Anneal.c.
+
+References ALLOC, ALPHA, BETA, copy\-Order(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Random(), cudd\-Sifting(), dd\-Exchange(), dd\-Jumping\-Aux(), Dd\-Manager::error\-Code, EXC\_\-PROB, FREE, Dd\-Manager::isolated, JUMP\_\-UP\_\-PROB, Dd\-Manager::keys, MAXGEN\_\-RATIO, random\_\-generator(), restore\-Order(), result, size, and stopping\_\-criterion().
+
+Referenced by dd\-Reorder\-Children().\index{cuddAnneal.c@{cudd\-Anneal.c}!ddExchange@{ddExchange}}
+\index{ddExchange@{ddExchange}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Exchange (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y}, double {\em temp})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_9f396915e6af5e5923911f5d3a643c31}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [This function is for exchanging two variables, x and y.]
+
+Description [This is the same funcion as dd\-Swapping except for comparison expression. Use probability function, exp(-size\_\-change/temp).]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 327 of file cudd\-Anneal.c.
+
+References cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-High(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), DD\_\-MAX\_\-REORDER\_\-GROWTH, Dd\-Manager::isolated, Dd\-Manager::keys, Move::next, result, sift\-Backward\-Prob(), Move::size, size, Move::x, and Move::y.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!ddJumpingAux@{ddJumpingAux}}
+\index{ddJumpingAux@{ddJumpingAux}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Jumping\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\_\-low}, int {\em x\_\-high}, double {\em temp})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_1fb998e6427d83c1a6f0150e2a17467a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves a variable to a specified position.]
+
+Description [If x==x\_\-low, it executes jumping\_\-down. If x==x\_\-high, it executes jumping\_\-up. This funcion is similar to dd\-Sifting\-Aux. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 476 of file cudd\-Anneal.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Next\-High(), cudd\-Next\-Low(), dd\-Jumping\-Down(), dd\-Jumping\-Up(), Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Move::next, result, sift\-Backward\-Prob(), and Dd\-Manager::subtables.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!ddJumpingDown@{ddJumpingDown}}
+\index{ddJumpingDown@{ddJumpingDown}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Jumping\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\_\-high}, int {\em initial\_\-size})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_09bcc9bc46f790661ef6549ef5d92daa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [This function is for jumping down.]
+
+Description [This is a simplified version of dd\-Sifting\-Down. It does not use lower bounding. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 606 of file cudd\-Anneal.c.
+
+References cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-High(), cudd\-Swap\-In\-Place(), Dd\-Manager::max\-Growth, Move::next, Move::size, size, Move::x, and Move::y.
+
+Referenced by dd\-Jumping\-Aux().\index{cuddAnneal.c@{cudd\-Anneal.c}!ddJumpingUp@{ddJumpingUp}}
+\index{ddJumpingUp@{ddJumpingUp}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Jumping\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\_\-low}, int {\em initial\_\-size})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_3266ccb3ce4c0da0e3c11c0b42947ddd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [This function is for jumping up.]
+
+Description [This is a simplified version of dd\-Sifting\-Up. It does not use lower bounding. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 547 of file cudd\-Anneal.c.
+
+References cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), Dd\-Manager::max\-Growth, Move::next, Move::size, size, Move::x, and Move::y.
+
+Referenced by dd\-Jumping\-Aux().\index{cuddAnneal.c@{cudd\-Anneal.c}!random_generator@{random\_\-generator}}
+\index{random_generator@{random\_\-generator}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double random\_\-generator ()\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_44cc4649aa6a40dfe6222c022db6ac09}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Random number generator.]
+
+Description [Returns a double precision value between 0.0 and 1.0.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 306 of file cudd\-Anneal.c.
+
+References Cudd\_\-Random().
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!restoreOrder@{restoreOrder}}
+\index{restoreOrder@{restoreOrder}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int restore\-Order (\bf{Dd\-Manager} $\ast$ {\em table}, int $\ast$ {\em array}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_baafb7c0229190195fb598d60afb53ff}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Restores the variable order in array by a series of sifts up.]
+
+Description [Restores the variable order in array by a series of sifts up. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 760 of file cudd\-Anneal.c.
+
+References assert, cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), Dd\-Manager::perm, and size.
+
+Referenced by cudd\-Annealing().\index{cuddAnneal.c@{cudd\-Anneal.c}!siftBackwardProb@{siftBackwardProb}}
+\index{siftBackwardProb@{siftBackwardProb}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int sift\-Backward\-Prob (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Move} $\ast$ {\em moves}, int {\em size}, double {\em temp})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_5d9b489d701c5a7f19ee5f135e80e7ca}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the DD to the best position encountered during sifting if there was improvement.]
+
+Description [Otherwise, \char`\"{}tosses a coin\char`\"{} to decide whether to keep the current configuration or return the DD to the original one. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 666 of file cudd\-Anneal.c.
+
+References Move::next, and Move::size.
+
+Referenced by dd\-Exchange(), and dd\-Jumping\-Aux().\index{cuddAnneal.c@{cudd\-Anneal.c}!stopping_criterion@{stopping\_\-criterion}}
+\index{stopping_criterion@{stopping\_\-criterion}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int stopping\_\-criterion (int {\em c1}, int {\em c2}, int {\em c3}, int {\em c4}, double {\em temp})\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_5f2b499b6706d3e880ad375ab7eacd03}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks termination condition.]
+
+Description [If temperature is STOP\_\-TEMP or there is no improvement then terminates. Returns 1 if the termination criterion is met; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 276 of file cudd\-Anneal.c.
+
+References STOP\_\-TEMP.
+
+Referenced by cudd\-Annealing().
+
+\subsection{Variable Documentation}
+\index{cuddAnneal.c@{cudd\-Anneal.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddAnneal.c@{cudd\-Anneal.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Anneal.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddAnneal_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 70 of file cudd\-Anneal.c.

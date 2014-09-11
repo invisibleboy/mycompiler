@@ -1,0 +1,216 @@
+\section{mtr\-Group.c File Reference}
+\label{mtrGroup_8c}\index{mtrGroup.c@{mtrGroup.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/mtr\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int mtr\-Shift\-HL \bf{ARGS} ((\bf{Mtr\-Node} $\ast$node, int shift))
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Init\-Group\-Tree} (int lower, int \bf{size})
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Make\-Group} (\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int \bf{size}, unsigned int flags)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Dissolve\-Group} (\bf{Mtr\-Node} $\ast$group)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Find\-Group} (\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int \bf{size})
+\item 
+int \bf{Mtr\_\-Swap\-Groups} (\bf{Mtr\-Node} $\ast$first, \bf{Mtr\-Node} $\ast$second)
+\item 
+void \bf{Mtr\_\-Print\-Groups} (\bf{Mtr\-Node} $\ast$root, int silent)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Read\-Groups} (FILE $\ast$fp, int nleaves)
+\item 
+static int \bf{mtr\-Shift\-HL} (\bf{Mtr\-Node} $\ast$node, int shift)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{MTR\_\-UNUSED} = \char`\"{}\$Id: mtr\-Group.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{mtrGroup.c@{mtr\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int mtr\-Shift\-HL ARGS ((\bf{Mtr\-Node} $\ast$node, int shift))\hspace{0.3cm}{\tt  [static]}}\label{mtrGroup_8c_b24874af6d033a2f2db42dc9fec09a50}
+
+
+Automatic\-Start \index{mtrGroup.c@{mtr\-Group.c}!Mtr_DissolveGroup@{Mtr\_\-DissolveGroup}}
+\index{Mtr_DissolveGroup@{Mtr\_\-DissolveGroup}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Dissolve\-Group (\bf{Mtr\-Node} $\ast$ {\em group})}\label{mtrGroup_8c_fbdda02555432854b787268ccd657ce8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Merges the children of `group' with the children of its parent.]
+
+Description [Merges the children of `group' with the children of its parent. Disposes of the node pointed by group. If group is the root of the group tree, this procedure leaves the tree unchanged. Returns the pointer to the parent of `group' upon successful termination; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Make\-Group] 
+
+Definition at line 328 of file mtr\-Group.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\_\-Dealloc\-Node(), MTR\_\-TERMINAL, MTR\_\-TEST, Mtr\-Node::parent, and Mtr\-Node::younger.\index{mtrGroup.c@{mtr\-Group.c}!Mtr_FindGroup@{Mtr\_\-FindGroup}}
+\index{Mtr_FindGroup@{Mtr\_\-FindGroup}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Find\-Group (\bf{Mtr\-Node} $\ast$ {\em root}, unsigned int {\em low}, unsigned int {\em size})}\label{mtrGroup_8c_1a20cb9542dc607dd7e35f8e4d7561d3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds a group with size leaves starting at low, if it exists.]
+
+Description [Finds a group with size leaves starting at low, if it exists. This procedure relies on the low and size fields of each node. It also assumes that the children of each node are sorted in order of increasing low. Returns the pointer to the root of the group upon successful termination; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 380 of file mtr\-Group.c.
+
+References assert, Mtr\-Node::child, Mtr\-Node::low, MTR\_\-TERMINAL, MTR\_\-TEST, Mtr\-Node::size, and Mtr\-Node::younger.\index{mtrGroup.c@{mtr\-Group.c}!Mtr_InitGroupTree@{Mtr\_\-InitGroupTree}}
+\index{Mtr_InitGroupTree@{Mtr\_\-InitGroupTree}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Init\-Group\-Tree (int {\em lower}, int {\em size})}\label{mtrGroup_8c_645819e1eca23ccb71ee08a2715c2bed}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Allocate new tree.]
+
+Description [Allocate new tree with one node, whose low and size fields are specified by the lower and size parameters. Returns pointer to tree root.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Init\-Tree Mtr\_\-Free\-Tree] 
+
+Definition at line 94 of file mtr\-Group.c.
+
+References Mtr\-Node::flags, Mtr\-Node::low, MTR\_\-DEFAULT, Mtr\_\-Init\-Tree(), and Mtr\-Node::size.
+
+Referenced by Cudd\_\-Make\-Tree\-Node(), Cudd\_\-Make\-Zdd\-Tree\-Node(), Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars(), cudd\-Tree\-Sifting(), cudd\-Zdd\-Tree\-Sifting(), and Mtr\_\-Read\-Groups().\index{mtrGroup.c@{mtr\-Group.c}!Mtr_MakeGroup@{Mtr\_\-MakeGroup}}
+\index{Mtr_MakeGroup@{Mtr\_\-MakeGroup}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Make\-Group (\bf{Mtr\-Node} $\ast$ {\em root}, unsigned int {\em low}, unsigned int {\em size}, unsigned int {\em flags})}\label{mtrGroup_8c_37cb3253f32077fd75e9204ca2bc981a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes a new group with size leaves starting at low.]
+
+Description [Makes a new group with size leaves starting at low. If the new group intersects an existing group, it must either contain it or be contained by it. This procedure relies on the low and size fields of each node. It also assumes that the children of each node are sorted in order of increasing low. In case of a valid request, the flags of the new group are set to the value passed in `flags.' This can also be used to change the flags of an existing group. Returns the pointer to the root of the new group upon successful termination; NULL otherwise. If the group already exists, the pointer to its root is returned.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Dissolve\-Group Mtr\_\-Read\-Groups Mtr\_\-Find\-Group] 
+
+Definition at line 131 of file mtr\-Group.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\-Node::low, Mtr\_\-Alloc\-Node(), Mtr\-Node::parent, Mtr\-Node::size, and Mtr\-Node::younger.
+
+Referenced by Cudd\_\-Make\-Tree\-Node(), Cudd\_\-Make\-Zdd\-Tree\-Node(), and Mtr\_\-Read\-Groups().\index{mtrGroup.c@{mtr\-Group.c}!Mtr_PrintGroups@{Mtr\_\-PrintGroups}}
+\index{Mtr_PrintGroups@{Mtr\_\-PrintGroups}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Print\-Groups (\bf{Mtr\-Node} $\ast$ {\em root}, int {\em silent})}\label{mtrGroup_8c_2d9c3174966e8acd78d0d0664065c472}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the groups as a parenthesized list.]
+
+Description [Prints the groups as a parenthesized list. After each group, the group's flag are printed, preceded by a `$|$'. For each flag (except MTR\_\-TERMINAL) a character is printed. \begin{itemize}
+\item F: MTR\_\-FIXED \item N: MTR\_\-NEWNODE \item S: MTR\_\-SOFT \end{itemize}
+The second argument, silent, if different from 0, causes Mtr\_\-Print\-Groups to only check the syntax of the group tree. ]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Print\-Tree] 
+
+Definition at line 508 of file mtr\-Group.c.
+
+References assert, Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\-Node::low, MTR\_\-DEFAULT, MTR\_\-FIXED, MTR\_\-NEWNODE, MTR\_\-SOFT, MTR\_\-TERMINAL, MTR\_\-TEST, Mtr\-Node::parent, Mtr\-Node::size, and Mtr\-Node::younger.
+
+Referenced by cudd\-Tree\-Sifting(), cudd\-Zdd\-Tree\-Sifting(), dd\-Tree\-Sifting\-Aux(), and zdd\-Tree\-Sifting\-Aux().\index{mtrGroup.c@{mtr\-Group.c}!Mtr_ReadGroups@{Mtr\_\-ReadGroups}}
+\index{Mtr_ReadGroups@{Mtr\_\-ReadGroups}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Read\-Groups (FILE $\ast$ {\em fp}, int {\em nleaves})}\label{mtrGroup_8c_b42ef347b9e72fc92080e72348187d94}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads groups from a file and creates a group tree.]
+
+Description [Reads groups from a file and creates a group tree. Each group is specified by three fields: $<$xmp$>$ low size flags. $<$/xmp$>$ Low and size are (short) integers. Flags is a string composed of the following characters (with associated translation): \begin{itemize}
+\item D: MTR\_\-DEFAULT \item F: MTR\_\-FIXED \item N: MTR\_\-NEWNODE \item S: MTR\_\-SOFT \item T: MTR\_\-TERMINAL \end{itemize}
+Normally, the only flags that are needed are D and F. Groups and fields are separated by white space (spaces, tabs, and newlines). Returns a pointer to the group tree if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Init\-Group\-Tree Mtr\_\-Make\-Group] 
+
+Definition at line 574 of file mtr\-Group.c.
+
+References Mtr\-Node::flags, Mtr\-Node::low, MTR\_\-DEFAULT, MTR\_\-FIXED, Mtr\_\-Init\-Group\-Tree(), Mtr\_\-Make\-Group(), MTR\_\-NEWNODE, MTR\_\-SOFT, MTR\_\-TERMINAL, size, and strlen().\index{mtrGroup.c@{mtr\-Group.c}!Mtr_SwapGroups@{Mtr\_\-SwapGroups}}
+\index{Mtr_SwapGroups@{Mtr\_\-SwapGroups}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mtr\_\-Swap\-Groups (\bf{Mtr\-Node} $\ast$ {\em first}, \bf{Mtr\-Node} $\ast$ {\em second})}\label{mtrGroup_8c_0f76a87423bc6e128596bb8fcea3ef6b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two children of a tree node.]
+
+Description [Swaps two children of a tree node. Adjusts the high and low fields of the two nodes and their descendants. The two children must be adjacent. However, first may be the younger sibling of second. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 441 of file mtr\-Group.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, mtr\-Shift\-HL(), Mtr\-Node::parent, Mtr\-Node::size, and Mtr\-Node::younger.\index{mtrGroup.c@{mtr\-Group.c}!mtrShiftHL@{mtrShiftHL}}
+\index{mtrShiftHL@{mtrShiftHL}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int mtr\-Shift\-HL (\bf{Mtr\-Node} $\ast$ {\em node}, int {\em shift})\hspace{0.3cm}{\tt  [static]}}\label{mtrGroup_8c_2b62d267e0ffd31a2fcfe7607a8c9383}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Adjusts the low fields of a node and its descendants.]
+
+Description [Adjusts the low fields of a node and its descendants. Adds shift to low of each node. Checks that no out-of-bounds values result. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 663 of file mtr\-Group.c.
+
+References Mtr\-Node::child, Mtr\-Node::low, MTR\_\-MAXHIGH, MTR\_\-TERMINAL, MTR\_\-TEST, Mtr\-Node::size, and Mtr\-Node::younger.
+
+Referenced by Mtr\_\-Swap\-Groups().
+
+\subsection{Variable Documentation}
+\index{mtrGroup.c@{mtr\-Group.c}!MTR_UNUSED@{MTR\_\-UNUSED}}
+\index{MTR_UNUSED@{MTR\_\-UNUSED}!mtrGroup.c@{mtr\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{MTR\_\-UNUSED} = \char`\"{}\$Id: mtr\-Group.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{mtrGroup_8c_71385e18c061c8783c806fedd390bb6a}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{mtr\-Group.c}{p.}{mtrGroup_8c}]
+
+Package\-Name [mtr]
+
+Synopsis [Functions to support group specification for reordering.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Mtr\_\-Init\-Group\-Tree()}{p.}{mtrGroup_8c_645819e1eca23ccb71ee08a2715c2bed} \item \doxyref{Mtr\_\-Make\-Group()}{p.}{mtrGroup_8c_37cb3253f32077fd75e9204ca2bc981a} \item \doxyref{Mtr\_\-Dissolve\-Group()}{p.}{mtrGroup_8c_fbdda02555432854b787268ccd657ce8} \item \doxyref{Mtr\_\-Find\-Group()}{p.}{mtrGroup_8c_1a20cb9542dc607dd7e35f8e4d7561d3} \item \doxyref{Mtr\_\-Swap\-Groups()}{p.}{mtrGroup_8c_0f76a87423bc6e128596bb8fcea3ef6b} \item \doxyref{Mtr\_\-Print\-Groups()}{p.}{mtrGroup_8c_2d9c3174966e8acd78d0d0664065c472} \item \doxyref{Mtr\_\-Read\-Groups()}{p.}{mtrGroup_8c_b42ef347b9e72fc92080e72348187d94} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item mtr\-Shift\-HL \end{itemize}
+]
+
+See\-Also [cudd package]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 58 of file mtr\-Group.c.

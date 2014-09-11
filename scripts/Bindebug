@@ -1,0 +1,502 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+#
+# Bindebug <benchmark_name> <good_dir> <bad_dir> "-input name"
+#
+# John W. Sias
+# IMPACT - University of Illinois at Urbana-Champaign
+# 27 August 98
+#
+# 13 October 99 - Upgraded to time out, correctly kill child processes
+#
+# Utility for finding bad object files given a "good" and a "bad" set.
+# ----------------------------------------------------------------------------
+#
+
+$| = 1;
+
+$mpid = $$;
+
+# Set up exception handling
+
+sub diehdlr {
+  cleanup() if ($$ == $mpid);
+}
+
+$SIG{__DIE__} = \&diehdlr;
+
+# Cleanup function
+
+sub cleanup {
+    chdir $ex_dir;
+    if ( -d $test_dir ) {
+	unlink( <$test_dir/*> );
+	rmdir $test_dir;
+    }
+}
+
+sub safe_system {
+  my($command);
+  my($retval);
+  $command = $_[0];
+  
+  if ( $command eq () ) {
+    return 0;
+  }
+
+  $retval = 0xffff & system $command;
+  
+  if ( $retval == 0 ) {
+    return 0;
+  } elsif ( $retval == 0xff00 ) {
+    die "$scriptname: Command \"$command\" failed.\n";
+  } elsif ( $retval > 0x80 ) {
+    $retval << 8;
+    die "$scriptname: Command \"$command\" exited with non-zero status.\n";
+  } else {
+	
+    # signal thrown in execution
+
+    $death_statement = "$scriptname: Command \"$command\" ";
+
+    if ( $retval & 0x80 ) {
+      $retval &= ~0x80;
+      $death_statement .= "dumped core and ";
+    }
+	
+    $death_statement .= "exited with signal $retval\n";
+
+    die $death_statement;
+  }
+}
+
+# Interface to print_training_info
+
+$command = ();
+
+sub get_command {
+  my($command);
+  $command = `read_exec_info $benchname $_[0]`;
+  $command =~ s/\n$//;
+  if ($_[0] =~ /^-args/) {
+    $command = "exec ./a.out " . $command . " > result.out 2> stderr.out";
+  } 
+  return $command;
+}
+
+# Swapper / executor
+
+sub swap_and_run {
+
+  my($lower, $upper, $i);
+
+  $lower = $_[0];
+  $upper = $_[1];
+
+  print "Checking files between ", $lower, " and ", $upper, ": ";
+
+  chdir($test_dir);
+
+  for ( $i = $lower; $i <= $upper; $i++ ) {
+    unlink($file_list[$i]) ||
+      die "Failed to remove file $file_list[$i].\n";
+    symlink("$bad_dir/$bad_file_list[$i]","$test_dir/$file_list[$i]") ||
+      die "Symbolic link of $bad_file_list[$i] failed.\n";
+  }
+
+  safe_system("$host_compiler $dstr *.o ${platform_dir}/impact_lemul_lib.o ".
+#               "-Wl,-relax " .
+	      "-L ${platform_dir} $linklibs");
+    
+  if ($norc) {
+    safe_system("chatr -r a.out");
+  }
+
+  safe_system($setup_command);
+
+  # Test binary
+
+  $status = 0;
+
+  eval {
+    local $SIG{__DIE__} = IGNORE;
+    local $SIG{ALRM} = sub { die "timed out"};
+    local $SIG{INT} = sub { die "intr" };
+    alarm $timeout;
+    $starttime = time();
+    if($cpid = fork)
+      {
+	print "($cpid)";
+	wait();
+	$status = $?;
+        $stoptime = time();
+	printf "(done in %d s) ", $stoptime - $starttime;
+      }
+    else
+      {
+	local $SIG{__DIE__} = IGNORE;
+	exec("${prefix_command} ${args_command}");
+	exit $status;
+      }
+    alarm 0;
+  };
+
+  # Interpret results
+
+  if ($@) { 
+    $result = 1;
+    if ($@ =~ /timed out/) {
+      print "Timed out";
+    } elsif ($@ =~ /intr/) {
+      print "Interrupted";
+    } else {
+      alarm 0;
+      printf "Evaluation failed.\n";
+      die;
+    }
+      
+    # Ensure child is dead
+
+    if (kill 0, $cpid) {
+      print": killing child";
+      kill 9, $cpid;
+      while (waitpid($cpid,0)!=$cpid) {;}
+    }
+    print "\n";
+  } else {
+      $rc = 0xffff & $status;
+
+      if ($rc == 0xff00) {
+	  $result = 1;
+	  print "Command failed.\n";
+      } elsif (!$ignxstat && !($rc & 0xff) && ($rc & 0xff00)) {
+	  $rc >>= 8;
+	  $result = 1;
+	  printf "Non-zero exit status $rc\n";
+      } elsif ($rc & 0xff != 0) {
+	  $result = 1;
+	  print "Terminated ";
+	  if ($rc & 0x80) {
+	      $rc &= ~ 0x80;
+	      print "with core ";
+	  }
+	  $sig = $rc & 0xFF;
+	  print "due to signal $sig\n";
+      } else {
+	  $result_string = `($check_command) 2>&1`;
+	  $result = ($result_string ne ());
+	  if ( $result ) {
+	      print "Incorrect output.\n";
+	  } else {
+	      print "Correct output.\n";
+	  }	
+      }
+  }
+
+  safe_system($cleanup_command);
+ 
+  if (!$dnr || $result) {
+      for ( $i = $lower; $i <= $upper; $i++ ) {
+	  unlink($file_list[$i]) ||
+	      die "Failed to remove file $file_list[$i].\n";
+	  symlink("$good_dir/$file_list[$i]","$test_dir/$file_list[$i]") ||
+	      die "Symbolic link of $file_list[$i] failed.\n";
+      }
+  }
+
+  unlink "a.out" || die "Failed to remove a.out\n";
+    
+  while ( -e "a.out" ) {;}
+    
+  return $result;
+}
+
+# Recursive debugging driver
+
+sub debug_range {
+
+  use integer;
+
+  my($lower, $upper, $middle, $lresult, $uresult);
+
+  $lower = $_[0];
+  $upper = $_[1];
+
+  if ($lower == $upper) {
+    $badfile = $bad_file_list[$lower];
+    $goodfile = $file_list[$lower];
+    print "\n<<< A bug is found in ${badfile}. >>>\n\n";
+    push(@failed_file_list, $badfile);
+    return 1;
+  }
+
+  $middle = ($lower + $upper) / 2;
+
+  $lresult = swap_and_run($lower, $middle);
+  
+  if ($lresult == 1) {
+    debug_range($lower, $middle);
+  }
+    
+  $uresult = swap_and_run($middle+1, $upper);
+  
+  if ($uresult == 1) {
+    debug_range($middle+1, $upper);
+  }
+
+  if (!$lresult && !$uresult) {
+      print "<<< A BUG EXISTS IN [$lower,$upper] BUT I CAN'T FIND IT! >>>\n";
+      $warn_missed = 1;
+  }
+  
+  return 0;
+}
+
+############################################################################## 
+############################################################################## 
+# INITIALIZATION
+############################################################################## 
+############################################################################## 
+
+$usage = "Usage: $scriptname\n<benchmark_name> <good_dir>" . 
+  " <bad_dir> [-input input_name][-intrinsics][-timeout to]\n";
+
+print "> Starting Bindebug\n";
+
+$scriptname = $0;
+$input_name = "";
+
+chomp ($platform_dir = `read_platform_info -platform_dir`);
+chomp ($host_compiler = `read_platform_info -host_compiler`);
+
+print "> Platform directory: $platform_dir\n";
+print "> Host compiler: $host_compiler\n";
+
+$timeout = 60; # 10 second benchmark execution timeout
+
+$rel_path = $ENV{"IMPACT_REL_PATH"};
+
+$scriptname =~ s/\/.*\///;
+
+$procno = $$;
+
+$ex_dir = `pwd`;
+chomp($ex_dir);
+$benchname = shift @ARGV || die $usage;
+$good_dir = shift @ARGV || die $usage;
+$bad_dir = shift @ARGV || die $usage;
+$norc = 0;
+$linklibs = "-lm";
+$dstr = "";
+while ($arg = shift @ARGV) {
+  if ("$arg" eq "-input") {
+    $input_name = join " ", "-input", shift @ARGV || die $usage;
+  } elsif ("$arg" eq "-intrinsics") {
+    $linklibs = join " ", $linklibs, "-lintrinsics";
+    print "> Adding -lintrinsics to link command.\n";
+  } elsif ("$arg" eq "-timeout") {
+    $timeout = shift @ARGV || die $usage;
+    print "> Timeout set to $timeout seconds.\n";
+  } elsif ("$arg" eq "-dnr") {
+    $dnr = 1;
+    print "> Will not replace BAD files that test out GOOD.\n";
+  } elsif ("$arg" eq "-norc") {
+    $norc = 1;
+    print "> Will mark a.out for general speculation.\n";
+  } elsif ("$arg" eq "-ignore_exit") {
+    $ignxstat = 1;
+    print "> Will ignore non-zero exit status.\n";
+  } elsif ("$arg" eq "-c++") {
+    $cppmode = 1;
+    print "> Experimental c++ mode.\n";
+  } elsif ("$arg" eq "-debug") {
+    $dbgmode = 1;
+    $dstr = "-g";
+  } else {
+    die $usage;
+  }
+}
+
+if ($cppmode) {
+    $improot = $ENV{"IMPACT_ROOT"};
+    $linklibs = join " ", $linklibs, "-L/opt/gcc-3.2/lib/ -L${improot}/platform/ia64lin_gcc -lC";
+    $host_compiler = "g++";
+    $linklibs = join " ", $linklibs, "${improot}/platform/ia64lin_gcc/stub.o";
+}
+
+$test_dir = "$ex_dir/bindebug_test_dir~$procno";
+
+# Render directories absolute
+
+if ( $good_dir =~ /^[^\/]/ ) {
+  $good_dir = $ex_dir . "/" . $good_dir;
+}
+
+if ( $bad_dir =~ /^[^\/]/ ) {
+  $bad_dir = $ex_dir . "/" . $bad_dir;
+}
+
+# Check for directories
+
+if ( ! -d $good_dir) {
+  die "$scriptname: <good_dir> \"$good_dir\" does not exist.\n";
+}
+
+if ( ! -d $bad_dir) {
+  die "$scriptname: <bad_dir> \"$bad_dir\" does not exist.\n";
+}
+
+while ( -e $test_dir ) {
+  $test_dir = $test_dir . "X";
+}
+
+mkdir($test_dir, 0777);
+
+# Build file lists
+
+@file_list = ();
+
+while ( <$good_dir/*.o> ) {
+  s/$good_dir\///;
+  push(@file_list, $_);
+}
+
+@file_list = sort(@file_list);
+
+@bad_file_list = ();
+
+while ( <$bad_dir/*.o> ) {
+  s/$bad_dir\///;
+  push(@bad_file_list, $_);
+}
+
+@bad_file_list = sort(@bad_file_list);
+
+# Check that file lists match
+
+for ( $i = 0; $i <= $#file_list ; $i++ ) {
+  $good_root = $file_list[$1];
+  $good_root =~ s/\..*//;
+  $bad_root = $bad_file_list[$1];
+  $bad_root =~ s/\..*//;
+  
+  ( $good_root eq $bad_root ) ||
+    die "$scriptname: Files in good and bad dirs do not match.\n";	
+}
+
+( $#file_list eq $#bad_file_list ) ||
+  die "$scriptname: Files in good and bad dirs do not match.\n";	
+
+@failed_file_list = ();
+
+chdir $test_dir;
+
+for ( $i = 0; $i <= $#file_list ; $i++ ) {
+  symlink("$good_dir/$file_list[$i]","$file_list[$i]") ||
+    die "$scriptname: Initial symbolic links failed.\n";
+}
+
+#
+# Binary debug
+#
+
+chdir $test_dir;
+
+chomp ($link_post = `read_compile_info $benchname -linking_postoptions`);
+
+if ($link_post) {
+  $linklibs = join " ", $linklibs, $link_post;
+}
+
+$prefix_command = get_command("-prefix $input_name");
+$setup_command = get_command("-setup $input_name");
+$args_command = get_command("-args $input_name");
+$check_command = get_command("-check result.out stderr.out $input_name");
+$cleanup_command = get_command("-cleanup $input_name");
+
+print "$scriptname Commands (from read_exec_info)\n";
+print "-------------------------------------------------------------------------------\n";
+print "Setup  : $setup_command\n";
+print "Prefix : $prefix_command\n";
+print "Test   : $args_command)\n";
+print "Check  : $check_command\n";
+print "Cleanup: $cleanup_command\n";
+print "-------------------------------------------------------------------------------\n";
+
+print "Setting up...\n";
+
+print "Debugging ", $#file_list + 1, " files...\n";
+
+$result = swap_and_run(0, $#file_list);
+
+if ($result) {
+    debug_range(0, $#file_list);
+}
+
+print "Cleaning up...\n";
+
+cleanup();
+
+$num_bad = $#failed_file_list + 1;
+
+print "$num_bad bad file(s) found: ", join(",",@failed_file_list), "\n";
+
+if ($warn_missed) {
+    print "WARNING: Multi-file bug(s) detected.  Try -dnr\n";
+}
+
+print "Done.\n";
+
+__END__

@@ -1,0 +1,107 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	Generate execution time results and branch statistics.
+#       Runs Lstatic to produce IMPACT_001 file, then runs Sum to 
+#	to produce IMPACT_001.sum file.
+#
+#	Usage: gen_Lstatic directory arch model ["extra args"] < "list"
+# 	input files must contain profile information and "isc" attributes
+#
+#       Dan Lavery, Wen-mei Hwu
+
+if [ $# -eq 3 ]; then
+	PREFIX="$1";
+        ARCH="$2";
+        MODEL="$3";
+        EXTRA_ARGS="";
+elif [ $# -eq 4 ]; then
+        PREFIX="$1";
+        ARCH="$2";
+        MODEL="$3";
+        EXTRA_ARGS="$4";
+else
+        echo '> Usage gen_Lstatic "directory" "arch" "model" ["extra_args"] < "list"';
+        echo '>';
+        echo '> "directory" is location of input files';
+        echo '> "arch" is target architecture (e.g. sparc)';
+        echo '> "model" is target model (e.g. elc)';
+        echo '> "extra_args" are optional additional -P and -F arguments to pass';
+        echo ">       Put quotes around args, e.g. '-Fparm1=2 -Fparm2=3'";
+        echo '> "list" is list of Lcode files to process';
+        exit 0200;
+fi;
+
+echo "> Prefixing files with ${PREFIX}/";
+echo "> Compiling for : arch = ${ARCH} / model = ${MODEL}";
+echo "> Extra Lstatic arguments : ${EXTRA_ARGS}";
+
+rm -f IMPACT_001
+
+while read FILE;
+do
+	echo "> processing $PREFIX/$FILE"
+	Lstatic \
+                -Farch=${ARCH} \
+                -Fmodel=${MODEL} \
+                ${EXTRA_ARGS} \
+		-i ${PREFIX}/${FILE};
+
+	ERROR=$?;
+	if [ $ERROR -ne 0 ]; then
+	    echo "> Lstatic failed on input file: ${FILE}";
+	    echo "> error_code= ${ERROR}";
+	    exit 0200;
+	fi;
+done;
+
+echo "> Summing all files";
+Sum -i IMPACT_001 -o IMPACT_001.sum
+
+echo "> Done";

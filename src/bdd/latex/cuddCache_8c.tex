@@ -1,0 +1,361 @@
+\section{cudd\-Cache.c File Reference}
+\label{cuddCache_8c}\index{cuddCache.c@{cuddCache.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{cudd\-Init\-Cache} (\bf{Dd\-Manager} $\ast$unique, unsigned int cache\-Size, unsigned int max\-Cache\-Size)
+\item 
+void \bf{cudd\-Cache\-Insert} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{Dd\-Node} $\ast$data)
+\item 
+void \bf{cudd\-Cache\-Insert2} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$data)
+\item 
+void \bf{cudd\-Cache\-Insert1} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$data)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup\-Zdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup2} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup1} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup2Zdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Cache\-Lookup1Zdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Constant\-Lookup} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$($\ast$op)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+int \bf{cudd\-Cache\-Profile} (\bf{Dd\-Manager} $\ast$table, FILE $\ast$fp)
+\item 
+void \bf{cudd\-Cache\-Resize} (\bf{Dd\-Manager} $\ast$table)
+\item 
+void \bf{cudd\-Cache\-Flush} (\bf{Dd\-Manager} $\ast$table)
+\item 
+int \bf{cudd\-Compute\-Floor\-Log2} (unsigned int value)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Cache.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheFlush@{cuddCacheFlush}}
+\index{cuddCacheFlush@{cuddCacheFlush}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Cache\-Flush (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddCache_8c_3430a7b66708275953bffbdd8d04dba8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Flushes the cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 916 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cachedeletions, Dd\-Manager::cache\-Slots, and Dd\-Cache::data.
+
+Referenced by dd\-Reorder\-Preprocess(), and zdd\-Reorder\-Preprocess().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheInsert@{cuddCacheInsert}}
+\index{cuddCacheInsert@{cuddCacheInsert}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Cache\-Insert (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h}, \bf{Dd\-Node} $\ast$ {\em data})}\label{cuddCache_8c_b1cb6ed2b84632f81e8b3b8484e671cd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a result in the cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Insert2 cudd\-Cache\-Insert1] 
+
+Definition at line 181 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cachecollisions, Dd\-Manager::cacheinserts, Dd\-Manager::cache\-Shift, dd\-CHash, and entry.
+
+Referenced by add\-Bdd\-Do\-Interval(), Cudd\_\-add\-Ite\-Constant(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-Equiv\-DC(), cudd\-Add\-Compose\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), and cudd\-Zdd\-Ite().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheInsert1@{cuddCacheInsert1}}
+\index{cuddCacheInsert1@{cuddCacheInsert1}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Cache\-Insert1 (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em data})}\label{cuddCache_8c_59589b9e9501e448ca3683a63388d6df}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a result in the cache for a function with two operands.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Insert cudd\-Cache\-Insert2] 
+
+Definition at line 268 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cachecollisions, Dd\-Manager::cacheinserts, Dd\-Manager::cache\-Shift, dd\-CHash2, and entry.
+
+Referenced by add\-Bdd\-Do\-Pattern(), Cudd\_\-add\-Find\-Max(), Cudd\_\-add\-Find\-Min(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Negate\-Recur(), cudd\-Add\-Round\-Off\-Recur(), dd\-Bdd\-To\-Add\-Recur(), dd\-Find\-Essential\-Recur(), zdd\-Port\-From\-Bdd\-Step(), and zdd\-Port\-To\-Bdd\-Step().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheInsert2@{cuddCacheInsert2}}
+\index{cuddCacheInsert2@{cuddCacheInsert2}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Cache\-Insert2 (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em data})}\label{cuddCache_8c_9a0dea7043973f558e0d0bbb473a2163}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a result in the cache for a function with two operands.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Insert cudd\-Cache\-Insert1] 
+
+Definition at line 225 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cachecollisions, Dd\-Manager::cacheinserts, Dd\-Manager::cache\-Shift, dd\-CHash2, and entry.
+
+Referenced by add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), add\-Do\-Ith\-Bit(), add\-Triangle\-Recur(), Cudd\_\-add\-Eval\-Const(), Cudd\_\-add\-Leq(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Decreasing(), Cudd\_\-Equal\-Sup\-Norm(), Cudd\_\-zdd\-Diff\-Const(), cudd\-Add\-Apply\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Add\-Or\-Abstract\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Scalar\-Inverse\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Xor\-Recur(), cudd\-Cofactor\-Recur(), cudd\-CProjection\-Recur(), cudd\-Zdd\-Change\-Aux(), cudd\-Zdd\-Diff(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Intersect(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Union(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), zdd\_\-subset0\_\-aux(), and zdd\_\-subset1\_\-aux().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookup@{cuddCacheLookup}}
+\index{cuddCacheLookup@{cuddCacheLookup}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddCache_8c_e866a3a62976d087e1bd1d0989a6096d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f, g, and h.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup2 cudd\-Cache\-Lookup1] 
+
+Definition at line 311 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim(), Dd\-Cache::data, dd\-CHash, Dd\-Cache::f, Dd\-Cache::g, Dd\-Cache::h, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by add\-Bdd\-Do\-Interval(), Cudd\_\-Equiv\-DC(), cudd\-Add\-Compose\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Add\-Non\-Sim\-Compose\-Recur(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Ite\-Recur(), and cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookup1@{cuddCacheLookup1}}
+\index{cuddCacheLookup1@{cuddCacheLookup1}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup1 (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddCache_8c_b754ef1119afbb120e7bc57f863f0b2e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup cudd\-Cache\-Lookup2] 
+
+Definition at line 477 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim(), Dd\-Cache::data, dd\-CHash2, Dd\-Cache::f, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by add\-Bdd\-Do\-Pattern(), Cudd\_\-add\-Find\-Max(), Cudd\_\-add\-Find\-Min(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Negate\-Recur(), cudd\-Add\-Round\-Off\-Recur(), dd\-Bdd\-To\-Add\-Recur(), dd\-Find\-Essential\-Recur(), and zdd\-Port\-To\-Bdd\-Step().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookup1Zdd@{cuddCacheLookup1Zdd}}
+\index{cuddCacheLookup1Zdd@{cuddCacheLookup1Zdd}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup1Zdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddCache_8c_29fa5b8b501a5648c3b8a6340d8ec0ed}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup\-Zdd cudd\-Cache\-Lookup2Zdd] 
+
+Definition at line 585 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim\-Zdd(), Dd\-Cache::data, dd\-CHash2, Dd\-Cache::f, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by zdd\-Port\-From\-Bdd\-Step().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookup2@{cuddCacheLookup2}}
+\index{cuddCacheLookup2@{cuddCacheLookup2}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup2 (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddCache_8c_2db1ee9c4d273f23a89e8724360e293f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f and g.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup cudd\-Cache\-Lookup1] 
+
+Definition at line 423 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim(), Dd\-Cache::data, dd\-CHash2, Dd\-Cache::f, Dd\-Cache::g, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), add\-Do\-Ith\-Bit(), add\-Triangle\-Recur(), Cudd\_\-add\-Leq(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Decreasing(), Cudd\_\-Equal\-Sup\-Norm(), cudd\-Add\-Apply\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Add\-Or\-Abstract\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Scalar\-Inverse\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Xor\-Recur(), cudd\-Cofactor\-Recur(), cudd\-CProjection\-Recur(), and cudd\-Zdd\-Isop().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookup2Zdd@{cuddCacheLookup2Zdd}}
+\index{cuddCacheLookup2Zdd@{cuddCacheLookup2Zdd}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup2Zdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddCache_8c_7d19a8bc23db5c171c663d77ad776872}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f and g.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup\-Zdd cudd\-Cache\-Lookup1Zdd] 
+
+Definition at line 531 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim\-Zdd(), Dd\-Cache::data, dd\-CHash2, Dd\-Cache::f, Dd\-Cache::g, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-zdd\-Diff\-Const(), cudd\-Zdd\-Change\-Aux(), cudd\-Zdd\-Diff(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Intersect(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Union(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), zdd\_\-subset0\_\-aux(), and zdd\_\-subset1\_\-aux().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheLookupZdd@{cuddCacheLookupZdd}}
+\index{cuddCacheLookupZdd@{cuddCacheLookupZdd}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Cache\-Lookup\-Zdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddCache_8c_f052476456d886d7007ac5651a9db5e4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f, g, and h.]
+
+Description [Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup2Zdd cudd\-Cache\-Lookup1Zdd] 
+
+Definition at line 367 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, cudd\-Cache\-Resize(), cudd\-Reclaim\-Zdd(), Dd\-Cache::data, dd\-CHash, Dd\-Cache::f, Dd\-Cache::g, Dd\-Cache::h, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, Dd\-Cache::op, and Dd\-Node::ref.
+
+Referenced by cudd\-Zdd\-Ite().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheProfile@{cuddCacheProfile}}
+\index{cuddCacheProfile@{cuddCacheProfile}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Cache\-Profile (\bf{Dd\-Manager} $\ast$ {\em table}, FILE $\ast$ {\em fp})}\label{cuddCache_8c_fb729dfe4ad40c46ab9918154831e4a1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes and prints a profile of the cache usage.]
+
+Description [Computes and prints a profile of the cache usage. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 696 of file cudd\-Cache.c.
+
+References ALLOC, Dd\-Manager::cache, Dd\-Manager::cache\-Slots, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, and max.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddCache.c@{cudd\-Cache.c}!cuddCacheResize@{cuddCacheResize}}
+\index{cuddCacheResize@{cuddCacheResize}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Cache\-Resize (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddCache_8c_71fcb8b02eb9a10d706301052525bcfa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resizes the cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 823 of file cudd\-Cache.c.
+
+References ALLOC, Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, Cudd\_\-Out\-Of\-Mem(), Dd\-Cache::data, dd\-CHash, dd\-CHash2, entry, Dd\-Cache::f, Dd\-Cache::g, Dd\-Cache::h, Dd\-Manager::max\-Cache, Dd\-Manager::max\-Cache\-Hard, Dd\-Manager::memused, MMout\-Of\-Memory, and Dd\-Cache::op.
+
+Referenced by cudd\-Cache\-Lookup(), cudd\-Cache\-Lookup1(), cudd\-Cache\-Lookup1Zdd(), cudd\-Cache\-Lookup2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Cache\-Lookup\-Zdd(), cudd\-Constant\-Lookup(), and dd\-Fix\-Limits().\index{cuddCache.c@{cudd\-Cache.c}!cuddComputeFloorLog2@{cuddComputeFloorLog2}}
+\index{cuddComputeFloorLog2@{cuddComputeFloorLog2}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Compute\-Floor\-Log2 (unsigned int {\em value})}\label{cuddCache_8c_c0c1936c2994972303a3a2696d9bdf39}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the floor of the logarithm to the base 2.]
+
+Description [Returns the floor of the logarithm to the base 2. The input value is assumed to be greater than 0.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 947 of file cudd\-Cache.c.
+
+References assert.
+
+Referenced by cudd\-Hash\-Table\-Init(), cudd\-Init\-Cache(), cudd\-Init\-Table(), cudd\-Insert\-Subtables(), cudd\-Level\-Queue\-Init(), cudd\-Local\-Cache\-Init(), cudd\-Resize\-Table\-Zdd(), and dd\-Resize\-Table().\index{cuddCache.c@{cudd\-Cache.c}!cuddConstantLookup@{cuddConstantLookup}}
+\index{cuddConstantLookup@{cuddConstantLookup}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Constant\-Lookup (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$, \bf{Dd\-Node} $\ast$) {\em op}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddCache_8c_d17ded80e6890bce174aed70cee380b8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in the cache for the result of op applied to f, g, and h.]
+
+Description [Looks up in the cache for the result of op applied to f, g, and h. Assumes that the calling procedure (e.g., Cudd\_\-bdd\-Ite\-Constant) is only interested in whether the result is constant or not. Returns the result if found (possibly DD\_\-NON\_\-CONSTANT); otherwise it returns NULL.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Cache\-Lookup] 
+
+Definition at line 642 of file cudd\-Cache.c.
+
+References Dd\-Manager::cache, Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, cudd\-Cache\-Resize(), Dd\-Cache::data, dd\-CHash, Dd\-Cache::f, Dd\-Cache::g, Dd\-Cache::h, Dd\-Manager::max\-Cache, Dd\-Manager::min\-Hit, and Dd\-Cache::op.
+
+Referenced by Cudd\_\-add\-Eval\-Const(), Cudd\_\-add\-Ite\-Constant(), and Cudd\_\-bdd\-Ite\-Constant().\index{cuddCache.c@{cudd\-Cache.c}!cuddInitCache@{cuddInitCache}}
+\index{cuddInitCache@{cuddInitCache}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Init\-Cache (\bf{Dd\-Manager} $\ast$ {\em unique}, unsigned int {\em cache\-Size}, unsigned int {\em max\-Cache\-Size})}\label{cuddCache_8c_c9f3d4ce5f9ac0f4fcd8f96587e13227}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes the computed table.]
+
+Description [Initializes the computed table. It is called by Cudd\_\-Init. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Init] 
+
+Definition at line 111 of file cudd\-Cache.c.
+
+References ALLOC, Dd\-Manager::cache, Dd\-Manager::cachecollisions, Dd\-Manager::cachedeletions, Dd\-Manager::cache\-Hits, Dd\-Manager::cacheinserts, Dd\-Manager::cache\-Misses, Dd\-Manager::cache\-Shift, Dd\-Manager::cache\-Slots, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Set\-Min\-Hit(), cudd\-Compute\-Floor\-Log2(), Dd\-Cache::data, DD\_\-MIN\_\-HIT, dd\-Max, dd\-Min, Dd\-Manager::error\-Code, Dd\-Manager::max\-Cache, Dd\-Manager::max\-Cache\-Hard, memset(), Dd\-Manager::memused, Dd\-Manager::min\-Cache, Dd\-Manager::min\-Hit, Dd\-Manager::slots, Dd\-Manager::tot\-Cachehits, and Dd\-Manager::tot\-Cache\-Misses.
+
+Referenced by Cudd\_\-Init().
+
+\subsection{Variable Documentation}
+\index{cuddCache.c@{cudd\-Cache.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddCache.c@{cudd\-Cache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Cache.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddCache_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Cache.c}{p.}{cuddCache_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for cache insertion and lookup.]
+
+Description [Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Init\-Cache()}{p.}{cuddCache_8c_c9f3d4ce5f9ac0f4fcd8f96587e13227} \item \doxyref{cudd\-Cache\-Insert()}{p.}{cuddCache_8c_b1cb6ed2b84632f81e8b3b8484e671cd} \item \doxyref{cudd\-Cache\-Insert2()}{p.}{cuddCache_8c_9a0dea7043973f558e0d0bbb473a2163} \item \doxyref{cudd\-Cache\-Lookup()}{p.}{cuddCache_8c_e866a3a62976d087e1bd1d0989a6096d} \item \doxyref{cudd\-Cache\-Lookup\-Zdd()}{p.}{cuddCache_8c_f052476456d886d7007ac5651a9db5e4} \item \doxyref{cudd\-Cache\-Lookup2()}{p.}{cuddCache_8c_2db1ee9c4d273f23a89e8724360e293f} \item \doxyref{cudd\-Cache\-Lookup2Zdd()}{p.}{cuddCache_8c_7d19a8bc23db5c171c663d77ad776872} \item \doxyref{cudd\-Constant\-Lookup()}{p.}{cuddCache_8c_d17ded80e6890bce174aed70cee380b8} \item \doxyref{cudd\-Cache\-Profile()}{p.}{cuddCache_8c_fb729dfe4ad40c46ab9918154831e4a1} \item \doxyref{cudd\-Cache\-Resize()}{p.}{cuddCache_8c_71fcb8b02eb9a10d706301052525bcfa} \item \doxyref{cudd\-Cache\-Flush()}{p.}{cuddCache_8c_3430a7b66708275953bffbdd8d04dba8} \item \doxyref{cudd\-Compute\-Floor\-Log2()}{p.}{cuddCache_8c_c0c1936c2994972303a3a2696d9bdf39} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 69 of file cudd\-Cache.c.

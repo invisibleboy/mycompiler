@@ -1,0 +1,1787 @@
+\section{cudd.h File Reference}
+\label{cudd_8h}\index{cudd.h@{cudd.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/mtr.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Dd\-Children}
+\item 
+struct \bf{Dd\-Node}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CUDD\_\-VERSION}~\char`\"{}2.2.0\char`\"{}
+\item 
+\#define \bf{TRUE}~1
+\item 
+\#define \bf{FALSE}~0
+\item 
+\#define \bf{CUDD\_\-VALUE\_\-TYPE}~double
+\item 
+\#define \bf{CUDD\_\-OUT\_\-OF\_\-MEM}~-1L
+\item 
+\#define \bf{CUDD\_\-UNIQUE\_\-SLOTS}~512
+\item 
+\#define \bf{CUDD\_\-CACHE\_\-SLOTS}~262144
+\item 
+\#define \bf{CUDD\_\-RESIDUE\_\-DEFAULT}~0
+\item 
+\#define \bf{CUDD\_\-RESIDUE\_\-MSB}~1
+\item 
+\#define \bf{CUDD\_\-RESIDUE\_\-TC}~2
+\item 
+\#define \bf{CUDD\_\-MAXINDEX}~((\bf{Dd\-Half\-Word}) $\sim$0)
+\item 
+\#define \bf{DD\_\-APA\_\-BITS}~16
+\item 
+\#define \bf{DD\_\-APA\_\-BASE}~(1 $<$$<$ DD\_\-APA\_\-BITS)
+\item 
+\#define \bf{DD\_\-APA\_\-MASK}~(DD\_\-APA\_\-BASE - 1)
+\item 
+\#define \bf{DD\_\-APA\_\-HEXPRINT}~\char`\"{}\%04x\char`\"{}
+\item 
+\#define \bf{Cudd\_\-Is\-Constant}(node)~((Cudd\_\-Regular(node)) $\rightarrow$ index == CUDD\_\-MAXINDEX)
+\item 
+\#define \bf{Cudd\_\-Not}(node)~((\bf{Dd\-Node} $\ast$)((long)(node) $^\wedge$ 01))
+\item 
+\#define \bf{Cudd\_\-Not\-Cond}(node, c)~((\bf{Dd\-Node} $\ast$)((long)(node) $^\wedge$ (c)))
+\item 
+\#define \bf{Cudd\_\-Regular}(node)~((\bf{Dd\-Node} $\ast$)((unsigned long)(node) \& $\sim$01))
+\item 
+\#define \bf{Cudd\_\-Complement}(node)~((\bf{Dd\-Node} $\ast$)((unsigned long)(node) $|$ 01))
+\item 
+\#define \bf{Cudd\_\-Is\-Complement}(node)~((int) ((long) (node) \& 01))
+\item 
+\#define \bf{Cudd\_\-T}(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.kids.T)
+\item 
+\#define \bf{Cudd\_\-E}(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.kids.E)
+\item 
+\#define \bf{Cudd\_\-V}(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.value)
+\item 
+\#define \bf{Cudd\_\-Read\-Index}(dd, index)~(Cudd\_\-Read\-Perm(dd,index))
+\item 
+\#define \bf{Cudd\_\-Foreach\-Cube}(manager, f, gen, cube, value)
+\item 
+\#define \bf{Cudd\_\-Foreach\-Node}(manager, f, gen, node)
+\item 
+\#define \bf{EXTERN}~extern
+\item 
+\#define \bf{ARGS}(protos)~()
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef unsigned short \bf{Dd\-Half\-Word}
+\item 
+typedef \bf{Dd\-Node} \bf{Dd\-Node}
+\item 
+typedef \bf{Dd\-Manager} \bf{Dd\-Manager}
+\item 
+typedef \bf{Dd\-Gen} \bf{Dd\-Gen}
+\item 
+typedef unsigned short int \bf{Dd\-Apa\-Digit}
+\item 
+typedef unsigned long int \bf{Dd\-Apa\-Double\-Digit}
+\item 
+typedef \bf{Dd\-Apa\-Digit} $\ast$ \bf{Dd\-Apa\-Number}
+\end{CompactItemize}
+\subsection*{Enumerations}
+\begin{CompactItemize}
+\item 
+enum \bf{Cudd\_\-Reordering\-Type} \{ \par
+\bf{CUDD\_\-REORDER\_\-SAME}, 
+\bf{CUDD\_\-REORDER\_\-NONE}, 
+\bf{CUDD\_\-REORDER\_\-RANDOM}, 
+\bf{CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT}, 
+\par
+\bf{CUDD\_\-REORDER\_\-SIFT}, 
+\bf{CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE}, 
+\bf{CUDD\_\-REORDER\_\-SYMM\_\-SIFT}, 
+\bf{CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV}, 
+\par
+\bf{CUDD\_\-REORDER\_\-WINDOW2}, 
+\bf{CUDD\_\-REORDER\_\-WINDOW3}, 
+\bf{CUDD\_\-REORDER\_\-WINDOW4}, 
+\bf{CUDD\_\-REORDER\_\-WINDOW2\_\-CONV}, 
+\par
+\bf{CUDD\_\-REORDER\_\-WINDOW3\_\-CONV}, 
+\bf{CUDD\_\-REORDER\_\-WINDOW4\_\-CONV}, 
+\bf{CUDD\_\-REORDER\_\-GROUP\_\-SIFT}, 
+\bf{CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV}, 
+\par
+\bf{CUDD\_\-REORDER\_\-ANNEALING}, 
+\bf{CUDD\_\-REORDER\_\-GENETIC}, 
+\bf{CUDD\_\-REORDER\_\-LINEAR}, 
+\bf{CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE}, 
+\par
+\bf{CUDD\_\-REORDER\_\-EXACT}
+ \}
+\item 
+enum \bf{Cudd\_\-Aggregation\-Type} \{ \par
+\bf{CUDD\_\-NO\_\-CHECK}, 
+\bf{CUDD\_\-GROUP\_\-CHECK}, 
+\bf{CUDD\_\-GROUP\_\-CHECK2}, 
+\bf{CUDD\_\-GROUP\_\-CHECK3}, 
+\par
+\bf{CUDD\_\-GROUP\_\-CHECK4}, 
+\bf{CUDD\_\-GROUP\_\-CHECK5}, 
+\bf{CUDD\_\-GROUP\_\-CHECK6}, 
+\bf{CUDD\_\-GROUP\_\-CHECK7}, 
+\par
+\bf{CUDD\_\-GROUP\_\-CHECK8}, 
+\bf{CUDD\_\-GROUP\_\-CHECK9}
+ \}
+\item 
+enum \bf{Cudd\_\-Hook\-Type} \{ \bf{CUDD\_\-PRE\_\-GC\_\-HOOK}, 
+\bf{CUDD\_\-POST\_\-GC\_\-HOOK}, 
+\bf{CUDD\_\-PRE\_\-REORDERING\_\-HOOK}, 
+\bf{CUDD\_\-POST\_\-REORDERING\_\-HOOK}
+ \}
+\item 
+enum \bf{Cudd\_\-Error\-Type} \{ \bf{CUDD\_\-NO\_\-ERROR}, 
+\bf{CUDD\_\-MEMORY\_\-OUT}, 
+\bf{CUDD\_\-INTERNAL\_\-ERROR}
+ \}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-New\-Var \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-New\-Var\-At\-Level \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int level))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Ith\-Var \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int i))
+\item 
+EXTERN int Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int multiplicity))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Const \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE c))
+\item 
+EXTERN void Cudd\_\-Autodyn\-Enable \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} method))
+\item 
+EXTERN void Cudd\_\-Autodyn\-Disable \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique))
+\item 
+EXTERN int Cudd\_\-Reordering\-Status \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} $\ast$method))
+\item 
+EXTERN void Cudd\_\-Set\-Background \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$bck))
+\item 
+EXTERN void Cudd\_\-Set\-Min\-Hit \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, unsigned int hr))
+\item 
+EXTERN void Cudd\_\-Set\-Loose\-Up\-To \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, unsigned int lut))
+\item 
+EXTERN void Cudd\_\-Set\-Max\-Cache \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, unsigned int mc))
+\item 
+EXTERN void Cudd\_\-Set\-Sift\-Max\-Var \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int smv))
+\item 
+EXTERN void Cudd\_\-Set\-Sift\-Max\-Swap \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int sms))
+\item 
+EXTERN void Cudd\_\-Set\-Max\-Growth \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, double mg))
+\item 
+EXTERN void Cudd\_\-Set\-Tree \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$tree))
+\item 
+EXTERN unsigned int Cudd\_\-Node\-Read\-Index \bf{ARGS} ((\bf{Dd\-Node} $\ast$node))
+\item 
+EXTERN void Cudd\_\-Set\-Epsilon \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE ep))
+\item 
+EXTERN void Cudd\_\-Set\-Groupcheck \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Cudd\_\-Aggregation\-Type} gc))
+\item 
+EXTERN void Cudd\_\-Set\-Recomb \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int recomb))
+\item 
+EXTERN void Cudd\_\-Set\-Symmviolation \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int symmviolation))
+\item 
+EXTERN void Cudd\_\-Set\-Arcviolation \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int arcviolation))
+\item 
+EXTERN void Cudd\_\-Set\-Population\-Size \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int population\-Size))
+\item 
+EXTERN void Cudd\_\-Set\-Number\-Xovers \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int number\-Xovers))
+\item 
+EXTERN int Cudd\_\-Print\-Info \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, FILE $\ast$fp))
+\item 
+EXTERN int Cudd\_\-Add\-Hook \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int($\ast$f)(\bf{Dd\-Manager} $\ast$, void $\ast$), \bf{Cudd\_\-Hook\-Type} where))
+\item 
+EXTERN int Cudd\_\-Std\-Pre\-Reord\-Hook \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, void $\ast$data))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Exist\-Abstract \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$cube))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Apply \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Plus \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$f, \bf{Dd\-Node} $\ast$$\ast$g))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Find\-Max \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Ith\-Bit \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int bit))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Scalar\-Inverse \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$epsilon))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Ite \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Eval\-Const \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Round\-Off \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int N))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Walsh \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Residue \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int n, int m, int options, int top))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-And\-Abstract \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$cube))
+\item 
+EXTERN int Cudd\_\-Apa\-Number\-Of\-Digits \bf{ARGS} ((int binary\-Digits))
+\item 
+EXTERN \bf{Dd\-Apa\-Number} Cudd\_\-New\-Apa\-Number \bf{ARGS} ((int digits))
+\item 
+EXTERN void Cudd\_\-Apa\-Copy \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} source, \bf{Dd\-Apa\-Number} dest))
+\item 
+EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Add \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} sum))
+\item 
+EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Subtract \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} diff))
+\item 
+EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Short\-Division \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} dividend, \bf{Dd\-Apa\-Digit} divisor, \bf{Dd\-Apa\-Number} quotient))
+\item 
+EXTERN unsigned int Cudd\_\-Apa\-Int\-Division \bf{ARGS} ((intdigits, \bf{Dd\-Apa\-Number} dividend, unsigned intdivisor, Dd\-Apa\-Numberquotient))
+\item 
+EXTERN void Cudd\_\-Apa\-Shift\-Right \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Digit} in, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b))
+\item 
+EXTERN void Cudd\_\-Apa\-Set\-To\-Literal \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} number, \bf{Dd\-Apa\-Digit} literal))
+\item 
+EXTERN void Cudd\_\-Apa\-Power\-Of\-Two \bf{ARGS} ((int digits, \bf{Dd\-Apa\-Number} number, int power))
+\item 
+EXTERN int Cudd\_\-Apa\-Compare \bf{ARGS} ((int digits\-First, Dd\-Apa\-Numberfirst, int digits\-Second, Dd\-Apa\-Numbersecond))
+\item 
+EXTERN int Cudd\_\-Apa\-Compare\-Ratios \bf{ARGS} ((int digits\-First, \bf{Dd\-Apa\-Number} first\-Num, unsigned int first\-Den, int digits\-Second, \bf{Dd\-Apa\-Number} second\-Num, unsigned int second\-Den))
+\item 
+EXTERN int Cudd\_\-Apa\-Print\-Hex \bf{ARGS} ((FILE $\ast$fp, int digits, \bf{Dd\-Apa\-Number} number))
+\item 
+EXTERN int Cudd\_\-Apa\-Print\-Exponential \bf{ARGS} ((FILE $\ast$fp, intdigits, Dd\-Apa\-Numbernumber, int precision))
+\item 
+EXTERN \bf{Dd\-Apa\-Number} Cudd\_\-Apa\-Count\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars, int $\ast$digits))
+\item 
+EXTERN int Cudd\_\-Apa\-Print\-Minterm \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars))
+\item 
+EXTERN int Cudd\_\-Apa\-Print\-Minterm\-Exp \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, intnvars, int precision))
+\item 
+EXTERN int Cudd\_\-Apa\-Print\-Density \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, intnvars))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Under\-Approx \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int safe, double quality))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Remap\-Under\-Approx \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, double quality))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Boolean\-Diff \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int x))
+\item 
+EXTERN int Cudd\_\-bdd\-Var\-Is\-Dependent \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$var))
+\item 
+EXTERN double Cudd\_\-bdd\-Correlation \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))
+\item 
+EXTERN double Cudd\_\-bdd\-Correlation\-Weights \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Bdd\-Threshold \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE value))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Bdd\-Interval \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE lower, CUDD\_\-VALUE\_\-TYPE upper))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Bdd\-To\-Add \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Transfer \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd\-Source, \bf{Dd\-Manager} $\ast$dd\-Destination, \bf{Dd\-Node} $\ast$f))
+\item 
+EXTERN int Cudd\_\-Debug\-Check \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Clipping\-And \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int max\-Depth, int direction))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Clipping\-And\-Abstract \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$cube, int max\-Depth, int direction))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Compose \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int v))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Permute \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int $\ast$permut))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Swap\-Variables \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Adj\-Permute\-X \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$x, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Vector\-Compose \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector))
+\item 
+EXTERN int Cudd\_\-bdd\-Approx\-Conj\-Decomp \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts))
+\item 
+EXTERN int Cudd\_\-bdd\-Approx\-Disj\-Decomp \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts))
+\item 
+EXTERN int Cudd\_\-bdd\-Is\-Var\-Essential \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int id, int phase))
+\item 
+EXTERN int Cudd\_\-Dump\-Blif \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int n, \bf{Dd\-Node} $\ast$$\ast$f, char $\ast$$\ast$inames, char $\ast$$\ast$onames, char $\ast$mname, FILE $\ast$fp))
+\item 
+EXTERN int Cudd\_\-Dump\-Dot \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int n, \bf{Dd\-Node} $\ast$$\ast$f, char $\ast$$\ast$inames, char $\ast$$\ast$onames, FILE $\ast$fp))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Constrain \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Squeeze \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Subset\-Compress \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars, int threshold))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Cudd\_\-Make\-Tree\-Node \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, unsigned int low, unsigned int \bf{size}, unsigned int type))
+\item 
+EXTERN int Cudd\_\-add\-Harwell \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$$\ast$xn, \bf{Dd\-Node} $\ast$$\ast$$\ast$yn\_\-, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy, int pr))
+\item 
+EXTERN \bf{Dd\-Manager} $\ast$Cudd\_\-Init \bf{ARGS} ((unsigned int num\-Vars, unsigned int num\-Vars\-Z, unsigned int num\-Slots, unsigned int cache\-Size, unsigned long max\-Memory))
+\item 
+EXTERN int Cudd\_\-Read\-Linear \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Matrix\-Multiply \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$z, int nz))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Triangle \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$z, int nz))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Priority\-Select \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$R, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$z, \bf{Dd\-Node} $\ast$Pi, int n, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, int, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$)))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Xgty \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$z, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Xeqy \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Dxygtdxz \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$z))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-CProjection \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$R, \bf{Dd\-Node} $\ast$Y))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Hamming \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x\-Vars, \bf{Dd\-Node} $\ast$$\ast$y\-Vars, int n\-Vars))
+\item 
+EXTERN int Cudd\_\-add\-Read \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$$\ast$xn, \bf{Dd\-Node} $\ast$$\ast$$\ast$yn\_\-, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy))
+\item 
+EXTERN int Cudd\_\-bdd\-Read \bf{ARGS} ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy))
+\item 
+EXTERN void Cudd\_\-Ref \bf{ARGS} ((\bf{Dd\-Node} $\ast$n))
+\item 
+EXTERN void Cudd\_\-Recursive\-Deref \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n))
+\item 
+EXTERN int Cudd\_\-Check\-Zero\-Ref \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager))
+\item 
+EXTERN int Cudd\_\-Reduce\-Heap \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Cudd\_\-Reordering\-Type} heuristic, int minsize))
+\item 
+EXTERN int Cudd\_\-Shuffle\-Heap \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int $\ast$permutation))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Eval \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$inputs))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Shortest\-Path \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int $\ast$support, int $\ast$length))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Largest\-Cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$length))
+\item 
+EXTERN int Cudd\_\-Shortest\-Length \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Decreasing \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int i))
+\item 
+EXTERN int Cudd\_\-Equiv\-DC \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$G, \bf{Dd\-Node} $\ast$D))
+\item 
+EXTERN int Cudd\_\-Equal\-Sup\-Norm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, CUDD\_\-VALUE\_\-TYPE tolerance, int pr))
+\item 
+EXTERN double $\ast$Cudd\_\-Cof\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Solve\-Eqn \bf{ARGS} ((\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$Y, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$$\ast$y\-Index, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Verify\-Sol \bf{ARGS} ((\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$y\-Index, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Split\-Set \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$S, \bf{Dd\-Node} $\ast$$\ast$x\-Vars, int n, double m))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Subset\-Heavy\-Branch \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Subset\-Short\-Paths \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int hardlimit))
+\item 
+EXTERN void Cudd\_\-Symm\-Profile \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))
+\item 
+EXTERN unsigned int Cudd\_\-Prime \bf{ARGS} ((unsigned int p))
+\item 
+EXTERN int Cudd\_\-Print\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node))
+\item 
+EXTERN int Cudd\_\-Print\-Debug \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int n, int pr))
+\item 
+EXTERN int Cudd\_\-Estimate\-Cofactor \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int i, int phase))
+\item 
+EXTERN int Cudd\_\-Estimate\-Cofactor\-Simple \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, int i))
+\item 
+EXTERN int Cudd\_\-Sharing\-Size \bf{ARGS} ((\bf{Dd\-Node} $\ast$$\ast$node\-Array, int n))
+\item 
+EXTERN double Cudd\_\-Count\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Vector\-Support \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$F, int n))
+\item 
+EXTERN int Cudd\_\-Classify\-Support \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$common, \bf{Dd\-Node} $\ast$$\ast$only\-F, \bf{Dd\-Node} $\ast$$\ast$only\-G))
+\item 
+EXTERN int Cudd\_\-bdd\-Pick\-One\-Cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$ddm, \bf{Dd\-Node} $\ast$node, char $\ast$string))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Pick\-One\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$$\ast$Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n, int k))
+\item 
+EXTERN \bf{Dd\-Gen} $\ast$Cudd\_\-First\-Cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value))
+\item 
+EXTERN int Cudd\_\-Next\-Cube \bf{ARGS} ((\bf{Dd\-Gen} $\ast$gen, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Compute\-Cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$vars, int $\ast$phase, int n))
+\item 
+EXTERN \bf{Dd\-Gen} $\ast$Cudd\_\-First\-Node \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$node))
+\item 
+EXTERN int Cudd\_\-Next\-Node \bf{ARGS} ((\bf{Dd\-Gen} $\ast$gen, \bf{Dd\-Node} $\ast$$\ast$node))
+\item 
+EXTERN int Cudd\_\-Gen\-Free \bf{ARGS} ((\bf{Dd\-Gen} $\ast$gen))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Indices\-To\-Cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, int $\ast$array, int n))
+\item 
+EXTERN void Cudd\_\-Print\-Version \bf{ARGS} ((FILE $\ast$fp))
+\item 
+EXTERN long Cudd\_\-Random \bf{ARGS} (())
+\item 
+EXTERN void Cudd\_\-Srandom \bf{ARGS} ((long seed))
+\item 
+EXTERN double Cudd\_\-Density \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars))
+\item 
+EXTERN void Cudd\_\-Out\-Of\-Mem \bf{ARGS} ((long \bf{size}))
+\item 
+EXTERN int Cudd\_\-zdd\-Count \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Isop \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U, \bf{Dd\-Node} $\ast$$\ast$zdd\_\-I))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Isop \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U))
+\item 
+EXTERN int Cudd\_\-zdd\-Dag\-Size \bf{ARGS} ((\bf{Dd\-Node} $\ast$p\_\-node))
+\item 
+EXTERN double Cudd\_\-zdd\-Count\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$node, int path))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Union \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Diff\-Const \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q))
+\item 
+EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Subset1 \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var))
+\item 
+EXTERN int Cudd\_\-zdd\-Print\-Minterm \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$node))
+\item 
+EXTERN int Cudd\_\-zdd\-Print\-Debug \bf{ARGS} ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$f, int n, int pr))
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ARGS(protos)~()}\label{cudd_8h_c567d4fddb379109f084370bc6947492}
+
+
+
+
+Definition at line 482 of file cudd.h.
+
+Referenced by util\_\-tilde\_\-expand().\index{cudd.h@{cudd.h}!CUDD_CACHE_SLOTS@{CUDD\_\-CACHE\_\-SLOTS}}
+\index{CUDD_CACHE_SLOTS@{CUDD\_\-CACHE\_\-SLOTS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-CACHE\_\-SLOTS~262144}\label{cudd_8h_e43ddb042121362b558a2ff66dd829ed}
+
+
+
+
+Definition at line 78 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_Complement@{Cudd\_\-Complement}}
+\index{Cudd_Complement@{Cudd\_\-Complement}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Complement(node)~((\bf{Dd\-Node} $\ast$)((unsigned long)(node) $|$ 01))}\label{cudd_8h_c4575f4314998362765264f64eccfe0c}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the complemented version of a pointer.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Regular Cudd\_\-Is\-Complement] 
+
+Definition at line 322 of file cudd.h.
+
+Referenced by dd\-Count\-Roots(), and dd\-Supp\-Interact().\index{cudd.h@{cudd.h}!Cudd_E@{Cudd\_\-E}}
+\index{Cudd_E@{Cudd\_\-E}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-E(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.kids.E)}\label{cudd_8h_059685e0a91bd532250b1d841eeaabc1}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the else child of an internal node.]
+
+Description [Returns the else child of an internal node. If {\tt node} is a constant node, the result is unpredictable.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-T Cudd\_\-V] 
+
+Definition at line 366 of file cudd.h.
+
+Referenced by Build\-Subset\-Bdd(), Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-zdd\-Print\-Subtable(), cudd\-Bdd\-Isop(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), cudd\-Zdd\-Dag\-Int(), cudd\-Zdd\-Isop(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), and Subset\-Count\-Nodes\-Aux().\index{cudd.h@{cudd.h}!Cudd_ForeachCube@{Cudd\_\-ForeachCube}}
+\index{Cudd_ForeachCube@{Cudd\_\-ForeachCube}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Foreach\-Cube(manager, f, gen, cube, value)}\label{cudd_8h_f13069593b0d4de4d16493b956de38a6}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}for((gen) = Cudd_FirstCube(manager, f, &cube, &value);\
+        Cudd_IsGenEmpty(gen) ? Cudd_GenFree(gen) : TRUE;\
+        (void) Cudd_NextCube(gen, &cube, &value))
+\end{verbatim}\end{Code}
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Iterates over the cubes of a decision diagram.]
+
+Description [Iterates over the cubes of a decision diagram f. \begin{itemize}
+\item \doxyref{Dd\-Manager}{p.}{structDdManager} $\ast$manager; \item \doxyref{Dd\-Node}{p.}{structDdNode} $\ast$f; \item \doxyref{Dd\-Gen}{p.}{structDdGen} $\ast$gen; \item int $\ast$$\ast$cube; \item CUDD\_\-VALUE\_\-TYPE $\ast$value; \end{itemize}
+Cudd\_\-Foreach\-Cube allocates and frees the generator. Therefore the application should not try to do that. Also, the cube is freed at the end of Cudd\_\-Foreach\-Cube and hence is not available outside of the loop.
+
+CAUTION: It is assumed that dynamic reordering will not occur while there are open generators. It is the user's responsibility to make sure that dynamic reordering does not occur. As long as new nodes are not created during generation, and dynamic reordering is not called explicitly, dynamic reordering will not occur. Alternatively, it is sufficient to disable dynamic reordering. It is a mistake to dispose of a diagram on which generation is ongoing.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Foreach\-Node Cudd\_\-First\-Cube Cudd\_\-Next\-Cube Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-Autodyn\-Disable] 
+
+Definition at line 430 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_ForeachNode@{Cudd\_\-ForeachNode}}
+\index{Cudd_ForeachNode@{Cudd\_\-ForeachNode}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Foreach\-Node(manager, f, gen, node)}\label{cudd_8h_eeb7e015a5d710dc3086b194193549f2}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}for((gen) = Cudd_FirstNode(manager, f, &node);\
+        Cudd_IsGenEmpty(gen) ? Cudd_GenFree(gen) : TRUE;\
+        (void) Cudd_NextNode(gen, &node))
+\end{verbatim}\end{Code}
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Iterates over the nodes of a decision diagram.]
+
+Description [Iterates over the nodes of a decision diagram f. \begin{itemize}
+\item \doxyref{Dd\-Manager}{p.}{structDdManager} $\ast$manager; \item \doxyref{Dd\-Node}{p.}{structDdNode} $\ast$f; \item \doxyref{Dd\-Gen}{p.}{structDdGen} $\ast$gen; \item \doxyref{Dd\-Node}{p.}{structDdNode} $\ast$$\ast$node; \end{itemize}
+The nodes are returned in a seemingly random order. Cudd\_\-Foreach\-Cube allocates and frees the generator. Therefore the application should not try to do that.
+
+CAUTION: It is assumed that dynamic reordering will not occur while there are open generators. It is the user's responsibility to make sure that dynamic reordering does not occur. As long as new nodes are not created during generation, and dynamic reordering is not called explicitly, dynamic reordering will not occur. Alternatively, it is sufficient to disable dynamic reordering. It is a mistake to dispose of a diagram on which generation is ongoing.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Foreach\-Cube Cudd\_\-First\-Node Cudd\_\-Next\-Node Cudd\_\-Gen\-Free Cudd\_\-Is\-Gen\-Empty Cudd\_\-Autodyn\-Disable] 
+
+Definition at line 464 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_IsComplement@{Cudd\_\-IsComplement}}
+\index{Cudd_IsComplement@{Cudd\_\-IsComplement}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Is\-Complement(node)~((int) ((long) (node) \& 01))}\label{cudd_8h_35322518c24f65f44eda9623083cb62c}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns 1 if a pointer is complemented.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Regular Cudd\_\-Complement] 
+
+Definition at line 336 of file cudd.h.
+
+Referenced by add\-Bdd\-Do\-Interval(), add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Pattern(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), add\-Check\-Positive\-Cube(), bdd\-Check\-Positive\-Cube(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), bdd\-Var\-To\-Canonical(), bdd\-Var\-To\-Canonical\-Simple(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Count\-Minterms(), Create\-Bot\-Dist(), Create\-Path\-Table(), Create\-Top\-Dist(), Cudd\_\-add\-Eval\-Const(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Pick\-One\-Cube(), Cudd\_\-Decreasing(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-Factored\-Form(), Cudd\_\-Equiv\-DC(), Cudd\_\-Eval(), Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Cofactor\-Recur(), cudd\-Collect\-Nodes(), cudd\-Estimate\-Cofactor(), cudd\-Estimate\-Cofactor\-Simple(), cudd\-Get\-Branches(), cudd\-Init\-Interact(), cudd\-Linear\-In\-Place(), cudd\-Split\-Set\-Recur(), cudd\-Swap\-In\-Place(), cudd\-Symm\-Check(), cudd\-Zdd\-Isop(), dd\-Bdd\-To\-Add\-Recur(), dd\-Clear\-Flag(), dd\-Clear\-Local(), dd\-Count\-Minterm\-Aux(), dd\-Count\-Roots(), dd\-Dag\-Int(), dd\-Do\-Dump\-Blif(), dd\-Do\-Dump\-Da\-Vinci(), dd\-Do\-Dump\-DDcal(), dd\-Do\-Dump\-Factored\-Form(), dd\-Ext\-Symm\-Check(), dd\-Find\-Essential\-Recur(), dd\-Leaves\-Int(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Print\-Minterm\-Aux(), dd\-Supp\-Interact(), dd\-Support\-Step(), gather\-Info(), gather\-Info\-Aux(), get\_\-cube(), get\_\-largest(), get\_\-path(), get\_\-shortest(), RAbuild\-Subset(), RAmark\-Nodes(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), UAmark\-Nodes(), update\-Parity(), zdd\-Port\-From\-Bdd\-Step(), and Zero\-Case().\index{cudd.h@{cudd.h}!Cudd_IsConstant@{Cudd\_\-IsConstant}}
+\index{Cudd_IsConstant@{Cudd\_\-IsConstant}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Is\-Constant(node)~((Cudd\_\-Regular(node)) $\rightarrow$ index == CUDD\_\-MAXINDEX)}\label{cudd_8h_35e63bfe07b09cd6f2508742cc37af38}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns 1 if the node is a constant node.]
+
+Description [Returns 1 if the node is a constant node (rather than an internal node). All constant nodes have the same index (CUDD\_\-MAXINDEX). The pointer passed to Cudd\_\-Is\-Constant may be either regular or complemented.]
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 263 of file cudd.h.
+
+Referenced by Build\-Conjuncts(), Build\-Subset\-Bdd(), compute\-Savings(), Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-add\-Leq(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Minimize(), Cudd\_\-bdd\-Restrict(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Equal\-Sup\-Norm(), Cudd\_\-zdd\-Print\-Subtable(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Non\-Sim\-Compose\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Check\-Cube(), cudd\-Conjuncts\-Aux(), cudd\-CProjection\-Recur(), cudd\-Remap\-Under\-Approx(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Under\-Approx(), cudd\-Zdd\-Dag\-Int(), dd\-Bdd\-To\-Add\-Recur(), dd\-Cof\-Minterm\-Aux(), dd\-Count\-Roots(), dd\-Do\-Dump\-Da\-Vinci(), dd\-Do\-Dump\-DDcal(), dd\-Do\-Dump\-Factored\-Form(), dd\-Find\-Essential\-Recur(), RAbuild\-Subset(), RAmark\-Nodes(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), UAmark\-Nodes(), update\-Parity(), update\-Refs(), zdd\_\-print\_\-minterm\_\-aux(), and zp2().\index{cudd.h@{cudd.h}!CUDD_MAXINDEX@{CUDD\_\-MAXINDEX}}
+\index{CUDD_MAXINDEX@{CUDD\_\-MAXINDEX}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-MAXINDEX~((\bf{Dd\-Half\-Word}) $\sim$0)}\label{cudd_8h_ce9063853dcc42532cb9c7c1b5cca2d8}
+
+
+
+
+Definition at line 92 of file cudd.h.
+
+Referenced by Cudd\_\-add\-Ith\-Var(), Cudd\_\-add\-New\-Var(), Cudd\_\-add\-New\-Var\-At\-Level(), Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-bdd\-New\-Var(), Cudd\_\-bdd\-New\-Var\-At\-Level(), Cudd\_\-Priority\-Select(), Cudd\_\-Read\-Inv\-Perm(), Cudd\_\-Read\-Inv\-Perm\-Zdd(), Cudd\_\-Read\-Perm(), Cudd\_\-Read\-Perm\-Zdd(), Cudd\_\-zdd\-Change(), Cudd\_\-zdd\-Ith\-Var(), cudd\-Heap\-Profile(), cudd\-Unique\-Const(), cudd\-Zdd\-Ite(), dd\-Rehash(), and dd\-Rehash\-Zdd().\index{cudd.h@{cudd.h}!Cudd_Not@{Cudd\_\-Not}}
+\index{Cudd_Not@{Cudd\_\-Not}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Not(node)~((\bf{Dd\-Node} $\ast$)((long)(node) $^\wedge$ 01))}\label{cudd_8h_352ef8d39e760eaabae6d58d9a5ddbfc}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Complements a DD.]
+
+Description [Complements a DD by flipping the complement attribute of the pointer (the least significant bit).]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Not\-Cond] 
+
+Definition at line 278 of file cudd.h.
+
+Referenced by add\-Bdd\-Do\-Interval(), add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Pattern(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), bdd\-Annotate\-Minterm\-Count(), bdd\-Check\-Positive\-Cube(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), bdd\-Var\-To\-Canonical(), bdd\-Var\-To\-Canonical\-Simple(), bdd\-Var\-To\-Const(), Build\-Subset\-Bdd(), Cudd\_\-add\-Hamming(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Approx\-Disj\-Decomp(), Cudd\_\-bdd\-Boolean\-Diff(), Cudd\_\-bdd\-Char\-To\-Vect(), Cudd\_\-bdd\-Compute\-Cube(), Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-bdd\-Gen\-Disj\-Decomp(), Cudd\_\-bdd\-Is\-Var\-Essential(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Iter\-Disj\-Decomp(), Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Minimize(), Cudd\_\-bdd\-New\-Var(), Cudd\_\-bdd\-Nor(), Cudd\_\-bdd\-Or(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Cube(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Read(), Cudd\_\-bdd\-Restrict(), Cudd\_\-bdd\-Univ\-Abstract(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-bdd\-Var\-Disj\-Decomp(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-bdd\-Xnor(), Cudd\_\-Classify\-Support(), Cudd\_\-Cofactor(), Cudd\_\-Count\-Minterm(), Cudd\_\-Decreasing(), Cudd\_\-Dump\-Factored\-Form(), Cudd\_\-Dxygtdxz(), Cudd\_\-Dxygtdyz(), Cudd\_\-Equiv\-DC(), Cudd\_\-Increasing(), Cudd\_\-Init(), Cudd\_\-Largest\-Cube(), Cudd\_\-Next\-Cube(), Cudd\_\-Over\-Approx(), Cudd\_\-Print\-Debug(), Cudd\_\-Print\-Minterm(), Cudd\_\-Priority\-Select(), Cudd\_\-Read\-Logic\-Zero(), Cudd\_\-Remap\-Over\-Approx(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), Cudd\_\-Superset\-Compress(), Cudd\_\-Superset\-Heavy\-Branch(), Cudd\_\-Superset\-Short\-Paths(), Cudd\_\-Support(), Cudd\_\-Vector\-Support(), Cudd\_\-Xeqy(), Cudd\_\-Xgty(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Check\-Cube(), cudd\-Cofactor\-Recur(), cudd\-CProjection\-Recur(), cudd\-Estimate\-Cofactor(), cudd\-Estimate\-Cofactor\-Simple(), cudd\-Get\-Branches(), cudd\-Insert\-Subtables(), cudd\-Linear\-In\-Place(), cudd\-Solve\-Eqn\-Recur(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Swap\-In\-Place(), cudd\-Symm\-Check(), cudd\-Zdd\-Isop(), dd\-Cof\-Minterm\-Aux(), dd\-Count\-Minterm\-Aux(), dd\-Dag\-Int(), dd\-Do\-Dump\-Factored\-Form(), dd\-Ext\-Symm\-Check(), dd\-Find\-Essential\-Recur(), dd\-Leaves\-Int(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Print\-Minterm\-Aux(), dd\-Resize\-Table(), dd\-Support\-Step(), gather\-Info(), get\_\-cube(), get\_\-path(), minterms\-From\-Universe(), RAbuild\-Subset(), select\-Minterms\-From\-Universe(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), update\-Parity(), zdd\-Port\-From\-Bdd\-Step(), zdd\-Port\-To\-Bdd\-Step(), and Zero\-Case().\index{cudd.h@{cudd.h}!Cudd_NotCond@{Cudd\_\-NotCond}}
+\index{Cudd_NotCond@{Cudd\_\-NotCond}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Not\-Cond(node, c)~((\bf{Dd\-Node} $\ast$)((long)(node) $^\wedge$ (c)))}\label{cudd_8h_e870da95e89a703e939161fe08b899f9}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Complements a DD if a condition is true.]
+
+Description [Complements a DD if condition c is true; c should be either 0 or 1, because it is used directly (for efficiency). If in doubt on the values c may take, use \char`\"{}(c) ? Cudd\_\-Not(node) : node\char`\"{}.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Not] 
+
+Definition at line 294 of file cudd.h.
+
+Referenced by add\-Bdd\-Do\-Interval(), add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Pattern(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Count\-Minterms(), Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-add\-Leq(), Cudd\_\-bdd\-Is\-Var\-Essential(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Nand(), Cudd\_\-bdd\-Or(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Eval(), Cudd\_\-Over\-Approx(), Cudd\_\-Remap\-Over\-Approx(), Cudd\_\-Superset\-Compress(), Cudd\_\-Superset\-Heavy\-Branch(), Cudd\_\-Superset\-Short\-Paths(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-Permute\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Vector\-Compose\-Recur(), cudd\-Cofactor\-Recur(), cudd\-Estimate\-Cofactor(), cudd\-Zdd\-Isop(), dd\-Cof\-Minterm\-Aux(), gather\-Info\-Aux(), RAbuild\-Subset(), RAmark\-Nodes(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), and Zero\-Case().\index{cudd.h@{cudd.h}!CUDD_OUT_OF_MEM@{CUDD\_\-OUT\_\-OF\_\-MEM}}
+\index{CUDD_OUT_OF_MEM@{CUDD\_\-OUT\_\-OF\_\-MEM}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-OUT\_\-OF\_\-MEM~-1L}\label{cudd_8h_ea3f40d6c6354b5b1475537cd2431ab4}
+
+
+
+
+Definition at line 75 of file cudd.h.
+
+Referenced by bdd\-Annotate\-Minterm\-Count(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), Cudd\_\-bdd\-Correlation(), Cudd\_\-bdd\-Correlation\-Weights(), Cudd\_\-Count\-Minterm(), Cudd\_\-Count\-Path(), Cudd\_\-Debug\-Check(), Cudd\_\-Density(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-Print\-Debug(), Cudd\_\-Support\-Size(), Cudd\_\-Vector\-Support\-Size(), Cudd\_\-zdd\-Count(), Cudd\_\-zdd\-Count\-Double(), Cudd\_\-zdd\-Print\-Debug(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-LICompaction(), cudd\-Estimate\-Cofactor(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), cudd\-Zdd\-Linear\-Aux(), cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), dd\-Count\-Minterm\-Aux(), dd\-Count\-Path\-Aux(), dd\-Linear\-And\-Sifting\-Aux(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Sifting\-Aux(), dd\-Sifting\-Down(), and dd\-Sifting\-Up().\index{cudd.h@{cudd.h}!Cudd_ReadIndex@{Cudd\_\-ReadIndex}}
+\index{Cudd_ReadIndex@{Cudd\_\-ReadIndex}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Read\-Index(dd, index)~(Cudd\_\-Read\-Perm(dd,index))}\label{cudd_8h_2c0122cc772ed6f3012bcac42fac0c0c}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current position in the order of variable index.]
+
+Description [Returns the current position in the order of variable index. This macro is obsolete and is kept for compatibility. New applications should use Cudd\_\-Read\-Perm instead.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Read\-Perm] 
+
+Definition at line 398 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_Regular@{Cudd\_\-Regular}}
+\index{Cudd_Regular@{Cudd\_\-Regular}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-Regular(node)~((\bf{Dd\-Node} $\ast$)((unsigned long)(node) \& $\sim$01))}\label{cudd_8h_fbbecf4f6f78f92518f4d0a477d870b6}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the regular version of a pointer.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Complement Cudd\_\-Is\-Complement] 
+
+Definition at line 308 of file cudd.h.
+
+Referenced by bdd\-Annotate\-Minterm\-Count(), bdd\-Correlation\-Aux(), bdd\-Correlation\-Weights\-Aux(), bdd\-Var\-To\-Canonical(), bdd\-Var\-To\-Canonical\-Simple(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Check\-In\-Tables(), Check\-Tables\-Cache\-And\-Return(), compute\-Savings(), Count\-Minterms(), Create\-Bot\-Dist(), Create\-Path\-Table(), Create\-Top\-Dist(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Average\-Distance(), Cudd\_\-bdd\-Boolean\-Diff(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Pick\-One\-Cube(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Classify\-Support(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Count\-Leaves(), Cudd\_\-Count\-Path(), Cudd\_\-Dag\-Size(), Cudd\_\-Debug\-Check(), Cudd\_\-Decreasing(), Cudd\_\-Deref(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Dump\-Factored\-Form(), Cudd\_\-Equiv\-DC(), Cudd\_\-Estimate\-Cofactor(), Cudd\_\-Estimate\-Cofactor\-Simple(), Cudd\_\-Eval(), Cudd\_\-First\-Node(), Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Largest\-Cube(), Cudd\_\-Next\-Cube(), Cudd\_\-Node\-Read\-Index(), Cudd\_\-Recursive\-Deref(), Cudd\_\-Ref(), Cudd\_\-Sharing\-Size(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Support(), Cudd\_\-Support\-Size(), Cudd\_\-Vector\-Support(), Cudd\_\-Vector\-Support\-Size(), cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Permute\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Vector\-Compose\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Cache\-Lookup(), cudd\-Cache\-Lookup1(), cudd\-Cache\-Lookup1Zdd(), cudd\-Cache\-Lookup2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Cache\-Lookup\-Zdd(), cudd\-Cofactor\-Recur(), cudd\-Collect\-Nodes(), cudd\-CProjection\-Recur(), cudd\-Estimate\-Cofactor(), cudd\-Estimate\-Cofactor\-Simple(), cudd\-Find\-Parent(), cudd\-Garbage\-Collect(), cudd\-Garbage\-Collect\-Zdd(), cudd\-Get\-Branches(), cudd\-Init\-Interact(), cudd\-Linear\-In\-Place(), cudd\-Local\-Cache\-Clear\-Dead(), cudd\-Local\-Cache\-Lookup(), cudd\-Print\-Node(), cudd\-Reclaim(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Short\-Paths(), cudd\-Swap\-In\-Place(), cudd\-Symm\-Check(), cudd\-Unique\-Inter(), cudd\-Unique\-Inter\-Zdd(), cudd\-Unique\-Lookup(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), dd\-Bdd\-To\-Add\-Recur(), dd\-Clear\-Flag(), dd\-Clear\-Global(), dd\-Clear\-Local(), dd\-Cof\-Minterm\-Aux(), dd\-Count\-Minterm\-Aux(), dd\-Count\-Path\-Aux(), dd\-Count\-Roots(), dd\-Dag\-Int(), dd\-Do\-Dump\-Blif(), dd\-Do\-Dump\-Da\-Vinci(), dd\-Do\-Dump\-DDcal(), dd\-Do\-Dump\-Factored\-Form(), dd\-Ext\-Symm\-Check(), dd\-Find\-Essential\-Recur(), dd\-Leaves\-Int(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Print\-Minterm\-Aux(), dd\-Supp\-Interact(), dd\-Support\-Step(), debug\-Find\-Parent(), dp2(), gather\-Info\-Aux(), get\_\-cube(), get\_\-largest(), get\_\-path(), get\_\-shortest(), Pair\-In\-Tables(), Pick\-One\-Pair(), RAbuild\-Subset(), RAmark\-Nodes(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), UAbuild\-Subset(), UAmark\-Nodes(), update\-Refs(), zdd\-Port\-From\-Bdd\-Step(), and Zero\-Case().\index{cudd.h@{cudd.h}!CUDD_RESIDUE_DEFAULT@{CUDD\_\-RESIDUE\_\-DEFAULT}}
+\index{CUDD_RESIDUE_DEFAULT@{CUDD\_\-RESIDUE\_\-DEFAULT}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-RESIDUE\_\-DEFAULT~0}\label{cudd_8h_51def84b8444e5a922b5859fca6674cf}
+
+
+
+
+Definition at line 81 of file cudd.h.\index{cudd.h@{cudd.h}!CUDD_RESIDUE_MSB@{CUDD\_\-RESIDUE\_\-MSB}}
+\index{CUDD_RESIDUE_MSB@{CUDD\_\-RESIDUE\_\-MSB}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-RESIDUE\_\-MSB~1}\label{cudd_8h_e8c32e7ebb7bc5341db1dabfa6709bc5}
+
+
+
+
+Definition at line 82 of file cudd.h.
+
+Referenced by Cudd\_\-add\-Residue().\index{cudd.h@{cudd.h}!CUDD_RESIDUE_TC@{CUDD\_\-RESIDUE\_\-TC}}
+\index{CUDD_RESIDUE_TC@{CUDD\_\-RESIDUE\_\-TC}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-RESIDUE\_\-TC~2}\label{cudd_8h_321dfaa195780e5752e6fa09bd092385}
+
+
+
+
+Definition at line 83 of file cudd.h.
+
+Referenced by Cudd\_\-add\-Residue().\index{cudd.h@{cudd.h}!Cudd_T@{Cudd\_\-T}}
+\index{Cudd_T@{Cudd\_\-T}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-T(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.kids.T)}\label{cudd_8h_b52776808fa28bf75cf6bf6c4782f0c5}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the then child of an internal node.]
+
+Description [Returns the then child of an internal node. If {\tt node} is a constant node, the result is unpredictable.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-E Cudd\_\-V] 
+
+Definition at line 351 of file cudd.h.
+
+Referenced by Build\-Subset\-Bdd(), Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-zdd\-Print\-Subtable(), cudd\-Bdd\-Isop(), cudd\-Solve\-Eqn\-Recur(), cudd\-Zdd\-Count\-Double\-Step(), cudd\-Zdd\-Count\-Step(), cudd\-Zdd\-Dag\-Int(), cudd\-Zdd\-Isop(), Store\-Nodes(), Subset\-Count\-Minterm\-Aux(), and Subset\-Count\-Nodes\-Aux().\index{cudd.h@{cudd.h}!CUDD_UNIQUE_SLOTS@{CUDD\_\-UNIQUE\_\-SLOTS}}
+\index{CUDD_UNIQUE_SLOTS@{CUDD\_\-UNIQUE\_\-SLOTS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-UNIQUE\_\-SLOTS~512}\label{cudd_8h_5898eb92cde4c11e117bb88330b50019}
+
+
+
+
+Definition at line 77 of file cudd.h.
+
+Referenced by cudd\-Init\-Table(), cudd\-Insert\-Subtables(), cudd\-Resize\-Table\-Zdd(), dd\-Reorder\-Postprocess(), dd\-Resize\-Table(), RAmark\-Nodes(), UAmark\-Nodes(), and zdd\-Reorder\-Postprocess().\index{cudd.h@{cudd.h}!Cudd_V@{Cudd\_\-V}}
+\index{Cudd_V@{Cudd\_\-V}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Cudd\_\-V(node)~((Cudd\_\-Regular(node)) $\rightarrow$ type.value)}\label{cudd_8h_3361e828cb96be5897c578b9bbad6e92}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the value of a constant node.]
+
+Description [Returns the value of a constant node. If {\tt node} is an internal node, the result is unpredictable.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-T Cudd\_\-E] 
+
+Definition at line 381 of file cudd.h.\index{cudd.h@{cudd.h}!CUDD_VALUE_TYPE@{CUDD\_\-VALUE\_\-TYPE}}
+\index{CUDD_VALUE_TYPE@{CUDD\_\-VALUE\_\-TYPE}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-VALUE\_\-TYPE~double}\label{cudd_8h_0eacff9d14824f9601da7152ecfdaeb1}
+
+
+
+
+Definition at line 74 of file cudd.h.
+
+Referenced by add\-MMRecur(), add\-Triangle\-Recur(), add\-Walsh\-Int(), Cudd\_\-add\-Bdd\-Ith\-Bit(), Cudd\_\-add\-Divide(), Cudd\_\-add\-Exist\-Abstract(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ith\-Bit(), Cudd\_\-add\-Minus(), Cudd\_\-add\-Plus(), Cudd\_\-add\-Read(), Cudd\_\-add\-Residue(), Cudd\_\-add\-Times(), and cudd\-Add\-Scalar\-Inverse\-Recur().\index{cudd.h@{cudd.h}!CUDD_VERSION@{CUDD\_\-VERSION}}
+\index{CUDD_VERSION@{CUDD\_\-VERSION}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-VERSION~\char`\"{}2.2.0\char`\"{}}\label{cudd_8h_98b2ff770ae4b437b35f4deab4cbb883}
+
+
+CHeader\-File$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd.h}{p.}{cudd_8h}]
+
+Package\-Name [cudd]
+
+Synopsis [The University of Colorado decision diagram package.]
+
+Description [External functions and data strucures of the CUDD package. \begin{itemize}
+\item To turn on the gathering of statistics, define DD\_\-STATS. \item To link with mis, define DD\_\-MIS. \end{itemize}
+Modified by Abelardo Pardo to interface it to VIS. ]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.]
+
+Revision [\begin{Desc}
+\item[Id]\doxyref{cudd.h}{p.}{cudd_8h},v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \end{Desc}
+] 
+
+Definition at line 45 of file cudd.h.
+
+Referenced by Cudd\_\-Print\-Version().\index{cudd.h@{cudd.h}!DD_APA_BASE@{DD\_\-APA\_\-BASE}}
+\index{DD_APA_BASE@{DD\_\-APA\_\-BASE}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-APA\_\-BASE~(1 $<$$<$ DD\_\-APA\_\-BITS)}\label{cudd_8h_01069d6e0190f787f2c4a38718bb500e}
+
+
+
+
+Definition at line 101 of file cudd.h.
+
+Referenced by Cudd\_\-Apa\-Int\-Division(), Cudd\_\-Apa\-Print\-Decimal(), Cudd\_\-Apa\-Print\-Exponential(), Cudd\_\-Apa\-Short\-Division(), and Cudd\_\-Apa\-Subtract().\index{cudd.h@{cudd.h}!DD_APA_BITS@{DD\_\-APA\_\-BITS}}
+\index{DD_APA_BITS@{DD\_\-APA\_\-BITS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-APA\_\-BITS~16}\label{cudd_8h_ab8bcb4b85200713dd68f1a72a9235ac}
+
+
+
+
+Definition at line 100 of file cudd.h.
+
+Referenced by Cudd\_\-Apa\-Number\-Of\-Digits(), Cudd\_\-Apa\-Power\-Of\-Two(), and Cudd\_\-Apa\-Shift\-Right().\index{cudd.h@{cudd.h}!DD_APA_HEXPRINT@{DD\_\-APA\_\-HEXPRINT}}
+\index{DD_APA_HEXPRINT@{DD\_\-APA\_\-HEXPRINT}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-APA\_\-HEXPRINT~\char`\"{}\%04x\char`\"{}}\label{cudd_8h_39daa97a2ceb8ece21484aa5b1c11eb1}
+
+
+
+
+Definition at line 103 of file cudd.h.
+
+Referenced by Cudd\_\-Apa\-Print\-Hex().\index{cudd.h@{cudd.h}!DD_APA_MASK@{DD\_\-APA\_\-MASK}}
+\index{DD_APA_MASK@{DD\_\-APA\_\-MASK}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-APA\_\-MASK~(DD\_\-APA\_\-BASE - 1)}\label{cudd_8h_de62a89be20c90e4bc45faa1da5624bb}
+
+
+
+
+Definition at line 102 of file cudd.h.
+
+Referenced by Cudd\_\-Apa\-Subtract().\index{cudd.h@{cudd.h}!EXTERN@{EXTERN}}
+\index{EXTERN@{EXTERN}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EXTERN~extern}\label{cudd_8h_77366c1bd428629dc898e188bfd182a3}
+
+
+
+
+Definition at line 475 of file cudd.h.\index{cudd.h@{cudd.h}!FALSE@{FALSE}}
+\index{FALSE@{FALSE}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FALSE~0}\label{cudd_8h_a93f0eb578d23995850d61f7d61c55c1}
+
+
+
+
+Definition at line 71 of file cudd.h.\index{cudd.h@{cudd.h}!TRUE@{TRUE}}
+\index{TRUE@{TRUE}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TRUE~1}\label{cudd_8h_a8cecfc5c5c054d2875c03e77b7be15d}
+
+
+
+
+Definition at line 68 of file cudd.h.
+
+Referenced by cudd\-Remap\-Under\-Approx(), UAbuild\-Subset(), and UAmark\-Nodes().
+
+\subsection{Typedef Documentation}
+\index{cudd.h@{cudd.h}!DdApaDigit@{DdApaDigit}}
+\index{DdApaDigit@{DdApaDigit}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned short int \bf{Dd\-Apa\-Digit}}\label{cudd_8h_c801c0bab4f2dc057822747fe9cde43d}
+
+
+
+
+Definition at line 235 of file cudd.h.\index{cudd.h@{cudd.h}!DdApaDoubleDigit@{DdApaDoubleDigit}}
+\index{DdApaDoubleDigit@{DdApaDoubleDigit}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned long int \bf{Dd\-Apa\-Double\-Digit}}\label{cudd_8h_4982623375ce6534742d8ba862b89506}
+
+
+
+
+Definition at line 236 of file cudd.h.\index{cudd.h@{cudd.h}!DdApaNumber@{DdApaNumber}}
+\index{DdApaNumber@{DdApaNumber}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef \bf{Dd\-Apa\-Digit}$\ast$ \bf{Dd\-Apa\-Number}}\label{cudd_8h_ce8dbc87f1aa0e0c783fa3eb20f7eeab}
+
+
+
+
+Definition at line 237 of file cudd.h.\index{cudd.h@{cudd.h}!DdGen@{DdGen}}
+\index{DdGen@{DdGen}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{Dd\-Gen} \bf{Dd\-Gen}}\label{cudd_8h_e2dcf43f58dcfdc0112e08cd962ff68d}
+
+
+
+
+Definition at line 231 of file cudd.h.\index{cudd.h@{cudd.h}!DdHalfWord@{DdHalfWord}}
+\index{DdHalfWord@{DdHalfWord}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned short \bf{Dd\-Half\-Word}}\label{cudd_8h_080a9b71ac483cf2c576ccedb5cba200}
+
+
+
+
+Definition at line 199 of file cudd.h.\index{cudd.h@{cudd.h}!DdManager@{DdManager}}
+\index{DdManager@{DdManager}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{Dd\-Manager} \bf{Dd\-Manager}}\label{cudd_8h_d210314f445a7b5d719abbce16e8b24d}
+
+
+
+
+Definition at line 229 of file cudd.h.\index{cudd.h@{cudd.h}!DdNode@{DdNode}}
+\index{DdNode@{DdNode}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{Dd\-Node} \bf{Dd\-Node}}\label{cudd_8h_113dbfe7d93a38b91a4214e214af7ec7}
+
+
+
+
+Definition at line 207 of file cudd.h.
+
+\subsection{Enumeration Type Documentation}
+\index{cudd.h@{cudd.h}!Cudd_AggregationType@{Cudd\_\-AggregationType}}
+\index{Cudd_AggregationType@{Cudd\_\-AggregationType}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{Cudd\_\-Aggregation\-Type}}\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33}
+
+
+Enum$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Type of aggregation methods.]
+
+Description [Type of aggregation methods.] \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{CUDD_NO_CHECK@{CUDD\_\-NO\_\-CHECK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_NO_CHECK@{CUDD\_\-NO\_\-CHECK}}\item[{\em 
+CUDD\_\-NO\_\-CHECK\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce334f1a026ea705ddbdebef7a29ffa1164d}
+}]\index{CUDD_GROUP_CHECK@{CUDD\_\-GROUP\_\-CHECK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK@{CUDD\_\-GROUP\_\-CHECK}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33d25024e64dd5b5a286ec68b7e74cb0b8}
+}]\index{CUDD_GROUP_CHECK2@{CUDD\_\-GROUP\_\-CHECK2}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK2@{CUDD\_\-GROUP\_\-CHECK2}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK2\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce3351588db194a511cd2f7ef3114518556f}
+}]\index{CUDD_GROUP_CHECK3@{CUDD\_\-GROUP\_\-CHECK3}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK3@{CUDD\_\-GROUP\_\-CHECK3}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK3\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33735c3b1fd401c898defa3daa3dd28c49}
+}]\index{CUDD_GROUP_CHECK4@{CUDD\_\-GROUP\_\-CHECK4}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK4@{CUDD\_\-GROUP\_\-CHECK4}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK4\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33324b97780cb16ebe7f64c73c00ee9eba}
+}]\index{CUDD_GROUP_CHECK5@{CUDD\_\-GROUP\_\-CHECK5}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK5@{CUDD\_\-GROUP\_\-CHECK5}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK5\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33d3a5294783a019eb777136b90d2e4473}
+}]\index{CUDD_GROUP_CHECK6@{CUDD\_\-GROUP\_\-CHECK6}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK6@{CUDD\_\-GROUP\_\-CHECK6}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK6\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce3376bc1d95fe27874bcafb3f69498036e5}
+}]\index{CUDD_GROUP_CHECK7@{CUDD\_\-GROUP\_\-CHECK7}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK7@{CUDD\_\-GROUP\_\-CHECK7}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK7\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce332255d47de89aeab7b361ab6a0878551c}
+}]\index{CUDD_GROUP_CHECK8@{CUDD\_\-GROUP\_\-CHECK8}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK8@{CUDD\_\-GROUP\_\-CHECK8}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK8\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce339a849284329e184055ff0189fae94239}
+}]\index{CUDD_GROUP_CHECK9@{CUDD\_\-GROUP\_\-CHECK9}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_GROUP_CHECK9@{CUDD\_\-GROUP\_\-CHECK9}}\item[{\em 
+CUDD\_\-GROUP\_\-CHECK9\label{cudd_8h_8b2572b778b7e8bd68afcd4aa1f0ce33d207ddf281975c30e63daaddbff265b1}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 153 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_ErrorType@{Cudd\_\-ErrorType}}
+\index{Cudd_ErrorType@{Cudd\_\-ErrorType}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{Cudd\_\-Error\-Type}}\label{cudd_8h_27114b4342bc1b987f35d751eae2444b}
+
+
+Enum$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Type of error codes.]
+
+Description [Type of error codes.] \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{CUDD_NO_ERROR@{CUDD\_\-NO\_\-ERROR}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_NO_ERROR@{CUDD\_\-NO\_\-ERROR}}\item[{\em 
+CUDD\_\-NO\_\-ERROR\label{cudd_8h_27114b4342bc1b987f35d751eae2444b220d2684f9cfbf9eb606f2636b8e8760}
+}]\index{CUDD_MEMORY_OUT@{CUDD\_\-MEMORY\_\-OUT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_MEMORY_OUT@{CUDD\_\-MEMORY\_\-OUT}}\item[{\em 
+CUDD\_\-MEMORY\_\-OUT\label{cudd_8h_27114b4342bc1b987f35d751eae2444b0db98cf2462f40577e6c83a60b095111}
+}]\index{CUDD_INTERNAL_ERROR@{CUDD\_\-INTERNAL\_\-ERROR}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_INTERNAL_ERROR@{CUDD\_\-INTERNAL\_\-ERROR}}\item[{\em 
+CUDD\_\-INTERNAL\_\-ERROR\label{cudd_8h_27114b4342bc1b987f35d751eae2444bd26f07005e0b7534b848d09c834867fd}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 189 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_HookType@{Cudd\_\-HookType}}
+\index{Cudd_HookType@{Cudd\_\-HookType}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{Cudd\_\-Hook\-Type}}\label{cudd_8h_fbec19daded82939f6045c92b3a7bde2}
+
+
+Enum$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Type of hooks.]
+
+Description [Type of hooks.] \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{CUDD_PRE_GC_HOOK@{CUDD\_\-PRE\_\-GC\_\-HOOK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_PRE_GC_HOOK@{CUDD\_\-PRE\_\-GC\_\-HOOK}}\item[{\em 
+CUDD\_\-PRE\_\-GC\_\-HOOK\label{cudd_8h_fbec19daded82939f6045c92b3a7bde294059de430a4e48b8afb151022f3668f}
+}]\index{CUDD_POST_GC_HOOK@{CUDD\_\-POST\_\-GC\_\-HOOK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_POST_GC_HOOK@{CUDD\_\-POST\_\-GC\_\-HOOK}}\item[{\em 
+CUDD\_\-POST\_\-GC\_\-HOOK\label{cudd_8h_fbec19daded82939f6045c92b3a7bde2f46c5878650565a45cb00616b73d5546}
+}]\index{CUDD_PRE_REORDERING_HOOK@{CUDD\_\-PRE\_\-REORDERING\_\-HOOK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_PRE_REORDERING_HOOK@{CUDD\_\-PRE\_\-REORDERING\_\-HOOK}}\item[{\em 
+CUDD\_\-PRE\_\-REORDERING\_\-HOOK\label{cudd_8h_fbec19daded82939f6045c92b3a7bde2704fd55a76fc6e2b8e5f9cb498bdd041}
+}]\index{CUDD_POST_REORDERING_HOOK@{CUDD\_\-POST\_\-REORDERING\_\-HOOK}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_POST_REORDERING_HOOK@{CUDD\_\-POST\_\-REORDERING\_\-HOOK}}\item[{\em 
+CUDD\_\-POST\_\-REORDERING\_\-HOOK\label{cudd_8h_fbec19daded82939f6045c92b3a7bde2c20a839fcf5d7121ef94f79ece9950c8}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 174 of file cudd.h.\index{cudd.h@{cudd.h}!Cudd_ReorderingType@{Cudd\_\-ReorderingType}}
+\index{Cudd_ReorderingType@{Cudd\_\-ReorderingType}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum \bf{Cudd\_\-Reordering\-Type}}\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde}
+
+
+Enum$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Type of reordering algorithm.]
+
+Description [Type of reordering algorithm.] \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{CUDD_REORDER_SAME@{CUDD\_\-REORDER\_\-SAME}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_SAME@{CUDD\_\-REORDER\_\-SAME}}\item[{\em 
+CUDD\_\-REORDER\_\-SAME\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde3c2554eb182fa3c6440fa5e3f72dddd5}
+}]\index{CUDD_REORDER_NONE@{CUDD\_\-REORDER\_\-NONE}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_NONE@{CUDD\_\-REORDER\_\-NONE}}\item[{\em 
+CUDD\_\-REORDER\_\-NONE\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddebb43fb9caec196a5f3333de31c16b475}
+}]\index{CUDD_REORDER_RANDOM@{CUDD\_\-REORDER\_\-RANDOM}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_RANDOM@{CUDD\_\-REORDER\_\-RANDOM}}\item[{\em 
+CUDD\_\-REORDER\_\-RANDOM\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde8ffde9a0194df5e01bb3a0eaf2d5a489}
+}]\index{CUDD_REORDER_RANDOM_PIVOT@{CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_RANDOM_PIVOT@{CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT}}\item[{\em 
+CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde45255db0c5134ca33ba807a372879368}
+}]\index{CUDD_REORDER_SIFT@{CUDD\_\-REORDER\_\-SIFT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_SIFT@{CUDD\_\-REORDER\_\-SIFT}}\item[{\em 
+CUDD\_\-REORDER\_\-SIFT\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddef512171f99e30a741b604602e077ae54}
+}]\index{CUDD_REORDER_SIFT_CONVERGE@{CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_SIFT_CONVERGE@{CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE}}\item[{\em 
+CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde2eb44e59cba9e1b55653941959eb5938}
+}]\index{CUDD_REORDER_SYMM_SIFT@{CUDD\_\-REORDER\_\-SYMM\_\-SIFT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_SYMM_SIFT@{CUDD\_\-REORDER\_\-SYMM\_\-SIFT}}\item[{\em 
+CUDD\_\-REORDER\_\-SYMM\_\-SIFT\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde2b9444b7775bba12da0f39a584078e0c}
+}]\index{CUDD_REORDER_SYMM_SIFT_CONV@{CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_SYMM_SIFT_CONV@{CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV}}\item[{\em 
+CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddebc7a353b99f532efefdf9092016e0894}
+}]\index{CUDD_REORDER_WINDOW2@{CUDD\_\-REORDER\_\-WINDOW2}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW2@{CUDD\_\-REORDER\_\-WINDOW2}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW2\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde1200f7bc9ce4e409d0bc1750518b97fe}
+}]\index{CUDD_REORDER_WINDOW3@{CUDD\_\-REORDER\_\-WINDOW3}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW3@{CUDD\_\-REORDER\_\-WINDOW3}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW3\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddee53a5c1dfdd719ff377d4f900de4c0cf}
+}]\index{CUDD_REORDER_WINDOW4@{CUDD\_\-REORDER\_\-WINDOW4}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW4@{CUDD\_\-REORDER\_\-WINDOW4}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW4\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde69dac82abf4db2bbf5820fa9638bdc4a}
+}]\index{CUDD_REORDER_WINDOW2_CONV@{CUDD\_\-REORDER\_\-WINDOW2\_\-CONV}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW2_CONV@{CUDD\_\-REORDER\_\-WINDOW2\_\-CONV}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW2\_\-CONV\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde8c7e70e4c81dbc35286b7a00685f5a19}
+}]\index{CUDD_REORDER_WINDOW3_CONV@{CUDD\_\-REORDER\_\-WINDOW3\_\-CONV}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW3_CONV@{CUDD\_\-REORDER\_\-WINDOW3\_\-CONV}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW3\_\-CONV\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddef7eb9f8bb0bd33ae78ecb6fb3094c3f9}
+}]\index{CUDD_REORDER_WINDOW4_CONV@{CUDD\_\-REORDER\_\-WINDOW4\_\-CONV}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_WINDOW4_CONV@{CUDD\_\-REORDER\_\-WINDOW4\_\-CONV}}\item[{\em 
+CUDD\_\-REORDER\_\-WINDOW4\_\-CONV\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddec949aef80601550a561adaf440aca438}
+}]\index{CUDD_REORDER_GROUP_SIFT@{CUDD\_\-REORDER\_\-GROUP\_\-SIFT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_GROUP_SIFT@{CUDD\_\-REORDER\_\-GROUP\_\-SIFT}}\item[{\em 
+CUDD\_\-REORDER\_\-GROUP\_\-SIFT\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde2f3a3020e2028bf957b4d2e6da34b748}
+}]\index{CUDD_REORDER_GROUP_SIFT_CONV@{CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_GROUP_SIFT_CONV@{CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV}}\item[{\em 
+CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde021943df6809b36d89fa03d0bb63b9ef}
+}]\index{CUDD_REORDER_ANNEALING@{CUDD\_\-REORDER\_\-ANNEALING}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_ANNEALING@{CUDD\_\-REORDER\_\-ANNEALING}}\item[{\em 
+CUDD\_\-REORDER\_\-ANNEALING\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde86b75dbbbe111b8b098b079fcae00bb8}
+}]\index{CUDD_REORDER_GENETIC@{CUDD\_\-REORDER\_\-GENETIC}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_GENETIC@{CUDD\_\-REORDER\_\-GENETIC}}\item[{\em 
+CUDD\_\-REORDER\_\-GENETIC\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde5f8da0a69c6e0a45f5aabf29c0f62b80}
+}]\index{CUDD_REORDER_LINEAR@{CUDD\_\-REORDER\_\-LINEAR}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_LINEAR@{CUDD\_\-REORDER\_\-LINEAR}}\item[{\em 
+CUDD\_\-REORDER\_\-LINEAR\label{cudd_8h_8ff397cb64855989d6ad62a491e20ddecb683aa1b0f0447e6bc3e233a27bc09a}
+}]\index{CUDD_REORDER_LINEAR_CONVERGE@{CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_LINEAR_CONVERGE@{CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE}}\item[{\em 
+CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde5fe4925131a190c26d615676991cbc87}
+}]\index{CUDD_REORDER_EXACT@{CUDD\_\-REORDER\_\-EXACT}!cudd.h@{cudd.h}}\index{cudd.h@{cudd.h}!CUDD_REORDER_EXACT@{CUDD\_\-REORDER\_\-EXACT}}\item[{\em 
+CUDD\_\-REORDER\_\-EXACT\label{cudd_8h_8ff397cb64855989d6ad62a491e20dde18cd94b42260d7f89b98887317383c96}
+}]\end{description}
+\end{Desc}
+
+
+
+Definition at line 121 of file cudd.h.
+
+\subsection{Function Documentation}
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Print\-Debug ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$f, int n, int pr))}\label{cudd_8h_e8bccbc86aed00420b6d01a7fc7efe0b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Print\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$node))}\label{cudd_8h_0590f12e80226f143cb57d6a639fb1b5}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Zdd\-Change ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, int var))}\label{cudd_8h_ac258619288906da13d95f30393338db}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Zdd\-Diff ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q))}\label{cudd_8h_2895f34d5c48f2aaac825bf4d2f6e5ee}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Diff ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$P, \bf{Dd\-Node} $\ast$Q))}\label{cudd_8h_3cf05f9ba2206f2060e1c62ed1ba5829}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-zdd\-Count\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$node, int path))}\label{cudd_8h_95c4ec4401c19b6a93eec851c80d85e5}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Dag\-Size ARGS ((\bf{Dd\-Node} $\ast$p\_\-node))}\label{cudd_8h_61eb9ce758d113cff5d934dc20cd14e6}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Isop ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U))}\label{cudd_8h_8f2bb9e9b504e5fb12ab15c9fd8fd5bf}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Isop ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U, \bf{Dd\-Node} $\ast$$\ast$zdd\_\-I))}\label{cudd_8h_a366463a031076919f888e0074f64956}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-zdd\-Count\-Double ARGS ((\bf{Dd\-Manager} $\ast$zdd, \bf{Dd\-Node} $\ast$P))}\label{cudd_8h_cb4b5492dd318cc3963428ddcf6138fb}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Out\-Of\-Mem ARGS ((long \bf{size}))}\label{cudd_8h_8338d64b8386dc66ae4b50ec44100fc9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-Density ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars))}\label{cudd_8h_623460208b11f1056b453687144f79c8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Srandom ARGS ((long seed))}\label{cudd_8h_3b2b36482a8b86ded858d4999039f0c2}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Init\-Tree ARGS (())}\label{cudd_8h_5e0c0409435846d72e4c7e0ae46131d5}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Print\-Version ARGS ((FILE $\ast$fp))}\label{cudd_8h_4ae0ae2c0dbee28707ebb10b6c8ffd7d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Indices\-To\-Cube ARGS ((\bf{Dd\-Manager} $\ast$dd, int $\ast$array, int n))}\label{cudd_8h_890685d992ea44c6ed0fd432af0a402a}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Is\-Gen\-Empty ARGS ((\bf{Dd\-Gen} $\ast$gen))}\label{cudd_8h_d0492de19494de6f327d2813004b88d3}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Next\-Node ARGS ((\bf{Dd\-Gen} $\ast$gen, \bf{Dd\-Node} $\ast$$\ast$node))}\label{cudd_8h_b497d42d5b499f1be2541f4afd77a5fd}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Gen}$\ast$ Cudd\_\-First\-Node ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$node))}\label{cudd_8h_05455c1fd044c22e640663fe860bd630}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Compute\-Cube ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$vars, int $\ast$phase, int n))}\label{cudd_8h_26f0d0eb14095153a7c77d729f28f258}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Next\-Cube ARGS ((\bf{Dd\-Gen} $\ast$gen, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value))}\label{cudd_8h_3a035937a865e2c63b3278aeaff079b7}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Gen}$\ast$ Cudd\_\-First\-Cube ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$$\ast$cube, CUDD\_\-VALUE\_\-TYPE $\ast$value))}\label{cudd_8h_221f838455fce748fc6270cd6503443b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$$\ast$ Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n, int k))}\label{cudd_8h_73e39779eea1f75e3aec2304524f8113}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Pick\-One\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vars, int n))}\label{cudd_8h_bb4e48438a5120ebd19147fad2a5a475}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Pick\-One\-Cube ARGS ((\bf{Dd\-Manager} $\ast$ddm, \bf{Dd\-Node} $\ast$node, char $\ast$string))}\label{cudd_8h_b8b7370ffa73492045f438191d46b75a}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Classify\-Support ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$common, \bf{Dd\-Node} $\ast$$\ast$only\-F, \bf{Dd\-Node} $\ast$$\ast$only\-G))}\label{cudd_8h_fee73e4cf932529f62d27a4600fff29c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Vector\-Support\-Size ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$F, int n))}\label{cudd_8h_6a91ac358fef6a1bb0e15027bb3acfb9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-Count\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars))}\label{cudd_8h_ee75ea55bf8c225e441c2dab5f21bcd7}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Sharing\-Size ARGS ((\bf{Dd\-Node} $\ast$$\ast$node\-Array, int n))}\label{cudd_8h_a88ff8b2527bb9aa2e6995a58489a2a8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Estimate\-Cofactor\-Simple ARGS ((\bf{Dd\-Node} $\ast$node, int i))}\label{cudd_8h_b52652252a3ba17b5f3ba5b2a1cd76b2}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Estimate\-Cofactor ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int i, int phase))}\label{cudd_8h_2a8e0d3a5efc8a65958c641d311a1def}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Print\-Debug ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int n, int pr))}\label{cudd_8h_ed2eb730b8c33f85d7079d34614845b8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Print\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node))}\label{cudd_8h_05ee041f8268c79c3d467596006f7984}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN unsigned int Cudd\_\-Prime ARGS ((unsigned int p))}\label{cudd_8h_b62f14a1caf7cf7ff6e634441ae2d799}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int cudd\-Zdd\-Symm\-Sifting\-Conv ARGS ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))}\label{cudd_8h_a167a6ae2d29cf4965fca53e8ec0477f}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Superset\-Short\-Paths ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int hardlimit))}\label{cudd_8h_dbbe928f0aedc5db3ef24195783a47d6}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Superset\-Heavy\-Branch ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold))}\label{cudd_8h_38e2a0d6cf9899bc1151ea273e817dd6}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Split\-Set ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$S, \bf{Dd\-Node} $\ast$$\ast$x\-Vars, int n, double m))}\label{cudd_8h_7bc9a04dd1ceb6ac0fc939410e08aadb}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Verify\-Sol ARGS ((\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$y\-Index, int n))}\label{cudd_8h_edf33821a14e7b6ed7868cbab7a74cf9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Solve\-Eqn ARGS ((\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$Y, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$$\ast$y\-Index, int n))}\label{cudd_8h_18dbb31d1d7281bfd989f5acbe1f8f08}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double$\ast$ Cudd\_\-Cof\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node))}\label{cudd_8h_e96ef7fe9ef711018a2e7ae095d03c94}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Equal\-Sup\-Norm ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, CUDD\_\-VALUE\_\-TYPE tolerance, int pr))}\label{cudd_8h_e2eb4c0e682934899e1dfa494d64ea53}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Equiv\-DC ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$G, \bf{Dd\-Node} $\ast$D))}\label{cudd_8h_01c2af677f1042949b0aef81e19c329e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Increasing ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int i))}\label{cudd_8h_de6ad72661697f22f290515a4b3d1f55}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Shortest\-Length ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight))}\label{cudd_8h_d0816835f933566d7572de9e18c31ca0}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Largest\-Cube ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$length))}\label{cudd_8h_25c17ada855f150e2ee5a350067377fc}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Shortest\-Path ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int $\ast$support, int $\ast$length))}\label{cudd_8h_78bbfcebdb71dde918d82b2e06ebbc5d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Eval ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$inputs))}\label{cudd_8h_05ec34e846a70266148298da7f03731b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Shuffle\-Heap ARGS ((\bf{Dd\-Manager} $\ast$table, int $\ast$permutation))}\label{cudd_8h_3fb91de1dbccaf6dd304ff06fb1104e8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Reduce\-Heap ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Cudd\_\-Reordering\-Type} heuristic, int minsize))}\label{cudd_8h_f5647b70a02a91fa1baaf3b17314c400}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void cudd\-Local\-Cache\-Clear\-All ARGS ((\bf{Dd\-Manager} $\ast$manager))}\label{cudd_8h_8a22b30c53550402a480bfaf8a3d617e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void cudd\-Reclaim\-Zdd ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n))}\label{cudd_8h_a01c58e35d81f896d813e79c85f78403}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Leaves\-Int ARGS ((\bf{Dd\-Node} $\ast$n))}\label{cudd_8h_379c67845163dbc8b0298ace302a5899}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Read ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy))}\label{cudd_8h_03792a9a32ee6bba692e1363ad513560}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-add\-Read ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$$\ast$xn, \bf{Dd\-Node} $\ast$$\ast$$\ast$yn\_\-, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy))}\label{cudd_8h_60bcdd9ecdf5819ea1aa3cef4fd0ebc3}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Hamming ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x\-Vars, \bf{Dd\-Node} $\ast$$\ast$y\-Vars, int n\-Vars))}\label{cudd_8h_6923d19c01589f95226dac50706dbc4d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-CProjection ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$R, \bf{Dd\-Node} $\ast$Y))}\label{cudd_8h_5e94f631b484bb8f1df65cd31e8a57d7}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Dxygtdyz ARGS ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$z))}\label{cudd_8h_e5857692e75b2810112e2ac778567730}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Xeqy ARGS ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y))}\label{cudd_8h_3157b8da8b8e142ef77ee100271fd007}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Xgty ARGS ((\bf{Dd\-Manager} $\ast$dd, int N, \bf{Dd\-Node} $\ast$$\ast$z, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y))}\label{cudd_8h_3b755b978c66d0311453d0d38cae2891}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-Priority\-Select ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$R, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$z, \bf{Dd\-Node} $\ast$Pi, int n, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, int, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$)))}\label{cudd_8h_24f7415effbef93390535303c6f315d0}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Triangle ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$z, int nz))}\label{cudd_8h_c1e99d24aa06ef1483a33914b8d8808b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Times\-Plus ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$z, int nz))}\label{cudd_8h_691a5668831c097c46c633b7df95cb30}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Xor\-Linear ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y))}\label{cudd_8h_fc3b10c993730ad615308ef603d1082a}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Manager}$\ast$ Cudd\_\-Init ARGS ((unsigned int num\-Vars, unsigned int num\-Vars\-Z, unsigned int num\-Slots, unsigned int cache\-Size, unsigned long max\-Memory))}\label{cudd_8h_d16969c834c05d1ae670923c06b46781}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-add\-Harwell ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$$\ast$xn, \bf{Dd\-Node} $\ast$$\ast$$\ast$yn\_\-, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy, int pr))}\label{cudd_8h_c84ce24814d32cca66a90ecf4e19deed}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node} $\ast$Cudd\_\-Make\-Zdd\-Tree\-Node ARGS ((\bf{Dd\-Manager} $\ast$dd, unsigned int low, unsigned int \bf{size}, unsigned int type))}\label{cudd_8h_ba8199ae64a5e40375c64b8154d60eb7}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Superset\-Compress ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars, int threshold))}\label{cudd_8h_5d8c02d8a50e6ca569c843d72ea390e1}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Squeeze ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))}\label{cudd_8h_fa608012bbe72932b26766cf44957bd4}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Bdd\-LICompaction ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c))}\label{cudd_8h_814da1cdc9792c75300a6fba77613027}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Dump\-Dot ARGS ((\bf{Dd\-Manager} $\ast$dd, int n, \bf{Dd\-Node} $\ast$$\ast$f, char $\ast$$\ast$inames, char $\ast$$\ast$onames, FILE $\ast$fp))}\label{cudd_8h_100141cf3759f0f541026d283da76364}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Dump\-Blif ARGS ((\bf{Dd\-Manager} $\ast$dd, int n, \bf{Dd\-Node} $\ast$$\ast$f, char $\ast$$\ast$inames, char $\ast$$\ast$onames, char $\ast$mname, FILE $\ast$fp))}\label{cudd_8h_9cbcb63d3e5d640a9fa07142151e3370}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Is\-Var\-Essential ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int id, int phase))}\label{cudd_8h_68b8dba2c4cf5f2f723898eb2c0917a8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Var\-Disj\-Decomp ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$disjuncts))}\label{cudd_8h_71a1277858a91e6878da25ee1a1f5b6b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Var\-Conj\-Decomp ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$$\ast$conjuncts))}\label{cudd_8h_0c7490c835855288970099166191cd29}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Vector\-Compose ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector))}\label{cudd_8h_60ab8b4540cef0ff7e4142f4120da4b5}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Adj\-Permute\-X ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$x, int n))}\label{cudd_8h_f96e02a0be6cac19d65807d7c38831fe}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Swap\-Variables ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))}\label{cudd_8h_d622079b1383cca221039b91adbeb36f}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-Permute ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int $\ast$permut))}\label{cudd_8h_eba56c8cdfdd1b56d1b1c664ef4e5634}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Compose ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int v))}\label{cudd_8h_720660871c1ab7f1805b00a66d15c192}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Clipping\-And\-Abstract ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$cube, int max\-Depth, int direction))}\label{cudd_8h_7e0307e65c293ead61d713b09c3e7c9c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Clipping\-And ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int max\-Depth, int direction))}\label{cudd_8h_7103104b4ce9a8294f9c5a6d17776dbb}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Reorder\-Postprocess ARGS ((\bf{Dd\-Manager} $\ast$table))}\label{cudd_8h_f1f608d944d45a0fbbbaf0d94ab818ba}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Transfer ARGS ((\bf{Dd\-Manager} $\ast$dd\-Source, \bf{Dd\-Manager} $\ast$dd\-Destination, \bf{Dd\-Node} $\ast$f))}\label{cudd_8h_dd17f881065238277ffec73e72ac735e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-zdd\-Port\-From\-Bdd ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B))}\label{cudd_8h_660204b8ae710c09774f2d8ad1ed0036}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Interval ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE lower, CUDD\_\-VALUE\_\-TYPE upper))}\label{cudd_8h_3778b69099e1e3e45555b0a69b8e9af9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Bdd\-Strict\-Threshold ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE value))}\label{cudd_8h_d88d21271588601db1b02a90b5387b7b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-bdd\-Correlation\-Weights ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, double $\ast$prob))}\label{cudd_8h_cc121539e68a89e8a34c403bde90024a}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Bdd\-Xor\-Recur ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))}\label{cudd_8h_acd54d4ccaebcae1d3048e9106c99b7a}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-bdd\-Var\-Is\-Dependent ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$var))}\label{cudd_8h_39db587df4dbcdce8785690527e64b11}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Boolean\-Diff ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int x))}\label{cudd_8h_b73ce2fd2d0655cbf8ed054c4e01d29d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Remap\-Over\-Approx ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, double quality))}\label{cudd_8h_8e4841367895a59df404351b98d0b4a6}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Over\-Approx ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int safe, double quality))}\label{cudd_8h_d41142d51d6d2e04f0e731a806a6e43c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Print\-Density ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, intnvars))}\label{cudd_8h_830d6214f48d7d3fe1a5fa70dbb50dbb}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Print\-Minterm\-Exp ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, intnvars, int precision))}\label{cudd_8h_06e945311987bb8b14b2bfa001d4388c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Print\-Minterm ARGS ((FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars))}\label{cudd_8h_a6e9ddca525c9d266fb6290048940fa2}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Apa\-Number} Cudd\_\-Apa\-Count\-Minterm ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars, int $\ast$digits))}\label{cudd_8h_8fa2e4349dbcff705ffed305e34ad02c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Print\-Exponential ARGS ((FILE $\ast$fp, intdigits, Dd\-Apa\-Numbernumber, int precision))}\label{cudd_8h_de0efd84c4ace5489ca00d0706c33b30}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Print\-Decimal ARGS ((FILE $\ast$fp, int digits, \bf{Dd\-Apa\-Number} number))}\label{cudd_8h_7ba902ca7ab05c399778c20f4f6080ad}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Compare\-Ratios ARGS ((int digits\-First, \bf{Dd\-Apa\-Number} first\-Num, unsigned int first\-Den, int digits\-Second, \bf{Dd\-Apa\-Number} second\-Num, unsigned int second\-Den))}\label{cudd_8h_d9faf0e0d277b98b1f6c3e2741f57803}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Compare ARGS ((int digits\-First, Dd\-Apa\-Numberfirst, int digits\-Second, Dd\-Apa\-Numbersecond))}\label{cudd_8h_e28c2290be194c7468a8dffd8cc97b73}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Apa\-Power\-Of\-Two ARGS ((int digits, \bf{Dd\-Apa\-Number} number, int power))}\label{cudd_8h_17413c0a75e74d0269702df3e3540345}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Apa\-Set\-To\-Literal ARGS ((int digits, \bf{Dd\-Apa\-Number} number, \bf{Dd\-Apa\-Digit} literal))}\label{cudd_8h_e96eb7a273a440ceb048001cf26e0f27}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Apa\-Shift\-Right ARGS ((int digits, \bf{Dd\-Apa\-Digit} in, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b))}\label{cudd_8h_da32ae37bbdf37554fd3d36853a58fbe}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN unsigned int Cudd\_\-Apa\-Int\-Division ARGS ((intdigits, \bf{Dd\-Apa\-Number} dividend, unsigned intdivisor, Dd\-Apa\-Numberquotient))}\label{cudd_8h_09b834fc971ecdce002b74c7cff25c8d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Short\-Division ARGS ((int digits, \bf{Dd\-Apa\-Number} dividend, \bf{Dd\-Apa\-Digit} divisor, \bf{Dd\-Apa\-Number} quotient))}\label{cudd_8h_d12ced7567cf5f799b3aa086212a5efe}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Subtract ARGS ((int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} diff))}\label{cudd_8h_865ce21534356c0ce76a85ef6fa20843}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Add ARGS ((int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} sum))}\label{cudd_8h_5da96539abb8e5640509cf025fddd200}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Apa\-Copy ARGS ((int digits, \bf{Dd\-Apa\-Number} source, \bf{Dd\-Apa\-Number} dest))}\label{cudd_8h_528ed2e41945ed33de923ac242764af4}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Apa\-Number} Cudd\_\-New\-Apa\-Number ARGS ((int digits))}\label{cudd_8h_c4707f1646fbb8b3f9376ef5243f0df6}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Apa\-Number\-Of\-Digits ARGS ((int binary\-Digits))}\label{cudd_8h_bead30c56f7ce750b2287757d29e464e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$cube))}\label{cudd_8h_bbbc164ef094868e3a62f46801b53b06}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Residue ARGS ((\bf{Dd\-Manager} $\ast$dd, int n, int m, int options, int top))}\label{cudd_8h_a6443a6aca074e57822b6b675666a1a0}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Walsh ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))}\label{cudd_8h_2089779127232ecc7a83c04e1fb0db99}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Round\-Off ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int N))}\label{cudd_8h_42ff0af0bf4f9e3a30e6a4ff56c648b3}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Zdd\-Divide\-F ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))}\label{cudd_8h_5feddd9384dde08a72b7e328c1dc886c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Zdd\-Ite ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h))}\label{cudd_8h_a6188017e6c34dd1477f2e7da6dc6409}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Scalar\-Inverse ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$epsilon))}\label{cudd_8h_b30e5cf17a48966cf14f66b9fd7d1009}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Bdd\-Ith\-Bit ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int bit))}\label{cudd_8h_b02565347664ce081ca5f39296934d6b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int cudd\-P ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f))}\label{cudd_8h_194057bf9e7d8164884877890defa098}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-add\-Xnor ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$f, \bf{Dd\-Node} $\ast$$\ast$g))}\label{cudd_8h_0438601d5b9e60c8e4d76e65565e98ce}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Apply ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$($\ast$)(\bf{Dd\-Manager} $\ast$, \bf{Dd\-Node} $\ast$$\ast$, \bf{Dd\-Node} $\ast$$\ast$), \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g))}\label{cudd_8h_48cf76d7c38d58c287202143c775c1c9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$cudd\-Bdd\-Exist\-Abstract\-Recur ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$cube))}\label{cudd_8h_378b94ea72f5d7b362122c78fb61efac}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Std\-Post\-Reord\-Hook ARGS ((\bf{Dd\-Manager} $\ast$dd, void $\ast$data))}\label{cudd_8h_75c23e903da15d4cca1321038960a126}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Is\-In\-Hook ARGS ((\bf{Dd\-Manager} $\ast$dd, int($\ast$f)(\bf{Dd\-Manager} $\ast$, void $\ast$), \bf{Cudd\_\-Hook\-Type} where))}\label{cudd_8h_dcf1bc9c991da877df0b5ae329fbe5a9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Print\-Info ARGS ((\bf{Dd\-Manager} $\ast$dd, FILE $\ast$fp))}\label{cudd_8h_8b7f69aeadb4100fc239667dbc1ed53f}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Number\-Xovers ARGS ((\bf{Dd\-Manager} $\ast$dd, int number\-Xovers))}\label{cudd_8h_a87abcea6c14040f896f0da9d6bfcd6b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Population\-Size ARGS ((\bf{Dd\-Manager} $\ast$dd, int population\-Size))}\label{cudd_8h_3ad04c5ae15c7084542ef03a11e10f30}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Arcviolation ARGS ((\bf{Dd\-Manager} $\ast$dd, int arcviolation))}\label{cudd_8h_8235cb46611e428355fd251d0a034278}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Symmviolation ARGS ((\bf{Dd\-Manager} $\ast$dd, int symmviolation))}\label{cudd_8h_6d55ced8b40f4dd6248fce587da3e2d9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Recomb ARGS ((\bf{Dd\-Manager} $\ast$dd, int recomb))}\label{cudd_8h_33bb2bedf83c7db45e69c3ad3287c5b4}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Groupcheck ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Cudd\_\-Aggregation\-Type} gc))}\label{cudd_8h_b839ef1998bf3a23023ef7b23c3ed3c8}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Epsilon ARGS ((\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE ep))}\label{cudd_8h_19aff9da425cf0e4b9a9b8d31b789063}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Count\-Leaves ARGS ((\bf{Dd\-Node} $\ast$node))}\label{cudd_8h_7123c25b3e26b84f955f8903763b324c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Zdd\-Tree ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$tree))}\label{cudd_8h_b3102b08d981df66b7c81dd880316ed3}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Max\-Growth ARGS ((\bf{Dd\-Manager} $\ast$dd, double mg))}\label{cudd_8h_8e2d7d5bc638ba226dd97ed8da58e22e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Sift\-Max\-Swap ARGS ((\bf{Dd\-Manager} $\ast$dd, int sms))}\label{cudd_8h_c83016048286200cc451b6e16ff76645}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Sift\-Max\-Var ARGS ((\bf{Dd\-Manager} $\ast$dd, int smv))}\label{cudd_8h_68bb45f707789b76ad593b27fcf126ce}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Max\-Cache\-Hard ARGS ((\bf{Dd\-Manager} $\ast$dd, unsigned int mc))}\label{cudd_8h_a098d937759e905825db095b9e32253e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Loose\-Up\-To ARGS ((\bf{Dd\-Manager} $\ast$dd, unsigned int lut))}\label{cudd_8h_6b3b940da94e2f0792a207704ae87f71}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Min\-Hit ARGS ((\bf{Dd\-Manager} $\ast$dd, unsigned int hr))}\label{cudd_8h_03b681108181c18160f0cc80d2ef092d}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Set\-Background ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$bck))}\label{cudd_8h_0473dc3bb62bec839f0a575cb335ad3e}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-Reordering\-Status\-Zdd ARGS ((\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} $\ast$method))}\label{cudd_8h_472671313c3bb7d14ca4fa0a2c7a146c}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void cudd\-Free\-Table ARGS ((\bf{Dd\-Manager} $\ast$unique))}\label{cudd_8h_72fb10f46375f5dedc53eb528a514ab9}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Cudd\_\-Autodyn\-Enable\-Zdd ARGS ((\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} method))}\label{cudd_8h_4481c45bfa7bf3859a7e4a04f6bf1228}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node}$\ast$ Cudd\_\-add\-Const ARGS ((\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE c))}\label{cudd_8h_a551d16066b42171301c2c6bab58a60b}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars ARGS ((\bf{Dd\-Manager} $\ast$dd, int multiplicity))}\label{cudd_8h_0b5ad9ccf4edf21e8b4c8070b226c117}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-Read\-Vars ARGS ((\bf{Dd\-Manager} $\ast$dd, int i))}\label{cudd_8h_6e75b63cf3711891ea15a1528ab1f653}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Dd\-Node} $\ast$Cudd\_\-bdd\-New\-Var\-At\-Level ARGS ((\bf{Dd\-Manager} $\ast$dd, int level))}\label{cudd_8h_f1731b85226147c02321f4e67c6c1476}
+
+
+\index{cudd.h@{cudd.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cudd.h@{cudd.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN double Cudd\_\-Average\-Distance ARGS ((\bf{Dd\-Manager} $\ast$dd))}\label{cudd_8h_58f3c381376be442c719470220e80517}
+
+
+Automatic\-Start 

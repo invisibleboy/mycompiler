@@ -1,0 +1,160 @@
+\section{symbol.c File Reference}
+\label{symbol_8c}\index{symbol.c@{symbol.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/symbol.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Sym\-Tbl}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MAX}~100
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-Sym\-Tbl} $\ast$ \bf{Sym\-Tbl}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{error} (char $\ast$mesg)
+\item 
+char $\ast$ \bf{Str\-Save} (char $\ast$str)
+\item 
+static int \bf{Hash} (\bf{Sym\-Tbl} tbl, char $\ast$\bf{name}, int type)
+\item 
+int \bf{New\-Sym\-Tbl} (int max\_\-size)
+\item 
+void \bf{Clear\-Sym\-Tbl} (int tbl\_\-id)
+\item 
+void \bf{Clear\-Free\-Sym\-Tbl} (int tbl\_\-id, void($\ast$free\_\-xxx)(void $\ast$))
+\item 
+\bf{Symbol} \bf{Add\-Sym} (int tbl\_\-id, char $\ast$\bf{name}, int type)
+\item 
+\bf{Symbol} \bf{Find\-Sym} (int tbl\_\-id, char $\ast$\bf{name}, int type)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{\_\-Sym\-Tbl} \bf{TBL} [MAX]
+\item 
+static int \bf{next\_\-tbl} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{symbol.c@{symbol.c}!MAX@{MAX}}
+\index{MAX@{MAX}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX~100}\label{symbol_8c_392fb874e547e582e9c66a08a1f23326}
+
+
+
+
+Definition at line 98 of file symbol.c.
+
+\subsection{Typedef Documentation}
+\index{symbol.c@{symbol.c}!SymTbl@{SymTbl}}
+\index{SymTbl@{SymTbl}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Sym\-Tbl} $\ast$ \bf{Sym\-Tbl}}\label{symbol_8c_e56ca042859b9c5a7ae8e6e54ac02cb1}
+
+
+
+
+\subsection{Function Documentation}
+\index{symbol.c@{symbol.c}!AddSym@{AddSym}}
+\index{AddSym@{AddSym}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Symbol} Add\-Sym (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type})}\label{symbol_8c_05f93640438901f9a61dbd26d507fd7c}
+
+
+Add a new symbol in the symbol table. 
+
+Definition at line 227 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), Hash(), INVALID\_\-SYMBOL, \_\-Symbol::name, next\_\-tbl, \_\-Symbol::ptr, Str\-Save(), TBL, \_\-Symbol::type, and \_\-Symbol::value.\index{symbol.c@{symbol.c}!ClearFreeSymTbl@{ClearFreeSymTbl}}
+\index{ClearFreeSymTbl@{ClearFreeSymTbl}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Clear\-Free\-Sym\-Tbl (int {\em tbl\_\-id}, void($\ast$)(void $\ast$) {\em free\_\-xxx})}\label{symbol_8c_f622da4f3a37bf4e093a755acb5c3895}
+
+
+
+
+Definition at line 208 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), INVALID\_\-SYMBOL, \_\-C\_\-Symbol::name, next\_\-tbl, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{symbol.c@{symbol.c}!ClearSymTbl@{ClearSymTbl}}
+\index{ClearSymTbl@{ClearSymTbl}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Clear\-Sym\-Tbl (int {\em tbl\_\-id})}\label{symbol_8c_ece567fd9e5204d5c8998cc4f3c266ca}
+
+
+Clear a symbol table. 
+
+Definition at line 192 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), INVALID\_\-SYMBOL, \_\-C\_\-Symbol::name, next\_\-tbl, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{symbol.c@{symbol.c}!error@{error}}
+\index{error@{error}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void error (char $\ast$ {\em mesg})\hspace{0.3cm}{\tt  [static]}}\label{symbol_8c_ee4e896cda242224d1a22f98709fcb89}
+
+
+
+
+Definition at line 74 of file symbol.c.\index{symbol.c@{symbol.c}!FindSym@{FindSym}}
+\index{FindSym@{FindSym}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Symbol} Find\-Sym (int {\em tbl\_\-id}, char $\ast$ {\em name}, int {\em type})}\label{symbol_8c_4e49bf067c9691ac9d2fd412e05d8ff2}
+
+
+Find a symbol in the symbol table. 
+
+Definition at line 247 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), Hash(), INVALID\_\-SYMBOL, next\_\-tbl, TBL, and \_\-Symbol::type.\index{symbol.c@{symbol.c}!Hash@{Hash}}
+\index{Hash@{Hash}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Hash (\bf{Sym\-Tbl} {\em tbl}, char $\ast$ {\em name}, int {\em type})\hspace{0.3cm}{\tt  [static]}}\label{symbol_8c_f23f72add718993c493def7c6557e32e}
+
+
+
+
+Definition at line 115 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), INVALID\_\-SYMBOL, and \_\-Sym\-Tbl::size.\index{symbol.c@{symbol.c}!NewSymTbl@{NewSymTbl}}
+\index{NewSymTbl@{NewSymTbl}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int New\-Sym\-Tbl (int {\em max\_\-size})}\label{symbol_8c_b7f269b7f4db6db301dfd0b6a3e68bef}
+
+
+Create a new symbol table. 
+
+get next table 
+
+Definition at line 162 of file symbol.c.
+
+References \_\-Sym\-Tbl::array, error(), INVALID\_\-SYMBOL, MAX, \_\-C\_\-Symbol::name, next\_\-tbl, \_\-C\_\-Symbol::ptr, \_\-Sym\-Tbl::size, TBL, \_\-C\_\-Symbol::type, and \_\-C\_\-Symbol::value.\index{symbol.c@{symbol.c}!StrSave@{StrSave}}
+\index{StrSave@{StrSave}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ Str\-Save (char $\ast$ {\em str})}\label{symbol_8c_2833fbeb3ea9ff23f6bf38a3ae4cb00e}
+
+
+
+
+Definition at line 82 of file symbol.c.
+
+Referenced by Add\-Sym().
+
+\subsection{Variable Documentation}
+\index{symbol.c@{symbol.c}!next_tbl@{next\_\-tbl}}
+\index{next_tbl@{next\_\-tbl}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{next\_\-tbl} = 0\hspace{0.3cm}{\tt  [static]}}\label{symbol_8c_8f6d5fcc8b0f003fcb0ac869a190bc2f}
+
+
+
+
+Definition at line 108 of file symbol.c.\index{symbol.c@{symbol.c}!TBL@{TBL}}
+\index{TBL@{TBL}!symbol.c@{symbol.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{\_\-Sym\-Tbl} \bf{TBL}[MAX]\hspace{0.3cm}{\tt  [static]}}\label{symbol_8c_084986a159410bcb790168f3471ee5e1}
+
+
+
+
+Definition at line 107 of file symbol.c.

@@ -1,0 +1,506 @@
+\section{cudd\-Approx.c File Reference}
+\label{cuddApprox_8c}\index{cuddApprox.c@{cuddApprox.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Node\-Data}
+\item 
+struct \bf{Approx\-Info}
+\item 
+struct \bf{Global\-Queue\-Item}
+\item 
+struct \bf{Local\-Queue\-Item}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DBL\_\-MAX\_\-EXP}~1024
+\item 
+\#define \bf{NOTHING}~0
+\item 
+\#define \bf{REPLACE\_\-T}~1
+\item 
+\#define \bf{REPLACE\_\-E}~2
+\item 
+\#define \bf{REPLACE\_\-N}~3
+\item 
+\#define \bf{REPLACE\_\-TT}~4
+\item 
+\#define \bf{REPLACE\_\-TE}~5
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void update\-Parity \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int newparity))
+\item 
+static \bf{Node\-Data} $\ast$gather\-Info\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int parity))
+\item 
+static \bf{Approx\-Info} $\ast$gather\-Info \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int num\-Vars, int parity))
+\item 
+static int compute\-Savings \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$skip, \bf{Approx\-Info} $\ast$info, \bf{Dd\-Level\-Queue} $\ast$queue))
+\item 
+static int UAmark\-Nodes \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, int safe, double quality))
+\item 
+static \bf{Dd\-Node} $\ast$UAbuild\-Subset \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info))
+\item 
+static int RAmark\-Nodes \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, double quality))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Under\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int safe, double quality)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Over\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int safe, double quality)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Remap\-Under\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, double quality)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Remap\-Over\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, double quality)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Under\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int safe, double quality)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Remap\-Under\-Approx} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, double quality)
+\item 
+static void \bf{update\-Parity} (\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int newparity)
+\item 
+static \bf{Node\-Data} $\ast$ \bf{gather\-Info\-Aux} (\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int parity)
+\item 
+static \bf{Approx\-Info} $\ast$ \bf{gather\-Info} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int num\-Vars, int parity)
+\item 
+static int \bf{compute\-Savings} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$skip, \bf{Approx\-Info} $\ast$info, \bf{Dd\-Level\-Queue} $\ast$queue)
+\item 
+static int \bf{update\-Refs} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$skip, \bf{Approx\-Info} $\ast$info, \bf{Dd\-Level\-Queue} $\ast$queue)
+\item 
+static int \bf{UAmark\-Nodes} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, int safe, double quality)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{UAbuild\-Subset} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info)
+\item 
+static int \bf{RAmark\-Nodes} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, double quality)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{RAbuild\-Subset} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Approx.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddApprox.c@{cudd\-Approx.c}!DBL_MAX_EXP@{DBL\_\-MAX\_\-EXP}}
+\index{DBL_MAX_EXP@{DBL\_\-MAX\_\-EXP}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DBL\_\-MAX\_\-EXP~1024}\label{cuddApprox_8c_539f2dd258b96fac8f4dc9bc139d75c9}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Approx.c}{p.}{cuddApprox_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Procedures to approximate a given BDD.]
+
+Description [External procedures provided by this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Under\-Approx()}{p.}{cuddApprox_8c_9381231f34573676e814bb696b2321c9} \item \doxyref{Cudd\_\-Over\-Approx()}{p.}{cuddApprox_8c_09e725e579f19ac3e946c04cfdde95f0} \item \doxyref{Cudd\_\-Remap\-Under\-Approx()}{p.}{cuddApprox_8c_05f3e8b16e5df2eb681a68e6ee6906f3} \item \doxyref{Cudd\_\-Remap\-Over\-Approx()}{p.}{cuddApprox_8c_88270c8ded877c10677d563b7041df38} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Under\-Approx()}{p.}{cuddApprox_8c_9f4ad4116db7673ca7b4b829ecb7197b} \item \doxyref{cudd\-Remap\-Under\-Approx()}{p.}{cuddApprox_8c_fd6a96316d8465015470b02486ffaa86} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{gather\-Info\-Aux()}{p.}{cuddApprox_8c_52ef9bff746f26b7676a9b6bf306aff0} \item \doxyref{gather\-Info()}{p.}{cuddApprox_8c_e44b2baafcdc4ec512e949ca16c527e8} \item \doxyref{compute\-Savings()}{p.}{cuddApprox_8c_fdfefa6bdb3878c328ba8fafa81794d1} \item \doxyref{UAmark\-Nodes()}{p.}{cuddApprox_8c_725a9cfe2c41f58f7f9f6ef1476965a8} \item \doxyref{UAbuild\-Subset()}{p.}{cuddApprox_8c_a7917aa7316c2bd90322cd38efe86043} \item \doxyref{update\-Refs()}{p.}{cuddApprox_8c_8db9c0f4accec76346cfba7cf37070a3} \item \doxyref{RAmark\-Nodes()}{p.}{cuddApprox_8c_5cbc7c83d55240241ce3316405b46a7a} \item \doxyref{RAbuild\-Subset()}{p.}{cuddApprox_8c_2a86508a00e350303c4d38de496dc03f} \end{itemize}
+]
+
+See\-Also [\doxyref{cudd\-Subset\-HB.c}{p.}{cuddSubsetHB_8c} \doxyref{cudd\-Subset\-SP.c}{p.}{cuddSubsetSP_8c} \doxyref{cudd\-Gen\-Cof.c}{p.}{cuddGenCof_8c}]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 51 of file cudd\-Approx.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), and gather\-Info().\index{cuddApprox.c@{cudd\-Approx.c}!NOTHING@{NOTHING}}
+\index{NOTHING@{NOTHING}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NOTHING~0}\label{cuddApprox_8c_ad4a7ebff687dc5228cc3fd4d25067f2}
+
+
+
+
+Definition at line 61 of file cudd\-Approx.c.
+
+Referenced by RAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!REPLACE_E@{REPLACE\_\-E}}
+\index{REPLACE_E@{REPLACE\_\-E}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-E~2}\label{cuddApprox_8c_c0f4c5f60b46c48f9ba8d940e91e936b}
+
+
+
+
+Definition at line 63 of file cudd\-Approx.c.
+
+Referenced by RAbuild\-Subset(), and RAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!REPLACE_N@{REPLACE\_\-N}}
+\index{REPLACE_N@{REPLACE\_\-N}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-N~3}\label{cuddApprox_8c_8730fda1e81e2be695fc98b7ea56b1d0}
+
+
+
+
+Definition at line 64 of file cudd\-Approx.c.
+
+Referenced by RAbuild\-Subset(), and RAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!REPLACE_T@{REPLACE\_\-T}}
+\index{REPLACE_T@{REPLACE\_\-T}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-T~1}\label{cuddApprox_8c_bfdeecb8041ec64c51bf6ac8ada9b85f}
+
+
+
+
+Definition at line 62 of file cudd\-Approx.c.
+
+Referenced by RAbuild\-Subset(), and RAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!REPLACE_TE@{REPLACE\_\-TE}}
+\index{REPLACE_TE@{REPLACE\_\-TE}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-TE~5}\label{cuddApprox_8c_887382ed988ce99032ca7190eb6cc0c8}
+
+
+
+
+Definition at line 66 of file cudd\-Approx.c.
+
+Referenced by RAbuild\-Subset(), and RAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!REPLACE_TT@{REPLACE\_\-TT}}
+\index{REPLACE_TT@{REPLACE\_\-TT}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REPLACE\_\-TT~4}\label{cuddApprox_8c_f328b37c5dce977e36a8cad72a5a5075}
+
+
+
+
+Definition at line 65 of file cudd\-Approx.c.
+
+Referenced by RAbuild\-Subset(), and RAmark\-Nodes().
+
+\subsection{Function Documentation}
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int RAmark\-Nodes ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, double quality))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_c953d7de72c57b3484675f447d7b597c}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node} $\ast$RAbuild\-Subset ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_e1758767ce85c1dcce2c818f8270850e}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int UAmark\-Nodes ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Approx\-Info} $\ast$info, int threshold, int safe, double quality))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_7a1370c0e7161b49a3adf6184242ae14}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-Refs ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$skip, \bf{Approx\-Info} $\ast$info, \bf{Dd\-Level\-Queue} $\ast$queue))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_9249829a35f5a0d91569e7bb61e24a8e}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Approx\-Info}$\ast$ gather\-Info ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int num\-Vars, int parity))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_3de6689312941b89c840c773ab1f761d}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Node\-Data}$\ast$ gather\-Info\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int parity))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_4c950de1d7cff6671894e8efdc04cec5}
+
+
+\index{cuddApprox.c@{cudd\-Approx.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void update\-Parity ARGS ((\bf{Dd\-Node} $\ast$node, \bf{Approx\-Info} $\ast$info, int newparity))\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_5aa1e875949075e457febe70380caec1}
+
+
+Automatic\-Start \index{cuddApprox.c@{cudd\-Approx.c}!computeSavings@{computeSavings}}
+\index{computeSavings@{computeSavings}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int compute\-Savings (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em skip}, \bf{Approx\-Info} $\ast$ {\em info}, \bf{Dd\-Level\-Queue} $\ast$ {\em queue})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_fdfefa6bdb3878c328ba8fafa81794d1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the nodes that would be eliminated if a given node were replaced by zero.]
+
+Description [Counts the nodes that would be eliminated if a given node were replaced by zero. This procedure uses a queue passed by the caller for efficiency: since the queue is left empty at the endof the search, it can be reused as is by the next search. Returns the count (always striclty positive) if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Under\-Approx] 
+
+Definition at line 748 of file cudd\-Approx.c.
+
+References assert, Cudd\_\-Is\-Constant, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-Level\-Queue\-Dequeue(), cudd\-Level\-Queue\-Enqueue(), cudd\-T, Dd\-Level\-Queue::first, Dd\-Node::index, Local\-Queue\-Item::local\-Ref, Local\-Queue\-Item::node, Dd\-Level\-Queue::size, st\_\-lookup(), and Approx\-Info::table.
+
+Referenced by RAmark\-Nodes(), and UAmark\-Nodes().\index{cuddApprox.c@{cudd\-Approx.c}!Cudd_OverApprox@{Cudd\_\-OverApprox}}
+\index{Cudd_OverApprox@{Cudd\_\-OverApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Over\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em safe}, double {\em quality})}\label{cuddApprox_8c_09e725e579f19ac3e946c04cfdde95f0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense superset from a BDD with Shiple's underapproximation method.]
+
+Description [Extracts a dense superset from a BDD. The procedure is identical to the underapproximation procedure except for the fact that it works on the complement of the given function. Extracting the subset of the complement function is equivalent to extracting the superset of the function. Returns a pointer to the BDD of the superset if successful. NULL if intermediate result causes the procedure to run out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Superset\-Heavy\-Branch Cudd\_\-Superset\-Short\-Paths Cudd\_\-Read\-Size] 
+
+Definition at line 236 of file cudd\-Approx.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, cudd\-Under\-Approx(), and Dd\-Manager::reordered.\index{cuddApprox.c@{cudd\-Approx.c}!Cudd_RemapOverApprox@{Cudd\_\-RemapOverApprox}}
+\index{Cudd_RemapOverApprox@{Cudd\_\-RemapOverApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Remap\-Over\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, double {\em quality})}\label{cuddApprox_8c_88270c8ded877c10677d563b7041df38}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense superset from a BDD with Shiple's underapproximation method.]
+
+Description [Extracts a dense superset from a BDD. The procedure is identical to the underapproximation procedure except for the fact that it works on the complement of the given function. Extracting the subset of the complement function is equivalent to extracting the superset of the function. Returns a pointer to the BDD of the superset if successful. NULL if intermediate result causes the procedure to run out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Superset\-Heavy\-Branch Cudd\_\-Superset\-Short\-Paths Cudd\_\-Read\-Size] 
+
+Definition at line 326 of file cudd\-Approx.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, cudd\-Remap\-Under\-Approx(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), and Cudd\_\-bdd\-Minimize().\index{cuddApprox.c@{cudd\-Approx.c}!Cudd_RemapUnderApprox@{Cudd\_\-RemapUnderApprox}}
+\index{Cudd_RemapUnderApprox@{Cudd\_\-RemapUnderApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Remap\-Under\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, double {\em quality})}\label{cuddApprox_8c_05f3e8b16e5df2eb681a68e6ee6906f3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense subset from a BDD with remapping underapproximation method.]
+
+Description [Extracts a dense subset from a BDD. This procedure uses a remapping technique and density as the cost function. Returns a pointer to the BDD of the subset if successful. NULL if the procedure runs out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will cause overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Short\-Paths Cudd\_\-Subset\-Heavy\-Branch Cudd\_\-Under\-Approx Cudd\_\-Read\-Size] 
+
+Definition at line 281 of file cudd\-Approx.c.
+
+References cudd\-Remap\-Under\-Approx(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-Subset\-Compress().\index{cuddApprox.c@{cudd\-Approx.c}!Cudd_UnderApprox@{Cudd\_\-UnderApprox}}
+\index{Cudd_UnderApprox@{Cudd\_\-UnderApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Under\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em safe}, double {\em quality})}\label{cuddApprox_8c_9381231f34573676e814bb696b2321c9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense subset from a BDD with Shiple's underapproximation method.]
+
+Description [Extracts a dense subset from a BDD. This procedure uses a variant of Tom Shiple's underapproximation method. The main difference from the original method is that density is used as cost function. Returns a pointer to the BDD of the subset if successful. NULL if the procedure runs out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will cause overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Short\-Paths Cudd\_\-Subset\-Heavy\-Branch Cudd\_\-Read\-Size] 
+
+Definition at line 189 of file cudd\-Approx.c.
+
+References cudd\-Under\-Approx(), and Dd\-Manager::reordered.\index{cuddApprox.c@{cudd\-Approx.c}!cuddRemapUnderApprox@{cuddRemapUnderApprox}}
+\index{cuddRemapUnderApprox@{cuddRemapUnderApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Remap\-Under\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, double {\em quality})}\label{cuddApprox_8c_fd6a96316d8465015470b02486ffaa86}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Applies the remapping underappoximation algorithm.]
+
+Description [Applies the remapping underappoximation algorithm. Proceeds in three phases: \begin{itemize}
+\item collect information on each node in the BDD; this is done via DFS. \item traverse the BDD in top-down fashion and compute for each node whether remapping increases density. \item traverse the BDD via DFS and actually perform the elimination. \end{itemize}
+Returns the approximated BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Remap\-Under\-Approx] 
+
+Definition at line 458 of file cudd\-Approx.c.
+
+References Cudd\_\-bdd\-Leq(), Cudd\_\-Check\-Keys(), Cudd\_\-Dag\-Size(), Cudd\_\-Debug\-Check(), Cudd\_\-Is\-Constant, cudd\-Deref, cudd\-Ref, FREE, gather\-Info(), Approx\-Info::page, RAbuild\-Subset(), RAmark\-Nodes(), result, Approx\-Info::size, st\_\-free\_\-table(), Approx\-Info::table, and TRUE.
+
+Referenced by Cudd\_\-Remap\-Over\-Approx(), and Cudd\_\-Remap\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!cuddUnderApprox@{cuddUnderApprox}}
+\index{cuddUnderApprox@{cuddUnderApprox}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Under\-Approx (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em safe}, double {\em quality})}\label{cuddApprox_8c_9f4ad4116db7673ca7b4b829ecb7197b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Applies Tom Shiple's underappoximation algorithm.]
+
+Description [Applies Tom Shiple's underappoximation algorithm. Proceeds in three phases: \begin{itemize}
+\item collect information on each node in the BDD; this is done via DFS. \item traverse the BDD in top-down fashion and compute for each node whether its elimination increases density. \item traverse the BDD via DFS and actually perform the elimination. \end{itemize}
+Returns the approximated BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Under\-Approx] 
+
+Definition at line 371 of file cudd\-Approx.c.
+
+References Cudd\_\-bdd\-Leq(), Cudd\_\-Check\-Keys(), Cudd\_\-Dag\-Size(), Cudd\_\-Debug\-Check(), Cudd\_\-Is\-Constant, cudd\-Deref, cudd\-Ref, FREE, gather\-Info(), Approx\-Info::page, result, Approx\-Info::size, st\_\-free\_\-table(), Approx\-Info::table, UAbuild\-Subset(), and UAmark\-Nodes().
+
+Referenced by Cudd\_\-Over\-Approx(), and Cudd\_\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!gatherInfo@{gatherInfo}}
+\index{gatherInfo@{gatherInfo}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Approx\-Info}$\ast$ gather\-Info (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em num\-Vars}, int {\em parity})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_e44b2baafcdc4ec512e949ca16c527e8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Gathers information about each node.]
+
+Description [Counts minterms and computes reference counts of each node in the BDD . The minterm count is separately computed for the node and its complement. This is to avoid cancellation errors. Returns a pointer to the data structure holding the information gathered if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Under\-Approx gather\-Info\-Aux] 
+
+Definition at line 654 of file cudd\-Approx.c.
+
+References ALLOC, Cudd\_\-Dag\-Size(), Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, DBL\_\-MAX\_\-EXP, DD\_\-ONE, Dd\-Manager::error\-Code, FREE, Node\-Data::function\-Ref, gather\-Info\-Aux(), Approx\-Info::index, Approx\-Info::max, memset(), Approx\-Info::minterms, Node\-Data::minterms\-N, Node\-Data::minterms\-P, Local\-Queue\-Item::node, Approx\-Info::one, Approx\-Info::page, Approx\-Info::size, st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-insert(), ST\_\-OUT\_\-OF\_\-MEM, st\_\-ptrcmp(), st\_\-ptrhash(), Approx\-Info::table, and Approx\-Info::zero.
+
+Referenced by cudd\-Remap\-Under\-Approx(), and cudd\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!gatherInfoAux@{gatherInfoAux}}
+\index{gatherInfoAux@{gatherInfoAux}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Node\-Data}$\ast$ gather\-Info\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, \bf{Approx\-Info} $\ast$ {\em info}, int {\em parity})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_52ef9bff746f26b7676a9b6bf306aff0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursively counts minterms and computes reference counts of each node in the BDD.]
+
+Description [Recursively counts minterms and computes reference counts of each node in the BDD. Similar to the cudd\-Count\-Minterm\-Aux which recursively counts the number of minterms for the dag rooted at each node in terms of the total number of variables (max). It assumes that the node pointer passed to it is regular and it maintains the invariant.]
+
+Side\-Effects [None]
+
+See\-Also [gather\-Info] 
+
+Definition at line 584 of file cudd\-Approx.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-E, cudd\-T, Node\-Data::function\-Ref, Approx\-Info::index, Node\-Data::minterms\-N, Node\-Data::minterms\-P, Local\-Queue\-Item::node, Approx\-Info::page, st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, Approx\-Info::table, and update\-Parity().
+
+Referenced by gather\-Info().\index{cuddApprox.c@{cudd\-Approx.c}!RAbuildSubset@{RAbuildSubset}}
+\index{RAbuildSubset@{RAbuildSubset}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ RAbuild\-Subset (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, \bf{Approx\-Info} $\ast$ {\em info})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_2a86508a00e350303c4d38de496dc03f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the subset BDD for cudd\-Remap\-Under\-Approx.]
+
+Description [Builds the subset BDDfor cudd\-Remap\-Under\-Approx. Based on the info table, performs remapping or replacement at selected nodes. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Remap\-Under\-Approx] 
+
+Definition at line 1432 of file cudd\-Approx.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), Local\-Queue\-Item::node, Approx\-Info::one, REPLACE\_\-E, REPLACE\_\-N, REPLACE\_\-T, REPLACE\_\-TE, REPLACE\_\-TT, st\_\-lookup(), Approx\-Info::table, and Approx\-Info::zero.
+
+Referenced by cudd\-Remap\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!RAmarkNodes@{RAmarkNodes}}
+\index{RAmarkNodes@{RAmarkNodes}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int RAmark\-Nodes (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Approx\-Info} $\ast$ {\em info}, int {\em threshold}, double {\em quality})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_5cbc7c83d55240241ce3316405b46a7a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Marks nodes for remapping.]
+
+Description [Marks nodes for remapping. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Remap\-Under\-Approx] 
+
+Definition at line 1118 of file cudd\-Approx.c.
+
+References assert, compute\-Savings(), Cudd\_\-bdd\-Leq(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not\-Cond, Cudd\_\-Regular, CUDD\_\-UNIQUE\_\-SLOTS, cudd\-E, cudd\-I, cudd\-Level\-Queue\-Dequeue(), cudd\-Level\-Queue\-Enqueue(), cudd\-Level\-Queue\-Init(), cudd\-Level\-Queue\-Quit(), cudd\-T, Dd\-Level\-Queue::first, Global\-Queue\-Item::impact\-N, Global\-Queue\-Item::impact\-P, Dd\-Node::index, Approx\-Info::minterms, Global\-Queue\-Item::node, Local\-Queue\-Item::node, NOTHING, REPLACE\_\-E, REPLACE\_\-N, REPLACE\_\-T, REPLACE\_\-TE, REPLACE\_\-TT, Dd\-Manager::size, Approx\-Info::size, st\_\-lookup(), Approx\-Info::table, and update\-Refs().
+
+Referenced by cudd\-Remap\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!UAbuildSubset@{UAbuildSubset}}
+\index{UAbuildSubset@{UAbuildSubset}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ UAbuild\-Subset (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, \bf{Approx\-Info} $\ast$ {\em info})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_a7917aa7316c2bd90322cd38efe86043}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the subset BDD.]
+
+Description [Builds the subset BDD. Based on the info table, replaces selected nodes by zero. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Under\-Approx] 
+
+Definition at line 1025 of file cudd\-Approx.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), Local\-Queue\-Item::node, st\_\-lookup(), Approx\-Info::table, TRUE, and Approx\-Info::zero.
+
+Referenced by cudd\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!UAmarkNodes@{UAmarkNodes}}
+\index{UAmarkNodes@{UAmarkNodes}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int UAmark\-Nodes (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Approx\-Info} $\ast$ {\em info}, int {\em threshold}, int {\em safe}, double {\em quality})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_725a9cfe2c41f58f7f9f6ef1476965a8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Marks nodes for replacement by zero.]
+
+Description [Marks nodes for replacement by zero. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Under\-Approx] 
+
+Definition at line 901 of file cudd\-Approx.c.
+
+References assert, compute\-Savings(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Regular, CUDD\_\-UNIQUE\_\-SLOTS, cudd\-E, cudd\-I, cudd\-Level\-Queue\-Dequeue(), cudd\-Level\-Queue\-Enqueue(), cudd\-Level\-Queue\-Init(), cudd\-Level\-Queue\-Quit(), cudd\-T, Dd\-Level\-Queue::first, Global\-Queue\-Item::impact\-N, Global\-Queue\-Item::impact\-P, Dd\-Node::index, Approx\-Info::minterms, Global\-Queue\-Item::node, Local\-Queue\-Item::node, Dd\-Manager::size, Approx\-Info::size, st\_\-lookup(), Approx\-Info::table, TRUE, and update\-Refs().
+
+Referenced by cudd\-Under\-Approx().\index{cuddApprox.c@{cudd\-Approx.c}!updateParity@{updateParity}}
+\index{updateParity@{updateParity}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void update\-Parity (\bf{Dd\-Node} $\ast$ {\em node}, \bf{Approx\-Info} $\ast$ {\em info}, int {\em newparity})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_786a1a3993926ee9220dd8871202b9c0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursively update the parity of the paths reaching a node.]
+
+Description [Recursively update the parity of the paths reaching a node. Assumes that node is regular and propagates the invariant.]
+
+Side\-Effects [None]
+
+See\-Also [gather\-Info\-Aux] 
+
+Definition at line 542 of file cudd\-Approx.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, cudd\-E, cudd\-T, Local\-Queue\-Item::node, st\_\-lookup(), and Approx\-Info::table.
+
+Referenced by gather\-Info\-Aux().\index{cuddApprox.c@{cudd\-Approx.c}!updateRefs@{updateRefs}}
+\index{updateRefs@{updateRefs}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int update\-Refs (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em skip}, \bf{Approx\-Info} $\ast$ {\em info}, \bf{Dd\-Level\-Queue} $\ast$ {\em queue})\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_8db9c0f4accec76346cfba7cf37070a3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Update function reference counts.]
+
+Description [Update function reference counts to account for replacement. Returns the number of nodes saved if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [UAmark\-Nodes RAmark\-Nodes] 
+
+Definition at line 820 of file cudd\-Approx.c.
+
+References assert, Cudd\_\-Is\-Constant, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-Level\-Queue\-Dequeue(), cudd\-Level\-Queue\-Enqueue(), cudd\-T, Dd\-Level\-Queue::first, Dd\-Node::index, Local\-Queue\-Item::node, Dd\-Level\-Queue::size, st\_\-lookup(), and Approx\-Info::table.
+
+Referenced by RAmark\-Nodes(), and UAmark\-Nodes().
+
+\subsection{Variable Documentation}
+\index{cuddApprox.c@{cudd\-Approx.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddApprox.c@{cudd\-Approx.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Approx.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddApprox_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 134 of file cudd\-Approx.c.

@@ -1,0 +1,626 @@
+\section{RU\_\-manager.c File Reference}
+\label{RU__manager_8c}\index{RU_manager.c@{RU\_\-manager.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdarg.h$>$}\par
+{\tt \#include \char`\"{}l\_\-schedule.h\char`\"{}}\par
+{\tt \#include \char`\"{}old\_\-sm.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{ERR}~stdout
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{RU\_\-set\_\-max\_\-pred} (int max)
+\item 
+int $\ast$ \bf{RU\_\-pred\_\-alloc} ()
+\item 
+void \bf{RU\_\-pred\_\-free} (int $\ast$ptr)
+\item 
+void \bf{RU\_\-pred\_\-print\_\-alloc\_\-data} (FILE $\ast$\bf{F}, int \bf{verbose})
+\item 
+\bf{RU\_\-Info} $\ast$ \bf{RU\_\-info\_\-alloc} ()
+\item 
+void \bf{RU\_\-info\_\-free} (\bf{RU\_\-Info} $\ast$ptr)
+\item 
+void \bf{RU\_\-info\_\-print\_\-alloc\_\-data} (FILE $\ast$\bf{F}, int \bf{verbose})
+\item 
+\bf{RU\_\-Info} $\ast$ \bf{RU\_\-info\_\-create} (L\_\-Oper $\ast$op, int $\ast$pred)
+\item 
+void \bf{RU\_\-info\_\-delete} (\bf{RU\_\-Info} $\ast$info)
+\item 
+\bf{RU\_\-Node} $\ast$ \bf{RU\_\-node\_\-alloc} ()
+\item 
+void \bf{RU\_\-node\_\-free} (\bf{RU\_\-Node} $\ast$ptr)
+\item 
+void \bf{RU\_\-node\_\-print\_\-alloc\_\-data} (FILE $\ast$\bf{F}, int \bf{verbose})
+\item 
+\bf{RU\_\-Node} $\ast$ \bf{RU\_\-node\_\-create} (\bf{RU\_\-Info} $\ast$info)
+\item 
+void \bf{RU\_\-node\_\-delete} (\bf{RU\_\-Map} $\ast$map, \bf{RU\_\-Node} $\ast$\bf{node})
+\item 
+void \bf{RU\_\-node\_\-delete\_\-all} (\bf{RU\_\-Node} $\ast$\bf{list})
+\item 
+void \bf{RU\_\-node\_\-insert\_\-before} (\bf{RU\_\-Map} $\ast$map, \bf{RU\_\-Node} $\ast$before\_\-node, \bf{RU\_\-Node} $\ast$\bf{node})
+\item 
+void \bf{RU\_\-node\_\-insert\_\-after} (\bf{RU\_\-Map} $\ast$map, \bf{RU\_\-Node} $\ast$after\_\-node, \bf{RU\_\-Node} $\ast$\bf{node})
+\item 
+\bf{RU\_\-Node} $\ast$ \bf{RU\_\-node\_\-find} (\bf{RU\_\-Node} $\ast$\bf{list}, \bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Rused $\ast$rused)
+\item 
+void \bf{RU\_\-map\_\-create} (int length)
+\item 
+void \bf{RU\_\-map\_\-realloc} ()
+\item 
+void \bf{RU\_\-map\_\-init} (int \bf{mode}, int cycles)
+\item 
+void \bf{RU\_\-map\_\-delete} ()
+\item 
+int \bf{RU\_\-number\_\-of\_\-alts} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int flags)
+\item 
+static int \bf{RU\_\-find\_\-resource\_\-index} (Mdes\_\-Rmask $\ast$mask)
+\item 
+static int \bf{RU\_\-find\_\-max} (int $\ast$ru\_\-count)
+\item 
+void \bf{RU\_\-update\_\-usage\_\-count} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int $\ast$ru\_\-count, int flags)
+\item 
+int \bf{RU\_\-alt\_\-flags\_\-compatible} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Alt $\ast$alt, int flags)
+\item 
+int \bf{RU\_\-can\_\-place} (int time, Mdes\_\-Rused $\ast$rused, int option\_\-num)
+\item 
+void \bf{RU\_\-place} (int time, Mdes\_\-Rused $\ast$rused, int option\_\-num, \bf{RU\_\-Info} $\ast$ru\_\-info)
+\item 
+void \bf{RU\_\-unplace} (int time, Mdes\_\-Rused $\ast$rused, \bf{RU\_\-Info} $\ast$ru\_\-info)
+\item 
+int \bf{RU\_\-schedule\_\-op} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int $\ast$operand\_\-ready\_\-times, int issue\_\-time, int earliest\_\-slot, int latest\_\-slot, int flags)
+\item 
+int \bf{RU\_\-schedule\_\-op\_\-reverse} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int $\ast$operand\_\-ready\_\-times, int issue\_\-time, int earliest\_\-slot, int latest\_\-slot, int flags)
+\item 
+int \bf{RU\_\-can\_\-schedule\_\-op} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int $\ast$operand\_\-ready\_\-times, int issue\_\-time, int earliest\_\-slot, int latest\_\-slot, int flags)
+\item 
+int \bf{RU\_\-schedule\_\-op\_\-at} (\bf{RU\_\-Info} $\ast$ru\_\-info, Mdes\_\-Info $\ast$mdes\_\-info, int $\ast$operand\_\-ready\_\-times, int issue\_\-time, int slot, int flags)
+\item 
+void \bf{RU\_\-unschedule\_\-op} (\bf{RU\_\-Info} $\ast$ru\_\-info)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{RU\_\-max\_\-pred} = 0
+\item 
+int \bf{RU\_\-pred\_\-alloc\_\-target\_\-size} = 128
+\item 
+static \bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-pred\_\-alloc\_\-data} = \{0, 0, 0\}
+\item 
+int \bf{RU\_\-info\_\-alloc\_\-target\_\-size} = 128
+\item 
+static \bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-info\_\-alloc\_\-data} = \{0, 0, 0\}
+\item 
+int \bf{RU\_\-node\_\-alloc\_\-target\_\-size} = 128
+\item 
+static \bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-node\_\-alloc\_\-data} = \{0, 0, 0\}
+\item 
+\bf{RU\_\-Map} $\ast$ \bf{RU\_\-map} = \bf{NULL}
+\item 
+int \bf{RU\_\-map\_\-length} = 0
+\item 
+int \bf{RU\_\-map\_\-mode} = -1
+\item 
+int \bf{RU\_\-map\_\-cycles} = -1
+\item 
+int $\ast$ \bf{RU\_\-mask} = \bf{NULL}
+\item 
+int \bf{RU\_\-mask\_\-width} = -1
+\item 
+\bf{OLD\_\-SM\_\-Cb} $\ast$ \bf{RU\_\-sm\_\-cb} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{RU_manager.c@{RU\_\-manager.c}!ERR@{ERR}}
+\index{ERR@{ERR}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ERR~stdout}\label{RU__manager_8c_735563036dced0b7d6cc98f97ea4978b}
+
+
+
+
+Definition at line 77 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-can\_\-schedule\_\-op(), RU\_\-map\_\-create(), RU\_\-map\_\-realloc(), RU\_\-place(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), and RU\_\-schedule\_\-op\_\-reverse().
+
+\subsection{Function Documentation}
+\index{RU_manager.c@{RU\_\-manager.c}!RU_alt_flags_compatible@{RU\_\-alt\_\-flags\_\-compatible}}
+\index{RU_alt_flags_compatible@{RU\_\-alt\_\-flags\_\-compatible}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-alt\_\-flags\_\-compatible (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Alt $\ast$ {\em alt}, int {\em flags})}\label{RU__manager_8c_279cb324520a5ca67d29a98a6e04fa75}
+
+
+
+
+Definition at line 963 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Info::proc\_\-opc.
+
+Referenced by RU\_\-can\_\-schedule\_\-op(), RU\_\-number\_\-of\_\-alts(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), RU\_\-schedule\_\-op\_\-reverse(), and RU\_\-update\_\-usage\_\-count().\index{RU_manager.c@{RU\_\-manager.c}!RU_can_place@{RU\_\-can\_\-place}}
+\index{RU_can_place@{RU\_\-can\_\-place}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-can\_\-place (int {\em time}, Mdes\_\-Rused $\ast$ {\em rused}, int {\em option\_\-num})}\label{RU__manager_8c_559445243def88381c49a1d653f25e77}
+
+
+
+
+Definition at line 982 of file RU\_\-manager.c.
+
+References ERR, \_\-RU\_\-Map::mask, RU\_\-map, RU\_\-map\_\-cycles, RU\_\-map\_\-length, RU\_\-map\_\-mode, RU\_\-map\_\-realloc(), RU\_\-mask\_\-width, and RU\_\-MODE\_\-CYCLIC.
+
+Referenced by RU\_\-can\_\-schedule\_\-op(), RU\_\-schedule\_\-op(), and RU\_\-schedule\_\-op\_\-at().\index{RU_manager.c@{RU\_\-manager.c}!RU_can_schedule_op@{RU\_\-can\_\-schedule\_\-op}}
+\index{RU_can_schedule_op@{RU\_\-can\_\-schedule\_\-op}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-can\_\-schedule\_\-op (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int $\ast$ {\em operand\_\-ready\_\-times}, int {\em issue\_\-time}, int {\em earliest\_\-slot}, int {\em latest\_\-slot}, int {\em flags})}\label{RU__manager_8c_2a33fab35682d96de7b2bf14a3d3ce51}
+
+
+
+
+Definition at line 1667 of file RU\_\-manager.c.
+
+References DEBUG, ERR, Lsched\_\-prepass, NULL, OLD\_\-SM\_\-sched\_\-table(), \_\-RU\_\-Info::op, RU\_\-alt\_\-flags\_\-compatible(), RU\_\-can\_\-place(), RU\_\-mask\_\-width, and RU\_\-sm\_\-cb.
+
+Referenced by Lsched\_\-can\_\-schedule\_\-op().\index{RU_manager.c@{RU\_\-manager.c}!RU_find_max@{RU\_\-find\_\-max}}
+\index{RU_find_max@{RU\_\-find\_\-max}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int RU\_\-find\_\-max (int $\ast$ {\em ru\_\-count})\hspace{0.3cm}{\tt  [static]}}\label{RU__manager_8c_865b549327e21580cf97523f09713419}
+
+
+
+
+Definition at line 825 of file RU\_\-manager.c.
+
+References NULL.
+
+Referenced by RU\_\-update\_\-usage\_\-count().\index{RU_manager.c@{RU\_\-manager.c}!RU_find_resource_index@{RU\_\-find\_\-resource\_\-index}}
+\index{RU_find_resource_index@{RU\_\-find\_\-resource\_\-index}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int RU\_\-find\_\-resource\_\-index (Mdes\_\-Rmask $\ast$ {\em mask})\hspace{0.3cm}{\tt  [static]}}\label{RU__manager_8c_eb113fdbde35088a445fb114cb393d4a}
+
+
+
+
+Definition at line 778 of file RU\_\-manager.c.
+
+References NULL.
+
+Referenced by RU\_\-update\_\-usage\_\-count().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_alloc@{RU\_\-info\_\-alloc}}
+\index{RU_info_alloc@{RU\_\-info\_\-alloc}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Info}$\ast$ RU\_\-info\_\-alloc ()}\label{RU__manager_8c_e25d4f480fef627b2aa2c3c0f0dd7f6a}
+
+
+
+
+Definition at line 203 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, RU\_\-info\_\-alloc\_\-data, and RU\_\-info\_\-alloc\_\-target\_\-size.
+
+Referenced by RU\_\-info\_\-create().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_create@{RU\_\-info\_\-create}}
+\index{RU_info_create@{RU\_\-info\_\-create}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Info}$\ast$ RU\_\-info\_\-create (L\_\-Oper $\ast$ {\em op}, int $\ast$ {\em pred})}\label{RU__manager_8c_29762a07dba8b05f2473077e4a60dc59}
+
+
+
+
+Definition at line 302 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Info::issue\_\-time, NULL, \_\-RU\_\-Info::op, \_\-RU\_\-Info::pred, RU\_\-info\_\-alloc(), \_\-RU\_\-Info::selected\_\-alt, and \_\-RU\_\-Info::slot\_\-used.
+
+Referenced by L\_\-create\_\-ru\_\-info\_\-oper().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_delete@{RU\_\-info\_\-delete}}
+\index{RU_info_delete@{RU\_\-info\_\-delete}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-info\_\-delete (\bf{RU\_\-Info} $\ast$ {\em info})}\label{RU__manager_8c_ae07a2cb1d5ab3c87d9bc65533e6618b}
+
+
+
+
+Definition at line 316 of file RU\_\-manager.c.
+
+References NULL, \_\-RU\_\-Info::op, \_\-RU\_\-Info::pred, RU\_\-info\_\-free(), RU\_\-pred\_\-free(), and \_\-RU\_\-Info::selected\_\-alt.
+
+Referenced by L\_\-delete\_\-ru\_\-info\_\-oper().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_free@{RU\_\-info\_\-free}}
+\index{RU_info_free@{RU\_\-info\_\-free}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-info\_\-free (\bf{RU\_\-Info} $\ast$ {\em ptr})}\label{RU__manager_8c_9fde0ac1f37deeb5971b5e79ab69022f}
+
+
+
+
+Definition at line 266 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, and RU\_\-info\_\-alloc\_\-data.
+
+Referenced by RU\_\-info\_\-delete().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_print_alloc_data@{RU\_\-info\_\-print\_\-alloc\_\-data}}
+\index{RU_info_print_alloc_data@{RU\_\-info\_\-print\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-info\_\-print\_\-alloc\_\-data (FILE $\ast$ {\em F}, int {\em verbose})}\label{RU__manager_8c_e39d950d620a4bfdd3872cc8d122995d}
+
+
+
+
+Definition at line 292 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, and RU\_\-info\_\-alloc\_\-data.\index{RU_manager.c@{RU\_\-manager.c}!RU_map_create@{RU\_\-map\_\-create}}
+\index{RU_map_create@{RU\_\-map\_\-create}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-map\_\-create (int {\em length})}\label{RU__manager_8c_8ee2628e7e9d01b3fd92ba1863a997c6}
+
+
+
+
+Definition at line 563 of file RU\_\-manager.c.
+
+References ERR, \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, \_\-RU\_\-Map::mask, NULL, RU\_\-map, RU\_\-MAP\_\-DEFAULT\_\-SIZE, RU\_\-map\_\-length, RU\_\-mask, and RU\_\-mask\_\-width.
+
+Referenced by Lsched\_\-init().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_delete@{RU\_\-map\_\-delete}}
+\index{RU_map_delete@{RU\_\-map\_\-delete}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-map\_\-delete ()}\label{RU__manager_8c_d1c9b9ac585b8b3b21b3333341b3ea64}
+
+
+
+
+Definition at line 723 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, NULL, RU\_\-map, RU\_\-map\_\-length, RU\_\-mask, and RU\_\-node\_\-delete\_\-all().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_init@{RU\_\-map\_\-init}}
+\index{RU_map_init@{RU\_\-map\_\-init}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-map\_\-init (int {\em mode}, int {\em cycles})}\label{RU__manager_8c_9fd19f8a47592bd1bf712ea4aa1ac59c}
+
+
+
+
+Definition at line 663 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, NULL, OLD\_\-SM\_\-delete\_\-cb(), OLD\_\-SM\_\-new\_\-cb(), OLD\_\-SM\_\-print\_\-map(), RU\_\-map, RU\_\-map\_\-cycles, RU\_\-map\_\-length, RU\_\-map\_\-mode, RU\_\-mask\_\-width, RU\_\-MODE\_\-CYCLIC, RU\_\-node\_\-delete\_\-all(), and RU\_\-sm\_\-cb.
+
+Referenced by Lsched\_\-schedule\_\-block().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_realloc@{RU\_\-map\_\-realloc}}
+\index{RU_map_realloc@{RU\_\-map\_\-realloc}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-map\_\-realloc ()}\label{RU__manager_8c_8d236d81b60c9e8059d44b25b79f0d7b}
+
+
+
+
+Definition at line 603 of file RU\_\-manager.c.
+
+References ERR, \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, \_\-RU\_\-Map::mask, NULL, RU\_\-map, RU\_\-map\_\-length, RU\_\-mask, RU\_\-mask\_\-width, and RU\_\-sm\_\-cb.
+
+Referenced by RU\_\-can\_\-place(), and RU\_\-place().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_alloc@{RU\_\-node\_\-alloc}}
+\index{RU_node_alloc@{RU\_\-node\_\-alloc}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Node}$\ast$ RU\_\-node\_\-alloc ()}\label{RU__manager_8c_a889b1b89b178b55414274fe9e308863}
+
+
+
+
+Definition at line 338 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, RU\_\-node\_\-alloc\_\-data, and RU\_\-node\_\-alloc\_\-target\_\-size.
+
+Referenced by RU\_\-node\_\-create().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_create@{RU\_\-node\_\-create}}
+\index{RU_node_create@{RU\_\-node\_\-create}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Node}$\ast$ RU\_\-node\_\-create (\bf{RU\_\-Info} $\ast$ {\em info})}\label{RU__manager_8c_a315764809eb265c289f574a6e007dea}
+
+
+
+
+Definition at line 437 of file RU\_\-manager.c.
+
+References node, NULL, and RU\_\-node\_\-alloc().
+
+Referenced by RU\_\-place().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_delete@{RU\_\-node\_\-delete}}
+\index{RU_node_delete@{RU\_\-node\_\-delete}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-delete (\bf{RU\_\-Map} $\ast$ {\em map}, \bf{RU\_\-Node} $\ast$ {\em node})}\label{RU__manager_8c_c88c4d3a796e4c8b83832f18e219e084}
+
+
+
+
+Definition at line 451 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, \_\-RU\_\-Node::next\_\-node, node, NULL, \_\-RU\_\-Node::prev\_\-node, and RU\_\-node\_\-free().
+
+Referenced by RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_delete_all@{RU\_\-node\_\-delete\_\-all}}
+\index{RU_node_delete_all@{RU\_\-node\_\-delete\_\-all}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-delete\_\-all (\bf{RU\_\-Node} $\ast$ {\em list})}\label{RU__manager_8c_8f707464bf5da98622a5bad82a0f42ae}
+
+
+
+
+Definition at line 485 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Node::next\_\-node, NULL, \_\-RU\_\-Node::prev\_\-node, and RU\_\-node\_\-free().
+
+Referenced by RU\_\-map\_\-delete(), and RU\_\-map\_\-init().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_find@{RU\_\-node\_\-find}}
+\index{RU_node_find@{RU\_\-node\_\-find}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Node}$\ast$ RU\_\-node\_\-find (\bf{RU\_\-Node} $\ast$ {\em list}, \bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Rused $\ast$ {\em rused})}\label{RU__manager_8c_8bc3a24cb101b8e888e5ca4cdcdd46cd}
+
+
+
+
+Definition at line 533 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Node::info, \_\-RU\_\-Node::next\_\-node, NULL, and \_\-RU\_\-Node::rused.
+
+Referenced by RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_free@{RU\_\-node\_\-free}}
+\index{RU_node_free@{RU\_\-node\_\-free}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-free (\bf{RU\_\-Node} $\ast$ {\em ptr})}\label{RU__manager_8c_3b6792cb608faebaff731d21aaf3280d}
+
+
+
+
+Definition at line 401 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, and RU\_\-node\_\-alloc\_\-data.
+
+Referenced by RU\_\-node\_\-delete(), and RU\_\-node\_\-delete\_\-all().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_insert_after@{RU\_\-node\_\-insert\_\-after}}
+\index{RU_node_insert_after@{RU\_\-node\_\-insert\_\-after}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-insert\_\-after (\bf{RU\_\-Map} $\ast$ {\em map}, \bf{RU\_\-Node} $\ast$ {\em after\_\-node}, \bf{RU\_\-Node} $\ast$ {\em node})}\label{RU__manager_8c_24938ed1acf23555ac3375874f2dc36e}
+
+
+
+
+Definition at line 515 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, \_\-RU\_\-Node::next\_\-node, node, and NULL.\index{RU_manager.c@{RU\_\-manager.c}!RU_node_insert_before@{RU\_\-node\_\-insert\_\-before}}
+\index{RU_node_insert_before@{RU\_\-node\_\-insert\_\-before}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-insert\_\-before (\bf{RU\_\-Map} $\ast$ {\em map}, \bf{RU\_\-Node} $\ast$ {\em before\_\-node}, \bf{RU\_\-Node} $\ast$ {\em node})}\label{RU__manager_8c_6df41a2223c79da7639cc70226e5a44f}
+
+
+
+
+Definition at line 497 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Map::first\_\-node, \_\-RU\_\-Map::last\_\-node, node, NULL, and \_\-RU\_\-Node::prev\_\-node.
+
+Referenced by RU\_\-place().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_print_alloc_data@{RU\_\-node\_\-print\_\-alloc\_\-data}}
+\index{RU_node_print_alloc_data@{RU\_\-node\_\-print\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-node\_\-print\_\-alloc\_\-data (FILE $\ast$ {\em F}, int {\em verbose})}\label{RU__manager_8c_f2144b0c30c68942e20c4d545d53b3af}
+
+
+
+
+Definition at line 427 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, and RU\_\-node\_\-alloc\_\-data.\index{RU_manager.c@{RU\_\-manager.c}!RU_number_of_alts@{RU\_\-number\_\-of\_\-alts}}
+\index{RU_number_of_alts@{RU\_\-number\_\-of\_\-alts}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-number\_\-of\_\-alts (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int {\em flags})}\label{RU__manager_8c_2bb3c099a39bca63ac454c2d8bf390c3}
+
+
+
+
+Definition at line 753 of file RU\_\-manager.c.
+
+References NULL, and RU\_\-alt\_\-flags\_\-compatible().\index{RU_manager.c@{RU\_\-manager.c}!RU_place@{RU\_\-place}}
+\index{RU_place@{RU\_\-place}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-place (int {\em time}, Mdes\_\-Rused $\ast$ {\em rused}, int {\em option\_\-num}, \bf{RU\_\-Info} $\ast$ {\em ru\_\-info})}\label{RU__manager_8c_6da67e7a294620fb20f83f07d1ba8391}
+
+
+
+
+Definition at line 1017 of file RU\_\-manager.c.
+
+References ERR, node, RU\_\-map, RU\_\-map\_\-cycles, RU\_\-map\_\-length, RU\_\-map\_\-mode, RU\_\-map\_\-realloc(), RU\_\-mask\_\-width, RU\_\-MODE\_\-CYCLIC, RU\_\-node\_\-create(), and RU\_\-node\_\-insert\_\-before().\index{RU_manager.c@{RU\_\-manager.c}!RU_pred_alloc@{RU\_\-pred\_\-alloc}}
+\index{RU_pred_alloc@{RU\_\-pred\_\-alloc}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ RU\_\-pred\_\-alloc ()}\label{RU__manager_8c_34fc03b647d985f62071736581eeada0}
+
+
+
+
+Definition at line 95 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, RU\_\-max\_\-pred, RU\_\-pred\_\-alloc\_\-data, and RU\_\-pred\_\-alloc\_\-target\_\-size.
+
+Referenced by L\_\-create\_\-ru\_\-info\_\-oper().\index{RU_manager.c@{RU\_\-manager.c}!RU_pred_free@{RU\_\-pred\_\-free}}
+\index{RU_pred_free@{RU\_\-pred\_\-free}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-pred\_\-free (int $\ast$ {\em ptr})}\label{RU__manager_8c_7fe7b921ed438a87c1cad6bafa91b8c9}
+
+
+
+
+Definition at line 158 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::free, \_\-RU\_\-Alloc\_\-Data::head, \_\-RU\_\-Alloc\_\-Header::next, NULL, and RU\_\-pred\_\-alloc\_\-data.
+
+Referenced by RU\_\-info\_\-delete().\index{RU_manager.c@{RU\_\-manager.c}!RU_pred_print_alloc_data@{RU\_\-pred\_\-print\_\-alloc\_\-data}}
+\index{RU_pred_print_alloc_data@{RU\_\-pred\_\-print\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-pred\_\-print\_\-alloc\_\-data (FILE $\ast$ {\em F}, int {\em verbose})}\label{RU__manager_8c_4cac910dd43ec706aad66ab1ca80377e}
+
+
+
+
+Definition at line 184 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Alloc\_\-Data::allocated, \_\-RU\_\-Alloc\_\-Data::free, and RU\_\-pred\_\-alloc\_\-data.\index{RU_manager.c@{RU\_\-manager.c}!RU_schedule_op@{RU\_\-schedule\_\-op}}
+\index{RU_schedule_op@{RU\_\-schedule\_\-op}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-schedule\_\-op (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int $\ast$ {\em operand\_\-ready\_\-times}, int {\em issue\_\-time}, int {\em earliest\_\-slot}, int {\em latest\_\-slot}, int {\em flags})}\label{RU__manager_8c_fa44bbc4a93b2ec9886306943a1ceba6}
+
+
+
+
+Definition at line 1073 of file RU\_\-manager.c.
+
+References DEBUG, ERR, Lsched\_\-prepass, NULL, OLD\_\-SM\_\-sched\_\-table(), \_\-RU\_\-Info::op, RU\_\-alt\_\-flags\_\-compatible(), RU\_\-can\_\-place(), RU\_\-mask\_\-width, and RU\_\-sm\_\-cb.\index{RU_manager.c@{RU\_\-manager.c}!RU_schedule_op_at@{RU\_\-schedule\_\-op\_\-at}}
+\index{RU_schedule_op_at@{RU\_\-schedule\_\-op\_\-at}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-schedule\_\-op\_\-at (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int $\ast$ {\em operand\_\-ready\_\-times}, int {\em issue\_\-time}, int {\em slot}, int {\em flags})}\label{RU__manager_8c_450f3855ffb14ac781f78eda9ca33ed0}
+
+
+
+
+Definition at line 1959 of file RU\_\-manager.c.
+
+References DEBUG, ERR, Lsched\_\-prepass, NULL, OLD\_\-SM\_\-sched\_\-table(), \_\-RU\_\-Info::op, RU\_\-alt\_\-flags\_\-compatible(), RU\_\-can\_\-place(), RU\_\-mask\_\-width, and RU\_\-sm\_\-cb.
+
+Referenced by Lsched\_\-schedule\_\-block(), and Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{RU_manager.c@{RU\_\-manager.c}!RU_schedule_op_reverse@{RU\_\-schedule\_\-op\_\-reverse}}
+\index{RU_schedule_op_reverse@{RU\_\-schedule\_\-op\_\-reverse}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int RU\_\-schedule\_\-op\_\-reverse (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int $\ast$ {\em operand\_\-ready\_\-times}, int {\em issue\_\-time}, int {\em earliest\_\-slot}, int {\em latest\_\-slot}, int {\em flags})}\label{RU__manager_8c_4041d3ebf720b70c9b966220065b11ce}
+
+
+
+
+Definition at line 1370 of file RU\_\-manager.c.
+
+References DEBUG, ERR, \_\-RU\_\-Info::issue\_\-time, Lsched\_\-prepass, NULL, OLD\_\-SM\_\-sched\_\-table(), \_\-RU\_\-Info::op, RU\_\-alt\_\-flags\_\-compatible(), RU\_\-sm\_\-cb, \_\-RU\_\-Info::selected\_\-alt, and \_\-RU\_\-Info::slot\_\-used.\index{RU_manager.c@{RU\_\-manager.c}!RU_set_max_pred@{RU\_\-set\_\-max\_\-pred}}
+\index{RU_set_max_pred@{RU\_\-set\_\-max\_\-pred}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-set\_\-max\_\-pred (int {\em max})}\label{RU__manager_8c_87347d084aae40509198e30f58e6e478}
+
+
+
+
+Definition at line 90 of file RU\_\-manager.c.
+
+References RU\_\-max\_\-pred.
+
+Referenced by Lsched\_\-init().\index{RU_manager.c@{RU\_\-manager.c}!RU_unplace@{RU\_\-unplace}}
+\index{RU_unplace@{RU\_\-unplace}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-unplace (int {\em time}, Mdes\_\-Rused $\ast$ {\em rused}, \bf{RU\_\-Info} $\ast$ {\em ru\_\-info})}\label{RU__manager_8c_a90890a46cfcd6cc9ef17c0726c5d39f}
+
+
+
+
+Definition at line 1049 of file RU\_\-manager.c.
+
+References node, RU\_\-map, RU\_\-map\_\-cycles, RU\_\-map\_\-mode, RU\_\-mask\_\-width, RU\_\-MODE\_\-CYCLIC, RU\_\-node\_\-delete(), and RU\_\-node\_\-find().
+
+Referenced by RU\_\-unschedule\_\-op().\index{RU_manager.c@{RU\_\-manager.c}!RU_unschedule_op@{RU\_\-unschedule\_\-op}}
+\index{RU_unschedule_op@{RU\_\-unschedule\_\-op}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-unschedule\_\-op (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info})}\label{RU__manager_8c_7c5e9e0c48f57d8752d3a958ccba3022}
+
+
+
+
+Definition at line 2247 of file RU\_\-manager.c.
+
+References \_\-RU\_\-Info::issue\_\-time, NULL, RU\_\-unplace(), and \_\-RU\_\-Info::selected\_\-alt.
+
+Referenced by Lsched\_\-schedule\_\-with\_\-delay\_\-op().\index{RU_manager.c@{RU\_\-manager.c}!RU_update_usage_count@{RU\_\-update\_\-usage\_\-count}}
+\index{RU_update_usage_count@{RU\_\-update\_\-usage\_\-count}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void RU\_\-update\_\-usage\_\-count (\bf{RU\_\-Info} $\ast$ {\em ru\_\-info}, Mdes\_\-Info $\ast$ {\em mdes\_\-info}, int $\ast$ {\em ru\_\-count}, int {\em flags})}\label{RU__manager_8c_c263a00da77bf491bc9a294b31b90f22}
+
+
+
+
+Definition at line 855 of file RU\_\-manager.c.
+
+References NULL, RU\_\-alt\_\-flags\_\-compatible(), RU\_\-find\_\-max(), and RU\_\-find\_\-resource\_\-index().
+
+\subsection{Variable Documentation}
+\index{RU_manager.c@{RU\_\-manager.c}!RU_info_alloc_data@{RU\_\-info\_\-alloc\_\-data}}
+\index{RU_info_alloc_data@{RU\_\-info\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-info\_\-alloc\_\-data} = \{0, 0, 0\}\hspace{0.3cm}{\tt  [static]}}\label{RU__manager_8c_8e82045ba167ef0c11a19853d637e585}
+
+
+
+
+Definition at line 201 of file RU\_\-manager.c.
+
+Referenced by RU\_\-info\_\-alloc(), RU\_\-info\_\-free(), and RU\_\-info\_\-print\_\-alloc\_\-data().\index{RU_manager.c@{RU\_\-manager.c}!RU_info_alloc_target_size@{RU\_\-info\_\-alloc\_\-target\_\-size}}
+\index{RU_info_alloc_target_size@{RU\_\-info\_\-alloc\_\-target\_\-size}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-info\_\-alloc\_\-target\_\-size} = 128}\label{RU__manager_8c_cc700ea8ef1b28e647eb33ac7847efb5}
+
+
+
+
+Definition at line 200 of file RU\_\-manager.c.
+
+Referenced by RU\_\-info\_\-alloc().\index{RU_manager.c@{RU\_\-manager.c}!RU_map@{RU\_\-map}}
+\index{RU_map@{RU\_\-map}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Map}$\ast$ \bf{RU\_\-map} = \bf{NULL}}\label{RU__manager_8c_1ec86ac6a189f5faa72bf350572c35e1}
+
+
+
+
+Definition at line 549 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-map\_\-create(), RU\_\-map\_\-delete(), RU\_\-map\_\-init(), RU\_\-map\_\-realloc(), RU\_\-place(), and RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_cycles@{RU\_\-map\_\-cycles}}
+\index{RU_map_cycles@{RU\_\-map\_\-cycles}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-map\_\-cycles} = -1}\label{RU__manager_8c_5b28f480dd80edd9d86edc9bfd31ce2b}
+
+
+
+
+Definition at line 552 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-map\_\-init(), RU\_\-place(), and RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_length@{RU\_\-map\_\-length}}
+\index{RU_map_length@{RU\_\-map\_\-length}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-map\_\-length} = 0}\label{RU__manager_8c_f866276404030638648a12e4eb39e048}
+
+
+
+
+Definition at line 550 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-map\_\-create(), RU\_\-map\_\-delete(), RU\_\-map\_\-init(), RU\_\-map\_\-realloc(), and RU\_\-place().\index{RU_manager.c@{RU\_\-manager.c}!RU_map_mode@{RU\_\-map\_\-mode}}
+\index{RU_map_mode@{RU\_\-map\_\-mode}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-map\_\-mode} = -1}\label{RU__manager_8c_ab284499f85b8370428d80e89545a59a}
+
+
+
+
+Definition at line 551 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-map\_\-init(), RU\_\-place(), and RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_mask@{RU\_\-mask}}
+\index{RU_mask@{RU\_\-mask}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{RU\_\-mask} = \bf{NULL}}\label{RU__manager_8c_82ca50c94ed1893421f461fb9d7cd40e}
+
+
+
+
+Definition at line 553 of file RU\_\-manager.c.
+
+Referenced by RU\_\-map\_\-create(), RU\_\-map\_\-delete(), and RU\_\-map\_\-realloc().\index{RU_manager.c@{RU\_\-manager.c}!RU_mask_width@{RU\_\-mask\_\-width}}
+\index{RU_mask_width@{RU\_\-mask\_\-width}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-mask\_\-width} = -1}\label{RU__manager_8c_056f20a9e7273cb15678a35197ead400}
+
+
+
+
+Definition at line 554 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-place(), RU\_\-can\_\-schedule\_\-op(), RU\_\-map\_\-create(), RU\_\-map\_\-init(), RU\_\-map\_\-realloc(), RU\_\-place(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), and RU\_\-unplace().\index{RU_manager.c@{RU\_\-manager.c}!RU_max_pred@{RU\_\-max\_\-pred}}
+\index{RU_max_pred@{RU\_\-max\_\-pred}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-max\_\-pred} = 0}\label{RU__manager_8c_b7005c442d3e96f4e308bc03d86a5e6f}
+
+
+
+
+Definition at line 86 of file RU\_\-manager.c.
+
+Referenced by RU\_\-pred\_\-alloc(), and RU\_\-set\_\-max\_\-pred().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_alloc_data@{RU\_\-node\_\-alloc\_\-data}}
+\index{RU_node_alloc_data@{RU\_\-node\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-node\_\-alloc\_\-data} = \{0, 0, 0\}\hspace{0.3cm}{\tt  [static]}}\label{RU__manager_8c_2304aff567f58368fbccf2420c81d705}
+
+
+
+
+Definition at line 336 of file RU\_\-manager.c.
+
+Referenced by RU\_\-node\_\-alloc(), RU\_\-node\_\-free(), and RU\_\-node\_\-print\_\-alloc\_\-data().\index{RU_manager.c@{RU\_\-manager.c}!RU_node_alloc_target_size@{RU\_\-node\_\-alloc\_\-target\_\-size}}
+\index{RU_node_alloc_target_size@{RU\_\-node\_\-alloc\_\-target\_\-size}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-node\_\-alloc\_\-target\_\-size} = 128}\label{RU__manager_8c_1914198ed1e4792f3b272b0388cca222}
+
+
+
+
+Definition at line 335 of file RU\_\-manager.c.
+
+Referenced by RU\_\-node\_\-alloc().\index{RU_manager.c@{RU\_\-manager.c}!RU_pred_alloc_data@{RU\_\-pred\_\-alloc\_\-data}}
+\index{RU_pred_alloc_data@{RU\_\-pred\_\-alloc\_\-data}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RU\_\-Alloc\_\-Data} \bf{RU\_\-pred\_\-alloc\_\-data} = \{0, 0, 0\}\hspace{0.3cm}{\tt  [static]}}\label{RU__manager_8c_6eaa9be91382d71648e535c178fe054b}
+
+
+
+
+Definition at line 88 of file RU\_\-manager.c.
+
+Referenced by RU\_\-pred\_\-alloc(), RU\_\-pred\_\-free(), and RU\_\-pred\_\-print\_\-alloc\_\-data().\index{RU_manager.c@{RU\_\-manager.c}!RU_pred_alloc_target_size@{RU\_\-pred\_\-alloc\_\-target\_\-size}}
+\index{RU_pred_alloc_target_size@{RU\_\-pred\_\-alloc\_\-target\_\-size}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{RU\_\-pred\_\-alloc\_\-target\_\-size} = 128}\label{RU__manager_8c_b3cf7ccf4896943986e5d5b41a522f41}
+
+
+
+
+Definition at line 87 of file RU\_\-manager.c.
+
+Referenced by RU\_\-pred\_\-alloc().\index{RU_manager.c@{RU\_\-manager.c}!RU_sm_cb@{RU\_\-sm\_\-cb}}
+\index{RU_sm_cb@{RU\_\-sm\_\-cb}!RU_manager.c@{RU\_\-manager.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{OLD\_\-SM\_\-Cb}$\ast$ \bf{RU\_\-sm\_\-cb} = \bf{NULL}}\label{RU__manager_8c_280f83ab226ce658de845ba6242dab13}
+
+
+
+
+Definition at line 557 of file RU\_\-manager.c.
+
+Referenced by RU\_\-can\_\-schedule\_\-op(), RU\_\-map\_\-init(), RU\_\-map\_\-realloc(), RU\_\-schedule\_\-op(), RU\_\-schedule\_\-op\_\-at(), and RU\_\-schedule\_\-op\_\-reverse().

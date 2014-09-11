@@ -1,0 +1,248 @@
+\section{cudd\-Interact.c File Reference}
+\label{cuddInteract_8c}\index{cuddInteract.c@{cuddInteract.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{BPL}~32
+\item 
+\#define \bf{LOGBPL}~5
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void dd\-Supp\-Interact \bf{ARGS} ((\bf{Dd\-Node} $\ast$f, int $\ast$support))
+\item 
+static void dd\-Clear\-Local \bf{ARGS} ((\bf{Dd\-Node} $\ast$f))
+\item 
+static void dd\-Update\-Interact \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int $\ast$support))
+\item 
+static void dd\-Clear\-Global \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table))
+\item 
+void \bf{cudd\-Set\-Interact} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+int \bf{cudd\-Test\-Interact} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+int \bf{cudd\-Init\-Interact} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static void \bf{dd\-Supp\-Interact} (\bf{Dd\-Node} $\ast$f, int $\ast$support)
+\item 
+static void \bf{dd\-Clear\-Local} (\bf{Dd\-Node} $\ast$f)
+\item 
+static void \bf{dd\-Update\-Interact} (\bf{Dd\-Manager} $\ast$table, int $\ast$support)
+\item 
+static void \bf{dd\-Clear\-Global} (\bf{Dd\-Manager} $\ast$table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Interact.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddInteract.c@{cudd\-Interact.c}!BPL@{BPL}}
+\index{BPL@{BPL}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BPL~32}\label{cuddInteract_8c_43a59b49336ac8ad13af90916f2ff4a0}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Interact.c}{p.}{cuddInteract_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to manipulate the variable interaction matrix.]
+
+Description [Internal procedures included in this file: \begin{itemize}
+\item \doxyref{cudd\-Set\-Interact()}{p.}{cuddInteract_8c_888f4a3339c8df41fa0eefd265657a44} \item \doxyref{cudd\-Test\-Interact()}{p.}{cuddInteract_8c_2cc583804f0963d4a76049be83d54d9c} \item \doxyref{cudd\-Init\-Interact()}{p.}{cuddInteract_8c_efe79f742e70f7e5523ed0604b7adfb0} \end{itemize}
+Static procedures included in this file: \begin{itemize}
+\item \doxyref{dd\-Supp\-Interact()}{p.}{cuddInteract_8c_9b95c6479171efa79a5148c6fac83a63} \item \doxyref{dd\-Clear\-Local()}{p.}{cuddInteract_8c_a165018c0f067220038524e3c784d81a} \item \doxyref{dd\-Update\-Interact()}{p.}{cuddInteract_8c_aad459ba4381eb7b8029b1807830dba4} \item \doxyref{dd\-Clear\-Global()}{p.}{cuddExact_8c_98f18f030b7f886714a67adbd67e9998} \end{itemize}
+The interaction matrix tells whether two variables are both in the support of some function of the DD. The main use of the interaction matrix is in the in-place swapping. Indeed, if two variables do not interact, there is no arc connecting the two layers; therefore, the swap can be performed in constant time, without scanning the subtables. Another use of the interaction matrix is in the computation of the lower bounds for sifting. Finally, the interaction matrix can be used to speed up aggregation checks in symmetric and group sifting.
+
+The computation of the interaction matrix is done with a series of depth-first searches. The searches start from those nodes that have only external references. The matrix is stored as a packed array of bits; since it is symmetric, only the upper triangle is kept in memory. As a final remark, we note that there may be variables that do intercat, but that for a given variable order have no arc connecting their layers when they are adjacent.]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 63 of file cudd\-Interact.c.
+
+Referenced by Cudd\_\-Print\-Linear(), Cudd\_\-Read\-Linear(), cudd\-Init\-Linear(), cudd\-Resize\-Linear(), cudd\-Set\-Interact(), and cudd\-Test\-Interact().\index{cuddInteract.c@{cudd\-Interact.c}!LOGBPL@{LOGBPL}}
+\index{LOGBPL@{LOGBPL}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LOGBPL~5}\label{cuddInteract_8c_cae1cfa779e6e7550496f3889b5cbb25}
+
+
+
+
+Definition at line 64 of file cudd\-Interact.c.
+
+Referenced by Cudd\_\-Print\-Linear(), Cudd\_\-Read\-Linear(), cudd\-Init\-Interact(), cudd\-Init\-Linear(), cudd\-Resize\-Linear(), cudd\-Set\-Interact(), cudd\-Test\-Interact(), and cudd\-Xor\-Linear().
+
+\subsection{Function Documentation}
+\index{cuddInteract.c@{cudd\-Interact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Global ARGS ((\bf{Dd\-Manager} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_44dd964bfbb3a1fbe786c8d4d0043761}
+
+
+\index{cuddInteract.c@{cudd\-Interact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Update\-Interact ARGS ((\bf{Dd\-Manager} $\ast$table, int $\ast$support))\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_ea591337df584b41a2f1f232a105c076}
+
+
+\index{cuddInteract.c@{cudd\-Interact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Local ARGS ((\bf{Dd\-Node} $\ast$f))\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_2a711eafab4d447402c2d67c7685fa4e}
+
+
+\index{cuddInteract.c@{cudd\-Interact.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Supp\-Interact ARGS ((\bf{Dd\-Node} $\ast$f, int $\ast$support))\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_78ade58fca80fd28335ee84bc7e6dc08}
+
+
+Automatic\-Start \index{cuddInteract.c@{cudd\-Interact.c}!cuddInitInteract@{cuddInitInteract}}
+\index{cuddInitInteract@{cuddInitInteract}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Init\-Interact (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddInteract_8c_efe79f742e70f7e5523ed0604b7adfb0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes the interaction matrix.]
+
+Description [Initializes the interaction matrix. The interaction matrix is implemented as a bit vector storing the upper triangle of the symmetric interaction matrix. The bit vector is kept in an array of long integers. The computation is based on a series of depth-first searches, one for each root of the DAG. Two flags are needed: The local visited flag uses the LSB of the then pointer. The global visited flag uses the LSB of the next pointer. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 208 of file cudd\-Interact.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Regular, dd\-Clear\-Local(), dd\-Supp\-Interact(), dd\-Update\-Interact(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::interact, LOGBPL, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::size, Dd\-Subtable::slots, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Bdd\-Align\-To\-Zdd(), and dd\-Reorder\-Preprocess().\index{cuddInteract.c@{cudd\-Interact.c}!cuddSetInteract@{cuddSetInteract}}
+\index{cuddSetInteract@{cuddSetInteract}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Set\-Interact (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddInteract_8c_888f4a3339c8df41fa0eefd265657a44}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Set interaction matrix entries.]
+
+Description [Given a pair of variables 0 $<$= x $<$ y $<$ table-$>$size, sets the corresponding bit of the interaction matrix to 1.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 127 of file cudd\-Interact.c.
+
+References assert, BPL, Dd\-Manager::interact, LOGBPL, Dd\-Manager::size, and size.
+
+Referenced by dd\-Update\-Interact(), and dd\-Update\-Interaction\-Matrix().\index{cuddInteract.c@{cudd\-Interact.c}!cuddTestInteract@{cuddTestInteract}}
+\index{cuddTestInteract@{cuddTestInteract}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Test\-Interact (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddInteract_8c_2cc583804f0963d4a76049be83d54d9c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Test interaction matrix entries.]
+
+Description [Given a pair of variables 0 $<$= x $<$ y $<$ table-$>$size, tests whether the corresponding bit of the interaction matrix is 1. Returns the value of the bit.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 162 of file cudd\-Interact.c.
+
+References assert, BPL, Dd\-Manager::interact, LOGBPL, result, Dd\-Manager::size, and size.
+
+Referenced by cudd\-Linear\-In\-Place(), cudd\-Swap\-In\-Place(), dd\-Ext\-Symm\-Check(), dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Sec\-Diff\-Check(), dd\-Sifting\-Down(), dd\-Sifting\-Up(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), and dd\-Update\-Interaction\-Matrix().\index{cuddInteract.c@{cudd\-Interact.c}!ddClearGlobal@{ddClearGlobal}}
+\index{ddClearGlobal@{ddClearGlobal}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Global (\bf{Dd\-Manager} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_5e3b03a87451d44026f0923d4df0338a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Scans the DD and clears the LSB of the next pointers.]
+
+Description [The LSB of the next pointers are used as markers to tell whether a node was reached by at least one DFS. Once the interaction matrix is built, these flags are reset.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 388 of file cudd\-Interact.c.
+
+References Cudd\_\-Regular, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::size, Dd\-Subtable::slots, and Dd\-Manager::subtables.\index{cuddInteract.c@{cudd\-Interact.c}!ddClearLocal@{ddClearLocal}}
+\index{ddClearLocal@{ddClearLocal}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Clear\-Local (\bf{Dd\-Node} $\ast$ {\em f})\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_a165018c0f067220038524e3c784d81a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs a DFS from f, clearing the LSB of the then pointers.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 325 of file cudd\-Interact.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, and cudd\-T.
+
+Referenced by cudd\-Init\-Interact().\index{cuddInteract.c@{cudd\-Interact.c}!ddSuppInteract@{ddSuppInteract}}
+\index{ddSuppInteract@{ddSuppInteract}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Supp\-Interact (\bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em support})\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_9b95c6479171efa79a5148c6fac83a63}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Find the support of f.]
+
+Description [Performs a DFS from f. Uses the LSB of the then pointer as visited flag.]
+
+Side\-Effects [Accumulates in support the variables on which f depends.]
+
+See\-Also [] 
+
+Definition at line 294 of file cudd\-Interact.c.
+
+References Cudd\_\-Complement, Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, Dd\-Node::index, and Dd\-Node::next.
+
+Referenced by cudd\-Init\-Interact().\index{cuddInteract.c@{cudd\-Interact.c}!ddUpdateInteract@{ddUpdateInteract}}
+\index{ddUpdateInteract@{ddUpdateInteract}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Update\-Interact (\bf{Dd\-Manager} $\ast$ {\em table}, int $\ast$ {\em support})\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_aad459ba4381eb7b8029b1807830dba4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Marks as interacting all pairs of variables that appear in support.]
+
+Description [If support[i] == support[j] == 1, sets the (i,j) entry of the interaction matrix to 1.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 354 of file cudd\-Interact.c.
+
+References cudd\-Set\-Interact(), and Dd\-Manager::size.
+
+Referenced by cudd\-Init\-Interact().
+
+\subsection{Variable Documentation}
+\index{cuddInteract.c@{cudd\-Interact.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddInteract.c@{cudd\-Interact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Interact.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddInteract_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 82 of file cudd\-Interact.c.

@@ -1,0 +1,1063 @@
+\section{ml\_\-hppa.c File Reference}
+\label{ml__hppa_8c}\index{ml_hppa.c@{ml\_\-hppa.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-hppa.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-HPPA\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-HPPA\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{M\_\-HPPA\_\-SMALL\_\-STRUCT\_\-MAX}~64
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(16 $\ast$ 8)
+\item 
+\#define \bf{M\_\-HPPA\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-HPPA\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-HPPA\_\-RET\_\-I32}~15
+\item 
+\#define \bf{M\_\-HPPA\_\-RET\_\-I64}~15
+\item 
+\#define \bf{M\_\-HPPA\_\-RET\_\-ST}~15
+\item 
+\#define \bf{M\_\-HPPA\_\-RET\_\-F}~4
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-hppa\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-hppa\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-hppa\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-hppa\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-hppa\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-hppa\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-hppa\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-hppa\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-hppa\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-hppa\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-hppa\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-hppa\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-hppa\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-hppa\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-hppa\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-hppa\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-hppa\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-hppa\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-hppa\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-hppa\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-hppa\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-hppa\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-hppa\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-hppa\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-hppa\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-hppa\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-hppa\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-hppa\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-hppa\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-hppa\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-hppa\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-hppa\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-hppa\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-hppa\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-hppa\_\-fragile\_\-macro\_\-set} ()
+\item 
+int \bf{M\_\-hppa\_\-dataflow\_\-macro} (int id)
+\item 
+int \bf{M\_\-hppa\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-hppa} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-hppa} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-hppa} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-hppa} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-hppa} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-hppa} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-hppa} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-hppa} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-hppa} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-hppa} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-hppa} (int ctype)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{Set} \bf{Set\_\-hppa\_\-fragile\_\-macro} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_hppa.c@{ml\_\-hppa.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__hppa_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_hppa.c@{ml\_\-hppa.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__hppa_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_hppa.c@{ml\_\-hppa.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__hppa_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_hppa.c@{ml\_\-hppa.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__hppa_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_BIT@{M\_\-HPPA\_\-ALIGN\_\-BIT}}
+\index{M_HPPA_ALIGN_BIT@{M\_\-HPPA\_\-ALIGN\_\-BIT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-BIT~1}\label{ml__hppa_8c_5b5309035fe85cab789f8bce3309260c}
+
+
+
+
+Definition at line 93 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_BLOCK@{M\_\-HPPA\_\-ALIGN\_\-BLOCK}}
+\index{M_HPPA_ALIGN_BLOCK@{M\_\-HPPA\_\-ALIGN\_\-BLOCK}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-BLOCK~-1}\label{ml__hppa_8c_81a27c8d35cc684353c60be1082cd0f9}
+
+
+
+
+Definition at line 103 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_CHAR@{M\_\-HPPA\_\-ALIGN\_\-CHAR}}
+\index{M_HPPA_ALIGN_CHAR@{M\_\-HPPA\_\-ALIGN\_\-CHAR}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-CHAR~8}\label{ml__hppa_8c_97d358418db3708258493874661f521d}
+
+
+
+
+Definition at line 94 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_DOUBLE@{M\_\-HPPA\_\-ALIGN\_\-DOUBLE}}
+\index{M_HPPA_ALIGN_DOUBLE@{M\_\-HPPA\_\-ALIGN\_\-DOUBLE}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-DOUBLE~64}\label{ml__hppa_8c_00125c0dfbc060aba934d06f0a005079}
+
+
+
+
+Definition at line 99 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_FLOAT@{M\_\-HPPA\_\-ALIGN\_\-FLOAT}}
+\index{M_HPPA_ALIGN_FLOAT@{M\_\-HPPA\_\-ALIGN\_\-FLOAT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-FLOAT~32}\label{ml__hppa_8c_be3624b57eb6cdf8e713f29b80e68bf6}
+
+
+
+
+Definition at line 98 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_INT@{M\_\-HPPA\_\-ALIGN\_\-INT}}
+\index{M_HPPA_ALIGN_INT@{M\_\-HPPA\_\-ALIGN\_\-INT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-INT~32}\label{ml__hppa_8c_e8797fb0a8e2c9a54f30359604c98106}
+
+
+
+
+Definition at line 96 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_LONG@{M\_\-HPPA\_\-ALIGN\_\-LONG}}
+\index{M_HPPA_ALIGN_LONG@{M\_\-HPPA\_\-ALIGN\_\-LONG}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-LONG~32}\label{ml__hppa_8c_b4c1728f4992209f45afed4689feca52}
+
+
+
+
+Definition at line 97 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_MAX@{M\_\-HPPA\_\-ALIGN\_\-MAX}}
+\index{M_HPPA_ALIGN_MAX@{M\_\-HPPA\_\-ALIGN\_\-MAX}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-MAX~64}\label{ml__hppa_8c_a1c1893a6082c4bcfb09af522f11f6b3}
+
+
+
+
+Definition at line 104 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_POINTER@{M\_\-HPPA\_\-ALIGN\_\-POINTER}}
+\index{M_HPPA_ALIGN_POINTER@{M\_\-HPPA\_\-ALIGN\_\-POINTER}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-POINTER~32}\label{ml__hppa_8c_d92336c5e84c44a4de16383f666e4bb7}
+
+
+
+
+Definition at line 100 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_SHORT@{M\_\-HPPA\_\-ALIGN\_\-SHORT}}
+\index{M_HPPA_ALIGN_SHORT@{M\_\-HPPA\_\-ALIGN\_\-SHORT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-SHORT~16}\label{ml__hppa_8c_1ad1443c590e65cdee2e588f36a42611}
+
+
+
+
+Definition at line 95 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_STRUCT@{M\_\-HPPA\_\-ALIGN\_\-STRUCT}}
+\index{M_HPPA_ALIGN_STRUCT@{M\_\-HPPA\_\-ALIGN\_\-STRUCT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-STRUCT~-1}\label{ml__hppa_8c_9d584311e59b5c53c5130e4fa37c5b7d}
+
+
+
+
+Definition at line 102 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_UNION@{M\_\-HPPA\_\-ALIGN\_\-UNION}}
+\index{M_HPPA_ALIGN_UNION@{M\_\-HPPA\_\-ALIGN\_\-UNION}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-UNION~-1}\label{ml__hppa_8c_bdd7b49dc83dfc933dfff20508d81420}
+
+
+
+
+Definition at line 101 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_ALIGN_VOID@{M\_\-HPPA\_\-ALIGN\_\-VOID}}
+\index{M_HPPA_ALIGN_VOID@{M\_\-HPPA\_\-ALIGN\_\-VOID}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-ALIGN\_\-VOID~-1}\label{ml__hppa_8c_c12a611b00ea90c8f552e958d15a766f}
+
+
+
+
+Definition at line 92 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_FLT_BASE@{M\_\-HPPA\_\-FLT\_\-BASE}}
+\index{M_HPPA_FLT_BASE@{M\_\-HPPA\_\-FLT\_\-BASE}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-FLT\_\-BASE~4}\label{ml__hppa_8c_746bca0fdd25306efb3bf93f212179eb}
+
+
+
+
+Definition at line 115 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-fnvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_INT_BASE@{M\_\-HPPA\_\-INT\_\-BASE}}
+\index{M_HPPA_INT_BASE@{M\_\-HPPA\_\-INT\_\-BASE}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-INT\_\-BASE~0}\label{ml__hppa_8c_6d665d3c7828a658c43146145dd145b7}
+
+
+
+
+Definition at line 114 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-fnvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_MAX_FNVAR_REG@{M\_\-HPPA\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_HPPA_MAX_FNVAR_REG@{M\_\-HPPA\_\-MAX\_\-FNVAR\_\-REG}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__hppa_8c_65652aed2c01815b5f1d1209ac59ba3e}
+
+
+
+
+Definition at line 109 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-fnvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_RET_F@{M\_\-HPPA\_\-RET\_\-F}}
+\index{M_HPPA_RET_F@{M\_\-HPPA\_\-RET\_\-F}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-RET\_\-F~4}\label{ml__hppa_8c_eb187738b3ef316b792b6e2fae57877e}
+
+
+
+
+Definition at line 120 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-return\_\-register().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_RET_I32@{M\_\-HPPA\_\-RET\_\-I32}}
+\index{M_HPPA_RET_I32@{M\_\-HPPA\_\-RET\_\-I32}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-RET\_\-I32~15}\label{ml__hppa_8c_0287dee1b21616306bd1fb9e5ac8130f}
+
+
+
+
+Definition at line 117 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-return\_\-register().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_RET_I64@{M\_\-HPPA\_\-RET\_\-I64}}
+\index{M_HPPA_RET_I64@{M\_\-HPPA\_\-RET\_\-I64}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-RET\_\-I64~15}\label{ml__hppa_8c_ec32a989f026b26673127597aab7528a}
+
+
+
+
+Definition at line 118 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_RET_ST@{M\_\-HPPA\_\-RET\_\-ST}}
+\index{M_HPPA_RET_ST@{M\_\-HPPA\_\-RET\_\-ST}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-RET\_\-ST~15}\label{ml__hppa_8c_64815e809bd54a7e438579df49a304f8}
+
+
+
+
+Definition at line 119 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-structure\_\-pointer().\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_BIT@{M\_\-HPPA\_\-SIZE\_\-BIT}}
+\index{M_HPPA_SIZE_BIT@{M\_\-HPPA\_\-SIZE\_\-BIT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-BIT~1}\label{ml__hppa_8c_dc56e3c77d9abce22fcf85243daea802}
+
+
+
+
+Definition at line 79 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_BLOCK@{M\_\-HPPA\_\-SIZE\_\-BLOCK}}
+\index{M_HPPA_SIZE_BLOCK@{M\_\-HPPA\_\-SIZE\_\-BLOCK}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-BLOCK~-1}\label{ml__hppa_8c_c766e2bb31b6fc778964ce0e9bc9025c}
+
+
+
+
+Definition at line 89 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_CHAR@{M\_\-HPPA\_\-SIZE\_\-CHAR}}
+\index{M_HPPA_SIZE_CHAR@{M\_\-HPPA\_\-SIZE\_\-CHAR}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-CHAR~8}\label{ml__hppa_8c_6a8549bbe303adec13ed65f7f5d644b8}
+
+
+
+
+Definition at line 80 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_DOUBLE@{M\_\-HPPA\_\-SIZE\_\-DOUBLE}}
+\index{M_HPPA_SIZE_DOUBLE@{M\_\-HPPA\_\-SIZE\_\-DOUBLE}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-DOUBLE~64}\label{ml__hppa_8c_3dee4e7e50b8153505cb8610a61327cc}
+
+
+
+
+Definition at line 85 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_FLOAT@{M\_\-HPPA\_\-SIZE\_\-FLOAT}}
+\index{M_HPPA_SIZE_FLOAT@{M\_\-HPPA\_\-SIZE\_\-FLOAT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-FLOAT~32}\label{ml__hppa_8c_d929613f890d6c9cc488c20f7853f9d7}
+
+
+
+
+Definition at line 84 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_INT@{M\_\-HPPA\_\-SIZE\_\-INT}}
+\index{M_HPPA_SIZE_INT@{M\_\-HPPA\_\-SIZE\_\-INT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-INT~32}\label{ml__hppa_8c_682ca1628b6c0893bd6c690267b2c8b1}
+
+
+
+
+Definition at line 82 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_LONG@{M\_\-HPPA\_\-SIZE\_\-LONG}}
+\index{M_HPPA_SIZE_LONG@{M\_\-HPPA\_\-SIZE\_\-LONG}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-LONG~32}\label{ml__hppa_8c_99c59ea739a1aa32847de07e75b802b3}
+
+
+
+
+Definition at line 83 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_MAX@{M\_\-HPPA\_\-SIZE\_\-MAX}}
+\index{M_HPPA_SIZE_MAX@{M\_\-HPPA\_\-SIZE\_\-MAX}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-MAX~64}\label{ml__hppa_8c_2cf1c04fdf414169d35d7c06acc50173}
+
+
+
+
+Definition at line 90 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_POINTER@{M\_\-HPPA\_\-SIZE\_\-POINTER}}
+\index{M_HPPA_SIZE_POINTER@{M\_\-HPPA\_\-SIZE\_\-POINTER}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-POINTER~32}\label{ml__hppa_8c_cfc53e68f4296f9cd535d7441400eb33}
+
+
+
+
+Definition at line 86 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_SHORT@{M\_\-HPPA\_\-SIZE\_\-SHORT}}
+\index{M_HPPA_SIZE_SHORT@{M\_\-HPPA\_\-SIZE\_\-SHORT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-SHORT~16}\label{ml__hppa_8c_c879911fb9c041da0caad3520e6a2854}
+
+
+
+
+Definition at line 81 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_STRUCT@{M\_\-HPPA\_\-SIZE\_\-STRUCT}}
+\index{M_HPPA_SIZE_STRUCT@{M\_\-HPPA\_\-SIZE\_\-STRUCT}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-STRUCT~-1}\label{ml__hppa_8c_164ea80278883780c01125e8fdac3c03}
+
+
+
+
+Definition at line 88 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_UNION@{M\_\-HPPA\_\-SIZE\_\-UNION}}
+\index{M_HPPA_SIZE_UNION@{M\_\-HPPA\_\-SIZE\_\-UNION}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-UNION~-1}\label{ml__hppa_8c_c30f05b423c2b238daa8652b258a5fa4}
+
+
+
+
+Definition at line 87 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SIZE_VOID@{M\_\-HPPA\_\-SIZE\_\-VOID}}
+\index{M_HPPA_SIZE_VOID@{M\_\-HPPA\_\-SIZE\_\-VOID}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SIZE\_\-VOID~0}\label{ml__hppa_8c_7542ee4bf37e1b175b204432a9b56f0a}
+
+
+
+
+Definition at line 78 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!M_HPPA_SMALL_STRUCT_MAX@{M\_\-HPPA\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_HPPA_SMALL_STRUCT_MAX@{M\_\-HPPA\_\-SMALL\_\-STRUCT\_\-MAX}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-HPPA\_\-SMALL\_\-STRUCT\_\-MAX~64}\label{ml__hppa_8c_dbd49a31b86218b95e339746c9e66fe7}
+
+
+
+
+Definition at line 110 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-fnvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(16 $\ast$ 8)}\label{ml__hppa_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 111 of file ml\_\-hppa.c.\index{ml_hppa.c@{ml\_\-hppa.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__hppa_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                   ((a->src[1]->ctype&0x30)==0x00)))||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_hppa.c@{ml\_\-hppa.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__hppa_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_hppa.c@{ml\_\-hppa.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__hppa_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_hppa.c@{ml\_\-hppa.c}!M_conflicting_operands_hppa@{M\_\-conflicting\_\-operands\_\-hppa}}
+\index{M_conflicting_operands_hppa@{M\_\-conflicting\_\-operands\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-hppa (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__hppa_8c_859e41c807ea451447492d5c5ea0ad20}
+
+
+
+
+Definition at line 2387 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-TRUE\_\-SP, M\_\-assert(), and MAX\_\-INT\_\-NAME.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_hppa.c@{ml\_\-hppa.c}!M_define_macros_hppa@{M\_\-define\_\-macros\_\-hppa}}
+\index{M_define_macros_hppa@{M\_\-define\_\-macros\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-hppa (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__hppa_8c_3c7cde3308152f998e523078246208c6}
+
+
+
+
+Definition at line 1443 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-ALLOC, HPPA\_\-MAC\_\-CALLEE\_\-F, HPPA\_\-MAC\_\-CALLEE\_\-I, HPPA\_\-MAC\_\-DP, HPPA\_\-MAC\_\-DYNCALL, HPPA\_\-MAC\_\-FLOAT\_\-CBIT, HPPA\_\-MAC\_\-FZERO, HPPA\_\-MAC\_\-LEAF, HPPA\_\-MAC\_\-MILLI\_\-RET\_\-VALUE, HPPA\_\-MAC\_\-MILLI\_\-RETADDR, HPPA\_\-MAC\_\-PLAYDOH\_\-BRTARGET, HPPA\_\-MAC\_\-PLAYDOH\_\-BRTMP, HPPA\_\-MAC\_\-PLAYDOH\_\-DEST0, HPPA\_\-MAC\_\-PLAYDOH\_\-DEST1, HPPA\_\-MAC\_\-PLAYDOH\_\-ESC, HPPA\_\-MAC\_\-PLAYDOH\_\-FDEST0, HPPA\_\-MAC\_\-PLAYDOH\_\-FONE, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC1, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC2, HPPA\_\-MAC\_\-PLAYDOH\_\-GPM, HPPA\_\-MAC\_\-PLAYDOH\_\-GPR, HPPA\_\-MAC\_\-PLAYDOH\_\-LC, HPPA\_\-MAC\_\-PLAYDOH\_\-PDST0, HPPA\_\-MAC\_\-PLAYDOH\_\-PDST1, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED0, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED1, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-ALL\_\-ROT, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-ALL\_\-STATIC, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-FALSE, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-TRUE, HPPA\_\-MAC\_\-PLAYDOH\_\-PSRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-0, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-1, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-2, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-3, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-4, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-5, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-6, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-7, HPPA\_\-MAC\_\-PLAYDOH\_\-RRB, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC1, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC2, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC3, HPPA\_\-MAC\_\-RETADDR, HPPA\_\-MAC\_\-SAR, HPPA\_\-MAC\_\-SR3, HPPA\_\-MAC\_\-SR5, HPPA\_\-MAC\_\-SWAP\_\-PTR, HPPA\_\-MAC\_\-TEMPREG, HPPA\_\-MAC\_\-TRUE\_\-SP, HPPA\_\-MAC\_\-ZERO, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros(), and M\_\-define\_\-macros\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_define_opcode_name_hppa@{M\_\-define\_\-opcode\_\-name\_\-hppa}}
+\index{M_define_opcode_name_hppa@{M\_\-define\_\-opcode\_\-name\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-hppa (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__hppa_8c_ab0d3979f76e536bdffa06ab59a0d244}
+
+
+
+
+Definition at line 1624 of file ml\_\-hppa.c.
+
+References LHPPAop\_\-ADDIB\_\-LT\_\-BWD, LHPPAop\_\-ADDIB\_\-LT\_\-FWD, LHPPAop\_\-ADDIL, LHPPAop\_\-BB\_\-0\_\-BWD, LHPPAop\_\-BB\_\-0\_\-FWD, LHPPAop\_\-BB\_\-1\_\-BWD, LHPPAop\_\-BB\_\-1\_\-FWD, LHPPAop\_\-COMB\_\-EQ\_\-BWD, LHPPAop\_\-COMB\_\-EQ\_\-FWD, LHPPAop\_\-COMB\_\-GE\_\-BWD, LHPPAop\_\-COMB\_\-GE\_\-FWD, LHPPAop\_\-COMB\_\-GE\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-GE\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-GT\_\-BWD, LHPPAop\_\-COMB\_\-GT\_\-FWD, LHPPAop\_\-COMB\_\-GT\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-GT\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-LE\_\-BWD, LHPPAop\_\-COMB\_\-LE\_\-FWD, LHPPAop\_\-COMB\_\-LE\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-LE\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-LT\_\-BWD, LHPPAop\_\-COMB\_\-LT\_\-FWD, LHPPAop\_\-COMB\_\-LT\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-LT\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-NE\_\-BWD, LHPPAop\_\-COMB\_\-NE\_\-FWD, LHPPAop\_\-COMIB\_\-EQ\_\-BWD, LHPPAop\_\-COMIB\_\-EQ\_\-FWD, LHPPAop\_\-COMIB\_\-GE\_\-BWD, LHPPAop\_\-COMIB\_\-GE\_\-FWD, LHPPAop\_\-COMIB\_\-GE\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-GE\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-GT\_\-BWD, LHPPAop\_\-COMIB\_\-GT\_\-FWD, LHPPAop\_\-COMIB\_\-GT\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-GT\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-LE\_\-BWD, LHPPAop\_\-COMIB\_\-LE\_\-FWD, LHPPAop\_\-COMIB\_\-LE\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-LE\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-LT\_\-BWD, LHPPAop\_\-COMIB\_\-LT\_\-FWD, LHPPAop\_\-COMIB\_\-LT\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-LT\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-NE\_\-BWD, LHPPAop\_\-COMIB\_\-NE\_\-FWD, LHPPAop\_\-DEPI, LHPPAop\_\-EXTRU, LHPPAop\_\-FMPYADD, LHPPAop\_\-FMPYSUB, LHPPAop\_\-JSR\_\-DYNCALL, LHPPAop\_\-LD\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-C\_\-SC1, LHPPAop\_\-LD\_\-C\_\-SC2, LHPPAop\_\-LD\_\-C\_\-SC3, LHPPAop\_\-LD\_\-C\_\-SV1, LHPPAop\_\-LD\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-F\_\-SC1, LHPPAop\_\-LD\_\-F\_\-SC2, LHPPAop\_\-LD\_\-F\_\-SC3, LHPPAop\_\-LD\_\-F\_\-SV1, LHPPAop\_\-LD\_\-I\_\-SC1, LHPPAop\_\-LD\_\-I\_\-SC2, LHPPAop\_\-LD\_\-I\_\-SC3, LHPPAop\_\-LD\_\-I\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-C\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-F\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-I\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SV1, LHPPAop\_\-LD\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-UC\_\-SV1, LHPPAop\_\-LDIL, LHPPAop\_\-LDO, LHPPAop\_\-MTSP, LHPPAop\_\-PRED\_\-MOV, LHPPAop\_\-VEXTRS, LHPPAop\_\-VSHD, LHPPAop\_\-ZVDEP, LHPPAop\_\-ZVDEPI, M\_\-add\_\-symbol, PAopcode\_\-ADDIB\_\-LT\_\-BWD, PAopcode\_\-ADDIB\_\-LT\_\-FWD, PAopcode\_\-ADDIL, PAopcode\_\-BB\_\-0\_\-BWD, PAopcode\_\-BB\_\-0\_\-FWD, PAopcode\_\-BB\_\-1\_\-BWD, PAopcode\_\-BB\_\-1\_\-FWD, PAopcode\_\-COMB\_\-EQ\_\-BWD, PAopcode\_\-COMB\_\-EQ\_\-FWD, PAopcode\_\-COMB\_\-GE\_\-BWD, PAopcode\_\-COMB\_\-GE\_\-FWD, PAopcode\_\-COMB\_\-GE\_\-U\_\-BWD, PAopcode\_\-COMB\_\-GE\_\-U\_\-FWD, PAopcode\_\-COMB\_\-GT\_\-BWD, PAopcode\_\-COMB\_\-GT\_\-FWD, PAopcode\_\-COMB\_\-GT\_\-U\_\-BWD, PAopcode\_\-COMB\_\-GT\_\-U\_\-FWD, PAopcode\_\-COMB\_\-LE\_\-BWD, PAopcode\_\-COMB\_\-LE\_\-FWD, PAopcode\_\-COMB\_\-LE\_\-U\_\-BWD, PAopcode\_\-COMB\_\-LE\_\-U\_\-FWD, PAopcode\_\-COMB\_\-LT\_\-BWD, PAopcode\_\-COMB\_\-LT\_\-FWD, PAopcode\_\-COMB\_\-LT\_\-U\_\-BWD, PAopcode\_\-COMB\_\-LT\_\-U\_\-FWD, PAopcode\_\-COMB\_\-NE\_\-BWD, PAopcode\_\-COMB\_\-NE\_\-FWD, PAopcode\_\-COMIB\_\-EQ\_\-BWD, PAopcode\_\-COMIB\_\-EQ\_\-FWD, PAopcode\_\-COMIB\_\-GE\_\-BWD, PAopcode\_\-COMIB\_\-GE\_\-FWD, PAopcode\_\-COMIB\_\-GE\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-GE\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-GT\_\-BWD, PAopcode\_\-COMIB\_\-GT\_\-FWD, PAopcode\_\-COMIB\_\-GT\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-GT\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-LE\_\-BWD, PAopcode\_\-COMIB\_\-LE\_\-FWD, PAopcode\_\-COMIB\_\-LE\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-LE\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-LT\_\-BWD, PAopcode\_\-COMIB\_\-LT\_\-FWD, PAopcode\_\-COMIB\_\-LT\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-LT\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-NE\_\-BWD, PAopcode\_\-COMIB\_\-NE\_\-FWD, PAopcode\_\-DEPI, PAopcode\_\-EXTRU, PAopcode\_\-FMPYADD, PAopcode\_\-FMPYSUB, PAopcode\_\-JSR\_\-DYNCALL, PAopcode\_\-LD\_\-C2\_\-SC1, PAopcode\_\-LD\_\-C2\_\-SC2, PAopcode\_\-LD\_\-C2\_\-SC3, PAopcode\_\-LD\_\-C2\_\-SV1, PAopcode\_\-LD\_\-C\_\-SC1, PAopcode\_\-LD\_\-C\_\-SC2, PAopcode\_\-LD\_\-C\_\-SC3, PAopcode\_\-LD\_\-C\_\-SV1, PAopcode\_\-LD\_\-F2\_\-SC1, PAopcode\_\-LD\_\-F2\_\-SC2, PAopcode\_\-LD\_\-F2\_\-SC3, PAopcode\_\-LD\_\-F2\_\-SV1, PAopcode\_\-LD\_\-F\_\-SC1, PAopcode\_\-LD\_\-F\_\-SC2, PAopcode\_\-LD\_\-F\_\-SC3, PAopcode\_\-LD\_\-F\_\-SV1, PAopcode\_\-LD\_\-I\_\-SC1, PAopcode\_\-LD\_\-I\_\-SC2, PAopcode\_\-LD\_\-I\_\-SC3, PAopcode\_\-LD\_\-I\_\-SV1, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-C2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-C\_\-SC1, PAopcode\_\-LD\_\-POST\_\-C\_\-SC2, PAopcode\_\-LD\_\-POST\_\-C\_\-SC3, PAopcode\_\-LD\_\-POST\_\-C\_\-SV1, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-F2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-F\_\-SC1, PAopcode\_\-LD\_\-POST\_\-F\_\-SC2, PAopcode\_\-LD\_\-POST\_\-F\_\-SC3, PAopcode\_\-LD\_\-POST\_\-F\_\-SV1, PAopcode\_\-LD\_\-POST\_\-I\_\-SC1, PAopcode\_\-LD\_\-POST\_\-I\_\-SC2, PAopcode\_\-LD\_\-POST\_\-I\_\-SC3, PAopcode\_\-LD\_\-POST\_\-I\_\-SV1, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC1, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC2, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC3, PAopcode\_\-LD\_\-POST\_\-UC\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-C\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-F\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-I\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SV1, PAopcode\_\-LD\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-UC\_\-SC1, PAopcode\_\-LD\_\-UC\_\-SC2, PAopcode\_\-LD\_\-UC\_\-SC3, PAopcode\_\-LD\_\-UC\_\-SV1, PAopcode\_\-LDIL, PAopcode\_\-LDO, PAopcode\_\-MTSP, PAopcode\_\-PRED\_\-MOV, PAopcode\_\-VEXTRS, PAopcode\_\-VSHD, PAopcode\_\-ZVDEP, and PAopcode\_\-ZVDEPI.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_hppa.c@{ml\_\-hppa.c}!M_get_macro_name_hppa@{M\_\-get\_\-macro\_\-name\_\-hppa}}
+\index{M_get_macro_name_hppa@{M\_\-get\_\-macro\_\-name\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-hppa (int {\em id})}\label{ml__hppa_8c_0b30cc81838e5a277738d6b057200aa3}
+
+
+
+
+Definition at line 1505 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-ALLOC, HPPA\_\-MAC\_\-CALLEE\_\-F, HPPA\_\-MAC\_\-CALLEE\_\-I, HPPA\_\-MAC\_\-DP, HPPA\_\-MAC\_\-DYNCALL, HPPA\_\-MAC\_\-FLOAT\_\-CBIT, HPPA\_\-MAC\_\-FZERO, HPPA\_\-MAC\_\-LEAF, HPPA\_\-MAC\_\-MILLI\_\-RET\_\-VALUE, HPPA\_\-MAC\_\-MILLI\_\-RETADDR, HPPA\_\-MAC\_\-PLAYDOH\_\-BRTARGET, HPPA\_\-MAC\_\-PLAYDOH\_\-BRTMP, HPPA\_\-MAC\_\-PLAYDOH\_\-DEST0, HPPA\_\-MAC\_\-PLAYDOH\_\-DEST1, HPPA\_\-MAC\_\-PLAYDOH\_\-ESC, HPPA\_\-MAC\_\-PLAYDOH\_\-FDEST0, HPPA\_\-MAC\_\-PLAYDOH\_\-FONE, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC1, HPPA\_\-MAC\_\-PLAYDOH\_\-FSRC2, HPPA\_\-MAC\_\-PLAYDOH\_\-GPM, HPPA\_\-MAC\_\-PLAYDOH\_\-GPR, HPPA\_\-MAC\_\-PLAYDOH\_\-LC, HPPA\_\-MAC\_\-PLAYDOH\_\-PDST0, HPPA\_\-MAC\_\-PLAYDOH\_\-PDST1, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED0, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED1, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-ALL\_\-ROT, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-ALL\_\-STATIC, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-FALSE, HPPA\_\-MAC\_\-PLAYDOH\_\-PRED\_\-TRUE, HPPA\_\-MAC\_\-PLAYDOH\_\-PSRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-0, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-1, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-2, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-3, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-4, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-5, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-6, HPPA\_\-MAC\_\-PLAYDOH\_\-PV\_\-7, HPPA\_\-MAC\_\-PLAYDOH\_\-RRB, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC0, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC1, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC2, HPPA\_\-MAC\_\-PLAYDOH\_\-SRC3, HPPA\_\-MAC\_\-RETADDR, HPPA\_\-MAC\_\-SAR, HPPA\_\-MAC\_\-SR3, HPPA\_\-MAC\_\-SR5, HPPA\_\-MAC\_\-SWAP\_\-PTR, HPPA\_\-MAC\_\-TEMPREG, HPPA\_\-MAC\_\-TRUE\_\-SP, and HPPA\_\-MAC\_\-ZERO.
+
+Referenced by M\_\-get\_\-macro\_\-name(), and M\_\-get\_\-macro\_\-name\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_get_opcode_name_hppa@{M\_\-get\_\-opcode\_\-name\_\-hppa}}
+\index{M_get_opcode_name_hppa@{M\_\-get\_\-opcode\_\-name\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-hppa (int {\em id})}\label{ml__hppa_8c_83e55e8fc37a7cf0577a46a663492b38}
+
+
+
+
+Definition at line 1796 of file ml\_\-hppa.c.
+
+References LHPPAop\_\-ADDIB\_\-LT\_\-BWD, LHPPAop\_\-ADDIB\_\-LT\_\-FWD, LHPPAop\_\-ADDIL, LHPPAop\_\-BB\_\-0\_\-BWD, LHPPAop\_\-BB\_\-0\_\-FWD, LHPPAop\_\-BB\_\-1\_\-BWD, LHPPAop\_\-BB\_\-1\_\-FWD, LHPPAop\_\-COMB\_\-EQ\_\-BWD, LHPPAop\_\-COMB\_\-EQ\_\-FWD, LHPPAop\_\-COMB\_\-GE\_\-BWD, LHPPAop\_\-COMB\_\-GE\_\-FWD, LHPPAop\_\-COMB\_\-GE\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-GE\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-GT\_\-BWD, LHPPAop\_\-COMB\_\-GT\_\-FWD, LHPPAop\_\-COMB\_\-GT\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-GT\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-LE\_\-BWD, LHPPAop\_\-COMB\_\-LE\_\-FWD, LHPPAop\_\-COMB\_\-LE\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-LE\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-LT\_\-BWD, LHPPAop\_\-COMB\_\-LT\_\-FWD, LHPPAop\_\-COMB\_\-LT\_\-U\_\-BWD, LHPPAop\_\-COMB\_\-LT\_\-U\_\-FWD, LHPPAop\_\-COMB\_\-NE\_\-BWD, LHPPAop\_\-COMB\_\-NE\_\-FWD, LHPPAop\_\-COMIB\_\-EQ\_\-BWD, LHPPAop\_\-COMIB\_\-EQ\_\-FWD, LHPPAop\_\-COMIB\_\-GE\_\-BWD, LHPPAop\_\-COMIB\_\-GE\_\-FWD, LHPPAop\_\-COMIB\_\-GE\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-GE\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-GT\_\-BWD, LHPPAop\_\-COMIB\_\-GT\_\-FWD, LHPPAop\_\-COMIB\_\-GT\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-GT\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-LE\_\-BWD, LHPPAop\_\-COMIB\_\-LE\_\-FWD, LHPPAop\_\-COMIB\_\-LE\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-LE\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-LT\_\-BWD, LHPPAop\_\-COMIB\_\-LT\_\-FWD, LHPPAop\_\-COMIB\_\-LT\_\-U\_\-BWD, LHPPAop\_\-COMIB\_\-LT\_\-U\_\-FWD, LHPPAop\_\-COMIB\_\-NE\_\-BWD, LHPPAop\_\-COMIB\_\-NE\_\-FWD, LHPPAop\_\-DEPI, LHPPAop\_\-EXTRU, LHPPAop\_\-FMPYADD, LHPPAop\_\-FMPYSUB, LHPPAop\_\-JSR\_\-DYNCALL, LHPPAop\_\-LD\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-C\_\-SC1, LHPPAop\_\-LD\_\-C\_\-SC2, LHPPAop\_\-LD\_\-C\_\-SC3, LHPPAop\_\-LD\_\-C\_\-SV1, LHPPAop\_\-LD\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-F\_\-SC1, LHPPAop\_\-LD\_\-F\_\-SC2, LHPPAop\_\-LD\_\-F\_\-SC3, LHPPAop\_\-LD\_\-F\_\-SV1, LHPPAop\_\-LD\_\-I\_\-SC1, LHPPAop\_\-LD\_\-I\_\-SC2, LHPPAop\_\-LD\_\-I\_\-SC3, LHPPAop\_\-LD\_\-I\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-C\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-C\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-F\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-F\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-I\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-I\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-POST\_\-UC\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-C2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-C\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-F2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-F\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-I\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-PRE\_\-UC\_\-SV1, LHPPAop\_\-LD\_\-UC2\_\-SC1, LHPPAop\_\-LD\_\-UC2\_\-SC2, LHPPAop\_\-LD\_\-UC2\_\-SC3, LHPPAop\_\-LD\_\-UC2\_\-SV1, LHPPAop\_\-LD\_\-UC\_\-SC1, LHPPAop\_\-LD\_\-UC\_\-SC2, LHPPAop\_\-LD\_\-UC\_\-SC3, LHPPAop\_\-LD\_\-UC\_\-SV1, LHPPAop\_\-LDIL, LHPPAop\_\-LDO, LHPPAop\_\-MTSP, LHPPAop\_\-PRED\_\-MOV, LHPPAop\_\-VEXTRS, LHPPAop\_\-VSHD, LHPPAop\_\-ZVDEP, LHPPAop\_\-ZVDEPI, PAopcode\_\-ADDIB\_\-LT\_\-BWD, PAopcode\_\-ADDIB\_\-LT\_\-FWD, PAopcode\_\-ADDIL, PAopcode\_\-BB\_\-0\_\-BWD, PAopcode\_\-BB\_\-0\_\-FWD, PAopcode\_\-BB\_\-1\_\-BWD, PAopcode\_\-BB\_\-1\_\-FWD, PAopcode\_\-COMB\_\-EQ\_\-BWD, PAopcode\_\-COMB\_\-EQ\_\-FWD, PAopcode\_\-COMB\_\-GE\_\-BWD, PAopcode\_\-COMB\_\-GE\_\-FWD, PAopcode\_\-COMB\_\-GE\_\-U\_\-BWD, PAopcode\_\-COMB\_\-GE\_\-U\_\-FWD, PAopcode\_\-COMB\_\-GT\_\-BWD, PAopcode\_\-COMB\_\-GT\_\-FWD, PAopcode\_\-COMB\_\-GT\_\-U\_\-BWD, PAopcode\_\-COMB\_\-GT\_\-U\_\-FWD, PAopcode\_\-COMB\_\-LE\_\-BWD, PAopcode\_\-COMB\_\-LE\_\-FWD, PAopcode\_\-COMB\_\-LE\_\-U\_\-BWD, PAopcode\_\-COMB\_\-LE\_\-U\_\-FWD, PAopcode\_\-COMB\_\-LT\_\-BWD, PAopcode\_\-COMB\_\-LT\_\-FWD, PAopcode\_\-COMB\_\-LT\_\-U\_\-BWD, PAopcode\_\-COMB\_\-LT\_\-U\_\-FWD, PAopcode\_\-COMB\_\-NE\_\-BWD, PAopcode\_\-COMB\_\-NE\_\-FWD, PAopcode\_\-COMIB\_\-EQ\_\-BWD, PAopcode\_\-COMIB\_\-EQ\_\-FWD, PAopcode\_\-COMIB\_\-GE\_\-BWD, PAopcode\_\-COMIB\_\-GE\_\-FWD, PAopcode\_\-COMIB\_\-GE\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-GE\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-GT\_\-BWD, PAopcode\_\-COMIB\_\-GT\_\-FWD, PAopcode\_\-COMIB\_\-GT\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-GT\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-LE\_\-BWD, PAopcode\_\-COMIB\_\-LE\_\-FWD, PAopcode\_\-COMIB\_\-LE\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-LE\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-LT\_\-BWD, PAopcode\_\-COMIB\_\-LT\_\-FWD, PAopcode\_\-COMIB\_\-LT\_\-U\_\-BWD, PAopcode\_\-COMIB\_\-LT\_\-U\_\-FWD, PAopcode\_\-COMIB\_\-NE\_\-BWD, PAopcode\_\-COMIB\_\-NE\_\-FWD, PAopcode\_\-DEPI, PAopcode\_\-EXTRU, PAopcode\_\-FMPYADD, PAopcode\_\-FMPYSUB, PAopcode\_\-JSR\_\-DYNCALL, PAopcode\_\-LD\_\-C2\_\-SC1, PAopcode\_\-LD\_\-C2\_\-SC2, PAopcode\_\-LD\_\-C2\_\-SC3, PAopcode\_\-LD\_\-C2\_\-SV1, PAopcode\_\-LD\_\-C\_\-SC1, PAopcode\_\-LD\_\-C\_\-SC2, PAopcode\_\-LD\_\-C\_\-SC3, PAopcode\_\-LD\_\-C\_\-SV1, PAopcode\_\-LD\_\-F2\_\-SC1, PAopcode\_\-LD\_\-F2\_\-SC2, PAopcode\_\-LD\_\-F2\_\-SC3, PAopcode\_\-LD\_\-F2\_\-SV1, PAopcode\_\-LD\_\-F\_\-SC1, PAopcode\_\-LD\_\-F\_\-SC2, PAopcode\_\-LD\_\-F\_\-SC3, PAopcode\_\-LD\_\-F\_\-SV1, PAopcode\_\-LD\_\-I\_\-SC1, PAopcode\_\-LD\_\-I\_\-SC2, PAopcode\_\-LD\_\-I\_\-SC3, PAopcode\_\-LD\_\-I\_\-SV1, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-C2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-C2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-C\_\-SC1, PAopcode\_\-LD\_\-POST\_\-C\_\-SC2, PAopcode\_\-LD\_\-POST\_\-C\_\-SC3, PAopcode\_\-LD\_\-POST\_\-C\_\-SV1, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-F2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-F2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-F\_\-SC1, PAopcode\_\-LD\_\-POST\_\-F\_\-SC2, PAopcode\_\-LD\_\-POST\_\-F\_\-SC3, PAopcode\_\-LD\_\-POST\_\-F\_\-SV1, PAopcode\_\-LD\_\-POST\_\-I\_\-SC1, PAopcode\_\-LD\_\-POST\_\-I\_\-SC2, PAopcode\_\-LD\_\-POST\_\-I\_\-SC3, PAopcode\_\-LD\_\-POST\_\-I\_\-SV1, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-POST\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC1, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC2, PAopcode\_\-LD\_\-POST\_\-UC\_\-SC3, PAopcode\_\-LD\_\-POST\_\-UC\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-C2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-C\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-C\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-F2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-F\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-F\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-I\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-I\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC1, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC2, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SC3, PAopcode\_\-LD\_\-PRE\_\-UC\_\-SV1, PAopcode\_\-LD\_\-UC2\_\-SC1, PAopcode\_\-LD\_\-UC2\_\-SC2, PAopcode\_\-LD\_\-UC2\_\-SC3, PAopcode\_\-LD\_\-UC2\_\-SV1, PAopcode\_\-LD\_\-UC\_\-SC1, PAopcode\_\-LD\_\-UC\_\-SC2, PAopcode\_\-LD\_\-UC\_\-SC3, PAopcode\_\-LD\_\-UC\_\-SV1, PAopcode\_\-LDIL, PAopcode\_\-LDO, PAopcode\_\-MTSP, PAopcode\_\-PRED\_\-MOV, PAopcode\_\-VEXTRS, PAopcode\_\-VSHD, PAopcode\_\-ZVDEP, and PAopcode\_\-ZVDEPI.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_array_align@{M\_\-hppa\_\-array\_\-align}}
+\index{M_hppa_array_align@{M\_\-hppa\_\-array\_\-align}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__hppa_8c_ec186a71c49e8fc22e414e5c070966f2}
+
+
+
+
+Definition at line 398 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align(), and M\_\-impact\_\-array\_\-align().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_array_layout@{M\_\-hppa\_\-array\_\-layout}}
+\index{M_hppa_array_layout@{M\_\-hppa\_\-array\_\-layout}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__hppa_8c_c435729f60c6697c5464f5ec86173032}
+
+
+
+
+Definition at line 392 of file ml\_\-hppa.c.
+
+Referenced by M\_\-array\_\-layout(), and M\_\-impact\_\-array\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_array_size@{M\_\-hppa\_\-array\_\-size}}
+\index{M_hppa_array_size@{M\_\-hppa\_\-array\_\-size}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__hppa_8c_7a5dd1ad548213f4facd4c5d78bec232}
+
+
+
+
+Definition at line 404 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size(), and M\_\-impact\_\-array\_\-size().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_bit_char@{M\_\-hppa\_\-bit\_\-char}}
+\index{M_hppa_bit_char@{M\_\-hppa\_\-bit\_\-char}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hppa_8c_72487e5368b3b505364af89d6458c014}
+
+
+
+
+Definition at line 175 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-BIT, M\_\-HPPA\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char(), and M\_\-impact\_\-bit\_\-char().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_bit_int@{M\_\-hppa\_\-bit\_\-int}}
+\index{M_hppa_bit_int@{M\_\-hppa\_\-bit\_\-int}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hppa_8c_db47df63a551328cf21f32439d2fb307}
+
+
+
+
+Definition at line 151 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-BIT, M\_\-HPPA\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int(), and M\_\-impact\_\-bit\_\-int().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_bit_long@{M\_\-hppa\_\-bit\_\-long}}
+\index{M_hppa_bit_long@{M\_\-hppa\_\-bit\_\-long}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hppa_8c_db6cca7ff9ffeb7557ce4882e428f948}
+
+
+
+
+Definition at line 139 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-BIT, M\_\-HPPA\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long(), and M\_\-impact\_\-bit\_\-long().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_bit_short@{M\_\-hppa\_\-bit\_\-short}}
+\index{M_hppa_bit_short@{M\_\-hppa\_\-bit\_\-short}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__hppa_8c_c495d0f8270eaa8cdfd5ea0fda482197}
+
+
+
+
+Definition at line 163 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-BIT, M\_\-HPPA\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short(), and M\_\-impact\_\-bit\_\-short().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_call_type@{M\_\-hppa\_\-call\_\-type}}
+\index{M_hppa_call_type@{M\_\-hppa\_\-call\_\-type}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hppa_8c_659ffb78b03ab7d4c248e6ae8653d368}
+
+
+
+
+Definition at line 294 of file ml\_\-hppa.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type(), M\_\-impact\_\-call\_\-type(), and M\_\-impact\_\-call\_\-type2().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_call_type2@{M\_\-hppa\_\-call\_\-type2}}
+\index{M_hppa_call_type2@{M\_\-hppa\_\-call\_\-type2}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hppa_8c_2daad82249b0f31bdb3e89f16ad10a38}
+
+
+
+
+Definition at line 339 of file ml\_\-hppa.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_cb_label_name@{M\_\-hppa\_\-cb\_\-label\_\-name}}
+\index{M_hppa_cb_label_name@{M\_\-hppa\_\-cb\_\-label\_\-name}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__hppa_8c_ef9ecb67aecbb17a603e49fe02ec7526}
+
+
+
+
+Definition at line 1040 of file ml\_\-hppa.c.
+
+Referenced by M\_\-cb\_\-label\_\-name(), and M\_\-impact\_\-cb\_\-label\_\-name().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_dataflow_macro@{M\_\-hppa\_\-dataflow\_\-macro}}
+\index{M_hppa_dataflow_macro@{M\_\-hppa\_\-dataflow\_\-macro}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-dataflow\_\-macro (int {\em id})}\label{ml__hppa_8c_0aa4627b19c9098354b28bcee7e191c7}
+
+
+
+
+Definition at line 1387 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-LAST, HPPA\_\-MAC\_\-PLAYDOH\_\-GPR, M\_\-assert(), M\_\-HP\_\-PA\_\-1\_\-0, M\_\-HP\_\-PA\_\-1\_\-1, M\_\-HP\_\-PA\_\-7100, M\_\-HP\_\-PA\_\-X, M\_\-HP\_\-PLAYDOH\_\-LCODE, M\_\-HP\_\-PLAYDOH\_\-MCODE, and M\_\-model.
+
+Referenced by M\_\-dataflow\_\-macro(), and M\_\-impact\_\-dataflow\_\-macro().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_double@{M\_\-hppa\_\-double}}
+\index{M_hppa_double@{M\_\-hppa\_\-double}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__hppa_8c_36512d3fc7f9e32d3ded009049067802}
+
+
+
+
+Definition at line 197 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-HPPA\_\-ALIGN\_\-DOUBLE, M\_\-HPPA\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double(), and M\_\-impact\_\-double().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_eval_type@{M\_\-hppa\_\-eval\_\-type}}
+\index{M_hppa_eval_type@{M\_\-hppa\_\-eval\_\-type}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hppa_8c_888352af2b57db93f3b85cf7f4e0465e}
+
+
+
+
+Definition at line 218 of file ml\_\-hppa.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type(), M\_\-impact\_\-eval\_\-type(), and M\_\-impact\_\-eval\_\-type2().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_eval_type2@{M\_\-hppa\_\-eval\_\-type2}}
+\index{M_hppa_eval_type2@{M\_\-hppa\_\-eval\_\-type2}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__hppa_8c_9f1775696fc5518a268eb6fd815cb6fe}
+
+
+
+
+Definition at line 252 of file ml\_\-hppa.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_float@{M\_\-hppa\_\-float}}
+\index{M_hppa_float@{M\_\-hppa\_\-float}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__hppa_8c_a602a3496ec13df4220bd2a7fc6a8167}
+
+
+
+
+Definition at line 187 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-HPPA\_\-ALIGN\_\-FLOAT, M\_\-HPPA\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float(), and M\_\-impact\_\-float().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_fn_label_name@{M\_\-hppa\_\-fn\_\-label\_\-name}}
+\index{M_hppa_fn_label_name@{M\_\-hppa\_\-fn\_\-label\_\-name}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-hppa\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__hppa_8c_9220a2944c316bd79328621e28405ea4}
+
+
+
+
+Definition at line 1119 of file ml\_\-hppa.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_fn_name_from_label@{M\_\-hppa\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_hppa_fn_name_from_label@{M\_\-hppa\_\-fn\_\-name\_\-from\_\-label}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-hppa\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__hppa_8c_f2960456940ae7a768be5669e2770171}
+
+
+
+
+Definition at line 1133 of file ml\_\-hppa.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_fnvar_layout@{M\_\-hppa\_\-fnvar\_\-layout}}
+\index{M_hppa_fnvar_layout@{M\_\-hppa\_\-fnvar\_\-layout}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__hppa_8c_c4a83ef7b3974b1cbe2e33c5d38b8b4e}
+
+
+
+
+Definition at line 719 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-HPPA\_\-ALIGN\_\-INT, M\_\-HPPA\_\-ALIGN\_\-MAX, M\_\-HPPA\_\-FLT\_\-BASE, M\_\-HPPA\_\-INT\_\-BASE, M\_\-HPPA\_\-MAX\_\-FNVAR\_\-REG, M\_\-HPPA\_\-SIZE\_\-INT, M\_\-HPPA\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout(), M\_\-hppa\_\-layout\_\-fnvar(), and M\_\-impact\_\-fnvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_fragile_macro@{M\_\-hppa\_\-fragile\_\-macro}}
+\index{M_hppa_fragile_macro@{M\_\-hppa\_\-fragile\_\-macro}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__hppa_8c_3014f9b711fa96e603622a27d431a97a}
+
+
+
+
+Definition at line 1143 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-DP, HPPA\_\-MAC\_\-FZERO, HPPA\_\-MAC\_\-ZERO, M\_\-assert(), M\_\-HP\_\-PA\_\-1\_\-0, M\_\-HP\_\-PA\_\-1\_\-1, M\_\-HP\_\-PA\_\-7100, M\_\-HP\_\-PA\_\-X, M\_\-HP\_\-PLAYDOH\_\-LCODE, M\_\-HP\_\-PLAYDOH\_\-MCODE, and M\_\-model.
+
+Referenced by M\_\-fragile\_\-macro(), and M\_\-impact\_\-fragile\_\-macro().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_fragile_macro_set@{M\_\-hppa\_\-fragile\_\-macro\_\-set}}
+\index{M_hppa_fragile_macro_set@{M\_\-hppa\_\-fragile\_\-macro\_\-set}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-hppa\_\-fragile\_\-macro\_\-set ()}\label{ml__hppa_8c_edcedf3decd672a9794788983658d9de}
+
+
+
+
+Definition at line 1177 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-ALLOC, HPPA\_\-MAC\_\-CALLEE\_\-F, HPPA\_\-MAC\_\-CALLEE\_\-I, HPPA\_\-MAC\_\-CONV\_\-LOC, HPPA\_\-MAC\_\-CONV\_\-OFF, HPPA\_\-MAC\_\-DYNCALL, HPPA\_\-MAC\_\-FLOAT\_\-CBIT, HPPA\_\-MAC\_\-LEAF, HPPA\_\-MAC\_\-MILLI\_\-RET\_\-VALUE, HPPA\_\-MAC\_\-MILLI\_\-RETADDR, HPPA\_\-MAC\_\-RETADDR, HPPA\_\-MAC\_\-SAR, HPPA\_\-MAC\_\-SR3, HPPA\_\-MAC\_\-SR5, HPPA\_\-MAC\_\-SWAP\_\-PTR, HPPA\_\-MAC\_\-TEMPREG, HPPA\_\-MAC\_\-TRUE\_\-SP, M\_\-assert(), M\_\-HP\_\-PA\_\-1\_\-0, M\_\-HP\_\-PA\_\-1\_\-1, M\_\-HP\_\-PA\_\-7100, M\_\-HP\_\-PA\_\-X, M\_\-HP\_\-PLAYDOH\_\-LCODE, M\_\-HP\_\-PLAYDOH\_\-MCODE, M\_\-model, Set\_\-add(), and Set\_\-hppa\_\-fragile\_\-macro.
+
+Referenced by M\_\-fragile\_\-macro\_\-set(), and M\_\-impact\_\-fragile\_\-macro\_\-set().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_is_cb_label@{M\_\-hppa\_\-is\_\-cb\_\-label}}
+\index{M_hppa_is_cb_label@{M\_\-hppa\_\-is\_\-cb\_\-label}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__hppa_8c_b557b1da6cb9fe60c27045b59c76075e}
+
+
+
+
+Definition at line 1046 of file ml\_\-hppa.c.
+
+Referenced by M\_\-impact\_\-is\_\-cb\_\-label(), and M\_\-is\_\-cb\_\-label().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_is_jumptbl_label@{M\_\-hppa\_\-is\_\-jumptbl\_\-label}}
+\index{M_hppa_is_jumptbl_label@{M\_\-hppa\_\-is\_\-jumptbl\_\-label}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__hppa_8c_bba6c2e63f7c1343093c6d3b95cd1cd4}
+
+
+
+
+Definition at line 1059 of file ml\_\-hppa.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-impact\_\-is\_\-jumptbl\_\-label(), and M\_\-is\_\-jumptbl\_\-label().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_jumptbl_label_name@{M\_\-hppa\_\-jumptbl\_\-label\_\-name}}
+\index{M_hppa_jumptbl_label_name@{M\_\-hppa\_\-jumptbl\_\-label\_\-name}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__hppa_8c_a762a696b15fa48d0a3927f99880608e}
+
+
+
+
+Definition at line 1052 of file ml\_\-hppa.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-impact\_\-jumptbl\_\-label\_\-name(), and M\_\-jumptbl\_\-label\_\-name().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_layout_fnvar@{M\_\-hppa\_\-layout\_\-fnvar}}
+\index{M_hppa_layout_fnvar@{M\_\-hppa\_\-layout\_\-fnvar}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__hppa_8c_e899f68524e3ef5c4013a8a6bd6d434d}
+
+
+
+
+Definition at line 667 of file ml\_\-hppa.c.
+
+References List\_\-next(), List\_\-size(), List\_\-start(), M\_\-hppa\_\-fnvar\_\-layout(), \_\-struct\_\-M\_\-Param::mode, mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Param::su\_\-ereg, and \_\-struct\_\-M\_\-Param::su\_\-sreg.
+
+Referenced by M\_\-impact\_\-layout\_\-fnvar(), and M\_\-layout\_\-fnvar().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_lvar_layout@{M\_\-hppa\_\-lvar\_\-layout}}
+\index{M_hppa_lvar_layout@{M\_\-hppa\_\-lvar\_\-layout}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__hppa_8c_0a0da56cc84f57410199e37f0a5f7628}
+
+
+
+
+Definition at line 990 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-MAX, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-impact\_\-lvar\_\-layout(), and M\_\-lvar\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_no_short_int@{M\_\-hppa\_\-no\_\-short\_\-int}}
+\index{M_hppa_no_short_int@{M\_\-hppa\_\-no\_\-short\_\-int}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-no\_\-short\_\-int (void)}\label{ml__hppa_8c_dbed763f132cceeb65e656b6d8e496e7}
+
+
+
+
+Definition at line 1034 of file ml\_\-hppa.c.
+
+References M\_\-HPPA\_\-SIZE\_\-INT, and M\_\-HPPA\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-impact\_\-no\_\-short\_\-int(), and M\_\-no\_\-short\_\-int().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_pointer@{M\_\-hppa\_\-pointer}}
+\index{M_hppa_pointer@{M\_\-hppa\_\-pointer}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__hppa_8c_528caf4e3e210b61f1eae6ef859a6f77}
+
+
+
+
+Definition at line 207 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-HPPA\_\-ALIGN\_\-POINTER, M\_\-HPPA\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-pointer(), and M\_\-pointer().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_return_register@{M\_\-hppa\_\-return\_\-register}}
+\index{M_hppa_return_register@{M\_\-hppa\_\-return\_\-register}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__hppa_8c_fc6eeff2665dbbbff40338a13362c934}
+
+
+
+
+Definition at line 1098 of file ml\_\-hppa.c.
+
+References M\_\-HPPA\_\-RET\_\-F, M\_\-HPPA\_\-RET\_\-I32, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-impact\_\-return\_\-register(), and M\_\-return\_\-register().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_struct_align@{M\_\-hppa\_\-struct\_\-align}}
+\index{M_hppa_struct_align@{M\_\-hppa\_\-struct\_\-align}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hppa_8c_6a52ac50752ae22b424b7c3bd7b28238}
+
+
+
+
+Definition at line 588 of file ml\_\-hppa.c.
+
+References M\_\-HPPA\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-impact\_\-struct\_\-align(), and M\_\-struct\_\-align().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_struct_layout@{M\_\-hppa\_\-struct\_\-layout}}
+\index{M_hppa_struct_layout@{M\_\-hppa\_\-struct\_\-layout}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__hppa_8c_7dd9ed529e079966472897bc4afa1f76}
+
+
+
+
+Definition at line 484 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-SIZE\_\-CHAR, M\_\-HPPA\_\-SIZE\_\-INT, M\_\-HPPA\_\-SIZE\_\-LONG, M\_\-HPPA\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-impact\_\-struct\_\-layout(), and M\_\-struct\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_struct_size@{M\_\-hppa\_\-struct\_\-size}}
+\index{M_hppa_struct_size@{M\_\-hppa\_\-struct\_\-size}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__hppa_8c_4ea35ed533f5fb0b57fe7591146ccb7f}
+
+
+
+
+Definition at line 607 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-HPPA\_\-ALIGN\_\-CHAR, M\_\-HPPA\_\-ALIGN\_\-LONG, M\_\-HPPA\_\-ALIGN\_\-SHORT, M\_\-HPPA\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-impact\_\-struct\_\-size(), and M\_\-struct\_\-size().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_structure_pointer@{M\_\-hppa\_\-structure\_\-pointer}}
+\index{M_hppa_structure_pointer@{M\_\-hppa\_\-structure\_\-pointer}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-structure\_\-pointer (int {\em purpose})}\label{ml__hppa_8c_6f4b575dbcf3324e01b0b942b47b5858}
+
+
+
+
+Definition at line 1092 of file ml\_\-hppa.c.
+
+References M\_\-HPPA\_\-RET\_\-ST.
+
+Referenced by M\_\-impact\_\-structure\_\-pointer(), and M\_\-structure\_\-pointer().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_subroutine_call@{M\_\-hppa\_\-subroutine\_\-call}}
+\index{M_hppa_subroutine_call@{M\_\-hppa\_\-subroutine\_\-call}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-subroutine\_\-call (int {\em opc})}\label{ml__hppa_8c_ef4b7cd187d6fe04d3b682be887b3eb1}
+
+
+
+
+Definition at line 1409 of file ml\_\-hppa.c.
+
+References M\_\-assert(), M\_\-HP\_\-PA\_\-1\_\-0, M\_\-HP\_\-PA\_\-1\_\-1, M\_\-HP\_\-PA\_\-7100, M\_\-HP\_\-PA\_\-X, M\_\-HP\_\-PLAYDOH\_\-LCODE, M\_\-HP\_\-PLAYDOH\_\-MCODE, and M\_\-model.
+
+Referenced by M\_\-impact\_\-subroutine\_\-call(), and M\_\-subroutine\_\-call().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_union_align@{M\_\-hppa\_\-union\_\-align}}
+\index{M_hppa_union_align@{M\_\-hppa\_\-union\_\-align}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hppa_8c_de73701883cf19da60efc9b25e2781da}
+
+
+
+
+Definition at line 430 of file ml\_\-hppa.c.
+
+References M\_\-HPPA\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-impact\_\-union\_\-align(), and M\_\-union\_\-align().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_union_layout@{M\_\-hppa\_\-union\_\-layout}}
+\index{M_hppa_union_layout@{M\_\-hppa\_\-union\_\-layout}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__hppa_8c_c32cc61bf1f33e5597224a4695b06820}
+
+
+
+
+Definition at line 419 of file ml\_\-hppa.c.
+
+Referenced by M\_\-impact\_\-union\_\-layout(), and M\_\-union\_\-layout().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_union_size@{M\_\-hppa\_\-union\_\-size}}
+\index{M_hppa_union_size@{M\_\-hppa\_\-union\_\-size}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-hppa\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__hppa_8c_6804446577d2d774d162829565cdada6}
+
+
+
+
+Definition at line 450 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-HPPA\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-impact\_\-union\_\-size(), and M\_\-union\_\-size().\index{ml_hppa.c@{ml\_\-hppa.c}!M_hppa_void@{M\_\-hppa\_\-void}}
+\index{M_hppa_void@{M\_\-hppa\_\-void}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-hppa\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__hppa_8c_d5eb60de6f2b92ee6d4a106ad96a2f79}
+
+
+
+
+Definition at line 129 of file ml\_\-hppa.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-HPPA\_\-ALIGN\_\-VOID, M\_\-HPPA\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-void(), and M\_\-void().\index{ml_hppa.c@{ml\_\-hppa.c}!M_is_stack_operand_hppa@{M\_\-is\_\-stack\_\-operand\_\-hppa}}
+\index{M_is_stack_operand_hppa@{M\_\-is\_\-stack\_\-operand\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-hppa (L\_\-Operand $\ast$ {\em operand})}\label{ml__hppa_8c_e9ac64bbabc572e56d9e4b5306c0745a}
+
+
+
+
+Definition at line 2315 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-is\_\-stack\_\-operand(), and M\_\-is\_\-stack\_\-operand\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_is_unsafe_macro_hppa@{M\_\-is\_\-unsafe\_\-macro\_\-hppa}}
+\index{M_is_unsafe_macro_hppa@{M\_\-is\_\-unsafe\_\-macro\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-hppa (L\_\-Operand $\ast$ {\em operand})}\label{ml__hppa_8c_0f3990ca95608d8d793b81daf3eebd38}
+
+
+
+
+Definition at line 2332 of file ml\_\-hppa.c.
+
+References HPPA\_\-MAC\_\-FLOAT\_\-CBIT, HPPA\_\-MAC\_\-FZERO, HPPA\_\-MAC\_\-SAR, HPPA\_\-MAC\_\-SR3, and HPPA\_\-MAC\_\-SR5.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro(), and M\_\-is\_\-unsafe\_\-macro\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_num_oper_required_for_hppa@{M\_\-num\_\-oper\_\-required\_\-for\_\-hppa}}
+\index{M_num_oper_required_for_hppa@{M\_\-num\_\-oper\_\-required\_\-for\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-hppa (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__hppa_8c_89b059fb225665f4f6772c31ed7af1d7}
+
+
+
+
+Definition at line 2163 of file ml\_\-hppa.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for(), and M\_\-num\_\-oper\_\-required\_\-for\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_num_registers_hppa@{M\_\-num\_\-registers\_\-hppa}}
+\index{M_num_registers_hppa@{M\_\-num\_\-registers\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-hppa (int {\em ctype})}\label{ml__hppa_8c_2877b550b4883ca3f13ebc597809593e}
+
+
+
+
+Definition at line 2492 of file ml\_\-hppa.c.
+
+References M\_\-assert(), M\_\-HP\_\-PA\_\-1\_\-0, M\_\-HP\_\-PA\_\-1\_\-1, M\_\-HP\_\-PA\_\-7100, M\_\-HP\_\-PA\_\-X, and M\_\-model.
+
+Referenced by M\_\-num\_\-registers().\index{ml_hppa.c@{ml\_\-hppa.c}!M_oper_supported_in_arch_hppa@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-hppa}}
+\index{M_oper_supported_in_arch_hppa@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-hppa (int {\em opc})}\label{ml__hppa_8c_abb2dba60a9f9529009d31eaa55a5840}
+
+
+
+
+Definition at line 2122 of file ml\_\-hppa.c.
+
+References M\_\-HP\_\-PA\_\-X, and M\_\-model.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch(), and M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact().\index{ml_hppa.c@{ml\_\-hppa.c}!M_operand_type_hppa@{M\_\-operand\_\-type\_\-hppa}}
+\index{M_operand_type_hppa@{M\_\-operand\_\-type\_\-hppa}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-hppa (L\_\-Operand $\ast$ {\em operand})}\label{ml__hppa_8c_324c65ae6f64ef5b6b79a81834ac1924}
+
+
+
+
+Definition at line 2351 of file ml\_\-hppa.c.
+
+References FIELD\_\-11, FIELD\_\-14, FIELD\_\-5, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit11, MDES\_\-OPERAND\_\-Lit14, MDES\_\-OPERAND\_\-Lit21, MDES\_\-OPERAND\_\-Lit5, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().
+
+\subsection{Variable Documentation}
+\index{ml_hppa.c@{ml\_\-hppa.c}!Set_hppa_fragile_macro@{Set\_\-hppa\_\-fragile\_\-macro}}
+\index{Set_hppa_fragile_macro@{Set\_\-hppa\_\-fragile\_\-macro}!ml_hppa.c@{ml\_\-hppa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{Set\_\-hppa\_\-fragile\_\-macro} = \bf{NULL}}\label{ml__hppa_8c_d79cc17391748e90c24f64d8479f3bf8}
+
+
+
+
+Definition at line 106 of file ml\_\-hppa.c.
+
+Referenced by M\_\-hppa\_\-fragile\_\-macro\_\-set().

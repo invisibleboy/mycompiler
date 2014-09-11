@@ -1,0 +1,670 @@
+\section{l\_\-pipe\_\-util.c File Reference}
+\label{l__pipe__util_8c}\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include $<$Lcode/r\_\-regalloc.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{L\_\-read\_\-parm\_\-lpipe} (Parm\_\-Parse\_\-Info $\ast$ppi)
+\item 
+\bf{Queue} $\ast$ \bf{Q\_\-create\_\-queue} ()
+\item 
+void \bf{Q\_\-reinit\_\-queue} (\bf{Queue} $\ast$queue)
+\item 
+void \bf{Q\_\-delete\_\-queue} (\bf{Queue} $\ast$queue)
+\item 
+void \bf{Q\_\-priority\_\-enqueue\_\-increasing} (\bf{Queue} $\ast$queue, \bf{SM\_\-Oper} $\ast$oper, int priority)
+\item 
+void \bf{Q\_\-priority\_\-enqueue\_\-decreasing} (\bf{Queue} $\ast$queue, \bf{SM\_\-Oper} $\ast$oper, int priority)
+\item 
+\bf{SM\_\-Oper} $\ast$ \bf{Q\_\-dequeue} (\bf{Queue} $\ast$queue)
+\item 
+\bf{SM\_\-Oper} $\ast$ \bf{Q\_\-peek\_\-tail} (\bf{Queue} $\ast$queue)
+\item 
+\bf{SM\_\-Oper} $\ast$ \bf{Q\_\-peek\_\-head} (\bf{Queue} $\ast$queue)
+\item 
+int \bf{Lpipe\_\-reordered\_\-anti\_\-dependent\_\-ops} (\bf{SM\_\-Oper} $\ast$oper, \bf{SM\_\-Oper} $\ast$next\_\-oper)
+\item 
+void \bf{Lpipe\_\-ignore\_\-self\_\-dependences} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-find\_\-loop\_\-back\_\-br} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$\bf{header\_\-cb})
+\item 
+void \bf{Lpipe\_\-remove\_\-branches} (L\_\-Func $\ast$fn, int unroll)
+\item 
+void \bf{Lpipe\_\-cb\_\-set\_\-iter} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{Lpipe\_\-cb\_\-set\_\-issue\_\-time} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-gen\_\-uncond\_\-pred\_\-define} (L\_\-Operand $\ast$pred0, L\_\-Operand $\ast$pred1, L\_\-Operand $\ast$dest, int opc)
+\item 
+void \bf{Lpipe\_\-create\_\-uncond\_\-pred\_\-defines} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-create\_\-start\_\-stop\_\-nodes} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{Lpipe\_\-delete\_\-start\_\-stop\_\-nodes} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{Lpipe\_\-print\_\-cb\_\-schedule} (FILE $\ast$file, L\_\-Func $\ast$fn, \bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{Lpipe\_\-create\_\-defines} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-delete\_\-defines} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-print\_\-cyclic\_\-stats} (FILE $\ast$\bf{gen\_\-statfile}, L\_\-Cb $\ast$\bf{header\_\-cb}, Softpipe\_\-Min\-II $\ast$Min\-II, int ii, int tries, int schedule\_\-length, int \bf{loop\_\-dep\_\-height}, int stage\_\-count, int unroll, int theta, int num\_\-oper, int branch\_\-count, L\_\-Inner\_\-Loop $\ast$loop)
+\item 
+L\_\-Oper $\ast$ \bf{Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands} (L\_\-Operand $\ast$dest, L\_\-Operand $\ast$src)
+\item 
+void \bf{Lpipe\_\-move\_\-int\_\-parm\_\-regs} (L\_\-Func $\ast$fn)
+\item 
+int \bf{Lpipe\_\-can\_\-create\_\-fallthru\_\-cb} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lpipe\_\-reduce\_\-defines} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-insert\_\-non\_\-rr\_\-defines} (L\_\-Func $\ast$fn)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Queue\_\-pool} = NULL
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Qnode\_\-pool} = NULL
+\item 
+int \bf{Lpipe\_\-do\_\-induction\_\-reversal} = 0
+\item 
+int \bf{Lpipe\_\-check\_\-loops\_\-in\_\-phase1} = 1
+\item 
+char $\ast$ \bf{Lpipe\_\-schema\_\-name} = NULL
+\item 
+int \bf{Lpipe\_\-schema} = MULTI\_\-EPI
+\item 
+int \bf{Lpipe\_\-backward\_\-sched} = 1
+\item 
+float \bf{Lpipe\_\-budget\_\-ratio} = 5.0
+\item 
+int \bf{Lpipe\_\-min\_\-ii} = 0
+\item 
+int \bf{Lpipe\_\-max\_\-ii} = 1000
+\item 
+int \bf{Lpipe\_\-max\_\-stages} = 1000
+\item 
+int \bf{Lpipe\_\-max\_\-tries} = 50
+\item 
+int \bf{Lpipe\_\-fixed\_\-slots\_\-for\_\-branches} = 0
+\item 
+int \bf{Lpipe\_\-do\_\-only\_\-postpass\_\-steps} = 0
+\item 
+int \bf{Lpipe\_\-compact\_\-branch\_\-path\_\-opers} = 0
+\item 
+int \bf{Lpipe\_\-sort\_\-mrt\_\-rows} = 1
+\item 
+int \bf{Lpipe\_\-combine\_\-cbs} = 1
+\item 
+int \bf{Lpipe\_\-debug} = 0
+\item 
+int \bf{Lpipe\_\-debug\_\-use\_\-cb\_\-bounds} = 0
+\item 
+int \bf{Lpipe\_\-debug\_\-lower\_\-cb\_\-bound} = 0
+\item 
+int \bf{Lpipe\_\-debug\_\-upper\_\-cb\_\-bound} = 100000000
+\item 
+int \bf{Lpipe\_\-print\_\-statistics} = 0
+\item 
+int \bf{Lpipe\_\-print\_\-iteration\_\-schedule} = 0
+\item 
+int \bf{Lpipe\_\-print\_\-schedules\_\-for\_\-debug} = 0
+\item 
+int \bf{Lpipe\_\-print\_\-mve\_\-summary} = 0
+\item 
+int \bf{Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure} = 0
+\item 
+int \bf{Lpipe\_\-add\_\-spill\_\-attributes} = 0
+\item 
+int \bf{Lpipe\_\-dump\_\-dot} = 0
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!L_read_parm_lpipe@{L\_\-read\_\-parm\_\-lpipe}}
+\index{L_read_parm_lpipe@{L\_\-read\_\-parm\_\-lpipe}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-lpipe (Parm\_\-Parse\_\-Info $\ast$ {\em ppi})}\label{l__pipe__util_8c_6f5aa25c2a95b94ee73ac1b754207d70}
+
+
+
+
+Definition at line 123 of file l\_\-pipe\_\-util.c.
+
+References KERNEL\_\-ONLY, Lpipe\_\-add\_\-spill\_\-attributes, Lpipe\_\-backward\_\-sched, Lpipe\_\-budget\_\-ratio, Lpipe\_\-check\_\-loops\_\-in\_\-phase1, Lpipe\_\-combine\_\-cbs, Lpipe\_\-compact\_\-branch\_\-path\_\-opers, Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure, Lpipe\_\-debug, Lpipe\_\-debug\_\-lower\_\-cb\_\-bound, Lpipe\_\-debug\_\-upper\_\-cb\_\-bound, Lpipe\_\-debug\_\-use\_\-cb\_\-bounds, Lpipe\_\-do\_\-induction\_\-reversal, Lpipe\_\-do\_\-only\_\-postpass\_\-steps, Lpipe\_\-dump\_\-dot, Lpipe\_\-fixed\_\-slots\_\-for\_\-branches, Lpipe\_\-max\_\-ii, Lpipe\_\-max\_\-stages, Lpipe\_\-max\_\-tries, Lpipe\_\-min\_\-ii, Lpipe\_\-print\_\-iteration\_\-schedule, Lpipe\_\-print\_\-mve\_\-summary, Lpipe\_\-print\_\-schedules\_\-for\_\-debug, Lpipe\_\-print\_\-statistics, Lpipe\_\-schema, Lpipe\_\-schema\_\-name, Lpipe\_\-sort\_\-mrt\_\-rows, MULTI\_\-EPI, MULTI\_\-EPI\_\-ROT\_\-REG, and REM\_\-LOOP.
+
+Referenced by Lpipe\_\-init(), and Lpipe\_\-loop\_\-prep\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_can_create_fallthru_cb@{Lpipe\_\-can\_\-create\_\-fallthru\_\-cb}}
+\index{Lpipe_can_create_fallthru_cb@{Lpipe\_\-can\_\-create\_\-fallthru\_\-cb}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-can\_\-create\_\-fallthru\_\-cb (L\_\-Cb $\ast$ {\em cb})}\label{l__pipe__util_8c_bc942e4e2d34aabcfb238a6102ac9618}
+
+
+
+
+Definition at line 1536 of file l\_\-pipe\_\-util.c.
+
+Referenced by Lpipe\_\-softpipe\_\-loop\_\-prep().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_cb_set_issue_time@{Lpipe\_\-cb\_\-set\_\-issue\_\-time}}
+\index{Lpipe_cb_set_issue_time@{Lpipe\_\-cb\_\-set\_\-issue\_\-time}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-cb\_\-set\_\-issue\_\-time (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_0b7f0cae0da09da3e5d8b982be9873e0}
+
+
+
+
+Definition at line 651 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, SM\_\-Oper::lcode\_\-op, SM\_\-Oper::next\_\-serial\_\-op, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-sm\_\-commit().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_cb_set_iter@{Lpipe\_\-cb\_\-set\_\-iter}}
+\index{Lpipe_cb_set_iter@{Lpipe\_\-cb\_\-set\_\-iter}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-cb\_\-set\_\-iter (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_d0e4be247037cc75bcca0eeebb56dc71}
+
+
+
+
+Definition at line 626 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, and SM\_\-Oper::next\_\-serial\_\-op.
+
+Referenced by Lpipe\_\-sm\_\-commit().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_create_defines@{Lpipe\_\-create\_\-defines}}
+\index{Lpipe_create_defines@{Lpipe\_\-create\_\-defines}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-create\_\-defines (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_689850f1f56bc56b23c950658e5aba87}
+
+
+
+
+Definition at line 1002 of file l\_\-pipe\_\-util.c.
+
+References M\_\-arch, M\_\-native\_\-int\_\-register\_\-ctype(), M\_\-return\_\-epilogue\_\-cntr\_\-register(), M\_\-TAHOE, and R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple().
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_create_start_stop_nodes@{Lpipe\_\-create\_\-start\_\-stop\_\-nodes}}
+\index{Lpipe_create_start_stop_nodes@{Lpipe\_\-create\_\-start\_\-stop\_\-nodes}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-create\_\-start\_\-stop\_\-nodes (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_4d45e5623b3ff132a813e2a9adf69150}
+
+
+
+
+Definition at line 788 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Oper::ext\_\-dest, SM\_\-Oper::ext\_\-src, SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Dep::from\_\-action, SM\_\-Cb::last\_\-serial\_\-op, Lpipe\_\-create\_\-op\_\-info(), Lpipe\_\-init\_\-op\_\-info(), MDES\_\-SYNC\_\-OUT, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-add\_\-dep(), SM\_\-add\_\-reg\_\-action(), SM\_\-FIXED\_\-DELAY, SM\_\-FLOW\_\-DEP, SM\_\-HARD\_\-DEP, SM\_\-ignore\_\-dep(), SM\_\-insert\_\-oper\_\-after(), SM\_\-MVE\_\-IGNORE, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-SOFT\_\-DEP, SM\_\-SYNC\_\-ACTION\_\-INDEX, SM\_\-SYNC\_\-ACTION\_\-OPERAND, and SM\_\-SYNC\_\-DEP.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_create_uncond_pred_defines@{Lpipe\_\-create\_\-uncond\_\-pred\_\-defines}}
+\index{Lpipe_create_uncond_pred_defines@{Lpipe\_\-create\_\-uncond\_\-pred\_\-defines}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-create\_\-uncond\_\-pred\_\-defines (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_8e12dca1f06e9f8f224a39473ba1bb81}
+
+
+
+
+Definition at line 713 of file l\_\-pipe\_\-util.c.
+
+References Lpipe\_\-debug, and Lpipe\_\-gen\_\-uncond\_\-pred\_\-define().
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_delete_defines@{Lpipe\_\-delete\_\-defines}}
+\index{Lpipe_delete_defines@{Lpipe\_\-delete\_\-defines}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-delete\_\-defines (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_e541b9878cec8748cd7882ee97c7ba4f}
+
+
+
+
+Definition at line 1261 of file l\_\-pipe\_\-util.c.
+
+References M\_\-is\_\-template\_\-op.
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_delete_start_stop_nodes@{Lpipe\_\-delete\_\-start\_\-stop\_\-nodes}}
+\index{Lpipe_delete_start_stop_nodes@{Lpipe\_\-delete\_\-start\_\-stop\_\-nodes}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-delete\_\-start\_\-stop\_\-nodes (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_e21d164bb9d5070bbf1f2250d5d27501}
+
+
+
+
+Definition at line 875 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Cb::lcode\_\-cb, SM\_\-Oper::lcode\_\-op, Lpipe\_\-free\_\-oper\_\-op\_\-info(), SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Oper::sm\_\-cb, and SM\_\-delete\_\-oper().
+
+Referenced by Lpipe\_\-failure(), and Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_find_loop_back_br@{Lpipe\_\-find\_\-loop\_\-back\_\-br}}
+\index{Lpipe_find_loop_back_br@{Lpipe\_\-find\_\-loop\_\-back\_\-br}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-find\_\-loop\_\-back\_\-br (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em header\_\-cb})}\label{l__pipe__util_8c_a00a3d794df406f15d3d85b20f483941}
+
+
+
+
+Definition at line 554 of file l\_\-pipe\_\-util.c.
+
+Referenced by Lpipe\_\-rem\_\-loop\_\-gen().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_gen_mov_consuming_operands@{Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands}}
+\index{Lpipe_gen_mov_consuming_operands@{Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands (L\_\-Operand $\ast$ {\em dest}, L\_\-Operand $\ast$ {\em src})}\label{l__pipe__util_8c_ee779950f38ef40325d91a06a673d9ae}
+
+
+
+
+Definition at line 1375 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-fix\_\-exposed\_\-pred\_\-wrt(), Lpipe\_\-fix\_\-live\_\-in(), Lpipe\_\-fix\_\-live\_\-out\_\-epi(), Lpipe\_\-fix\_\-live\_\-out\_\-stage(), Lpipe\_\-fix\_\-set\_\-out\_\-epi(), Lpipe\_\-fix\_\-set\_\-out\_\-stage(), Lpipe\_\-gen\_\-epilogue\_\-counter(), Lpipe\_\-gen\_\-loop\_\-counter(), Lpipe\_\-move\_\-int\_\-parm\_\-regs(), and Lpipe\_\-rename\_\-mac().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_gen_uncond_pred_define@{Lpipe\_\-gen\_\-uncond\_\-pred\_\-define}}
+\index{Lpipe_gen_uncond_pred_define@{Lpipe\_\-gen\_\-uncond\_\-pred\_\-define}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ Lpipe\_\-gen\_\-uncond\_\-pred\_\-define (L\_\-Operand $\ast$ {\em pred0}, L\_\-Operand $\ast$ {\em pred1}, L\_\-Operand $\ast$ {\em dest}, int {\em opc})}\label{l__pipe__util_8c_af4d8d01138767db21c4b576f99cd96d}
+
+
+
+
+Definition at line 676 of file l\_\-pipe\_\-util.c.
+
+References M\_\-native\_\-int\_\-register\_\-ctype().
+
+Referenced by Lpipe\_\-create\_\-uncond\_\-pred\_\-defines(), and Lpipe\_\-kernel\_\-gen\_\-rot().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_ignore_self_dependences@{Lpipe\_\-ignore\_\-self\_\-dependences}}
+\index{Lpipe_ignore_self_dependences@{Lpipe\_\-ignore\_\-self\_\-dependences}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-ignore\_\-self\_\-dependences (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_fe0fa3d6120b61b121fc43231a6d890d}
+
+
+
+
+Definition at line 506 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Oper::lcode\_\-op, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-ignore\_\-dep(), SM\_\-MVE\_\-IGNORE, SM\_\-Reg\_\-Action::sm\_\-op, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_insert_non_rr_defines@{Lpipe\_\-insert\_\-non\_\-rr\_\-defines}}
+\index{Lpipe_insert_non_rr_defines@{Lpipe\_\-insert\_\-non\_\-rr\_\-defines}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-insert\_\-non\_\-rr\_\-defines (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_9746794fce95842da4036ab2dea2779a}
+
+
+
+
+Definition at line 1606 of file l\_\-pipe\_\-util.c.
+
+References R\_\-build\_\-rotating\_\-reg\_\-set().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_move_int_parm_regs@{Lpipe\_\-move\_\-int\_\-parm\_\-regs}}
+\index{Lpipe_move_int_parm_regs@{Lpipe\_\-move\_\-int\_\-parm\_\-regs}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-move\_\-int\_\-parm\_\-regs (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_b17b99684ef3a58402ade4ddb0129407}
+
+
+
+
+Definition at line 1414 of file l\_\-pipe\_\-util.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), and M\_\-native\_\-int\_\-register\_\-ctype().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_cb_schedule@{Lpipe\_\-print\_\-cb\_\-schedule}}
+\index{Lpipe_print_cb_schedule@{Lpipe\_\-print\_\-cb\_\-schedule}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-print\_\-cb\_\-schedule (FILE $\ast$ {\em file}, L\_\-Func $\ast$ {\em fn}, \bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__util_8c_b586f12896d4906e0e7015d4ea36b61e}
+
+
+
+
+Definition at line 928 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Oper\_\-Queue::first\_\-qentry, header\_\-cb, SM\_\-Cb::kernel\_\-queue, SM\_\-Cb::lcode\_\-cb, SM\_\-Oper::lcode\_\-op, SM\_\-Oper\_\-Qentry::next\_\-qentry, sched\_\-file, SM\_\-attach\_\-isl(), and SM\_\-Oper\_\-Qentry::sm\_\-op.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_cyclic_stats@{Lpipe\_\-print\_\-cyclic\_\-stats}}
+\index{Lpipe_print_cyclic_stats@{Lpipe\_\-print\_\-cyclic\_\-stats}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-print\_\-cyclic\_\-stats (FILE $\ast$ {\em gen\_\-statfile}, L\_\-Cb $\ast$ {\em header\_\-cb}, Softpipe\_\-Min\-II $\ast$ {\em Min\-II}, int {\em ii}, int {\em tries}, int {\em schedule\_\-length}, int {\em loop\_\-dep\_\-height}, int {\em stage\_\-count}, int {\em unroll}, int {\em theta}, int {\em num\_\-oper}, int {\em branch\_\-count}, L\_\-Inner\_\-Loop $\ast$ {\em loop})}\label{l__pipe__util_8c_1717d05a7fa2b065c482d5476745d580}
+
+
+
+
+Definition at line 1296 of file l\_\-pipe\_\-util.c.
+
+References Lpipe\_\-budget\_\-ratio.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_reduce_defines@{Lpipe\_\-reduce\_\-defines}}
+\index{Lpipe_reduce_defines@{Lpipe\_\-reduce\_\-defines}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-reduce\_\-defines (L\_\-Func $\ast$ {\em fn})}\label{l__pipe__util_8c_08dd82ece7672006298b40e75a866e6b}
+
+
+
+
+Definition at line 1560 of file l\_\-pipe\_\-util.c.
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_remove_branches@{Lpipe\_\-remove\_\-branches}}
+\index{Lpipe_remove_branches@{Lpipe\_\-remove\_\-branches}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-remove\_\-branches (L\_\-Func $\ast$ {\em fn}, int {\em unroll})}\label{l__pipe__util_8c_c7e6b4cf559095203372239c9544b2a8}
+
+
+
+
+Definition at line 605 of file l\_\-pipe\_\-util.c.
+
+References header\_\-cb, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, SOFTPIPE\_\-OP\_\-INFO, and Softpipe\_\-Op\_\-Info\_\-pool.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_reordered_anti_dependent_ops@{Lpipe\_\-reordered\_\-anti\_\-dependent\_\-ops}}
+\index{Lpipe_reordered_anti_dependent_ops@{Lpipe\_\-reordered\_\-anti\_\-dependent\_\-ops}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-reordered\_\-anti\_\-dependent\_\-ops (\bf{SM\_\-Oper} $\ast$ {\em oper}, \bf{SM\_\-Oper} $\ast$ {\em next\_\-oper})}\label{l__pipe__util_8c_af2a384e21644ca71a0c7f4a3a524d8d}
+
+
+
+
+Definition at line 432 of file l\_\-pipe\_\-util.c.
+
+References SM\_\-Oper::dest, SM\_\-Reg\_\-Action::first\_\-dep\_\-out, SM\_\-Dep::ignore, SM\_\-Dep::min\_\-delay, SM\_\-Dep::next\_\-dep\_\-out, SM\_\-Dep::omega, SM\_\-Reg\_\-Action::sm\_\-op, and SM\_\-Dep::to\_\-action.
+
+Referenced by Lpipe\_\-sort\_\-MRT\_\-rows().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_create_queue@{Q\_\-create\_\-queue}}
+\index{Q_create_queue@{Q\_\-create\_\-queue}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Queue}$\ast$ Q\_\-create\_\-queue ()}\label{l__pipe__util_8c_cdc1d20712bda5896582534b68c4acbf}
+
+
+
+
+Definition at line 217 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, Queue\_\-pool, and Queue::tail.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_delete_queue@{Q\_\-delete\_\-queue}}
+\index{Q_delete_queue@{Q\_\-delete\_\-queue}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Q\_\-delete\_\-queue (\bf{Queue} $\ast$ {\em queue})}\label{l__pipe__util_8c_942148e69d79ed6f032311fc5f673ec1}
+
+
+
+
+Definition at line 245 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, Qnode::next\_\-qnode, Qnode\_\-pool, and Queue\_\-pool.\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_dequeue@{Q\_\-dequeue}}
+\index{Q_dequeue@{Q\_\-dequeue}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{SM\_\-Oper}$\ast$ Q\_\-dequeue (\bf{Queue} $\ast$ {\em queue})}\label{l__pipe__util_8c_133e3cf36bdcb5c8bd8a22cf3d73dc36}
+
+
+
+
+Definition at line 374 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, SM\_\-Oper::lcode\_\-op, Lpipe\_\-debug, Qnode::next\_\-qnode, Qnode::oper, Qnode::prev\_\-qnode, Qnode::priority, Qnode\_\-pool, and Queue::tail.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_peek_head@{Q\_\-peek\_\-head}}
+\index{Q_peek_head@{Q\_\-peek\_\-head}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{SM\_\-Oper}$\ast$ Q\_\-peek\_\-head (\bf{Queue} $\ast$ {\em queue})}\label{l__pipe__util_8c_c31c6a79d7e89f946aa510fb48beeb21}
+
+
+
+
+Definition at line 418 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, and Qnode::oper.\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_peek_tail@{Q\_\-peek\_\-tail}}
+\index{Q_peek_tail@{Q\_\-peek\_\-tail}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{SM\_\-Oper}$\ast$ Q\_\-peek\_\-tail (\bf{Queue} $\ast$ {\em queue})}\label{l__pipe__util_8c_97fa4ed0e8f32c08ef93c041c69c542d}
+
+
+
+
+Definition at line 408 of file l\_\-pipe\_\-util.c.
+
+References Qnode::oper, and Queue::tail.\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_priority_enqueue_decreasing@{Q\_\-priority\_\-enqueue\_\-decreasing}}
+\index{Q_priority_enqueue_decreasing@{Q\_\-priority\_\-enqueue\_\-decreasing}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Q\_\-priority\_\-enqueue\_\-decreasing (\bf{Queue} $\ast$ {\em queue}, \bf{SM\_\-Oper} $\ast$ {\em oper}, int {\em priority})}\label{l__pipe__util_8c_8fcbbb02452d1ca7f1fb27f24bf23fc9}
+
+
+
+
+Definition at line 318 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, SM\_\-Oper::lcode\_\-op, Lpipe\_\-debug, Qnode::next\_\-qnode, Qnode::oper, Qnode::prev\_\-qnode, Qnode::priority, Qnode\_\-pool, and Queue::tail.
+
+Referenced by Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), and Lpipe\_\-sm\_\-schedule().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_priority_enqueue_increasing@{Q\_\-priority\_\-enqueue\_\-increasing}}
+\index{Q_priority_enqueue_increasing@{Q\_\-priority\_\-enqueue\_\-increasing}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Q\_\-priority\_\-enqueue\_\-increasing (\bf{Queue} $\ast$ {\em queue}, \bf{SM\_\-Oper} $\ast$ {\em oper}, int {\em priority})}\label{l__pipe__util_8c_5d0d8ff30543d84c18044af612092e86}
+
+
+
+
+Definition at line 261 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, SM\_\-Oper::lcode\_\-op, Lpipe\_\-debug, Qnode::next\_\-qnode, Qnode::oper, Qnode::prev\_\-qnode, Qnode::priority, Qnode\_\-pool, and Queue::tail.
+
+Referenced by Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), and Lpipe\_\-sm\_\-schedule().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Q_reinit_queue@{Q\_\-reinit\_\-queue}}
+\index{Q_reinit_queue@{Q\_\-reinit\_\-queue}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Q\_\-reinit\_\-queue (\bf{Queue} $\ast$ {\em queue})}\label{l__pipe__util_8c_df1c12ac44e95b30e76ae8af8d4b7e4c}
+
+
+
+
+Definition at line 229 of file l\_\-pipe\_\-util.c.
+
+References Queue::head, Qnode::next\_\-qnode, Qnode\_\-pool, and Queue::tail.
+
+\subsection{Variable Documentation}
+\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_add_spill_attributes@{Lpipe\_\-add\_\-spill\_\-attributes}}
+\index{Lpipe_add_spill_attributes@{Lpipe\_\-add\_\-spill\_\-attributes}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-add\_\-spill\_\-attributes} = 0}\label{l__pipe__util_8c_e2d1368da174d6c3c8b7ec7d1cbbf44e}
+
+
+
+
+Definition at line 111 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_backward_sched@{Lpipe\_\-backward\_\-sched}}
+\index{Lpipe_backward_sched@{Lpipe\_\-backward\_\-sched}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-backward\_\-sched} = 1}\label{l__pipe__util_8c_1ed5180823f3e497dbc3becd928690f5}
+
+
+
+
+Definition at line 85 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-compute\_\-ready\_\-time(), Lpipe\_\-compute\_\-static\_\-priorities(), Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), Lpipe\_\-optimize\_\-lifetimes(), and Lpipe\_\-sm\_\-schedule().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_budget_ratio@{Lpipe\_\-budget\_\-ratio}}
+\index{Lpipe_budget_ratio@{Lpipe\_\-budget\_\-ratio}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}float \bf{Lpipe\_\-budget\_\-ratio} = 5.0}\label{l__pipe__util_8c_a50c2551f678955eabc6e79793268ffa}
+
+
+
+
+Definition at line 87 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-print\_\-cyclic\_\-stats().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_check_loops_in_phase1@{Lpipe\_\-check\_\-loops\_\-in\_\-phase1}}
+\index{Lpipe_check_loops_in_phase1@{Lpipe\_\-check\_\-loops\_\-in\_\-phase1}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-check\_\-loops\_\-in\_\-phase1} = 1}\label{l__pipe__util_8c_6535802484914fea24cb0c4267280e86}
+
+
+
+
+Definition at line 80 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-loop\_\-prep\_\-end(), Lpipe\_\-loop\_\-prep\_\-init(), and Lpipe\_\-softpipe\_\-loop\_\-prep().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_combine_cbs@{Lpipe\_\-combine\_\-cbs}}
+\index{Lpipe_combine_cbs@{Lpipe\_\-combine\_\-cbs}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-combine\_\-cbs} = 1}\label{l__pipe__util_8c_33aa768a71f08754b1273f95c0cf1d2f}
+
+
+
+
+Definition at line 99 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_compact_branch_path_opers@{Lpipe\_\-compact\_\-branch\_\-path\_\-opers}}
+\index{Lpipe_compact_branch_path_opers@{Lpipe\_\-compact\_\-branch\_\-path\_\-opers}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-compact\_\-branch\_\-path\_\-opers} = 0}\label{l__pipe__util_8c_86f23e88bb2635324fa313d64bb50971}
+
+
+
+
+Definition at line 96 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_compute_loop_reg_pressure@{Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure}}
+\index{Lpipe_compute_loop_reg_pressure@{Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure} = 0}\label{l__pipe__util_8c_05b449c92ca8c59d61db6054cd56e7ee}
+
+
+
+
+Definition at line 110 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-compute\_\-reg\_\-pressure(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_debug@{Lpipe\_\-debug}}
+\index{Lpipe_debug@{Lpipe\_\-debug}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-debug} = 0}\label{l__pipe__util_8c_ad83dd0fea79c90886829873235d97be}
+
+
+
+
+Definition at line 101 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-fix\_\-exposed\_\-pred\_\-wrt(), L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-analyze\_\-lr(), Lpipe\_\-construct\_\-lr(), Lpipe\_\-create\_\-uncond\_\-pred\_\-defines(), Lpipe\_\-do\_\-compact\_\-branch\_\-path\_\-opers(), Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), Lpipe\_\-optimize\_\-lifetimes(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-sm\_\-schedule(), Lpipe\_\-softpipe\_\-loop\_\-prep(), Lpipe\_\-sort\_\-MRT\_\-rows(), Q\_\-dequeue(), Q\_\-priority\_\-enqueue\_\-decreasing(), and Q\_\-priority\_\-enqueue\_\-increasing().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_debug_lower_cb_bound@{Lpipe\_\-debug\_\-lower\_\-cb\_\-bound}}
+\index{Lpipe_debug_lower_cb_bound@{Lpipe\_\-debug\_\-lower\_\-cb\_\-bound}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-debug\_\-lower\_\-cb\_\-bound} = 0}\label{l__pipe__util_8c_4ebe475f1a840fbaa32b10d000fd7f70}
+
+
+
+
+Definition at line 103 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_debug_upper_cb_bound@{Lpipe\_\-debug\_\-upper\_\-cb\_\-bound}}
+\index{Lpipe_debug_upper_cb_bound@{Lpipe\_\-debug\_\-upper\_\-cb\_\-bound}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-debug\_\-upper\_\-cb\_\-bound} = 100000000}\label{l__pipe__util_8c_9142d5510348648db05b36ee12f6058e}
+
+
+
+
+Definition at line 104 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_debug_use_cb_bounds@{Lpipe\_\-debug\_\-use\_\-cb\_\-bounds}}
+\index{Lpipe_debug_use_cb_bounds@{Lpipe\_\-debug\_\-use\_\-cb\_\-bounds}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-debug\_\-use\_\-cb\_\-bounds} = 0}\label{l__pipe__util_8c_ab570eb13a3e6d913d45c8a3b85fad84}
+
+
+
+
+Definition at line 102 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_do_induction_reversal@{Lpipe\_\-do\_\-induction\_\-reversal}}
+\index{Lpipe_do_induction_reversal@{Lpipe\_\-do\_\-induction\_\-reversal}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-do\_\-induction\_\-reversal} = 0}\label{l__pipe__util_8c_fe93aca3da93bf91019df7f7726355fb}
+
+
+
+
+Definition at line 79 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-softpipe\_\-loop\_\-prep().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_do_only_postpass_steps@{Lpipe\_\-do\_\-only\_\-postpass\_\-steps}}
+\index{Lpipe_do_only_postpass_steps@{Lpipe\_\-do\_\-only\_\-postpass\_\-steps}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-do\_\-only\_\-postpass\_\-steps} = 0}\label{l__pipe__util_8c_414f010c3e4a932c6061bb593e7945b0}
+
+
+
+
+Definition at line 94 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_dump_dot@{Lpipe\_\-dump\_\-dot}}
+\index{Lpipe_dump_dot@{Lpipe\_\-dump\_\-dot}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-dump\_\-dot} = 0}\label{l__pipe__util_8c_2b86b75abb1973402ba2363621a03bb3}
+
+
+
+
+Definition at line 113 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-sm\_\-commit().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_fixed_slots_for_branches@{Lpipe\_\-fixed\_\-slots\_\-for\_\-branches}}
+\index{Lpipe_fixed_slots_for_branches@{Lpipe\_\-fixed\_\-slots\_\-for\_\-branches}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-fixed\_\-slots\_\-for\_\-branches} = 0}\label{l__pipe__util_8c_5dfc4a9a1248286c8e15ad45456ddb90}
+
+
+
+
+Definition at line 93 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-sort\_\-MRT\_\-rows().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_max_ii@{Lpipe\_\-max\_\-ii}}
+\index{Lpipe_max_ii@{Lpipe\_\-max\_\-ii}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-max\_\-ii} = 1000}\label{l__pipe__util_8c_971e2f43a9bcf87d02ca3adb1f632358}
+
+
+
+
+Definition at line 89 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_max_stages@{Lpipe\_\-max\_\-stages}}
+\index{Lpipe_max_stages@{Lpipe\_\-max\_\-stages}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-max\_\-stages} = 1000}\label{l__pipe__util_8c_d36c8bdff7baceb8d1cb7853c908bf03}
+
+
+
+
+Definition at line 90 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_max_tries@{Lpipe\_\-max\_\-tries}}
+\index{Lpipe_max_tries@{Lpipe\_\-max\_\-tries}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-max\_\-tries} = 50}\label{l__pipe__util_8c_b20efb4ff31868be5a5b0c3039351158}
+
+
+
+
+Definition at line 91 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_min_ii@{Lpipe\_\-min\_\-ii}}
+\index{Lpipe_min_ii@{Lpipe\_\-min\_\-ii}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-min\_\-ii} = 0}\label{l__pipe__util_8c_05fca7cb5ae9510942db3f6c0307a355}
+
+
+
+
+Definition at line 88 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-pipeline\_\-loop().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_iteration_schedule@{Lpipe\_\-print\_\-iteration\_\-schedule}}
+\index{Lpipe_print_iteration_schedule@{Lpipe\_\-print\_\-iteration\_\-schedule}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-print\_\-iteration\_\-schedule} = 0}\label{l__pipe__util_8c_f65026de9f77648de4df3b4f4ec74417}
+
+
+
+
+Definition at line 106 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-cleanup(), and Lpipe\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_mve_summary@{Lpipe\_\-print\_\-mve\_\-summary}}
+\index{Lpipe_print_mve_summary@{Lpipe\_\-print\_\-mve\_\-summary}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-print\_\-mve\_\-summary} = 0}\label{l__pipe__util_8c_39d6ce980c9450094cb1c9372292b9ac}
+
+
+
+
+Definition at line 108 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-associate\_\-mve\_\-regs(), and Lpipe\_\-associate\_\-rot\_\-regs().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_schedules_for_debug@{Lpipe\_\-print\_\-schedules\_\-for\_\-debug}}
+\index{Lpipe_print_schedules_for_debug@{Lpipe\_\-print\_\-schedules\_\-for\_\-debug}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-print\_\-schedules\_\-for\_\-debug} = 0}\label{l__pipe__util_8c_0b64713f1a54406156072dd81814ea25}
+
+
+
+
+Definition at line 107 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-cleanup(), and Lpipe\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_print_statistics@{Lpipe\_\-print\_\-statistics}}
+\index{Lpipe_print_statistics@{Lpipe\_\-print\_\-statistics}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-print\_\-statistics} = 0}\label{l__pipe__util_8c_ab2140575cdf9b3526e6da5ea095a784}
+
+
+
+
+Definition at line 105 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-cleanup(), Lpipe\_\-init(), Lpipe\_\-loop\_\-prep\_\-end(), Lpipe\_\-loop\_\-prep\_\-init(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-softpipe\_\-loop\_\-prep(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_schema@{Lpipe\_\-schema}}
+\index{Lpipe_schema@{Lpipe\_\-schema}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-schema} = MULTI\_\-EPI}\label{l__pipe__util_8c_9929661b757af9845e6325f4752a7d87}
+
+
+
+
+Definition at line 83 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-analyze\_\-lr(), Lpipe\_\-associate\_\-rot\_\-regs(), Lpipe\_\-construct\_\-lr(), Lpipe\_\-fix\_\-live\_\-in\_\-rot(), Lpipe\_\-fix\_\-live\_\-out(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-softpipe\_\-loop\_\-prep(), and Lpipe\_\-software\_\-pipeline().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_schema_name@{Lpipe\_\-schema\_\-name}}
+\index{Lpipe_schema_name@{Lpipe\_\-schema\_\-name}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{Lpipe\_\-schema\_\-name} = NULL}\label{l__pipe__util_8c_659205866ba47e73cc85c2376ecd1985}
+
+
+
+
+Definition at line 82 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe(), and Lpipe\_\-init().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Lpipe_sort_mrt_rows@{Lpipe\_\-sort\_\-mrt\_\-rows}}
+\index{Lpipe_sort_mrt_rows@{Lpipe\_\-sort\_\-mrt\_\-rows}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-sort\_\-mrt\_\-rows} = 1}\label{l__pipe__util_8c_1fd08397fdb9c8be171e9e45a1d811aa}
+
+
+
+
+Definition at line 97 of file l\_\-pipe\_\-util.c.
+
+Referenced by L\_\-read\_\-parm\_\-lpipe().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Qnode_pool@{Qnode\_\-pool}}
+\index{Qnode_pool@{Qnode\_\-pool}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Qnode\_\-pool} = NULL}\label{l__pipe__util_8c_b2b35dba38efd9d6e53512e38d014729}
+
+
+
+
+Definition at line 71 of file l\_\-pipe\_\-util.c.
+
+Referenced by Lpipe\_\-init(), Q\_\-delete\_\-queue(), Q\_\-dequeue(), Q\_\-priority\_\-enqueue\_\-decreasing(), Q\_\-priority\_\-enqueue\_\-increasing(), and Q\_\-reinit\_\-queue().\index{l_pipe_util.c@{l\_\-pipe\_\-util.c}!Queue_pool@{Queue\_\-pool}}
+\index{Queue_pool@{Queue\_\-pool}!l_pipe_util.c@{l\_\-pipe\_\-util.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Queue\_\-pool} = NULL}\label{l__pipe__util_8c_4a9d1f680824f7426e01b910d4cc2b03}
+
+
+
+
+Definition at line 70 of file l\_\-pipe\_\-util.c.
+
+Referenced by Lpipe\_\-init(), Q\_\-create\_\-queue(), and Q\_\-delete\_\-queue().

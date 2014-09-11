@@ -1,0 +1,1795 @@
+#!/usr/bin/perl
+
+#######################################################################
+# USER SETTINGS
+#######################################################################
+
+# CURRENT RUNS (ibm)
+$basedir   = "/home/scratch3/nystrom/TESTS2/";
+$resultdir = "RESULTS";
+$benchdir  = "Regression";
+
+
+# CURRENT RUNS (laptop)
+#$basedir   = "/exper/nystrom/NEW";
+
+
+# PREVIOUSLY SAVED RUNS (ibm)
+#$basedir = "/home/scratch3/nystrom/TESTS2/RESULTS/";
+#$resultdir = ".";
+#$benchdir = "PLDI.10-29-orig";
+
+
+# PREVIOUSLY SAVED RUNS (laptop)
+#$basedir = "/exper/nystrom/RESULTS-10-29-orig/";
+#$resultdir = ".";
+#$benchdir = "OLD.10-29-15";
+
+
+$rbakdir   = "OLD";
+$timelimit = 1600;
+
+
+#######################################################################
+# BENCHMARKS
+#######################################################################
+
+#add( "directory", "name", "impact bench name", "rank", -, "heap gen")
+#   for names,  "" - differs to previous entry 
+#   for bench name, "local" implies -local_src
+$max = 0;
+add("BMK", "", "", 0, 1, 1);
+
+#SPEC
+add("008", "", "008.espresso", 2, 1, 10000);
+add("023", "", "023.eqntott",  1, 1, 10000);
+add("099", "", "099.go",       1, 1, 10000);
+add("124", "", "124.m88ksim",  2, 1, 10000);
+add("129", "", "129.compress", 1, 1, 10000);
+add("130", "", "130.li",       3, 1, 10000);
+add("132", "", "132.ijpeg",    4, 1, 10000);
+add("134", "", "134.perl",     3, 1, 1);      
+add("164", "", "164.gzip",     1, 1, 10000);
+add("175", "", "175.vpr",      2, 1, 10000);
+add("176", "", "176.gcc",      5, 1, 1);
+add("181", "", "181.mcf",      1, 1, 10000);
+add("183", "", "183.equake",   2, 1, 10000);
+add("186", "", "186.crafty",   2, 1, 10000);
+add("188", "", "188.ammp",     2, 1, 10000);
+add("197", "", "197.parser",   2, 1, 10000);
+add("253", "", "253.perlbmk",  6, 1, 10000);
+add("254", "", "254.gap",      5, 1, 10000);
+add("255", "", "255.vortex",   4, 1, 10000);
+add("256", "", "256.bzip2",    1, 1, 10000);
+add("300", "", "300.twolf",    2, 1, 10000);
+
+# OLDEN
+#add("health",  "", "olden_health",   1, 1, 10000);
+#add("treeadd", "", "olden_treeadd",  1, 1, 10000);
+
+# MEDIABENCH/EEMBC/MEDIA/TELECOM
+add("adpcmdec", "", "", 2, 1, 10000);
+add("adpcmenc", "", "", 2, 1, 10000);
+add("g721dec",  "", "", 2, 1, 10000);
+add("g721enc",  "", "", 2, 1, 10000);
+add("g724dec",  "", "", 2, 1, 10000);
+add("g724enc",  "", "", 2, 1, 10000);
+add("gsmdec",   "", "", 2, 1, 10000);
+add("gsmenc",   "", "", 2, 1, 10000);
+add("jpegdec",  "", "", 4, 1, 10000);      
+add("jpegenc",  "", "", 4, 1, 10000);      
+add("h263dec",  "", "", 2, 1, 10000);
+add("h263enc",  "", "", 2, 1, 10000);
+add("mpeg2dec", "", "", 2, 1, 10000);
+add("mpeg2enc", "", "", 2, 1, 10000);
+add("mpg123",   "", "", 2, 1, 10000);
+add("autcor00", "", "", 2, 1, 10000);
+add("conven00", "", "", 2, 1, 10000);
+add("fbital00", "", "", 2, 1, 10000);
+add("fft00",    "", "", 2, 1, 10000);
+add("viterb00", "", "", 2, 1, 10000);
+add("jpg2Kdec", "", "", 4, 1, 10000);
+add("mpeg4dec", "", "", 3, 1, 10000);
+
+# OPENSOURCE/MISC
+#add("povray2.2", "povray2", "local", 5, 1, 1);      # DNW no X for link
+add("povray3",   "povray3", "local", 6, 1, 1);
+#add("mad",       "",        "mad",   5, 1, 1);      # DNW prof
+#add("screen3",   "",        "local", 5, 1, 1);      # DNW prof
+#add("gs",        "",        "local", 6, 1, 1);      
+
+
+#######################################################################
+# CONFIGURATIONS
+#######################################################################
+          
+$maxcfg = 0;
+#addconfig("ci", "fi",   "-1",  "and",  "none", "0");
+#addconfig("cs", "fi",   "-1",  "and",  "none");
+#addconfig("ci", "fdvs", "-1",  "and",  "none");
+#addconfig("cs", "fdvs", "-1",  "and",  "none");
+
+#addconfig("ci", "fi",   "0",  "and",  "none");
+#addconfig("cs", "fi",   "0",  "and",  "none");
+#addconfig("ci", "fdvs", "0",  "and",  "none");
+#addconfig("cs", "fdvs", "0",  "and",  "none", "0");
+#addconfig("cs", "fdvs", "1",  "and",  "none", "0");
+
+
+
+#addconfig("ci", "fi",   "-1",  "and", "none", "0");
+#addconfig("ci", "fdvs", "-1",  "and", "none", "0");
+#addconfig("ci", "fdvs", "-1",  "and", "none", "1");
+#addconfig("ci", "fdvs", "-1",  "and", "none", "2");
+
+#addconfig("ci", "fi",   "0",  "and", "none", "0");
+#addconfig("ci", "fdvs", "0",  "and", "none", "0");
+#addconfig("ci", "fdvs", "0",  "and", "none", "1");
+#addconfig("ci", "fdvs", "0",  "and", "none", "2");
+
+#addconfig("cs", "fi",   "0",  "and", "none", "0");
+addconfig("cs", "fdvs", "0",  "and", "none", "0");
+#addconfig("cs", "fdvs", "0",  "and", "none", "1");
+#addconfig("cs", "fdvs", "0",  "and", "none", "2");
+
+#addconfig("cs", "fi",   "1",  "and", "none", "0");
+addconfig("cs", "fdvs", "1",  "and", "none", "0");
+#addconfig("cs", "fdvs", "1",  "and", "none", "1");
+#addconfig("cs", "fdvs", "1",  "and", "none", "2");
+
+#addconfig("cs", "fdvs", "0",  "stgd", "none", "0");
+#addconfig("cs", "fdvs", "1",  "stgd", "none", "0");
+
+
+sub addconfig
+  {
+    my $c = shift;
+    my $f = shift;
+    my $h = shift;
+    my $g = shift;
+    my $r = shift;
+    my $s = shift;
+
+    @clist = ("$c");
+    @clist = ("ci","cs") if ($c eq "*");
+
+    @flist = ("$f");
+    @flist = ("fi","fdvs") if ($f eq "*");
+
+    @hlist = ("$h");
+    @hlist = ("-1","0","1") if ($h eq "*");
+
+    @glist = ("$g");
+    @glist = ("and","stgd") if ($g eq "*");
+
+    @rlist = ("$r");
+    @rlist = ("none","full") if ($r eq "*");
+
+    @slist = ("$s");
+    @slist = ("0","1","2") if ($s eq "*");
+
+    foreach $fo (@flist)
+      {
+	foreach $co (@clist)
+	  {
+	    foreach $ho (@hlist)
+	      {
+		foreach $go (@glist)
+		  {
+		    foreach $ro (@rlist)
+		      {
+			foreach $so (@slist)
+			  {
+			    #print "$maxcfg $fo $co $hc $go $ro $so\n";
+			    $cfgtab[$maxcfg]{fo} = $fo;
+			    $cfgtab[$maxcfg]{co} = $co;
+			    $cfgtab[$maxcfg]{ho} = $ho;
+			    $cfgtab[$maxcfg]{go} = $go;
+			    $cfgtab[$maxcfg]{ro} = $ro;
+			    $cfgtab[$maxcfg]{fso} = $so;
+			    $str = $co.$fo.$ho;
+			    $cfgmap{$str} = $maxcfg;
+			    printf "%s %d\n",$str,$maxcfg;
+			    $maxcfg++;
+			  }
+		      }
+		  }
+	      }
+	  }
+      }
+  }
+
+#######################################################################
+# TOPLEVEL
+
+#######################################################################
+$fullbenchdir = $basedir;
+$fullbenchdir = "$basedir/$benchdir" if ($benchdir);
+$fullresultdir = $basedir;
+$fullresultdir = "$basedir/$resultdir" if ($resultdir);
+
+#######################################################################
+
+$mode = $ARGV[0];
+$maxrank = $ARGV[1];
+$id = $ARGV[2];
+
+$datefmt = `date +%0m-%0d-%0k`;
+chop($datefmt);
+
+print "$0 $mode $maxrank $id\n";
+
+die "invalid mode [$mode]\n" if (!(($mode eq "clean") || 
+				   ($mode eq "compile") ||
+				   ($mode eq "gather") ||
+				   ($mode eq "save") ||
+				   ($mode eq "excel") ||
+				   ($mode eq "test") ||
+				   ($mode eq "run")));
+
+if ($mode eq "gather")
+  {
+    gatherinithead();
+  }
+
+for ($r=0; $r<100; $r++)
+  {
+    last if ($r > $maxrank);
+
+    for ($i=0; $i<$max; $i++)
+      {
+	next if ($bmks[$i]{rank} != $r);	
+	$intercount = 0;
+
+	clean($i, $id) if ($mode eq "clean");
+	compile($i) if ($mode eq "compile");
+	runall($i) if ($mode eq "run");
+	gather($i) if ($mode eq "gather");
+	save($i, $id) if ($mode eq "save");
+	gather($i) if ($mode eq "excel");
+	test($i) if ($mode eq "test");
+
+	die "Interrupted" if ($intercount > 0);
+      }
+  }
+
+if ($mode eq "gather")
+  {
+    gatherprint();
+  }
+
+if ($mode eq "excel")
+  {
+    excelprint();
+  }
+
+
+#######################################################################
+
+sub add
+  {
+    my $dir = shift;        # where compilation will take place
+    my $name = shift;       # name used for human output
+    my $benchname = shift;  # name used for compilation scripts
+    my $rank = shift;
+    my $dohc = shift;
+    my $hcgen = shift;
+
+    $bmks[$max]{dir} = $dir;
+
+    $bmks[$max]{name} = $name;
+    $bmks[$max]{name} = $dir if ($name eq "");
+
+    $bmks[$max]{benchname} = $benchname;
+    $bmks[$max]{benchname} = $name if ($benchname eq "");
+    $bmks[$max]{benchname} = $dir if ($benchname eq "");
+
+    $bmks[$max]{rank} = $rank;
+    $bmks[$max]{dohc} = $dohc;
+    $bmks[$max]{hcgen} = $hcgen;
+    $max++;
+
+    return;
+  }
+
+########################################################################
+sub timed_exec
+  {
+    my $cmd = shift;
+    my $timeout = shift;
+    my $starttime, $stoptime;
+    my $status = 0;
+
+    eval {
+      local $SIG{__DIE__} = IGNORE;
+      local $SIG{ALRM} = sub { die "timed out"};
+      local $SIG{INT} = sub { die "intr" };
+      alarm $timeout;
+      $starttime = time();
+      if($cpid = fork)
+	{
+	  wait();
+	  $status = $?;
+	  $stoptime = time();
+	  printf "(%6d s) ", $stoptime - $starttime;
+	}
+      else
+	{
+	  local $SIG{__DIE__} = IGNORE;
+	  exec("$cmd");
+	  exit $status;
+	}
+      alarm 0;
+    };
+
+    if ($@) { 
+      $result = 1;
+      if ($@ =~ /timed out/) {
+	print "Timed out";
+      } elsif ($@ =~ /intr/) {
+	print "Interrupted";
+	$intercount++;
+      } else {
+	alarm 0;
+	printf "Evaluation failed.\n";
+	die;
+      }
+      
+      # Ensure child is dead
+      
+      if (kill 0, $cpid) {
+	print": killing child";
+	kill 9, $cpid;
+	while (waitpid($cpid,0)!=$cpid) {;}
+      }
+      print "\n";
+    } 
+  }
+
+########################################################################
+sub islocked
+  {
+    my $name = shift;
+
+    $lock1 = "${name}1";
+    if (-e $lock1)
+      {
+	print "SKIP \n";
+	return 1;
+      }
+    `touch ${name}1`;
+    die "no ${name}1\n" if (! -e $lock1);
+    
+    sleep($id);
+    
+    $lock2 = "${name}2";
+    if (-e $lock2)
+      {
+	`rm ${name}1`;
+	print "SKIP\n";
+	return 1;
+      }
+    `touch ${name}2`;
+    die "no ${name}2\n" if (! -e $lock2);
+
+    return 0;
+  }
+
+########################################################################
+sub gotodir
+  {
+    my $dir = shift;
+    my $i = shift;
+    
+    if (chdir("$dir/$bmks[$i]{dir}") == 0)
+      {
+	print "Cound not open dir $dir/$bmks[$i]{dir}\n";
+	return 0;
+      }
+    
+    return 1;
+  }
+
+########################################################################
+
+
+sub gen_configparm
+  {
+    my $j = shift;
+    my $fo = $cfgtab[$j]{fo};
+    my $co = $cfgtab[$j]{co};
+    my $ho = $cfgtab[$j]{ho};
+    my $go = $cfgtab[$j]{go};
+    my $ro = $cfgtab[$j]{ro};
+    my $fso = $cfgtab[$j]{fso};
+    
+    my $ext = "$co.$fo";
+    my $hcopt = 0;
+    my $hcgenopt = 0;
+    
+    $ext = $ext . "1" if ($fso eq "1");
+    $ext = $ext . "2" if ($fso eq "2");
+
+    if ($ro eq "full")
+      {
+	$ext = "r$ext";
+      }
+
+    if ($go eq "stgd")
+      {
+	$ext = "S.$ext";
+      }
+
+    if (!($ho eq "-1"))
+      {
+	if ($ho eq "0")
+	  {
+	    # Obligatory hc 0
+	    $ext = "${ext}.hc0";
+	  }
+	else
+	  {
+	    # Benchmark max setting
+	    $ext = "${ext}.hc$bmks[$i]{hcgen}";
+	    $hcgenopt = $bmks[$i]{hcgen};
+
+	    # Don't repeat if $hcgen is also 0
+	    return (0) if ($bmks[$i]{hcgen} == 0);
+	  }
+
+	$hcopt = 1;
+
+	# Don't bother if turned off for benchmark
+	return (0) if (!$bmks[$i]{dohc});
+      }
+    
+    return (1, $ext, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fso);
+  }
+
+########################################################################
+
+sub gen_configstr
+  {
+    my $j = shift;
+    my $fo = $cfgtab[$j]{fo};
+    my $co = $cfgtab[$j]{co};
+    my $ho = $cfgtab[$j]{ho};
+    my $go = $cfgtab[$j]{go};
+    my $ro = $cfgtab[$j]{ro};
+    my $fso = $cfgtab[$j]{fso};
+    my $cfg = "";
+
+    $cfg .= "S" if ($go eq "stgd");
+    $cfg .= "f" if ($fo eq "fdvs");
+    $cfg .= "y1" if ($fso eq "1");
+    $cfg .= "y2" if ($fso eq "2");
+    $cfg .= "R" if ($ro eq "full");
+    $cfg .= "c" if ($co eq "cs");
+    $cfg .= "h" if (!($ho eq "-1"));
+    $cfg .= "0" if ($ho eq "0");
+
+    $cfg = "-" if ($cfg eq "");
+
+    return $cfg;
+  }
+
+########################################################################
+
+sub clean
+  {
+    my $i = shift;
+    my $name = shift;
+
+    return if ($i == 0);
+
+    printf "# %s %d (CLEAN) ${name}\n",$bmks[$i]{dir},$bmks[$i]{rank};
+    return if (!gotodir($fullbenchdir, $i));
+
+
+    system "rm ${name}1" if (-e "${name}1");
+    system "rm ${name}2" if (-e "${name}2");
+  }
+
+########################################################################
+
+sub compile
+  {
+    my $i = shift;
+
+    return if ($i == 0);
+
+    printf "# %s %d (COMPILE)  ",$bmks[$i]{dir},$bmks[$i]{rank};
+    
+    # Go to the directory 
+    if (! -d "$fullbenchdir/$bmks[$i]{dir}")
+      {
+	mkdir("$fullbenchdir/$bmks[$i]{dir}");
+      }
+    return if (!gotodir($fullbenchdir, $i));
+
+    # LOCKS 
+    return if (islocked("LOCK"));
+
+    # Clean out old files
+    # print "Cleaning up old files\n";
+    while (defined($file = <*.tgz *.stl *.st *.stf *.stp *.pci *.i>))
+      {
+	system "rm $file";
+      }
+
+    # Compile
+    $compflags = "-fe1 -fe2 -fe3 -fe4 -no_inlining -noclean";
+    if ($bmks[$i]{benchname} eq "local")
+      {
+	$cmd = "new_compile_bench_new NONE -local_src $compflags";
+      }
+    else
+      {
+	$cmd = "new_compile_bench_new $bmks[$i]{benchname} $compflags";
+      }
+    #print "$datefmt: $cmd  ";
+    system "$cmd >& LOG.COMPILE";
+    
+    $val = `tail -1 LOG.COMPILE`;
+    if ($val =~ /Exiting/)
+      {
+	print "FAILED\n";
+      }
+    elsif ($val =~ /%%%%/)
+      {
+	print "PASSED\n";
+      }
+    else
+      {
+	print "UNKNOWN\n";
+      }
+  }
+
+########################################################################
+
+sub test
+  {
+    my $i = shift;
+
+    return if ($i == 0);
+
+    printf "# %s %d\n",$bmks[$i]{dir},$bmks[$i]{rank};
+    return if (!gotodir($fullbenchdir, $i));
+    
+    # LOCKS 
+    # return if (islocked("LKTEST"));
+
+    for ($j=0; $j<$maxcfg; $j++)
+      {
+	($val, $ext, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fso) = gen_configparm($j);
+	next if (!$val);
+
+	$cstr = gen_configstr($j);
+	
+	printf "$cstr : $ext, $fo, $co, $hcopt, $hcgenopt, $go\n";
+
+	timed_exec("sleep $j", 5);
+      }
+  }
+
+########################################################################
+
+sub runall
+  {
+    my $i = shift;
+
+    return if ($i == 0);
+
+    printf "# %s %d\n",$bmks[$i]{dir},$bmks[$i]{rank};
+    return if (!gotodir($fullbenchdir, $i));
+    
+    # LOCKS 
+    return if (islocked("LKRUN"));
+    
+    for ($j=0; $j<$maxcfg; $j++)
+      {
+	($val, $ext, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fso) = gen_configparm($j);
+	next if (!$val);
+	
+	$cmd = ("tcsh -c \"Pipa -i a.out.pci -o stp " .
+		"-Fipa_sync_gen=yes " .
+		"-Fipa_sync_gen_testonly=yes " .
+		"-Fipa_sync_append_all_obj=yes " .
+		"-Fipa_context_option=$co " .
+		"-Fipa_csrec_option=$ro " .
+		"-Fipa_field_option=$fo " .
+		"-Fipa_cloning_option=$hcopt " .
+		"-Fipa_cloning_gen=$hcgenopt " .
+		"-Fipa_gcon_option=$go " .
+		"-Fipa_field_safety=$fso " .
+		"-Fipa_slow_callgraph=no " .
+		">>& RUN.$ext\"");
+		
+	print "$datefmt: $ext  ";
+	system "echo $datefmt: $cmd  > RUN.$ext";
+	timed_exec($cmd, $timelimit);
+	
+	$out = `tail RUN.$ext | grep "DONE"`;
+	#$time = `tail -20 RUN.$ext | grep "TIME"`;
+	if ($out eq "")
+	  {
+	    print "RUN-FAILED\n";
+	  }
+	else
+	  {
+	    print "\n";
+	  }
+      } 
+  }
+
+########################################################################
+sub gather
+  {
+    my $i = shift;
+
+    return if ($i == 0);
+
+    printf "# %s %d\n",$bmks[$i]{dir},$bmks[$i]{rank};
+    return if (!gotodir($fullbenchdir, $i));
+    
+    for ($j=0; $j<$maxcfg; $j++)
+      {
+	($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	next if (!$val);
+	
+	$file = "RUN.$name";
+	gatherinit($i);
+	
+	if (! -e $file)
+	  {
+	    print "NO RUN $file\n";
+	    $alldata{$bmks[$i]{name}}{$j}{status} = "NO RUN";
+	    next;		
+	  }
+	
+	$out = `tail $file | grep "DONE"`;
+	$time = `tail $file | grep "TIME"`; 
+	if ($out eq "")
+	  {
+	    print "FAILED $name\n";
+	    $alldata{$bmks[$i]{name}}{$j}{status} = "FAILED";
+	    next;
+	  }
+	printf("PASSED $file\n");
+	
+	open(INFILE, "< $file");
+	$alldata{$bmks[$i]{name}}{$j}{status} = "OK";
+	
+	$findtime = 1;
+	$access = 0;
+	$heaps = 0;
+	$totale = 0;
+	$foundall = 0;
+	$inall = 0;
+	$foundaa = 0;
+	
+	while (<INFILE>)
+	  {
+	    if (/GDATA\s+TD TIME\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{tdtime} = $1;
+	      }
+	    if (/GDATA\s+BU TIME\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{butime} = $1;
+	      }
+	    if (/GDATA\s+CI TIME\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{butime} = $1;
+	      }
+	    if (/GDATA\s+SYNC TIME\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{synctime} = $1;
+	      }
+	    if (/(\d\d-.\d-.\d):/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{date}=$1;
+	      }
+	    
+	    if (/(\d+)\s+:\s+\d+.\d+\s+\d+.\d+\s+:\s+NORM\s+(\d+.\d+)\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{lda}=$2;
+		$alldata{$bmks[$i]{name}}{$j}{sta}=$3;
+	      }
+	    if (/(\d+)\s+:\s+\d+.\d+\s+\d+.\d+\s+:\s+HEAP\s+(\d+.\d+)\s+(\d+.\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{hlda}=$2;
+		$alldata{$bmks[$i]{name}}{$j}{hsta}=$3;
+	      }
+
+	    if (/CALLG Merging (\d+) nodes in SCC (\d+)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{SCC} = 0 if ($2 == 1);
+		$alldata{$bmks[$i]{name}}{$j}{SCC} += $1;
+	      }
+
+	    $access++ if (/ACCESSING/);
+	    
+	    if (/\# DONE \#/)
+	      {
+		$findtime = 0;
+	      }
+	    
+	    if (/NODES    ALL \<\-/)
+	      {
+		$inall = 1;
+		$foundaa = 0;
+	      }
+	    
+	    if ($inall)
+	      {
+		if (/ALL   \d+ \<\-/)
+		  {
+		    $inall = 0;
+		    #printf("end\n");
+		  }
+		if (/NODES\s+(\d+) <-\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/)
+		  {
+		    #printf("N $1 = G$2 H$3 N$4 S$5\n");
+		    $alldata{$bmks[$i]{name}}{$j}{nodes} = $1 - ($2 + $3);
+		    $alldata{$bmks[$i]{name}}{$j}{heaps} = $5;
+		    $alldata{$bmks[$i]{name}}{$j}{kcycle} = $7;
+		    $alldata{$bmks[$i]{name}}{$j}{mod} = $8;
+		    #print "$bmks[$i]{name}, $7, $8\n";
+		  }
+
+		if (!$foundaa)
+		  {
+		    if (/AA\s+(\d+) <-\s+\(\s+(\d+)\s+(\d+)\s+(\d+)\)\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\|\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(\d+)/)
+		      {
+			#printf("A $1 = $2 $3 $4\n");
+			$alldata{$bmks[$i]{name}}{$j}{aa} = $1;
+			$alldata{$bmks[$i]{name}}{$j}{aasum} = $2;
+			$alldata{$bmks[$i]{name}}{$j}{stride} = $5;
+			#print "stride $5\n";
+			$foundaa = 1;
+		      }
+		  }
+	      }
+	    
+	    if ($findtime && /\#\# TIME \d+.\d+ \(R \d+.\d+\) \(T (\d+.\d+)\)/)
+	      {
+		$alldata{$bmks[$i]{name}}{$j}{acc} = "$access";
+		$alldata{$bmks[$i]{name}}{$j}{time} = "$1";
+	      }			
+	  } # infile 
+	
+	close(INFILE);
+      } 
+  }
+
+
+sub gatherinit
+  {
+    my $i = shift;
+
+    $alldata{$bmks[$i]{name}}{$j}{status} = "";
+    $alldata{$bmks[$i]{name}}{$j}{acc} = "-";
+    $alldata{$bmks[$i]{name}}{$j}{time} = "0";
+    $alldata{$bmks[$i]{name}}{$j}{tdtime} = "0";
+    $alldata{$bmks[$i]{name}}{$j}{butime} = "0";
+
+    $alldata{$bmks[$i]{name}}{$j}{nodes} = "-";
+    $alldata{$bmks[$i]{name}}{$j}{heaps} = "-";
+    $alldata{$bmks[$i]{name}}{$j}{aa} = "-";
+    $alldata{$bmks[$i]{name}}{$j}{aasum} = "-";
+  }
+
+sub gatherinithead
+  {
+    my $i=0;
+
+    for ($j=0; $j<$maxcfg; $j++)
+      {
+	$alldata{$bmks[$i]{name}}{$j}{status} = "OK";
+	$alldata{$bmks[$i]{name}}{$j}{acc} = "ACC";
+	$alldata{$bmks[$i]{name}}{$j}{time} = "TIME";
+	$alldata{$bmks[$i]{name}}{$j}{tdtime} = "TD-T";
+	$alldata{$bmks[$i]{name}}{$j}{butime} = "BU-T";
+	$alldata{$bmks[$i]{name}}{$j}{synctime} = "SC-T";
+	$alldata{$bmks[$i]{name}}{$j}{date} = "DATE";
+	
+	$alldata{$bmks[$i]{name}}{$j}{nodes} = "NODES";
+	$alldata{$bmks[$i]{name}}{$j}{heaps} = "HEAPS";
+	$alldata{$bmks[$i]{name}}{$j}{aa} = "AA";
+	$alldata{$bmks[$i]{name}}{$j}{aasum} = "AASUM";
+	
+	$alldata{$bmks[$i]{name}}{$j}{lda}= "LDA";
+	$alldata{$bmks[$i]{name}}{$j}{sta}= "STA";
+	$alldata{$bmks[$i]{name}}{$j}{hlda}= "HLDA";
+	$alldata{$bmks[$i]{name}}{$j}{hsta}= "HSTA";
+
+	$alldata{$bmks[$i]{name}}{$j}{SCC}="SCC";
+	$alldata{$bmks[$i]{name}}{$j}{kcycle}="KCYCLE";
+	$alldata{$bmks[$i]{name}}{$j}{mod}="MOD";
+	$alldata{$bmks[$i]{name}}{$j}{stride}="STRIDE";
+      }
+  }
+
+sub gatherprint
+  {
+    open(SUMOUT,"> $fullresultdir/RESULT-SUM.${datefmt}") || die "";
+    
+    for ($i=0; $i<$max; $i++)
+      {
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+
+	    printf SUMOUT "%9s ", $alldata{$bmks[$i]{name}}{$j}{date};
+	    printf SUMOUT "%5s ", $bmks[$i]{name};
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    printf SUMOUT "%6s ", $cfg;
+	    
+	    printf SUMOUT "%4s ", $alldata{$bmks[$i]{name}}{$j}{acc};
+	    printf SUMOUT "%4s ", $alldata{$bmks[$i]{name}}{$j}{SCC};
+	    printf SUMOUT "%6s ", $alldata{$bmks[$i]{name}}{$j}{time};
+	    if ($i != 0)
+	      {
+		printf SUMOUT "%7.2f ", $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		printf SUMOUT "%7.2f ", $alldata{$bmks[$i]{name}}{$j}{butime};
+		printf SUMOUT "%7.2f ", $alldata{$bmks[$i]{name}}{$j}{synctime};
+	      }
+	    else
+	      {
+		printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{butime};
+		printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{synctime};
+	      }
+	    printf SUMOUT "%8s ", $alldata{$bmks[$i]{name}}{$j}{nodes};
+	    printf SUMOUT "%5s ", $alldata{$bmks[$i]{name}}{$j}{heaps};
+	    printf SUMOUT "%10s ", $alldata{$bmks[$i]{name}}{$j}{aa};
+	    printf SUMOUT "%10s ", $alldata{$bmks[$i]{name}}{$j}{aasum};
+	    
+	    printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{lda};
+	    printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{sta};
+	    printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{hlda};
+	    printf SUMOUT "%7s ", $alldata{$bmks[$i]{name}}{$j}{hsta};
+	    
+#	    if ($co eq "cs" && $i > 0 && $hcgenopt == 0)
+#	      {
+#		$tmp1 = ($alldata{$bmks[$i]{name}}{$j}{aa} - 
+#			 $alldata{$bmks[$i]{name}}{$j}{aasum});
+#		$tmp2 = ($alldata{$bmks[$i]{name}}{$j-1}{aa} - 
+#			 $alldata{$bmks[$i]{name}}{$j-1}{aasum});
+#		
+#		if ($tmp2 > 0)
+#		  {
+#		    printf  SUMOUT "%10d ", 100 * (($tmp2 - $tmp1) / $tmp2);
+#		  }
+#		else
+#		  {
+#		    printf  SUMOUT "%10s ", "-";
+#		  }
+#	      }
+	    
+	    printf SUMOUT " \n";
+	  }
+	
+	printf SUMOUT "\n";
+      }
+    
+    close(SUMOUT);    
+  }
+
+########################################################################
+sub save
+  {
+    my $i = shift;
+    my $savedir;
+
+    return if ($i == 0);
+
+    printf "# %s %d\n",$bmks[$i]{dir},$bmks[$i]{rank};
+    return if (!gotodir($fullbenchdir, $i));
+
+    if ($id eq "")
+      {
+	$savedir = "$fullresultdir/$rbakdir.$datefmt";
+      }
+    else
+      {
+	$savedir = "$fullresultdir/$id.$datefmt";
+      }
+
+    if (! -d "$savedir")
+      {
+	mkdir ("$savedir");
+      }
+    
+    for ($j=0; $j<$maxcfg; $j++)
+      {
+	($val, $ext, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	next if (!$val);
+
+	$file = "RUN.$ext";
+	if (! -e $file)
+	  {
+	    print "NO RUN [$file]\n";
+	    $alldata{$bmks[$i]{dir}}{$j}{status} = "NO RUN";
+	    next;		
+	  }
+	
+	if (! -d "$savedir/$bmks[$i]{dir}")
+	  {
+	    mkdir ("$savedir/$bmks[$i]{dir}");
+	  }
+	`cp $file $savedir/$bmks[$i]{dir}`;
+      }
+  }
+
+
+########################################################################
+sub time_raw
+  {
+    ##################    TIME (RAW)
+    open(XLTIME,"> $fullresultdir/XLTIME.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($fo eq "fdvs") || 
+		     !($hcopt eq "1") || !($hcgenopt eq "0") || 
+		     !($go eq "and"));
+
+	    printf XLTIME "%9s,", $alldata{$bmks[$i]{name}}{$fo.$co.$ho}{date};
+	    if ($first_time)
+	      {
+		printf XLTIME "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLTIME ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    printf XLTIME "%6s, ", $cfg;
+	    
+	    if ($i == 0)
+	      {
+		printf XLTIME "%7s, ", $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		printf XLTIME "%7s, ", $alldata{$bmks[$i]{name}}{$j}{butime};
+		printf XLTIME "%7s, ", $alldata{$bmks[$i]{name}}{$j}{butime};
+	      }
+	    elsif ($co eq "cs")
+	      {
+		printf XLTIME "%7.2f, ", $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		printf XLTIME "%7.2f, ", $alldata{$bmks[$i]{name}}{$j}{butime};
+		printf XLTIME "0, "
+		      }
+	    else
+	      {
+		printf XLTIME "0, 0, ";
+		printf XLTIME "%7.2f, ", $alldata{$bmks[$i]{name}}{$j}{butime};
+	      }
+	    
+	    printf XLTIME " \n";
+	  }
+	
+	printf XLTIME "\n";
+      }
+    close(XLTIME);
+}
+
+sub time_incr()
+  {
+    ##################    TIME (INCR)
+    open(XLTIME,"> $fullresultdir/XLTIME2.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $fs0) = gen_configparm($j);
+
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || !($hcgenopt eq "0") ||
+		     !($go eq "and"));
+
+		    
+	    printf XLTIME "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XLTIME "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLTIME ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+
+	    if ($i == 0)
+	      {
+		printf XLTIME "%7s, ", "M-TD";
+		printf XLTIME "%7s, ", "M-BU";
+		printf XLTIME "%7s, ", "TIME";
+	      }
+	    else
+	      {
+		$td = $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		$bu = $alldata{$bmks[$i]{name}}{$j}{butime};
+		$cit = $alldata{$bmks[$i]{name}}{$j-1}{butime};
+		if ($cit == 0)
+		  {
+		    printf XLTIME "%7.2f, ", 0;
+		    printf XLTIME "%7.2f, ", 0;
+		  }
+		else
+		  {
+		    printf XLTIME "%7.2f, ", $td / $cit;
+		    printf XLTIME "%7.2f, ", $bu / $cit;
+		    printf XLTIME "%7.2f, ", $td + $bu;
+		  }
+	      }
+	    
+	    printf XLTIME " \n";
+	  }
+	
+	printf XLTIME "\n";
+      }
+    close(XLTIME);
+
+    open(XLTIME,"> $fullresultdir/XLTIME2_H.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || ($hcgenopt eq "0") ||
+		     !($go eq "and"));
+
+	    printf XLTIME "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XLTIME "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLTIME ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+
+	    if ($i == 0)
+	      {
+		printf XLTIME "%7s, ", "M-TD";
+		printf XLTIME "%7s, ", "M-BU";
+		printf XLTIME "%7s, ", "TIME";
+	      }
+	    else
+	      {
+		$td = $alldata{$bmks[$i]{name}}{$j}{tdtime};
+		$bu = $alldata{$bmks[$i]{name}}{$j}{butime};
+		$cit = $alldata{$bmks[$i]{name}}{$j-2}{butime};
+		if ($cit == 0)
+		  {
+		    printf XLTIME "%7.2f, ", 0;
+		    printf XLTIME "%7.2f, ", 0;
+		  }
+		else
+		  {
+		    printf XLTIME "%7.2f, ", $td / $cit;
+		    printf XLTIME "%7.2f, ", $bu / $cit;
+		    printf XLTIME "%7.2f, ", $td + $bu;
+		  }
+	      }
+	    
+	    printf XLTIME " \n";
+	  }
+	
+	printf XLTIME "\n";
+      }
+    close(XLTIME);    
+  }
+
+sub accuracy()
+  {
+    ##################    ACCURACY 
+    open(XLACC,"> $fullresultdir/XLACC.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || !($hcgenopt eq "0") || 
+		     !($go eq "and"));
+		    
+	    printf XLACC "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XLACC "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLACC ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    if ($i != 0)
+	      {
+		$sum = ($alldata{$bmks[$i]{name}}{$j}{lda} +
+			$alldata{$bmks[$i]{name}}{$j}{sta});
+		$sumh = ($alldata{$bmks[$i]{name}}{$j}{hlda} +
+			 $alldata{$bmks[$i]{name}}{$j}{hsta});
+		
+		$sumci = ($alldata{$bmks[$i]{name}}{$j-1}{lda} +
+			  $alldata{$bmks[$i]{name}}{$j-1}{sta});
+		$sumhci = ($alldata{$bmks[$i]{name}}{$j-1}{hlda} +
+			   $alldata{$bmks[$i]{name}}{$j-1}{hsta});
+		
+		$abs = ($alldata{$bmks[$i]{name}}{$j}{aa} -
+			$alldata{$bmks[$i]{name}}{$j}{aasum});
+		
+		$absci = ($alldata{$bmks[$i]{name}}{$j-1}{aa} -
+			  $alldata{$bmks[$i]{name}}{$j-1}{aasum});
+		
+		if ($sumci == 0)
+		  {
+		    printf XLACC "%4.3f, ", 0;
+		  }
+		else
+		  {
+		    printf XLACC "%4.3f, ", ($sumci - $sum) / $sumci;
+		  }
+		
+		if ($sumhci == 0)
+		  {
+		    printf XLACC "%4.3f, ", 0;
+		  }
+		else
+		  {
+		    printf XLACC "%4.3f, ", ($sumhci - $sumh) / $sumhci;
+		  }
+
+		#if ($absci == 0)
+		#  {
+		#    printf XLACC "0\n,,ABS,0,0,%4.3f, ", 0;
+		#  }
+		#else
+		#  {
+		#    printf XLACC "0\n,,ABS,0,0,%4.3f, ", ($absci - $abs) / $absci;
+		#  }
+		
+		#printf XLACC "%8s, ", $sum;
+		#printf XLACC "%8s, ", $sumh;
+	      }
+	    else
+	      {
+		printf XLACC "%8s, ", "CI-NRM";
+		printf XLACC "%8s, ", "CI-HP";
+		#printf XLACC "%8s, ", "CI-ABS";
+			
+		#printf XLACC "%8s, ", "NM-Val";
+		#printf XLACC "%8s, ", "HP-Val";
+	      }
+	    
+	    
+	    printf XLACC " \n";
+	  }
+      }
+    close(XLACC);
+
+    open(XLACC,"> $fullresultdir/XLACC_H.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || ($hcgenopt eq "0") || 
+		     !($go eq "and"));
+		    
+	    printf XLACC "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XLACC "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLACC ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    if ($i != 0)
+	      {
+		$sum = ($alldata{$bmks[$i]{name}}{$j}{lda} +
+			$alldata{$bmks[$i]{name}}{$j}{sta});
+		$sumh = ($alldata{$bmks[$i]{name}}{$j}{hlda} +
+			 $alldata{$bmks[$i]{name}}{$j}{hsta});
+		
+		$sumci = ($alldata{$bmks[$i]{name}}{$j-2}{lda} +
+			  $alldata{$bmks[$i]{name}}{$j-2}{sta});
+		$sumhci = ($alldata{$bmks[$i]{name}}{$j-2}{hlda} +
+			   $alldata{$bmks[$i]{name}}{$j-2}{hsta});
+		
+		$abs = ($alldata{$bmks[$i]{name}}{$j}{aa} -
+			$alldata{$bmks[$i]{name}}{$j}{aasum});
+		
+		$absci = ($alldata{$bmks[$i]{name}}{$j-2}{aa} -
+			  $alldata{$bmks[$i]{name}}{$j-2}{aasum});
+		
+		if ($sumci == 0)
+		  {
+		    printf XLACC "%4.3f, ", 0;
+		  }
+		else
+		  {
+		    printf XLACC "%4.3f, ", ($sumci - $sum) / $sumci;
+		  }
+		
+		if ($sumhci == 0)
+		  {
+		    printf XLACC "%4.3f, ", 0;
+		  }
+		else
+		  {
+		    printf XLACC "%4.3f, ", ($sumhci - $sumh) / $sumhci;
+		  }
+
+		#if ($absci == 0)
+		#  {
+		#    printf XLACC "0\n,,ABS,0,0,%4.3f, ", 0;
+		#  }
+		#else
+		#  {
+		#    printf XLACC "0\n,,ABS,0,0,%4.3f, ", ($absci - $abs) / $absci;
+		#  }
+		
+		#printf XLACC "%8s, ", $sum;
+		#printf XLACC "%8s, ", $sumh;
+	      }
+	    else
+	      {
+		printf XLACC "%8s, ", "CI-NRM";
+		printf XLACC "%8s, ", "CI-HP";
+		#printf XLACC "%8s, ", "CI-ABS";
+			
+		#printf XLACC "%8s, ", "NM-Val";
+		#printf XLACC "%8s, ", "HP-Val";
+	      }
+	    
+	    
+	    printf XLACC " \n";
+	  }
+      }
+    close(XLACC);
+  }
+
+sub accuracy_all()
+  {
+    ##################    ACCURACY 
+    open(XLACC,"> $fullresultdir/XLACC_ALL.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+		    
+	    printf XLACC "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XLACC "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XLACC ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    printf XLACC "%6s, ", $cfg;
+	    
+	    if ($i != 0)
+	      {
+		$sum = ($alldata{$bmks[$i]{name}}{$j}{lda} +
+			$alldata{$bmks[$i]{name}}{$j}{sta});
+		$sumh = ($alldata{$bmks[$i]{name}}{$j}{hlda} +
+			 $alldata{$bmks[$i]{name}}{$j}{hsta});
+		
+		if ($sum + $sumh > 0)
+		  {
+		    $total = log($sum + $sumh) / log(10);
+		    $perc = (($total * $sum)/($sum + $sumh));
+		    $perch = (($total * $sumh)/($sum + $sumh));
+		  }
+		else
+		  {
+		    $perc = 0;
+		    $perch = 0;
+		  }
+		printf XLACC "%0.3f, ", $perc;
+		printf XLACC "%0.3f, ", $perch;
+	      }
+	    else
+	      {
+		printf XLACC "%8s, ", "NORM";
+		printf XLACC "%8s, ", "HEAP";
+	      }
+	    
+	    printf XLACC " \n";
+	  }
+	
+	printf XLACC ".\n";
+      }
+    close(XLACC);
+  }
+
+sub sccs
+  {
+
+    ##################    SCCs
+    open(XL,"> $fullresultdir/SCC.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || !($hcgenopt eq "0") || 
+		     !($go eq "and"));
+		    
+	    printf XL "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    
+	    if ($alldata{$bmks[$i]{name}}{$j}{acc} == 0)
+	      {
+		printf XL "%4.3f ",0; 
+	      }
+	    else
+	      {
+		printf XL "%4.3f ", 
+		($alldata{$bmks[$i]{name}}{$j}{SCC} / 
+		 $alldata{$bmks[$i]{name}}{$j}{acc});
+	      }
+
+	    printf XL " \n";
+	  }
+      }
+    close(XL);
+  }
+
+sub time_raw2
+  {
+    ##################    RAW TIMES
+    open(XL,"> $fullresultdir/TIMERAW.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || !($hcgenopt eq "0") || 
+		     !($go eq "and"));
+		    
+	    printf XL "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    #printf XL "%6s, ", $cfg;
+	    
+	    printf XL "%0.3f, %0.3f", 
+	      ($alldata{$bmks[$i]{name}}{$j}{tdtime} + 
+	       $alldata{$bmks[$i]{name}}{$j}{butime}),
+		$alldata{$bmks[$i]{name}}{$j-1}{butime};
+
+	    printf XL " \n";
+	  }
+      }
+    close(XL);
+
+    open(XL,"> $fullresultdir/TIMERAW_H.${datefmt}") || die "";
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if (!($co eq "cs") || !($fo eq "fdvs") || 
+		     !($hcopt eq "1") || ($hcgenopt eq "0") || 
+		     !($go eq "and"));
+		    
+	    printf XL "%9s,", $alldata{$bmks[$i]{name}}{$j}{date};
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	    
+	    $cfg = gen_configstr($j);
+	    #printf XL "%6s, ", $cfg;
+	    
+	    printf XL "%0.3f, %0.3f", 
+	      ($alldata{$bmks[$i]{name}}{$j}{tdtime} + 
+	       $alldata{$bmks[$i]{name}}{$j}{butime}),
+		$alldata{$bmks[$i]{name}}{$j-2}{butime};
+
+	    printf XL " \n";
+	  }
+      }
+    close(XL);
+  }
+
+
+##############################################################
+#######   PLDI 05         ####################################
+##############################################################
+
+sub pldi_timeincr_part
+  {
+    my $cmatch = shift;
+    my $hmatch = shift;
+    my $title = shift;
+
+    print XL "\n\n $title \n";
+    for ($j=0;$j<3;$j++)
+      {
+	$avg_total[$j] = 0;
+	$avg_cnt[$j] = 0;
+      }
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if ($fo eq "fi");
+	    next if ($fs0 eq "1");
+	    next if (!($co eq $cmatch) || !($cfgtab[$j]{ho} eq $hmatch));
+
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	
+	    $cfg = gen_configstr($j);
+
+	    if ($i != 0)
+	      {
+		$str = $co."fi".$cfgtab[$j]{ho};
+		$basetime = ($alldata{$bmks[$i]{name}}{$cfgmap{$str}}{tdtime} +
+			     $alldata{$bmks[$i]{name}}{$cfgmap{$str}}{butime});
+		$time = ($alldata{$bmks[$i]{name}}{$j}{tdtime} +
+			 $alldata{$bmks[$i]{name}}{$j}{butime});
+
+		if ($basetime > 0)
+		  {
+		    printf XL "%0.3f ",($time - $basetime) / $basetime;
+		    $avg_total[$fs0] += ($time - $basetime) / $basetime;
+		    $avg_cnt[$fs0] ++;
+		  }
+		else
+		  {
+		    printf XL "---";
+		  }
+	      }
+	    else
+	      {
+		printf XL "FS%d ", $fs0;
+	      }
+	  }
+
+	printf XL " \n" if !($first_time);
+      }    
+
+    printf XL "\"%s\",", "AVG";
+    for ($j=0;$j<3;$j++)
+      {
+	next if ($j == 1);
+	if ($avg_cnt[$j] > 0)
+	  {
+	    printf XL "%0.3f,",$avg_total[$j] / $avg_cnt[$j];
+	  }
+	else
+	  {
+	    printf XL "---,";
+	  }
+      }
+    printf XL "\n";
+  }
+
+sub pldi_timeincr()
+  {
+    open(XL,"> $fullresultdir/PLDI_TIMEINCR.${datefmt}") || die "";
+
+    pldi_timeincr_part("ci","-1","CI-H-1");
+    pldi_timeincr_part("ci","0", "CI-H0");
+    pldi_timeincr_part("cs","0", "CS-H0");
+    pldi_timeincr_part("cs","1", "CS-H1");
+
+    close(XL);
+  }
+
+sub pldi_accdec_part
+  {
+    my $cmatch = shift;
+    my $hmatch = shift;
+    my $title = shift;
+
+    print XL "\n\n $title \n";
+    for ($j=0;$j<3;$j++)
+      {
+	$avg_total[$j] = 0;
+	$avg_totalh[$j] = 0;
+	$avg_cnt[$j] = 0;
+	$avg_cnth[$j] = 0;
+      }
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if ($fo eq "fi");
+	    next if ($fs0 eq "1");
+	    next if (!($co eq $cmatch) || !($cfgtab[$j]{ho} eq $hmatch));
+
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	
+	    $cfg = gen_configstr($j);
+
+	    if ($i != 0)
+	      {
+		$str = $co."fi".$cfgtab[$j]{ho};
+		$baseacc = $alldata{$bmks[$i]{name}}{$cfgmap{$str}}{lda};
+		$baseacch = $alldata{$bmks[$i]{name}}{$cfgmap{$str}}{hlda};
+		$acc = $alldata{$bmks[$i]{name}}{$j}{lda};
+		$acch = $alldata{$bmks[$i]{name}}{$j}{hlda};
+		
+		if ($baseacc > 0)
+		  {
+		    printf XL "%0.3f,",($baseacc - $acc) / $baseacc;
+		    $avg_total[$fs0] += ($baseacc - $acc) / $baseacc;
+		    $avg_cnt[$fs0] ++;
+		  }
+		else
+		  {
+		    printf XL "---,";
+		  }
+		if ($baseacch > 0)
+		  {
+		    printf XL "%0.3f",($baseacch - $acch) / $baseacch;
+		    $avg_totalh[$fs0] += ($baseacch - $acch) / $baseacch;
+		    $avg_cnth[$fs0] ++;
+		  }
+		else
+		  {
+		    printf XL "---";
+		  }
+	      }
+	    else
+	      {
+		printf XL "FS%d NRM, FS%d HP ", $fs0, $fs0;
+	      }
+	  }
+
+	printf XL " \n" if !($first_time);
+      }    
+
+    printf XL "\"%s\",", "AVG";
+    for ($j=0;$j<3;$j++)
+      {
+	next if ($j == 1);
+	if ($avg_cnt[$j] > 0)
+	  {
+	    printf XL "%0.3f,",$avg_total[$j] / $avg_cnt[$j];
+	  }
+	else
+	  {
+	    printf XL "---,";
+	  }
+
+	if ($avg_cnth[$j] > 0)
+	  {
+	    printf XL "%0.3f,",$avg_totalh[$j] / $avg_cnth[$j];
+	  }
+	else
+	  {
+	    printf XL "---,";
+	  }
+      }
+    printf XL "\n";
+  }
+
+sub pldi_accdec()
+  {
+    open(XL,"> $fullresultdir/PLDI_ACCDEC.${datefmt}") || die "";
+
+    pldi_accdec_part("ci","-1","CI-H-1");
+    pldi_accdec_part("ci","0", "CI-H0");
+    pldi_accdec_part("cs","0", "CS-H0");
+    pldi_accdec_part("cs","1", "CS-H1");
+
+    close(XL);
+  }
+
+sub pldi_kmspercent_part
+  {
+    my $cmatch = shift;
+    my $hmatch = shift;
+    my $title = shift;
+
+    print XL "\n\n $title \n";
+    for ($j=0;$j<3;$j++)
+      {
+	$avg_kcycle[$j] = 0;
+	$avg_mod[$j] = 0;
+	$avg_stride[$j] = 0;
+	$avg_cnt[$j] = 0;
+      }
+    for ($i=0; $i<$max; $i++)
+      {
+	$first_time = 1;
+	for ($j=0; $j<$maxcfg; $j++)
+	  {
+	    ($val, $name, $fo, $co, $go, $hcopt, $hcgenopt, $ro, $fs0) = gen_configparm($j);
+	    next if (!$val);
+	    next if ($fo eq "fi");
+	    next if (!($fs0 eq "2"));
+	    next if (!($co eq $cmatch) || !($cfgtab[$j]{ho} eq $hmatch));
+
+	    if ($first_time)
+	      {
+		printf XL "\"%s\",", $bmks[$i]{name};
+	      }
+	    else
+	      {
+		printf XL ",";
+	      }
+	    $first_time = 0;
+	
+	    $cfg = gen_configstr($j);
+
+	    if ($i != 0)
+	      {
+		$nodes = $alldata{$bmks[$i]{name}}{$j}{nodes};
+		$edges = $alldata{$bmks[$i]{name}}{$j}{aa};
+		$kcycle = $alldata{$bmks[$i]{name}}{$j}{kcycle};
+		$mod = $alldata{$bmks[$i]{name}}{$j}{mod};
+		$stride = $alldata{$bmks[$i]{name}}{$j}{stride};
+
+		#print "$bmks[$i]{name}, $nodes, $edges, $kcycle, $mod, $stride\n";
+		
+		if ($nodes > 0 && $edges > 0)
+		  {
+		    printf XL "%0.3f,", ($kcycle / $nodes);
+		    printf XL "%0.3f,", ($mod / $nodes);
+		    printf XL "%0.3f", ($stride / $edges);
+		    $avg_kcycle[$fs0] += ($kcycle / $nodes);
+		    $avg_mod[$fs0] += ($mod / $nodes);
+		    $avg_stride[$fs0] += ($stride / $edges);
+		    $avg_cnt[$fs0] ++;
+		  }
+		else
+		  {
+		    printf XL "---,---,---";
+		  }
+	      }
+	    else
+	      {
+		printf XL "FS%d KCYCLE,FS%d MOD,FS%d STRIDE", $fs0, $fs0, $fs0;
+	      }
+	  }
+
+	printf XL " \n" if !($first_time);
+      }    
+
+    printf XL "\"%s\",", "AVG";
+    for ($j=0;$j<3;$j++)
+      {
+	next if ($j != 2);
+	if ($avg_cnt[$j] > 0)
+	  {
+	    printf XL "%0.3f,",$avg_kcycle[$j] / $avg_cnt[$j];
+	    printf XL "%0.3f,",$avg_mod[$j] / $avg_cnt[$j];
+	    printf XL "%0.3f,",$avg_stride[$j] / $avg_cnt[$j];
+	  }
+	else
+	  {
+	    printf XL "---,---,---,";
+	  }
+      }
+    printf XL "\n";
+  }
+
+
+sub pldi_kmspercent()
+  {
+    open(XL,"> $fullresultdir/PLDI_KMSPERCENT.${datefmt}") || die "";
+
+    pldi_kmspercent_part("ci","-1","CI-H-1");
+    pldi_kmspercent_part("ci","0", "CI-H0");
+    pldi_kmspercent_part("cs","0", "CS-H0");
+    pldi_kmspercent_part("cs","1", "CS-H1");
+
+    close(XL);
+  }
+
+
+sub excelprint
+  {
+    #time_raw();
+    #time_incr();
+    #accuracy();
+    #accuracy_all();
+    #sccs();
+    #time_raw2();
+
+    pldi_timeincr();
+    pldi_accdec();
+    pldi_kmspercent();
+  }
+

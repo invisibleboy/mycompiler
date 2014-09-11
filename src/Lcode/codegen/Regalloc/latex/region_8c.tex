@@ -1,0 +1,141 @@
+\section{region.c File Reference}
+\label{region_8c}\index{region.c@{region.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$library/heap.h$>$}\par
+{\tt \#include $<$library/stack.h$>$}\par
+{\tt \#include \char`\"{}global\_\-cfg.h\char`\"{}}\par
+{\tt \#include \char`\"{}region.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{init\-Region} (void)
+\item 
+\bf{Region} $\ast$ \bf{new\-Region} (void)
+\item 
+void \bf{free\-Region} (\bf{Region} $\ast$\bf{region})
+\item 
+int \bf{in\-Region} (\bf{Region} $\ast$\bf{region}, \bf{Node} $\ast$\bf{node})
+\item 
+void \bf{Add\-Member} (\bf{Region} $\ast$\bf{region}, \bf{Node} $\ast$\bf{node})
+\item 
+void \bf{add\-Region\-Member\-Cb} (\bf{Region} $\ast$\bf{region}, L\_\-Cb $\ast$cb)
+\item 
+void \bf{print\-Region\-Cbs} (\bf{Region} $\ast$\bf{region})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Region\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Region\-Member\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Region\-Alloc\_\-pool} = \bf{NULL}
+\item 
+\bf{Hash\-Table} \bf{region\-Node\-Hash\-Tbl}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{region.c@{region.c}!AddMember@{AddMember}}
+\index{AddMember@{AddMember}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Add\-Member (\bf{Region} $\ast$ {\em region}, \bf{Node} $\ast$ {\em node})}\label{region_8c_cddadead93362fe953336a0747798580}
+
+
+
+
+Definition at line 135 of file region.c.
+
+References \_\-Node\-Cb, \_\-Node\-Id, \_\-Region\-Member\-Node, Hash\-Table\_\-insert(), L\_\-alloc(), region::member\-List, region::members, region\_\-member::next\-Member, node, NULL, Region\-Member\_\-pool, region\-Node\-Hash\-Tbl, and Set\_\-add().\index{region.c@{region.c}!addRegionMemberCb@{addRegionMemberCb}}
+\index{addRegionMemberCb@{addRegionMemberCb}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\-Region\-Member\-Cb (\bf{Region} $\ast$ {\em region}, L\_\-Cb $\ast$ {\em cb})}\label{region_8c_7018bfc607ccd72b309651e5b7931c7b}
+
+
+
+
+Definition at line 156 of file region.c.
+
+References region\_\-member::cb, Hash\-Table\_\-insert(), \_\-Set::id, L\_\-alloc(), region\_\-member::member, region::member\-List, region::members, region\_\-member::next\-Member, NULL, Region\-Member\_\-pool, region\-Node\-Hash\-Tbl, and Set\_\-add().\index{region.c@{region.c}!freeRegion@{freeRegion}}
+\index{freeRegion@{freeRegion}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\-Region (\bf{Region} $\ast$ {\em region})}\label{region_8c_b24dd54edc0ca358ddef994d6d2a4bbc}
+
+
+
+
+Definition at line 113 of file region.c.
+
+References L\_\-free(), region::member\-List, region::members, region\_\-member::next\-Member, NULL, Region\_\-pool, Region\-Member\_\-pool, and Set\_\-dispose().\index{region.c@{region.c}!initRegion@{initRegion}}
+\index{initRegion@{initRegion}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void init\-Region (void)}\label{region_8c_06133a96de8199c1f9ad53f81b9ccefb}
+
+
+
+
+Definition at line 75 of file region.c.
+
+References Hash\-Table\_\-create(), L\_\-create\_\-alloc\_\-pool(), NULL, Region\_\-pool, Region\-Alloc\_\-pool, Region\-Member\_\-pool, and region\-Node\-Hash\-Tbl.\index{region.c@{region.c}!inRegion@{inRegion}}
+\index{inRegion@{inRegion}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int in\-Region (\bf{Region} $\ast$ {\em region}, \bf{Node} $\ast$ {\em node})}\label{region_8c_34d3995284a72df5bda745011f4c5430}
+
+
+
+
+Definition at line 129 of file region.c.
+
+References \_\-Node\-Cb, region::members, node, and Set\_\-in().\index{region.c@{region.c}!newRegion@{newRegion}}
+\index{newRegion@{newRegion}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Region}$\ast$ new\-Region (void)}\label{region_8c_01dacc4f40c21699910354b785fb3d09}
+
+
+
+
+Definition at line 91 of file region.c.
+
+References region::alloc\-List, region::enter\-List, region::exit\-List, region::flags, Hash\-Table\_\-create(), region::id, L\_\-alloc(), region::member\-List, region::members, region::next\-Region, NULL, region::rclass, Region\_\-pool, region::region\-Alloc\-Hash\-Tbl, region::seed, and region::weight.\index{region.c@{region.c}!printRegionCbs@{printRegionCbs}}
+\index{printRegionCbs@{printRegionCbs}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\-Region\-Cbs (\bf{Region} $\ast$ {\em region})}\label{region_8c_3af735e504b98da478c1293487bccc9d}
+
+
+
+
+Definition at line 177 of file region.c.
+
+References \_\-Region\-Member\-Cb, region::id, region::member\-List, region\_\-member::next\-Member, NULL, and region::weight.
+
+\subsection{Variable Documentation}
+\index{region.c@{region.c}!Region_pool@{Region\_\-pool}}
+\index{Region_pool@{Region\_\-pool}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Region\_\-pool} = \bf{NULL}}\label{region_8c_4d5f483920804fe14be6a864cd58f714}
+
+
+
+
+Definition at line 69 of file region.c.
+
+Referenced by free\-Region(), init\-Region(), and new\-Region().\index{region.c@{region.c}!RegionAlloc_pool@{RegionAlloc\_\-pool}}
+\index{RegionAlloc_pool@{RegionAlloc\_\-pool}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Region\-Alloc\_\-pool} = \bf{NULL}}\label{region_8c_cb9d86cc7095b99777615691d1b01e64}
+
+
+
+
+Definition at line 71 of file region.c.
+
+Referenced by init\-Region().\index{region.c@{region.c}!RegionMember_pool@{RegionMember\_\-pool}}
+\index{RegionMember_pool@{RegionMember\_\-pool}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Region\-Member\_\-pool} = \bf{NULL}}\label{region_8c_9f2f8bae1c2ca89a413b6a51a373ed02}
+
+
+
+
+Definition at line 70 of file region.c.
+
+Referenced by Add\-Member(), add\-Region\-Member\-Cb(), free\-Region(), and init\-Region().\index{region.c@{region.c}!regionNodeHashTbl@{regionNodeHashTbl}}
+\index{regionNodeHashTbl@{regionNodeHashTbl}!region.c@{region.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Hash\-Table} \bf{region\-Node\-Hash\-Tbl}}\label{region_8c_5da076713e396adacb647c9d8b501754}
+
+
+
+
+Definition at line 72 of file region.c.
+
+Referenced by Add\-Member(), add\-Region\-Member\-Cb(), and init\-Region().

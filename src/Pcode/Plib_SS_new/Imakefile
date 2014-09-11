@@ -1,0 +1,131 @@
+/* 
+ * IMPACT IMakefile for IMPACT build environment v3.0
+ * Created 7/1997
+ * Revised 1/1998
+ *
+ * (C) Copyright 1997, Patrick R. Eaton, David I. August, and Wen-Mei W. Hwu
+ * All rights granted to University of Illinois Board of Regents.
+ *
+ * Notes:
+ *   All lists are space separated.
+ *
+ *   The construct 
+ *     #ifdef BeforeImakeParamsFile/AfterImakeParamsFile ... #endif
+ *   appears throughout this template.  It may be ignored (but not
+ *   editted) for the purposes of revising this file for use with
+ *   a new module.
+ */
+
+#define ModuleCFlags -DSSA_COUNT -DSSA_DEBUG
+
+/* 
+ * If IHaveSubdirs is defined, the makefile will recursively call
+ * makefiles in SUBDIRS.
+ */
+#ifdef AfterImakeParamsFile
+#undefine IHaveSubdirs
+#endif
+
+
+/* 
+ * If IHaveObjsInSubdirs is defined, the makefile will build the library
+ * or executable defined at this level with objects in each subdirectory
+ * in SUBDIRS.  This is done for one directory level and is therefore not
+ * recursive.
+ */
+#ifdef BeforeImakeParamsFile
+#undefine IHaveObjsInSubdirs
+#endif
+
+
+/* 
+ * SUBDIRS lists all subdirectories to be used for recursive makes and
+ * object inclusion.  The order of directories listed in SUBDIRS is
+ * significant as it indicates the recursive build order.
+ *
+ * To set SUBDIRS to the list of all subdirectories under the current
+ * directory in alphabetical order, define SUBDIRS to be
+ * SUBDIRS = $(subst /,,$(filter %/,$(shell ls -F)))
+ */
+#ifdef BeforeImakeParamsFile
+SUBDIRS = 
+#endif
+
+
+/* 
+ * CLASS is used to determine the location of headers in this directory
+ * in the include subdirectory.
+ */
+#ifdef BeforeImakeParamsFile
+CLASS = Pcode
+#endif
+
+
+/* 
+ * EXPORTHDRS is a list of header files exported to other modules.  This
+ * is used to create links in the include subdirectory.
+ * CWL add h_prag.h, gen_ccode.h, flatten.h
+ */
+#ifdef BeforeImakeParamsFile
+EXPORTHDRS = ss_ssa2.h ss_ind_expr.h ss_induct2.h ss_lifetime.h
+#endif
+
+/* 
+ * This ifdef is necessary to support a single imakefile for both master
+ * and slave makefiles.
+ */
+#ifdef IAmASlave
+
+
+/* 
+ * PROGRAM is the name of executable built by this makefile.  Leave empty
+ * if none.
+ */
+#ifdef BeforeImakeParamsFile
+PROGRAM = PcodeSSA_new
+#endif
+
+
+/* 
+ * LIBNAME is the name of library built by this makefile.  Leave empty
+ * if none.
+ */
+#ifdef BeforeImakeParamsFile
+LIBNAME = libpcode_ssa_new
+#endif
+
+
+/* 
+ * LIBS is a list of libraries necessary for the building of PROGRAM
+ * specified.  Leave empty if none.  Libraries are specified in the form
+ * libX.a.  libm.a is implied.
+ */
+#ifdef BeforeImakeParamsFile
+LIBS = libpcode_probe.a libpcode.a libpcode_cf.a libimpact.a
+#endif
+
+/*
+ * EXTRA_INCLUDE_PATHS is a list of all other include paths that you 
+ * would like to pass to the compiler through the -I flag.  The build
+ * will automatically search the current directory ( . ) as well as the 
+ * IMPACT include directory ( $(IMPACT_ROOT)/include ) and the release
+ * include directory ( $(IMPACT_REL_PATH)/include ).  The list should
+ * be space separated with elements in the form -Idir1 or -Idir2.  If 
+ * no additional paths are needed, simply leave empty.
+ */
+#ifdef BeforeImakeParamsFile
+EXTRA_INCLUDE_PATHS = 
+#endif
+
+/* 
+ * standard_compile_rule is the default rule for compiling IMPACT
+ * modules for C and C++.  If the module is to be built on only 
+ * certain platforms, use a construct such as is shown below (and
+ * delete this invocation of the standard_compile_rule).
+ */
+#ifdef AfterImakeParamsFile
+standard_compile_rule()
+#endif
+
+/* endif IAmASlave */
+#endif

@@ -1,0 +1,561 @@
+\section{cudd\-LCache.c File Reference}
+\label{cuddLCache_8c}\index{cuddLCache.c@{cuddLCache.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DD\_\-MAX\_\-HASHTABLE\_\-DENSITY}~2
+\item 
+\#define \bf{dd\-LCHash2}(f, g, shift)~((((unsigned)(f) $\ast$ DD\_\-P1 + (unsigned)(g)) $\ast$ DD\_\-P2) $>$$>$ (shift))
+\item 
+\#define \bf{dd\-LCHash3}(f, g, h, shift)~dd\-CHash2(f,g,h,shift)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void cudd\-Local\-Cache\-Resize \bf{ARGS} ((\bf{Dd\-Local\-Cache} $\ast$cache))
+\item 
+static DD\_\-INLINE unsigned int dd\-LCHash \bf{ARGS} ((\bf{Dd\-Node\-Ptr} $\ast$key, unsigned int keysize, int shift))
+\item 
+static int cudd\-Hash\-Table\-Resize \bf{ARGS} ((\bf{Dd\-Hash\-Table} $\ast$hash))
+\item 
+\bf{Dd\-Local\-Cache} $\ast$ \bf{cudd\-Local\-Cache\-Init} (\bf{Dd\-Manager} $\ast$manager, unsigned int key\-Size, unsigned int cache\-Size, unsigned int max\-Cache\-Size)
+\item 
+void \bf{cudd\-Local\-Cache\-Quit} (\bf{Dd\-Local\-Cache} $\ast$cache)
+\item 
+void \bf{cudd\-Local\-Cache\-Insert} (\bf{Dd\-Local\-Cache} $\ast$cache, \bf{Dd\-Node\-Ptr} $\ast$key, \bf{Dd\-Node} $\ast$value)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Local\-Cache\-Lookup} (\bf{Dd\-Local\-Cache} $\ast$cache, \bf{Dd\-Node\-Ptr} $\ast$key)
+\item 
+void \bf{cudd\-Local\-Cache\-Clear\-Dead} (\bf{Dd\-Manager} $\ast$manager)
+\item 
+void \bf{cudd\-Local\-Cache\-Clear\-All} (\bf{Dd\-Manager} $\ast$manager)
+\item 
+\bf{Dd\-Hash\-Table} $\ast$ \bf{cudd\-Hash\-Table\-Init} (\bf{Dd\-Manager} $\ast$manager, unsigned int key\-Size, unsigned int init\-Size)
+\item 
+void \bf{cudd\-Hash\-Table\-Quit} (\bf{Dd\-Hash\-Table} $\ast$hash)
+\item 
+int \bf{cudd\-Hash\-Table\-Insert} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node\-Ptr} $\ast$key, \bf{Dd\-Node} $\ast$value, \bf{ptrint} count)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Hash\-Table\-Lookup} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node\-Ptr} $\ast$key)
+\item 
+int \bf{cudd\-Hash\-Table\-Insert1} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$value, \bf{ptrint} count)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Hash\-Table\-Lookup1} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f)
+\item 
+int \bf{cudd\-Hash\-Table\-Insert2} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$value, \bf{ptrint} count)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Hash\-Table\-Lookup2} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+int \bf{cudd\-Hash\-Table\-Insert3} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h, \bf{Dd\-Node} $\ast$value, \bf{ptrint} count)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Hash\-Table\-Lookup3} (\bf{Dd\-Hash\-Table} $\ast$hash, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+static void \bf{cudd\-Local\-Cache\-Resize} (\bf{Dd\-Local\-Cache} $\ast$cache)
+\item 
+static DD\_\-INLINE unsigned int \bf{dd\-LCHash} (\bf{Dd\-Node\-Ptr} $\ast$key, unsigned int keysize, int shift)
+\item 
+static void \bf{cudd\-Local\-Cache\-Add\-To\-List} (\bf{Dd\-Local\-Cache} $\ast$cache)
+\item 
+static void \bf{cudd\-Local\-Cache\-Remove\-From\-List} (\bf{Dd\-Local\-Cache} $\ast$cache)
+\item 
+static int \bf{cudd\-Hash\-Table\-Resize} (\bf{Dd\-Hash\-Table} $\ast$hash)
+\item 
+static DD\_\-INLINE \bf{Dd\-Hash\-Item} $\ast$ \bf{cudd\-Hash\-Table\-Alloc} (\bf{Dd\-Hash\-Table} $\ast$hash)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-LCache.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddLCache.c@{cudd\-LCache.c}!DD_MAX_HASHTABLE_DENSITY@{DD\_\-MAX\_\-HASHTABLE\_\-DENSITY}}
+\index{DD_MAX_HASHTABLE_DENSITY@{DD\_\-MAX\_\-HASHTABLE\_\-DENSITY}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-MAX\_\-HASHTABLE\_\-DENSITY~2}\label{cuddLCache_8c_a6007145a7784f8348a528e35bfc2f1c}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-LCache.c}{p.}{cuddLCache_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for local caches.]
+
+Description [Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Local\-Cache\-Init()}{p.}{cuddLCache_8c_04039575e531729b0360e1f77e535ad9} \item \doxyref{cudd\-Local\-Cache\-Quit()}{p.}{cuddLCache_8c_d16e373eb982f7c7858f392584ed9f2f} \item \doxyref{cudd\-Local\-Cache\-Insert()}{p.}{cuddLCache_8c_df77dae50c8fe505edf8ab200a6c9f37} \item \doxyref{cudd\-Local\-Cache\-Lookup()}{p.}{cuddLCache_8c_ba758bb98f9976228aef74176af791fd} \item \doxyref{cudd\-Local\-Cache\-Clear\-Dead()}{p.}{cuddLCache_8c_fcc9444fb15a2e92ec840a1fe3a18afd} \item \doxyref{cudd\-Local\-Cache\-Clear\-All()}{p.}{cuddLCache_8c_9b3e20543e022d0d3092591b73b7b939} \item cudd\-Local\-Cache\-Profile() \item \doxyref{cudd\-Hash\-Table\-Init()}{p.}{cuddLCache_8c_e76427554fe01c4d539d7de58a9722be} \item \doxyref{cudd\-Hash\-Table\-Quit()}{p.}{cuddLCache_8c_c48511fd185191433d7f180850e71e0f} \item \doxyref{cudd\-Hash\-Table\-Insert()}{p.}{cuddLCache_8c_9bf314654e2092980899575ffc3aeaa3} \item \doxyref{cudd\-Hash\-Table\-Lookup()}{p.}{cuddLCache_8c_fd730a2140b0e0009f659f85af2efdfc} \item \doxyref{cudd\-Hash\-Table\-Insert2()}{p.}{cuddLCache_8c_3bb782d3c2c4225e79f82706ee2bb755} \item \doxyref{cudd\-Hash\-Table\-Lookup2()}{p.}{cuddLCache_8c_4a672d94fcbd1084a6164da71ece13d2} \item \doxyref{cudd\-Hash\-Table\-Insert3()}{p.}{cuddLCache_8c_213d89cd581679e29763e8fb6b6ea4c8} \item \doxyref{cudd\-Hash\-Table\-Lookup3()}{p.}{cuddLCache_8c_3e01ff980c57a850c2ac2e25ba79b3a2} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Local\-Cache\-Resize()}{p.}{cuddLCache_8c_5325adbe14e1e1de34ddb6fd5de4ec6a} \item \doxyref{dd\-LCHash()}{p.}{cuddLCache_8c_e0366a237153d44d7b77649fa4dde016} \item \doxyref{cudd\-Local\-Cache\-Add\-To\-List()}{p.}{cuddLCache_8c_b6fa61b6c791a7a7fe678994675aef47} \item \doxyref{cudd\-Local\-Cache\-Remove\-From\-List()}{p.}{cuddLCache_8c_0ce0bf5ccf36cef240bf9927ed606824} \item \doxyref{cudd\-Hash\-Table\-Resize()}{p.}{cuddLCache_8c_c0269abf4cc795878e023811d7fbba1d} \item \doxyref{cudd\-Hash\-Table\-Alloc()}{p.}{cuddLCache_8c_2283bae6e58a194ac73e56022e70578f} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 57 of file cudd\-LCache.c.
+
+Referenced by cudd\-Hash\-Table\-Init().\index{cuddLCache.c@{cudd\-LCache.c}!ddLCHash2@{ddLCHash2}}
+\index{ddLCHash2@{ddLCHash2}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define dd\-LCHash2(f, g, shift)~((((unsigned)(f) $\ast$ DD\_\-P1 + (unsigned)(g)) $\ast$ DD\_\-P2) $>$$>$ (shift))}\label{cuddLCache_8c_a0cf86b29de0675e6432e8df8cbc9e4a}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes hash function for keys of two operands.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [dd\-LCHash3 dd\-LCHash] 
+
+Definition at line 97 of file cudd\-LCache.c.
+
+Referenced by cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Insert2(), cudd\-Hash\-Table\-Lookup1(), cudd\-Hash\-Table\-Lookup2(), and cudd\-Hash\-Table\-Resize().\index{cuddLCache.c@{cudd\-LCache.c}!ddLCHash3@{ddLCHash3}}
+\index{ddLCHash3@{ddLCHash3}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define dd\-LCHash3(f, g, h, shift)~dd\-CHash2(f,g,h,shift)}\label{cuddLCache_8c_c25b081a425460960b2a9db20a6ad00f}
+
+
+Macro$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes hash function for keys of three operands.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [dd\-LCHash2 dd\-LCHash] 
+
+Definition at line 113 of file cudd\-LCache.c.
+
+Referenced by cudd\-Hash\-Table\-Insert3(), and cudd\-Hash\-Table\-Lookup3().
+
+\subsection{Function Documentation}
+\index{cuddLCache.c@{cudd\-LCache.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Hash\-Table\-Resize ARGS ((\bf{Dd\-Hash\-Table} $\ast$hash))\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_bdeee019dddc585088052fee17fcaa37}
+
+
+\index{cuddLCache.c@{cudd\-LCache.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE unsigned int dd\-LCHash ARGS ((\bf{Dd\-Node\-Ptr} $\ast$key, unsigned int keysize, int shift))\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_b8b12252a56f5d29975215fe92a497e4}
+
+
+\index{cuddLCache.c@{cudd\-LCache.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Local\-Cache\-Resize ARGS ((\bf{Dd\-Local\-Cache} $\ast$cache))\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_8b7b964ff74ceea7c73fffb059b5de77}
+
+
+Automatic\-Start \index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableAlloc@{cuddHashTableAlloc}}
+\index{cuddHashTableAlloc@{cuddHashTableAlloc}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE \bf{Dd\-Hash\-Item}$\ast$ cudd\-Hash\-Table\-Alloc (\bf{Dd\-Hash\-Table} $\ast$ {\em hash})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_2283bae6e58a194ac73e56022e70578f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Fast storage allocation for Dd\-Nodes in the table.]
+
+Description [Fast storage allocation for Dd\-Nodes in the table. The first 4 bytes of a chunk contain a pointer to the next block; the rest contains DD\_\-MEM\_\-CHUNK spaces for Dd\-Nodes. Returns a pointer to a new node if successful; NULL is memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Dynamic\-Alloc\-Node] 
+
+Definition at line 1366 of file cudd\-LCache.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, DD\_\-MEM\_\-CHUNK, Dd\-Manager::error\-Code, Dd\-Hash\-Table::itemsize, Dd\-Hash\-Table::manager, Dd\-Hash\-Table::memory\-List, Dd\-Hash\-Item::next, and Dd\-Hash\-Table::next\-Free.
+
+Referenced by cudd\-Hash\-Table\-Insert(), cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Insert2(), and cudd\-Hash\-Table\-Insert3().\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableInit@{cuddHashTableInit}}
+\index{cuddHashTableInit@{cuddHashTableInit}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Hash\-Table}$\ast$ cudd\-Hash\-Table\-Init (\bf{Dd\-Manager} $\ast$ {\em manager}, unsigned int {\em key\-Size}, unsigned int {\em init\-Size})}\label{cuddLCache_8c_e76427554fe01c4d539d7de58a9722be}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes a hash table.]
+
+Description [Initializes a hash table. Returns a pointer to the new table if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Quit] 
+
+Definition at line 513 of file cudd\-LCache.c.
+
+References ALLOC, Dd\-Hash\-Table::bucket, CUDD\_\-MEMORY\_\-OUT, cudd\-Compute\-Floor\-Log2(), DD\_\-MAX\_\-HASHTABLE\_\-DENSITY, Dd\-Manager::error\-Code, FREE, Dd\-Hash\-Table::itemsize, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::manager, Dd\-Hash\-Table::maxsize, Dd\-Hash\-Table::memory\-List, memset(), Dd\-Hash\-Table::next\-Free, Dd\-Hash\-Table::num\-Buckets, Dd\-Hash\-Table::shift, and Dd\-Hash\-Table::size.
+
+Referenced by Cudd\_\-add\-Permute(), Cudd\_\-add\-Vector\-Compose(), Cudd\_\-bdd\-Permute(), and Cudd\_\-bdd\-Vector\-Compose().\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableInsert@{cuddHashTableInsert}}
+\index{cuddHashTableInsert@{cuddHashTableInsert}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Hash\-Table\-Insert (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node\-Ptr} $\ast$ {\em key}, \bf{Dd\-Node} $\ast$ {\em value}, \bf{ptrint} {\em count})}\label{cuddLCache_8c_9bf314654e2092980899575ffc3aeaa3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts an item in a hash table.]
+
+Description [Inserts an item in a hash table when the key has more than three pointers. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [[cudd\-Hash\-Table\-Insert1 cudd\-Hash\-Table\-Insert2 cudd\-Hash\-Table\-Insert3 cudd\-Hash\-Table\-Lookup] 
+
+Definition at line 623 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Hash\-Table\-Alloc(), cudd\-Hash\-Table\-Resize(), cudd\-Ref, dd\-LCHash(), Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::maxsize, Dd\-Hash\-Item::next, result, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableInsert1@{cuddHashTableInsert1}}
+\index{cuddHashTableInsert1@{cuddHashTableInsert1}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Hash\-Table\-Insert1 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em value}, \bf{ptrint} {\em count})}\label{cuddLCache_8c_33441f3cc9ba4dcc96433d23adf4b536}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts an item in a hash table.]
+
+Description [Inserts an item in a hash table when the key is one pointer. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Insert cudd\-Hash\-Table\-Insert2 cudd\-Hash\-Table\-Insert3 cudd\-Hash\-Table\-Lookup1] 
+
+Definition at line 742 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Hash\-Table\-Alloc(), cudd\-Hash\-Table\-Resize(), cudd\-Ref, dd\-LCHash2, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::maxsize, Dd\-Hash\-Item::next, result, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.
+
+Referenced by cudd\-Add\-Permute\-Recur(), cudd\-Add\-Vector\-Compose\-Recur(), cudd\-Bdd\-Permute\-Recur(), and cudd\-Bdd\-Vector\-Compose\-Recur().\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableInsert2@{cuddHashTableInsert2}}
+\index{cuddHashTableInsert2@{cuddHashTableInsert2}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Hash\-Table\-Insert2 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em value}, \bf{ptrint} {\em count})}\label{cuddLCache_8c_3bb782d3c2c4225e79f82706ee2bb755}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts an item in a hash table.]
+
+Description [Inserts an item in a hash table when the key is composed of two pointers. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Insert cudd\-Hash\-Table\-Insert1 cudd\-Hash\-Table\-Insert3 cudd\-Hash\-Table\-Lookup2] 
+
+Definition at line 849 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Hash\-Table\-Alloc(), cudd\-Hash\-Table\-Resize(), cudd\-Ref, dd\-LCHash2, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::maxsize, Dd\-Hash\-Item::next, result, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableInsert3@{cuddHashTableInsert3}}
+\index{cuddHashTableInsert3@{cuddHashTableInsert3}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Hash\-Table\-Insert3 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h}, \bf{Dd\-Node} $\ast$ {\em value}, \bf{ptrint} {\em count})}\label{cuddLCache_8c_213d89cd581679e29763e8fb6b6ea4c8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts an item in a hash table.]
+
+Description [Inserts an item in a hash table when the key is composed of three pointers. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Insert cudd\-Hash\-Table\-Insert1 cudd\-Hash\-Table\-Insert2 cudd\-Hash\-Table\-Lookup3] 
+
+Definition at line 959 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Hash\-Table\-Alloc(), cudd\-Hash\-Table\-Resize(), cudd\-Ref, dd\-LCHash3, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::maxsize, Dd\-Hash\-Item::next, result, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableLookup@{cuddHashTableLookup}}
+\index{cuddHashTableLookup@{cuddHashTableLookup}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Hash\-Table\-Lookup (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node\-Ptr} $\ast$ {\em key})}\label{cuddLCache_8c_fd730a2140b0e0009f659f85af2efdfc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up a key in a hash table.]
+
+Description [Looks up a key consisting of more than three pointers in a hash table. Returns the value associated to the key if there is an entry for the given key in the table; NULL otherwise. If the entry is present, its reference counter is decremented if not saturated. If the counter reaches 0, the value of the entry is dereferenced, and the entry is returned to the free list.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Lookup1 cudd\-Hash\-Table\-Lookup2 cudd\-Hash\-Table\-Lookup3 cudd\-Hash\-Table\-Insert] 
+
+Definition at line 678 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Deref, cudd\-Sat\-Dec, dd\-LCHash(), Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Item::next, Dd\-Hash\-Table::next\-Free, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableLookup1@{cuddHashTableLookup1}}
+\index{cuddHashTableLookup1@{cuddHashTableLookup1}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Hash\-Table\-Lookup1 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddLCache_8c_10dc94baf12ac76234775b6ba0d04e65}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up a key consisting of one pointer in a hash table.]
+
+Description [Looks up a key consisting of one pointer in a hash table. Returns the value associated to the key if there is an entry for the given key in the table; NULL otherwise. If the entry is present, its reference counter is decremented if not saturated. If the counter reaches 0, the value of the entry is dereferenced, and the entry is returned to the free list.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Lookup cudd\-Hash\-Table\-Lookup2 cudd\-Hash\-Table\-Lookup3 cudd\-Hash\-Table\-Insert1] 
+
+Definition at line 794 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Deref, cudd\-Sat\-Dec, dd\-LCHash2, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Item::next, Dd\-Hash\-Table::next\-Free, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.
+
+Referenced by cudd\-Add\-Permute\-Recur(), cudd\-Add\-Vector\-Compose\-Recur(), cudd\-Bdd\-Permute\-Recur(), and cudd\-Bdd\-Vector\-Compose\-Recur().\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableLookup2@{cuddHashTableLookup2}}
+\index{cuddHashTableLookup2@{cuddHashTableLookup2}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Hash\-Table\-Lookup2 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddLCache_8c_4a672d94fcbd1084a6164da71ece13d2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up a key consisting of two pointers in a hash table.]
+
+Description [Looks up a key consisting of two pointer in a hash table. Returns the value associated to the key if there is an entry for the given key in the table; NULL otherwise. If the entry is present, its reference counter is decremented if not saturated. If the counter reaches 0, the value of the entry is dereferenced, and the entry is returned to the free list.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Lookup cudd\-Hash\-Table\-Lookup1 cudd\-Hash\-Table\-Lookup3 cudd\-Hash\-Table\-Insert2] 
+
+Definition at line 903 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Deref, cudd\-Sat\-Dec, dd\-LCHash2, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Item::next, Dd\-Hash\-Table::next\-Free, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableLookup3@{cuddHashTableLookup3}}
+\index{cuddHashTableLookup3@{cuddHashTableLookup3}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Hash\-Table\-Lookup3 (\bf{Dd\-Hash\-Table} $\ast$ {\em hash}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddLCache_8c_3e01ff980c57a850c2ac2e25ba79b3a2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up a key consisting of three pointers in a hash table.]
+
+Description [Looks up a key consisting of three pointers in a hash table. Returns the value associated to the key if there is an entry for the given key in the table; NULL otherwise. If the entry is present, its reference counter is decremented if not saturated. If the counter reaches 0, the value of the entry is dereferenced, and the entry is returned to the free list.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Lookup cudd\-Hash\-Table\-Lookup1 cudd\-Hash\-Table\-Lookup2 cudd\-Hash\-Table\-Insert3] 
+
+Definition at line 1015 of file cudd\-LCache.c.
+
+References assert, Dd\-Hash\-Table::bucket, Dd\-Hash\-Item::count, cudd\-Deref, cudd\-Sat\-Dec, dd\-LCHash3, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Item::next, Dd\-Hash\-Table::next\-Free, Dd\-Hash\-Table::shift, Dd\-Hash\-Table::size, and Dd\-Hash\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableQuit@{cuddHashTableQuit}}
+\index{cuddHashTableQuit@{cuddHashTableQuit}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Hash\-Table\-Quit (\bf{Dd\-Hash\-Table} $\ast$ {\em hash})}\label{cuddLCache_8c_c48511fd185191433d7f180850e71e0f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Shuts down a hash table.]
+
+Description [Shuts down a hash table, dereferencing all the values.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Init] 
+
+Definition at line 570 of file cudd\-LCache.c.
+
+References Dd\-Hash\-Table::bucket, Cudd\_\-Recursive\-Deref(), FREE, Dd\-Hash\-Table::manager, Dd\-Hash\-Table::memory\-List, Dd\-Hash\-Item::next, Dd\-Hash\-Table::num\-Buckets, and Dd\-Hash\-Item::value.
+
+Referenced by Cudd\_\-add\-Permute(), Cudd\_\-add\-Vector\-Compose(), Cudd\_\-bdd\-Permute(), and Cudd\_\-bdd\-Vector\-Compose().\index{cuddLCache.c@{cudd\-LCache.c}!cuddHashTableResize@{cuddHashTableResize}}
+\index{cuddHashTableResize@{cuddHashTableResize}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Hash\-Table\-Resize (\bf{Dd\-Hash\-Table} $\ast$ {\em hash})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_c0269abf4cc795878e023811d7fbba1d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resizes a hash table.]
+
+Description [Resizes a hash table. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Hash\-Table\-Insert] 
+
+Definition at line 1251 of file cudd\-LCache.c.
+
+References ALLOC, Dd\-Hash\-Table::bucket, Cudd\_\-Out\-Of\-Mem(), dd\-LCHash2, Dd\-Hash\-Item::key, Dd\-Hash\-Table::keysize, Dd\-Hash\-Table::maxsize, memset(), MMout\-Of\-Memory, Dd\-Hash\-Item::next, Dd\-Hash\-Table::num\-Buckets, and Dd\-Hash\-Table::shift.
+
+Referenced by cudd\-Hash\-Table\-Insert(), cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Insert2(), and cudd\-Hash\-Table\-Insert3().\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheAddToList@{cuddLocalCacheAddToList}}
+\index{cuddLocalCacheAddToList@{cuddLocalCacheAddToList}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Local\-Cache\-Add\-To\-List (\bf{Dd\-Local\-Cache} $\ast$ {\em cache})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_b6fa61b6c791a7a7fe678994675aef47}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a local cache in the manager list.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1185 of file cudd\-LCache.c.
+
+References Dd\-Manager::local\-Caches, Dd\-Local\-Cache::manager, and Dd\-Local\-Cache::next.
+
+Referenced by cudd\-Local\-Cache\-Init().\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheClearAll@{cuddLocalCacheClearAll}}
+\index{cuddLocalCacheClearAll@{cuddLocalCacheClearAll}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Local\-Cache\-Clear\-All (\bf{Dd\-Manager} $\ast$ {\em manager})}\label{cuddLCache_8c_9b3e20543e022d0d3092591b73b7b939}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Clears the local caches of a manager.]
+
+Description [Clears the local caches of a manager. Used before reordering.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 380 of file cudd\-LCache.c.
+
+References Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Manager::local\-Caches, memset(), Dd\-Local\-Cache::next, and Dd\-Local\-Cache::slots.
+
+Referenced by dd\-Reorder\-Preprocess().\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheClearDead@{cuddLocalCacheClearDead}}
+\index{cuddLocalCacheClearDead@{cuddLocalCacheClearDead}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Local\-Cache\-Clear\-Dead (\bf{Dd\-Manager} $\ast$ {\em manager})}\label{cuddLCache_8c_fcc9444fb15a2e92ec840a1fe3a18afd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Clears the dead entries of the local caches of a manager.]
+
+Description [Clears the dead entries of the local caches of a manager. Used during garbage collection.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 323 of file cudd\-LCache.c.
+
+References Cudd\_\-Regular, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache\-Item::key, Dd\-Local\-Cache::keysize, Dd\-Manager::local\-Caches, Dd\-Local\-Cache::next, Dd\-Local\-Cache::slots, and Dd\-Local\-Cache\-Item::value.\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheInit@{cuddLocalCacheInit}}
+\index{cuddLocalCacheInit@{cuddLocalCacheInit}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Local\-Cache}$\ast$ cudd\-Local\-Cache\-Init (\bf{Dd\-Manager} $\ast$ {\em manager}, unsigned int {\em key\-Size}, unsigned int {\em cache\-Size}, unsigned int {\em max\-Cache\-Size})}\label{cuddLCache_8c_04039575e531729b0360e1f77e535ad9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes a local computed table.]
+
+Description [Initializes a computed table. Returns a pointer the the new local cache in case of success; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Init\-Cache] 
+
+Definition at line 154 of file cudd\-LCache.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, cudd\-Compute\-Floor\-Log2(), cudd\-Local\-Cache\-Add\-To\-List(), dd\-Max, dd\-Min, Dd\-Manager::error\-Code, FREE, Dd\-Local\-Cache::hits, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache::keysize, Dd\-Local\-Cache::look\-Ups, Dd\-Local\-Cache::manager, Dd\-Local\-Cache::maxslots, memset(), Dd\-Manager::memused, Dd\-Manager::min\-Hit, Dd\-Local\-Cache::min\-Hit, Dd\-Local\-Cache::shift, Dd\-Local\-Cache::slots, and Dd\-Manager::slots.\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheInsert@{cuddLocalCacheInsert}}
+\index{cuddLocalCacheInsert@{cuddLocalCacheInsert}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Local\-Cache\-Insert (\bf{Dd\-Local\-Cache} $\ast$ {\em cache}, \bf{Dd\-Node\-Ptr} $\ast$ {\em key}, \bf{Dd\-Node} $\ast$ {\em value})}\label{cuddLCache_8c_df77dae50c8fe505edf8ab200a6c9f37}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a result in a local cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 243 of file cudd\-LCache.c.
+
+References dd\-LCHash(), entry, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache::keysize, memcpy(), and Dd\-Local\-Cache::shift.\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheLookup@{cuddLocalCacheLookup}}
+\index{cuddLocalCacheLookup@{cuddLocalCacheLookup}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Local\-Cache\-Lookup (\bf{Dd\-Local\-Cache} $\ast$ {\em cache}, \bf{Dd\-Node\-Ptr} $\ast$ {\em key})}\label{cuddLCache_8c_ba758bb98f9976228aef74176af791fd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Looks up in a local cache.]
+
+Description [Looks up in a local cache. Returns the result if found; it returns NULL if no result is found.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 276 of file cudd\-LCache.c.
+
+References Cudd\_\-Regular, cudd\-Local\-Cache\-Resize(), cudd\-Reclaim(), dd\-LCHash(), entry, Dd\-Local\-Cache::hits, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache::keysize, Dd\-Local\-Cache::look\-Ups, Dd\-Local\-Cache::manager, Dd\-Local\-Cache::maxslots, memcmp(), Dd\-Local\-Cache::min\-Hit, Dd\-Node::ref, Dd\-Local\-Cache::shift, and Dd\-Local\-Cache::slots.\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheQuit@{cuddLocalCacheQuit}}
+\index{cuddLocalCacheQuit@{cuddLocalCacheQuit}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Local\-Cache\-Quit (\bf{Dd\-Local\-Cache} $\ast$ {\em cache})}\label{cuddLCache_8c_d16e373eb982f7c7858f392584ed9f2f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Shuts down a local computed table.]
+
+Description [Initializes the computed table. It is called by Cudd\_\-Init. Returns a pointer the the new local cache in case of success; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Local\-Cache\-Init] 
+
+Definition at line 217 of file cudd\-LCache.c.
+
+References cudd\-Local\-Cache\-Remove\-From\-List(), FREE, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache::manager, Dd\-Manager::memused, and Dd\-Local\-Cache::slots.\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheRemoveFromList@{cuddLocalCacheRemoveFromList}}
+\index{cuddLocalCacheRemoveFromList@{cuddLocalCacheRemoveFromList}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Local\-Cache\-Remove\-From\-List (\bf{Dd\-Local\-Cache} $\ast$ {\em cache})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_0ce0bf5ccf36cef240bf9927ed606824}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Removes a local cache from the manager list.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1209 of file cudd\-LCache.c.
+
+References Dd\-Manager::local\-Caches, Dd\-Local\-Cache::manager, and Dd\-Local\-Cache::next.
+
+Referenced by cudd\-Local\-Cache\-Quit().\index{cuddLCache.c@{cudd\-LCache.c}!cuddLocalCacheResize@{cuddLocalCacheResize}}
+\index{cuddLocalCacheResize@{cuddLocalCacheResize}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Local\-Cache\-Resize (\bf{Dd\-Local\-Cache} $\ast$ {\em cache})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_5325adbe14e1e1de34ddb6fd5de4ec6a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resizes a local cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1075 of file cudd\-LCache.c.
+
+References ALLOC, Cudd\_\-Out\-Of\-Mem(), dd\-LCHash(), entry, Dd\-Local\-Cache::hits, Dd\-Local\-Cache::item, Dd\-Local\-Cache::itemsize, Dd\-Local\-Cache\-Item::key, Dd\-Local\-Cache::keysize, Dd\-Local\-Cache::look\-Ups, Dd\-Local\-Cache::manager, Dd\-Local\-Cache::maxslots, memcpy(), memset(), Dd\-Manager::memused, MMout\-Of\-Memory, Dd\-Local\-Cache::shift, Dd\-Local\-Cache::slots, and Dd\-Local\-Cache\-Item::value.
+
+Referenced by cudd\-Local\-Cache\-Lookup().\index{cuddLCache.c@{cudd\-LCache.c}!ddLCHash@{ddLCHash}}
+\index{ddLCHash@{ddLCHash}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE unsigned int dd\-LCHash (\bf{Dd\-Node\-Ptr} $\ast$ {\em key}, unsigned int {\em keysize}, int {\em shift})\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_e0366a237153d44d7b77649fa4dde016}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the hash value for a local cache.]
+
+Description [Computes the hash value for a local cache. Returns the bucket index.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1156 of file cudd\-LCache.c.
+
+References DD\_\-P1.
+
+Referenced by cudd\-Hash\-Table\-Insert(), cudd\-Hash\-Table\-Lookup(), cudd\-Local\-Cache\-Insert(), cudd\-Local\-Cache\-Lookup(), and cudd\-Local\-Cache\-Resize().
+
+\subsection{Variable Documentation}
+\index{cuddLCache.c@{cudd\-LCache.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddLCache.c@{cudd\-LCache.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-LCache.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddLCache_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 74 of file cudd\-LCache.c.

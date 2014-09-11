@@ -1,0 +1,382 @@
+\section{l\_\-softpipe.c File Reference}
+\label{l__softpipe_8c}\index{l_softpipe.c@{l\_\-softpipe.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-softpipe.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-sched.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-sync.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-rename.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-mve.h\char`\"{}}\par
+{\tt \#include $<$Lcode/r\_\-regalloc.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-opti.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-disjvreg.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MAX\_\-TRIES}~100
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{Lpipe\_\-init} (Parm\_\-Macro\_\-List $\ast$command\_\-line\_\-macro\_\-list)
+\item 
+void \bf{Lpipe\_\-measurement\_\-init} (Parm\_\-Macro\_\-List $\ast$command\_\-line\_\-macro\_\-list)
+\item 
+void \bf{Lpipe\_\-cleanup} (void)
+\item 
+void \bf{Lpipe\_\-measurement\_\-cleanup} (void)
+\item 
+static void \bf{Lpipe\_\-failure} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, Softpipe\_\-Min\-II $\ast$Min\-II)
+\item 
+static void \bf{Lpipe\_\-compute\_\-start\_\-stop\_\-issue\_\-time} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static int \bf{Lpipe\_\-pipeline\_\-loop} (L\_\-Func $\ast$fn, L\_\-Inner\_\-Loop $\ast$loop)
+\item 
+void \bf{Lpipe\_\-software\_\-pipeline} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-mark\_\-loops\_\-with\_\-spills} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Lpipe\_\-compute\_\-reg\_\-pressure} (L\_\-Func $\ast$fn)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+L\_\-Cb $\ast$ \bf{header\_\-cb}
+\item 
+L\_\-Cb $\ast$ \bf{preheader\_\-cb}
+\item 
+L\_\-Cb $\ast$ \bf{prologue\_\-cb}
+\item 
+L\_\-Cb $\ast$ \bf{remainder\_\-cb}
+\item 
+int \bf{Lpipe\_\-stage\_\-count}
+\item 
+int \bf{Lpipe\_\-counted\_\-loop} = 0
+\item 
+L\_\-Oper $\ast$$\ast$ \bf{kernel\_\-copy\_\-last\_\-op} = 0
+\item 
+L\_\-Oper $\ast$$\ast$ \bf{kernel\_\-copy\_\-first\_\-op} = 0
+\item 
+int \bf{loop\_\-dep\_\-height} = -1
+\item 
+int \bf{Lpipe\_\-total\_\-issue\_\-slots} = -1
+\item 
+FILE $\ast$ \bf{sched\_\-file} = NULL
+\item 
+FILE $\ast$ \bf{pipe\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{gen\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{iters\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{reg\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{func\_\-reg\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{spill\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{code\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{swp\_\-code\_\-statfile} = NULL
+\item 
+FILE $\ast$ \bf{acyclic\_\-statfile} = NULL
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_softpipe.c@{l\_\-softpipe.c}!MAX_TRIES@{MAX\_\-TRIES}}
+\index{MAX_TRIES@{MAX\_\-TRIES}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-TRIES~100}\label{l__softpipe_8c_fd63d23830ad86d01b6fff2e6c615f7e}
+
+
+
+
+Definition at line 74 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().
+
+\subsection{Function Documentation}
+\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_cleanup@{Lpipe\_\-cleanup}}
+\index{Lpipe_cleanup@{Lpipe\_\-cleanup}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-cleanup (void)}\label{l__softpipe_8c_5f4f86dea88858861446d1e06c1dea15}
+
+
+
+
+Definition at line 259 of file l\_\-softpipe.c.
+
+References gen\_\-statfile, iters\_\-statfile, Lpipe\_\-measurement\_\-cleanup(), Lpipe\_\-print\_\-iteration\_\-schedule, Lpipe\_\-print\_\-schedules\_\-for\_\-debug, Lpipe\_\-print\_\-statistics, pipe\_\-statfile, and sched\_\-file.\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_compute_reg_pressure@{Lpipe\_\-compute\_\-reg\_\-pressure}}
+\index{Lpipe_compute_reg_pressure@{Lpipe\_\-compute\_\-reg\_\-pressure}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-compute\_\-reg\_\-pressure (L\_\-Func $\ast$ {\em fn})}\label{l__softpipe_8c_432bc19bba68265dd93532edc814fcff}
+
+
+
+
+Definition at line 1322 of file l\_\-softpipe.c.
+
+References func\_\-reg\_\-statfile, header\_\-cb, Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure, and reg\_\-statfile.\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_compute_start_stop_issue_time@{Lpipe\_\-compute\_\-start\_\-stop\_\-issue\_\-time}}
+\index{Lpipe_compute_start_stop_issue_time@{Lpipe\_\-compute\_\-start\_\-stop\_\-issue\_\-time}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-compute\_\-start\_\-stop\_\-issue\_\-time (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__softpipe_8c_950faa312298324e1d5634c3c4842ae1}
+
+
+
+
+Definition at line 327 of file l\_\-softpipe.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, SM\_\-Cb::last\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Oper::sched\_\-cycle, SM\_\-MAX\_\-CYCLE, SM\_\-MIN\_\-CYCLE, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_failure@{Lpipe\_\-failure}}
+\index{Lpipe_failure@{Lpipe\_\-failure}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-failure (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, Softpipe\_\-Min\-II $\ast$ {\em Min\-II})\hspace{0.3cm}{\tt  [static]}}\label{l__softpipe_8c_dc1a6d6920170c96e1c6d6d52eacf808}
+
+
+
+
+Definition at line 295 of file l\_\-softpipe.c.
+
+References header\_\-cb, SM\_\-Cb::lcode\_\-cb, Lpipe\_\-delete\_\-start\_\-stop\_\-nodes(), Lpipe\_\-free\_\-op\_\-info(), and SM\_\-delete\_\-cb().
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_init@{Lpipe\_\-init}}
+\index{Lpipe_init@{Lpipe\_\-init}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-init (Parm\_\-Macro\_\-List $\ast$ {\em command\_\-line\_\-macro\_\-list})}\label{l__softpipe_8c_f044c0c24784b6dda4e45d4e5688ba4d}
+
+
+
+
+Definition at line 139 of file l\_\-softpipe.c.
+
+References acyclic\_\-statfile, code\_\-statfile, func\_\-reg\_\-statfile, gen\_\-statfile, iters\_\-statfile, L\_\-read\_\-parm\_\-lpipe(), Lpipe\_\-dest\_\-mve\_\-pool, Lpipe\_\-measurement\_\-init(), Lpipe\_\-MVEInfo\_\-pool, Lpipe\_\-pred\_\-mve\_\-pool, Lpipe\_\-print\_\-iteration\_\-schedule, Lpipe\_\-print\_\-schedules\_\-for\_\-debug, Lpipe\_\-print\_\-statistics, Lpipe\_\-schema\_\-name, Lpipe\_\-src\_\-mve\_\-pool, pipe\_\-statfile, Qnode\_\-pool, Queue\_\-pool, reg\_\-statfile, sched\_\-file, Softpipe\_\-Op\_\-Info\_\-pool, spill\_\-statfile, and swp\_\-code\_\-statfile.\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_mark_loops_with_spills@{Lpipe\_\-mark\_\-loops\_\-with\_\-spills}}
+\index{Lpipe_mark_loops_with_spills@{Lpipe\_\-mark\_\-loops\_\-with\_\-spills}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-mark\_\-loops\_\-with\_\-spills (L\_\-Func $\ast$ {\em fn})}\label{l__softpipe_8c_1240d252386c4bb4d5f9bc08a7c2039e}
+
+
+
+
+Definition at line 978 of file l\_\-softpipe.c.
+
+References code\_\-statfile, KERNEL\_\-ONLY, Lpipe\_\-add\_\-spill\_\-attributes, Lpipe\_\-schema, num\_\-cb, prologue\_\-cb, spill\_\-statfile, and swp\_\-code\_\-statfile.\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_measurement_cleanup@{Lpipe\_\-measurement\_\-cleanup}}
+\index{Lpipe_measurement_cleanup@{Lpipe\_\-measurement\_\-cleanup}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-measurement\_\-cleanup (void)}\label{l__softpipe_8c_c18c12740729ece750284668380d64dd}
+
+
+
+
+Definition at line 278 of file l\_\-softpipe.c.
+
+References code\_\-statfile, func\_\-reg\_\-statfile, Lpipe\_\-add\_\-spill\_\-attributes, Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure, reg\_\-statfile, spill\_\-statfile, and swp\_\-code\_\-statfile.
+
+Referenced by Lpipe\_\-cleanup().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_measurement_init@{Lpipe\_\-measurement\_\-init}}
+\index{Lpipe_measurement_init@{Lpipe\_\-measurement\_\-init}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-measurement\_\-init (Parm\_\-Macro\_\-List $\ast$ {\em command\_\-line\_\-macro\_\-list})}\label{l__softpipe_8c_4f72a55b73cc8bb4b70700d7ba9cffe2}
+
+
+
+
+Definition at line 226 of file l\_\-softpipe.c.
+
+References code\_\-statfile, func\_\-reg\_\-statfile, Lpipe\_\-add\_\-spill\_\-attributes, Lpipe\_\-compute\_\-loop\_\-reg\_\-pressure, reg\_\-statfile, spill\_\-statfile, and swp\_\-code\_\-statfile.
+
+Referenced by Lpipe\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_pipeline_loop@{Lpipe\_\-pipeline\_\-loop}}
+\index{Lpipe_pipeline_loop@{Lpipe\_\-pipeline\_\-loop}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-pipeline\_\-loop (L\_\-Func $\ast$ {\em fn}, L\_\-Inner\_\-Loop $\ast$ {\em loop})\hspace{0.3cm}{\tt  [static]}}\label{l__softpipe_8c_cd9bb1e732e6b1dd2cb4071650da8534}
+
+
+
+
+Definition at line 367 of file l\_\-softpipe.c.
+
+References SM\_\-Oper::flags, gen\_\-statfile, header\_\-cb, iters\_\-statfile, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, KERNEL\_\-ONLY, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, lmdes, loop\_\-dep\_\-height, Lpipe\_\-adjust\_\-syncs\_\-for\_\-modulo\_\-sched(), Lpipe\_\-analyze\_\-lr(), Lpipe\_\-budget\_\-ratio, Lpipe\_\-compute\_\-start\_\-stop\_\-issue\_\-time(), Lpipe\_\-construct\_\-op\_\-info(), Lpipe\_\-create\_\-start\_\-stop\_\-nodes(), Lpipe\_\-debug, Lpipe\_\-delete\_\-start\_\-stop\_\-nodes(), Lpipe\_\-failure(), Lpipe\_\-fix\_\-live\_\-in(), Lpipe\_\-fix\_\-live\_\-in\_\-rot(), Lpipe\_\-fix\_\-live\_\-out(), Lpipe\_\-fix\_\-live\_\-out\_\-rot(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-free\_\-op\_\-info(), Lpipe\_\-ignore\_\-self\_\-dependences(), Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-mark\_\-branch\_\-path\_\-opers(), Lpipe\_\-max\_\-ii, Lpipe\_\-min\_\-ii, Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-multi\_\-epi\_\-gen\_\-rot(), Lpipe\_\-mve\_\-transform(), Lpipe\_\-print\_\-cb\_\-info(), Lpipe\_\-print\_\-cb\_\-schedule(), Lpipe\_\-print\_\-cyclic\_\-stats(), Lpipe\_\-print\_\-statistics, Lpipe\_\-rem\_\-loop\_\-gen(), Lpipe\_\-remove\_\-branches(), Lpipe\_\-remove\_\-empty\_\-epilogues(), Lpipe\_\-rreg\_\-transform(), Lpipe\_\-schema, Lpipe\_\-sm\_\-commit(), Lpipe\_\-sm\_\-schedule(), Lpipe\_\-sm\_\-terminate(), Lpipe\_\-stage\_\-count, Lpipe\_\-total\_\-issue\_\-slots, mdes\_\-st::max\_\-slot, MAX\_\-TRIES, MULTI\_\-EPI, MULTI\_\-EPI\_\-ROT\_\-REG, SM\_\-Cb::op\_\-count, pipe\_\-statfile, preheader\_\-cb, prologue\_\-cb, REM\_\-LOOP, remainder\_\-cb, SM\_\-delete\_\-cb(), SM\_\-find\_\-sm\_\-op(), SM\_\-LOOP\_\-BACK\_\-BR, SM\_\-MODULO, SM\_\-new\_\-cb(), SM\_\-NORMALIZE\_\-ISSUE, SM\_\-PREPASS, SM\_\-print\_\-cb\_\-dependences(), SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, and SM\_\-Cb::version1\_\-mdes.
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_software_pipeline@{Lpipe\_\-software\_\-pipeline}}
+\index{Lpipe_software_pipeline@{Lpipe\_\-software\_\-pipeline}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-software\_\-pipeline (L\_\-Func $\ast$ {\em fn})}\label{l__softpipe_8c_5b303ec4e784e21c2d7d38c47ea63b98}
+
+
+
+
+Definition at line 753 of file l\_\-softpipe.c.
+
+References header\_\-cb, KERNEL\_\-ONLY, L\_\-jump\_\-branch\_\-target\_\-expansion(), L\_\-jump\_\-combine\_\-branch\_\-to\_\-uncond\_\-branch(), L\_\-jump\_\-combine\_\-labels(), L\_\-jump\_\-elim\_\-branch\_\-to\_\-next\_\-block(), L\_\-jump\_\-merge\_\-always\_\-successive\_\-blocks(), L\_\-rename\_\-disjoint\_\-virtual\_\-registers(), L\_\-split\_\-cb\_\-after(), Lpipe\_\-combine\_\-cbs, Lpipe\_\-counted\_\-loop, Lpipe\_\-create\_\-comp\_\-code\_\-blocks(), Lpipe\_\-create\_\-defines(), Lpipe\_\-create\_\-uncond\_\-pred\_\-defines(), Lpipe\_\-debug\_\-lower\_\-cb\_\-bound, Lpipe\_\-debug\_\-upper\_\-cb\_\-bound, Lpipe\_\-debug\_\-use\_\-cb\_\-bounds, Lpipe\_\-delete\_\-defines(), Lpipe\_\-do\_\-only\_\-postpass\_\-steps, Lpipe\_\-fix\_\-infinite\_\-lifetimes(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-print\_\-statistics, Lpipe\_\-reduce\_\-defines(), Lpipe\_\-rename\_\-defined\_\-macros(), Lpipe\_\-rename\_\-disj\_\-vregs\_\-in\_\-loop(), Lpipe\_\-schema, MULTI\_\-EPI\_\-ROT\_\-REG, pipe\_\-statfile, R\_\-build\_\-rotating\_\-reg\_\-set(), and REM\_\-LOOP.
+
+\subsection{Variable Documentation}
+\index{l_softpipe.c@{l\_\-softpipe.c}!acyclic_statfile@{acyclic\_\-statfile}}
+\index{acyclic_statfile@{acyclic\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{acyclic\_\-statfile} = NULL}\label{l__softpipe_8c_e08449fa1216f1e3436bf8d7fe73731f}
+
+
+
+
+Definition at line 120 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!code_statfile@{code\_\-statfile}}
+\index{code_statfile@{code\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{code\_\-statfile} = NULL}\label{l__softpipe_8c_05e5e553ea7e96a23f4379f954ce70bb}
+
+
+
+
+Definition at line 116 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-init(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!func_reg_statfile@{func\_\-reg\_\-statfile}}
+\index{func_reg_statfile@{func\_\-reg\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{func\_\-reg\_\-statfile} = NULL}\label{l__softpipe_8c_66928bb443a445b2b093b1082d083379}
+
+
+
+
+Definition at line 112 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-compute\_\-reg\_\-pressure(), Lpipe\_\-init(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!gen_statfile@{gen\_\-statfile}}
+\index{gen_statfile@{gen\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{gen\_\-statfile} = NULL}\label{l__softpipe_8c_bfb992b8633f7de2f771384a01c7411e}
+
+
+
+
+Definition at line 106 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-cleanup(), Lpipe\_\-init(), and Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!header_cb@{header\_\-cb}}
+\index{header_cb@{header\_\-cb}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Cb$\ast$ \bf{header\_\-cb}}\label{l__softpipe_8c_91e84fa9645e4d3beb7b8b6c150da74b}
+
+
+
+
+Definition at line 83 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-adjust\_\-syncs\_\-for\_\-epilogue(), Lpipe\_\-adjust\_\-syncs\_\-for\_\-modulo\_\-sched(), Lpipe\_\-adjust\_\-syncs\_\-for\_\-prologue(), Lpipe\_\-compute\_\-reg\_\-pressure(), Lpipe\_\-failure(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-gen\_\-epi\_\-rot(), Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-print\_\-cb\_\-schedule(), Lpipe\_\-rem\_\-loop\_\-gen(), Lpipe\_\-remove\_\-branches(), Lpipe\_\-sm\_\-schedule(), Lpipe\_\-softpipe\_\-loop\_\-prep(), and Lpipe\_\-software\_\-pipeline().\index{l_softpipe.c@{l\_\-softpipe.c}!iters_statfile@{iters\_\-statfile}}
+\index{iters_statfile@{iters\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{iters\_\-statfile} = NULL}\label{l__softpipe_8c_065f771def475aca9432d340c6eaf35b}
+
+
+
+
+Definition at line 108 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-cleanup(), Lpipe\_\-init(), and Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!kernel_copy_first_op@{kernel\_\-copy\_\-first\_\-op}}
+\index{kernel_copy_first_op@{kernel\_\-copy\_\-first\_\-op}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$$\ast$ \bf{kernel\_\-copy\_\-first\_\-op} = 0}\label{l__softpipe_8c_394714920d405996c9ac56376596536a}
+
+
+
+
+Definition at line 91 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-mve\_\-transform(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-rem\_\-loop\_\-gen().\index{l_softpipe.c@{l\_\-softpipe.c}!kernel_copy_last_op@{kernel\_\-copy\_\-last\_\-op}}
+\index{kernel_copy_last_op@{kernel\_\-copy\_\-last\_\-op}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$$\ast$ \bf{kernel\_\-copy\_\-last\_\-op} = 0}\label{l__softpipe_8c_43dd5bc461bab37b4dc35075227b76df}
+
+
+
+
+Definition at line 90 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-gen\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-mve\_\-transform(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-rem\_\-loop\_\-gen().\index{l_softpipe.c@{l\_\-softpipe.c}!loop_dep_height@{loop\_\-dep\_\-height}}
+\index{loop_dep_height@{loop\_\-dep\_\-height}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{loop\_\-dep\_\-height} = -1}\label{l__softpipe_8c_4dc68702d9b52f9ccb3dc704c3382dad}
+
+
+
+
+Definition at line 93 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-Min\-Dist(), and Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_counted_loop@{Lpipe\_\-counted\_\-loop}}
+\index{Lpipe_counted_loop@{Lpipe\_\-counted\_\-loop}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-counted\_\-loop} = 0}\label{l__softpipe_8c_e41610bb03edbaeb7c02cfcc7fc4467b}
+
+
+
+
+Definition at line 88 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-software\_\-pipeline().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_stage_count@{Lpipe\_\-stage\_\-count}}
+\index{Lpipe_stage_count@{Lpipe\_\-stage\_\-count}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-stage\_\-count}}\label{l__softpipe_8c_e9b3310fa8a82cd6903c833cef98effd}
+
+
+
+
+Definition at line 87 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_softpipe.c@{l\_\-softpipe.c}!Lpipe_total_issue_slots@{Lpipe\_\-total\_\-issue\_\-slots}}
+\index{Lpipe_total_issue_slots@{Lpipe\_\-total\_\-issue\_\-slots}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lpipe\_\-total\_\-issue\_\-slots} = -1}\label{l__softpipe_8c_377860f550eb8f35543d1b7c4a931268}
+
+
+
+
+Definition at line 94 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-sm\_\-schedule().\index{l_softpipe.c@{l\_\-softpipe.c}!pipe_statfile@{pipe\_\-statfile}}
+\index{pipe_statfile@{pipe\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{pipe\_\-statfile} = NULL}\label{l__softpipe_8c_d4ad2d89187dec7ea2bbf365f1e10e1e}
+
+
+
+
+Definition at line 104 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-cleanup(), Lpipe\_\-init(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-software\_\-pipeline().\index{l_softpipe.c@{l\_\-softpipe.c}!preheader_cb@{preheader\_\-cb}}
+\index{preheader_cb@{preheader\_\-cb}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Cb$\ast$ \bf{preheader\_\-cb}}\label{l__softpipe_8c_4ee6d00e67672cc9a04b6f5f533bfb72}
+
+
+
+
+Definition at line 84 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-multi\_\-epi\_\-gen\_\-rot(), Lpipe\_\-pipeline\_\-loop(), and Lpipe\_\-rem\_\-loop\_\-gen().\index{l_softpipe.c@{l\_\-softpipe.c}!prologue_cb@{prologue\_\-cb}}
+\index{prologue_cb@{prologue\_\-cb}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Cb$\ast$ \bf{prologue\_\-cb}}\label{l__softpipe_8c_4708e528902bf49b9c374df3e644309d}
+
+
+
+
+Definition at line 85 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-adjust\_\-syncs\_\-for\_\-prologue(), Lpipe\_\-fix\_\-live\_\-in(), Lpipe\_\-fix\_\-live\_\-in\_\-rot(), Lpipe\_\-gen\_\-partial\_\-epi(), Lpipe\_\-gen\_\-partial\_\-epi\_\-rot(), Lpipe\_\-kernel\_\-gen\_\-rot(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-multi\_\-epi\_\-gen(), Lpipe\_\-multi\_\-epi\_\-gen\_\-rot(), Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-rem\_\-loop(), Lpipe\_\-rem\_\-loop\_\-gen(), and Lpipe\_\-remove\_\-empty\_\-epilogues().\index{l_softpipe.c@{l\_\-softpipe.c}!reg_statfile@{reg\_\-statfile}}
+\index{reg_statfile@{reg\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{reg\_\-statfile} = NULL}\label{l__softpipe_8c_9f9788ffccb227a45934435833fe651e}
+
+
+
+
+Definition at line 110 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-compute\_\-reg\_\-pressure(), Lpipe\_\-init(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!remainder_cb@{remainder\_\-cb}}
+\index{remainder_cb@{remainder\_\-cb}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Cb$\ast$ \bf{remainder\_\-cb}}\label{l__softpipe_8c_785a1b69c62478bf5624354abd3955e1}
+
+
+
+
+Definition at line 86 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-pipeline\_\-loop(), Lpipe\_\-rem\_\-loop(), and Lpipe\_\-rem\_\-loop\_\-gen().\index{l_softpipe.c@{l\_\-softpipe.c}!sched_file@{sched\_\-file}}
+\index{sched_file@{sched\_\-file}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{sched\_\-file} = NULL}\label{l__softpipe_8c_dfcefa1a772012ef80d3b8f14f3f150b}
+
+
+
+
+Definition at line 101 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-cleanup(), Lpipe\_\-init(), and Lpipe\_\-print\_\-cb\_\-schedule().\index{l_softpipe.c@{l\_\-softpipe.c}!spill_statfile@{spill\_\-statfile}}
+\index{spill_statfile@{spill\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{spill\_\-statfile} = NULL}\label{l__softpipe_8c_b31a94b2b54c2bff51947401462afb8a}
+
+
+
+
+Definition at line 114 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-init(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().\index{l_softpipe.c@{l\_\-softpipe.c}!swp_code_statfile@{swp\_\-code\_\-statfile}}
+\index{swp_code_statfile@{swp\_\-code\_\-statfile}!l_softpipe.c@{l\_\-softpipe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{swp\_\-code\_\-statfile} = NULL}\label{l__softpipe_8c_6124881d1ab46cfbcebdfa6852499434}
+
+
+
+
+Definition at line 118 of file l\_\-softpipe.c.
+
+Referenced by Lpipe\_\-init(), Lpipe\_\-mark\_\-loops\_\-with\_\-spills(), Lpipe\_\-measurement\_\-cleanup(), and Lpipe\_\-measurement\_\-init().

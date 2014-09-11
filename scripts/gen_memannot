@@ -1,0 +1,340 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#
+# Usage: gen_memannot dir base list [options]";
+#
+# Probes, simulates, and annotates lcode/mcode.
+#
+# Options (zero or more of the the following may be specified):
+#   -lcode          indicates lcode is being input (the default is mcode)
+#   -f2c            links in f2c libraries
+#   -write_alloc    use write_allocate cache
+#   -mem_dep        perform memory dependence profiling
+#   -pred           perform predicate profiling -JCG 5/7/95
+#   -guide <guide_mode> perform guided memory dependence profiling -DAC 9/7/97
+#   -guide_annot <annot_mode>   perform guided memory dependence annotation (sync,attr)
+#   -remove_sync    remove existing sync arcs in gen_Lget annotation
+#   -sync           generate sync arcs in Lannotate from profile information 
+#   -mem_reuse      perform memory reuse profiling
+#   -skip_probing   Skip over gen_probed_hppa step
+#
+#   -lib_dir	    also search 'dir' for libs
+#   -add_lib	    also link in 'lib'
+#
+#   -dcache_size n   Sets dcache size to n
+#   -dcache_block_size n   Sets dcache block size to n
+#   -dcache_assoc n   Sets dcache associativity to n
+#
+#   -no_skip	    Force skip size to 0
+#
+#
+#       Written by Teresa Johnson
+#      
+#       Updated by Dan Connors (mem dep guide,sync arc generation)
+
+INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_new";
+
+ARCH=`host_arch`
+if test "$?" != 0; then echo "Terminating: error in arch ($ARCH)"; exit 1;fi
+
+case $ARCH in
+    hppa)
+        VALID_ARCH=1;;
+
+
+    *)
+        VALID_ARCH=0;;
+esac
+
+
+LANNOT_BENCH_PARMS="-Fprofile_memory_accesses=yes"
+PROBE_FLAGS=" "
+LANNOT_BENCH_FLAGS=" "
+LANNOTATE_PARMS=""
+LANNOT=1;
+GUIDE_PROFILE=0;
+GUIDE_ANNOT=0;
+LGET_ARGS="";
+SKIP_PROBING=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 3 ]; then
+    PREFIX="$1";
+    BASE="$2";
+    LIST="$3";
+
+    # skip the 1 set arguments
+    shift 3;
+else
+    VALID_ARGS=0;
+fi
+
+NEW_LIB_DIR=`${INFO_SCRIPT} LIBDIRS ${BASE}`
+NEW_LIB=`${INFO_SCRIPT} LIBS ${BASE}`
+PROBE_FLAGS="${PROBE_FLAGS} ${NEW_LIB_DIR} ${NEW_LIB}";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-lcode)
+	    echo "> Source is Lcode";
+	    PROBE_FLAGS="${PROBE_FLAGS} -lcode";;
+
+	-f2c)
+	    echo "> Linking in f2c libraries";
+	    PROBE_FLAGS="${PROBE_FLAGS} -f2c";;
+	
+	-pred)
+	   echo "> Predicate profiling";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fprofile_predicates=yes";;
+	-pred_def)
+	    echo "> Pred def profiling";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Ftrace_pred_defs=yes -Fprofile_pred_defs=yes";
+	    PROBE_FLAGS="${PROBE_FLAGS} -Ftrace_pred_defs=yes";;
+
+	-write_alloc)
+	    echo "> Write allocate cache";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fdcache_write_allocate=yes";;
+
+	-mem_dep)
+	    echo "> Memory dependence profiling";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fmem_dep_profiling=yes";;
+
+	-mem_reuse)
+	    echo "> Memory reuse profiling";
+	    LANNOT=0;
+	    PROBE_FLAGS="${PROBE_FLAGS} -encode_mem_region";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fmem_reuse_profiling=yes";;
+
+	-pcache)
+	    echo "> Use prefetch cache";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fprefetch_cache=yes";;
+
+	-guide)
+	    GUIDE_MODE="$1";
+	    shift;
+	    echo "> Using guided mem profiling, ${GUIDE_MODE} mode";
+	    GUIDE_PROFILE=1;
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fmem_dep_model_name=guided";;
+
+	-guide_annot)
+	    GUIDE_ANNOT_MODE="$1";
+	    shift;
+	    echo "> Will annotate guided profile information with ${GUIDE_ANNOT_MODE}";
+
+	    if [ ${GUIDE_ANNOT_MODE} = "sync" ]; then
+	        LGET_ARGS="${LGET_ARGS} -gen_sync";
+	    elif [ ${GUIDE_ANNOT_MODE} = "attr" ]; then
+	        LGET_ARGS="${LGET_ARGS} -gen_attr";
+	    else
+		VALID_ARGS = 0;
+	    fi;
+
+	    LANNOT=0;
+	    GUIDE_ANNOT=1;;
+
+	-remove_sync)
+	    echo "> Will remove existing sync arcs in gen_Lget annotation";
+	    LGET_ARGS="${LGET_ARGS} -remove_sync";;
+
+       -nozero)
+            echo "> Will generate sync arcs only non-zero sync arcs in gen_Lget";
+            LGET_ARGS="${LGET_ARGS} -nozero";;
+
+	-sync)
+	    echo "> Will generate sync arcs in Lannotate from profile information ";
+	    LANNOTATE_PARMS="-Fgenerate_profiled_sync_arcs=yes";;
+
+	-dcache_size)
+	    SIZE="$1";
+	    shift;
+	    echo "> Dcache size set to ${SIZE}";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fdcache_size=${SIZE}";;
+
+	-dcache_block_size)
+	    BSIZE="$1";
+	    shift;
+	    echo "> Dcache block size set to ${BSIZE}";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fdcache_block_size=${BSIZE}";;
+
+	-dcache_assoc)
+	    ASSOC="$1";
+	    shift;
+	    echo "> Dcache associativity set to ${ASSOC}";
+	    LANNOT_BENCH_PARMS="${LANNOT_BENCH_PARMS} -Fdcache_assoc=${ASSOC}";;
+
+	-no_skip)
+	    echo "> Force skip size to 0 (force no sampling)";
+	    LANNOT_BENCH_FLAGS="${LANNOT_BENCH_FLAGS} -no_skip";;
+
+        -lib_dir)
+            NEW_LIB_DIR="$1";
+            shift;
+            PROBE_FLAGS="${PROBE_FLAGS} -lib_dir ${NEW_LIB_DIR}";
+            echo "> Add ${NEW_LIB_DIR} to library directories";;
+
+        -add_lib)
+            NEW_LIB="$1";
+            shift;
+            PROBE_FLAGS="${PROBE_FLAGS} -add_lib ${NEW_LIB}";
+            echo "> Add ${NEW_LIB} to libraries";;
+
+        -skip_probing)
+            SKIP_PROBING=1;
+            echo "> Skipping gen_probed_hppa step";;
+
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+
+if [ $VALID_ARCH -eq 0 -o $VALID_ARGS -eq 0 ]; then
+
+    if [ $VALID_ARCH -eq 0 ]; then
+        echo ' ';
+        echo '==> This should be run on a hppa machine '
+        echo ' ';
+    fi
+
+    echo ' ';
+    echo "> Usage: gen_memannot dir base list [options]";
+    echo '> ';
+    echo '> Probes, simulates, and annotates lcode/mcode.';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -lcode          indicates lcode is being input (the default is mcode)';
+    echo '>   -f2c            links in f2c libraries';
+    echo '>   -write_alloc    use write_allocate cache';
+    echo '>   -mem_dep        perform memory dependence profiling';
+    echo '>   -mem_reuse      perform memory reuse profiling';
+    echo '>   -pred           perform predicate profiling';
+    echo '>   -pred_def       perform pred def profiling';
+    echo '>   -guide <guide_mode> perform guided memory dependence profiling (sync,local,low)';
+    echo '>   -guide_annot <annot_mode> annot guide memory dependence info code (sync,attr)';
+    echo '>   -nozero         generate sync arcs only non-zero sync arcs in gen_Lget';
+    echo '>   -remove_sync    removes existing sync arc information in Lget annotation';
+    echo '>   -sync           generate sync arc infromation in Lannotate from mem profiling';
+    echo "> "
+    echo ">   -lib_dir 'dir'  also search 'dir' for libs";
+    echo ">   -add_lib 'lib'  also link in 'lib'";
+    echo "> "
+    echo ">   -dcache_size n   Sets dcache size to n";
+    echo ">   -dcache_block_size n   Sets dcache block size to n";
+    echo ">   -dcache_assoc n   Sets dcache associativity to n";
+    echo ">   -skip_probing   Skip over gen_probed_hppa step";
+    echo "> "
+    echo ">   -no_skip	      Force skip size to 0 (force no sampling)";
+    echo ">"
+
+
+    exit 0200;
+fi;
+
+# Need to build a guide file for guided profiling
+if [ $GUIDE_PROFILE -eq 1 ]; then
+    LANNOT_BENCH_FLAGS="${LANNOT_BENCH_FLAGS} -no_skip";
+    gen_Lguide ${PREFIX} ${GUIDE_MODE} guide < ${LIST}
+fi;
+
+if [ $SKIP_PROBING -eq 0 ]; then
+	echo "> Calling gen_probed_lcode";
+	echo "gen_probed_lcode ${PREFIX} simulation ${BASE} ${PROBE_FLAGS} -debug < ${LIST}"
+	gen_probed_lcode \
+		${PREFIX} \
+		simulation \
+		${BASE} \
+		${PROBE_FLAGS} \
+		-debug \
+		< ${LIST}
+#	echo "> Calling gen_probed_hppa";
+#	echo "gen_probed_hppa ${PREFIX} simulation ${BASE} ${PROBE_FLAGS} < ${LIST}"
+#	gen_probed_hppa \
+#		${PREFIX} \
+#		simulation \
+#		${BASE} \
+#		${PROBE_FLAGS} \
+#		< ${LIST}
+	if test "$?" != 0; then echo "ERROR in gen_probed_hppa!"; exit 1;fi
+fi;
+
+	echo "> Calling Lannot_bench";
+	echo "Lannot_bench ${BASE} ${PREFIX} ${LANNOT_BENCH_PARMS} ${LANNOT_BENCH_FLAGS}"
+	Lannot_bench ${BASE} ${PREFIX} "${LANNOT_BENCH_PARMS}" ${LANNOT_BENCH_FLAGS}
+	if test "$?" != 0; then echo "ERROR in Lannot_bench!"; exit 1;fi
+
+if [ $LANNOT -eq 1 ]; then
+	echo "> Calling gen_Lannotate";
+#	echo "gen_Lannotate insert ${PREFIX} ${BASE} ${LANNOTATE_PARMS} < ${LIST}"
+	gen_Lannotate \
+		insert \
+		${PREFIX} \
+		${BASE} \
+		${LANNOTATE_PARMS} \
+		< ${LIST}
+	if test "$?" != 0; then echo "ERROR in gen_Lannotate!"; exit 1;fi
+fi;
+
+if [ $GUIDE_PROFILE -eq 1 ]; then
+    gen_Lget . ${PREFIX}/${BASE}.pdc ${PREFIX}/${BASE}.index \
+		-mem_dep -mem_dep_file ${BASE}.pdc ${LGET_ARGS} < ${PREFIX}/${LIST}
+fi;

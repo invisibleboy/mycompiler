@@ -1,0 +1,166 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script searches the benchmark info search path (defined
+#       by various environment variables) for the first directory that
+#       contains a subdirectory with the specified benchmark name.
+#       This script returns this path, or an error message (exit value 1).
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 10/02/98
+#
+
+ERROR_FLAG=0;
+SUPPRESS_USAGE=0;
+
+# Get fixed argument(s)
+if [ $# -eq 1 ]; then
+    # The first argument must be the benchmark name
+    BENCHMARK="$1";
+
+else
+    ERROR_FLAG=1;
+fi
+
+# Find path if not already in error mode 
+if [ $ERROR_FLAG -eq 0 ]; then
+    # Set Trimaran's default benchmark path if TRIMARAN_REL_PATH defined
+    if [ "${TRIMARAN_REL_PATH}" != "" ] ; then
+        TRIMARAN_DEFAULT_BENCH_PATH="${TRIMARAN_REL_PATH}/benchmarks";
+    else
+        TRIMARAN_DEFAULT_BENCH_PATH="";
+    fi
+
+    # Set IMPACT's default benchmark path if IMPACT_REL_PATH defined
+    if [ "${IMPACT_REL_PATH}" != "" ] ; then
+        IMPACT_DEFAULT_BENCH_PATH="${IMPACT_REL_PATH}/benchmarks";
+    else
+        IMPACT_DEFAULT_BENCH_PATH="";
+    fi
+
+    # Search for BENCHMARK subdirectory in all the following paths
+    # Note: /bin/sh ignores undefined paths, so we get the desired behavior
+    BENCH_FOUND=0;
+    for BENCH_PATH in $USER_BENCH_PATH1 $USER_BENCH_PATH2 $USER_BENCH_PATH3 \
+   		      $USER_BENCH_PATH4 $TRIMARAN_DEFAULT_BENCH_PATH \
+                      $IMPACT_DEFAULT_BENCH_PATH
+    do
+        if [ -d ${BENCH_PATH}/${BENCHMARK} ] ; then
+            # Found it!  Print path and exit with 0
+            echo "${BENCH_PATH}/${BENCHMARK}"
+            exit 0;
+        fi
+    done
+    
+    # If got here, didn't find it, so must have error
+    echo " ";
+    echo "> Error: find_bench_dir unable to find '${BENCHMARK}' subdirectory!"
+    echo " ";
+    SUPPRESS_USAGE=1;
+fi
+
+#
+# If got here, must have error, print usage
+#
+if [ $SUPPRESS_USAGE -eq 0 ]; then
+   echo "> Usage: find_bench_dir benchmark";
+   echo "> ";
+   echo "> Searches for the presence of a 'benchmark' subdirectory the following "
+   echo "> environment-variable-specified directories, in the order specified below.";
+   echo "> ";
+   echo "> Prints path to the first 'benchmark' subdirectory found and returns 0.";
+   echo "> If subdirectory is not found, prints error message and returns 1.";
+   echo "> ";
+fi
+echo ">  Environment Variable Used                     Current Value";
+echo "> ----------------------------  ----------------------------------------------"
+if [ "${USER_BENCH_PATH1}" != "" ]; then
+    echo "> USER_BENCH_PATH1              ${USER_BENCH_PATH1}";
+else
+    echo "> USER_BENCH_PATH1              (undefined)";
+fi
+
+if [ "${USER_BENCH_PATH2}" != "" ]; then
+    echo "> USER_BENCH_PATH2              ${USER_BENCH_PATH2}";
+else
+    echo "> USER_BENCH_PATH2              (undefined)";
+fi
+
+if [ "${USER_BENCH_PATH3}" != "" ]; then
+    echo "> USER_BENCH_PATH3              ${USER_BENCH_PATH3}";
+else
+    echo "> USER_BENCH_PATH3              (undefined)";
+fi
+
+if [ "${USER_BENCH_PATH4}" != "" ]; then
+    echo "> USER_BENCH_PATH4              ${USER_BENCH_PATH4}";
+else
+    echo "> USER_BENCH_PATH4              (undefined)";
+fi
+
+if [ "${TRIMARAN_REL_PATH}" != "" ]; then
+    echo "> TRIMARAN_REL_PATH/benchmarks  ${TRIMARAN_REL_PATH}/benchmarks";
+else
+    echo "> TRIMARAN_REL_PATH/benchmarks  (undefined)";
+fi
+
+if [ "${IMPACT_REL_PATH}" != "" ]; then
+    echo "> IMPACT_REL_PATH/benchmarks    ${IMPACT_REL_PATH}/benchmarks";
+else
+    echo "> IMPACT_REL_PATH/benchmarks    (undefined)";
+fi
+
+exit 1;
+
+
+
+
+

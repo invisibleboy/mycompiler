@@ -1,0 +1,145 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Dependence default parameters.
+#
+# Created by Rick Hank, 11-11-93
+#
+# Revisions:
+#
+
+(Dependence 
+    #
+    # Enable removal of memory, control, and/or anti/output depdences
+    #
+    resolve_dependences = no;
+        resolve_all_memory_dep = no;
+        resolve_all_control_dep = no;
+        resolve_all_anti_output_dep = no;
+
+    #
+    # Enable check of memory profiled dependences
+    #  -must be used in conjunction with enabled sync_arcs
+    #
+    check_profiled_memory_dependences = yes;
+
+
+    # For Superscalar schedules set to yes, for VLIW schedules set to no
+    # This parm controls whether or not control depedence edges are inserted
+    # to ensure the macro defines are ordered properly with respect to 
+    # jsr/rts's. This is important to VLIW machines and used unnecessarly in
+    # a superscalar it costs some performance.
+    allow_lat_dangles_into_jsrs = yes;
+    
+    # OLD S??T
+    # The next four parameters should be deleted when the new scheduler
+    # and dependence stuff is released. 
+    # The next three parameters are always treated as no for software 
+    # pipelining (CYCLIC mode).
+    remove_always_safe = no;
+    remove_ctl_dep_safe = no;
+    remove_complex_safe = no;
+    use_iter = yes;
+
+    #
+    # Allow concurrent issue of flow dependence
+    # compare and branch instructions, etc.
+    allow_concurrent_issue = no;
+
+    #
+    # Allow certain instructions to percolate above and below jsrs
+    #
+    remove_jsr_dependences = no;
+
+    #
+    #  Enable upward code motion
+    #
+    allow_upward_code_perc = no;
+
+        # Defines that maximum number of branches that an instruction
+        # can be boosted above.  -1 = no limit
+        # There are no limits for software pipelining (CYCLIC mode)
+        branch_perc_limit=-1;
+        except_branch_perc_limit=13;
+
+        #
+        # Ignore branch live out conditions during upward code percolation
+        #
+        ignore_live_out = no;
+
+        #
+        # Hardware available to support speculative stores
+        #
+        allow_speculative_stores = no;
+
+    #
+    #  Enable downward code motion
+    #
+    allow_downward_code_perc = no;
+
+    print_dependence_graph = no;
+
+    # Support for DRP stuff (Yoji's research)
+    add_copy_check_dependences = no;
+    add_copy_back_dependences = no;
+
+    # Used for predication
+    add_pred_hardware_arcs = yes;
+
+    # Used to force branches to not reorder
+    hb_keep_branch_order = no;
+
+    # Used to force all instructions not to reorder
+    program_order = no;
+
+    # Debug Flags
+    debug_concurrent_issue = no;
+    debug_memory_disambiguation = no;
+    debug_upward_code_perc = no;
+    debug_downward_code_perc = no;
+end)

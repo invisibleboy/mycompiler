@@ -1,0 +1,152 @@
+#!/bin/sh -f
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+#       Profiles a benchmark mcode files with the benchmark's "standard"
+#       input
+#
+#  	usage: Lprof_bench_mcode  "benchmark" "ext" ["dir"]
+#
+#       Required arguments:
+#
+#       benchmark is benchmark name ie wc, 008.espresso
+# 	ext the ext to use for selecting files to profile ie S
+#
+#       Optional arguments:
+#
+#       dir the directory the files are in, defaults '.'
+#
+
+ARCH=`arch`;
+BATCH_NAME="Lprof_bench_mcode";
+
+RESULT_FILE="prof.out";
+
+if [ $# -eq 2 -a "$ARCH" -eq "hppa" ]; then
+        BENCHMARK="$1";
+        EXT="$2";
+        DIR="."
+
+elif [ $# -eq 3 -a "$ARCH" -eq "hppa" ]; then
+        BENCHMARK="$1";
+        EXT="$2";
+        DIR="$3"
+else
+
+if [ "$ARCH" != "hppa" ]; then
+   echo ' ';
+   echo '==> This should be run on a HP 755 (Alderaan, or Scorpius)';
+   echo ' ';
+fi
+	echo '> Usage: Lprof_bench_mcode  "benchmark" "ext" ["dir"]';
+	echo ' ';
+	echo 'Required args:';
+	echo ' ';
+	echo '  "benchmark" is benchmark name (ie wc, 008.espresso)';
+	echo '  "ext" is file ext (ie S)';
+	echo ' ';
+	echo 'Optional args:';
+	echo ' ';
+	echo '  "dir" is file directory, defaults to "."';
+	echo ' ';	
+	exit 0200;
+fi
+
+INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_new"
+
+#
+# Get benchmark arguments, prefix, and check commands
+#
+SETUP=`${INFO_SCRIPT} SETUP ${BENCHMARK}`
+PREFIX=`${INFO_SCRIPT} PREFIX ${BENCHMARK}`
+ARGS="`${INFO_SCRIPT} ARGS ${BENCHMARK}` >& ${RESULT_FILE}"
+CHECK=`${INFO_SCRIPT} CHECK ${BENCHMARK} ${RESULT_FILE}`
+CLEANUP=`${INFO_SCRIPT} CLEANUP ${BENCHMARK}`
+
+# Make sure worked (test only last command since all same batch file)
+if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$CLEANUP"; exit 1;fi
+
+
+#MAKE SURE DIRECTORY EXISTS
+if [ ! -d $DIR ] ; then
+	echo "> $BATCH_NAME, directory doesn't exits: $DIR";
+	exit 0220;
+fi
+
+#create prof_list and make sure this list is not empty
+/bin/sh -c "cd ${DIR}; ls | grep '\\.${EXT}\$' > prof_list;"
+if [ "$?" != 0 ]; then
+	echo "> $BATCH_NAME, there are no '.${EXT}' files in $DIR";
+	exit 0220;
+fi
+
+
+# Print out exactly what we are doing
+# Using csh echo allows printing out \rm and \cp properly, otherwise
+# get inproper output (treated as newlines, etc)
+/bin/csh -c "echo \"\
+> Profiling '.${EXT}' files (mcode) in directory '${DIR}'\n\
+>\n\
+>    Setup: '${SETUP}'\n\
+>   Prefix: '${PREFIX}'\n\
+> Prof Args: '${ARGS}'\n\
+>    Check: '${CHECK}'\n\
+>  Cleanup: '${CLEANUP}'\n\n\"  ";
+
+
+nice -10 /bin/sh -c "cd ${DIR}; \
+	rm -f ${RESULT_FILE}; \
+        ${SETUP} \
+	gen_Lprofile_mcode prof_list '${ARGS}' 1 '${PREFIX}'; \
+	echo '>\n> RESULT CHECK BEGIN FOR ${BENCHMARK}'; \
+        ${CHECK}; \
+        echo '> RESULT CHECK END FOR ${BENCHMARK}\n>'; \
+        rm -f prof_list ${RESULT_FILE} ; ${CLEANUP} \
+        echo '> Done (${BATCH_NAME} for ${BENCHMARK})';"

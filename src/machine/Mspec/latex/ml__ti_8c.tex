@@ -1,0 +1,1051 @@
+\section{ml\_\-ti.c File Reference}
+\label{ml__ti_8c}\index{ml_ti.c@{ml\_\-ti.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-ti.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-CHAR}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-SHORT}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-DOUBLE}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-TI\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-CHAR}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-SHORT}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-DOUBLE}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-TI\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-TI\_\-MAX\_\-FNVAR\_\-REG}~6
+\item 
+\#define \bf{M\_\-TI\_\-SMALL\_\-STRUCT\_\-MAX}~64
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(16 $\ast$ 8)
+\item 
+\#define \bf{M\_\-TI\_\-NUM\_\-FLT\_\-PARM\_\-REGS}~2
+\item 
+\#define \bf{M\_\-TI\_\-NUM\_\-INT\_\-PARM\_\-REGS}~4
+\item 
+\#define \bf{M\_\-TI\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-TI\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-TI\_\-RET\_\-F}~6
+\item 
+\#define \bf{M\_\-TI\_\-RET\_\-I32}~6
+\item 
+\#define \bf{M\_\-TI\_\-RET\_\-I64}~6
+\item 
+\#define \bf{M\_\-TI\_\-RET\_\-ST}~6
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-ti\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-ti\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-ti\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-ti\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-ti\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-ti\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-ti\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-ti\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-ti\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-ti\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-ti\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-ti\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-ti\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-ti\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-ti\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-ti\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-ti\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-ti\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-ti\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-ti\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-ti\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-ti\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-ti\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-ti\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-ti\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-ti\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-ti\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-ti\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-ti\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-ti\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-ti\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-ti\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-ti\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-ti\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+int \bf{M\_\-ti\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-ti} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-ti} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-ti} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-ti} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-ti} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-ti} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-ti} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-ti} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-ti} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-ti} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-ti} (int ctype)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{use\_\-standard\_\-function\_\-call\_\-model}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_ti.c@{ml\_\-ti.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__ti_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_ti.c@{ml\_\-ti.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__ti_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_ti.c@{ml\_\-ti.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__ti_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_ti.c@{ml\_\-ti.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__ti_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_BIT@{M\_\-TI\_\-ALIGN\_\-BIT}}
+\index{M_TI_ALIGN_BIT@{M\_\-TI\_\-ALIGN\_\-BIT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-BIT~1}\label{ml__ti_8c_001e2a727e21de44184b09d152b9adad}
+
+
+
+
+Definition at line 93 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_BLOCK@{M\_\-TI\_\-ALIGN\_\-BLOCK}}
+\index{M_TI_ALIGN_BLOCK@{M\_\-TI\_\-ALIGN\_\-BLOCK}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-BLOCK~-1}\label{ml__ti_8c_ba45bb7f1c3d2687b756807413909855}
+
+
+
+
+Definition at line 103 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_CHAR@{M\_\-TI\_\-ALIGN\_\-CHAR}}
+\index{M_TI_ALIGN_CHAR@{M\_\-TI\_\-ALIGN\_\-CHAR}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-CHAR~32}\label{ml__ti_8c_94da9a03f750eeb505dae6cd5c57aac3}
+
+
+
+
+Definition at line 94 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_DOUBLE@{M\_\-TI\_\-ALIGN\_\-DOUBLE}}
+\index{M_TI_ALIGN_DOUBLE@{M\_\-TI\_\-ALIGN\_\-DOUBLE}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-DOUBLE~32}\label{ml__ti_8c_4bcaa2955b17fb30aef2c953074fb0d0}
+
+
+
+
+Definition at line 99 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_FLOAT@{M\_\-TI\_\-ALIGN\_\-FLOAT}}
+\index{M_TI_ALIGN_FLOAT@{M\_\-TI\_\-ALIGN\_\-FLOAT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-FLOAT~32}\label{ml__ti_8c_f21ab0f10d67453a4e8c09b66358f1a9}
+
+
+
+
+Definition at line 98 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_INT@{M\_\-TI\_\-ALIGN\_\-INT}}
+\index{M_TI_ALIGN_INT@{M\_\-TI\_\-ALIGN\_\-INT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-INT~32}\label{ml__ti_8c_abf48cf9a52850a003531d2b9a967ae5}
+
+
+
+
+Definition at line 96 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_LONG@{M\_\-TI\_\-ALIGN\_\-LONG}}
+\index{M_TI_ALIGN_LONG@{M\_\-TI\_\-ALIGN\_\-LONG}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-LONG~32}\label{ml__ti_8c_4e640304ca0cd47600fc6db2f0d2a34f}
+
+
+
+
+Definition at line 97 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_MAX@{M\_\-TI\_\-ALIGN\_\-MAX}}
+\index{M_TI_ALIGN_MAX@{M\_\-TI\_\-ALIGN\_\-MAX}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-MAX~64}\label{ml__ti_8c_aee5f903db666b0a0cd86443423d4479}
+
+
+
+
+Definition at line 104 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_POINTER@{M\_\-TI\_\-ALIGN\_\-POINTER}}
+\index{M_TI_ALIGN_POINTER@{M\_\-TI\_\-ALIGN\_\-POINTER}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-POINTER~32}\label{ml__ti_8c_d87f457f18d94632e662377b1e21220d}
+
+
+
+
+Definition at line 100 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_SHORT@{M\_\-TI\_\-ALIGN\_\-SHORT}}
+\index{M_TI_ALIGN_SHORT@{M\_\-TI\_\-ALIGN\_\-SHORT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-SHORT~32}\label{ml__ti_8c_cbc3151133b73e5957fd78f4f2ead7ef}
+
+
+
+
+Definition at line 95 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_STRUCT@{M\_\-TI\_\-ALIGN\_\-STRUCT}}
+\index{M_TI_ALIGN_STRUCT@{M\_\-TI\_\-ALIGN\_\-STRUCT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-STRUCT~-1}\label{ml__ti_8c_add91d4370032f4630acf8d95f2192eb}
+
+
+
+
+Definition at line 102 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_UNION@{M\_\-TI\_\-ALIGN\_\-UNION}}
+\index{M_TI_ALIGN_UNION@{M\_\-TI\_\-ALIGN\_\-UNION}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-UNION~-1}\label{ml__ti_8c_72ea3c60f3363eeef12bb26d96e78a26}
+
+
+
+
+Definition at line 101 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_ALIGN_VOID@{M\_\-TI\_\-ALIGN\_\-VOID}}
+\index{M_TI_ALIGN_VOID@{M\_\-TI\_\-ALIGN\_\-VOID}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-ALIGN\_\-VOID~-1}\label{ml__ti_8c_55c9385ed967b337ab735f73000278ba}
+
+
+
+
+Definition at line 92 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_FLT_BASE@{M\_\-TI\_\-FLT\_\-BASE}}
+\index{M_TI_FLT_BASE@{M\_\-TI\_\-FLT\_\-BASE}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-FLT\_\-BASE~4}\label{ml__ti_8c_53e15df461654a155706bdfd14f50e95}
+
+
+
+
+Definition at line 128 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-fnvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_INT_BASE@{M\_\-TI\_\-INT\_\-BASE}}
+\index{M_TI_INT_BASE@{M\_\-TI\_\-INT\_\-BASE}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-INT\_\-BASE~0}\label{ml__ti_8c_d5c7e3aae36fa5409778a6da6544db0e}
+
+
+
+
+Definition at line 117 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-fnvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_MAX_FNVAR_REG@{M\_\-TI\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_TI_MAX_FNVAR_REG@{M\_\-TI\_\-MAX\_\-FNVAR\_\-REG}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-MAX\_\-FNVAR\_\-REG~6}\label{ml__ti_8c_0d053bc0360713019362939cd89f396d}
+
+
+
+
+Definition at line 110 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-fnvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_NUM_FLT_PARM_REGS@{M\_\-TI\_\-NUM\_\-FLT\_\-PARM\_\-REGS}}
+\index{M_TI_NUM_FLT_PARM_REGS@{M\_\-TI\_\-NUM\_\-FLT\_\-PARM\_\-REGS}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-NUM\_\-FLT\_\-PARM\_\-REGS~2}\label{ml__ti_8c_3b5a3ab0f198cbc609d6011f03a6a5ef}
+
+
+
+
+Definition at line 114 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_NUM_INT_PARM_REGS@{M\_\-TI\_\-NUM\_\-INT\_\-PARM\_\-REGS}}
+\index{M_TI_NUM_INT_PARM_REGS@{M\_\-TI\_\-NUM\_\-INT\_\-PARM\_\-REGS}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-NUM\_\-INT\_\-PARM\_\-REGS~4}\label{ml__ti_8c_ae3a867657a909fff645288b974f74c3}
+
+
+
+
+Definition at line 115 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-fnvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_RET_F@{M\_\-TI\_\-RET\_\-F}}
+\index{M_TI_RET_F@{M\_\-TI\_\-RET\_\-F}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-RET\_\-F~6}\label{ml__ti_8c_0d47f267ddcbd57ea28c0ddc5c657734}
+
+
+
+
+Definition at line 132 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-return\_\-register().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_RET_I32@{M\_\-TI\_\-RET\_\-I32}}
+\index{M_TI_RET_I32@{M\_\-TI\_\-RET\_\-I32}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-RET\_\-I32~6}\label{ml__ti_8c_96b8223ffe9d896d33501bb14ef4328e}
+
+
+
+
+Definition at line 133 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-return\_\-register().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_RET_I64@{M\_\-TI\_\-RET\_\-I64}}
+\index{M_TI_RET_I64@{M\_\-TI\_\-RET\_\-I64}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-RET\_\-I64~6}\label{ml__ti_8c_1ef8f4b94f2d0a762f0c4739b8e805c4}
+
+
+
+
+Definition at line 134 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_RET_ST@{M\_\-TI\_\-RET\_\-ST}}
+\index{M_TI_RET_ST@{M\_\-TI\_\-RET\_\-ST}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-RET\_\-ST~6}\label{ml__ti_8c_c937db4e7b80a57309ac683cf15fff66}
+
+
+
+
+Definition at line 135 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-structure\_\-pointer().\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_BIT@{M\_\-TI\_\-SIZE\_\-BIT}}
+\index{M_TI_SIZE_BIT@{M\_\-TI\_\-SIZE\_\-BIT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-BIT~1}\label{ml__ti_8c_4aa2563121f221fae307c4f0c907512a}
+
+
+
+
+Definition at line 79 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_BLOCK@{M\_\-TI\_\-SIZE\_\-BLOCK}}
+\index{M_TI_SIZE_BLOCK@{M\_\-TI\_\-SIZE\_\-BLOCK}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-BLOCK~-1}\label{ml__ti_8c_2cc906f967840afae284c45a636f60fe}
+
+
+
+
+Definition at line 89 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_CHAR@{M\_\-TI\_\-SIZE\_\-CHAR}}
+\index{M_TI_SIZE_CHAR@{M\_\-TI\_\-SIZE\_\-CHAR}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-CHAR~32}\label{ml__ti_8c_603e55daa81040df099857c075ef5f05}
+
+
+
+
+Definition at line 80 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_DOUBLE@{M\_\-TI\_\-SIZE\_\-DOUBLE}}
+\index{M_TI_SIZE_DOUBLE@{M\_\-TI\_\-SIZE\_\-DOUBLE}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-DOUBLE~32}\label{ml__ti_8c_b26027711a8ac5d3f24f8a04589c5a18}
+
+
+
+
+Definition at line 85 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_FLOAT@{M\_\-TI\_\-SIZE\_\-FLOAT}}
+\index{M_TI_SIZE_FLOAT@{M\_\-TI\_\-SIZE\_\-FLOAT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-FLOAT~32}\label{ml__ti_8c_9c79d3d8ff2d83e401cafc66f77fb90c}
+
+
+
+
+Definition at line 84 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_INT@{M\_\-TI\_\-SIZE\_\-INT}}
+\index{M_TI_SIZE_INT@{M\_\-TI\_\-SIZE\_\-INT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-INT~32}\label{ml__ti_8c_3b1e0f3b322e6256389055a6496e8f33}
+
+
+
+
+Definition at line 82 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_LONG@{M\_\-TI\_\-SIZE\_\-LONG}}
+\index{M_TI_SIZE_LONG@{M\_\-TI\_\-SIZE\_\-LONG}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-LONG~32}\label{ml__ti_8c_79974440324502dd6ed6697a2946bd00}
+
+
+
+
+Definition at line 83 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_MAX@{M\_\-TI\_\-SIZE\_\-MAX}}
+\index{M_TI_SIZE_MAX@{M\_\-TI\_\-SIZE\_\-MAX}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-MAX~64}\label{ml__ti_8c_6ee3b6cbe840c0cce8cec512f6ebb436}
+
+
+
+
+Definition at line 90 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_POINTER@{M\_\-TI\_\-SIZE\_\-POINTER}}
+\index{M_TI_SIZE_POINTER@{M\_\-TI\_\-SIZE\_\-POINTER}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-POINTER~32}\label{ml__ti_8c_e8f7cf7c9b4bb52ee37fbce364692a4f}
+
+
+
+
+Definition at line 86 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_SHORT@{M\_\-TI\_\-SIZE\_\-SHORT}}
+\index{M_TI_SIZE_SHORT@{M\_\-TI\_\-SIZE\_\-SHORT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-SHORT~32}\label{ml__ti_8c_f7874a766f97a354df11e266fc5a7800}
+
+
+
+
+Definition at line 81 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_STRUCT@{M\_\-TI\_\-SIZE\_\-STRUCT}}
+\index{M_TI_SIZE_STRUCT@{M\_\-TI\_\-SIZE\_\-STRUCT}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-STRUCT~-1}\label{ml__ti_8c_bc0eccf6a162a156eb1e3f9c069184bf}
+
+
+
+
+Definition at line 88 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_UNION@{M\_\-TI\_\-SIZE\_\-UNION}}
+\index{M_TI_SIZE_UNION@{M\_\-TI\_\-SIZE\_\-UNION}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-UNION~-1}\label{ml__ti_8c_77e87b41964312f9c9aa20edb458bdc0}
+
+
+
+
+Definition at line 87 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SIZE_VOID@{M\_\-TI\_\-SIZE\_\-VOID}}
+\index{M_TI_SIZE_VOID@{M\_\-TI\_\-SIZE\_\-VOID}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SIZE\_\-VOID~0}\label{ml__ti_8c_549aa4cf03954346b365fdcedd42bb2c}
+
+
+
+
+Definition at line 78 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_TI_SMALL_STRUCT_MAX@{M\_\-TI\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_TI_SMALL_STRUCT_MAX@{M\_\-TI\_\-SMALL\_\-STRUCT\_\-MAX}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TI\_\-SMALL\_\-STRUCT\_\-MAX~64}\label{ml__ti_8c_25c2728e88926de1d6b2fe77108c2fdc}
+
+
+
+
+Definition at line 111 of file ml\_\-ti.c.
+
+Referenced by M\_\-ti\_\-fnvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(16 $\ast$ 8)}\label{ml__ti_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 112 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__ti_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) ||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_ti.c@{ml\_\-ti.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__ti_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_ti.c@{ml\_\-ti.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__ti_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_ti.c@{ml\_\-ti.c}!M_conflicting_operands_ti@{M\_\-conflicting\_\-operands\_\-ti}}
+\index{M_conflicting_operands_ti@{M\_\-conflicting\_\-operands\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-ti (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__ti_8c_00eb85cce86faa06e3246f7df0eb6fbb}
+
+
+
+
+Definition at line 1560 of file ml\_\-ti.c.
+
+References M\_\-assert(), TI\_\-MAC\_\-COMPUTATION\_\-REG0, TI\_\-MAC\_\-COMPUTATION\_\-REG1, TI\_\-MAC\_\-COMPUTATION\_\-REG2, TI\_\-MAC\_\-COMPUTATION\_\-REG3, and TI\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_ti.c@{ml\_\-ti.c}!M_define_macros_ti@{M\_\-define\_\-macros\_\-ti}}
+\index{M_define_macros_ti@{M\_\-define\_\-macros\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-ti (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__ti_8c_123b8338a580936f1b26d24c704ea303}
+
+
+
+
+Definition at line 1106 of file ml\_\-ti.c.
+
+References M\_\-add\_\-symbol, TI\_\-MAC\_\-ALLOC, TI\_\-MAC\_\-AUXILIARY\_\-REG7, TI\_\-MAC\_\-BK, TI\_\-MAC\_\-CALLEE\_\-F, TI\_\-MAC\_\-CALLEE\_\-I, TI\_\-MAC\_\-COMPUTATION\_\-REG0, TI\_\-MAC\_\-COMPUTATION\_\-REG1, TI\_\-MAC\_\-COMPUTATION\_\-REG2, TI\_\-MAC\_\-COMPUTATION\_\-REG3, TI\_\-MAC\_\-DP, TI\_\-MAC\_\-INDEX\_\-REG0, TI\_\-MAC\_\-INDEX\_\-REG1, TI\_\-MAC\_\-LEAF, TI\_\-MAC\_\-RC, TI\_\-MAC\_\-RE, TI\_\-MAC\_\-RS, TI\_\-MAC\_\-ST, and TI\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-define\_\-macros().\index{ml_ti.c@{ml\_\-ti.c}!M_define_opcode_name_ti@{M\_\-define\_\-opcode\_\-name\_\-ti}}
+\index{M_define_opcode_name_ti@{M\_\-define\_\-opcode\_\-name\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-ti (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__ti_8c_d139005a4a1c4eb5e5dd85daa19231d0}
+
+
+
+
+Definition at line 1192 of file ml\_\-ti.c.
+
+References LTIop\_\-ALU\_\-DIRECT, LTIop\_\-ALU\_\-INDIRECT, LTIop\_\-ALU\_\-INDIRECT\_\-INDIRECT, LTIop\_\-ALU\_\-INDIRECT\_\-REG, LTIop\_\-ALU\_\-REG\_\-DIRECT, LTIop\_\-ALU\_\-REG\_\-INDIRECT, LTIop\_\-BD, LTIop\_\-BR, LTIop\_\-BRD, LTIop\_\-BS, LTIop\_\-BU, LTIop\_\-BUD, LTIop\_\-CALL, LTIop\_\-CALLU, LTIop\_\-DB, LTIop\_\-DBD, LTIop\_\-PAR\_\-LOAD, LTIop\_\-PAR\_\-ONE\_\-OPERAND, LTIop\_\-PAR\_\-STORE, LTIop\_\-PAR\_\-TWO\_\-OPERAND, LTIop\_\-POP, LTIop\_\-POPF, LTIop\_\-PUSH, LTIop\_\-PUSHF, LTIop\_\-REPEAT\_\-BLOCK, LTIop\_\-REPEAT\_\-INSTRUCTION, LTIop\_\-RETS, LTIop\_\-SUBRF, LTIop\_\-SUBRI, M\_\-add\_\-symbol, TIopcode\_\-ALU\_\-DIRECT, TIopcode\_\-ALU\_\-INDIRECT, TIopcode\_\-ALU\_\-INDIRECT\_\-INDIRECT, TIopcode\_\-ALU\_\-INDIRECT\_\-REG, TIopcode\_\-ALU\_\-REG\_\-DIRECT, TIopcode\_\-ALU\_\-REG\_\-INDIRECT, TIopcode\_\-BD, TIopcode\_\-BR, TIopcode\_\-BRD, TIopcode\_\-BS, TIopcode\_\-BU, TIopcode\_\-BUD, TIopcode\_\-CALL, TIopcode\_\-CALLU, TIopcode\_\-DB, TIopcode\_\-DBD, TIopcode\_\-PAR\_\-LOAD, TIopcode\_\-PAR\_\-ONE\_\-OPERAND, TIopcode\_\-PAR\_\-STORE, TIopcode\_\-PAR\_\-TWO\_\-OPERAND, TIopcode\_\-POP, TIopcode\_\-POPF, TIopcode\_\-PUSH, TIopcode\_\-PUSHF, TIopcode\_\-REPEAT\_\-BLOCK, TIopcode\_\-REPEAT\_\-INSTRUCTION, TIopcode\_\-RETS, TIopcode\_\-SUBRF, and TIopcode\_\-SUBRI.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_ti.c@{ml\_\-ti.c}!M_get_macro_name_ti@{M\_\-get\_\-macro\_\-name\_\-ti}}
+\index{M_get_macro_name_ti@{M\_\-get\_\-macro\_\-name\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-ti (int {\em id})}\label{ml__ti_8c_1253c117d601ea643a109dc732cc72a8}
+
+
+
+
+Definition at line 1141 of file ml\_\-ti.c.
+
+References TI\_\-MAC\_\-ALLOC, TI\_\-MAC\_\-AUXILIARY\_\-REG7, TI\_\-MAC\_\-BK, TI\_\-MAC\_\-CALLEE\_\-F, TI\_\-MAC\_\-CALLEE\_\-I, TI\_\-MAC\_\-COMPUTATION\_\-REG0, TI\_\-MAC\_\-COMPUTATION\_\-REG1, TI\_\-MAC\_\-COMPUTATION\_\-REG2, TI\_\-MAC\_\-COMPUTATION\_\-REG3, TI\_\-MAC\_\-DP, TI\_\-MAC\_\-INDEX\_\-REG0, TI\_\-MAC\_\-INDEX\_\-REG1, TI\_\-MAC\_\-LEAF, TI\_\-MAC\_\-RC, TI\_\-MAC\_\-RE, TI\_\-MAC\_\-RS, TI\_\-MAC\_\-ST, and TI\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_ti.c@{ml\_\-ti.c}!M_get_opcode_name_ti@{M\_\-get\_\-opcode\_\-name\_\-ti}}
+\index{M_get_opcode_name_ti@{M\_\-get\_\-opcode\_\-name\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-ti (int {\em id})}\label{ml__ti_8c_4732884a2388381c9aa84c4b45adfd26}
+
+
+
+
+Definition at line 1232 of file ml\_\-ti.c.
+
+References LTIop\_\-ALU\_\-DIRECT, LTIop\_\-ALU\_\-INDIRECT, LTIop\_\-ALU\_\-INDIRECT\_\-INDIRECT, LTIop\_\-ALU\_\-INDIRECT\_\-REG, LTIop\_\-ALU\_\-REG\_\-DIRECT, LTIop\_\-ALU\_\-REG\_\-INDIRECT, LTIop\_\-BD, LTIop\_\-BR, LTIop\_\-BRD, LTIop\_\-BS, LTIop\_\-BU, LTIop\_\-BUD, LTIop\_\-CALL, LTIop\_\-CALLU, LTIop\_\-DB, LTIop\_\-DBD, LTIop\_\-PAR\_\-LOAD, LTIop\_\-PAR\_\-ONE\_\-OPERAND, LTIop\_\-PAR\_\-STORE, LTIop\_\-PAR\_\-TWO\_\-OPERAND, LTIop\_\-POP, LTIop\_\-POPF, LTIop\_\-PUSH, LTIop\_\-PUSHF, LTIop\_\-REPEAT\_\-BLOCK, LTIop\_\-REPEAT\_\-INSTRUCTION, LTIop\_\-RETS, LTIop\_\-SUBRF, LTIop\_\-SUBRI, TIopcode\_\-ALU\_\-DIRECT, TIopcode\_\-ALU\_\-INDIRECT, TIopcode\_\-ALU\_\-INDIRECT\_\-INDIRECT, TIopcode\_\-ALU\_\-INDIRECT\_\-REG, TIopcode\_\-ALU\_\-REG\_\-DIRECT, TIopcode\_\-ALU\_\-REG\_\-INDIRECT, TIopcode\_\-BD, TIopcode\_\-BR, TIopcode\_\-BRD, TIopcode\_\-BS, TIopcode\_\-BU, TIopcode\_\-BUD, TIopcode\_\-CALL, TIopcode\_\-CALLU, TIopcode\_\-DB, TIopcode\_\-DBD, TIopcode\_\-PAR\_\-LOAD, TIopcode\_\-PAR\_\-ONE\_\-OPERAND, TIopcode\_\-PAR\_\-STORE, TIopcode\_\-PAR\_\-TWO\_\-OPERAND, TIopcode\_\-POP, TIopcode\_\-POPF, TIopcode\_\-PUSH, TIopcode\_\-PUSHF, TIopcode\_\-REPEAT\_\-BLOCK, TIopcode\_\-REPEAT\_\-INSTRUCTION, TIopcode\_\-RETS, TIopcode\_\-SUBRF, and TIopcode\_\-SUBRI.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_ti.c@{ml\_\-ti.c}!M_is_stack_operand_ti@{M\_\-is\_\-stack\_\-operand\_\-ti}}
+\index{M_is_stack_operand_ti@{M\_\-is\_\-stack\_\-operand\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-ti (L\_\-Operand $\ast$ {\em operand})}\label{ml__ti_8c_39785d8ee8a076ab945940addf0a3084}
+
+
+
+
+Definition at line 1487 of file ml\_\-ti.c.
+
+References TI\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_ti.c@{ml\_\-ti.c}!M_is_unsafe_macro_ti@{M\_\-is\_\-unsafe\_\-macro\_\-ti}}
+\index{M_is_unsafe_macro_ti@{M\_\-is\_\-unsafe\_\-macro\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-ti (L\_\-Operand $\ast$ {\em operand})}\label{ml__ti_8c_cde805290046ff9cf301676d1135f0f0}
+
+
+
+
+Definition at line 1503 of file ml\_\-ti.c.
+
+References TI\_\-MAC\_\-COMPUTATION\_\-REG0, TI\_\-MAC\_\-COMPUTATION\_\-REG1, and TI\_\-MAC\_\-ST.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_ti.c@{ml\_\-ti.c}!M_num_oper_required_for_ti@{M\_\-num\_\-oper\_\-required\_\-for\_\-ti}}
+\index{M_num_oper_required_for_ti@{M\_\-num\_\-oper\_\-required\_\-for\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-ti (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__ti_8c_4a5fa948fab23585d5b9dc74e4e4d5e3}
+
+
+
+
+Definition at line 1347 of file ml\_\-ti.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_ti.c@{ml\_\-ti.c}!M_num_registers_ti@{M\_\-num\_\-registers\_\-ti}}
+\index{M_num_registers_ti@{M\_\-num\_\-registers\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-ti (int {\em ctype})}\label{ml__ti_8c_c1ac51ff34bc864794d49f033c8efcd3}
+
+
+
+
+Definition at line 1632 of file ml\_\-ti.c.
+
+References M\_\-assert(), M\_\-model, and M\_\-TI\_\-1.
+
+Referenced by M\_\-num\_\-registers().\index{ml_ti.c@{ml\_\-ti.c}!M_oper_supported_in_arch_ti@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-ti}}
+\index{M_oper_supported_in_arch_ti@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-ti (int {\em opc})}\label{ml__ti_8c_63f22360123194536bc972d29360084c}
+
+
+
+
+Definition at line 1310 of file ml\_\-ti.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_ti.c@{ml\_\-ti.c}!M_operand_type_ti@{M\_\-operand\_\-type\_\-ti}}
+\index{M_operand_type_ti@{M\_\-operand\_\-type\_\-ti}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-ti (L\_\-Operand $\ast$ {\em operand})}\label{ml__ti_8c_f9b61d1bc511d8028dffc27b75ba4cf7}
+
+
+
+
+Definition at line 1528 of file ml\_\-ti.c.
+
+References FIELD\_\-16, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit16, MDES\_\-OPERAND\_\-Lit24, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_array_align@{M\_\-ti\_\-array\_\-align}}
+\index{M_ti_array_align@{M\_\-ti\_\-array\_\-align}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__ti_8c_4e70504bb940f8768cb2441101ef07f1}
+
+
+
+
+Definition at line 411 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_array_layout@{M\_\-ti\_\-array\_\-layout}}
+\index{M_ti_array_layout@{M\_\-ti\_\-array\_\-layout}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__ti_8c_6d11f943ead088d249d81176f6abfc49}
+
+
+
+
+Definition at line 405 of file ml\_\-ti.c.
+
+Referenced by M\_\-array\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_array_size@{M\_\-ti\_\-array\_\-size}}
+\index{M_ti_array_size@{M\_\-ti\_\-array\_\-size}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__ti_8c_ad0eb837b512262771ac1abd03d4d5df}
+
+
+
+
+Definition at line 417 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_bit_char@{M\_\-ti\_\-bit\_\-char}}
+\index{M_ti_bit_char@{M\_\-ti\_\-bit\_\-char}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__ti_8c_9e66e626af7942131a48194624bd721e}
+
+
+
+
+Definition at line 190 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-BIT, M\_\-TI\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_bit_int@{M\_\-ti\_\-bit\_\-int}}
+\index{M_ti_bit_int@{M\_\-ti\_\-bit\_\-int}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__ti_8c_135f27fb35b9a0e08734f682ad2cdc2b}
+
+
+
+
+Definition at line 166 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-ALIGN\_\-BIT, M\_\-TI\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_bit_long@{M\_\-ti\_\-bit\_\-long}}
+\index{M_ti_bit_long@{M\_\-ti\_\-bit\_\-long}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__ti_8c_0c40eb294d66cd69d1b997e777909bfb}
+
+
+
+
+Definition at line 154 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-ALIGN\_\-BIT, M\_\-TI\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_bit_short@{M\_\-ti\_\-bit\_\-short}}
+\index{M_ti_bit_short@{M\_\-ti\_\-bit\_\-short}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__ti_8c_f6e972f8879fedcf0a74ccd8e9d1747f}
+
+
+
+
+Definition at line 178 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-ALIGN\_\-BIT, M\_\-TI\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_call_type@{M\_\-ti\_\-call\_\-type}}
+\index{M_ti_call_type@{M\_\-ti\_\-call\_\-type}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__ti_8c_152b2d6a90432c022324644c9c3b3fbb}
+
+
+
+
+Definition at line 312 of file ml\_\-ti.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_call_type2@{M\_\-ti\_\-call\_\-type2}}
+\index{M_ti_call_type2@{M\_\-ti\_\-call\_\-type2}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__ti_8c_8c6df6f3f3e5260cd76d9bb7cf952457}
+
+
+
+
+Definition at line 354 of file ml\_\-ti.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_cb_label_name@{M\_\-ti\_\-cb\_\-label\_\-name}}
+\index{M_ti_cb_label_name@{M\_\-ti\_\-cb\_\-label\_\-name}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__ti_8c_9be118e933c4eac229cc67eca1a60c6a}
+
+
+
+
+Definition at line 961 of file ml\_\-ti.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_double@{M\_\-ti\_\-double}}
+\index{M_ti_double@{M\_\-ti\_\-double}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__ti_8c_2c690d4b5e43377e69836dc0c2f6b026}
+
+
+
+
+Definition at line 215 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-DOUBLE, M\_\-TI\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_eval_type@{M\_\-ti\_\-eval\_\-type}}
+\index{M_ti_eval_type@{M\_\-ti\_\-eval\_\-type}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__ti_8c_6856ac6a1fe6d45d21afa1c9d289ce7c}
+
+
+
+
+Definition at line 236 of file ml\_\-ti.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_eval_type2@{M\_\-ti\_\-eval\_\-type2}}
+\index{M_ti_eval_type2@{M\_\-ti\_\-eval\_\-type2}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__ti_8c_e6b3ba73eda8743a3e29607bc070ba26}
+
+
+
+
+Definition at line 270 of file ml\_\-ti.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_float@{M\_\-ti\_\-float}}
+\index{M_ti_float@{M\_\-ti\_\-float}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__ti_8c_470700be28327137b93ff17d43451e6e}
+
+
+
+
+Definition at line 205 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-FLOAT, M\_\-TI\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_fn_label_name@{M\_\-ti\_\-fn\_\-label\_\-name}}
+\index{M_ti_fn_label_name@{M\_\-ti\_\-fn\_\-label\_\-name}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-ti\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__ti_8c_9b25ba9608d5105b695d8edcb3f5be61}
+
+
+
+
+Definition at line 1035 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_ti_fn_name_from_label@{M\_\-ti\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_ti_fn_name_from_label@{M\_\-ti\_\-fn\_\-name\_\-from\_\-label}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-ti\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__ti_8c_aeaa8b8fde571ac42208d73f0ccd6bb5}
+
+
+
+
+Definition at line 1049 of file ml\_\-ti.c.\index{ml_ti.c@{ml\_\-ti.c}!M_ti_fnvar_layout@{M\_\-ti\_\-fnvar\_\-layout}}
+\index{M_ti_fnvar_layout@{M\_\-ti\_\-fnvar\_\-layout}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__ti_8c_2e3c9aee819e829a2bee9c7a18c82e5f}
+
+
+
+
+Definition at line 663 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TI\_\-ALIGN\_\-INT, M\_\-TI\_\-ALIGN\_\-MAX, M\_\-TI\_\-FLT\_\-BASE, M\_\-TI\_\-INT\_\-BASE, M\_\-TI\_\-MAX\_\-FNVAR\_\-REG, M\_\-TI\_\-NUM\_\-INT\_\-PARM\_\-REGS, M\_\-TI\_\-SIZE\_\-INT, M\_\-TI\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, \_\-struct\_\-M\_\-Type::size, and use\_\-standard\_\-function\_\-call\_\-model.
+
+Referenced by M\_\-fnvar\_\-layout(), and M\_\-ti\_\-layout\_\-fnvar().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_fragile_macro@{M\_\-ti\_\-fragile\_\-macro}}
+\index{M_ti_fragile_macro@{M\_\-ti\_\-fragile\_\-macro}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__ti_8c_25627f2dfedd6c390f72b04a0d380ccc}
+
+
+
+
+Definition at line 1059 of file ml\_\-ti.c.
+
+References M\_\-assert(), M\_\-model, M\_\-TI\_\-1, and TI\_\-MAC\_\-ST.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_is_cb_label@{M\_\-ti\_\-is\_\-cb\_\-label}}
+\index{M_ti_is_cb_label@{M\_\-ti\_\-is\_\-cb\_\-label}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__ti_8c_a750c25c0c4205d01c954b6a49cb325a}
+
+
+
+
+Definition at line 967 of file ml\_\-ti.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_is_jumptbl_label@{M\_\-ti\_\-is\_\-jumptbl\_\-label}}
+\index{M_ti_is_jumptbl_label@{M\_\-ti\_\-is\_\-jumptbl\_\-label}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__ti_8c_f4ed8b1e5ececfdb0268ccdb9d071a5d}
+
+
+
+
+Definition at line 980 of file ml\_\-ti.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_jumptbl_label_name@{M\_\-ti\_\-jumptbl\_\-label\_\-name}}
+\index{M_ti_jumptbl_label_name@{M\_\-ti\_\-jumptbl\_\-label\_\-name}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__ti_8c_8f4c814faa0dc82fde65e781a8b64ea7}
+
+
+
+
+Definition at line 973 of file ml\_\-ti.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_layout_fnvar@{M\_\-ti\_\-layout\_\-fnvar}}
+\index{M_ti_layout_fnvar@{M\_\-ti\_\-layout\_\-fnvar}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__ti_8c_cb96589fb7b8f72ef4f020421e32c6c1}
+
+
+
+
+Definition at line 610 of file ml\_\-ti.c.
+
+References List\_\-next(), List\_\-size(), List\_\-start(), M\_\-ti\_\-fnvar\_\-layout(), \_\-struct\_\-M\_\-Param::mode, mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Param::su\_\-ereg, and \_\-struct\_\-M\_\-Param::su\_\-sreg.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_lvar_layout@{M\_\-ti\_\-lvar\_\-layout}}
+\index{M_ti_lvar_layout@{M\_\-ti\_\-lvar\_\-layout}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__ti_8c_a3bd1781085ae8ea0268ab3c00949cfc}
+
+
+
+
+Definition at line 913 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-ALIGN\_\-MAX, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_no_short_int@{M\_\-ti\_\-no\_\-short\_\-int}}
+\index{M_ti_no_short_int@{M\_\-ti\_\-no\_\-short\_\-int}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-no\_\-short\_\-int (void)}\label{ml__ti_8c_b057548a4ac1ff3213dec888a2e586ce}
+
+
+
+
+Definition at line 955 of file ml\_\-ti.c.
+
+References M\_\-TI\_\-SIZE\_\-INT, and M\_\-TI\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_pointer@{M\_\-ti\_\-pointer}}
+\index{M_ti_pointer@{M\_\-ti\_\-pointer}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__ti_8c_7eed50174a4457c9d4a930ca39cef920}
+
+
+
+
+Definition at line 225 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-POINTER, M\_\-TI\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_return_register@{M\_\-ti\_\-return\_\-register}}
+\index{M_ti_return_register@{M\_\-ti\_\-return\_\-register}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__ti_8c_ee0194d8749361e7c94fb0415ac622a2}
+
+
+
+
+Definition at line 1014 of file ml\_\-ti.c.
+
+References M\_\-TI\_\-RET\_\-F, M\_\-TI\_\-RET\_\-I32, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-return\_\-register().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_struct_align@{M\_\-ti\_\-struct\_\-align}}
+\index{M_ti_struct_align@{M\_\-ti\_\-struct\_\-align}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__ti_8c_0ae9b98b22ea0685a343508bfdff0bd1}
+
+
+
+
+Definition at line 546 of file ml\_\-ti.c.
+
+References M\_\-TI\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_struct_layout@{M\_\-ti\_\-struct\_\-layout}}
+\index{M_ti_struct_layout@{M\_\-ti\_\-struct\_\-layout}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__ti_8c_0e50d1deae194d6267b5bad9f369dd5c}
+
+
+
+
+Definition at line 497 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_struct_size@{M\_\-ti\_\-struct\_\-size}}
+\index{M_ti_struct_size@{M\_\-ti\_\-struct\_\-size}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__ti_8c_06ed7bba2d8d5b01dd68e2d020f101b5}
+
+
+
+
+Definition at line 565 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TI\_\-ALIGN\_\-CHAR, M\_\-TI\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, and M\_\-TYPE\_\-BIT\_\-LONG.
+
+Referenced by M\_\-struct\_\-size().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_structure_pointer@{M\_\-ti\_\-structure\_\-pointer}}
+\index{M_ti_structure_pointer@{M\_\-ti\_\-structure\_\-pointer}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-structure\_\-pointer (int {\em purpose})}\label{ml__ti_8c_48bbc2be514120d89b28c04379fb68cb}
+
+
+
+
+Definition at line 1008 of file ml\_\-ti.c.
+
+References M\_\-TI\_\-RET\_\-ST.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_subroutine_call@{M\_\-ti\_\-subroutine\_\-call}}
+\index{M_ti_subroutine_call@{M\_\-ti\_\-subroutine\_\-call}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-subroutine\_\-call (int {\em opc})}\label{ml__ti_8c_21818721d762b5b5f51f7d7988e9f59f}
+
+
+
+
+Definition at line 1087 of file ml\_\-ti.c.
+
+References M\_\-assert(), M\_\-model, and M\_\-TI\_\-1.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_union_align@{M\_\-ti\_\-union\_\-align}}
+\index{M_ti_union_align@{M\_\-ti\_\-union\_\-align}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__ti_8c_ead1bc1d961b416baea9cd538b2076f3}
+
+
+
+
+Definition at line 443 of file ml\_\-ti.c.
+
+References M\_\-TI\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_union_layout@{M\_\-ti\_\-union\_\-layout}}
+\index{M_ti_union_layout@{M\_\-ti\_\-union\_\-layout}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__ti_8c_5fb0cb519449366a2cfe9b8d6d44d911}
+
+
+
+
+Definition at line 432 of file ml\_\-ti.c.
+
+Referenced by M\_\-union\_\-layout().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_union_size@{M\_\-ti\_\-union\_\-size}}
+\index{M_ti_union_size@{M\_\-ti\_\-union\_\-size}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-ti\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__ti_8c_a0ea480b946299870b13777af2aa0777}
+
+
+
+
+Definition at line 463 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_ti.c@{ml\_\-ti.c}!M_ti_void@{M\_\-ti\_\-void}}
+\index{M_ti_void@{M\_\-ti\_\-void}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-ti\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__ti_8c_596f117999816a25475ec1acf46ef43f}
+
+
+
+
+Definition at line 144 of file ml\_\-ti.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TI\_\-ALIGN\_\-VOID, M\_\-TI\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().
+
+\subsection{Variable Documentation}
+\index{ml_ti.c@{ml\_\-ti.c}!use_standard_function_call_model@{use\_\-standard\_\-function\_\-call\_\-model}}
+\index{use_standard_function_call_model@{use\_\-standard\_\-function\_\-call\_\-model}!ml_ti.c@{ml\_\-ti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{use\_\-standard\_\-function\_\-call\_\-model}}\label{ml__ti_8c_0c29a3c5541686d91b2debcd367b47e9}
+
+
+
+
+Definition at line 75 of file mi\_\-ti.c.
+
+Referenced by M\_\-set\_\-model\_\-ti(), and M\_\-ti\_\-fnvar\_\-layout().

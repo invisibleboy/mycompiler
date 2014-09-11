@@ -1,0 +1,148 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Software pipeliner default parameters.
+#
+# Created by Dan Lavery, 4/8/95
+#
+
+(Lsoftpipe
+# parms that affect phase 1 loop preparation only
+       do_induction_reversal = no;        # Move induction operations from
+                                          # end of the loop to the top
+                                          # of the loop to eliminate cross-
+                                          # iteration flow dependence between
+                                          # induction variable update
+                                          # oper and other opers.
+                                          # Not currently supported
+       check_loops_in_phase1 = yes;       # Recheck suitability of loops
+                                          # for pipelining in phase 1.
+                                          # Some transformation since
+                                          # early in Lsuperscalar may make
+                                          # the loop unsuitable.
+
+# parms that affect phase 1 and phase 2 of code generation
+#       code_schema = remainder_loop;    
+#       code_schema = multiple_epilogues;    
+	code_schema = multiple_epilogues_rotating_registers;    
+#       code_schema = kernel_only;    
+				# Options:
+				# remainder_loop (not currently supported)
+				# multiple_epilogues 
+				# multiple_epilogues_rotating_registers
+				# kernel_only (utilized predication to
+				# execute the prologue and epilogue)
+
+# parms that affect phase 2 only
+       backward_scheduling = yes;           # Backward scheduling often
+                                            # better than forward
+       fixed_slots_for_branches = yes;      # Processor has fixed slots for
+                                            # branches, so don't change
+                                            # slots when sorting
+       do_only_postpass_steps = no;         # Perform only the post-regalloc
+                                            # steps, mark_spills, etc.
+
+       budget_ratio = 10.0;                 # Ratio * number of ops is the
+                                            # number of allowed op schedules
+                                            # including op re-schedules before
+                                            # bumping up II.
+       softpipe_min_ii = 0;	            # Minimum II. Generally
+	                                    # used to make the loop body into
+					    # 1 stage for debugging purposes
+       softpipe_max_ii = 99;		    # Maximum II. If the II is too
+					    # large, then it isn't worth
+					    # pipelining.
+       softpipe_max_stages = 99;	    # Maximum stages.  When the number
+                                            # of stages gets large, the
+                                            # reg pressure also gets large.
+       softpipe_max_tries = 99;		    # Increase the min II by this
+                                            # much before giving up.
+
+# parms that affect phase 2 optimization only
+       compact_branch_path_opers = no;      # Compact opers on which loop back
+                                            # branch depends and shift them
+                                            # upward in the schedule to avoid
+                                            # unnecessary speculation.  Only
+                                            # invoked for counted loops without
+                                            # early exits.  Not currently
+					    # supported.
+       sort_mrt_rows = no;                  # Sort opers within each row
+                                            # of MRT to reduce register
+                                            # pressure and speculation
+       softpipe_combine_cbs = yes;          # Combine cbs after softpipe
+                                            # that fall through into one another
+	
+  # If debug_use_cb_bounds is set to yes, the pipeliner will only
+  # pipeline those cbs with ids between the upper and lower bound, inclusive.
+  # I.e., set both upper and lower bound to 10 to pipeline only cb 10.
+       debug_software_pipelining = 0;       # 0 for no debug info
+                                            # 1 for step by step debug info
+                                            # 2 for voluminous debug info
+       softpipe_debug_use_cb_bounds = no;
+       softpipe_debug_lower_cb_bound = 0;
+       softpipe_debug_upper_cb_bound = 100000000;
+
+       print_pipelining_statistics = yes;   # Add attributes to header cb
+                                            # containing stats on II, kmin, etc
+                                            # Also print statistics on 
+                                            # pipelined loops in softpipe.stats
+       print_iteration_schedule = no;       # for each loop, print the final
+                                            # schedule for a single iteration
+                                            # to file loop.schedules
+       print_schedules_for_debug = no;      # for each loop, print the schedule
+                                            # for the header cb to file
+                                            # loop.schedules at various
+                                            # points in the scheduling process
+       print_MVE_summary = no;              # for each loop, print the length
+                                            # of each lifetime and the number
+                                            # of names required for MVE to 
+                                            # stdout
+
+       compute_loop_reg_pressure = no;      # information about the 
+       add_spill_attributes = no;           # pipelined loop.
+end)

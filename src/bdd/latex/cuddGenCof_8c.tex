@@ -1,0 +1,657 @@
+\section{cudd\-Gen\-Cof.c File Reference}
+\label{cuddGenCof_8c}\index{cuddGenCof.c@{cuddGenCof.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Mark\-Cache\-Key}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DD\_\-LIC\_\-DC}~0
+\item 
+\#define \bf{DD\_\-LIC\_\-1}~1
+\item 
+\#define \bf{DD\_\-LIC\_\-0}~2
+\item 
+\#define \bf{DD\_\-LIC\_\-NL}~3
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int cudd\-Bdd\-Constrain\-Decomp \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$decomp))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Bdd\-Char\-To\-Vect \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$x))
+\item 
+static int cudd\-Bdd\-LICMark\-Edges \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c, \bf{st\_\-table} $\ast$table, \bf{st\_\-table} $\ast$cache))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Bdd\-LICBuild\-Result \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$cache, \bf{st\_\-table} $\ast$table))
+\item 
+static int Mark\-Cache\-Hash \bf{ARGS} ((char $\ast$ptr, int modulus))
+\item 
+static int Mark\-Cache\-Compare \bf{ARGS} ((const char $\ast$ptr1, const char $\ast$ptr2))
+\item 
+static enum \bf{st\_\-retval} Mark\-Cache\-Clean\-Up \bf{ARGS} ((char $\ast$key, char $\ast$value, char $\ast$arg))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Bdd\-Squeeze \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Constrain} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Restrict} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Constrain} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$$\ast$ \bf{Cudd\_\-bdd\-Constrain\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Restrict} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$$\ast$ \bf{Cudd\_\-bdd\-Char\-To\-Vect} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-LICompaction} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Squeeze} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Minimize} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Subset\-Compress} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars, int threshold)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Superset\-Compress} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int nvars, int threshold)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Constrain\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Restrict\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Constrain\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Restrict\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-LICompaction} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c)
+\item 
+static int \bf{cudd\-Bdd\-Constrain\-Decomp} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$decomp)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Char\-To\-Vect} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$x)
+\item 
+static int \bf{cudd\-Bdd\-LICMark\-Edges} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c, \bf{st\_\-table} $\ast$table, \bf{st\_\-table} $\ast$cache)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-LICBuild\-Result} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$cache, \bf{st\_\-table} $\ast$table)
+\item 
+static int \bf{Mark\-Cache\-Hash} (char $\ast$ptr, int modulus)
+\item 
+static int \bf{Mark\-Cache\-Compare} (const char $\ast$ptr1, const char $\ast$ptr2)
+\item 
+static enum \bf{st\_\-retval} \bf{Mark\-Cache\-Clean\-Up} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Squeeze} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Gen\-Cof.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!DD_LIC_0@{DD\_\-LIC\_\-0}}
+\index{DD_LIC_0@{DD\_\-LIC\_\-0}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-LIC\_\-0~2}\label{cuddGenCof_8c_47f751f28a0a4c6bcbf8a7a0b00d7c5c}
+
+
+
+
+Definition at line 65 of file cudd\-Gen\-Cof.c.
+
+Referenced by cudd\-Bdd\-LICMark\-Edges().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!DD_LIC_1@{DD\_\-LIC\_\-1}}
+\index{DD_LIC_1@{DD\_\-LIC\_\-1}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-LIC\_\-1~1}\label{cuddGenCof_8c_38013a854f3a3668b3884fa41ce4bb97}
+
+
+
+
+Definition at line 64 of file cudd\-Gen\-Cof.c.
+
+Referenced by cudd\-Bdd\-LICBuild\-Result(), and cudd\-Bdd\-LICMark\-Edges().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!DD_LIC_DC@{DD\_\-LIC\_\-DC}}
+\index{DD_LIC_DC@{DD\_\-LIC\_\-DC}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-LIC\_\-DC~0}\label{cuddGenCof_8c_58e6e08b6d6eecaa27751fe9daa7572f}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Gen\-Cof.c}{p.}{cuddGenCof_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Generalized cofactors for BDDs and ADDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Constrain()}{p.}{cuddGenCof_8c_250f801a2e5814da9d67a3436f0e3376} \item \doxyref{Cudd\_\-bdd\-Restrict()}{p.}{cuddGenCof_8c_3c8d8bb0210e368eb7258b2961c3cf3e} \item \doxyref{Cudd\_\-add\-Constrain()}{p.}{cuddGenCof_8c_3bdc53bb832fb6b57528e7d5ceef7944} \item \doxyref{Cudd\_\-bdd\-Constrain\-Decomp()}{p.}{cuddGenCof_8c_aaf0b345123f5065ac6b2ea951b7bfe8} \item \doxyref{Cudd\_\-add\-Restrict()}{p.}{cuddGenCof_8c_4ab16f58da620eb1c2e927426aea22c7} \item \doxyref{Cudd\_\-bdd\-Char\-To\-Vect()}{p.}{cuddGenCof_8c_1a4482b94e76db44ff22087277d09b4d} \item \doxyref{Cudd\_\-bdd\-LICompaction()}{p.}{cuddGenCof_8c_6c23e53c189d45d06b68a9a52b724141} \item \doxyref{Cudd\_\-bdd\-Squeeze()}{p.}{cuddGenCof_8c_fbc2329b3d7a6cb0b8adc5582fc7fe2c} \item \doxyref{Cudd\_\-Subset\-Compress()}{p.}{cuddGenCof_8c_bbc5a582b85170a4c365e852b98c37da} \item \doxyref{Cudd\_\-Superset\-Compress()}{p.}{cuddGenCof_8c_194308bd7e4afce7aa668833f8a4e2ff} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Constrain\-Recur()}{p.}{cuddGenCof_8c_6311f1cc598ee0f3681a76baec8c6d53} \item \doxyref{cudd\-Bdd\-Restrict\-Recur()}{p.}{cuddGenCof_8c_c7fd377dc8f0df6472ca0fe6df41ae48} \item \doxyref{cudd\-Add\-Constrain\-Recur()}{p.}{cuddGenCof_8c_bb45bdb200e1e4e975b20925130a6c66} \item \doxyref{cudd\-Add\-Restrict\-Recur()}{p.}{cuddGenCof_8c_560239ea1d3da12ff14b214f0adf17a4} \item \doxyref{cudd\-Bdd\-LICompaction()}{p.}{cuddGenCof_8c_6ac4647d91d277c68197d1860239dfbc} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Constrain\-Decomp()}{p.}{cuddGenCof_8c_5eaea32f6ed375be93c707ce4f5fea3d} \item \doxyref{cudd\-Bdd\-Char\-To\-Vect()}{p.}{cuddGenCof_8c_544d6fe00d57c345745125eb2f426269} \item \doxyref{cudd\-Bdd\-LICMark\-Edges()}{p.}{cuddGenCof_8c_6816dc82d29be25bac7eec5068866537} \item \doxyref{cudd\-Bdd\-LICBuild\-Result()}{p.}{cuddGenCof_8c_030d33ea12ccc3211150fb6a56899bd3} \item \doxyref{cudd\-Bdd\-Squeeze()}{p.}{cuddGenCof_8c_95af9893c405bea9e49dba8632e8abb3} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 63 of file cudd\-Gen\-Cof.c.
+
+Referenced by cudd\-Bdd\-LICBuild\-Result(), and cudd\-Bdd\-LICMark\-Edges().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!DD_LIC_NL@{DD\_\-LIC\_\-NL}}
+\index{DD_LIC_NL@{DD\_\-LIC\_\-NL}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-LIC\_\-NL~3}\label{cuddGenCof_8c_9dff231f69b4be9b27fc2eddde0c4fa6}
+
+
+
+
+Definition at line 66 of file cudd\-Gen\-Cof.c.
+
+Referenced by cudd\-Bdd\-LICBuild\-Result().
+
+\subsection{Function Documentation}
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Squeeze ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_b512a27b1d74d598fb028df08b9e1fb7}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} Mark\-Cache\-Clean\-Up ARGS ((char $\ast$key, char $\ast$value, char $\ast$arg))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_3ad7da56ed9338d71274fc22ca577cf4}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mark\-Cache\-Compare ARGS ((const char $\ast$ptr1, const char $\ast$ptr2))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_912accc5e82bab9f2508e1511c2dd7de}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mark\-Cache\-Hash ARGS ((char $\ast$ptr, int modulus))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_7e5fdf6cbcfae9f9ba38ce8f701c8c2c}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-LICBuild\-Result ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$cache, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_5db75afc5a39c4bee62b7ad0b0a460c3}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Bdd\-LICMark\-Edges ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$c, \bf{st\_\-table} $\ast$table, \bf{st\_\-table} $\ast$cache))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_4bda0958635944abb0cac836de995001}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Char\-To\-Vect ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$x))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_ab6342ba3282fe410d0bbb37d288533e}
+
+
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Bdd\-Constrain\-Decomp ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$decomp))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_58d9358817e0027e306bc6223b4f3252}
+
+
+Automatic\-Start \index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_addConstrain@{Cudd\_\-addConstrain}}
+\index{Cudd_addConstrain@{Cudd\_\-addConstrain}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Constrain (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_3bdc53bb832fb6b57528e7d5ceef7944}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes f constrain c for ADDs.]
+
+Description [Computes f constrain c (f @ c), for f an ADD and c a 0-1 ADD. List of special cases: \begin{itemize}
+\item F @ 0 = 0 \item F @ 1 = F \item 0 @ c = 0 \item 1 @ c = 1 \item F @ F = 1 \end{itemize}
+Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain] 
+
+Definition at line 262 of file cudd\-Gen\-Cof.c.
+
+References cudd\-Add\-Constrain\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by cudd\-Add\-Constrain\-Recur().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_addRestrict@{Cudd\_\-addRestrict}}
+\index{Cudd_addRestrict@{Cudd\_\-addRestrict}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Restrict (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_4ab16f58da620eb1c2e927426aea22c7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [ADD restrict according to Coudert and Madre's algorithm (ICCAD90).]
+
+Description [ADD restrict according to Coudert and Madre's algorithm (ICCAD90). Returns the restricted ADD if successful; otherwise NULL. If application of restrict results in an ADD larger than the input ADD, the input ADD is returned.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Constrain Cudd\_\-bdd\-Restrict] 
+
+Definition at line 357 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Literal\-Set\-Intersection(), Cudd\_\-Dag\-Size(), Cudd\_\-Recursive\-Deref(), Cudd\_\-Support(), cudd\-Add\-Restrict\-Recur(), cudd\-Ref, DD\_\-ONE, and Dd\-Manager::reordered.
+
+Referenced by cudd\-Add\-Restrict\-Recur().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddCharToVect@{Cudd\_\-bddCharToVect}}
+\index{Cudd_bddCharToVect@{Cudd\_\-bddCharToVect}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$$\ast$ Cudd\_\-bdd\-Char\-To\-Vect (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddGenCof_8c_1a4482b94e76db44ff22087277d09b4d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes a vector whose image equals a non-zero function.]
+
+Description [Computes a vector of BDDs whose image equals a non-zero function. The result depends on the variable order. The i-th component of the vector depends only on the first i variables in the order. Each BDD in the vector is not larger than the BDD of the given characteristic function. This function is based on the description of char-to-vect in \char`\"{}Verification of Sequential Machines Using Boolean Functional Vectors\char`\"{} by O. Coudert, C. Berthet and J. C. Madre. Returns a pointer to an array containing the result if successful; NULL otherwise. The size of the array equals the number of variables in the manager. The components of the solution have their reference counts already incremented (unlike the results of most other functions in the package.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain] 
+
+Definition at line 436 of file cudd\-Gen\-Cof.c.
+
+References ALLOC, Cudd\_\-Iter\-Deref\-Bdd(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, cudd\-Bdd\-Char\-To\-Vect(), cudd\-Ref, DD\_\-ONE, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Manager::reordered, Dd\-Manager::size, and Dd\-Manager::vars.\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddConstrain@{Cudd\_\-bddConstrain}}
+\index{Cudd_bddConstrain@{Cudd\_\-bddConstrain}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Constrain (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_250f801a2e5814da9d67a3436f0e3376}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes f constrain c.]
+
+Description [Computes f constrain c (f @ c). Uses a canonical form: (f' @ c) = ( f @ c)'. (Note: this is not true for c.) List of special cases: \begin{itemize}
+\item F @ 0 = 0 \item F @ 1 = F \item 0 @ c = 0 \item 1 @ c = 1 \item F @ F = 1 \item F @ F'= 0 \end{itemize}
+Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Restrict Cudd\_\-add\-Constrain] 
+
+Definition at line 142 of file cudd\-Gen\-Cof.c.
+
+References cudd\-Bdd\-Constrain\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by cudd\-Bdd\-Constrain\-Recur().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddConstrainDecomp@{Cudd\_\-bddConstrainDecomp}}
+\index{Cudd_bddConstrainDecomp@{Cudd\_\-bddConstrainDecomp}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$$\ast$ Cudd\_\-bdd\-Constrain\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddGenCof_8c_aaf0b345123f5065ac6b2ea951b7bfe8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [BDD conjunctive decomposition as in Mc\-Millan's CAV96 paper.]
+
+Description [BDD conjunctive decomposition as in Mc\-Millan's CAV96 paper. The decomposition is canonical only for a given variable order. If canonicity is required, variable ordering must be disabled after the decomposition has been computed. Returns an array with one entry for each BDD variable in the manager if successful; otherwise NULL. The components of the solution have their reference counts already incremented (unlike the results of most other functions in the package.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain Cudd\_\-bdd\-Exist\-Abstract] 
+
+Definition at line 297 of file cudd\-Gen\-Cof.c.
+
+References ALLOC, Cudd\_\-Iter\-Deref\-Bdd(), CUDD\_\-MEMORY\_\-OUT, cudd\-Bdd\-Constrain\-Decomp(), cudd\-Ref, DD\_\-ONE, Dd\-Manager::error\-Code, FREE, Dd\-Manager::reordered, and Dd\-Manager::size.\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddLICompaction@{Cudd\_\-bddLICompaction}}
+\index{Cudd_bddLICompaction@{Cudd\_\-bddLICompaction}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-LICompaction (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_6c23e53c189d45d06b68a9a52b724141}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs safe minimization of a BDD.]
+
+Description [Performs safe minimization of a BDD. Given the BDD {\tt f} of a function to be minimized and a BDD {\tt c} representing the care set, Cudd\_\-bdd\-LICompaction produces the BDD of a function that agrees with {\tt f} wherever {\tt c} is 1. Safe minimization means that the size of the result is guaranteed not to exceed the size of {\tt f}. This function is based on the DAC97 paper by Hong et al.. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Restrict] 
+
+Definition at line 496 of file cudd\-Gen\-Cof.c.
+
+References cudd\-Bdd\-LICompaction(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), and Cudd\_\-bdd\-Minimize().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddMinimize@{Cudd\_\-bddMinimize}}
+\index{Cudd_bddMinimize@{Cudd\_\-bddMinimize}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Minimize (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_f47227c86f08d37cd5fd8ea2a89afcb7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds a small BDD that agrees with {\tt f} over {\tt c}.]
+
+Description [Finds a small BDD that agrees with {\tt f} over {\tt c}. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Restrict Cudd\_\-bdd\-LICompaction Cudd\_\-bdd\-Squeeze] 
+
+Definition at line 579 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-LICompaction(), Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Remap\-Over\-Approx(), cudd\-Deref, cudd\-Ref, and DD\_\-ONE.\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddRestrict@{Cudd\_\-bddRestrict}}
+\index{Cudd_bddRestrict@{Cudd\_\-bddRestrict}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Restrict (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_3c8d8bb0210e368eb7258b2961c3cf3e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [BDD restrict according to Coudert and Madre's algorithm (ICCAD90).]
+
+Description [BDD restrict according to Coudert and Madre's algorithm (ICCAD90). Returns the restricted BDD if successful; otherwise NULL. If application of restrict results in a BDD larger than the input BDD, the input BDD is returned.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain Cudd\_\-add\-Restrict] 
+
+Definition at line 174 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Exist\-Abstract(), Cudd\_\-Classify\-Support(), Cudd\_\-Dag\-Size(), Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, cudd\-Bdd\-Restrict\-Recur(), cudd\-Deref, cudd\-Ref, and DD\_\-ONE.
+
+Referenced by cudd\-Bdd\-Restrict\-Recur().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_bddSqueeze@{Cudd\_\-bddSqueeze}}
+\index{Cudd_bddSqueeze@{Cudd\_\-bddSqueeze}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Squeeze (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em l}, \bf{Dd\-Node} $\ast$ {\em u})}\label{cuddGenCof_8c_fbc2329b3d7a6cb0b8adc5582fc7fe2c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds a small BDD in a function interval.]
+
+Description [Finds a small BDD in a function interval. Given BDDs {\tt l} and {\tt u}, representing the lower bound and upper bound of a function interval, Cudd\_\-bdd\-Squeeze produces the BDD of a function within the interval with a small BDD. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Restrict Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 528 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Dag\-Size(), Cudd\_\-Iter\-Deref\-Bdd(), cudd\-Bdd\-Squeeze(), cudd\-Ref, and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), Cudd\_\-Subset\-Compress(), and cudd\-Bdd\-Squeeze().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_SubsetCompress@{Cudd\_\-SubsetCompress}}
+\index{Cudd_SubsetCompress@{Cudd\_\-SubsetCompress}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Subset\-Compress (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em nvars}, int {\em threshold})}\label{cuddGenCof_8c_bbc5a582b85170a4c365e852b98c37da}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Find a dense subset of BDD {\tt f}.]
+
+Description [Finds a dense subset of BDD {\tt f}. Density is the ratio of number of minterms to number of nodes. Uses several techniques in series. It is more expensive than other subsetting procedures, but often produces better results. See Cudd\_\-Subset\-Short\-Paths for a description of the threshold and nvars parameters. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Remap Cudd\_\-Subset\-Short\-Paths Cudd\_\-Subset\-Heavy\-Branch Cudd\_\-bdd\-Squeeze] 
+
+Definition at line 626 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Squeeze(), Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Remap\-Under\-Approx(), Cudd\_\-Subset\-Short\-Paths(), cudd\-Deref, and cudd\-Ref.
+
+Referenced by Cudd\_\-Superset\-Compress().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!Cudd_SupersetCompress@{Cudd\_\-SupersetCompress}}
+\index{Cudd_SupersetCompress@{Cudd\_\-SupersetCompress}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Superset\-Compress (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em nvars}, int {\em threshold})}\label{cuddGenCof_8c_194308bd7e4afce7aa668833f8a4e2ff}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Find a dense superset of BDD {\tt f}.]
+
+Description [Finds a dense superset of BDD {\tt f}. Density is the ratio of number of minterms to number of nodes. Uses several techniques in series. It is more expensive than other supersetting procedures, but often produces better results. See Cudd\_\-Superset\-Short\-Paths for a description of the threshold and nvars parameters. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Compress Cudd\_\-Superset\-Remap Cudd\_\-Superset\-Short\-Paths Cudd\_\-Superset\-Heavy\-Branch Cudd\_\-bdd\-Squeeze] 
+
+Definition at line 676 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, and Cudd\_\-Subset\-Compress().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddAddConstrainRecur@{cuddAddConstrainRecur}}
+\index{cuddAddConstrainRecur@{cuddAddConstrainRecur}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Add\-Constrain\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_bb45bdb200e1e4e975b20925130a6c66}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Constrain.]
+
+Description [Performs the recursive step of Cudd\_\-add\-Constrain. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Constrain] 
+
+Definition at line 986 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-add\-Constrain(), Cudd\_\-Is\-Constant, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-add\-Constrain().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddAddRestrictRecur@{cuddAddRestrictRecur}}
+\index{cuddAddRestrictRecur@{cuddAddRestrictRecur}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Add\-Restrict\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_560239ea1d3da12ff14b214f0adf17a4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Restrict.]
+
+Description [Performs the recursive step of Cudd\_\-add\-Restrict. Returns the restricted ADD if successful; otherwise NULL.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Restrict] 
+
+Definition at line 1089 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-add\-Or(), Cudd\_\-add\-Restrict(), Cudd\_\-Is\-Constant, Cudd\_\-Recursive\-Deref(), cudd\-Add\-Apply\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-add\-Restrict().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddCharToVect@{cuddBddCharToVect}}
+\index{cuddBddCharToVect@{cuddBddCharToVect}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Char\-To\-Vect (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em x})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_544d6fe00d57c345745125eb2f426269}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Char\-To\-Vect.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Char\-To\-Vect. This function maintains the invariant that f is non-zero. Returns the i-th component of the vector if successful; otherwise NULL.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Char\-To\-Vect] 
+
+Definition at line 1347 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-Ite\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-I, cudd\-Ref, cudd\-T, DD\_\-ONE, Dd\-Node::index, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Char\-To\-Vect().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddConstrainDecomp@{cuddBddConstrainDecomp}}
+\index{cuddBddConstrainDecomp@{cuddBddConstrainDecomp}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Bdd\-Constrain\-Decomp (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em decomp})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_5eaea32f6ed375be93c707ce4f5fea3d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Constrain\-Decomp.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Constrain\-Decomp. Returns f super (i) if successful; otherwise NULL.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain\-Decomp] 
+
+Definition at line 1285 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-E, cudd\-Ref, cudd\-T, Dd\-Node::index, and result.
+
+Referenced by Cudd\_\-bdd\-Constrain\-Decomp().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddConstrainRecur@{cuddBddConstrainRecur}}
+\index{cuddBddConstrainRecur@{cuddBddConstrainRecur}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Constrain\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_6311f1cc598ee0f3681a76baec8c6d53}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Constrain.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Constrain. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Constrain] 
+
+Definition at line 709 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Constrain(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Constrain(), and cudd\-Bdd\-Constrain\-Decomp().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddLICBuildResult@{cuddBddLICBuildResult}}
+\index{cuddBddLICBuildResult@{cuddBddLICBuildResult}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-LICBuild\-Result (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{st\_\-table} $\ast$ {\em cache}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_030d33ea12ccc3211150fb6a56899bd3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the result of Cudd\_\-bdd\-LICompaction.]
+
+Description [Builds the results of Cudd\_\-bdd\-LICompaction. Returns a pointer to the minimized BDD if successful; otherwise NULL.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction cudd\-Bdd\-LICMark\-Edges] 
+
+Definition at line 1549 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-LIC\_\-1, DD\_\-LIC\_\-DC, DD\_\-LIC\_\-NL, DD\_\-ONE, one, Dd\-Manager::perm, st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by cudd\-Bdd\-LICompaction().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddLICMarkEdges@{cuddBddLICMarkEdges}}
+\index{cuddBddLICMarkEdges@{cuddBddLICMarkEdges}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Bdd\-LICMark\-Edges (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c}, \bf{st\_\-table} $\ast$ {\em table}, \bf{st\_\-table} $\ast$ {\em cache})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_6816dc82d29be25bac7eec5068866537}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the edge marking step of Cudd\_\-bdd\-LICompaction.]
+
+Description [Performs the edge marking step of Cudd\_\-bdd\-LICompaction. Returns the LUB of the markings of the two outgoing edges of {\tt f} if successful; otherwise CUDD\_\-OUT\_\-OF\_\-MEM.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction cudd\-Bdd\-LICBuild\-Result] 
+
+Definition at line 1427 of file cudd\-Gen\-Cof.c.
+
+References ALLOC, Mark\-Cache\-Key::c, Cudd\_\-Is\-Complement, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, DD\_\-LIC\_\-0, DD\_\-LIC\_\-1, DD\_\-LIC\_\-DC, DD\_\-ONE, Dd\-Manager::error\-Code, Mark\-Cache\-Key::f, FREE, Dd\-Node::index, one, Dd\-Manager::perm, st\_\-find\_\-or\_\-add(), st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by cudd\-Bdd\-LICompaction().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddLICompaction@{cuddBddLICompaction}}
+\index{cuddBddLICompaction@{cuddBddLICompaction}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-LICompaction (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_6ac4647d91d277c68197d1860239dfbc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs safe minimization of a BDD.]
+
+Description [Performs safe minimization of a BDD. Given the BDD {\tt f} of a function to be minimized and a BDD {\tt c} representing the care set, Cudd\_\-bdd\-LICompaction produces the BDD of a function that agrees with {\tt f} wherever {\tt c} is 1. Safe minimization means that the size of the result is guaranteed not to exceed the size of {\tt f}. This function is based on the DAC97 paper by Hong et al.. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 1215 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), DD\_\-ONE, Mark\-Cache\-Clean\-Up(), Mark\-Cache\-Compare(), Mark\-Cache\-Hash(), st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.
+
+Referenced by Cudd\_\-bdd\-LICompaction().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddRestrictRecur@{cuddBddRestrictRecur}}
+\index{cuddBddRestrictRecur@{cuddBddRestrictRecur}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Restrict\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em c})}\label{cuddGenCof_8c_c7fd377dc8f0df6472ca0fe6df41ae48}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Restrict.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Restrict. Returns the restricted BDD if successful; otherwise NULL.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Restrict] 
+
+Definition at line 837 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Restrict(), Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Restrict(), and cudd\-Solve\-Eqn\-Recur().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!cuddBddSqueeze@{cuddBddSqueeze}}
+\index{cuddBddSqueeze@{cuddBddSqueeze}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Squeeze (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em l}, \bf{Dd\-Node} $\ast$ {\em u})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_95af9893c405bea9e49dba8632e8abb3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Squeeze.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Squeeze. This procedure exploits the fact that if we complement and swap the bounds of the interval we obtain a valid solution by taking the complement of the solution to the original problem. Therefore, we can enforce the condition that the upper bound is always regular. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Squeeze] 
+
+Definition at line 1752 of file cudd\-Gen\-Cof.c.
+
+References Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Squeeze(), Cudd\_\-Dag\-Size(), Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Squeeze().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!MarkCacheCleanUp@{MarkCacheCleanUp}}
+\index{MarkCacheCleanUp@{MarkCacheCleanUp}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} Mark\-Cache\-Clean\-Up (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_58bfa50bf07c637bdae80489407eb17a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees memory associated with computed table of cudd\-Bdd\-LICMark\-Edges.]
+
+Description [Frees memory associated with computed table of cudd\-Bdd\-LICMark\-Edges. Returns ST\_\-CONTINUE.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 1721 of file cudd\-Gen\-Cof.c.
+
+References entry, FREE, and ST\_\-CONTINUE.
+
+Referenced by cudd\-Bdd\-LICompaction().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!MarkCacheCompare@{MarkCacheCompare}}
+\index{MarkCacheCompare@{MarkCacheCompare}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mark\-Cache\-Compare (const char $\ast$ {\em ptr1}, const char $\ast$ {\em ptr2})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_5721a32e1d89799cd08e782e87a64c39}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function for the computed table of cudd\-Bdd\-LICMark\-Edges.]
+
+Description [Comparison function for the computed table of cudd\-Bdd\-LICMark\-Edges. Returns 0 if the two nodes of the key are equal; 1 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 1692 of file cudd\-Gen\-Cof.c.
+
+References Mark\-Cache\-Key::c, and Mark\-Cache\-Key::f.
+
+Referenced by cudd\-Bdd\-LICompaction().\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!MarkCacheHash@{MarkCacheHash}}
+\index{MarkCacheHash@{MarkCacheHash}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mark\-Cache\-Hash (char $\ast$ {\em ptr}, int {\em modulus})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_d3e5cecf15bdf16ccbb6fe67cfcdc995}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Hash function for the computed table of cudd\-Bdd\-LICMark\-Edges.]
+
+Description [Hash function for the computed table of cudd\-Bdd\-LICMark\-Edges. Returns the bucket number.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-LICompaction] 
+
+Definition at line 1660 of file cudd\-Gen\-Cof.c.
+
+References entry.
+
+Referenced by cudd\-Bdd\-LICompaction().
+
+\subsection{Variable Documentation}
+\index{cuddGenCof.c@{cudd\-Gen\-Cof.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddGenCof.c@{cudd\-Gen\-Cof.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Gen\-Cof.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenCof_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 88 of file cudd\-Gen\-Cof.c.

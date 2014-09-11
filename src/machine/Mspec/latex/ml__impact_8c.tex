@@ -1,0 +1,1486 @@
+\section{ml\_\-impact.c File Reference}
+\label{ml__impact_8c}\index{ml_impact.c@{ml\_\-impact.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include $<$machine/m\_\-spec.h$>$}\par
+{\tt \#include $<$machine/m\_\-impact.h$>$}\par
+{\tt \#include $<$machine/m\_\-hppa.h$>$}\par
+{\tt \#include $<$machine/m\_\-sparc.h$>$}\par
+{\tt \#include $<$library/i\_\-list.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{JWS\_\-NEW\_\-STACK\_\-MODEL}
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-IMPACT\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-IMPACT\_\-SIZE\_\-INT)
+\item 
+\#define \bf{M\_\-IMPACT\_\-R0\_\-I}~0
+\item 
+\#define \bf{M\_\-IMPACT\_\-R0\_\-F}~1
+\item 
+\#define \bf{M\_\-IMPACT\_\-R0\_\-F2}~2
+\item 
+\#define \bf{M\_\-IMPACT\_\-ST}~0
+\item 
+\#define \bf{M\_\-IMPACT\_\-ARG\_\-I}~4
+\item 
+\#define \bf{M\_\-IMPACT\_\-ARG\_\-F}~(M\_\-IMPACT\_\-ARG\_\-I + M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG)
+\item 
+\#define \bf{M\_\-IMPACT\_\-ARG\_\-F2}~(M\_\-IMPACT\_\-ARG\_\-F + M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG)
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX}~64
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-MIN\_\-PARAM\_\-SIZE}~(16 $\ast$ 8)
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I32}~15
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I64}~15
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-RET\_\-ST}~15
+\item 
+\#define \bf{M\_\-IMPACT\_\-LCODE\_\-RET\_\-F}~4
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-impact\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-impact\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-impact\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-impact\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-impact\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-impact\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-impact\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-impact\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-impact\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-impact\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-impact\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-impact\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-impact\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-impact\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-impact\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-impact\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-impact\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-impact\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-impact\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-impact\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-impact\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-impact\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-impact\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$base\_\-macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int need\_\-ST, int purpose)
+\item 
+int \bf{M\_\-impact\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-impact\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-impact\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-impact\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-impact\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-impact\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-impact\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-impact\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-impact\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-impact\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-impact\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+\bf{Set} \bf{M\_\-impact\_\-fragile\_\-macro\_\-set} ()
+\item 
+int \bf{M\_\-impact\_\-dataflow\_\-macro} (int id)
+\item 
+int \bf{M\_\-impact\_\-subroutine\_\-call} (int opc)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-impact} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-impact} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-impact} (L\_\-Operand $\ast$operand)
+\item 
+static int \bf{M\_\-operand\_\-type\_\-impact\_\-lcode} (L\_\-Operand $\ast$operand)
+\item 
+static int \bf{M\_\-operand\_\-type\_\-impact\_\-hp\_\-lcode} (L\_\-Operand $\ast$operand)
+\item 
+static int \bf{M\_\-operand\_\-type\_\-impact\_\-sparc\_\-lcode} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-impact} (L\_\-Operand $\ast$operand)
+\item 
+static int \bf{M\_\-conflicting\_\-operands\_\-impact\_\-lcode} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+static int \bf{M\_\-conflicting\_\-operands\_\-impact\_\-hp\_\-lcode} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+static int \bf{M\_\-conflicting\_\-operands\_\-impact\_\-sparc\_\-lcode} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-impact} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+void \bf{M\_\-define\_\-macros\_\-impact} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-impact} (int id)
+\item 
+int \bf{M\_\-num\_\-registers\_\-impact} (int ctype)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{M\_\-impact\_\-model}
+\item 
+\bf{Set} \bf{Set\_\-impact\_\-fragile\_\-macro} = \bf{NULL}
+\item 
+int \bf{M\_\-Limpact\_\-dbl\_\-offset} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_impact.c@{ml\_\-impact.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__impact_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_impact.c@{ml\_\-impact.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__impact_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_impact.c@{ml\_\-impact.c}!JWS_NEW_STACK_MODEL@{JWS\_\-NEW\_\-STACK\_\-MODEL}}
+\index{JWS_NEW_STACK_MODEL@{JWS\_\-NEW\_\-STACK\_\-MODEL}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define JWS\_\-NEW\_\-STACK\_\-MODEL}\label{ml__impact_8c_da7b5b77b5ce6aa95a106ce13e96e685}
+
+
+
+
+Definition at line 76 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__impact_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_impact.c@{ml\_\-impact.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__impact_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_BIT@{M\_\-IMPACT\_\-ALIGN\_\-BIT}}
+\index{M_IMPACT_ALIGN_BIT@{M\_\-IMPACT\_\-ALIGN\_\-BIT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-BIT~1}\label{ml__impact_8c_4f2a3874aa6954ada8e045dc3a958fef}
+
+
+
+
+Definition at line 131 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_BLOCK@{M\_\-IMPACT\_\-ALIGN\_\-BLOCK}}
+\index{M_IMPACT_ALIGN_BLOCK@{M\_\-IMPACT\_\-ALIGN\_\-BLOCK}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-BLOCK~-1}\label{ml__impact_8c_d61d85c41eb0a0b1d03c9f6f2e66a12b}
+
+
+
+
+Definition at line 141 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_CHAR@{M\_\-IMPACT\_\-ALIGN\_\-CHAR}}
+\index{M_IMPACT_ALIGN_CHAR@{M\_\-IMPACT\_\-ALIGN\_\-CHAR}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-CHAR~8}\label{ml__impact_8c_ae114dbe6c6f2f9d0c0a48aa78f5f77f}
+
+
+
+
+Definition at line 132 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_DOUBLE@{M\_\-IMPACT\_\-ALIGN\_\-DOUBLE}}
+\index{M_IMPACT_ALIGN_DOUBLE@{M\_\-IMPACT\_\-ALIGN\_\-DOUBLE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-DOUBLE~64}\label{ml__impact_8c_f059efb1414f00bc58412de341c23f04}
+
+
+
+
+Definition at line 137 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_FLOAT@{M\_\-IMPACT\_\-ALIGN\_\-FLOAT}}
+\index{M_IMPACT_ALIGN_FLOAT@{M\_\-IMPACT\_\-ALIGN\_\-FLOAT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-FLOAT~32}\label{ml__impact_8c_27490f4ed7fb1d774eca72fceb8cdd38}
+
+
+
+
+Definition at line 136 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_INT@{M\_\-IMPACT\_\-ALIGN\_\-INT}}
+\index{M_IMPACT_ALIGN_INT@{M\_\-IMPACT\_\-ALIGN\_\-INT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-INT~32}\label{ml__impact_8c_948130e605226cec8b8cdf3babb62bdc}
+
+
+
+
+Definition at line 134 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_LONG@{M\_\-IMPACT\_\-ALIGN\_\-LONG}}
+\index{M_IMPACT_ALIGN_LONG@{M\_\-IMPACT\_\-ALIGN\_\-LONG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-LONG~32}\label{ml__impact_8c_653a3ccaba9e475f9886b35acbfdf996}
+
+
+
+
+Definition at line 135 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_MAX@{M\_\-IMPACT\_\-ALIGN\_\-MAX}}
+\index{M_IMPACT_ALIGN_MAX@{M\_\-IMPACT\_\-ALIGN\_\-MAX}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-MAX~64}\label{ml__impact_8c_b061fa47f9cf8f5df0672e08b8598ee2}
+
+
+
+
+Definition at line 142 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_POINTER@{M\_\-IMPACT\_\-ALIGN\_\-POINTER}}
+\index{M_IMPACT_ALIGN_POINTER@{M\_\-IMPACT\_\-ALIGN\_\-POINTER}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-POINTER~32}\label{ml__impact_8c_dca3c02cd429101391dd6ee6347d407b}
+
+
+
+
+Definition at line 138 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_SHORT@{M\_\-IMPACT\_\-ALIGN\_\-SHORT}}
+\index{M_IMPACT_ALIGN_SHORT@{M\_\-IMPACT\_\-ALIGN\_\-SHORT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-SHORT~16}\label{ml__impact_8c_1498e03bd549907d1c9b135969fc51b4}
+
+
+
+
+Definition at line 133 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_STRUCT@{M\_\-IMPACT\_\-ALIGN\_\-STRUCT}}
+\index{M_IMPACT_ALIGN_STRUCT@{M\_\-IMPACT\_\-ALIGN\_\-STRUCT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-STRUCT~-1}\label{ml__impact_8c_d85278b5ca39a38b04992b24c30f60f8}
+
+
+
+
+Definition at line 140 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_UNION@{M\_\-IMPACT\_\-ALIGN\_\-UNION}}
+\index{M_IMPACT_ALIGN_UNION@{M\_\-IMPACT\_\-ALIGN\_\-UNION}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-UNION~-1}\label{ml__impact_8c_c9f22d73b371355310c4348d88bd0e8e}
+
+
+
+
+Definition at line 139 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ALIGN_VOID@{M\_\-IMPACT\_\-ALIGN\_\-VOID}}
+\index{M_IMPACT_ALIGN_VOID@{M\_\-IMPACT\_\-ALIGN\_\-VOID}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ALIGN\_\-VOID~-1}\label{ml__impact_8c_05e51ea689c646304b2422fd6ba3307c}
+
+
+
+
+Definition at line 130 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ARG_F@{M\_\-IMPACT\_\-ARG\_\-F}}
+\index{M_IMPACT_ARG_F@{M\_\-IMPACT\_\-ARG\_\-F}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ARG\_\-F~(M\_\-IMPACT\_\-ARG\_\-I + M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG)}\label{ml__impact_8c_d56fc73a7e4d34dd9e1afeed5a9dd62f}
+
+
+
+
+Definition at line 157 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ARG_F2@{M\_\-IMPACT\_\-ARG\_\-F2}}
+\index{M_IMPACT_ARG_F2@{M\_\-IMPACT\_\-ARG\_\-F2}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ARG\_\-F2~(M\_\-IMPACT\_\-ARG\_\-F + M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG)}\label{ml__impact_8c_192a6455dd431ab531c420c9f9f56892}
+
+
+
+
+Definition at line 158 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ARG_I@{M\_\-IMPACT\_\-ARG\_\-I}}
+\index{M_IMPACT_ARG_I@{M\_\-IMPACT\_\-ARG\_\-I}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ARG\_\-I~4}\label{ml__impact_8c_3a899964f41b4457965580de385fdfe1}
+
+
+
+
+Definition at line 156 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_BIT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT}}
+\index{M_IMPACT_LCODE_ALIGN_BIT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT~1}\label{ml__impact_8c_2b9d5ea14aa692b7f6f31780c61b87c3}
+
+
+
+
+Definition at line 102 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_BLOCK@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BLOCK}}
+\index{M_IMPACT_LCODE_ALIGN_BLOCK@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BLOCK}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BLOCK~-1}\label{ml__impact_8c_5e9ebda09cc5a5d0fa76c1cbce8f8129}
+
+
+
+
+Definition at line 112 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_CHAR@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR}}
+\index{M_IMPACT_LCODE_ALIGN_CHAR@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR~8}\label{ml__impact_8c_45e04b3144ec92fdedab4cce4d8580a6}
+
+
+
+
+Definition at line 103 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_DOUBLE@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-DOUBLE}}
+\index{M_IMPACT_LCODE_ALIGN_DOUBLE@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-DOUBLE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-DOUBLE~64}\label{ml__impact_8c_3c026ec87ce09894c2f0ba847ed8fb01}
+
+
+
+
+Definition at line 108 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_FLOAT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-FLOAT}}
+\index{M_IMPACT_LCODE_ALIGN_FLOAT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-FLOAT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-FLOAT~32}\label{ml__impact_8c_749055d25dc0191163d1937fb0fe3d0b}
+
+
+
+
+Definition at line 107 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_INT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT}}
+\index{M_IMPACT_LCODE_ALIGN_INT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT~32}\label{ml__impact_8c_001d96e2308e9a88f77a4e64cc365fe0}
+
+
+
+
+Definition at line 105 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_LONG@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-LONG}}
+\index{M_IMPACT_LCODE_ALIGN_LONG@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-LONG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-LONG~32}\label{ml__impact_8c_7642f0a647f1bfdba5c39b5a1a9224dc}
+
+
+
+
+Definition at line 106 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_MAX@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX}}
+\index{M_IMPACT_LCODE_ALIGN_MAX@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX~64}\label{ml__impact_8c_a7defd1f8384d84cc71303daccf66fb4}
+
+
+
+
+Definition at line 113 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_POINTER@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-POINTER}}
+\index{M_IMPACT_LCODE_ALIGN_POINTER@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-POINTER}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-POINTER~32}\label{ml__impact_8c_2f6e08e7b90ce05dd1fc5d5105683562}
+
+
+
+
+Definition at line 109 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_SHORT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-SHORT}}
+\index{M_IMPACT_LCODE_ALIGN_SHORT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-SHORT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-SHORT~16}\label{ml__impact_8c_ef720516dac29d6f5c8901bf9f3b23a4}
+
+
+
+
+Definition at line 104 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_STRUCT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-STRUCT}}
+\index{M_IMPACT_LCODE_ALIGN_STRUCT@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-STRUCT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-STRUCT~-1}\label{ml__impact_8c_1ddd4f214db81589dd8997c5bcac3098}
+
+
+
+
+Definition at line 111 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_UNION@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-UNION}}
+\index{M_IMPACT_LCODE_ALIGN_UNION@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-UNION}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-UNION~-1}\label{ml__impact_8c_30da0094cacc3ac7cdf8d78702c8565e}
+
+
+
+
+Definition at line 110 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_ALIGN_VOID@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-VOID}}
+\index{M_IMPACT_LCODE_ALIGN_VOID@{M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-VOID}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-VOID~-1}\label{ml__impact_8c_e8e5ab7ce6d1f7a16637c142deac4f03}
+
+
+
+
+Definition at line 101 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_FLT_BASE@{M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE}}
+\index{M_IMPACT_LCODE_FLT_BASE@{M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE~4}\label{ml__impact_8c_5121afe0b6cb6db70e6fa604ebc6daa5}
+
+
+
+
+Definition at line 169 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_INT_BASE@{M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE}}
+\index{M_IMPACT_LCODE_INT_BASE@{M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE~0}\label{ml__impact_8c_b2ea8bc1b4f275ebf2135f626a531078}
+
+
+
+
+Definition at line 168 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_MAX_FNVAR_REG@{M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_IMPACT_LCODE_MAX_FNVAR_REG@{M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__impact_8c_05f2dcd44df0022f70cf0105bd40d58f}
+
+
+
+
+Definition at line 163 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_MIN_PARAM_SIZE@{M\_\-IMPACT\_\-LCODE\_\-MIN\_\-PARAM\_\-SIZE}}
+\index{M_IMPACT_LCODE_MIN_PARAM_SIZE@{M\_\-IMPACT\_\-LCODE\_\-MIN\_\-PARAM\_\-SIZE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-MIN\_\-PARAM\_\-SIZE~(16 $\ast$ 8)}\label{ml__impact_8c_7e7355d06a46691ae6a4621b042bc7ca}
+
+
+
+
+Definition at line 165 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_RET_F@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-F}}
+\index{M_IMPACT_LCODE_RET_F@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-F}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-RET\_\-F~4}\label{ml__impact_8c_3b1b90af7f7e3d61de272b21654ccb12}
+
+
+
+
+Definition at line 174 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_RET_I32@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I32}}
+\index{M_IMPACT_LCODE_RET_I32@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I32}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-RET\_\-I32~15}\label{ml__impact_8c_b91a79957599b8124c3f7e29f7e63471}
+
+
+
+
+Definition at line 171 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_RET_I64@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I64}}
+\index{M_IMPACT_LCODE_RET_I64@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-I64}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-RET\_\-I64~15}\label{ml__impact_8c_52ca773884110c3080c055546df0c1d0}
+
+
+
+
+Definition at line 172 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_RET_ST@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-ST}}
+\index{M_IMPACT_LCODE_RET_ST@{M\_\-IMPACT\_\-LCODE\_\-RET\_\-ST}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-RET\_\-ST~15}\label{ml__impact_8c_a9511739c217ff6a8703cf9350648685}
+
+
+
+
+Definition at line 173 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-structure\_\-pointer().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_BIT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT}}
+\index{M_IMPACT_LCODE_SIZE_BIT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT~1}\label{ml__impact_8c_fdae06f1e25c435505683f043067d9ee}
+
+
+
+
+Definition at line 88 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_BLOCK@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BLOCK}}
+\index{M_IMPACT_LCODE_SIZE_BLOCK@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BLOCK}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BLOCK~-1}\label{ml__impact_8c_8cec614729ae394245145f7bf8f93d65}
+
+
+
+
+Definition at line 98 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_CHAR@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-CHAR}}
+\index{M_IMPACT_LCODE_SIZE_CHAR@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-CHAR}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-CHAR~8}\label{ml__impact_8c_eda2894167c97cb02e81c484799db725}
+
+
+
+
+Definition at line 89 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_DOUBLE@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-DOUBLE}}
+\index{M_IMPACT_LCODE_SIZE_DOUBLE@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-DOUBLE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-DOUBLE~64}\label{ml__impact_8c_a765f5c85d32a0f4a656271eb5d60b7e}
+
+
+
+
+Definition at line 94 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_FLOAT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-FLOAT}}
+\index{M_IMPACT_LCODE_SIZE_FLOAT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-FLOAT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-FLOAT~32}\label{ml__impact_8c_120dfccdb114ff29cdd1ecfbeafd09ba}
+
+
+
+
+Definition at line 93 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_INT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT}}
+\index{M_IMPACT_LCODE_SIZE_INT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT~32}\label{ml__impact_8c_dbe5326b968d413a116ff7e6faef37dc}
+
+
+
+
+Definition at line 91 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_LONG@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-LONG}}
+\index{M_IMPACT_LCODE_SIZE_LONG@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-LONG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-LONG~32}\label{ml__impact_8c_08a40a503b7751740c8f38266779702a}
+
+
+
+
+Definition at line 92 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_MAX@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-MAX}}
+\index{M_IMPACT_LCODE_SIZE_MAX@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-MAX}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-MAX~64}\label{ml__impact_8c_84d2fa57893bb0c937bf7c7a105b68bb}
+
+
+
+
+Definition at line 99 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_POINTER@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-POINTER}}
+\index{M_IMPACT_LCODE_SIZE_POINTER@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-POINTER}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-POINTER~32}\label{ml__impact_8c_773afd4ad4800a7ef7feed25d45198fa}
+
+
+
+
+Definition at line 95 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_SHORT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT}}
+\index{M_IMPACT_LCODE_SIZE_SHORT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT~16}\label{ml__impact_8c_7c68a57b7ecc2d917ad077685f57e834}
+
+
+
+
+Definition at line 90 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_STRUCT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-STRUCT}}
+\index{M_IMPACT_LCODE_SIZE_STRUCT@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-STRUCT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-STRUCT~-1}\label{ml__impact_8c_e061aa43f98a25731da8d03cf56840b1}
+
+
+
+
+Definition at line 97 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_UNION@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-UNION}}
+\index{M_IMPACT_LCODE_SIZE_UNION@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-UNION}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-UNION~-1}\label{ml__impact_8c_5d554a1c6dc4733ea2cddc22f4ea47f4}
+
+
+
+
+Definition at line 96 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SIZE_VOID@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-VOID}}
+\index{M_IMPACT_LCODE_SIZE_VOID@{M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-VOID}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-VOID~0}\label{ml__impact_8c_13f29101fdb38b26b58fccbe1401f4f5}
+
+
+
+
+Definition at line 87 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_LCODE_SMALL_STRUCT_MAX@{M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_IMPACT_LCODE_SMALL_STRUCT_MAX@{M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX~64}\label{ml__impact_8c_56901842c88992968d52e4e5c71e2ff4}
+
+
+
+
+Definition at line 164 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_MAX_FNVAR_REG@{M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_IMPACT_MAX_FNVAR_REG@{M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__impact_8c_a86c3b3e32f30e13621ca30b97b38109}
+
+
+
+
+Definition at line 149 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fnvar\_\-layout(), and M\_\-impact\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_R0_F@{M\_\-IMPACT\_\-R0\_\-F}}
+\index{M_IMPACT_R0_F@{M\_\-IMPACT\_\-R0\_\-F}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-R0\_\-F~1}\label{ml__impact_8c_59bfd543741fd0d77c3eb3648ec616c8}
+
+
+
+
+Definition at line 153 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_R0_F2@{M\_\-IMPACT\_\-R0\_\-F2}}
+\index{M_IMPACT_R0_F2@{M\_\-IMPACT\_\-R0\_\-F2}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-R0\_\-F2~2}\label{ml__impact_8c_e194e4bb89be2570967d770cc738ddd5}
+
+
+
+
+Definition at line 154 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_R0_I@{M\_\-IMPACT\_\-R0\_\-I}}
+\index{M_IMPACT_R0_I@{M\_\-IMPACT\_\-R0\_\-I}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-R0\_\-I~0}\label{ml__impact_8c_a10b1568da7823f056efc25f28f36fe6}
+
+
+
+
+Definition at line 152 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_BIT@{M\_\-IMPACT\_\-SIZE\_\-BIT}}
+\index{M_IMPACT_SIZE_BIT@{M\_\-IMPACT\_\-SIZE\_\-BIT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-BIT~1}\label{ml__impact_8c_3ac692b34eb14d3d4372a0b83ad07543}
+
+
+
+
+Definition at line 117 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_BLOCK@{M\_\-IMPACT\_\-SIZE\_\-BLOCK}}
+\index{M_IMPACT_SIZE_BLOCK@{M\_\-IMPACT\_\-SIZE\_\-BLOCK}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-BLOCK~-1}\label{ml__impact_8c_83c077b1cb1e694d344623bf4cb01cdf}
+
+
+
+
+Definition at line 127 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_CHAR@{M\_\-IMPACT\_\-SIZE\_\-CHAR}}
+\index{M_IMPACT_SIZE_CHAR@{M\_\-IMPACT\_\-SIZE\_\-CHAR}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-CHAR~8}\label{ml__impact_8c_d9ec574c041644b0fb69d8f5c2acd762}
+
+
+
+
+Definition at line 118 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_DOUBLE@{M\_\-IMPACT\_\-SIZE\_\-DOUBLE}}
+\index{M_IMPACT_SIZE_DOUBLE@{M\_\-IMPACT\_\-SIZE\_\-DOUBLE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-DOUBLE~64}\label{ml__impact_8c_fd311f4ae867e079333a63f38c6247e2}
+
+
+
+
+Definition at line 123 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_FLOAT@{M\_\-IMPACT\_\-SIZE\_\-FLOAT}}
+\index{M_IMPACT_SIZE_FLOAT@{M\_\-IMPACT\_\-SIZE\_\-FLOAT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-FLOAT~32}\label{ml__impact_8c_4ae8f843dcb0b1ed08fcca42155312f6}
+
+
+
+
+Definition at line 122 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_INT@{M\_\-IMPACT\_\-SIZE\_\-INT}}
+\index{M_IMPACT_SIZE_INT@{M\_\-IMPACT\_\-SIZE\_\-INT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-INT~32}\label{ml__impact_8c_f6eb317ce192d89c1e7cf5e09cb24367}
+
+
+
+
+Definition at line 120 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_LONG@{M\_\-IMPACT\_\-SIZE\_\-LONG}}
+\index{M_IMPACT_SIZE_LONG@{M\_\-IMPACT\_\-SIZE\_\-LONG}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-LONG~32}\label{ml__impact_8c_5141bc40cde54855f09f28f1437759fc}
+
+
+
+
+Definition at line 121 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_MAX@{M\_\-IMPACT\_\-SIZE\_\-MAX}}
+\index{M_IMPACT_SIZE_MAX@{M\_\-IMPACT\_\-SIZE\_\-MAX}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-MAX~64}\label{ml__impact_8c_b44051edea73cbcf9f10337a48b1bc5a}
+
+
+
+
+Definition at line 128 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_POINTER@{M\_\-IMPACT\_\-SIZE\_\-POINTER}}
+\index{M_IMPACT_SIZE_POINTER@{M\_\-IMPACT\_\-SIZE\_\-POINTER}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-POINTER~32}\label{ml__impact_8c_a8aaae01dde3e459dca939bd9ee3eb2b}
+
+
+
+
+Definition at line 124 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_SHORT@{M\_\-IMPACT\_\-SIZE\_\-SHORT}}
+\index{M_IMPACT_SIZE_SHORT@{M\_\-IMPACT\_\-SIZE\_\-SHORT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-SHORT~16}\label{ml__impact_8c_b8f73dd98dfe44b339c6fe6019261b82}
+
+
+
+
+Definition at line 119 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_STRUCT@{M\_\-IMPACT\_\-SIZE\_\-STRUCT}}
+\index{M_IMPACT_SIZE_STRUCT@{M\_\-IMPACT\_\-SIZE\_\-STRUCT}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-STRUCT~-1}\label{ml__impact_8c_1c651bc6fd50f015d87c6a9a8a5d9aef}
+
+
+
+
+Definition at line 126 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_UNION@{M\_\-IMPACT\_\-SIZE\_\-UNION}}
+\index{M_IMPACT_SIZE_UNION@{M\_\-IMPACT\_\-SIZE\_\-UNION}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-UNION~-1}\label{ml__impact_8c_b50fe6ddd5d247e0658815b290739055}
+
+
+
+
+Definition at line 125 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_SIZE_VOID@{M\_\-IMPACT\_\-SIZE\_\-VOID}}
+\index{M_IMPACT_SIZE_VOID@{M\_\-IMPACT\_\-SIZE\_\-VOID}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-SIZE\_\-VOID~0}\label{ml__impact_8c_d5a5ea699150eba483e34d459c997d10}
+
+
+
+
+Definition at line 116 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_IMPACT_ST@{M\_\-IMPACT\_\-ST}}
+\index{M_IMPACT_ST@{M\_\-IMPACT\_\-ST}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-IMPACT\_\-ST~0}\label{ml__impact_8c_cef6d0f0bca4ffa1764170c4d82e85ca}
+
+
+
+
+Definition at line 155 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-structure\_\-pointer().\index{ml_impact.c@{ml\_\-impact.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG $\ast$ M\_\-IMPACT\_\-SIZE\_\-INT)}\label{ml__impact_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 150 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__impact_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                   ((a->src[1]->ctype&0x30)==0x00)))||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_impact.c@{ml\_\-impact.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__impact_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_impact.c@{ml\_\-impact.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__impact_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_impact.c@{ml\_\-impact.c}!M_conflicting_operands_impact@{M\_\-conflicting\_\-operands\_\-impact}}
+\index{M_conflicting_operands_impact@{M\_\-conflicting\_\-operands\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-impact (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__impact_8c_e740f1408e76772a425f3deb201be249}
+
+
+
+
+Definition at line 3889 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-conflicting\_\-operands\_\-impact\_\-hp\_\-lcode(), M\_\-conflicting\_\-operands\_\-impact\_\-lcode(), M\_\-conflicting\_\-operands\_\-impact\_\-sparc\_\-lcode(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, and M\_\-impact\_\-model.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_impact.c@{ml\_\-impact.c}!M_conflicting_operands_impact_hp_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-hp\_\-lcode}}
+\index{M_conflicting_operands_impact_hp_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-hp\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-conflicting\_\-operands\_\-impact\_\-hp\_\-lcode (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_3845c66ea65ad64e071f7f04292d44a9}
+
+
+
+
+Definition at line 3569 of file ml\_\-impact.c.
+
+References HPPA\_\-MAC\_\-TRUE\_\-SP, and M\_\-assert().
+
+Referenced by M\_\-conflicting\_\-operands\_\-impact().\index{ml_impact.c@{ml\_\-impact.c}!M_conflicting_operands_impact_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-lcode}}
+\index{M_conflicting_operands_impact_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-conflicting\_\-operands\_\-impact\_\-lcode (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_b770a62b39c1d11e287504714b2cfc90}
+
+
+
+
+Definition at line 3384 of file ml\_\-impact.c.
+
+References M\_\-assert(), Mspec\_\-num\_\-flt\_\-callee\_\-reg, Mspec\_\-num\_\-flt\_\-caller\_\-reg, Mspec\_\-num\_\-int\_\-callee\_\-reg, Mspec\_\-num\_\-int\_\-caller\_\-reg, and Mspec\_\-num\_\-prd\_\-callee\_\-reg.
+
+Referenced by M\_\-conflicting\_\-operands\_\-impact().\index{ml_impact.c@{ml\_\-impact.c}!M_conflicting_operands_impact_sparc_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-sparc\_\-lcode}}
+\index{M_conflicting_operands_impact_sparc_lcode@{M\_\-conflicting\_\-operands\_\-impact\_\-sparc\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-conflicting\_\-operands\_\-impact\_\-sparc\_\-lcode (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_fd0373a48011e9abbce11298103ad69b}
+
+
+
+
+Definition at line 3746 of file ml\_\-impact.c.
+
+References M\_\-assert().
+
+Referenced by M\_\-conflicting\_\-operands\_\-impact().\index{ml_impact.c@{ml\_\-impact.c}!M_define_macros_impact@{M\_\-define\_\-macros\_\-impact}}
+\index{M_define_macros_impact@{M\_\-define\_\-macros\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-impact (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__impact_8c_0e3e1a774dd4511d032a382c6d873d70}
+
+
+
+
+Definition at line 3928 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-define\_\-macros\_\-hppa(), M\_\-define\_\-macros\_\-sparc(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, and M\_\-impact\_\-model.
+
+Referenced by M\_\-define\_\-macros().\index{ml_impact.c@{ml\_\-impact.c}!M_get_macro_name_impact@{M\_\-get\_\-macro\_\-name\_\-impact}}
+\index{M_get_macro_name_impact@{M\_\-get\_\-macro\_\-name\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-impact (int {\em id})}\label{ml__impact_8c_445e0d3936d21b3a448d064579eab029}
+
+
+
+
+Definition at line 3955 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-get\_\-macro\_\-name\_\-hppa(), M\_\-get\_\-macro\_\-name\_\-sparc(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and NULL.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_array_align@{M\_\-impact\_\-array\_\-align}}
+\index{M_impact_array_align@{M\_\-impact\_\-array\_\-align}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__impact_8c_92393a8481f5f66d461a68d6daaec28f}
+
+
+
+
+Definition at line 858 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-array\_\-align(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-array\_\-align().
+
+Referenced by M\_\-array\_\-align().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_array_layout@{M\_\-impact\_\-array\_\-layout}}
+\index{M_impact_array_layout@{M\_\-impact\_\-array\_\-layout}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__impact_8c_cb0a343bbcbffa45ccf991b9591ac643}
+
+
+
+
+Definition at line 831 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-array\_\-layout(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-array\_\-layout().
+
+Referenced by M\_\-array\_\-layout().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_array_size@{M\_\-impact\_\-array\_\-size}}
+\index{M_impact_array_size@{M\_\-impact\_\-array\_\-size}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__impact_8c_3205c56b2c4afe8a50fa5be7feee38ca}
+
+
+
+
+Definition at line 886 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-array\_\-size(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-sparc\_\-array\_\-size(), and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_bit_char@{M\_\-impact\_\-bit\_\-char}}
+\index{M_impact_bit_char@{M\_\-impact\_\-bit\_\-char}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__impact_8c_3170e2b73eda536371bef6cd734bcb26}
+
+
+
+
+Definition at line 333 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-bit\_\-char(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-BIT, M\_\-sparc\_\-bit\_\-char(), M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_bit_int@{M\_\-impact\_\-bit\_\-int}}
+\index{M_impact_bit_int@{M\_\-impact\_\-bit\_\-int}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__impact_8c_e1fcafda2c971ef1031e21e5e315fa82}
+
+
+
+
+Definition at line 255 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-bit\_\-int(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-BIT, M\_\-sparc\_\-bit\_\-int(), M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_bit_long@{M\_\-impact\_\-bit\_\-long}}
+\index{M_impact_bit_long@{M\_\-impact\_\-bit\_\-long}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__impact_8c_addedb5ab4da29436e92243f51462890}
+
+
+
+
+Definition at line 216 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-bit\_\-long(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-BIT, M\_\-sparc\_\-bit\_\-long(), M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_bit_short@{M\_\-impact\_\-bit\_\-short}}
+\index{M_impact_bit_short@{M\_\-impact\_\-bit\_\-short}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__impact_8c_14aa64b9319ab1623ba269cbc125127b}
+
+
+
+
+Definition at line 294 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-bit\_\-short(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-BIT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-BIT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-BIT, M\_\-sparc\_\-bit\_\-short(), M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_call_type@{M\_\-impact\_\-call\_\-type}}
+\index{M_impact_call_type@{M\_\-impact\_\-call\_\-type}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__impact_8c_3a7eece9501df8e160fe2c727acb66c4}
+
+
+
+
+Definition at line 651 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-call\_\-type(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-double(), M\_\-impact\_\-float(), M\_\-impact\_\-int(), M\_\-impact\_\-model, M\_\-impact\_\-void(), M\_\-sparc\_\-call\_\-type(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_call_type2@{M\_\-impact\_\-call\_\-type2}}
+\index{M_impact_call_type2@{M\_\-impact\_\-call\_\-type2}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__impact_8c_50f1220ba58ed00fae9a86a14f7a71dc}
+
+
+
+
+Definition at line 733 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-call\_\-type(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-char(), M\_\-impact\_\-double(), M\_\-impact\_\-float(), M\_\-impact\_\-int(), M\_\-impact\_\-long(), M\_\-impact\_\-model, M\_\-impact\_\-pointer(), M\_\-impact\_\-short(), M\_\-impact\_\-void(), M\_\-sparc\_\-call\_\-type(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_cb_label_name@{M\_\-impact\_\-cb\_\-label\_\-name}}
+\index{M_impact_cb_label_name@{M\_\-impact\_\-cb\_\-label\_\-name}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__impact_8c_842d345871ee8cabee91082195650597}
+
+
+
+
+Definition at line 2309 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-cb\_\-label\_\-name(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-cb\_\-label\_\-name().
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_dataflow_macro@{M\_\-impact\_\-dataflow\_\-macro}}
+\index{M_impact_dataflow_macro@{M\_\-impact\_\-dataflow\_\-macro}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-dataflow\_\-macro (int {\em id})}\label{ml__impact_8c_d1f56f35be1b1788e8ae85c69cc910d3}
+
+
+
+
+Definition at line 2837 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-dataflow\_\-macro(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-dataflow\_\-macro().
+
+Referenced by M\_\-dataflow\_\-macro().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_double@{M\_\-impact\_\-double}}
+\index{M_impact_double@{M\_\-impact\_\-double}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__impact_8c_b04477a74ff1bd6c006864e0dc4cc493}
+
+
+
+
+Definition at line 407 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-double(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-DOUBLE, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-DOUBLE, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-DOUBLE, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-DOUBLE, M\_\-sparc\_\-double(), M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double(), M\_\-impact\_\-call\_\-type(), M\_\-impact\_\-call\_\-type2(), M\_\-impact\_\-eval\_\-type(), and M\_\-impact\_\-eval\_\-type2().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_eval_type@{M\_\-impact\_\-eval\_\-type}}
+\index{M_impact_eval_type@{M\_\-impact\_\-eval\_\-type}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__impact_8c_a1a04fd589ebbb42a94d90e64e0eb165}
+
+
+
+
+Definition at line 477 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-eval\_\-type(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-double(), M\_\-impact\_\-float(), M\_\-impact\_\-int(), M\_\-impact\_\-model, M\_\-impact\_\-void(), M\_\-sparc\_\-eval\_\-type(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_eval_type2@{M\_\-impact\_\-eval\_\-type2}}
+\index{M_impact_eval_type2@{M\_\-impact\_\-eval\_\-type2}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__impact_8c_a005d77e1253669ccb2887ecee53ec79}
+
+
+
+
+Definition at line 557 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-eval\_\-type(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-char(), M\_\-impact\_\-double(), M\_\-impact\_\-float(), M\_\-impact\_\-int(), M\_\-impact\_\-long(), M\_\-impact\_\-model, M\_\-impact\_\-pointer(), M\_\-impact\_\-short(), M\_\-impact\_\-void(), M\_\-sparc\_\-eval\_\-type(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_float@{M\_\-impact\_\-float}}
+\index{M_impact_float@{M\_\-impact\_\-float}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__impact_8c_d94006697d99ac56f4256f80d5af0a73}
+
+
+
+
+Definition at line 372 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-float(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-FLOAT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-FLOAT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-FLOAT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-FLOAT, M\_\-sparc\_\-float(), M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float(), M\_\-impact\_\-call\_\-type(), M\_\-impact\_\-call\_\-type2(), M\_\-impact\_\-eval\_\-type(), and M\_\-impact\_\-eval\_\-type2().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_fn_label_name@{M\_\-impact\_\-fn\_\-label\_\-name}}
+\index{M_impact_fn_label_name@{M\_\-impact\_\-fn\_\-label\_\-name}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-impact\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__impact_8c_f316ca56f8d396b8a66ededaf48cc47c}
+
+
+
+
+Definition at line 2546 of file ml\_\-impact.c.
+
+References M\_\-IM\_\-LCODE, and M\_\-impact\_\-model.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_fn_name_from_label@{M\_\-impact\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_impact_fn_name_from_label@{M\_\-impact\_\-fn\_\-name\_\-from\_\-label}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-impact\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__impact_8c_5979949472a3ff0de008104e3a0a5659}
+
+
+
+
+Definition at line 2568 of file ml\_\-impact.c.
+
+References M\_\-IM\_\-LCODE, and M\_\-impact\_\-model.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_fnvar_layout@{M\_\-impact\_\-fnvar\_\-layout}}
+\index{M_impact_fnvar_layout@{M\_\-impact\_\-fnvar\_\-layout}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em need\_\-ST}, int {\em purpose})}\label{ml__impact_8c_207bcdded4eed80210d0b158c71deef0}
+
+
+
+
+Definition at line 1777 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-hppa\_\-fnvar\_\-layout(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-MAX, M\_\-IMPACT\_\-ARG\_\-F, M\_\-IMPACT\_\-ARG\_\-F2, M\_\-IMPACT\_\-ARG\_\-I, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX, M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE, M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE, M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT, M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG, M\_\-impact\_\-model, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-sparc\_\-fnvar\_\-layout(), M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_fragile_macro@{M\_\-impact\_\-fragile\_\-macro}}
+\index{M_impact_fragile_macro@{M\_\-impact\_\-fragile\_\-macro}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__impact_8c_f6abd5dc86b31ff6473ad12f25b0f357}
+
+
+
+
+Definition at line 2584 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-fragile\_\-macro(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-fragile\_\-macro().
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_fragile_macro_set@{M\_\-impact\_\-fragile\_\-macro\_\-set}}
+\index{M_impact_fragile_macro_set@{M\_\-impact\_\-fragile\_\-macro\_\-set}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} M\_\-impact\_\-fragile\_\-macro\_\-set ()}\label{ml__impact_8c_fa6740bce46b3248c44a144e1324a1d5}
+
+
+
+
+Definition at line 2635 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-fragile\_\-macro\_\-set(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-sparc\_\-fragile\_\-macro\_\-set(), Set\_\-add(), and Set\_\-impact\_\-fragile\_\-macro.
+
+Referenced by M\_\-fragile\_\-macro\_\-set().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_is_cb_label@{M\_\-impact\_\-is\_\-cb\_\-label}}
+\index{M_impact_is_cb_label@{M\_\-impact\_\-is\_\-cb\_\-label}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__impact_8c_bd0320b0fe8194d89510f78fa77cb3ac}
+
+
+
+
+Definition at line 2336 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-is\_\-cb\_\-label(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-is\_\-cb\_\-label().
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_is_jumptbl_label@{M\_\-impact\_\-is\_\-jumptbl\_\-label}}
+\index{M_impact_is_jumptbl_label@{M\_\-impact\_\-is\_\-jumptbl\_\-label}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__impact_8c_d8c149aca592f99d47dfe571f7ac6900}
+
+
+
+
+Definition at line 2391 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-is\_\-jumptbl\_\-label(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-JUMPTBL\_\-BASE\_\-NAME, and M\_\-sparc\_\-is\_\-jumptbl\_\-label().
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_jumptbl_label_name@{M\_\-impact\_\-jumptbl\_\-label\_\-name}}
+\index{M_impact_jumptbl_label_name@{M\_\-impact\_\-jumptbl\_\-label\_\-name}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__impact_8c_0400fcf639590896e30935ad2c9efc13}
+
+
+
+
+Definition at line 2364 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-jumptbl\_\-label\_\-name(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-JUMPTBL\_\-BASE\_\-NAME, and M\_\-sparc\_\-jumptbl\_\-label\_\-name().
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_layout_fnvar@{M\_\-impact\_\-layout\_\-fnvar}}
+\index{M_impact_layout_fnvar@{M\_\-impact\_\-layout\_\-fnvar}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__impact_8c_1a7e47bb95219eb03a444e58530d142c}
+
+
+
+
+Definition at line 1447 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, List\_\-next(), List\_\-start(), M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-hppa\_\-layout\_\-fnvar(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-MAX, M\_\-IMPACT\_\-ARG\_\-F, M\_\-IMPACT\_\-ARG\_\-F2, M\_\-IMPACT\_\-ARG\_\-I, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX, M\_\-IMPACT\_\-LCODE\_\-FLT\_\-BASE, M\_\-IMPACT\_\-LCODE\_\-INT\_\-BASE, M\_\-IMPACT\_\-LCODE\_\-MAX\_\-FNVAR\_\-REG, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT, M\_\-IMPACT\_\-LCODE\_\-SMALL\_\-STRUCT\_\-MAX, M\_\-IMPACT\_\-MAX\_\-FNVAR\_\-REG, M\_\-impact\_\-model, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-sparc\_\-layout\_\-fnvar(), M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, MIN\_\-PARAM\_\-SIZE, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Type::size, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_lvar_layout@{M\_\-impact\_\-lvar\_\-layout}}
+\index{M_impact_lvar_layout@{M\_\-impact\_\-lvar\_\-layout}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__impact_8c_4bd8555cf87df1b9454f2434769496bc}
+
+
+
+
+Definition at line 2174 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-lvar\_\-layout(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-MAX, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-MAX, M\_\-impact\_\-model, M\_\-sparc\_\-lvar\_\-layout(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_no_short_int@{M\_\-impact\_\-no\_\-short\_\-int}}
+\index{M_impact_no_short_int@{M\_\-impact\_\-no\_\-short\_\-int}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-no\_\-short\_\-int (void)}\label{ml__impact_8c_44be82987adbaf2e3dbabec49ffb4ffe}
+
+
+
+
+Definition at line 2281 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-no\_\-short\_\-int(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-INT, M\_\-IMPACT\_\-SIZE\_\-SHORT, and M\_\-sparc\_\-no\_\-short\_\-int().
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_pointer@{M\_\-impact\_\-pointer}}
+\index{M_impact_pointer@{M\_\-impact\_\-pointer}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__impact_8c_31e92222e58968dbe9347df025cab8a9}
+
+
+
+
+Definition at line 442 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-pointer(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-POINTER, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-POINTER, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-POINTER, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-POINTER, M\_\-sparc\_\-pointer(), M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-call\_\-type2(), M\_\-impact\_\-eval\_\-type2(), and M\_\-pointer().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_return_register@{M\_\-impact\_\-return\_\-register}}
+\index{M_impact_return_register@{M\_\-impact\_\-return\_\-register}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__impact_8c_0556009b30b25e1e2083eb4d60ca0908}
+
+
+
+
+Definition at line 2497 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-return\_\-register(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-LCODE\_\-RET\_\-F, M\_\-IMPACT\_\-LCODE\_\-RET\_\-I32, M\_\-impact\_\-model, M\_\-IMPACT\_\-R0\_\-F, M\_\-IMPACT\_\-R0\_\-F2, M\_\-IMPACT\_\-R0\_\-I, M\_\-sparc\_\-return\_\-register(), M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-return\_\-register().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_struct_align@{M\_\-impact\_\-struct\_\-align}}
+\index{M_impact_struct_align@{M\_\-impact\_\-struct\_\-align}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__impact_8c_d21888c9bce1dd53494b008eed89ca60}
+
+
+
+
+Definition at line 1255 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-struct\_\-align(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR, M\_\-impact\_\-model, and M\_\-sparc\_\-struct\_\-align().
+
+Referenced by M\_\-struct\_\-align().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_struct_layout@{M\_\-impact\_\-struct\_\-layout}}
+\index{M_impact_struct_layout@{M\_\-impact\_\-struct\_\-layout}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__impact_8c_9cfb90318cc28da689ae4bf6a912352a}
+
+
+
+
+Definition at line 1089 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-struct\_\-layout(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-CHAR, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-LONG, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-SHORT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-CHAR, M\_\-IMPACT\_\-SIZE\_\-INT, M\_\-IMPACT\_\-SIZE\_\-LONG, M\_\-sparc\_\-struct\_\-layout(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_struct_size@{M\_\-impact\_\-struct\_\-size}}
+\index{M_impact_struct_size@{M\_\-impact\_\-struct\_\-size}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__impact_8c_bb17feb90e9135abecae6b3ad811df53}
+
+
+
+
+Definition at line 1309 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-struct\_\-size(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-LONG, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-SHORT, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-INT, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-INT, M\_\-sparc\_\-struct\_\-size(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-struct\_\-size().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_structure_pointer@{M\_\-impact\_\-structure\_\-pointer}}
+\index{M_impact_structure_pointer@{M\_\-impact\_\-structure\_\-pointer}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-structure\_\-pointer (int {\em purpose})}\label{ml__impact_8c_1e48123c0c27b0057bc099de33959c55}
+
+
+
+
+Definition at line 2469 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-structure\_\-pointer(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-LCODE\_\-RET\_\-ST, M\_\-impact\_\-model, M\_\-IMPACT\_\-ST, and M\_\-sparc\_\-structure\_\-pointer().
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_subroutine_call@{M\_\-impact\_\-subroutine\_\-call}}
+\index{M_impact_subroutine_call@{M\_\-impact\_\-subroutine\_\-call}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-subroutine\_\-call (int {\em opc})}\label{ml__impact_8c_2fec04e2059724cadae6a4b3887cf5fc}
+
+
+
+
+Definition at line 2874 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-subroutine\_\-call(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-subroutine\_\-call().
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_union_align@{M\_\-impact\_\-union\_\-align}}
+\index{M_impact_union_align@{M\_\-impact\_\-union\_\-align}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__impact_8c_2e5cd8e5ebff2487d4335bf77585cbf3}
+
+
+
+
+Definition at line 963 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-union\_\-align(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR, M\_\-impact\_\-model, and M\_\-sparc\_\-union\_\-align().
+
+Referenced by M\_\-union\_\-align().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_union_layout@{M\_\-impact\_\-union\_\-layout}}
+\index{M_impact_union_layout@{M\_\-impact\_\-union\_\-layout}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__impact_8c_44a1330a8c7bc6a524a8499491e659fa}
+
+
+
+
+Definition at line 926 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-hppa\_\-union\_\-layout(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, and M\_\-sparc\_\-union\_\-layout().
+
+Referenced by M\_\-union\_\-layout().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_union_size@{M\_\-impact\_\-union\_\-size}}
+\index{M_impact_union_size@{M\_\-impact\_\-union\_\-size}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-impact\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__impact_8c_60162eb6fcc852b1e553033653d6e5a4}
+
+
+
+
+Definition at line 1017 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-union\_\-size(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-INT, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-CHAR, M\_\-impact\_\-model, M\_\-sparc\_\-union\_\-size(), and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_impact.c@{ml\_\-impact.c}!M_impact_void@{M\_\-impact\_\-void}}
+\index{M_impact_void@{M\_\-impact\_\-void}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-impact\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__impact_8c_c625ece0b7ac684355da7474aa4bfb5f}
+
+
+
+
+Definition at line 181 of file ml\_\-impact.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-hppa\_\-void(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-IMPACT\_\-ALIGN\_\-VOID, M\_\-IMPACT\_\-LCODE\_\-ALIGN\_\-VOID, M\_\-IMPACT\_\-LCODE\_\-SIZE\_\-VOID, M\_\-impact\_\-model, M\_\-IMPACT\_\-SIZE\_\-VOID, M\_\-sparc\_\-void(), M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-impact\_\-call\_\-type(), M\_\-impact\_\-call\_\-type2(), M\_\-impact\_\-eval\_\-type(), M\_\-impact\_\-eval\_\-type2(), and M\_\-void().\index{ml_impact.c@{ml\_\-impact.c}!M_is_stack_operand_impact@{M\_\-is\_\-stack\_\-operand\_\-impact}}
+\index{M_is_stack_operand_impact@{M\_\-is\_\-stack\_\-operand\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-impact (L\_\-Operand $\ast$ {\em operand})}\label{ml__impact_8c_033087e5c0e736026c15df60df03d092}
+
+
+
+
+Definition at line 3126 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-is\_\-stack\_\-operand\_\-hppa(), and M\_\-is\_\-stack\_\-operand\_\-sparc().
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_impact.c@{ml\_\-impact.c}!M_is_unsafe_macro_impact@{M\_\-is\_\-unsafe\_\-macro\_\-impact}}
+\index{M_is_unsafe_macro_impact@{M\_\-is\_\-unsafe\_\-macro\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-impact (L\_\-Operand $\ast$ {\em operand})}\label{ml__impact_8c_22fa0d2a24d08297ee923a6cffc326f3}
+
+
+
+
+Definition at line 3171 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-is\_\-unsafe\_\-macro\_\-hppa(), and M\_\-is\_\-unsafe\_\-macro\_\-sparc().
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_impact.c@{ml\_\-impact.c}!M_num_oper_required_for_impact@{M\_\-num\_\-oper\_\-required\_\-for\_\-impact}}
+\index{M_num_oper_required_for_impact@{M\_\-num\_\-oper\_\-required\_\-for\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-impact (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__impact_8c_ee715afcd59360f0d1467b13415120cd}
+
+
+
+
+Definition at line 2947 of file ml\_\-impact.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, M\_\-assert(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-sparc(), non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_impact.c@{ml\_\-impact.c}!M_num_registers_impact@{M\_\-num\_\-registers\_\-impact}}
+\index{M_num_registers_impact@{M\_\-num\_\-registers\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-impact (int {\em ctype})}\label{ml__impact_8c_e7dac71a49e2df3df50be0a15d306bca}
+
+
+
+
+Definition at line 3984 of file ml\_\-impact.c.
+
+Referenced by M\_\-num\_\-registers().\index{ml_impact.c@{ml\_\-impact.c}!M_oper_supported_in_arch_impact@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact}}
+\index{M_oper_supported_in_arch_impact@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-impact (int {\em opc})}\label{ml__impact_8c_dc11d8be06a626bed81c4561060ec8fa}
+
+
+
+
+Definition at line 2913 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-oper\_\-supported\_\-in\_\-arch\_\-hppa(), and M\_\-oper\_\-supported\_\-in\_\-arch\_\-sparc().
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_impact.c@{ml\_\-impact.c}!M_operand_type_impact@{M\_\-operand\_\-type\_\-impact}}
+\index{M_operand_type_impact@{M\_\-operand\_\-type\_\-impact}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-impact (L\_\-Operand $\ast$ {\em operand})}\label{ml__impact_8c_992eb8e949512feb4f789e105b6bc110}
+
+
+
+
+Definition at line 3309 of file ml\_\-impact.c.
+
+References M\_\-assert(), M\_\-IM\_\-HP\_\-LCODE, M\_\-IM\_\-HP\_\-MCODE, M\_\-IM\_\-LCODE, M\_\-IM\_\-SPARC\_\-LCODE, M\_\-IM\_\-SPARC\_\-MCODE, M\_\-IM\_\-VER\_\-1, M\_\-impact\_\-model, M\_\-operand\_\-type\_\-impact\_\-hp\_\-lcode(), M\_\-operand\_\-type\_\-impact\_\-lcode(), and M\_\-operand\_\-type\_\-impact\_\-sparc\_\-lcode().
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_impact.c@{ml\_\-impact.c}!M_operand_type_impact_hp_lcode@{M\_\-operand\_\-type\_\-impact\_\-hp\_\-lcode}}
+\index{M_operand_type_impact_hp_lcode@{M\_\-operand\_\-type\_\-impact\_\-hp\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-operand\_\-type\_\-impact\_\-hp\_\-lcode (L\_\-Operand $\ast$ {\em operand})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_9a4d0d218e376a446e1bdf4723c7b56c}
+
+
+
+
+Definition at line 3231 of file ml\_\-impact.c.
+
+References FIELD\_\-11, FIELD\_\-14, FIELD\_\-5, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit11, MDES\_\-OPERAND\_\-Lit14, MDES\_\-OPERAND\_\-Lit21, MDES\_\-OPERAND\_\-Lit5, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-p, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-operand\_\-type\_\-impact().\index{ml_impact.c@{ml\_\-impact.c}!M_operand_type_impact_lcode@{M\_\-operand\_\-type\_\-impact\_\-lcode}}
+\index{M_operand_type_impact_lcode@{M\_\-operand\_\-type\_\-impact\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-operand\_\-type\_\-impact\_\-lcode (L\_\-Operand $\ast$ {\em operand})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_ed74c402461c02cfb1e1572f1bbdc674}
+
+
+
+
+Definition at line 3199 of file ml\_\-impact.c.
+
+References M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-p, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-operand\_\-type\_\-impact().\index{ml_impact.c@{ml\_\-impact.c}!M_operand_type_impact_sparc_lcode@{M\_\-operand\_\-type\_\-impact\_\-sparc\_\-lcode}}
+\index{M_operand_type_impact_sparc_lcode@{M\_\-operand\_\-type\_\-impact\_\-sparc\_\-lcode}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-operand\_\-type\_\-impact\_\-sparc\_\-lcode (L\_\-Operand $\ast$ {\em operand})\hspace{0.3cm}{\tt  [static]}}\label{ml__impact_8c_8adfe0f0b7bc2f7fb372f518b9c3493f}
+
+
+
+
+Definition at line 3270 of file ml\_\-impact.c.
+
+References L\_\-SPARC\_\-MAC\_\-FCC, L\_\-SPARC\_\-MAC\_\-FCC15, L\_\-SPARC\_\-MAC\_\-ICC, L\_\-SPARC\_\-MAC\_\-ICC15, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, MDES\_\-OPERAND\_\-sparc\_\-fcc, MDES\_\-OPERAND\_\-sparc\_\-icc, and NULL.
+
+Referenced by M\_\-operand\_\-type\_\-impact().
+
+\subsection{Variable Documentation}
+\index{ml_impact.c@{ml\_\-impact.c}!M_impact_model@{M\_\-impact\_\-model}}
+\index{M_impact_model@{M\_\-impact\_\-model}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-impact\_\-model}}\label{ml__impact_8c_6bc09fd2e80115fe0235158cc800ead0}
+
+
+
+
+Definition at line 84 of file mi\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!M_Limpact_dbl_offset@{M\_\-Limpact\_\-dbl\_\-offset}}
+\index{M_Limpact_dbl_offset@{M\_\-Limpact\_\-dbl\_\-offset}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-Limpact\_\-dbl\_\-offset} = 0}\label{ml__impact_8c_502b354dc87b610d3d50f1660ab9fec7}
+
+
+
+
+Definition at line 3341 of file ml\_\-impact.c.\index{ml_impact.c@{ml\_\-impact.c}!Set_impact_fragile_macro@{Set\_\-impact\_\-fragile\_\-macro}}
+\index{Set_impact_fragile_macro@{Set\_\-impact\_\-fragile\_\-macro}!ml_impact.c@{ml\_\-impact.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{Set\_\-impact\_\-fragile\_\-macro} = \bf{NULL}}\label{ml__impact_8c_cf9fefe44d56f6544151601c66634de2}
+
+
+
+
+Definition at line 147 of file ml\_\-impact.c.
+
+Referenced by M\_\-impact\_\-fragile\_\-macro\_\-set().

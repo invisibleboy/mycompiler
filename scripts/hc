@@ -1,0 +1,171 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+##############################################################################
+ #
+ # Generates a .lmdes2 from an .hmdes2 file (primarily for ELCOR)
+ #
+ # type script name without arguments to see usage.
+ #
+ # Written by John C. Gyllenhaal, Wen-mei Hwu 2/10/95
+ #
+##############################################################################
+
+# set up environment with default values:
+PREPROCESSOR_OPTIONS="";
+COMPILER_OPTIONS="";
+COMPILER_EXT="lmdes2";
+LMDES_INPUT=0;
+TYPE="Hmdes";
+
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    HMDES_NAME="$1"
+
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-hc)
+	    echo "> Generating compiled hmdes instead of lmdes";
+	    COMPILER_EXT="hmdes2hc";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -hmdes";;
+
+	-en)
+	    echo "> Generating entry names instead of lmdes";
+	    COMPILER_EXT="hmdes2en";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -names";;
+
+	-width)
+            echo "> Output page width set to '$1'";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -width $1";
+	    shift;;
+	
+	-read_lmdes)
+	    echo "> Reading input from lmdes file";
+	    LMDES_INPUT=1;
+	    TYPE="Lmdes";
+	    COMPILER_EXT="lmdes22";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -read_lmdes";;
+
+	-bypass_alloc)
+	    echo "> Bypassing alloc routines in preprocessor and compiler.";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -bypass_alloc";
+	    PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} -bypass_alloc";;
+
+	-print_usage)
+	    echo "> Print alloc routine usage in preprocessor and compiler.";
+	    COMPILER_OPTIONS="${COMPILER_OPTIONS} -print_usage";
+	    PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} -print_usage";;
+	
+	
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: hc hmdes2_file [options]';
+    echo '> ';
+    echo '> Preprocesses the hmdes file (generating hmdes2_file.hmdes2pp) and';
+    echo '> creates a compiler independent lmdes file (hmdes2_file.lmdes2).';
+    echo '>';
+    echo '> NOTE: This is a generic script which does not do IMPACT-specific';
+    echo '>       customization!  (See "hmdesc" for that functionality.)';
+    echo '>       ELCOR users and MD power users may use this script directly.';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -hc             outputs compiled hmdes (.hmdes2hc) instead of lmdes';
+    echo '>   -en             outputs entry names (.hmdes2en) instead of lmdes'; 
+    echo '>   -read_lmdes     reads input as lmdes files'
+    echo '>   -width int      sets output page width for compiled hmdes';
+    echo '> ';
+    echo '> Debug options:';
+    echo '>   -bypass_alloc   use malloc instead of alloc routines.';
+    echo '>   -print_usage    prints alloc routine stats.';
+    echo '> ';
+    exit 0200;
+fi
+
+FILEOUT=`echo $HMDES_NAME | awk -F. '{print $1}'`
+
+if [ $LMDES_INPUT -eq 0 ]; then
+  echo "> Preprocessing Hmdes (${HMDES_NAME} -> ${FILEOUT}.hmdes2pp)";
+  md_preprocessor ${HMDES_NAME} -o ${FILEOUT}.hmdes2pp $PREPROCESSOR_OPTIONS
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+  FILEIN="${FILEOUT}.hmdes2pp"
+else
+  FILEIN="${HMDES_NAME}";
+fi
+
+
+echo "> Compiling ${TYPE} (${FILEIN} -> ${FILEOUT}.${COMPILER_EXT})";
+md_compiler ${FILEIN} -o ${FILEOUT}.${COMPILER_EXT} \
+	        $COMPILER_OPTIONS
+
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+echo "> Done"
+

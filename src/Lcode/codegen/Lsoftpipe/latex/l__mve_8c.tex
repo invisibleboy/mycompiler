@@ -1,0 +1,499 @@
+\section{l\_\-mve.c File Reference}
+\label{l__mve_8c}\index{l_mve.c@{l\_\-mve.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-mve.h\char`\"{}}\par
+{\tt \#include $<$assert.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{LPIPE\_\-LR\_\-TYPE}~(\bf{SM\_\-REGISTER\_\-TYPE}$|$\bf{SM\_\-MACRO\_\-TYPE})
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Lpipe\_\-LRInfo} $\ast$ \bf{Lpipe\_\-create\_\-live\_\-range\_\-info} (\bf{SM\_\-Reg\_\-Info} $\ast$rinfo)
+\item 
+static List \bf{Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info} (List lr\_\-list)
+\item 
+static \bf{Lpipe\_\-LRInfo} $\ast$ \bf{Lpipe\_\-find\_\-live\_\-range} (List lr\_\-list, \bf{SM\_\-Reg\_\-Info} $\ast$rinfo)
+\item 
+static void \bf{Lpipe\_\-update\_\-lr\_\-last\_\-acc} (\bf{Lpipe\_\-LRInfo} $\ast$lr\_\-info, int issue\_\-time, int issue\_\-slot, int ii)
+\item 
+static \bf{Lpipe\_\-MVEInfo} $\ast$ \bf{Lpipe\_\-new\_\-opd\_\-mve\_\-info} (\bf{Lpipe\_\-LRInfo} $\ast$lr)
+\item 
+static void \bf{Lpipe\_\-print\_\-live\_\-ranges} (List lr\_\-list, int ii)
+\item 
+static int \bf{Lpipe\_\-modulo\_\-decrement} (int count, int unrolled)
+\item 
+static void \bf{Lpipe\_\-print\_\-mve\_\-info} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-delete\_\-all\_\-mve\_\-info} (L\_\-Oper $\ast$oper)
+\item 
+void \bf{Lpipe\_\-free\_\-mve\_\-info} ()
+\item 
+static int \bf{Lpipe\_\-get\_\-best\_\-lr} (List $\ast$op\_\-array, \bf{Lpipe\_\-LRInfo} $\ast$prev\_\-lr\_\-info, \bf{Lpipe\_\-LRInfo} $\ast$$\ast$lr\_\-info, int ii)
+\item 
+static int \bf{Lpipe\_\-associate\_\-rot\_\-regs} (List lr\_\-list, \bf{SM\_\-Cb} $\ast$sm\_\-cb, int count\_\-only)
+\item 
+static int \bf{Lpipe\_\-associate\_\-mve\_\-regs} (List lr\_\-list, \bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static List \bf{Lpipe\_\-construct\_\-lr} (\bf{SM\_\-Cb} $\ast$kernel\_\-cb)
+\item 
+int \bf{Lpipe\_\-analyze\_\-lr} (\bf{SM\_\-Cb} $\ast$kernel\_\-cb, int count\_\-only)
+\item 
+int \bf{Lpipe\_\-find\_\-name} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{Lpipe\_\-LRInfo} $\ast$lr\_\-info, \bf{Lpipe\_\-MVEInfo} $\ast$mve\_\-info)
+\item 
+static int \bf{Lpipe\_\-mov\_\-opc} (L\_\-Operand $\ast$opd)
+\item 
+int \bf{Lpipe\_\-rreg\_\-transform} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb, \bf{Lpipe\_\-LRInfo} $\ast$lr\_\-info, int reg)
+\item 
+void \bf{Lpipe\_\-fix\_\-live\_\-in\_\-rot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb, \bf{Lpipe\_\-LRInfo} $\ast$lr\_\-info, int name\_\-index)
+\item 
+void \bf{Lpipe\_\-fix\_\-live\_\-out\_\-rot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{SM\_\-Oper} $\ast$sm\_\-loop\_\-back\_\-br)
+\item 
+void \bf{Lpipe\_\-mve\_\-transform} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, int unroll)
+\item 
+void \bf{Lpipe\_\-fix\_\-live\_\-in} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-merge\_\-compensation\_\-code} (L\_\-Cb $\ast$epilogue\_\-cb)
+\item 
+static void \bf{Lpipe\_\-fix\_\-live\_\-out\_\-epi} (L\_\-Cb $\ast$kernel\_\-cb, L\_\-Oper $\ast$exit\_\-branch)
+\item 
+static Set \bf{Lpipe\_\-fix\_\-set\_\-out\_\-epi} (Set to\_\-fix, L\_\-Cb $\ast$kernel\_\-cb, L\_\-Oper $\ast$exit\_\-branch)
+\item 
+static void \bf{Lpipe\_\-fix\_\-live\_\-out\_\-stage} (L\_\-Cb $\ast$kernel\_\-cb, L\_\-Oper $\ast$exit\_\-branch, L\_\-Oper $\ast$first\_\-op, L\_\-Oper $\ast$last\_\-op, int stage)
+\item 
+static Set \bf{Lpipe\_\-fix\_\-set\_\-out\_\-stage} (Set to\_\-fix, L\_\-Cb $\ast$kernel\_\-cb, L\_\-Oper $\ast$exit\_\-branch, L\_\-Oper $\ast$first\_\-op, L\_\-Oper $\ast$last\_\-op, int stage)
+\item 
+void \bf{Lpipe\_\-fix\_\-live\_\-out} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, int unroll)
+\item 
+int \bf{Lpipe\_\-get\_\-pro\_\-reg} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{Lpipe\_\-LRInfo} $\ast$lr\_\-info, \bf{Lpipe\_\-MVEInfo} $\ast$mve\_\-info, int stg\_\-ofst)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Lpipe\_\-src\_\-mve\_\-pool} = NULL
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Lpipe\_\-pred\_\-mve\_\-pool} = NULL
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Lpipe\_\-dest\_\-mve\_\-pool} = NULL
+\item 
+static L\_\-Alloc\_\-Pool $\ast$ \bf{Lpipe\_\-LRInfo\_\-pool} = NULL
+\item 
+L\_\-Alloc\_\-Pool $\ast$ \bf{Lpipe\_\-MVEInfo\_\-pool} = NULL
+\item 
+static List \bf{Lpipe\_\-mve\_\-lr\_\-list} = NULL
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_mve.c@{l\_\-mve.c}!LPIPE_LR_TYPE@{LPIPE\_\-LR\_\-TYPE}}
+\index{LPIPE_LR_TYPE@{LPIPE\_\-LR\_\-TYPE}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LPIPE\_\-LR\_\-TYPE~(\bf{SM\_\-REGISTER\_\-TYPE}$|$\bf{SM\_\-MACRO\_\-TYPE})}\label{l__mve_8c_266ef6e31198aaf35fff458b7b01346c}
+
+
+
+
+Definition at line 97 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-construct\_\-lr().
+
+\subsection{Function Documentation}
+\index{l_mve.c@{l\_\-mve.c}!Lpipe_analyze_lr@{Lpipe\_\-analyze\_\-lr}}
+\index{Lpipe_analyze_lr@{Lpipe\_\-analyze\_\-lr}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-analyze\_\-lr (\bf{SM\_\-Cb} $\ast$ {\em kernel\_\-cb}, int {\em count\_\-only})}\label{l__mve_8c_66180998b7a313e243cc0cef7058723e}
+
+
+
+
+Definition at line 1436 of file l\_\-mve.c.
+
+References SM\_\-Cb::II, SM\_\-Cb::lcode\_\-cb, Lpipe\_\-associate\_\-mve\_\-regs(), Lpipe\_\-associate\_\-rot\_\-regs(), Lpipe\_\-construct\_\-lr(), Lpipe\_\-debug, Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info(), Lpipe\_\-delete\_\-all\_\-mve\_\-info(), Lpipe\_\-ignore\_\-kernel\_\-inst, Lpipe\_\-mve\_\-lr\_\-list, Lpipe\_\-print\_\-live\_\-ranges(), Lpipe\_\-print\_\-mve\_\-info(), Lpipe\_\-schema, MULTI\_\-EPI, and REM\_\-LOOP.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_associate_mve_regs@{Lpipe\_\-associate\_\-mve\_\-regs}}
+\index{Lpipe_associate_mve_regs@{Lpipe\_\-associate\_\-mve\_\-regs}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-associate\_\-mve\_\-regs (List {\em lr\_\-list}, \bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_cd8521ecc279eb04026b93e86c2d4d90}
+
+
+
+
+Definition at line 858 of file l\_\-mve.c.
+
+References SM\_\-Reg\_\-Info::id, SM\_\-Cb::II, SM\_\-Cb::lcode\_\-fn, \_\-Lpipe\_\-LRInfo::lifetime, Lpipe\_\-print\_\-mve\_\-summary, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, SM\_\-Reg\_\-Info::operand, \_\-Lpipe\_\-LRInfo::rinfo, SM\_\-REGISTER\_\-TYPE, SM\_\-Reg\_\-Info::type, and \_\-Lpipe\_\-LRInfo::use\_\-after\_\-def\_\-slot.
+
+Referenced by Lpipe\_\-analyze\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_associate_rot_regs@{Lpipe\_\-associate\_\-rot\_\-regs}}
+\index{Lpipe_associate_rot_regs@{Lpipe\_\-associate\_\-rot\_\-regs}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-associate\_\-rot\_\-regs (List {\em lr\_\-list}, \bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em count\_\-only})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_cd205735f2bb6b94e9d3fb0b544e5bc0}
+
+
+
+
+Definition at line 527 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::first\_\-def\_\-slot, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, SM\_\-Reg\_\-Info::id, SM\_\-Cb::II, KERNEL\_\-ONLY, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-time, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, \_\-Lpipe\_\-LRInfo::lifetime, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-LRInfo::live\_\-in\_\-def\_\-time, Lpipe\_\-get\_\-best\_\-lr(), Lpipe\_\-print\_\-mve\_\-summary, Lpipe\_\-schema, M\_\-arch, M\_\-native\_\-int\_\-register\_\-ctype(), M\_\-TAHOE, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, \_\-Lpipe\_\-LRInfo::num\_\-names\_\-w\_\-pro, SM\_\-Reg\_\-Info::operand, R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc(), R\_\-get\_\-rot\_\-regs(), \_\-Lpipe\_\-LRInfo::rinfo, SM\_\-MACRO\_\-TYPE, SM\_\-Cb::stages, SM\_\-Reg\_\-Info::type, and \_\-Lpipe\_\-LRInfo::use\_\-after\_\-def\_\-slot.
+
+Referenced by Lpipe\_\-analyze\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_construct_lr@{Lpipe\_\-construct\_\-lr}}
+\index{Lpipe_construct_lr@{Lpipe\_\-construct\_\-lr}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static List Lpipe\_\-construct\_\-lr (\bf{SM\_\-Cb} $\ast$ {\em kernel\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_e3f004767b57ec9efce4fbd01338344d}
+
+
+
+
+Definition at line 960 of file l\_\-mve.c.
+
+References SM\_\-Oper::dest, \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, SM\_\-Reg\_\-Info::first\_\-def, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Reg\_\-Action::first\_\-dep\_\-out, SM\_\-Cb::first\_\-rinfo, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Reg\_\-Action::flags, SM\_\-Dep::flags, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Cb::II, \_\-Softpipe\_\-Op\_\-Info::isrc\_\-mve\_\-info, \_\-Softpipe\_\-Op\_\-Info::issue\_\-slot, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, KERNEL\_\-ONLY, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-MVEInfo::lifetime, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-LRInfo::live\_\-in\_\-def\_\-time, \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-MVEInfo::live\_\-range, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-create\_\-live\_\-range\_\-info(), Lpipe\_\-debug, Lpipe\_\-find\_\-live\_\-range(), LPIPE\_\-LR\_\-TYPE, Lpipe\_\-new\_\-opd\_\-mve\_\-info(), Lpipe\_\-schema, Lpipe\_\-update\_\-lr\_\-last\_\-acc(), MDES\_\-DEST, MDES\_\-PRED, MDES\_\-SRC, MDES\_\-SYNC\_\-IN, MULTI\_\-EPI\_\-ROT\_\-REG, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Dep::next\_\-dep\_\-out, SM\_\-Reg\_\-Info::next\_\-rinfo, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Dep::omega, SM\_\-Reg\_\-Info::operand, SM\_\-Reg\_\-Action::operand\_\-number, SM\_\-Reg\_\-Action::operand\_\-type, \_\-Softpipe\_\-Op\_\-Info::pred\_\-mve\_\-info, SM\_\-Reg\_\-Action::rinfo, SM\_\-FLOW\_\-DEP, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-OUTPUT\_\-DEP, SM\_\-PRED\_\-COND\_\-USE, SM\_\-PRED\_\-UNCOND\_\-USE, SM\_\-REG\_\-DEP, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info, \_\-Lpipe\_\-MVEInfo::stage\_\-lifetime\_\-incr, SM\_\-Dep::to\_\-action, and SM\_\-Reg\_\-Info::type.
+
+Referenced by Lpipe\_\-analyze\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_create_live_range_info@{Lpipe\_\-create\_\-live\_\-range\_\-info}}
+\index{Lpipe_create_live_range_info@{Lpipe\_\-create\_\-live\_\-range\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Lpipe\_\-LRInfo}$\ast$ Lpipe\_\-create\_\-live\_\-range\_\-info (\bf{SM\_\-Reg\_\-Info} $\ast$ {\em rinfo})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_88cf47566d993f9dbdcd9a5ad50c70f3}
+
+
+
+
+Definition at line 104 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::def\_\-sm\_\-oper, SM\_\-Reg\_\-Info::ext, SM\_\-Reg\_\-Info::first\_\-def, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-slot, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-slot, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-slot, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-time, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-LRInfo::lifetime, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-LRInfo::live\_\-in\_\-def\_\-time, \_\-Lpipe\_\-LRInfo::live\_\-out, Lpipe\_\-LRInfo\_\-pool, \_\-Lpipe\_\-LRInfo::names, SM\_\-Reg\_\-Action::next\_\-def, \_\-Lpipe\_\-LRInfo::num\_\-names, \_\-Lpipe\_\-LRInfo::num\_\-names\_\-w\_\-pro, \_\-Lpipe\_\-LRInfo::prologue\_\-mov\_\-inserted, \_\-Lpipe\_\-LRInfo::rinfo, SM\_\-Oper::sched\_\-cycle, SM\_\-Cb::sched\_\-cycle\_\-offset, SM\_\-Oper::sched\_\-slot, SM\_\-Oper::sm\_\-cb, SM\_\-Reg\_\-Action::sm\_\-op, SOFTPIPE\_\-OP\_\-INFO, and \_\-Lpipe\_\-LRInfo::use\_\-after\_\-def\_\-slot.
+
+Referenced by Lpipe\_\-construct\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_delete_all_live_range_info@{Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info}}
+\index{Lpipe_delete_all_live_range_info@{Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static List Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info (List {\em lr\_\-list})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_9db1381b8d089a5564206ab6ba6800f1}
+
+
+
+
+Definition at line 185 of file l\_\-mve.c.
+
+References Lpipe\_\-LRInfo\_\-pool, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, and \_\-Lpipe\_\-LRInfo::num\_\-names\_\-w\_\-pro.
+
+Referenced by Lpipe\_\-analyze\_\-lr(), and Lpipe\_\-free\_\-mve\_\-info().\index{l_mve.c@{l\_\-mve.c}!Lpipe_delete_all_mve_info@{Lpipe\_\-delete\_\-all\_\-mve\_\-info}}
+\index{Lpipe_delete_all_mve_info@{Lpipe\_\-delete\_\-all\_\-mve\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-delete\_\-all\_\-mve\_\-info (L\_\-Oper $\ast$ {\em oper})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_746c620b9309f05bc7a78d8e1ef1f91b}
+
+
+
+
+Definition at line 379 of file l\_\-mve.c.
+
+References Lpipe\_\-MVEInfo\_\-pool, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info.
+
+Referenced by Lpipe\_\-analyze\_\-lr(), and Lpipe\_\-free\_\-mve\_\-info().\index{l_mve.c@{l\_\-mve.c}!Lpipe_find_live_range@{Lpipe\_\-find\_\-live\_\-range}}
+\index{Lpipe_find_live_range@{Lpipe\_\-find\_\-live\_\-range}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Lpipe\_\-LRInfo}$\ast$ Lpipe\_\-find\_\-live\_\-range (List {\em lr\_\-list}, \bf{SM\_\-Reg\_\-Info} $\ast$ {\em rinfo})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_b4bea3da2926f660a7ec49c20a4e6eab}
+
+
+
+
+Definition at line 216 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::rinfo.
+
+Referenced by Lpipe\_\-construct\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_find_name@{Lpipe\_\-find\_\-name}}
+\index{Lpipe_find_name@{Lpipe\_\-find\_\-name}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-find\_\-name (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{Lpipe\_\-LRInfo} $\ast$ {\em lr\_\-info}, \bf{Lpipe\_\-MVEInfo} $\ast$ {\em mve\_\-info})}\label{l__mve_8c_be2ad277734a8abfd86d44294fa8983d}
+
+
+
+
+Definition at line 1495 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, SM\_\-Cb::II, \_\-Lpipe\_\-MVEInfo::lifetime, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-LRInfo::live\_\-in\_\-def\_\-time, and \_\-Lpipe\_\-LRInfo::num\_\-names.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out\_\-rot(), Lpipe\_\-get\_\-pro\_\-reg(), and Lpipe\_\-rreg\_\-transform().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_in@{Lpipe\_\-fix\_\-live\_\-in}}
+\index{Lpipe_fix_live_in@{Lpipe\_\-fix\_\-live\_\-in}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-fix\_\-live\_\-in (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__mve_8c_b9b475f6cf9c77cd9d0d58f080c0bef5}
+
+
+
+
+Definition at line 2214 of file l\_\-mve.c.
+
+References SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, prologue\_\-cb, \_\-Lpipe\_\-LRInfo::prologue\_\-mov\_\-inserted, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info, and SM\_\-Cb::stages.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_in_rot@{Lpipe\_\-fix\_\-live\_\-in\_\-rot}}
+\index{Lpipe_fix_live_in_rot@{Lpipe\_\-fix\_\-live\_\-in\_\-rot}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-fix\_\-live\_\-in\_\-rot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__mve_8c_bb2be6c164712e95e8e6126203115def}
+
+
+
+
+Definition at line 1726 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, SM\_\-Cb::first\_\-serial\_\-op, KERNEL\_\-ONLY, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup(), Lpipe\_\-get\_\-pro\_\-reg(), Lpipe\_\-schema, MULTI\_\-EPI\_\-ROT\_\-REG, SM\_\-Oper::next\_\-serial\_\-op, \_\-Lpipe\_\-LRInfo::num\_\-names, prologue\_\-cb, \_\-Lpipe\_\-LRInfo::prologue\_\-mov\_\-inserted, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::stage, and SM\_\-Cb::stages.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_out@{Lpipe\_\-fix\_\-live\_\-out}}
+\index{Lpipe_fix_live_out@{Lpipe\_\-fix\_\-live\_\-out}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-fix\_\-live\_\-out (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em unroll})}\label{l__mve_8c_be5df0a0e4bf74c50235e9a87e157c37}
+
+
+
+
+Definition at line 2765 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, SM\_\-Cb::lcode\_\-cb, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-fix\_\-live\_\-out\_\-epi(), Lpipe\_\-fix\_\-live\_\-out\_\-stage(), Lpipe\_\-fix\_\-set\_\-out\_\-epi(), Lpipe\_\-fix\_\-set\_\-out\_\-stage(), Lpipe\_\-ignore\_\-kernel\_\-inst, Lpipe\_\-merge\_\-compensation\_\-code(), Lpipe\_\-modulo\_\-decrement(), Lpipe\_\-schema, REM\_\-LOOP, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::stage.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_out_epi@{Lpipe\_\-fix\_\-live\_\-out\_\-epi}}
+\index{Lpipe_fix_live_out_epi@{Lpipe\_\-fix\_\-live\_\-out\_\-epi}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-fix\_\-live\_\-out\_\-epi (L\_\-Cb $\ast$ {\em kernel\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_1ee5f471df4bc048477d40a2ab83bb47}
+
+
+
+
+Definition at line 2367 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, \_\-Softpipe\_\-Op\_\-Info::exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::stage.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_out_rot@{Lpipe\_\-fix\_\-live\_\-out\_\-rot}}
+\index{Lpipe_fix_live_out_rot@{Lpipe\_\-fix\_\-live\_\-out\_\-rot}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-fix\_\-live\_\-out\_\-rot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{SM\_\-Oper} $\ast$ {\em sm\_\-loop\_\-back\_\-br})}\label{l__mve_8c_980d54700d750838e30a785314e34805}
+
+
+
+
+Definition at line 1884 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::exit\_\-cb, SM\_\-Cb::first\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::isrc\_\-mve\_\-info, SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-find\_\-name(), Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup(), SM\_\-Oper::next\_\-serial\_\-op, \_\-Lpipe\_\-LRInfo::num\_\-names, SM\_\-Reg\_\-Info::operand, \_\-Lpipe\_\-LRInfo::rinfo, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_live_out_stage@{Lpipe\_\-fix\_\-live\_\-out\_\-stage}}
+\index{Lpipe_fix_live_out_stage@{Lpipe\_\-fix\_\-live\_\-out\_\-stage}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-fix\_\-live\_\-out\_\-stage (L\_\-Cb $\ast$ {\em kernel\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Oper $\ast$ {\em first\_\-op}, L\_\-Oper $\ast$ {\em last\_\-op}, int {\em stage})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_e88028a00126e6131b9cc667b88f86bb}
+
+
+
+
+Definition at line 2562 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, \_\-Softpipe\_\-Op\_\-Info::exit\_\-cb, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::stage.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_set_out_epi@{Lpipe\_\-fix\_\-set\_\-out\_\-epi}}
+\index{Lpipe_fix_set_out_epi@{Lpipe\_\-fix\_\-set\_\-out\_\-epi}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static Set Lpipe\_\-fix\_\-set\_\-out\_\-epi (Set {\em to\_\-fix}, L\_\-Cb $\ast$ {\em kernel\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_f6ff4bb1935ebcb64fec63d238e51fa0}
+
+
+
+
+Definition at line 2459 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, \_\-Softpipe\_\-Op\_\-Info::epilogue\_\-stage, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::stage.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_fix_set_out_stage@{Lpipe\_\-fix\_\-set\_\-out\_\-stage}}
+\index{Lpipe_fix_set_out_stage@{Lpipe\_\-fix\_\-set\_\-out\_\-stage}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static Set Lpipe\_\-fix\_\-set\_\-out\_\-stage (Set {\em to\_\-fix}, L\_\-Cb $\ast$ {\em kernel\_\-cb}, L\_\-Oper $\ast$ {\em exit\_\-branch}, L\_\-Oper $\ast$ {\em first\_\-op}, L\_\-Oper $\ast$ {\em last\_\-op}, int {\em stage})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_26ca66a6c5177a42f255a740d1979087}
+
+
+
+
+Definition at line 2661 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, L\_\-annotate\_\-oper(), \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-gen\_\-mov\_\-consuming\_\-operands(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::stage.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_free_mve_info@{Lpipe\_\-free\_\-mve\_\-info}}
+\index{Lpipe_free_mve_info@{Lpipe\_\-free\_\-mve\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-free\_\-mve\_\-info ()}\label{l__mve_8c_78c3c1d55b2de2cc8d2c30fc73669d6b}
+
+
+
+
+Definition at line 414 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, header\_\-cb, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info(), Lpipe\_\-delete\_\-all\_\-mve\_\-info(), Lpipe\_\-dest\_\-mve\_\-pool, Lpipe\_\-ignore\_\-kernel\_\-inst, Lpipe\_\-mve\_\-lr\_\-list, Lpipe\_\-pred\_\-mve\_\-pool, Lpipe\_\-schema, Lpipe\_\-src\_\-mve\_\-pool, MULTI\_\-EPI, \_\-Softpipe\_\-Op\_\-Info::pred\_\-mve\_\-info, REM\_\-LOOP, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_gen_rot_epi_fixup@{Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup}}
+\index{Lpipe_gen_rot_epi_fixup@{Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb}, \bf{Lpipe\_\-LRInfo} $\ast$ {\em lr\_\-info}, int {\em name\_\-index})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_4db10761962fd1923c7ca39914f642cc}
+
+
+
+
+Definition at line 1811 of file l\_\-mve.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-mov\_\-opc(), M\_\-arch, M\_\-TAHOE, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, SM\_\-Reg\_\-Info::operand, and \_\-Lpipe\_\-LRInfo::rinfo.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out\_\-rot().\index{l_mve.c@{l\_\-mve.c}!Lpipe_gen_rot_pro_fixup@{Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup}}
+\index{Lpipe_gen_rot_pro_fixup@{Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb}, \bf{Lpipe\_\-LRInfo} $\ast$ {\em lr\_\-info}, int {\em reg})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_ae45409fd9131df5bc8f83729510812a}
+
+
+
+
+Definition at line 1674 of file l\_\-mve.c.
+
+References L\_\-annotate\_\-oper(), Lpipe\_\-mov\_\-opc(), M\_\-arch, M\_\-TAHOE, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, SM\_\-Reg\_\-Info::operand, and \_\-Lpipe\_\-LRInfo::rinfo.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-in\_\-rot().\index{l_mve.c@{l\_\-mve.c}!Lpipe_get_best_lr@{Lpipe\_\-get\_\-best\_\-lr}}
+\index{Lpipe_get_best_lr@{Lpipe\_\-get\_\-best\_\-lr}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-get\_\-best\_\-lr (List $\ast$ {\em op\_\-array}, \bf{Lpipe\_\-LRInfo} $\ast$ {\em prev\_\-lr\_\-info}, \bf{Lpipe\_\-LRInfo} $\ast$$\ast$ {\em lr\_\-info}, int {\em ii})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_d79d013591249d3e2a5c053799910698}
+
+
+
+
+Definition at line 474 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::last\_\-access\_\-slot, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-time, SM\_\-Reg\_\-Info::operand, and \_\-Lpipe\_\-LRInfo::rinfo.
+
+Referenced by Lpipe\_\-associate\_\-rot\_\-regs().\index{l_mve.c@{l\_\-mve.c}!Lpipe_get_pro_reg@{Lpipe\_\-get\_\-pro\_\-reg}}
+\index{Lpipe_get_pro_reg@{Lpipe\_\-get\_\-pro\_\-reg}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-get\_\-pro\_\-reg (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{Lpipe\_\-LRInfo} $\ast$ {\em lr\_\-info}, \bf{Lpipe\_\-MVEInfo} $\ast$ {\em mve\_\-info}, int {\em stg\_\-ofst})}\label{l__mve_8c_bc251ae063227ad587bde4091a7a8a7a}
+
+
+
+
+Definition at line 2882 of file l\_\-mve.c.
+
+References SM\_\-Cb::lcode\_\-cb, SM\_\-Cb::lcode\_\-fn, Lpipe\_\-find\_\-name(), \_\-Lpipe\_\-LRInfo::names, and \_\-Lpipe\_\-LRInfo::num\_\-names\_\-w\_\-pro.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-in\_\-rot(), and Lpipe\_\-multi\_\-epi\_\-gen\_\-rot().\index{l_mve.c@{l\_\-mve.c}!Lpipe_merge_compensation_code@{Lpipe\_\-merge\_\-compensation\_\-code}}
+\index{Lpipe_merge_compensation_code@{Lpipe\_\-merge\_\-compensation\_\-code}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-merge\_\-compensation\_\-code (L\_\-Cb $\ast$ {\em epilogue\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_300fcb8a4b5a8a4fc7f52e0b8c193f91}
+
+
+
+
+Definition at line 2341 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_modulo_decrement@{Lpipe\_\-modulo\_\-decrement}}
+\index{Lpipe_modulo_decrement@{Lpipe\_\-modulo\_\-decrement}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-modulo\_\-decrement (int {\em count}, int {\em unrolled})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_7dd82e8867f2fca8e451a4c7be59fd17}
+
+
+
+
+Definition at line 314 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-fix\_\-live\_\-out().\index{l_mve.c@{l\_\-mve.c}!Lpipe_mov_opc@{Lpipe\_\-mov\_\-opc}}
+\index{Lpipe_mov_opc@{Lpipe\_\-mov\_\-opc}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Lpipe\_\-mov\_\-opc (L\_\-Operand $\ast$ {\em opd})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_dbcc1c6752c12e5d507c9bb136143844}
+
+
+
+
+Definition at line 1519 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-gen\_\-rot\_\-epi\_\-fixup(), and Lpipe\_\-gen\_\-rot\_\-pro\_\-fixup().\index{l_mve.c@{l\_\-mve.c}!Lpipe_mve_transform@{Lpipe\_\-mve\_\-transform}}
+\index{Lpipe_mve_transform@{Lpipe\_\-mve\_\-transform}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-mve\_\-transform (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em unroll})}\label{l__mve_8c_b3521b99ecff5fb6e631fe1caa6d81bc}
+
+
+
+
+Definition at line 1963 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::def\_\-sm\_\-oper, \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, SM\_\-Cb::II, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::kernel\_\-copy, kernel\_\-copy\_\-first\_\-op, kernel\_\-copy\_\-last\_\-op, SM\_\-Cb::lcode\_\-cb, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-MVEInfo::lifetime, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-copy\_\-op\_\-info(), Lpipe\_\-ignore\_\-kernel\_\-inst, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, SOFTPIPE\_\-OP\_\-INFO, \_\-Lpipe\_\-MVEInfo::stage\_\-lifetime\_\-incr, and SM\_\-Cb::stages.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_new_opd_mve_info@{Lpipe\_\-new\_\-opd\_\-mve\_\-info}}
+\index{Lpipe_new_opd_mve_info@{Lpipe\_\-new\_\-opd\_\-mve\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Lpipe\_\-MVEInfo}$\ast$ Lpipe\_\-new\_\-opd\_\-mve\_\-info (\bf{Lpipe\_\-LRInfo} $\ast$ {\em lr})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_46a16b2e81536e0801824c9354f817fe}
+
+
+
+
+Definition at line 257 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-MVEInfo::lifetime, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-MVEInfo\_\-pool, and \_\-Lpipe\_\-MVEInfo::stage\_\-lifetime\_\-incr.
+
+Referenced by Lpipe\_\-construct\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_print_live_ranges@{Lpipe\_\-print\_\-live\_\-ranges}}
+\index{Lpipe_print_live_ranges@{Lpipe\_\-print\_\-live\_\-ranges}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-print\_\-live\_\-ranges (List {\em lr\_\-list}, int {\em ii})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_6351038c17aadb5b3409428a8d2fd12b}
+
+
+
+
+Definition at line 271 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::def\_\-sm\_\-oper, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-slot, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, SM\_\-Reg\_\-Info::id, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-slot, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-time, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-LRInfo::lifetime, \_\-Lpipe\_\-LRInfo::live\_\-in, \_\-Lpipe\_\-LRInfo::live\_\-in\_\-def\_\-time, \_\-Lpipe\_\-LRInfo::live\_\-out, \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, \_\-Lpipe\_\-LRInfo::rinfo, and \_\-Lpipe\_\-LRInfo::use\_\-after\_\-def\_\-slot.
+
+Referenced by Lpipe\_\-analyze\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_print_mve_info@{Lpipe\_\-print\_\-mve\_\-info}}
+\index{Lpipe_print_mve_info@{Lpipe\_\-print\_\-mve\_\-info}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-print\_\-mve\_\-info (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_072448416103b6792781cb20ec102be1}
+
+
+
+
+Definition at line 324 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, \_\-Lpipe\_\-MVEInfo::lifetime, SM\_\-Oper::next\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::pred\_\-mve\_\-info, SOFTPIPE\_\-OP\_\-INFO, \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info, and \_\-Lpipe\_\-MVEInfo::stage\_\-lifetime\_\-incr.
+
+Referenced by Lpipe\_\-analyze\_\-lr().\index{l_mve.c@{l\_\-mve.c}!Lpipe_rreg_transform@{Lpipe\_\-rreg\_\-transform}}
+\index{Lpipe_rreg_transform@{Lpipe\_\-rreg\_\-transform}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-rreg\_\-transform (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__mve_8c_6d37a198558a19c6fc216dc807812c85}
+
+
+
+
+Definition at line 1540 of file l\_\-mve.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::dest\_\-mve\_\-info, SM\_\-Cb::lcode\_\-cb, \_\-Lpipe\_\-MVEInfo::lifetime, \_\-Lpipe\_\-MVEInfo::live\_\-range, Lpipe\_\-find\_\-name(), \_\-Lpipe\_\-LRInfo::names, \_\-Lpipe\_\-LRInfo::num\_\-names, \_\-Softpipe\_\-Op\_\-Info::pred\_\-mve\_\-info, SOFTPIPE\_\-OP\_\-INFO, and \_\-Softpipe\_\-Op\_\-Info::src\_\-mve\_\-info.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_mve.c@{l\_\-mve.c}!Lpipe_update_lr_last_acc@{Lpipe\_\-update\_\-lr\_\-last\_\-acc}}
+\index{Lpipe_update_lr_last_acc@{Lpipe\_\-update\_\-lr\_\-last\_\-acc}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-update\_\-lr\_\-last\_\-acc (\bf{Lpipe\_\-LRInfo} $\ast$ {\em lr\_\-info}, int {\em issue\_\-time}, int {\em issue\_\-slot}, int {\em ii})\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_1d39b58ce865b3522fddcb21b1195f28}
+
+
+
+
+Definition at line 232 of file l\_\-mve.c.
+
+References \_\-Lpipe\_\-LRInfo::first\_\-def\_\-slot, \_\-Lpipe\_\-LRInfo::first\_\-def\_\-time, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-slot, \_\-Lpipe\_\-LRInfo::last\_\-access\_\-time, \_\-Lpipe\_\-LRInfo::lifetime, and \_\-Lpipe\_\-LRInfo::use\_\-after\_\-def\_\-slot.
+
+Referenced by Lpipe\_\-construct\_\-lr().
+
+\subsection{Variable Documentation}
+\index{l_mve.c@{l\_\-mve.c}!Lpipe_dest_mve_pool@{Lpipe\_\-dest\_\-mve\_\-pool}}
+\index{Lpipe_dest_mve_pool@{Lpipe\_\-dest\_\-mve\_\-pool}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Lpipe\_\-dest\_\-mve\_\-pool} = NULL}\label{l__mve_8c_4fd7a438ad2a7b1efa5d57d7aa1933b2}
+
+
+
+
+Definition at line 81 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-create\_\-op\_\-info(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-free\_\-oper\_\-op\_\-info(), and Lpipe\_\-init().\index{l_mve.c@{l\_\-mve.c}!Lpipe_LRInfo_pool@{Lpipe\_\-LRInfo\_\-pool}}
+\index{Lpipe_LRInfo_pool@{Lpipe\_\-LRInfo\_\-pool}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Lpipe\_\-LRInfo\_\-pool} = NULL\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_c304f63e31503bac19dfdafffb1acc0e}
+
+
+
+
+Definition at line 86 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-create\_\-live\_\-range\_\-info(), and Lpipe\_\-delete\_\-all\_\-live\_\-range\_\-info().\index{l_mve.c@{l\_\-mve.c}!Lpipe_mve_lr_list@{Lpipe\_\-mve\_\-lr\_\-list}}
+\index{Lpipe_mve_lr_list@{Lpipe\_\-mve\_\-lr\_\-list}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}List \bf{Lpipe\_\-mve\_\-lr\_\-list} = NULL\hspace{0.3cm}{\tt  [static]}}\label{l__mve_8c_b55d273205ba9ea778a0d8d0b79469cb}
+
+
+
+
+Definition at line 89 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-analyze\_\-lr(), and Lpipe\_\-free\_\-mve\_\-info().\index{l_mve.c@{l\_\-mve.c}!Lpipe_MVEInfo_pool@{Lpipe\_\-MVEInfo\_\-pool}}
+\index{Lpipe_MVEInfo_pool@{Lpipe\_\-MVEInfo\_\-pool}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Lpipe\_\-MVEInfo\_\-pool} = NULL}\label{l__mve_8c_47ef06dbc5fdfb506db61338bd91c45d}
+
+
+
+
+Definition at line 87 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-delete\_\-all\_\-mve\_\-info(), Lpipe\_\-init(), and Lpipe\_\-new\_\-opd\_\-mve\_\-info().\index{l_mve.c@{l\_\-mve.c}!Lpipe_pred_mve_pool@{Lpipe\_\-pred\_\-mve\_\-pool}}
+\index{Lpipe_pred_mve_pool@{Lpipe\_\-pred\_\-mve\_\-pool}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Lpipe\_\-pred\_\-mve\_\-pool} = NULL}\label{l__mve_8c_3c5eb3ef3a82d664ba3a3da10b8e0093}
+
+
+
+
+Definition at line 79 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-create\_\-op\_\-info(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-free\_\-oper\_\-op\_\-info(), and Lpipe\_\-init().\index{l_mve.c@{l\_\-mve.c}!Lpipe_src_mve_pool@{Lpipe\_\-src\_\-mve\_\-pool}}
+\index{Lpipe_src_mve_pool@{Lpipe\_\-src\_\-mve\_\-pool}!l_mve.c@{l\_\-mve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Alloc\_\-Pool$\ast$ \bf{Lpipe\_\-src\_\-mve\_\-pool} = NULL}\label{l__mve_8c_7f8629ad0a52237fabc7b5b90c9a369c}
+
+
+
+
+Definition at line 77 of file l\_\-mve.c.
+
+Referenced by Lpipe\_\-create\_\-op\_\-info(), Lpipe\_\-free\_\-mve\_\-info(), Lpipe\_\-free\_\-oper\_\-op\_\-info(), and Lpipe\_\-init().

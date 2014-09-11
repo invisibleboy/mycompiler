@@ -1,0 +1,4271 @@
+#!/usr/bin/env python
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+# Robert Kidd 6/12/02
+# Based on ia64_compile_bench and gen_test_ia64
+# This script wraps IMPACT in a cc-like interface.
+# This script assumes that it is installed in impact/bin or
+# impact/scripts.
+# 09/06/02 REK Modifying this script so that the first stage always produces
+#              both Pcode files and real objects.  The objects will have
+#              Pcode embedded in an application specific section.  For an
+#              object <name>.a, the Pcode is stored in a section <name>.pc.
+#
+# To skip past the function definitions to the beginning of the script,
+# search for ***MAIN***.
+
+import commands
+import copy
+import glob
+import os
+import re
+import string
+import sys
+
+# Before importing oicc's modules, add their directory to the module path
+relPath = os.environ.get ("IMPACT_REL_PATH")
+if relPath != "":
+    sys.path.append ("%s/driver" % os.environ["IMPACT_REL_PATH"])
+
+# The name of the C++ version of this script.
+cxxDriverName = "oi++"
+
+# We will need a temp file at several points in the script, so I'll
+# make a filename here to use.
+tmpFile = "oicc.tmp.%d" % os.getpid ()
+    
+import filetypes
+import readargs
+
+# This function checks that all input files exist.
+#
+# In order for libraries to be processed in the correct order wrt input
+# files, library specifiers (-l...) may be interspersed with input files
+# in fileList.  We need to skip these.
+def verify_input_existance (driverName, fileList):
+    libraryRegEx = re.compile ("^-l")
+    
+    # We will print an error message unless at least one input file exists.
+    # In the case that an input file exists, we will set this flag.
+    inputExists = 0
+    
+    # We will exit with status 1 if at least one input file does not exist.
+    # We set this variable when an input file does not exist.
+    exitStatus = 0    
+
+    for file in fileList:
+	# Skip library specifiers.
+	if libraryRegEx.match (file):
+	    continue
+	
+	if os.path.exists (file):
+	    inputExists = 1
+	else:
+	    sys.stderr.write ("%s: %s: No such file or directory\n" % \
+			      (driverName, file))
+	    exitStatus = 1
+
+    if not inputExists:
+        sys.stderr.write("%s: no input files\n" % driverName)
+
+    if exitStatus != 0:
+	exit (exitStatus)
+
+    return
+# def verify_input_existance
+
+# This function checks that the essential environment variables are set.
+# If the script can guess reasonable values for variables that are not set,
+# it sets them and prints a warning.
+def init_impact (argv):
+    scriptName = argv[0]
+    scriptDir = os.path.dirname (scriptName)
+
+    release = os.environ.get ("IMPACT_REL_PATH")
+    if release == "":
+	release = os.path.normpath (scriptDir + '/..')
+	sys.stderr.write ("Environment variable IMPACT_REL_PATH isn't "
+			  "defined.  Using %s\n" % release)
+	os.environ["IMPACT_REL_PATH"] = release
+
+    root = os.environ.get ("IMPACT_ROOT")
+    if root == "":
+	root = os.path.normpath (scriptDir + '/..')
+	sys.stderr.write ("Environment variable IMPACT_ROOT isn't defined. "
+			  "Using %s\n" % root)
+	os.environ["IMPACT_ROOT"] = root
+
+    stdParmsFile = os.environ["STD_PARMS_FILE"]
+    if stdParmsFile == "":
+	stdParmsFile = os.path.normpath (os.environ["IMPACT_REL_PATH"] + \
+					 '/parms/STD_PARMS.IPF-MCKINLEY')
+	sys.stderr.write ("Environment variable STD_PARMS_FILE isn't "
+			  "defined. Using %s\n" % stdParmsFile)
+	os.environ["STD_PARMS_FILE"] = stdParmsFile
+	
+    projectName = os.environ.get ("DEFAULT_PROJECT")
+    if projectName == "":
+	projectName = "full"
+        # If we aren't compiling a benchmark, DEFAULT_PROJECT might not
+        # matter, so we may be able to suppress this complaint later.
+        sys.stderr.write ("Environment variable DEFAULT_PROJECT isn't set "
+			  "and -project wasn't specified.\nUsing 'full'\n")
+	os.environ["DEFAULT_PROJECT"] = projectName
+
+    hostPlatform = read_platform_info ("-host_platform")
+    if hostPlatform == "":
+	if os.environ.has_key ("HOST_PLATFORM"):
+	    hostPlatform = os.environ["HOST_PLATFORM"]
+	else:
+	    sys.stderr.write ("Could not get host platform from "
+			      "'read_platform_info -host_platform.\n"
+			      "You must set the HOST_PLATFORM environment "
+			      "variable.\n")
+    else:
+	os.environ["HOST_PLATFORM"] = hostPlatform
+
+    hostCompiler = read_platform_info ("-host_compiler")
+    if hostCompiler == "":
+	if os.environ.has_key ("HOST_COMPILER"):
+	    hostCompiler = os.environ["HOST_COMPILER"]
+	else:
+	    sys.stderr.write ("Could not get host compiler from "
+			      "'read_platform_info -host_compiler'.\n"
+			      "You must set the HOST_COMPILER environment "
+			      "variable.\n")
+    else:
+	os.environ["HOST_COMPILER"] = hostCompiler
+# def init_impact
+
+def print_version (argv):
+    try:
+	import openimpact
+	version = openimpact.package_version
+    except ImportError:
+	version = "???"
+
+    print "%s version %s" % (os.path.basename (argv[0]), version)
+    exit ()
+# def print_version
+
+def print_usage_information (argv):
+    print """Usage: %s [options] file...
+Options:
+  Long options can be specified with one dash or two.
+  --analyze-gprof-info        Run gprof on the info collected with the
+                              --collect-gprof-info option as it is collected.
+			      This may slow compilation significantly.
+  --ansi                      Input is ANSI-C (default).
+  -C                          Tell the preprocessor not to discard comments.
+                              Implies -E. Passed directly to gcc.
+  -c                          Stop after converting to Pcode. The compiler does
+                              as much as it can when it is called with a subset
+			      of the source files.
+  --clean                     Delete all intermediate files created by a
+                              previous compile.
+  --collect-gprof-info <cmd>  Collect the gmon.out files created by commands
+                              profiled for gprof.  The files will be moved to
+			      the oicc.gprof directory.  Profiles are only
+			      collected for commands matching the regular
+			      expression <cmd>.
+  -D<define>                  Define symbol <define>.
+  --debugger <prog>           Use <prog> as the debugger. This defaults to gdb.
+  --do-induct                 Run code through Linduct to determine
+                              non-loop-variant load/store pairs.
+  --do-inlining               Perform function inlining.  This requires a
+                              profiling run.
+  --do-pip-gen-only           Generate the PIP files for the file(s) or library
+                              given on the command line.
+  --do-pointer-analysis       Run pointer analysis on the code.
+  -E                          Stop after the preprocessing stage.
+  -F<parm>                    Set a parameter that will be passed to each
+                              IMPACT module.
+  -g                          Generate assembly level debugging symbols.
+  -H                          Prints the name of each header file used. Passed
+                              directly to gcc.
+  -h, --help                  Print this message.
+  --host-layout-info <file>   Use <file> as the host_layout_info.md file
+                              instead of $PLATFORM_DIR/host_layout_info.md.
+  -I<path>                    Add <path> to the list of directories to search
+                              for include files.
+  -i                          See -r.
+  --idirafter <dir>           Add <dir> to the tail end of the -I include
+                              search path.
+  --imacros <file>            Process <file> to get macro definitions.
+                              Passed directly to preprocessor (gcc).
+  --include <file>            Process <file> before the specified input file.
+                              Passed directly to preprocessor (gcc).
+  --insert-pcode-only         Compile source using gcc, but insert OpenIMPACT's
+                              intermediate representation into the objects.
+  --iprefix <prefix>          Prepend <prefix> to the directories specified
+                              in later --iwithprefix options. Passed directly
+			      to preprocessor (gcc).
+  --iwithprefix <dir>         (See also --iprefix).  Add <prefix>/<dir> to the
+                              tail end of the -I list of directories. Passed
+			      directly to preprocessor (gcc).
+  -j<jobs>                    When possible, run up to <jobs> jobs in parallel.
+  --keep-intermediate-files   Keep extra files generated during each stage
+                              of the compilation.
+  --krc                       Input is in K&R C form instead of ANSI C.
+  -L<path>                    Add <path> to the list of directories to search
+                              for libraries.
+  -l<lib>                     Link against <lib>.
+  --lprof-gen                 Generate a profiled binary for profile guided
+                              optimization (Lcode stage).  Lcode profiling
+			      requires that Pcode profiling has already been
+			      done (--lprof-gen is typically specified at the
+			      same time as --pprof-use).
+  --lprof-use                 After running the profiled binary, use the
+                              profile information to guide the optimization
+			      (Lcode stage).
+  -M, -MD, -MM, -MMD          Options for the preprocessor. Implies -E. Passed
+                              directly to gcc.
+  --max-unroll <num>          Unroll loops a maximum of <num> times.
+  --mitanium                  Generate code for a first generation Itanium
+  --mmckinley                 Generate code for a second generation Itanium.
+                              (default).
+  --model <ITANIUM|MCKINLEY>  The same as specifying --mitanium or --mmckinley.
+  --no-add-prof-ext           Do not add the .prof extension to the
+                              intermediate binaries when profiling.
+  --no-control-speculation    Turn off control speculation.
+  --no-insert-pcode           When generating the final object files, do not
+                              pack the Pcode into the object.
+  --nostartfiles              Do not use the standard system startup files when
+                              linking. Passed directly to linker (gcc).
+  --nostdinc                  Do not search the standard system directories for
+                              header files. Passed directly to preprocessor
+			      (gcc).
+  --nostdlib                  Do not use the standard system libraries when
+                              linking. Passed directly to linker (gcc).
+  -O0, -O, -O1, -O2, -O3      Set the optimization level.
+                              -O0     no optimization
+			      -O, -O1 (default) Perform most standard
+			              optizations (Lopti, Lblock, Lsuperscalar)
+			      -O2     O1 + pointer analysis & pipelining
+			      -O3     O2 + inlining
+  -o <file>                   Save the resulting binary in <file>.
+  -P                          Tell the preprocessor not to generate '#line'
+                              commands. Implies -E. Passed directly to gcc.
+  --parmfile <file>           Specify a parameter file to override the default
+                              (STD_PARMS.IPF-MCKINLEY).
+  --pipe                      Turn on software pipelining. This also turns
+                              on pointer analysis.
+  --pprof-gen                 Generate a profiled binary for profile guided
+                              optimization (Pcode stage).
+  --pprof-use                 After running the profiled binary, use the
+                              profile information to guide the optimization
+			      (Pcode stage).  --lprof-gen is typically
+			      specified at the same time.
+  --preprocessor-opti         Pass the optimization flags to the preprocessor
+                              (gcc).  This inlines optimized forms of some
+			      functions, but may rely on unsupported gcc
+			      extensions.
+  --print-file-name=<lib>     Print the full absolute name of library. Passed
+                              directly to gcc.
+  --print-libgcc-file-name    Same as --print-file-name=libgcc.a. Passed
+                              directly to gcc.
+  --print-prog-name=<prog>    Print the full absolute name of a program. Passed
+                              directly to gcc.
+  --profile-stage <num>       Specify which profiling stage to run.
+                              Stage       Effective option
+			      1           --pprof-gen
+			      2           --pprof-use --lprof-gen
+			      3           --lprof-use
+  --prompt-to-debug <regex>   Prompt the user to run the command matching
+                              <regex> in the debugger. See also --debugger.
+  -R<path>                    Add <path> to the list of directories to search
+                              for shared libraries.
+  -r, --relocatable           Link objects into a relocatable object that
+                              can be used as input to ld.
+  --resume                    The compiler will try to resume compilation from
+                              the last completed stage.  For the greatest
+			      benefit, --keep-intermediate-files should have
+			      been specified on the previous run.
+  --rc                        Insert recovery code.
+  --stop-after-assembling     Stop compilation after assembling to object
+                              files.
+  --stop-after-converting-to-gp
+                              Stop compilation after the Lgp_rel stage.
+  --stop-after-ctop, -c       Stop compilation after translating the C source
+                              to Pcode. Note that the object files written at
+			      this point are generated by gcc, and do not have
+			      any IMPACT optimizations.
+  --stop-after-lblock         Stop compilation after the Lblock stage.
+  --stop-after-lcode-profiling
+                              Stop compilation after merging Lcode profile
+                              information back to the source files.
+  --stop-after-lopti          Stop compilation after the Lopti stage.
+  --stop-after-lsuperscalar   Stop compilation after the Lsuperscalar stage.
+  --stop-after-ltahoe, -S     Stop compilation after translating the C source
+                              to assembly code.
+  --stop-after-pcode-profiling
+                              Stop compilation after merging Pcode profile
+                              information back to the source files.
+  --stop-after-pflatten       Stop compilation after the Pflatten stage.
+  --stop-after-pinline        Stop compilation after the Pinline stage.
+  --stop-after-pointer-analysis
+                              Stop compilation after running pointer
+                              analysis.
+  --stop-after-psplit         Stop compilation just after running Psplit (just
+                              before running Pinline).
+  --stop-after-ptol           Stop compilation after translating Pcode to
+                              Lcode.
+  --target <target>           Select the machine description for scheduling.
+  -U<define>                  Undefine preprocessor symbol <define>. Passed
+                              directly to preprocessor (gcc).
+  -u<symbol>                  Undefine linker symbol <symbol>. Passed directly
+                              to linker (gcc).
+  --undef                     Do not define any unstandard macros. Passed
+                              directly to preprocessor (gcc).
+  --use-ias                   Write assembly code that can be assembled using
+                              Intel's assembler. When assembling, uses Intel's
+			      assembler. By default, the GNU format and
+			      assembler are used.
+  -v, --verbose               Print status information during compilation.
+  --version                   Print version information.
+  -Wl,<option>                Pass <option> directly to linker (gcc).  If
+                              <option> contains commas, it is split at the
+			      commas and passed to the linker as multiple
+			      options.
+  -Wp,<option>                Pass <option> directly to preprocessor (gcc).
+                              If <option> contains commas, it is split at the
+			      commas and passed to the preprocessor as
+			      multiple options.
+  --Xlinker <option>          Pass <option> directly to linker (gcc).  Only
+                              one option may be passed with --Xlinker.  If
+			      the option takes an argument, specify --Xlinker
+			      multiple times.
+  -x <language>               Specify the language for input files following
+                              this option.  Recognized values:
+			      c c-header cpp-output c++ c++-cpp-output
+
+  Pinline options:
+  These options apply only to Pinline
+  --pinline-adjust-func-weight=(yes|no) Default: no
+  --pinline-body-size-metric=(total|touched|executed) Default: touched
+  --pinline-exclude-small-from-ratio-limit=(yes|no) Ignore small functions when
+                              calculating expansion ratio.  Default: yes
+  --pinline-favor-small-functions=(yes|no) Default: yes
+  --pinline-il-log-name=<value> Default: stdout
+  --pinline-indir-thresh=<value> Default: 0.15
+  --pinline-inline-ebody-floor=<value> Default: 6000
+  --pinline-inline-function-pointers=(yes|no) Default: yes
+  --pinline-inline-indir-by-profile=(yes|no) Default: yes
+  --pinline-inline-inlined-body=(yes|no) Default: yes
+  --pinline-inline-key-cost=(sqrt_callee_size|callee_size|mc_callee_size)
+                              Default: sqrt_callee_size
+  --pinline-inline-self-recursion=(yes|no) Default: no
+  --pinline-max-expansion-ratio=<value> The maximum allowable ratio of inlined
+                              size to original size.  Default: 1.35
+  --pinline-max-function-size=<value> The maximum allowable size for a function
+                              after inlining.  Default: 4096
+  --pinline-max-sf-size-limit=<value> The largest allowable stack frame for
+                              inlining.  Default: 8192
+  --pinline-min-arc-ratio=<value> Default: 0.01
+  --pinline-min-expansion-key=<value> Do not inline a call site whose priority
+                              value is less than this value.  Default: 0.001
+  --pinline-min-expansion-weight=<value> The minimum weight a function must
+                              have to be inlined.  Default: 10.0
+  --pinline-prevent-cross-file-inlining=(yes|no) Default: no
+  --pinline-prevent-inline-functions=<list> Default: empty
+  --pinline-print-heap-trace=(yes|no) Default: yes
+  --pinline-print-inline-stats=(yes|no) Default: yes
+  --pinline-print-inline-trace=(yes|no) Default: yes
+  --pinline-size-only=(yes|no) Pinline will only use function size (and
+                              not profile data) when deciding to inline.
+			      This is turned on automatically if inlining
+			      is done without profiling.  Default: no
+  --pinline-small-function-thresh=<value> The threshold for a function to be
+                              considered small.  Default: 3
+  --pinline-sp-output-spec=<filename> Default: impact_mapping
+
+  Pcode profiling options:
+#*  These options only affect Pcode profiling.
+#*  --pprof-add-lib=<lib>       Add a library to link.
+  --pprof-debug               Generate a binary with debugging information.
+#*  --pprof-lib-dir=<dir>       Add a directory to search for libraries.
+#*  --pprof-log-file=<file>     Log messages from PtoC to this file.
+  --pprof-no-annotate-ipc     Specify -Fannotate_ipc=no for Pannotate.
+  --pprof-no-annotate-loop    Specify -Fannotate_loop=no for Pannotate.
+  --pprof-no-annotate-pcode   Specify -Fannotate_pcode=no for Pannotate.
+#*  --pprof-no-flatten          Do not flatten the input Pcode.
+#*  --pprof-no-insert-loop-count-probe PtoC will not insert loop count probes.
+#*  --pprof-no-insert-probe     PtoC will not insert probes.
+#*  --pprof-optimize            Generate an optimized profiling binary.
+#*  --pprof-shared-libs         Use shared libs to build profiling binary.
+#*  --pprof-static-libs         Use static libs to build profiling binary.
+
+  Pointer Analysis options:
+#   --pip-dd-split-compound-expr-stmts=(yes|no)
+#   --pip-dump-every-arc=(yes|no)
+#   --pip-fast-mode=(yes|no)
+#   --pip-force-dependence-analysis=(yes|no)
+#   --pip-merge-interprocedural-data=<value>
+#                               Set -Fmerge_interprocedural_data=<value> for the
+# 			      PIP commands.  Defaults to 2.
+#   --pip-multi-alias-relation=<value>
+#                               Set -Fmulti_alias_relation=<value> for the PIP
+# 			      commands.  Defaults to 0.
+#   --pip-points-to-representation=<value>
+#                               Set -Fpoints_to_representation=<value> for the
+# 			      PIP commands.  Defaults to 1.
+#   --pip-allow-function-pointer-casts
+#                               Allows function pointers to be cast to other
+# 			      pointer types.  This will increase the time
+# 			      required for pointer analysis.
+#   --pip-allow-data-pointer-casts
+#                               Allows data pointers to be cast to other
+# 			      pointer types  This will increase the time
+# 			      required for pointer analysis.
+
+ Pcode to Lcode transformation options:
+  --ptol-annotate-omega=(yes|no) Default: yes
+  --ptol-debug-sync-arcs=(yes|no) Default: no
+  --ptol-emit-data-type-info=(yes|no) Default: yes
+  --ptol-emit-source-info=(yes|no) Default: no
+  --ptol-generate-abs-instructions=(yes|no) Default: no
+  --ptol-generate-acc-name-attrs=(yes|no) Default: no
+  --ptol-generate-hashing-branches=(yes|no) Default: yes
+  --ptol-generate-label-attrs=(yes|no) Default: no
+  --ptol-generate-sign-extend-operations=(yes|no) Default: yes
+  --ptol-generate-static-branch-attrs=(yes|no) Default: no
+  --ptol-generate-sync-arcs=(yes|no) Default: no
+  --ptol-globalize-lvars=(yes|no) Default: no
+  --ptol-ignore-hash-br-seq-weight=(yes|no) Default: no
+  --ptol-ignore-hash-profile-weight=(yes|no) Default: no
+  --ptol-initialize-function-live-ins=(yes|no) Default: yes
+  --ptol-insert-intrinsics=(yes|no) Default: yes
+  --ptol-mark-glob-objids=(yes|no) Default: no
+  --ptol-retain-sync-nums=(yes|no) Default: no
+  --ptol-substitute-subroutine-call-for-operation=(yes|no) Default: no
+
+  Classical Lcode optimiztation (Lopti) options:
+  --lopti-allow-jump-expansion-of-pcode-loops=(yes|no)
+                              Allow branch target expansion of loop bodies.
+  --lopti-debug-global-opti=(yes|no)
+                              Print debug info for global optimizations.
+  --lopti-debug-jump-opti=(yes|no)
+                              Print debug info for jump optimizations.
+  --lopti-debug-local-opti=(yes|no)
+                              Print debug info for local optimizations.
+  --lopti-debug-loop-opti=(yes|no)
+                              Print debug info for loop optimizations.
+  --lopti-debug-memflow=(yes|no)
+                              Print debug info for memflow.
+  --lopti-do-classify-branches=(yes|no)
+                              Attach information attribute to all branches.
+  --lopti-do-code-layout=(yes|no)
+                              Do trace selection and code layout.
+  --lopti-do-complex-ind-elim=(yes|no)
+                              Allow complex induction elimination (induction
+			      variables) with different increments to be
+			      eliminated.
+  --lopti-do-dead-loop-rem=(yes|no)
+                              Do dead loop removal.
+  --lopti-do-global-common-sub-elim=(yes|no)
+                              Arithmetic common subexpression elimination.
+  --lopti-do-global-constant-prop=(yes|no)
+                              Do global constant propagation.
+  --lopti-do-global-copy-prop=(yes|no)
+                              Do global copy propagation.
+  --lopti-do-global-dead-code-rem=(yes|no)
+                              Do global dead code removal.
+  --lopti-do-global-dead-if-then-else-rem=(yes|no)
+                              Remove two blocks that do the same operation.
+  --lopti-do-global-elim-boolean-ops=(yes|no)
+                              Remove unnecessary boolean operations.
+  --lopti-do-global-mem-copy-prop=(yes|no)
+                              Do global memory copy propagation.
+  --lopti-do-global-opti=(yes|no)
+                              Set to no to disable all global optizations.
+  --lopti-do-global-red-load-elim=(yes|no)
+                              Do global redundant load elimination.
+  --lopti-do-global-red-store-elim=(yes|no)
+                              Do global redundant store elimination.
+  --lopti-do-jump-block-merge=(yes|no)
+                              Merge blocks that are always sequential.
+  --lopti-do-jump-br-swap=(yes|no)
+                              Swap loop/fall-through branches.
+  --lopti-do-jump-br-target-expansion=(yes|no)
+                              Do branch target expansion
+  --lopti-do-jump-br-to-next-block=(yes|no)
+                              Eliminate branch to next sequential block.
+  --lopti-do-jump-br-to-same-target=(yes|no)
+                              Eliminate branches to the same target.
+  --lopti-do-jump-br-to-uncond-br=(yes|no)
+                              Retarget branch to unconditional branch.
+  --lopti-do-jump-combine-labels=(yes|no)
+                              Remove redundant cb labels.
+  --lopti-do-jump-dead-block-elim=(yes|no)
+                              Eliminate dead (unreachable) blocks.
+  --lopti-do-jump-opti=(yes|no)
+                              Set to no to disable all jump optimizations.
+  --lopti-do-local-branch-fold=(yes|no)
+                              Do local branch folding.
+  --lopti-do-local-code-motion=(yes|no)
+                              Do local code reordering.
+  --lopti-do-local-common-sub-elim=(yes|no)
+                              Do local arithmetic common subexpression
+			      elimination.
+  --lopti-do-local-constant-comb=(yes|no)
+                              Do local constant combining.
+  --lopti-do-local-constant-fold=(yes|no)
+                              Do local constant folding.
+  --lopti-do-local-constant-prop=(yes|no)
+                              Do local constant propagation.
+  --lopti-do-local-copy-prop=(yes|no)
+                              Do local copy propagation.
+  --lopti-do-local-dead-code-rem=(yes|no)
+                              Do local dead code removal.
+  --lopti-do-local-mem-copy-prop=(yes|no)
+                              Do local memory copy propagation.
+  --lopti-do-local-operation-fold=(yes|no)
+                              Do local operation folding.
+  --lopti-do-local-opti=(yes|no)
+                              Set to no to disable all local optimizations.
+  --lopti-do-local-reduce-logic=(yes|no)
+                              Do local logic reduction.
+  --lopti-do-local-red-load-elim=(yes|no)
+                              Do local redundant load elimination.
+  --lopti-do-local-red-store-elim=(yes|no)
+                              Do local redundant store elimination.
+  --lopti-do-local-register-rename=(yes|no)
+                              Do local register renaming.
+  --lopti-do-local-remove-sign-ext=(yes|no)
+                              Remove unnecessary sign extensions.
+  --lopti-do-local-rev-copy-prop=(yes|no)
+                              Do local reverse copy propagation.
+  --lopti-do-local-strength-red=(yes|no)
+                              Do local strength reduction.
+  --lopti-do-local-strength-red-for-signed-div-rem=(yes|no)
+                              Do local strength reduction for a signed divide
+			      and remainder.
+  --lopti-do-local-operation-cancel=(yes|no)
+                              Do local operation cancellation.
+  --lopti-do-local-op-breakdown=(yes|no)
+                              Breakup certain operations that cannot be
+			      handled by the target processor.
+  --lopti-do-local-op-recombine=(yes|no)
+                              Recombine operations that were not optimized
+			      away.
+  --lopti-do-longword-loop-opti=(yes|no)
+                              Convert char or short operand based loop to long
+			      based loop.
+  --lopti-do-loop-br-simp=(yes|no)
+                              Simplify loop back branches.
+  --lopti-do-loop-global-var-mig=(yes|no)
+                              Do loop global variable migration.
+  --lopti-do-loop-ind-var-str-red=(yes|no)
+                              Do loop induction variable strength reduction.
+  --lopti-do-loop-ind-var-reinit=(yes|no)
+                              Do loop induction variable reinitialization.
+  --lopti-do-loop-inv-code-rem=(yes|no)
+                              Do loop invariant code removal.
+  --lopti-do-loop-opti=(yes|no)
+                              Set to no to disable all loop optimizations.
+  --lopti-do-mark-incoming-parms=(yes|no)
+                              Mark incoming parameter address in attribute.
+  --lopti-do-mark-memory-labels=(yes|no)
+                              Mark address labels in attribute.
+  --lopti-do-mark-sync-jsrs=(yes|no)
+                              Mark <Y> flag for jsr.
+  --lopti-do-mark-trivial-safe-ops=(yes|no)
+                              Mark <F> for load/store (simple analysis only).
+  --lopti-do-mark-trivial-sef-jsrs=(yes|no)
+                              Mark <E> for jsr (simple analysis only).
+  --lopti-do-memflow-multistore-load=(yes|no)
+                              Perform multiple store to load optimization.
+  --lopti-do-memflow-opti=(yes|no)
+                              Set to no to disable all memflow optimizations.
+  --lopti-do-post-inc-conv=(yes|no)
+                              Generate pre or post increment loads and stores.
+  --lopti-do-remove-decidable-cond-branches=(yes|no)
+  --lopti-do-split-branches=(yes|no)
+                              Split multi-def branches to aid HB.
+  --lopti-do-split-unification=(yes|no)
+  --lopti-ignore-sync-arcs-for-loop-inv-migration=(yes|no)
+  --lopti-ignore-sync-arcs-for-red-elim=(yes|no)
+  --lopti-memflow-bypass-jsr=<int>
+                              Maximum number of loads for optimization.
+  --lopti-memflow-bypass-load=<int>
+                              Maximum number of stores for optimization.
+  --lopti-memflow-bypass-store=<int>
+                              Maximum number of jsrs for optimization.
+  --lopti-memflow-bypass-total=<int>
+                              Maximum number of memory operations for
+			      optimization.
+  --lopti-only-lvl1-for-zero-weight-fn=(yes|no)
+                              Override optimization level for zero weight
+			      functions.
+  --lopti-opti-level=<int>    Optimization level
+                              0   No optimization
+			      1   Local optimization only
+			      2   Local and global optimization
+			      3   Local, global, and jump optimization
+			      4   Local, global, jump, and loop optimization
+  --lopti-pred-promotion-level=<int>
+                              Predicate promotion level
+			      0   No predicate promotion
+			      1   Heirarchical promotion
+			      2   Full promotion without renaming
+			      3   Full promotion with renaming
+  --lopti-preserve-loop-var=(yes|no)
+                              If yes, do not eliminate the loop variable with
+			      induction variable elimination.
+  --lopti-print-opti-breakdown=(yes|no)
+                              Print more detailed optimizations.
+  --lopti-print-opti-count=(yes|no)
+                              Print counts of applied optimizations.
+  --lopti-store-migration-mode=<int>
+                              1   FULL_PRED
+			      2   NO_PRED
+			      3   NO_COND
+
+  Lcode profiling options:
+  These options only affect Lcode profiling.
+  --lprof-add-lib=<lib>       Add a library to link.
+  --lprof-buf                 Do loop buffer encoding and profiling. If this
+                              option is specified, --lprof-no-loop-iters must
+			      not be.
+  --lprof-debug               Generate a binary with debugging information.
+  --lprof-flush-trace         Flush trace buffer at every op.
+  --lprof-lib-dir=<dir>       Add a directory to search for libaries.
+  --lprof-gen-attr            Lget will create profile attributes.
+  --lprof-gen-sync            Lget will create profiled sync arcs.
+  --lprof-gen-value           Lget will create value profile attributes.
+  --lprof-mem-dep             Lget will merge memory dependence profile
+                              information.
+  --lprof-mem-dep-file=<file> Specify memory dependence profile filename.
+  --lprof-mem-reuse           Lget will create memory reuse profile attributes.
+  --lprof-mem-reuse-file=<file> Specify memory reuse profile filename.
+  --lprof-nozero              Lget will remove zero conflict areas.
+  --lprof-no-loop-iters       Do not generate loop iteration info.
+  --lprof-no-probes           Probes will not be inserted.
+  --lprof-no-ver              Lemulate skips version checks on Lcode info
+                              attributes.
+  --lprof-optimize            Generate an optimized profiling binary.
+  --lprof-remove-sync         Lget will remove existing sync arcs.
+  --lprof-reuse               Lget will create reuse profile attributes.
+  --lprof-reuse-file=<file>   Specify reuse profile filename.
+  --lprof-shared-libs         Use shared libs to build profiling binary.
+  --lprof-static-libs         Use static libs to build profiling binary.
+  --lprof-value=<value>       Percentage of value occurance that should be
+                              annotated.
+  --lprof-value-file=<file>   Specify value profile filename.
+
+  Lblock options:
+  --lblock-no-peel            Disable loop peeling in Lblock.
+
+  Lsuperscalar options:
+  --lsuperscalar-faster-opti  Disable some Lsuperscalar optimizations for
+                              faster compile time.
+  --lsuperscalar-remainder-loop-opti
+                              Turn on remainder loop optimization.
+
+  Ltahoe options:
+  --ltahoe-faster-sched
+
+  All long options can be specified with one or two leading dashes.
+
+  For a level of optimization equivalent to ia64_compile_bench with no extra
+  options, use '-O --do-inlining'.""" % os.path.basename (argv[0])
+    exit ()
+# def print_usage_information
+
+# exit cleans up the temp file if it exists and calls sys.exit()
+def exit (status = 0):
+    """Cleans up and exits
+
+    status: The status to return on exit.
+    If the exit status is 0, this function cleans up the temp file, then
+    calls sys.exit()."""
+    if status == 0 and os.path.exists (tmpFile) and os.path.isfile (tmpFile):
+	os.remove (tmpFile)
+
+    sys.exit (status)
+# def exit
+
+# clean_files cleans up temporary files.
+def clean_files (files, opts):
+    """Cleans up temporary files
+
+    files: A list of temporary files to remove
+    opts: The options dictionary
+    If --keep-intermediate-files is specified, this function writes each
+    filename to the file 'oicc.tmpfiles'.  If not, this function deletes
+    each given file."""
+    if opts.has_key ("delete-intermediate-files"):
+	for file in files:
+	    run_command ("rm -rf %s" % file, opts)
+	# for file
+    else:
+	fileHandle = open ("oicc.tmpfiles", 'a')
+	for file in files:
+	    fileHandle.write ("%s\n" % file)
+	# for file
+	fileHandle.close ()
+# def clean_files
+
+# read_platform_info is simply a wrapper around the read_platform_info
+# shell script.  It takes a string argument that is passed directly
+# to the script.
+def read_platform_info (arg):
+    """A wrapper around the read_platform_info shell script
+
+    arg: The exact argument that should be passed to the shell script
+    This function calls the shell script and returns its output."""
+    cmd = "read_platform_info " + arg
+    return commands.getoutput (cmd)
+# def read_platform_info
+
+#  # Make_option_dictionary converts the list of pairs that getopt returns
+# into a dictionary where the value for an option is keyed by the option.
+def make_option_dictionary(optList):
+    """Converts the output of getopt to a dictionary
+
+    optList: A list of (option, value) pairs as is returned by
+             getopt.getopt.
+    This function converts the given list to a dictionary where the option's
+    value is keyed by the option.  Command line switches have a value of
+    1, while options that require an argument have that argument as a value."""
+    result = {}
+
+    # A regular expression to pull the dashes off the front of the option
+    regex = re.compile ("^--?")
+
+    for option in optList:
+        # If the value part of the pair isn't empty, it should be stored in
+        # the dictionary.  Otherwise, this option is a switch, so we should
+        # just store 1 in the dictionary.
+        if option[1]:
+            result[regex.sub ("", option[0])]=option[1]
+        else:
+            result[regex.sub ("", option[0])]=1
+    # for option
+
+    return result
+# def make_option_dictionary
+
+
+# collect_gprof_info copies the gmon.out file generated by a command compiled
+# for use with gprof to the oicc.gprof directory and gives it a unique name.
+# The name is of the form <cmd>_gmon.out[.n], where <cmd> is the full path to
+# the command with slashes converted to underscores.
+# If --analyze-gprof-info is specified, this function runs gprof on the
+# collected file and saves it in <cmd>_gprof.out[.n]
+def collect_gprof_info(cmd, opts):
+    """Copies the gmon.out file to the oicc.gprof directory with a unique name.
+
+    cmd:  The command that generated the file.
+    opts: The options dictionary."""
+
+    # Collect the gmon.out file if it was generated.
+    if re.match (opts["collect-gprof-info"], cmd) and \
+       os.path.exists ("gmon.out"):
+	# Create the collection directory if necessary
+	if not os.path.exists ("oicc.gprof"):
+	    os.mkdir ("oicc.gprof")
+		
+	# The new name of the gmon.out file will be <cmd>_gmon.out[.n]
+	# <cmd> is the full path to the program that created this
+	# file with slashes changed to underscores.
+	whichCmd = commands.getoutput ("which %s" % string.split (cmd, " ")[0])
+	underscoreCmd = re.sub ("/", "_", whichCmd)[1:]
+	newGmonName = "oicc.gprof/%s_gmon.out" % underscoreCmd
+
+	# Find the smallest i for which file.i doesn't exist
+	i = 1
+	if os.path.exists (newGmonName):
+	    while os.path.exists ("%s.%d" % (newGmonName, i)):
+		i = i + 1
+	    newGmonName = "%s.%d" % (newGmonName, i)
+		
+	os.rename ("gmon.out", newGmonName)
+
+	sys.stdout.write ("gmon.out for command %s is in %s.\n" % \
+			  (cmd, newGmonName))
+	sys.stdout.write ("Run 'gprof %s %s' to analyze it.\n" % \
+			  (whichCmd, newGmonName))
+	sys.stdout.flush ()
+
+	if opts.has_key ("analyze-gprof-info"):
+	    gprofOutputName = re.sub ("gmon\.out", "gprof.out", newGmonName)
+	    run_command ("gprof %s %s > %s" % (whichCmd, newGmonName,
+					       gprofOutputName), opts)
+# def collect_gprof_info
+
+# save_profile_state creates a tarball of all intermediate files that
+# need to be preserved until the second phase of profiling executes.
+#
+# files is a list of intermediate (pcf or O) files to be saved.
+# opts is the options hash.
+#
+# The tarball has a name of the form oicc_profile_state_<output_name>
+def save_profile_state (files, opts):
+    stateFiles = [opts["PROF_BINARY_NAME"], "impact_ipc_id.tmp",
+		  "impact_loop_id.tmp", "impact_probe.status",
+		  "impact_probe.tmp"]
+
+    cmd = "tar cf oicc_profile_state_%s " % opts["o"]
+
+    for file in files + stateFiles:
+	if os.path.exists (file):
+	    cmd = cmd + file + " "
+    # for file
+
+    run_command (cmd, opts)
+# def save_profile_state
+
+# restore_profile_state restores the profile state previously saved
+# by save_profile_state
+def restore_profile_state (opts):
+    run_command ("tar xf oicc_profile_state_%s" % opts["o"], opts)
+# def restore_profile_state
+
+# clear_profile_state clears the profile state previously saved by
+# save_profile_state
+def clear_profile_state (opts):
+    clean_files (["oicc_profile_state_%s" % opts["o"]], opts)
+# def clear_profile_state
+
+# run_command runs the given command and returns the output.  If the command
+# exits with status other than 0, this function exits the script with the
+# same exit status.  If opts["verbose"] is set, the output of the command is
+# printed to standard error.
+# 02/05/03 REK Modifying this function to print output as it is generated
+#              by the command instead of waiting until the command finishes
+#              to print all output.
+def run_command (cmd, opts):
+    """Runs a command and returns its output
+
+    cmd:  The command to run.
+    opts: The options dictionary.
+    If the command exits with a status other than 0, this function calls
+    exit with the command's exit status."""
+
+    output=""
+
+    if opts.has_key ("verbose"):
+	sys.stderr.write ("Getting ready to run command:\n")
+	sys.stderr.write ("%s\n" % cmd)
+	sys.stderr.write ("at %s\n" % commands.getoutput("date"))
+
+    if opts.has_key ("prompt-to-debug") and \
+       re.match (opts["prompt-to-debug"], cmd):
+	runDebugger=raw_input ("Run this command in the debugger? (y/N) ")
+	if runDebugger == 'y':
+	    status =os.system(opts["debugger"])
+	else:
+	    cmdOutput = os.popen ("{ %s; } 2>&1" % cmd, "r")
+	    line = cmdOutput.readline ()
+	    while line:
+		output = output + line
+		if opts.has_key ("verbose"):
+		    sys.stderr.write ("%s" % line)
+		line = cmdOutput.readline ()
+	    # while
+	    status = cmdOutput.close ()
+    else:
+	cmdOutput = os.popen ("{ %s; } 2>&1" % cmd, "r")
+	line = cmdOutput.readline ()
+	while line:
+	    output = output + line
+	    if opts.has_key ("verbose"):
+		sys.stderr.write ("%s" % line)
+	    line = cmdOutput.readline ()
+	# while
+	status = cmdOutput.close ()
+
+    if opts.has_key ("collect-gprof-info"):
+	collect_gprof_info (cmd, opts)
+
+    # Since only the high byte matters, shift it before evaluating status.
+    if status:
+	status = status >> 8
+
+    if status:
+	sys.stderr.write ("run_command: Exiting with status %s\n" % status)
+	sys.stderr.write ("run_command: From command %s\n" % cmd)
+	exit (status)
+
+    return output
+# def run_command
+
+# run_parallel runs the given commands in parallel up to the given limit.
+# If the command exits with status other than 0, this function exits the
+# script with the same exit status.
+def run_parallel (cmd, args, opts):
+    """Runs several commands in parallel
+
+    cmd:     The command to run.  Arguments from args will be substituted
+             into this string to form the command.  The substitution mechanism
+	     is Python's '%' operator.
+    args:    A list of argument tuples.  Each entry in this list will be
+             substituted into cmd to form a complete command to execute.
+	     args should have the form:
+	     [(cmd0arg0, cmd0arg1, ...), (cmd1arg0, cmd1arg1, ...), ...]
+    opts:    The options dictionary.
+    
+    If the command exits with a status other than 0, this function calls
+    exit with the command's exit status."""
+
+    # A dictionary to map PIDs back to the command executed for debugging.
+    pidToCmd = {}
+    jobsRunning = 0
+    pid = 0
+
+    for argSet in args:
+	curCmd = cmd % argSet
+	
+	# If we already have all job slots full, wait for one to finish.
+
+	if jobsRunning >= opts["j"]:
+	    childResult = os.waitpid (0, 0)
+	    childStatus = childResult[1] >> 8
+
+	    if childStatus:
+		sys.stderr.write ("run_parallel: Exiting with status %s\n" %
+				  childStatus)
+		sys.stderr.write ("run_parallel: From command %s (pid %d)\n" %
+				  (pidToCmd[childResult[0]], childResult[0]))
+		exit (childStatus)
+	    jobsRunning = jobsRunning - 1
+
+	    # Remove the child's command from the pidToCmd hash
+	    del pidToCmd[childResult[0]]
+	    
+	if jobsRunning < opts["j"]:
+	    pid = os.fork ()
+	    jobsRunning = jobsRunning + 1
+	    if pid == 0: # We're in the child process
+		run_command (curCmd, opts)
+		exit ()
+	    else:
+		# We're still in the parent.  Save the command in the hash
+		# keyed by child PID.
+		pidToCmd[pid] = curCmd
+    # for argSet
+
+    # Wait for the children to finish before returning.
+    while jobsRunning > 0:
+	if opts.has_key ("verbose"):
+	    pids = pidToCmd.keys ()
+	    pids.sort ()
+	    for pid in pids:
+		sys.stderr.write ("Waiting for pid %d (%s)\n" %
+				  (pid, pidToCmd[pid]))
+	    # for pid
+	    
+	childResult = os.waitpid (0, 0)
+	childStatus = childResult[1] >> 8
+	
+	if childStatus:
+	    sys.stderr.write ("run_parallel: Exiting with status %s\n" %
+			      childStatus)
+	    sys.stderr.write ("run_parallel: From command %s (pid %d)\n" %
+			      (pidToCmd[childResult[0]], childResult[0]))
+	    exit (childStatus)
+	jobsRunning = jobsRunning - 1
+
+	# Remove the child's command from the pidToCmd hash
+	del pidToCmd[childResult[0]]
+    # while
+
+    return
+# def run_parallel
+    
+# make_source_list writes the names of the source files to process to a
+# temporary file and returns the name of that file.  This is used to feed
+# many of the gen scripts
+def make_source_list (dict, *fileTypes):
+    """Writes the filenames to a temporary file and returns the filename
+
+    dict:      The dictionary generated by group_files.
+    fileTypes: One or more file types.
+
+    This function writes a list of filenames to a file that will be parsed
+    by a gen script later on.  It is assumed that files go through several
+    formats, and that only the file extension changes during this process.
+    Therefore, the file written by this function will be a list of unique
+    base names (the part excluding the extension).  The file types given
+    are in order of decreasing precedence.  All files of the first type
+    will be added to the output.  Files of subsequent types will only
+    be added if there is no earlier file with the same base name already in
+    the output."""
+
+    if os.path.exists (tmpFile):
+	tmpFileHandle = open (tmpFile, 'a')
+    else:
+	tmpFileHandle = open (tmpFile, 'w')
+
+    # Tack on the extension for the given file type.
+    for file in filetypes.unique_files_of_type (dict, fileTypes):
+	tmpFileHandle.write ("%s\n" % file)
+    # for file
+    tmpFileHandle.close ()
+
+    return tmpFile
+# def make_source_list
+
+# find_lib finds a library archive in the current source tree.
+# 09/06/02 REK This will no longer have to deal with fake archives.
+def find_lib (paths, ldLibSpec, verbose):
+    """Finds a library archive in the current source tree.
+
+    paths:     The list of paths to search the library.  This should be
+               a string of -L options for ld, such as '-L. -L../lib'
+    ldLibSpec: The specifier as passed to ld, but without the -l.  For
+               example, if ld is given '-lm', ldLibSpec would be 'm', and
+	       this function would search for 'libm.a'
+    This function searches the given paths for the .a file that ld would
+    find.  If the library is found, this function returns the path
+    and real name of the file (ie, ../lib/libfoo.a)."""
+
+    # First, build the name of the file we're looking for.
+    libName = "lib" + ldLibSpec + ".a"
+
+    if verbose:
+	sys.stderr.write ("Looking for library %s\n" % libName)
+
+    # Next, look for this file in each of the directories.
+    for path in string.split (paths):
+	# Remove the -L from the front of the path.
+	path = re.sub ("^-L", "", path)
+
+	if verbose:
+	    sys.stderr.write ("Trying path %s\n" % path)
+
+	pathToLib = os.path.join (path, libName)
+
+	# See if the library exists at this location
+	if os.path.isfile (pathToLib):
+	    # We've found it.
+	    if verbose:
+		sys.stderr.write ("Lib found in %s\n" % pathToLib)
+		
+	    return pathToLib
+    # for path
+
+    # We didn't find the library; return nothing.
+    return ""
+# def find_lib
+
+# extract_pcode_from_object calls dumpelfsection to extract pcode that has
+# been embedded in an elf object.  It takes the name of the object file
+# as its argument.  It calls objdump on the object file to find all sections
+# named *.pc.  It extracts these sections with dumpelfsection and attempts
+# to unzip them using gunzip.  The function returns a list (possibly empty)
+# of Pcode files extracted from the object.
+def extract_pcode_from_object (obj, opts):
+    """Extracts Pcode embedded in an elf object.
+
+    obj:  The elf object to inspect.
+    opts: The options dictionary."""
+
+    result = []
+    pcMatch = \
+        re.compile ("\s*\d+\s*(\S+%s)" % \
+            re.escape (filetypes.fileExtensions[filetypes.PCODE_WITH_SYM_TAB]))
+
+    pipeHandle = os.popen ("objdump -h %s" % obj)
+    curLine = pipeHandle.readline ()
+    while curLine:
+	match = pcMatch.match (string.strip (curLine))
+	if match:
+	    sectionName = match.group (1)
+
+	    cmd = "dumpelfsection %s %s > %s.gz" % (obj, sectionName, tmpFile)
+	    run_command (cmd, opts)
+
+	    if os.path.getsize ("%s.gz" % tmpFile) != 0:
+		# Try to unzip tmpFile.gz
+		(status, output) = \
+		    commands.getstatusoutput ("gunzip %s.gz" % tmpFile)
+
+		if (status >> 8) == 0:
+		    # Move the unpacked Pcode to its final location.
+		    pcodeFile = os.path.join (os.path.split (obj)[0],
+					      sectionName)
+		    run_command ("mv %s %s" % (tmpFile, pcodeFile), opts)
+
+		    result.append (pcodeFile)
+		else:
+		    if os.path.exists (tmpFile):
+			os.remove (tmpFile)
+		    if os.path.exists ("%s.gz" % tmpFile):
+			os.remove ("%s.gz" % tmpFile)
+	    else:
+		if os.path.exists ("%s.gz" % tmpFile):
+		    os.remove ("%s.gz" % tmpFile)
+
+	curLine = pipeHandle.readline ()
+    # while curLine
+
+    pipeHandle.close ()
+
+    return result
+# def extract_pcode_from_object
+
+# extract_pcode_from_archive attempts to extract pcode embedded in the elf
+# objects that make up an ar archive.  If successful, it returns a list of
+# the extracted Pcode files.  If there is no Pcode in the archive, it
+# returns an empty list.  To avoid name collisions, this function creates
+# a directory structure in the temporary directory 'oicc.tmplib' to use to
+# unpack modules.  Directories are created in the temporary directory to
+# mimic the path to the original library, and the modules are unpacked
+# to a directory named for the original library.  For example, if this
+# function is given /usr/lib/libm.a as a library, the Pcode will be unpacked
+# to ./oicc.tmplib/usr/lib/libm.a/<filename>.pc
+def extract_pcode_from_archive (arc, compObjs, opts):
+    """Extracts Pcode embedded in elf objects in an ar archive.
+
+    arc:  The archive to inspect.
+    compObjs: A dictionary mapping names of compound objects (generated with
+              ld -r) to lists of Pcode files making up those objects.
+    opts: The options dictionary."""
+
+    result = []
+    
+    if arc == "":
+	return result
+
+    oldDir = os.getcwd ()
+    arcBase = os.path.basename (arc)
+    arcAbsPath = os.path.abspath (arc)
+
+    # Set arcNewPath to the path to the temporary directory
+    arcNewPath = os.path.normpath ("oicc.tmplib/%s" % arcAbsPath)
+
+    # Create a temporary directory to unpack the archive.
+    run_command ("mkdir -p %s" % arcNewPath, opts)
+    os.chdir (arcNewPath)
+
+    # Open a pipe to get the list of files contained in the archive.
+    pipeHandle = os.popen ("ar t %s" % arcAbsPath)
+
+    # Read the files into a hash so that we can check for duplicates before
+    # extracting files.  It is technically possible for an archive to have
+    # multiple members with the same filename.  This is not POSIX compliant
+    # (according to the GNU ar manpage), and GNU ar will not create
+    # such an archive, so this is unlikely.  Still, if it happens,
+    # print a warning.
+    archiveFiles = {}
+    curFile = string.strip (pipeHandle.readline ())
+    while curFile:
+	if archiveFiles.has_key (curFile):
+	    sys.stderr.write ("""
+Warning: %s contains multiple members with the same filename
+ (%s).  oicc does not support libraries of this type.
+ Compilation may produce unexpected results.
+""" % (arc, curFile))
+
+	else:
+	    archiveFiles[curFile] = 1
+	    
+	curFile = string.strip (pipeHandle.readline ())
+    # while
+
+    pipeHandle.close ()
+
+    for curFile in archiveFiles.keys ():
+	run_command ("ar x %s %s" % (arcAbsPath, curFile), opts)
+
+	pcodeFiles = extract_pcode_from_object (curFile, opts)
+
+	# Add the Pcode file to the result list if it exists.
+	if len (pcodeFiles) > 0:
+	    # If the object contains more than one Pcode file, add it
+	    # and all Pcode files to compObjs.
+	    if len (pcodeFiles) > 1:
+		compObjs[curFile] = pcodeFiles
+
+	    for pcodeFile in pcodeFiles:
+		result.append (os.path.join (arcNewPath, pcodeFile))
+	    # for pcodeFile
+    # for curFile
+
+    os.chdir (oldDir)
+
+    # Extract symbol mapping information from the archive to build
+    # the library's index.
+    indexHandle = open (os.path.join (arcNewPath, "__index"), 'w')
+    pipeHandle = os.popen ("nm -s %s | grep 'in.*\.o$'" % arc)
+    curLine = string.strip (pipeHandle.readline ())
+    while curLine:
+	# Lines coming from nm -s have the form <symbol> in <file>.o
+	curLineSplit = string.split (curLine, " in ")
+
+	# Rename the file to a .pst extension.
+	curFileName = filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					     curLineSplit[1], 1)
+	indexHandle.write ("%s\t%s\n" % (curLineSplit[0], curFileName))
+	curLine = string.strip (pipeHandle.readline ())
+    # while
+    pipeHandle.close ()
+    indexHandle.close ()
+
+    return result
+# def extract_pcode_from_archive
+
+# update_library locates object files in the current directory that originally
+# came from the given library and updates the library with the new object.
+def update_library (lib, opts):
+    """Updates library with objects from current directory.
+
+    lib:  The library to update.
+    opts: The options dictionary."""
+
+    # First, check if we even have permission to update the library.
+    if not os.access (lib, os.W_OK):
+	return
+
+    oldDir = os.getcwd ()
+    libBase = os.path.basename (lib)
+    libAbsPath = os.path.abspath (lib)
+
+    # Set libNewPath to the path to the temporary directory
+    libNewPath = os.path.normpath ("oicc.tmplib/%s" % libAbsPath)
+
+    os.chdir (libNewPath)
+
+    # Open a pipe to get the list of files contained in the library.
+    pipeHandle = os.popen ("ar t %s" % libAbsPath)
+
+    curFile = string.strip (pipeHandle.readline ())
+    while curFile:
+	# If this object exists in the parent directory, copy it to this
+	# one and rename it.
+	if os.path.exists (curFile):
+	    run_command ("ar r %s %s" % (libAbsPath, curFile), opts)
+
+	curFile = string.strip (pipeHandle.readline ())
+    # while curFile
+
+    os.chdir (oldDir)
+
+    return
+#def update_library
+
+
+# read_command_line takes the command line arguments (sys.argv[1:]) and
+# returns two data structures.  The first is a dictionary that maps the option
+# name (without leading - or --) to option value.  The second is a list
+# of command line arguments that do not match options.  This includes
+# libraries specified with -l
+def read_command_line (argv):
+    # Set up the arguments to the getopt call
+    # Source level debugging isn't supported, but specifying -g will make ias
+    # assemble with debugging turned on for assembly level debugging.
+    # These lists are in alphabetical order.  The 'l' option is supported, but
+    # does not appear here.  After we parse the argument list, arguments not
+    # matched are returned in the order they were specified.  These are the
+    # files to compile and libraries specified with -llib.  We'll pull the
+    # -llib out manually later on.  This preserves the order in which things
+    # are specified on the command line.
+    shortArgs = ["C", "c", "D=", "E", "F=", "g", "h", "j=", "I=", "i", "L=", \
+		 "M=", "O", "o=", "P", "p=?", "R=", "r", "S", "U=", "u=", \
+		 "v", "W=?", "x="]
+    longArgs = ["analyze-gprof-info", "ansi", "clean", "collect-gprof-info=", \
+		"debugger=", "do-induct", "do-inlining", \
+		"do-pip-gen-only", "do-pointer-analysis", \
+		"dump-parms", "help", "host-layout-file=", "idirafter=", \
+		"imacros=", "include=", "insert-pcode-only", "iprefix=", \
+		"iwithprefix=", "keep-intermediate-files", "krc", \
+		"lblock-no-peel", \
+		"lopti-allow-jump-expansion-of-pcode-loops=", \
+		"lopti-debug-global-opti=", "lopti-debug-jump-opti=", \
+		"lopti-debug-local-opti=", "lopti-debug-loop-opti=", \
+		"lopti-debug-memflow=", \
+		"lopti-do-classify-branches=", "lopti-do-code-layout=", \
+		"lopti-do-complex-ind-elim=", "lopti-do-dead-loop-rem=", \
+		"lopti-do-global-common-sub-elim=", \
+		"lopti-do-global-constant-prop=", \
+		"lopti-do-global-copy-prop=", \
+		"lopti-do-global-dead-code-rem=", \
+		"lopti-do-global-dead-if-then-else-rem=", \
+		"lopti-do-global-elim-boolean-ops=", \
+		"lopti-do-global-mem-copy-prop=", "lopti-do-global-opti=", \
+		"lopti-do-global-red-load-elim=", \
+		"lopti-do-global-red-store-elim=", \
+		"lopti-do-jump-block-merge=", "lopti-do-jump-br-swap=", \
+		"lopti-do-jump-br-target-expansion=", \
+		"lopti-do-jump-br-to-next-block=", \
+		"lopti-do-jump-br-to-same-target=", \
+		"lopti-do-jump-br-to-uncond-br=", \
+		"lopti-do-jump-combine-labels=", \
+		"lopti-do-jump-dead-block-elim=", "lopti-do-jump-opti=", \
+		"lopti-do-local-branch-fold=", "lopti-do-local-code-motion=", \
+		"lopti-do-local-common-sub-elim=", \
+		"lopti-do-local-constant-comb=", \
+		"lopti-do-local-constant-fold=", \
+		"lopti-do-local-constant-prop=", \
+		"lopti-do-local-copy-prop=", "lopti-do-local-dead-code-rem=", \
+		"lopti-do-local-mem-copy-prop=", \
+		"lopti-do-local-operation-fold=", \
+		"lopti-do-local-opti=", "lopti-do-local-reduce-logic=", \
+		"lopti-do-local-red-load-elim=", \
+		"lopti-do-local-red-store-elim=", \
+		"lopti-do-local-register-rename=", \
+		"lopti-do-local-remove-sign-ext=", \
+		"lopti-do-local-rev-copy-prop=", \
+		"lopti-do-local-strength-red=", \
+		"lopti-do-local-strength-red-for-signed-div-rem=", \
+		"lopti-do-local-operation-cancel=", \
+		"lopti-do-local-op-breakdown=", \
+		"lopti-do-local-op-recombine=", \
+		"lopti-do-longword-loop-opti=", "lopti-do-loop-br-simp=", \
+		"lopti-do-loop-global-var-mig=", \
+		"lopti-do-loop-ind-var-str-red=", \
+		"lopti-do-loop-ind-var-reinit=", \
+		"lopti-do-loop-inv-code-rem=", \
+		"lopti-do-loop-opti=", "lopti-do-mark-incoming-parms=", \
+		"lopti-do-mark-memory-labels=", "lopti-do-mark-sync-jsrs=", \
+		"lopti-do-mark-trivial-safe-ops=", \
+		"lopti-do-mark-trivial-sef-jsrs=", \
+		"lopti-do-memflow-multistore-load=", \
+		"lopti-do-memflow-opti=", "lopti-do-post-inc-conv=", \
+		"lopti-do-remove-decidable-cond-branches=", \
+		"lopti-do-split-branches=", "lopti-do-split-unification=", \
+		"lopti-ignore-sync-arcs-for-loop-inv-migration=", \
+		"lopti-ignore-sync-arcs-for-red-elim=", \
+		"lopti-memflow-bypass-jsr=", "lopti-memflow-bypass-load=", \
+		"lopti-memflow-bypass-store=", "lopti-memflow-bypass-total=", \
+		"lopti-only-lvl1-for-zero-weight-fn=", "lopti-opti-level=", \
+		"lopti-pred-promotion-level=", "lopti-preserve-loop-var=", \
+		"lopti-print-opti-breakdown=", "lopti-print-opti-count=", \
+		"lopti-store-migration-mode=", "lprof-add-lib=", "lprof-buf",
+		"lprof-debug", "lprof-flush-trace", "lprof-gen", \
+		"lprof-lib-dir=", "lprof-gen-attr", "lprof-gen-sync", \
+		"lprof-gen-value", "lprof-mem-dep", "lprof-mem-dep-file=", \
+		"lprof-mem-reuse", "lprof-mem-reuse-file=", "lprof-nozero", \
+		"lprof-no-loop-iters", "lprof-no-probes", "lprof-no-ver", \
+		"lprof-optimize", "lprof-remove-sync", "lprof-reuse", \
+		"lprof-reuse-file", "lprof-shared-libs", "lprof-static-libs", \
+		"lprof-use", "lprof-value=", "lprof-value-file=", \
+		"lsuperscalar-faster-opti", \
+		"lsuperscalar-remainder-loop-opti", \
+		"ltahoe-faster-sched", "max-unroll=", "mitanium", \
+		"mmckinley", "no-add-prof-ext", "no-control-speculation", \
+		"no-cspec", "no-insert-pcode", "nostartfiles", "nostdinc", \
+		"nostdlib", "O0", "O1", "O2", "O3", "parmfile=", "pedantic", \
+		"pedantic-errors", "pip-allow-data-pointer-casts", \
+		"pip-allow-function-pointer-casts", "cspec", \
+		"pip-dd-split-compound-expr-stmts=", "pip-dump-every-arc=", \
+		"pip-fast-mode=", "pip-force-dependence-analysis=", \
+		"pip-merge-interprocedural-data=", \
+		"pip-multi-alias-relation=", "pip-points-to-representation=", \
+		"pinline-adjust-func-weight=", "pinline-body-size-metric=", \
+		"pinline-exclude-small-from-ratio-limit=", \
+		"pinline-favor-small-functions=", "pinline-il-log-name=", \
+		"pinline-indir-thresh=", "pinline-inline-ebody-floor=", \
+		"pinline-inline-function-pointers=", \
+		"pinline-inline-indir-by-profile=", \
+		"pinline-inline-inlined-body=", "pinline-inline-key-cost", \
+		"pinline-inline-self-recursion=", \
+		"pinline-max-expansion-ratio=", "pinline-max-function-size=", \
+		"pinline-max-sf-size-limit=", "pinline-min-expansion-key=", \
+		"pinline-min-expansion-weight=", \
+		"pinline-prevent-cross-file-inlining=", \
+		"pinline-prevent-inline-functions=", \
+		"pinline-print-heap-trace=", "pinline-print-inline-stats=", \
+		"pinline-print-inline-trace=", "pinline-size-only=", \
+		"pinline-small-function-thresh=", "pinline-sp-output-spec=", \
+		"pipe", "pprof-add-lib=", "pprof-debug", "pprof-gen", \
+		"pprof-lib-dir=", "pprof-log-file=", \
+		"pprof-no-annotate-ipc", "pprof-no-annotate-loop", \
+		"pprof-no-annotate-pcode", \
+		"pprof-no-flatten", "pprof-no-insert-loop-count-probe", \
+		"pprof-no-insert-probe", "pprof-optimize", \
+		"pprof-shared-libs", "pprof-static-libs", "pprof-use", \
+		"preprocessor-opti", "print-file-name=", \
+		"print-libgcc-file-name", "print-prog-name=", \
+		"profile-stage=", "prompt-to-debug=", \
+		"ptol-annotate-omega=", "ptol-debug-sync-arcs=", \
+		"ptol-emit-data-type-info=", "ptol-emit-source-info", \
+		"ptol-generate-abs-instructions=", \
+		"ptol-generate-acc-name-attrs=", \
+		"ptol-generate-hashing-branches=", \
+		"ptol-generate-label-attrs=", \
+		"ptol-generate-static-branch-attrs=", \
+		"ptol-generate-sync-arcs=", "ptol-globalize-lvars=", \
+		"ptol-ignore-hash-br-seq-weight=", \
+		"ptol-ignore-hash-profile-weight=", \
+		"ptol-initialize-function-live-ins=", \
+		"ptol-insert-intrinsics=", "ptol-mark-glob-objids=", \
+		"ptol-retain-sync-nums=", \
+		"ptol-substitute-subroutine-call-for-operation=", "rc", \
+		"relocatable", "resume", "save-temps", "shared", "static", \
+		"stop-after-assembling", "stop-after-converting-to-gp", \
+		"stop-after-ctop", \
+		"stop-after-lblock", "stop-after-lcode-profiling", \
+		"stop-after-lopti", "stop-after-lsuperscalar", \
+		"stop-after-ltahoe", "stop-after-pcode-profiling", \
+		"stop-after-pflatten", "stop-after-pinline", \
+		"stop-after-pointer-analysis", "stop-after-psplit", \
+		"stop-after-ptol", "symbolic", "target=", "traditional", \
+		"traditional-cpp", "trigraphs", "undef", "use-ias", \
+		"verbose", "version", "Wl,=", "Wp,=", "Xlinker"]
+    
+    (optionList, fileList) = readargs.readargs (argv, shortArgs, longArgs)
+    
+    # Build a hash out of the command line options so that we don't have to
+    # look through the entire list to see if an option is specified.
+    # Any options that the script builds (OPTIMIZATION_LEVEL,
+    # PREPROCESSOR_OPTIONS) should be capitalized.  Options coming from
+    # the command line are keyed by their name.
+    options = make_option_dictionary (optionList)
+
+    # Make -v and --verbose both set verbose in options
+    if options.has_key ("v"):
+	options["verbose"] = 1
+
+    # Some options (such as -I, -D) can be specified more than once.  They
+    # only show up in the options dictionary once, so we need to walk through
+    # optionList to find all of these.  Once we find all options and merge
+    # them, we save them back in the dictionary under the option key for later
+    # use.
+
+    # Detect any libraries specified with the syntax -l lib and change
+    # to -llib
+    nextFileIsLib = 0
+    tmpFileList = []
+    for file in fileList:
+	if file == "-l":
+	    nextFileIsLib = 1
+	elif nextFileIsLib:
+	    tmpFileList.append ("-l" + file)
+	    nextFileIsLib = 0
+	else:
+	    tmpFileList.append (file)
+	# if file == "-l"
+    # for file
+    fileList = tmpFileList
+
+    # Build the -Wl, option for gcc.
+    if options.has_key ("Wl,") or options.has_key ("Xlinker"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-Wl," or option[0] == "--Wl,":
+		completeOption = "%s -Wl,%s " % (completeOption, option[1])
+	    if option[0] == "-Xlinker" or option[0] == "--Xlinker":
+		completeOption = "%s -Xlinker %s " % (completeOption,
+						      option[1])
+	# for option
+	options["Wl,"] = completeOption
+    else:
+	options["Wl,"] = ""
+
+    # Build the -Wp, option for the preprocessor
+    if options.has_key ("Wp,"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-Wp," or option[0] =="--Wp,":
+		completeOption = "%s -Wp,%s " % (completeOption, option[1])
+	# for option
+	options["Wp,"] = completeOption
+    else:
+	options["Wp,"] = ""
+
+    # Build the -F IMPACT module parm list
+    if options.has_key ("F"): # module parm
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-F":
+		completeOption = "%s -F%s " % (completeOption, option[1])
+	# for option
+	options["F"] = completeOption
+    else:
+	options["F"] = ""
+
+    # add dump_parms=yes if --dump-parms is specified
+    if options.has_key ("dump-parms"):
+	options["F"] = options["F"] + "-Fdump_parms=yes "
+
+    # Build the -L library path list.
+    if options.has_key ("L"): # Library paths
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-L":
+		completeOption = "%s -L%s " % (completeOption, option[1])
+	# for option
+	options["L"] = completeOption
+    else:
+	options["L"] = ""
+
+    # Build the -I include path list.
+    if options.has_key ("I"): # Include paths
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-I":
+		completeOption = "%s -I%s " % (completeOption, option[1])
+	# for option
+	options["I"] = completeOption
+    else:
+	options["I"] = ""
+
+    # Add the directories specified with --idirafter, --iprefix, or
+    # --iwithprefix to the -I list
+    if options.has_key ("idirafter") or options.has_key ("iprefix") or \
+       options.has_key ("iwithprefix"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] =="--idirafter" or option[0] == "-idirafter":
+		completeOption = "%s -idirafter %s " % (completeOption,
+							option[1])
+	    elif option[0] == "--iprefix" or option[0] == "-iprefix":
+		completeOption = "%s -iprefix %s " % (completeOption,
+						      option[1])
+	    elif option[0] == "--iwithprefix" or option[0] =="-iwithprefix":
+		completeOption = "%s -iwithprefix %s " % (completeOption,
+							  option[1])
+	# for option
+	options["I"] = "%s %s " % (options["I"], completeOption)
+
+    # Add other include options to the options["I"]
+    if options.has_key ("nostdinc"):
+	options["I"] = options["I"] + "-nostdinc "
+
+    # Build the -R (runtime library path) path list.
+    if options.has_key ("R"): # runtime paths
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-R":
+		completeOption = "%s -R%s " % (completeOption, option[1])
+	# for option
+	options["R"] = completeOption
+    else:
+	options["R"] = ""
+
+    # Build the -D/-U define/undefine list.  All -D/-U options are stored in
+    # options["D"] in the order they are specified on the command line.
+    if options.has_key ("D") or options.has_key ("U"): # Symbol definitions
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-D" or option[0] == "-U":
+		if options.has_key ("verbose"):
+		    sys.stderr.write ("option[1]=%s\n" % option[1])
+		# Escape any quotes surrouding option[1].
+		if re.match ("^(.*=)\"(.*)\"$", option[1]):
+		    option[1] = re.sub ("^(.*=)\"(.*)\"$", "\\1'\"\\2\"'",
+					option[1])
+		elif re.match ("^(.*=)'(.*)'$", option[1]):
+		    option[1] = re.sub ("^(.*=)'(.*)'$", "\\1\\'\\2\\'",
+					option[1])
+		completeOption = "%s %s%s " % (completeOption, option[0],
+					       option[1])
+	# for option
+	options["D"] = completeOption
+    else:
+	options["D"] = ""
+
+    # Build the -M preprocessor option list.
+    if options.has_key ("M"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-M":
+		completeOption = "%s -M%s " % (completeOption, option[1])
+	# for option
+	options["M"] = completeOption
+    else:
+	options["M"] = ""
+
+    # Build the list of extra library paths for Pcode profiling.
+    if options.has_key ("pprof-lib-dir"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "--pprof-lib-dir" or option[0] == "-pprof-lib-dir":
+		completeOption = "%s -L%s " % (completeOption, option[1])
+	# for option
+	options["pprof-lib-dir"] = completeOption
+    else:
+	options["pprof-lib-dir"] = ""
+
+    # Build the list of extra libraries for Pcode profiling.
+    if options.has_key ("pprof-add-lib"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "--pprof-add-lib" or option[0] =="-pprof-add-lib":
+		completeOption = "%s -l%s " % (completeOption, option[1])
+	# for option
+	options["pprof-add-lib"] = completeOption
+    else:
+	options["pprof-add-lib"] = ""
+
+    # Build the list of extra library paths for Lcode profiling.
+    if options.has_key ("lprof-lib-dir"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "--lprof-lib-dir" or option[0] == "-lprof-lib-dir":
+		completeOption = "%s -L%s " % (completeOption, option[1])
+	# for option
+	options["lprof-lib-dir"] = completeOption
+    else:
+	options["lprof-lib-dir"] = ""
+
+    # Build the list of extra libraries for Lcode profilling.
+    if options.has_key ("lprof-add-lib"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "--lprof-add-lib" or option[0] == "-lprof-add-lib":
+		completeOption = "%s -l%s " % (completeOption, option[1])
+	# for option
+	options["lprof-add-lib"] = completeOption
+    else:
+	options["lprof-add-lib"] = ""
+
+    # Set up options["LINKER_OPTIONS"].
+    options["LINKER_OPTIONS"] = ""
+    if options.has_key ("nostartfiles"):
+	options["LINKER_OPTIONS"] = options["LINKER_OPTIONS"] + \
+				    "-nostartfiles "
+    if options.has_key ("nostdlib"):
+	options["LINKER_OPTIONS"] = options["LINKER_OPTIONS"] + "-nostdlib "
+
+    # Add in the -u (undefine linker symbol) options.
+    if options.has_key ("u"):
+	completeOption = ""
+	for option in optionList:
+	    if option[0] == "-u":
+		completeOption = "%s -u %s " % (completeOption, option[1])
+	# for option
+	options["LINKER_OPTION"] = options["LINKER_OPTIONS"] + completeOption
+
+    return options, fileList
+# def read_command_line
+
+# preprocess takes the inputFiles dictionary as the first argument.  It takes
+# the options dictionary as its second argument.  It is assumed that
+# inputFiles contains some C source files.  It runs all C source files
+# through gcc's preprocessor
+def preprocess (files, opts):
+    # Build the command to run the preprocessor on the input
+    cmd = read_platform_info ("-preprocessor_invocation") + " "
+    cmd = cmd + read_platform_info ("-ansi_c_mode_specifier") + " "
+
+    # oicc always defines __OICC__.  The -U option will be added later in
+    # case the user needs to undefine it.
+    cmd = cmd + "-D__OICC__ "
+
+    # Add the -D, -I, and other preprocessor options.
+    cmd = cmd + opts["PREPROCESSOR_OPTIONS"]
+
+    # Add any of the -C, -P, or -M arguments passed by the user
+    if opts.has_key ("C"):
+	cmd = cmd + "-C "
+    if opts.has_key ("P"):
+	cmd = cmd + "-P "
+    cmd = cmd + opts.get ("M") + " "
+
+    if files.has_key (filetypes.C_SOURCE):
+	cmd = cmd + string.join (files[filetypes.C_SOURCE])
+    if files.has_key (filetypes.CXX_SOURCE):
+	cmd = cmd + string.join (files[filetypes.CXX_SOURCE])
+
+    # Escape the parentheses in the command so as not to confuse sh.
+    # This may look useless, but the first argument is a regular expression
+    # (parens need to be escaped), and the second is a string (no escape
+    # necessary), so it does the right thing.
+    cmd = re.sub ("\(", "\(", cmd)
+    cmd = re.sub ("\)", "\)", cmd)
+    status = os.system (cmd)
+    # The exit status of the command is contained in the high byte.
+    exit (status >> 8)
+# def preprocess
+
+# do_c_to_p takes the inputFiles dictionary as the first argument.
+# takes the options dictionary as the second argument.
+# This function converts the input C code to Pcode, then packs the Pcode
+# into an object generated from the C source by gcc.
+# This function returns a dictionary mapping the original .c files to the
+# .pc files (since they may be in different locations).
+# Input files: $file.c
+# Intermediate files: $file.i, $file.pc, host_layout_info.md, $file.pc.db
+# Output files: $file.o
+def do_c_to_p (files, opts):
+    cToPSTMap = {}
+
+    # The location of a sed script to massage the Pcode into something
+    # we can handle.
+    cleanupPath = "%s/platform/%s_%s/cleani.sed" % \
+		  (os.environ["IMPACT_REL_PATH"], os.environ["HOST_PLATFORM"],
+		   os.environ["HOST_COMPILER"])
+    cleanupPathExists = os.path.exists (cleanupPath)
+    preprocessorInvocation = "%s %s %s " % \
+			     (read_platform_info ("-preprocessor_invocation"),
+			      read_platform_info ("-include_path_options"),
+			      opts["PREPROCESSOR_OPTIONS"])
+    # Build the pragma that will be added to each Pcode file
+    preprocessInfoPragma = ""
+    if opts.has_key ("krc"):
+	preprocessInfoPragma = "K&R-C"
+    else:
+	preprocessInfoPragma = "Ansi-C"
+    preprocessInfoPragma = preprocessInfoPragma + re.escape("\$") + \
+			   read_platform_info ("-preprocessor_invocation") + \
+			   " " + \
+			   re.escape ("\$") + \
+			   read_platform_info ("-include_path_options") + \
+			   re.escape ("\$") + commands.getoutput ("date")
+    os.environ["PREPROCESS_INFO_PRAGMA"] = preprocessInfoPragma
+    
+    if opts.has_key ("verbose"):
+	sys.stderr.write ("preprocessorInvocation=%s\n" % \
+			  preprocessorInvocation)
+
+    # We may change the path of the files as we convert to Pcode, so we
+    # need a dictionary to map those new files to the original C files if
+    # we are going to compile those to an object with gcc.
+    origCFiles = {}
+
+    cmdParArgs = []
+    cleanupCmdParArgs = []
+
+    # Set up the command to run the preprocessor.
+    preprocessorCmd = "%s %%s > %%s" % preprocessorInvocation
+    # Escape the parentheses in the command so as not to confuse sh.
+    # This may look useless, but the first argument is a regular
+    # expression (parens must be escaped), and the second is a string,
+    # so it does the right thing.
+    preprocessorCmd = re.sub ("\(", "\(", preprocessorCmd)
+    preprocessorCmd = re.sub("\)", "\)", preprocessorCmd)
+
+    cleanupCmd = "mv %%s %%s.dirty ; \
+                  sed -f %s %%s.dirty > %%s ; \
+                  rm -f %%s.dirty"
+
+    # Run each file through the preprocessor and impact-edgcpfe
+    # The [:] at the end makes a copy of the array.  The array will be
+    # modified inside the loop, so this is necessary.
+    for (type, ppType) in [[filetypes.C_SOURCE, filetypes.PREPROCESSED_C],
+			   [filetypes.CXX_SOURCE, filetypes.PREPROCESSED_CXX]]:
+	if files.has_key (type):
+	    for file in files[type][:]:
+		preprocessedFile = filetypes.rename_file (ppType, file, 1)
+		preprocessedFile = \
+		  os.path.join (opts["OUTPUT_DIRECTORY"],
+				os.path.basename (preprocessedFile))
+
+		# We just adjusted the path of the output file, so simply
+		# calling update file won't work here.  We have to remove
+		# the old file and add the new file to the dictionary.
+		filetypes.remove_file (file, type, files)
+		filetypes.add_file (preprocessedFile, files)
+
+		# Map the Pcode name of the file to the original C file.
+		origCFiles[filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+						  preprocessedFile, 1)] = file
+		# Map the original filename to the .pc file.
+		if opts.has_key ("verbose"):
+		    sys.stderr.write \
+		     ("cToPSTMap: %s -> %s\n" % \
+		      (file,
+		       filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					      preprocessedFile, 1)))
+		cToPSTMap[file] = \
+		  filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					 preprocessedFile, 1)
+
+		# preprocessedFile should be the original file base with a .i
+		# extension in the output directory at this point.
+		cmdParArgs.append ((file, preprocessedFile))
+		cleanupCmdParArgs.append ((preprocessedFile, preprocessedFile,
+					   preprocessedFile, preprocessedFile,
+					   preprocessedFile))
+		# for file
+    # for type
+
+    run_parallel (preprocessorCmd, cmdParArgs, opts)
+    
+    if cleanupPathExists:
+	run_parallel (cleanupCmd, cleanupCmdParArgs, opts)
+
+    # Run impact-edgcpfe on the .i files
+    cmdParArgs = []
+    cleanFiles = []
+    
+    if files.has_key (filetypes.PREPROCESSED_C):
+	if opts.has_key ("krc"):
+	    cmd = "impact-edgcpfe -K -w --pcode %s; Psymtab -i %s -o %s"
+	else:
+	    cmd = "impact-edgcpfe -m -w --pcode %s; Psymtab -i %s -o %s"
+	
+	for file in files[filetypes.PREPROCESSED_C]:
+	    pcName = filetypes.rename_file (filetypes.PCODE, file, 1)
+	    pstName = filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					     file, 1)
+	    cmdParArgs.append ((file, pcName, pstName))
+	    cleanFiles.append (file)
+	    cleanFiles.append (pcName)
+	# for file
+
+    if files.has_key (filetypes.PREPROCESSED_CXX):
+	cmd = "impact-edgcpfe -w --instantiate used --g++ --pcode %s; " \
+	      "Psymtab -i %s -o %s"
+
+	for file in files[filetypes.PREPROCESSED_CXX]:
+	    pcName = filetypes.rename_file (filetypes.PCODE, file, 1)
+	    pstName = filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					     file, 1)
+	    cmdParArgs.append ((file, pcName, pstName))
+	    cleanFiles.append (file)
+	    cleanFiles.append (pcName)
+	# for file
+
+    run_parallel (cmd, cmdParArgs, opts)
+    clean_files (cleanFiles, opts)
+
+    if files.has_key (filetypes.PREPROCESSED_C):
+	filetypes.update_files_by_type (filetypes.PREPROCESSED_C,
+					filetypes.PCODE_WITH_SYM_TAB, files)
+    if files.has_key (filetypes.PREPROCESSED_CXX):
+	filetypes.update_files_by_type (filetypes.PREPROCESSED_CXX,
+					filetypes.PCODE_WITH_SYM_TAB, files)
+
+    # 11/18/02 REK Only compile to an object if we're stopping part way
+    #              through the compile.
+    # 02/14/03 REK Also compile to an object if insert-pcode-only is
+    #              specified.
+    if opts.has_key ("c") or opts.has_key ("pprof-gen") or \
+       opts.has_key ("insert-pcode-only"):
+	# Set up the command to compile the source to an object, gzip the
+	# Pcode, insert the Pcode, then insert the symbol table from
+	# gen_file_db.
+	cmd = "gcc -c %%s -o %%s %s %s && \
+	       gzip -c %%s > %%s.gz && \
+	       objcopy --add-section %%s=%%s.gz %%s" % (opts.get("I"),
+							opts.get("D"))
+
+	cmdParArgs = []
+	rmCmdParArgs = []
+	
+	for file in files[filetypes.PCODE_WITH_SYM_TAB]:
+	    cFile = origCFiles[file]
+	    
+	    fileBase = os.path.basename (file)
+	    
+	    # If both -c and -o are specified, use the given value
+	    # as the name of the object.  Otherwise, rename the input file
+	    # and output to the current directory.
+	    if opts.has_key ("c") and opts["o"] != "a.out":
+		objectFile = opts["o"]
+	    else:
+		objectFile = filetypes.rename_file (filetypes.OBJECT,
+						    fileBase, 1)
+
+	    # Make sure the pcode section is named $output.pst
+	    pcodeSectionName = \
+	       filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+				      objectFile, 1)
+	    pcodeSectionName = os.path.basename (pcodeSectionName)
+		
+	    cmdParArgs.append ((cFile, objectFile, file, file,
+				pcodeSectionName, file, objectFile))
+	    rmCmdParArgs.append ((file))
+        # for file
+
+	run_parallel (cmd, cmdParArgs, opts)
+
+        cleanFiles = []
+	for file in rmCmdParArgs:
+	    cleanFiles.append ("%s.gz" % file)
+	# for file
+	clean_files (cleanFiles, opts)
+
+	# Keep the .pst files around if we're building a profiled binary
+	# or cleaning.
+	if not opts.has_key ("pprof-gen"):
+	    cleanFiles = []
+	    for file in rmCmdParArgs:
+		cleanFiles.append (file)
+	    # for file
+	    clean_files (cleanFiles, opts)
+    return cToPSTMap
+# def do_c_to_p
+		    
+
+# link_files runs Plink on the Pcode source files.
+def link_files (srcFiles, srcToIRMap, irFiles, opts):
+    """Links Pcode files into the interprocedural symbol table.
+
+    srcFiles:   The list of source files from the command line.
+    srcToIRMap: A dictionary mapping source files to intermediate
+                representation files.
+    irFiles:    The inputFiles dictionary.
+    opts:       The options dictionary."""
+
+    # If using the output filename as the interprocedural symbol table
+    # name will collide with a source file, add leading underscores until
+    # we get something unique.
+    while os.path.exists (filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+						 opts["IP_SYM_TAB_BASE"], 0)):
+	(dir, base) = os.path.split (opts["IP_SYM_TAB_BASE"])
+	opts["IP_SYM_TAB_BASE"] = os.path.join (dir, "_" + base)
+    # while
+
+    cmd = "Plink --print -e pstl -o %s " % \
+	  filetypes.rename_file (filetypes.PCODE_LINKED,
+				 opts["IP_SYM_TAB_BASE"], 0)
+
+    # If we're doing pointer analysis, link against the PIP stub file.
+    pstExt = filetypes.extension_without_dot (filetypes.PCODE_WITH_SYM_TAB)
+    if opts.has_key ("do-pointer-analysis"):
+	run_command ("mkdir -p oicc.pip", opts)
+	run_command ("ln -sf %s/platform/%s_%s/IPA_lib/__impact_lib.%s " \
+		     " oicc.pip" % (os.environ["IMPACT_ROOT"],
+				    os.environ["IMPACT_HOST_PLATFORM"],
+				    os.environ["IMPACT_HOST_COMPILER"],
+				    pstExt), opts)
+	if not opts.has_key ("CXX"):
+	    cmd = "%s oicc.pip/__impact_lib.%s " % (cmd, pstExt)
+	else:
+	    run_command ("ln -sf %s/platform/%s_%s/IPA_lib/__impact_lib2.%s" \
+			 " oicc.pip" % (os.environ["IMPACT_ROOT"],
+					os.environ["IMPACT_HOST_PLATFORM"],
+					os.environ["IMPACT_HOST_COMPILER"],
+					pstExt), opts)
+	    cmd = "%s oicc.pip/__impact_lib.%s oicc.pip/__impact_lib2.%s " % \
+		  (cmd, pstExt, pstExt)
+
+    # Copy files from the input list in input order, renaming
+    # .o to .pst and .a/ to -l ....a/
+    oRegEx = filetypes.get_ext_re (filetypes.OBJECT)
+    aRegEx = re.compile \
+	       (re.escape \
+		  (filetypes.fileExtensions[filetypes.AR_ARCHIVE] + "/") + "$")
+
+    for file in srcFiles:
+	if srcToIRMap.has_key (file):
+	    irFile = srcToIRMap[file]
+	    cmd = "%s %s " % (cmd, irFile)
+	elif aRegEx.search (file):
+	    cmd = "%s -l %s " % (cmd, file)
+	else:
+	    sys.stderr.write ("no match\n")
+    # for file
+
+    # Plink will print a list of files that are needed.  Anything not
+    # on the list does not need to be compiled.
+    necessaryFiles = run_command (cmd, opts)
+
+    if not opts.has_key ("insert-pcode"):
+	clean_files (irFiles[filetypes.PCODE_WITH_SYM_TAB][:], opts)
+
+    filetypes.update_files_by_type (filetypes.PCODE_WITH_SYM_TAB,
+				    filetypes.PCODE_LINKED, irFiles)
+
+    if not opts.has_key ("compile-all-files"):
+	# Insert the files we need into the dictionary.  We then
+	# inspect the Pcode files in inputFiles and remove the ones
+	# we don't need.  This gives us a chance to delete the
+	# intermediate files we don't need.
+	necessaryFileDict = {}
+
+	blankRegex = re.compile ("^ *$")
+
+	for file in string.split (necessaryFiles, "\n"):
+	    if not blankRegex.match (file):
+		necessaryFileDict[file] = 1
+	# for file
+
+	for file in irFiles[filetypes.PCODE_LINKED][:]:
+	    if not necessaryFileDict.has_key (file):
+		clean_files ([file], opts)
+		filetypes.remove_file (file, filetypes.PCODE_LINKED, irFiles)
+	# for file
+# def link_files
+
+
+# get_ptoc_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of
+# arguments for PtoC.
+def get_ptoc_args (opts):
+    result = ""
+
+    if opts.has_key ("pprof-no-insert-probe"):
+	result = result + "-Fdo_insert_probe=no "
+    else:
+	result = result + "-Fdo_insert_probe=yes "
+    if opts.has_key ("pprof-no-insert-loop-count-probe"):
+	result = result + "-Fdo_insert_loop_trip_count_probe=no "
+    else:
+	result = result + "-Fdo_insert_loop_trip_count_probe=yes "
+    if opts.has_key ("pprof-log-file"):
+	result = result + "-Flog_file=%s " % opts["pprof-log-file"]
+    else:
+	result = result + "-Flog_file=stderr "
+
+    return result
+# def get_ptoc_args    
+
+
+# get_pannotate_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of
+# arguments for Pannotate.
+def get_pannotate_args (opts):
+    result = ""
+
+    if opts.has_key ("pprof-no-annotate-ipc"):
+	result = result + "-Fannotate_ipc=no "
+    else:
+	result = result + "-Fannotate_ipc=yes "
+    if opts.has_key ("pprof-no-annotate-loop"):
+	result = result + "-Fannotate_loop=no "
+    else:
+	result = result + "-Fannotate_loop=yes "
+    if opts.has_key ("pprof-no-annotate-pcode"):
+	result = result + "-Fannotate_pcode=no "
+    else:
+	result = result + "-Fannotate_pcode=yes "
+    if opts.has_key ("pprof-log-file"):
+	result = result + "-Flog_file=%s " % opts["pprof-log-file"]
+    else:
+	result = result + "-Flog_file=stderr "
+
+    return result
+# def get_pannotate_args
+
+
+# get_pinline_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Pinline
+def get_pinline_args (opts):
+    result = ""
+
+    if opts.has_key ("verbose"):
+	result = result + "-Fprint_heap_trace=yes " + \
+		 "-Fprint_inline_stats=yes -Fprint_inline_trace=yes "
+    if opts.has_key ("pinline-adjust-func-weight"):
+	result = result + "-Fadjust_func_weight=%s " % \
+		 options["pinline-adjust-func-weight"]
+    if opts.has_key ("pinline-body-size-metric"):
+	result = result + "-Fbody_size_metric=%s " % \
+		 options["pinline-body-size-metric"]
+    if opts.has_key ("pinline-exclude-small-from-ratio-limit"):
+	result = result + "-Fexclude_small_from_ratio_limit=%s " % \
+		 opts["pinline-exclude-small-from-ratio-limit"]
+    if opts.has_key ("pinline-favor-small-functions"):
+	result = result + "-Ffavor_small_functions=%s " % \
+		 opts["pinline-favor-small-functions"]
+    if opts.has_key ("pinline-il-log-name"):
+	result = result + "-Fil_log_name=%s " % opts["pinline-il-log-name"]
+    if opts.has_key ("pinline-indir-thresh"):
+	result = result + "-Findir_thresh=%s " % opts["pinline-indir-thresh"]
+    if opts.has_key ("pinline-inline-function-pointers"):
+	result = result + "-Finline_function_pointers=%s " % \
+		 opts["pinline-inline-function-pointers"]
+    if opts.has_key ("pinline-inline-indir-by-profile"):
+	result = result + "-Finline_indir_by_profile=%s " % \
+		 opts["pinline-inline-indir-by-profile"]
+    if opts.has_key ("pinline-inline-inlined-body"):
+	result = result + "-Finline_inlined_body=%s " % \
+		 opts["pinline-inline-inlined-body"]
+    if opts.has_key ("pinline-inline-key-cost"):
+	result = result + "-Finline_key_cost=%s " % \
+		 opts["pinline-inline-key-cost"]
+    if opts.has_key ("pinline-inline-self-recursion"):
+	result = result + "-Finline_self_recursion=%s " % \
+		 opts["pinline-inline-self-recursion"]
+    if opts.has_key ("pinline-max-expansion-ratio"):
+	result = result + "-Fmax_expansion_ratio=%s " % \
+		 opts["pinline-max-expansion-ratio"]
+    if opts.has_key ("pinline-max-function-size"):
+	result = result + "-Fmax_function_size=%s " % \
+		 opts["pinline-max-function-size"]
+    if opts.has_key ("pinline-max-sf-size-limit"):
+	 result = result + "-Fmax_sf_size_limit=%s " % \
+		  opts["pinline-max-sf-size-limit"]
+    if opts.has_key ("pinline-min-expansion-key"):
+	result = result + "-Fmin_expansion_key=%s " % \
+		 opts["pinline-min-expansion-key"]
+    if opts.has_key ("pinline-min-expansion-weight"):
+	result = result + "-Fmin_expansion_weight=%s " % \
+		 opts["pinline-min-expansion-weight"]
+    if opts.has_key ("pinline-prevent-cross-file-inlining"):
+	result = result + "-Fprevent_cross_file_inlining=%s " % \
+		 opts["pinline-prevent-cross-file-inlining"]
+    if opts.has_key ("pinline-prevent-inline-functions"):
+	result = result + "-Fprevent_inline_functions=%s " % \
+		 opts["pinline-prevent-inline-functions"]
+    if opts.has_key ("pinline-print-heap-trace"):
+	result = result + "-Fprint_heap_trace=%s " % \
+		 opts["pinline-print-heap-trace"]
+    if opts.has_key ("pinline-print-inline-stats"):
+	result = result + "-Fprint_inline_stats=%s " % \
+		 opts["pinline-print-inline-stats"]
+    if opts.has_key ("pinline-print-inline-trace"):
+	result = result + "-Fprint_inline_trace=%s " % \
+		 opts["pinline-print-inline-trace"]
+    if opts.has_key ("pinline-size-only"):
+	result = result + "-Fsize_only=%s " % opts["pinline-size-only"]
+    if opts.has_key ("pinline-small-function-thresh"):
+	result = result + "-Fsmall_function_thresh=%s " % \
+		 opts["pinline-small-function-thresh"]
+    if opts.has_key ("pinline-sp-output-spec"):
+	result = result + "-Fsp_output_spec=%s " % \
+		 opts["pinline-sp-output-spec"]
+
+    return result
+# def get_pinline_args
+
+
+# get_ptol_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for PtoL.
+def get_ptol_args(opts):
+    result = ""
+
+    if opts.has_key ("do-pointer-analysis"):
+	result = result + "-Fgen_acc_specs=yes "
+    else:
+	result = result + "-Fgen_acc_specs=no "
+    if opts.has_key ("ptol-annotate-omega"):
+	result = result + "-Fannotate_omega=%s " % opts["ptol-annotate-omega"]
+    if opts.has_key ("ptol-debug-sync-arcs"):
+	result = result + "-Fdebug_sync_arcs=%s " % \
+		 opts["ptol-debug-sync-arcs"]
+    if opts.has_key ("ptol-emit-data-type-info"):
+	result = result + "-Femit_data_type_info=%s " % \
+		 opts["ptol-emit-data-type-info"]
+    if opts.has_key ("ptol-emit-source-info"):
+	result = result + "-Femit_source_info=%s " % \
+		 opts["ptol-emit-source-info"]
+    if opts.has_key ("ptol-generate-abs-insrtuctions"):
+	result = result + "-Fgenerate_abs_instructions=%s " % \
+		 opts["ptol-generate-abs-instructions"]
+    if opts.has_key ("ptol-generate-acc-name-attrs"):
+	result = result + "-Fgenerate_acc_name_attrs=%s " % \
+		 opts["ptol-generate-acc-name-attrs"]
+    if opts.has_key ("ptol-generate-hashing-branches"):
+	result = result + "-Fgenerate_hashing_branches=%s " % \
+		 opts["ptol-generate-hashing-branches"]
+    if opts.has_key ("ptol-generate-label-attrs"):
+	result = result + "-Fgenerate_label_attrs=%s " % \
+		 opts["ptol-generate-label-attrs"]
+    if opts.has_key ("ptol-generate-sign-extend-operations"):
+	result = result + "-Fgenerate_sign_extend_operations=%s " % \
+		 opts["ptol-generate-sign-extend-operations"]
+    if opts.has_key ("ptol-generate-static-branch-attrs"):
+	result = result + "-Fgenerate_static_branch_attrs=%s " % \
+		 opts["ptol-generate-static-branch-attrs"]
+    if opts.has_key ("ptol-generate-sync-arcs"):
+	result = result + "-Fgenerate_sync_arcs=%s " % \
+		 opts["ptol-generate-sync-arcs"]
+    if opts.has_key ("ptol-globalize-lvars"):
+	result = result + "-Fglobalize_lvars=%s " % \
+		 opts["ptol-globalize-lvars"]
+    if opts.has_key ("ptol-ignore-hash-br-seq-weight"):
+	result = result + "-Fignore_hash_br_seq_weight=%s " % \
+		 opts["ptol-ignore-hash-br-seq-weight"]
+    if opts.has_key ("ptol-ignore-hash-profile-weight"):
+	result = result + "-Fignore_hash_profile_weight=%s " % \
+		 opts["ptol-ignore-hash-profile-weight"]
+    if opts.has_key ("ptol-initialize-function-live-ins"):
+	result = result + "-Finitialize_function_live_ins=%s " % \
+		 opts["ptol-initialize-function-live-ins"]
+    if opts.has_key ("ptol-insert-intrinsics"):
+	result = result + "-Finsert_intrinsics=%s " % \
+		 opts["ptol-insert-intrinsics"]
+    if opts.has_key ("ptol-mark-glob-objids"):
+	result = result + "-Fmark_glob_objids=%s " % \
+		 opts["ptol-mark-glob-objids"]
+    if opts.has_key ("ptol-retain-sync-nums"):
+	result = result + "-Fretain_sync_nums=%s " % \
+		 opts["ptol-retain-sync-nums"]
+    if opts.has_key ("ptol-substitute-subroutine-call-for-operation"):
+	result = result + "-Fsubstitute_subroutine_call_for_operation=%s " % \
+		 opts["ptol-substitute-subroutine-call-for-operation"]
+
+    return result
+# def get_ptol_args
+
+
+# # get_pipgen_args takes the options dictionary as its argument.
+# # This function checks the command line options and builds a set of arguments
+# # for PIPGen.
+# def get_pipgen_args(opts):
+#     result=""
+
+#     if opts.has_key ("pip-dd-split-compound-expr-stmts"):
+# 	result=result + "-Fdd_split_compound_expr_stmts=%s " % \
+# 		opts["pip-dd-split-compount-expr-stmts"]
+#     if opts.has_key ("pip-dump-every-arc"):
+# 	result=result + "-Fdump_every_arc=%s " % opts["pip-dump-every-arc"]
+#     if opts.has_key ("pip-fast-mode"):
+# 	result=result + "-Ffast_mode=%s " % opts["pip-fast-mode"]
+#     if opts.has_key ("pip-force-dependence-analysis"):
+# 	result=result + "-Fforce_dependence_analysis=%s " % \
+# 		opts["pip-force-dependence-analysis"]
+#     if opts.has_key ("pip-multi-alias-relation"):
+# 	result=result + "-Fmulti_alias_relation=%s " % \
+# 		opts["pip-multi-alias-relation"]
+#     else:
+# 	result=result + "-Fmulti_alias_relation=0 "
+#     if opts.has_key ("pip-points-to-representation"):
+# 	result=result + "-Fpoints_to_representation=%s " % \
+# 		opts["pip-points-to-representation"]
+#     else:
+# 	result=result + "-Fpoints_to_representation=1 "
+
+#     if opts.has_key ("pip-allow-data-pointer-casts"):
+# 	result=result + "-Fallow_unrestricted_casting=2 "
+#     elif opts.has_key ("pip-allow-function-pointer-casts"):
+# 	result=result + "-Fallow_unrestricted_casting=1 "
+
+#     return result
+# # def get_pipgen_args
+
+
+# # get_pipanal_args takes the options dictionary as its argument.
+# # This function checks the command line options and builds a set of arguments
+# # for PIPAnal.
+# def get_pipanal_args(opts):
+#     result=""
+    
+#     if opts.has_key ("pip-points-to-representation"):
+# 	result=result + "-Fpoints_to_representation=%s " % \
+# 		opts["pip-points-to-representation"]
+#     else:
+# 	result=result + "-Fpoints_to_representation=1 "
+#     if opts.has_key ("pip-multi-alias-relation"):
+# 	result=result + "-Fmulti_alias_relation=%s " % \
+# 		opts["pip-multi-alias-relation"]
+#     if opts.has_key ("pip-dump-every-arc"):
+# 	result + "-Fdump_every_arc=%s " % opts["pip-dump-every-arc"]
+
+#     return result
+# # def get_pipanal_args
+
+
+# get_lopti_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lopti.
+def get_lopti_args (opts):
+    result = ""
+
+    if opts.has_key ("rc"):
+	result = result + "-Fgenerate_spec_checks=yes "
+
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    if opts.has_key ("no-cspec") or opts.has_key ("no-control-speculation"):
+	result = result + "-Fnon_excepting_ops=0 "
+
+    # 10/14/02 REK Set the rest of the Lopti opts if they are specified.
+    if opts.has_key ("lopti-allow-jump-expansion-of-pcode-loops"):
+	result = result + "-Fallow_jump_expansion_of_pcode_loops=%s " % \
+		 opts["lopti-allow-jump-expansion-of-pcode-loops"]
+    if opts.has_key ("lopti-debug-global-opti"):
+	result = result + "-Fdebug_global_opti=%s " % \
+		 opts["lopti-debug-global-opti"]
+    if opts.has_key ("lopti-debug-jump-opti"):
+	result = result + "-Fdebug_jump_opti=%s " % \
+		 opts["lopti-debug-jump-opti"]
+    if opts.has_key ("lopti-debug-local-opti"):
+	result = result + "-Fdebug_local_opti=%s " % \
+		 opts["lopti-debug-local-opti"]
+    if opts.has_key ("lopti-debug-loop-opti"):
+	result = result + "-Fdebug_loop_opti=%s " % \
+		 opts["lopti-debug-loop-opti"]
+    if opts.has_key ("lopti-debug-memflow"):
+	result = result + "-Fdebug_memflow=%s " % opts["lopti-debug-memflow"]
+    if opts.has_key ("lopti-do-classify-branches"):
+	result = result + "-Fdo_classify_branches=%s " % \
+		 opts["lopti-do-classify-branches"]
+    if opts.has_key ("lopti-do-code-layout"):
+	result = result + "-Fdo_code_layout=%s " % opts["lopti-do-code-layout"]
+    if opts.has_key ("lopti-do-complex-ind-elim"):
+	result = result + "-Fdo_complex_ind_elim=%s " % \
+		 opts["lopti-do-complex-ind-elim"]
+    if opts.has_key ("lopti-do-dead-loop-rem"):
+	result = result + "-Fdo_dead_loop_rem=%s " % \
+		 opts["lopti-do-dead-loop-rem"]
+    if opts.has_key ("lopti-do-global-common-sub-elim"):
+	result = result + "-Fdo_global_common_sub_elim=%s " % \
+		 opts["lopti-do-global-common-sub-elim"]
+    if opts.has_key ("lopti-do-global-constant-prop"):
+	result = result + "-Fdo_global_constant_prop=%s " % \
+		 opts["lopti-do-global-constant-prop"]
+    if opts.has_key ("lopti-do-global-copy-prop"):
+	result = result + "-Fdo_global_copy_prop=%s " % \
+		 opts["lopti-do-global-copy-prop"]
+    if opts.has_key ("lopti-do-global-dead-code-rem"):
+	result = result + "-Fdo_global_dead_code_rem=%s " % \
+		 opts["lopti-do-global-dead-code-rem"]
+    if opts.has_key ("lopti-do-global-dead-if-then-else-rem"):
+	result = result + "-Fdo_global_dead_if_then_else_rem=%s " % \
+		 opts["lopti-do-global-dead-if-then-else-rem"]
+    if opts.has_key ("lopti-do-global-elim-boolean-ops"):
+	result = result + "-Fdo_global_elim_boolean_ops=%s " % \
+		 opts["lopti-do-global-elim-boolean-ops"]
+    if opts.has_key ("lopti-do-global-mem-copy-prop"):
+	result = result + "-Fdo_global_mem_copy_prop=%s " % \
+		 opts["lopti-do-global-mem-copy-prop"]
+    if opts.has_key ("lopti-do-global-opti"):
+	result = result + "-Fdo_global_opti=%s " % opts["lopti-do-global-opti"]
+    if opts.has_key ("lopti-do-global-red-load-elim"):
+	result = result + "-Fdo_global_red_load_elim=%s " % \
+		 opts["lopti-do-global-red-load-elim"]
+    if opts.has_key ("lopti-do-global-red-store-elim"):
+	result = result + "-Fdo_global_red_store_elim=%s " % \
+		 opts["lopti-do-global-red-store-elim"]
+    if opts.has_key ("lopti-do-jump-block-merge"):
+	result = result + "-Fdo_jump_block_merge=%s " % \
+		 opts["lopti-do-jump-block-merge"]
+    if opts.has_key ("lopti-do-jump-br-swap"):
+	result = result + "-Fdo_jump_br_swap=%s " % \
+		 opts["lopti-do-jump-br-swap"]
+    if opts.has_key ("lopti-do-jump-br-target-expansion"):
+	result = result + "-Fdo_jump_br_target_expansion=%s " % \
+		 opts["lopti-do-jump-br-target-expansion"]
+    if opts.has_key ("lopti-do-jump-br-to-next-block"):
+	result = result + "-Fdo_jump_br_to_next_block=%s " % \
+		 opts["lopti-do-jump-br-to-next-block"]
+    if opts.has_key ("lopti-do-jump-br-to-same-target"):
+	result = result + "-Fdo_jump_br_to_same_target=%s " % \
+		 opts["lopti-do-jump-br-to-same-target"]
+    if opts.has_key ("lopti-do-jump-br-to-uncond-br"):
+	result = result + "-Fdo_jump_br_to_uncond_br=%s " % \
+		 opts["lopti-do-jump-br-to-uncond-br"]
+    if opts.has_key ("lopti-do-jump-combine-labels"):
+	result = result + "-Fdo_jump_combine_labels=%s " % \
+		 opts["lopti-do-jump-combine-labels"]
+    if opts.has_key ("lopti-do-jump-dead-block-elim"):
+	result = result + "-Fdo_jump_dead_block_elim=%s " % \
+		 opts["lopti-do-jump-dead-block-elim"]
+    if opts.has_key ("lopti-do-jump-opti"):
+	result = result + "-Fdo_jump_opti=%s " % opts["lopti-do-jump-opti"]
+    if opts.has_key ("lopti-do-local-branch-fold"):
+	result = result + "-Fdo_local_branch_fold=%s " % \
+		 opts["lopti-do-local-branch-fold"]
+    if opts.has_key ("lopti-do-local-code-motion"):
+	result = result + "-Fdo_local_code_motion=%s " % \
+		 opts["lopti-do-local-code-motion"]
+    if opts.has_key ("lopti-do-local-common-sub-elim"):
+	result = result + "-Fdo_local_common_sub_elim=%s " % \
+		 opts["lopti-do-local-common-sub-elim"]
+    if opts.has_key ("lopti-do-local-constant-comb"):
+	result = result + "-Fdo_local_constant_comb=%s " % \
+		 opts["lopti-do-local-constant-comb"]
+    if opts.has_key ("lopti-do-local-constant-fold"):
+	result = result + "-Fdo_local_constant_fold=%s " % \
+		 opts["lopti-do-local-constant-fold"]
+    if opts.has_key ("lopti-do-local-constant-prop"):
+	result = result + "-Fdo_local_constant_prop=%s " % \
+		 opts["lopti-do-local-constant-prop"]
+    if opts.has_key ("lopti-do-local-copy-prop"):
+	result = result + "-Fdo_local_copy_prop=%s " % \
+		 opts["lopti-do-local-copy-prop"]
+    if opts.has_key ("lopti-do-local-dead-code-rem"):
+	result = result + "-Fdo_local_dead_code_rem=%s " % \
+		 opts["lopti-do-local-dead-code-rem"]
+    if opts.has_key ("lopti-do-local-mem-copy-prop"):
+	result = result + "-Fdo_local_mem_copy_prop=%s " % \
+		 opts["lopti-do-local-mem-copy-prop"]
+    if opts.has_key ("lopti-do-local-operation-fold"):
+	result = result + "-Fdo_local_operation_fold=%s " % \
+		 opts["lopti-do-local-operation-fold"]
+    if opts.has_key ("lopti-do-local-opti"):
+	result = result + "-Fdo_local_opti=%s " % opts["lopti-do-local-opti"]
+    if opts.has_key ("lopti-do-local-reduce-logic"):
+	result = result + "-Fdo_local_reduce_logic=%s " % \
+		 opts["lopti-do-local-reduce-logic"]
+    if opts.has_key ("lopti-do-local-red-load-elim"):
+	result = result + "-Fdo_local_red_load_elim=%s " % \
+		 opts["lopti-do-local-red-load-elim"]
+    if opts.has_key ("lopti-do-local-red-store-elim"):
+	result = result + "-Fdo_local_red_store_elim=%s " % \
+		 opts["lopti-do-local-red-store-elim"]
+    if opts.has_key ("lopti-do-local-register-rename"):
+	result = result + "-Fdo_local_register_rename=%s " % \
+		 opts["lopti-do-local-register-rename"]
+    if opts.has_key ("lopti-do-local-remove-sign-ext"):
+	result = result + "-Fdo_local_remove_sign_ext=%s " % \
+		 opts["lopti-do-local-remove-sign-ext"]
+    if opts.has_key ("lopti-do-local-rev-copy-prop"):
+	result = result + "-Fdo_local_rev_copy_prop=%s " % \
+		 opts["lopti-do-local-rev-copy-prop"]
+    if opts.has_key ("lopti-do-local-strength-red"):
+	result = result + "-Fdo_local_strength_red=%s " % \
+		 opts["lopti-do-local-strength-red"]
+    if opts.has_key ("lopti-do-local-strength-red-for-signed-div-rem"):
+	result = result + "-Fdo_local_strength_red_for_signed_div_rem=%s " % \
+		 opts["lopti-do-local-strength-red-for-signed-div-rem"]
+    if opts.has_key ("lopti-do-local-operation-cancel"):
+	result = result + "-Fdo_local_operation_cancel=%s " % \
+		 opts["lopti-do-local-operation-cancel"]
+    if opts.has_key ("lopti-do-local-op-breakdown"):
+	result = result + "-Fdo_local_op_breakdown=%s " % \
+		 opts["lopti-do-local-op-breakdown"]
+    if opts.has_key ("lopti-do-local-op-recombine"):
+	result = result + "-Fdo_local_op_recombine=%s " % \
+		 opts["lopti-do-local-op-recombine"]
+    if opts.has_key ("lopti-do-longword-loop-opti"):
+	result = result + "-Fdo_longword_loop_opti=%s " % \
+		 opts["lopti-do-longword-loop-opti"]
+    if opts.has_key ("lopti-do-loop-br-simp"):
+	result = result + "-Fdo_loop_br_simp=%s " % \
+		 opts["lopti-do-loop-br-simp"]
+    if opts.has_key ("lopti-do-loop-global-var-mig"):
+	result = result + "-Fdo_loop_global_var_mig=%s " % \
+		 opts["lopti-do-loop-global-var-mig"]
+    if opts.has_key ("lopti-do-loop-ind-var-str-red"):
+	result = result + "-Fdo_loop_ind_var_str_red=%s " % \
+		 opts["lopti-do-loop-ind-var-str-red"]
+    if opts.has_key ("lopti-do-loop-ind-var-reinit"):
+	result = result + "-Fdo_loop_ind_var_reinit=%s " % \
+		 opts["lopti-do-loop-ind-var-reinit"]
+    if opts.has_key ("lopti-do-loop-inv-code-rem"):
+	result = result + "-Fdo_loop_inv_code_rem=%s " % \
+		 opts["lopti-do-loop-inv-code-rem"]
+    if opts.has_key ("lopti-do-loop-opti"):
+	result = result + "-Fdo_loop_opti=%s " % opts["lopti-do-loop-opti"]
+    if opts.has_key ("lopti-do-mark-incoming-parms"):
+	result = result + "-Fdo_mark_incoming_parms=%s " % \
+		 opts["lopti-do-mark-incoming-parms"]
+    if opts.has_key ("lopti-do-mark-memory-labels"):
+	result = result + "-Fdo_mark_memory_labels=%s " % \
+		 opts["lopti-do-mark-memory-labels"]
+    if opts.has_key ("lopti-do-mark-sync-jsrs"):
+	result = result + "-Fdo_mark_sync_jsrs=%s " % \
+		 opts["lopti-do-mark-sync-jsrs"]
+    if opts.has_key ("lopti-do-mark-trivial-safe-ops"):
+	result = result + "-Fdo_mark_trivial_safe_ops=%s " % \
+		 opts["lopti-do-mark-trivial-safe-ops"]
+    if opts.has_key ("lopti-do-mark-trivial-sef-jsrs"):
+	result = result + "-Fdo_mark_trivial_sef_jsrs=%s " % \
+		 opts["lopti-do-mark-trivial-sef-jsrs"]
+    if opts.has_key ("lopti-do-memflow-multistore-load"):
+	result = result + "-Fdo_memflow_multistore_load=%s " % \
+		 opts["lopti-do-memflow-multistore-load"]
+    if opts.has_key ("lopti-do-memflow-opti"):
+	result = result + "-Fdo_memflow_opti=%s " % \
+		 opts["lopti-do-memflow-opti"]
+    if opts.has_key ("lopti-do-post-inc-conv"):
+	result = result + "-Fdo_post_inc_conv=%s " % \
+		 opts["lopti-do-post-inc-conv"]
+    if opts.has_key ("lopti-do-remove-decidable-cond-branches"):
+	result = result + "-Fdo_remove-decidable_cond_branches=%s " % \
+		 opts["lopti-do-remove-decidable-cond-branches"]
+    if opts.has_key ("lopti-do-split-branches"):
+	result = result + "-Fdo_split_branches=%s " % \
+		 opts["lopti-do-split-branches"]
+    if opts.has_key ("lopti-do-split-unification"):
+	result = result + "-Fdo_split_unification=%s " % \
+		 opts["lopti-do-split-unification"]
+    if opts.has_key ("lopti-ignore-sync-arcs-for-loop-inv-migration"):
+	result = result + "-Fignore_sync_arcs_for_loop_inv_migration=%s " % \
+		 opts["lopti-ignore-sync-arcs-for-loop-inv-migration"]
+    if opts.has_key ("lopti-ignore-sync-arcs-for-red-elim"):
+	result = result + "-Fignore_sync_arcs_for_red_elim=%s " % \
+		 opts["lopti-ignore-sync-arcs-for-red-elim"]
+    if opts.has_key ("lopti-memflow-bypass-jsr"):
+	result = result + "-Fmemflow_bypass_jsr=%s " % \
+		 opts["lopti-memflow-bypass-jsr"]
+    if opts.has_key ("lopti-memflow-bypass-load"):
+	result = result + "-Fmemflow_bypass_load=%s " % \
+		 opts["lopti-memflow-bypass-load"]
+    if opts.has_key ("lopti-memflow-bypass-store"):
+	result = result + "-Fmemflow_bypass_store=%s " % \
+		 opts["lopti-memflow-bypass-store"]
+    if opts.has_key ("lopti-memflow-bypass-total"):
+	result = result + "-Fmemflow_bypass_total=%s " % \
+		 opts["lopti-memflow-bypass-total"]
+    if opts.has_key ("lopti-only-lvl1-for-zero-weight-fn"):
+	result = result + "-Fonly_lvl1_for_zero_weight-fn=%s " % \
+		 opts["lopti-only-lvl1-for-zero-weight-fn"]
+    if opts.has_key ("lopti-opti-level"):
+	result = result + "-Fopti_level=%s " % opts["lopti-opti-level"]
+    if opts.has_key ("lopti-pred-promotion-level"):
+	result = result + "-Fpred_promotion_level=%s " % \
+		 opts["lopti-pred-promotion-level"]
+    if opts.has_key ("lopti-preserve-loop-var"):
+	result = result + "-Fpreserve_loop_var=%s " % \
+		 opts["lopti-preserve-loop-var"]
+    if opts.has_key ("lopti-print-opti-breakdown"):
+	result = result + "-Fprint_opti_breakdown=%s " % \
+		 opts["lopti-print-opti-breakdown"]
+    if opts.has_key ("lopti-print-opti-count"):
+	result = result + "-Fprint_opti_count=%s " % \
+		 opts["lopti-print-opti-count"]
+    if opts.has_key ("lopti-store-migration-mode"):
+	result = result + "-Fstore_migration_mode=%s " % \
+		 opts["lopti-store-migration-mode"]
+
+    return result
+# def get_lopti_args
+
+
+# get_lencode_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lencode.
+def get_lencode_args (opts):
+    result = ""
+
+    if not opts.has_key ("lprof-no-loop-iters"):
+	result = result + "-Fencode_loop_info=yes -Fdo_loop_nest_info=yes \
+			   -Fencode_sim_loop_info=yes "
+    if opts.has_key ("lprof-buf"):
+	result = result + "-Fdo_buf_info=yes -Fbuf_info_file_name=BUF_INFO "
+    if opts.has_key ("lprof-no-probes"):
+	result = result + "-Fencode_for=noprobes "
+    else:
+	result = result + "-Fencode_for=profiling "
+
+    return result
+# def get_lencode_parms
+
+
+# get_lemulate_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lemulate.
+def get_lemulate_args (opts):
+    result = ""
+
+    if opts.has_key ("dump-parms"):
+	result = result + "-Fdump_parms=yes "
+    if opts.has_key ("lprof-no-ver"):
+	result = result + "-Fgenerate_info_files=no "
+    if opts.has_key ("lprof-no-probes"):
+	result = result + "-Fprobe_for=noprobes "
+    else:
+	result = result + "-Fprobe_for=profiling "
+    if opts.has_key ("krc"):
+	result = result + "-Fansi_c_mode=no "
+    else:
+	result = result + "-Fansi_c_mode=yes "
+
+    return result
+# def get_lemulate_args
+
+
+# get_lget_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lget.
+def get_lget_args (opts):
+    result = ""
+    
+    if opts.has_key ("lprof-mem-dep") or opts.has_key ("lprof-gen-value") or \
+       opts.has_key ("lprof-mem-reuse") or opts.has_key ("lprof-reuse"):
+	result = result + "-Finsert_profile=no "
+    else:
+	result = result + "-Finsert_profile=yes "
+    if opts.has_key ("lprof-mem-dep"):
+	result = result + "-Finsert_mem_dep_profile=yes "
+    if opts.has_key ("lprof-mem-dep-file"):
+	result = result + "-Fmem_dep_profile_file=%s " % \
+		 opts["lprof-mem-dep-file"]
+    if opts.has_key ("lprof-nozero"):
+	result = result + "-Fremove_zero_conflict_sync_arcs=yes "
+    if opts.has_key ("lprof-remove-sync"):
+	result = result + "-Fremove_existing_sync_arcs=yes "
+    if opts.has_key ("lprof-gen-sync"):
+	result = result + "-Fmem_dep_annotate_mode=sync "
+    if opts.has_key ("lprof-gen-attr"):
+	result = result + "-Fmem_dep_annotate_mode=attr "
+    if opts.has_key ("lprof-gen-value"):
+	result = result + "-Finsert_value_profile=yes "
+    if opts.has_key ("lprof-value"):
+	result = result + "-Fvalue_profile_percentage=%s " % \
+		 opts["lprof-value"]
+    if opts.has_key ("lprof-value-file"):
+	result = result + "-Fvalue_profile_file=%s " % \
+		 opts["lprof-value-file"]
+    if opts.has_key ("lprof-mem-reuse"):
+	result = result + "-Finsert_mem_reuse_profile=yes "
+    if opts.has_key ("lprof-mem-reuse-file"):
+	result = result + "-Fmem_reuse_profile_file=%s " % \
+		 opts["lprof-mem-reuse-file"]
+    if opts.has_key ("lprof-reuse"):
+	result = result + "-Finsert_reuse_profile=yes "
+    if opts.has_key ("lprof-reuse-file"):
+	result = result + "-Freuse_profile_file=%s " % \
+		 opts["lprof-reuse-file"]
+
+    return result
+# def get_lget_args
+
+
+# get_lblock_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lblock.
+def get_lblock_args (opts):
+    result = ""
+
+    if opts.has_key ("rc"):
+	result = result + "-Fgenerate_spec_checks=yes "
+    if opts.has_key ("target"):
+	result = result + "-Flmdes=%s " % opts["target"]
+    if opts.has_key ("lblock-no-peel"):
+	result = result + "-Fpeel_enable=no "
+
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    if opts.has_key ("no-cspec") or opts.has_key ("no-control-speculation"):
+	result = result + "-Fnon_excepting_ops=0 "
+
+    return result
+# def get_lblock_args
+
+
+# get_lsuperscalar_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Lsuperscalar.
+def get_lsuperscalar_args(opts):
+    result=""
+
+    # Build the option list here so that the options don't have to be
+    # checked for every file.
+    result="-Fdo_branch_combining=yes -Fpred_exec_support=yes "
+    if opts.has_key ("rc"):
+	result = result + "-Fgenerate_spec_checks=yes "
+    if opts.has_key ("lsuperscalar-remainder-loop-opti"):
+	result = result + "-Funroll_with_remainder_loop=yes "
+	result = result + "-Funroll_with_pipelined_loops=yes "
+    if opts.has_key ("target"):
+	result = result + "-Flmdes=%s " % opts["target"]
+    if opts.has_key ("pipe"):
+	result = result + "-Fmark_softpipe_loops=yes "
+	result = result + "-Fdo_multiway_branch_opti=no "
+    if opts.has_key ("lsuperscalar-faster-opti"):
+	result = result + "-Fallow_backedge_exp=no "
+	result = result + "-Fallow_expansion_of_loops=no "
+	result = result + "-Fallow_extra_unrolling_for_small_loops=no "
+    if opts.has_key ("max-unroll"):
+	result = result + "-Fmax_unroll_allowed=%s " % opts["max-unroll"]
+
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    if opts.has_key ("no-cspec") or opts.has_key ("no-control-speculation"):
+	result = result + "-Fnon_excepting_ops=0 "
+
+    return result
+#def get_lsuperscalar_args
+
+
+# get_ltahoe_args takes the options dictionary as its argument.
+# This function checks the command line options and builds a set of arguments
+# for Ltahoe.
+def get_ltahoe_args(opts):
+    result = ""
+
+    if opts.has_key ("target"):
+        result = result + "-Flmdes=%s " % opts["target"]
+    if opts.has_key ("pipe"):
+        result = result + "-Fdo_software_pipelining=yes "
+    if opts.has_key ("rc"):
+        result = result + "-Fgenerate_spec_checks=yes "
+        result = result + "-Fdo_recovery_code=yes "
+        result = result + "-Fclobber_unats=no "
+    if opts.has_key ("ltahoe-faster-sched"):
+        result = result + "-Fdf_max_pred_paths=20 "
+
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    if opts.has_key ("no-cspec") or opts.has_key ("no-control-speculation"):
+	result = result + "-Fnon_excepting_ops=0 "
+
+    # 12/02/02 REK Adding support for GNU as
+    if opts.has_key ("use-ias"):
+	result = result + "-Foutput_for_ias=yes "
+    else:
+	result = result + "-Foutput_for_ias=no "
+
+    if opts["OPTIMIZATION_LEVEL"]==0:
+	result = result + "-Fdo_machine_opt=no"
+
+    return result
+# def get_ltahoe_args
+
+
+# generate_pprofiled_binary takes the inputFiles dictionary as the first
+# argument.  It takes the options dictionary as the second argument.
+# It takes a list of libraries to link with the profiled binary as the third
+# argument.
+# This function builds the Pcode profiled binary and exits.  The user
+# will run this binary and then call the compiler again.
+# To generate profiled code,
+# -run 'gen_PtoC_probed . "-p $STD_PARMS_FILE" < srclist'
+# -Compile the generated C with gcc using something like
+# `read_platform_info -compiler_invocation` -g -o gzip.prof *_rev.c \
+#   `read_platform_info -pcode_prof_lib` -lm
+# If --pprof-use was specified on the command line, we must have done this
+# step already, so we can skip it.
+def generate_pprofiled_binary (files, opts, profLibsToLink):
+    # Clean up any old profile info.
+    for file in ["impact_probe.status", "impact_loop_id.tmp", \
+		 "impact_probe.tmp", "profile.dat", "profile.iter", \
+		 "%s.prof" % opts["o"]] + \
+		glob.glob ("profile_dat.%s.*" % opts["o"]) + \
+		glob.glob ("profile_iter.%s.*" % opts["o"]):
+	if os.path.exists (file):
+	    os.remove (file)
+    # for file
+
+    ipTableName = filetypes.rename_file (filetypes.PCODE_FLAT,
+					 opts["IP_SYM_TAB_BASE"], 0)
+
+    if opts.has_key ("verbose"):
+	sys.stderr.write ("inputFiles:\n")
+	filetypes.dump_dict (files)
+
+    # Run each Pcode file (flattened or normal) through PtoC to make the probed
+    # .c files.
+    cmd = "PtoC -p %s -Finsert_probe=yes -Finsert_loop_probe=yes \
+           -Finsert_ipc_probe=yes -Flog_file=stderr \
+	   -Foutput_tag=\"%s\" -i %s" % (opts["parmfile"], opts["o"],
+					 ipTableName)
+
+    pcfFiles = files[filetypes.PCODE_FLAT][:]
+    filetypes.update_files_by_type (filetypes.PCODE_FLAT,
+				    filetypes.PROBED_C_CODE, files)
+
+    run_command (cmd, opts)
+
+    # We can't compile *_rev.c in one step if we're compiling c++.  The
+    # code generated by PtoC is accepted by gcc, but not by g++.  We
+    # therefore compile *_rev.c to *_rev.o with gcc, then link with
+    # gcc or g++, depending on the language.
+    compiler_base = read_platform_info ("-compiler_invocation") + " "
+    if opts.has_key ("pprof-shared-libs"):
+	compiler_base = compiler_base + \
+			read_platform_info ("-shared_lib_specifier") + " "
+    if opts.has_key ("pprof-static-libs"):
+	compiler_base = compiler_base + \
+			read_platform_info ("-static_lib_specifier") + " "
+    if opts.has_key ("krc"):
+	compiler_base = compiler_base + \
+			read_platform_info ("-krc_mode_specifier") + " "
+    else:
+	compiler_base = compiler_base + \
+			read_platform_info ("-ansi_c_mode_specifier") + " "
+    if opts.has_key ("pprof-debug"):
+	compiler_base = compiler_base + \
+			read_platform_info ("-debug_mode_specifier") + " "
+    if opts.has_key ("pprof-optimize"):
+	compiler_base = compiler_base + \
+			read_platform_info ("-opti_mode_specifier") + " "
+    
+    cmd_compile = compiler_base + "-c %s -o %s"
+    cmdParArgs = []
+    for file in files[filetypes.PROBED_C_CODE]:
+	rev_o = filetypes.rename_file (filetypes.PROBED_OBJECT, file, 1)
+	cmdParArgs.append ((file, rev_o))
+    cmdParArgs.append (("impact_dump_probe_rev.c", "impact_dump_probe_rev.o"))
+
+    run_parallel (cmd_compile, cmdParArgs, opts)
+
+    clean_files (files[filetypes.PROBED_C_CODE][:], opts)
+    filetypes.update_files_by_type (filetypes.PROBED_C_CODE,
+				    filetypes.PROBED_OBJECT, files)
+
+    # Build the command to run the linker
+    cmd_link = compiler_base
+    if opts.has_key ("CXX"):
+	cmd_link = re.sub ("^gcc", "g++", cmd_link)
+
+    # If no name was specified, use a.out.prof as the binary name
+    cmd_link = cmd_link + "-o %s " % opts["PROF_BINARY_NAME"]
+
+    if opts.has_key ("verbose"):
+	sys.stderr.write ("inputFiles:\n")
+	filetypes.dump_dict (files)
+
+    # Add the files to compile.
+    for file in files[filetypes.PROBED_OBJECT]:
+	cmd_link = cmd_link + file + " "
+    # for file
+
+    # Add impact's source file for the probing.
+    cmd_link = cmd_link + "impact_dump_probe_rev.o "
+
+    # Add in any paths to search for libraries.
+    cmd_link = cmd_link + opts.get("L") + " " + opts.get("R") + " "
+
+    # Add in any special library paths for Pcode profiling.
+    cmd_link = cmd_link + opts.get("pprof-lib-dir") + " "
+
+    # Read the linking postoptions if this is a benchmark.
+    cmd_link = cmd_link + read_platform_info ("-compiler_postoptions") + " "
+
+    # Here is where the f2c stuff would be inserted.
+    cmd_link = cmd_link + read_platform_info ("-pcode_prof_lib") + " "
+
+    # profLibsToLink only contains system libraries specified on the command
+    # line.  Libraries that are part of the source tree being compiled are
+    # profiled as objects.
+    cmd_link = cmd_link + profLibsToLink + " -lm "
+
+    if opts.has_key ("CXX"):
+	cmd_link = "%s -lC %s/stub.o " % (cmd_link,
+					  read_platform_info ("-platform_dir"))
+
+    # Add in any special libs for Pcode profiling.
+    cmd_link = cmd_link + opts.get ("pprof-add-lib") + " "
+
+    if opts.has_key ("verbose"):
+	sys.stderr.write ("Running command %s\n" % cmd_link)
+	
+    status = os.system (cmd_link)
+
+    # Some profile state information is saved in filenames that may conflict
+    # with other runs of the compiler.  save_profile_state() stores these
+    # files in a filename with a unique name.
+    save_profile_state (pcfFiles + [ipTableName], opts)
+
+    clean_files (["impact_dump_probe_rev.c", "impact_dump_probe_rev.o",
+		  "__impact_pprof.h", "impact_ipc_id.tmp",
+		  "impact_loop_id.tmp", "impact_probe.status",
+		  "impact_probe.tmp", ipTableName] + \
+		 files[filetypes.PROBED_OBJECT] + pcfFiles, opts)
+
+    exit (status >> 8)
+# def generate_pprofiled_binary
+
+
+# merge_pprofile_info takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second argument.
+# This function merges the Pcode profiling information back into the Pcode
+# files.
+# To use the profile information
+# -run 'Pmerge_prof profile_dat.<output name>.*' --> generates profile.dat
+# -run 'Pmerge_iter profile_iter.<output name>.*'--> generates profile.iter
+# -run 'Pmerge_ipc profile_ipc.<output name>.*'  --> generates profile.ipc
+# -run 'gen_PtoPannotate_internal . "-p $STD_PARMS_FILE" < srclist'
+# Input files: $file.pcf
+# Output files: $file.pcf_p
+def merge_pprofile_info (files, opts):
+    ipTableName = filetypes.rename_file (filetypes.PCODE_FLAT,
+					 opts["IP_SYM_TAB_BASE"], 0)
+
+    # Generate the profile.dat and profile.iter files
+    run_command ("Pmerge_prof profile_dat.%s.*" % opts["o"], opts)
+    run_command ("Pmerge_iter profile_iter.%s.*" % opts["o"], opts)
+    if len (glob.glob ("profile_ipc.%s.*" % opts["o"])) != 0:
+	run_command ("Pmerge_ipc %s profile_ipc.%s.*" % \
+		     (opts["PROF_BINARY_NAME"], opts["o"]), opts)
+		 
+    # Before running Pannotate it is necessary to delete the impact_probe.tmp
+    # and impact_loop_id.tmp files so that Pannotate starts with loop 0.
+    run_command ("rm -f impact_probe.tmp impact_loop_id.tmp impact_ipc_id.tmp",
+		 opts)
+
+    # Run each flattened Pcode file through Pannotate
+    # The [:] at the end copies the array, which is necessary as we will modify
+    # the array inside the loop.
+    cmd = "Pannotate -p %s %s -i %s -o %s" % \
+	  (opts["parmfile"], get_pannotate_args (opts), ipTableName, 
+	   filetypes.extension_without_dot (filetypes.PCODE_FLAT_PROFILED))
+
+    run_command (cmd, opts)
+
+    # Remove the flattened pcode files if we don't need them anymore.
+    cleanFiles = files[filetypes.PCODE_FLAT][:]
+    cleanFiles = cleanFiles + glob.glob ("profile_dat.%s.*" % opts["o"]) + \
+		 glob.glob ("profile_iter.%s.*" % opts["o"]) + \
+		 glob.glob ("profile_ipc.%s.*" % opts["o"]) + \
+		 ["impact_probe.status", "impact_loop_id.tmp",
+		  "impact_probe.tmp", "profile.dat", "profile.iter",
+		  "profile.ipc", opts["PROF_BINARY_NAME"], ipTableName]
+		 
+    clean_files (cleanFiles, opts)
+
+    clear_profile_state (opts)
+
+    filetypes.update_files_by_type (filetypes.PCODE_FLAT,
+				    filetypes.PCODE_FLAT_PROFILED, files)
+# def merge_pprofile_info
+
+
+# generate_lprofiled_binary takes the inputFiles dictionary as the first
+# argument.  It takes the options dictionary as the second argument.
+# It takes a list of libraries to link with the profiled binary as the third
+# argument.
+# This function builds the Lcode profiled binary and exits.  The user
+# will run this binary and then call the compiler again.
+# Input files: *.O
+# Intermediate files: _EM_data_init.c, _EM_extern.h, _EM_include.h,
+#                     _EM_struct.h, host_info.compiler,
+#                     host_info.compiler_version, host_info.platform,
+#                     impact_info.date, impact_info.lcode, impact_info.type,
+#                     impact_info.version, io.encoded, *.O.c, *.O.h,
+#                     preprocess_info.date, preprocess_info.extra_options,
+#                     preprocess_info.invocation, preprocess_info.mode
+# Output files: $output.probed, $output.prof, *.O
+def generate_lprofiled_binary (files, opts, profLibsToLink):
+    # Set the name of the profiled binary and the encoded file
+    # scriptName is the name of the python script that the user will actually
+    # run.  It is a simple wrapper around Lprofile.
+    # profileName is the name of the output from Lprofile.
+    probedName = "%s.probed" % opts["o"]
+    encodedName = "%s.encoded" % opts["o"]
+    scriptName = opts["PROF_BINARY_NAME"]
+    profileName = opts["o"]
+
+    # Clean up any old profile info.
+    for file in glob.glob ("%s*profile" % opts["o"]) + \
+	    ["%s.index" % opts["o"]]:
+        run_command ("rm -f %s" % file, opts)
+    # for file
+
+    # Delete the files we're about to generate.
+    run_command ("rm -f %s" % probedName, opts)
+    run_command ("rm -f %s" % encodedName, opts)
+    run_command ("rm -f %s" % scriptName, opts)
+    run_command ("rm -f %s" % profileName, opts)
+
+    # Save the .O files for --lprof-use
+    save_profile_state (files[filetypes.LCODE_OPTIMIZED], opts)
+
+    # Set up the arguments for Lencode
+    lencodeParms = "-p %s -Flayout_database_name=%s %s %s " % \
+		   (opts["parmfile"], opts["host-layout-info"],
+		    get_lencode_args (opts), opts["F"])
+    for file in files[filetypes.LCODE_OPTIMIZED]:
+	cmd = "Lencode %s -i %s -o stdout >> %s" % (lencodeParms, file,
+						    encodedName)
+	run_command (cmd, opts)
+    # for file
+
+    # Write the names of the optimized Lcode files to a temporary file
+    # that Lemulate will read.
+    tmpFilename = make_source_list (files, filetypes.LCODE_OPTIMIZED)
+
+    cmd = "Lemulate -p %s -Flayout_database_name=%s %s %s -i %s" % \
+	  (opts["parmfile"], opts["host-layout-info"],
+	   get_lemulate_args (opts), opts["F"], tmpFilename)
+    run_command (cmd, opts)
+
+    run_command ("rm -f %s" % tmpFilename, opts)
+
+    cleanFiles = files[filetypes.LCODE_OPTIMIZED][:]
+    # Each file we just processed in in probed Lcode form now.
+    filetypes.update_files_by_type (filetypes.LCODE_OPTIMIZED,
+				    filetypes.PROBED_LCODE, files)
+
+    # Set up the command to compile the probed Lcode files.
+    cmd = read_platform_info ("-compiler_invocation") + " "
+    if opts.has_key ("CXX"):
+	cmd = re.sub ("^gcc", "g++", cmd)
+
+    if opts.has_key ("krc"):
+	cmd = cmd + read_platform_info ("-krc_mode_specifier") + " "
+    else:
+	cmd = cmd + read_platform_info ("-ansi_c_mode_specifier") + " "
+
+    if opts.has_key ("lprof-debug"):
+	cmd = cmd + read_platform_info ("-debug_mode_specifier") + " "
+    elif opts.has_key ("lprof-optimize"):
+	cmd = cmd + read_platform_info ("-opti_mode_specifier") + " "
+
+    if opts.has_key ("lprof-shared-libs"):
+	cmd = cmd + read_platform_info ("-shared_lib_specifier") + " "
+    if opts.has_key ("lprof-static-libs"):
+	cmd = cmd + read_platform_info ("-static_lib_specifier") + " "
+
+    if opts.has_key ("lprof-flush-trace"):
+	cmd = cmd + "-DFLUSH_TRACE "
+
+    cmd = cmd + "-I%s/include " % os.environ["IMPACT_ROOT"]
+    cmd = cmd + "-o %s " % probedName
+
+    # Add the _EM_data_init.c file to get main
+    cmd = cmd + "_EM_data_init.c "
+
+    # Add in each probed Lcode file to the command.
+    lcodeFiles = files[filetypes.PROBED_LCODE][:]
+    for file in files[filetypes.PROBED_LCODE]:
+	cmd = cmd + file + " "
+    # for file
+
+    cmd = cmd + read_platform_info ("-lcode_emul_lib") + " "
+
+    # Add in the library paths.
+    cmd = cmd + opts.get("L") + " " + opts.get("R") + " "
+
+    # Add in any special library paths for Lcode profiling.
+    cmd = cmd + opts.get("lprof-lib-dir") + " "
+
+    # Add in the libraries to link with
+    cmd = cmd + profLibsToLink + " "
+
+    if opts.has_key ("CXX"):
+	cmd = "%s -lC %s/stub.o " % (cmd, read_platform_info ("-platform_dir"))
+
+    # Add in any special libs for Lcode profiling.
+    cmd = cmd + opts.get("lprof-add-lib") + " "
+
+    cmd = cmd + read_platform_info ("-compiler_postoptions") + " "
+
+    # Compile the probed Lcode.
+    run_command (cmd, opts)
+
+    for file in lcodeFiles:
+	cleanFiles.append (file)
+	cleanFiles.append (os.path.splitext(file)[0] + ".h")
+    # for file
+    cleanFiles = cleanFiles + ["_EM_data_init.c", "_EM_extern.h",
+			       "_EM_include.h", "_EM_struct.h",
+			       "host_info.compiler",
+			       "host_info.compiler_version",
+			       "host_info.platform",
+			       "impact_info.date", "impact_info.lcode",
+			       "impact_info.type", "impact_info.version",
+			       "preprocess_info.date",
+			       "preprocess_info.extra_options",
+			       "preprocess_info.invocation",
+			       "preprocess_info.mode"]
+    clean_files (cleanFiles, opts)
+
+    # Run the binary through chatr
+    if not (opts.has_key ("no-cspec") or \
+	    opts.has_key ("no-control-speculation")):
+	run_command ("chatr -r %s" % probedName, opts)
+
+    # Write a script that the user will run to do the profiling
+    curDir = os.getcwd ()
+    scriptHandle = open (scriptName, 'w')
+    scriptHandle.write ("""#! /usr/bin/env python
+import os, sys
+cmd = "%s/%s "
+for arg in sys.argv[1:]:
+    cmd = cmd + "'" + arg + "' "
+os.execvpe ("Lprofile", ["Lprofile",
+                         "%s/%s",
+			 "%s/%s." + str (os.getpid ()) + ".profile",
+			 "%s/%s",
+			 cmd,
+			 "-p %s %s"],
+			 os.environ)""" % \
+		        (curDir, probedName, curDir, encodedName, curDir,
+			 profileName, curDir, probedName, opts["parmfile"],
+			 opts["F"]))
+    scriptHandle.close ()
+
+    run_command ("chmod +x %s" % scriptName, opts)
+    
+    exit ()
+# def generate_lprofiled_binary
+
+
+# merge_lprofile_info takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second argument.
+# This function merges the Lcode profiling information back into the Lcode
+# files.
+def merge_lprofile_info (files, opts):
+    clean_files (["%s.encoded" % opts["o"], "%s.probed" % opts["o"],
+		  "%s.prof" % opts["o"]], opts)
+
+    profileName = "%s.profile" % opts["o"]
+    profileSplatName = "%s.*.profile" % opts["o"]
+    indexName = "%s.index" % opts["o"]
+
+    run_command ("gen_profile_merge_lcode %s > %s" % (profileSplatName,
+						      profileName), opts)
+    
+    # Generate the index file
+    cmd="Lget -p %s -Fmode=index -Fprofile_file=%s -Findex_file=%s \
+         -Farch=impact -Fmodel=Lcode %s " % (opts["parmfile"], profileName,
+					     indexName, opts["F"])
+    run_command (cmd, opts)
+
+    # Set up the command to run Lget
+    cmd = "Lget -p %s -Fmode=insert -Fprofile_file=%s -Findex_file=%s \
+           -Farch=impact -Fmodel=Lcode %s %s -i %%s -o %%s" % \
+          (opts["parmfile"], profileName, indexName, get_lget_args (opts),
+	   opts["F"])
+
+    # Determine how the output file should be named
+    outputFiletype = filetypes.LCODE_PROFILED
+    if opts.has_key ("lprof-mem-reuse") or \
+       opts.has_key ("lprof-mem-dep"):
+	outputFiletype = filetypes.LCODE_PROFILED_MEM_REUSE
+    elif opts.has_key ("lprof-reuse"):
+	outputFiletype = filetypes.LCODE_PROFILED_REUSE
+    elif opts.has_key ("lprof-gen-value") or \
+	 (opts.has_key ("lprof-value") and \
+	  (opts.has_key ("lprof-mem-reuse") or \
+	   opts.has_key ("lprof-reuse"))):
+	outputFiletype = filetypes.LCODE_PROFILED_GEN_VALUE
+
+    # Merge the profile information into the Lcode.
+    # The [:] at the end makes a copy of the array.  This is necessary as the
+    # array is modified inside the loop.
+    cmdParArgs = []
+    lcodeFiles = files[filetypes.LCODE_OPTIMIZED][:]
+    for file in files[filetypes.LCODE_OPTIMIZED][:]:
+	lcodeFile = filetypes.update_file (file, filetypes.LCODE_OPTIMIZED,
+					   outputFiletype, files)
+	cmdParArgs.append ((file, lcodeFile))
+    # for file
+    
+    run_parallel (cmd, cmdParArgs, opts)
+
+    clean_files (lcodeFiles + glob.glob (profileSplatName) + \
+		 [profileName, indexName], opts)
+
+    clear_profile_state (opts)
+
+    # Exit if the files are something other than LCODE_PROFILED
+    if outputFiletype != filetypes.LCODE_PROFILED:
+	if opts.has_key ("verbose"):
+	    print "outputFiletype=%s (not LCODE_PROFILED), exiting." % \
+		  outputFiletype
+	exit ()
+# def merge_lprofile_info
+
+
+# do_ptol takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second.
+# This function translates the Pcode files to Lcode, and also performs
+# pointer analysis if necessary.
+# Input files: *.pci, extern.pch, struct.pch
+# Intermediate files: pip/*, pip1/*, function_level_exec_time
+# Output files: *.lc
+def do_ptol (files, opts):
+    if files.has_key (filetypes.PCODE_FLAT):
+	ptolInputType = filetypes.PCODE_FLAT
+    else:
+	ptolInputType = filetypes.PCODE_INLINED
+    ipTableName = filetypes.rename_file (ptolInputType,
+					 opts["IP_SYM_TAB_BASE"], 0)
+
+    if opts.has_key ("do-pointer-analysis"):
+	cmd = "Pipa -p %s -i %s -o %s" % \
+	      (opts["parmfile"], ipTableName,
+	       filetypes.extension_without_dot (filetypes.PCODE_SYNC))
+
+	run_command (cmd, opts)
+
+	clean_files ([ipTableName, "CALLGRAPH.fl", "NODEMAP", "PIPAWARN",
+		      "ipa"] + files[ptolInputType][:], opts)
+
+	filetypes.update_files_by_type (ptolInputType,
+					filetypes.PCODE_SYNC, files)
+	ptolInputType = filetypes.PCODE_SYNC
+	ipTableName = filetypes.rename_file (filetypes.PCODE_SYNC,
+					     ipTableName, 1)
+
+    cmd = "PtoL -p %s %s -i %s" % (opts["parmfile"], get_ptol_args (opts),
+				   ipTableName)
+	
+    run_command (cmd, opts)
+
+    cleanFiles = files[ptolInputType][:]
+    cleanFiles.append (ipTableName)
+    cleanFiles.append ("oicc.pip")
+    clean_files (cleanFiles, opts)
+
+    filetypes.update_files_by_type (ptolInputType, filetypes.LCODE, files)
+    # Add the __impact_data.lc file to the list of source files.
+    filetypes.add_file ("__impact_data.lc", files)
+
+    return
+# def do_ptol
+
+
+# do_lblock takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second.
+# This function runs each file through Lblock.
+# Input files: *.O or *.O_p
+# Output files: *.H
+def do_lblock (files, opts):
+    # Run each profiled or optimized Lcode file through Lblock
+    # Figure out what types of files we have.
+    inputTypes = []
+    lcodeFiles = []
+    if files.has_key (filetypes.LCODE_PROFILED):
+	inputTypes.append (filetypes.LCODE_PROFILED)
+	lcodeFiles = lcodeFiles + files[filetypes.LCODE_PROFILED][:]
+    if files.has_key (filetypes.LCODE_OPTIMIZED):
+	inputTypes.append (filetypes.LCODE_OPTIMIZED)
+	lcodeFiles = lcodeFiles + files[filetypes.LCODE_OPTIMIZED][:]
+    
+    cmdParArgs = []
+    for curType in inputTypes:
+	# The [:] at the end copies the array.  This is necessary as the array
+	# is modified inside the loop.
+	for file in files[curType][:]:
+	    lcodeFile = filetypes.update_file(file, curType,
+					      filetypes.HYPERBLOCK, files)
+	    cmdParArgs.append ((file, lcodeFile))
+	# for file
+    # for curType
+
+    cmd = "Lblock -p %s -Flayout_database_name=%s -Farch=IMPACT \
+	   -Fmodel=Lcode %s %s -i %%s -o %%s" % \
+          (opts["parmfile"], opts["host-layout-info"], get_lblock_args (opts),
+	   opts["F"])
+    run_parallel(cmd, cmdParArgs, opts)
+
+    # Run each file through Linduct
+    if opts.has_key ("do-induct"):
+	cmdParArgs = []
+	for file in files[filetypes.HYPERBLOCK]:
+	    lcodeFile = filetypes.rename_file (filetypes.LINDUCT_OUTPUT, file,
+					       1)
+	    cmdParArgs.append ((file, lcodeFile, lcodeFile, file))
+	    lcodeFiles.append (lcodeFile)
+	# for file
+	
+	cmd = "Linduct -p %s %s -i %%s -o %%s ; mv %%s %%s" % \
+	      (opts["parmfile"], opts["F"])
+	run_parallel (cmd, cmdParArgs, opts)
+
+    # Delete the Lcode files if they are not needed.
+    clean_files (lcodeFiles, opts)
+# def do_lblock
+
+
+# do_lsuperscalar takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second argument.
+# This function runs each file through Lsuperscalar.
+# Input files: *.H
+# Output files: *.HS
+def do_lsuperscalar (files, opts):
+    # Run each Hyperblock file through Lsuperscalar
+    # The [:] at the end copies the array.  This is necessary as the array is
+    # modified inside the loop.
+    cmdParArgs = []
+    lcodeFiles = files[filetypes.HYPERBLOCK][:]
+    for file in files[filetypes.HYPERBLOCK][:]:
+	lcodeFile = filetypes.update_file (file, filetypes.HYPERBLOCK,
+					   filetypes.HYPERBLOCK_SUPERSCALAR,
+					   files)
+	cmdParArgs.append ((file, lcodeFile))
+    # for file
+
+    cmd = "Lsuperscalar -p %s -Flayout_database_name=%s -Farch=TAHOE \
+           -Fmodel=%s %s %s -i %%s -o %%s" % \
+          (opts["parmfile"], opts["host-layout-info"], opts["model"],
+	   get_lsuperscalar_args (opts), opts["F"])
+    run_parallel (cmd, cmdParArgs, opts)
+
+    # Run each file through Linduct
+    if opts.has_key ("do-induct"):
+	cmdParArgs = []
+	for file in files[filetypes.HYPERBLOCK_SUPERSCALAR]:
+	    lcodeFile = filetypes.rename_file (filetypes.LINDUCT_OUTPUT, file,
+					       1)
+	    cmdParArgs.append ((file, lcodeFile))
+	    lcodeFiles.append (lcodeFile)
+	# for file
+	
+	cmd = "Linduct -p %s %s -i %%s -o %%s" % (opts["parmfile"], opts["F"])
+	run_parallel (cmd, cmdParArgs, opts)
+
+    # Delete the Hyperblock files if they are not needed.
+    clean_files (lcodeFiles + ["markpipe.stats"], opts)
+# def do_lsuperscalar
+
+
+# do_ltahoe takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second argument.
+# This function runs each file through Ltahoe.
+# Input files: *.HS or *.lc
+# Output files: *.s
+def do_ltahoe (files, opts):
+    # Run every Lcode and superscalar Hyperblock file through Ltahoe to
+    # convert to assembly.
+    # This used to be to H->M (phase=3), then M->A (phase=4)
+    # The [:] at the end copies the array.  This is necessary as the array
+    # is modified inside the loop.
+
+    cmdParArgs = []
+    lcodeFiles = []
+    if files.has_key (filetypes.HYPERBLOCK_SUPERSCALAR):
+	lcodeFiles = lcodeFiles + files[filetypes.HYPERBLOCK_SUPERSCALAR][:]
+	for file in files[filetypes.HYPERBLOCK_SUPERSCALAR][:]:
+	    lcodeFile = \
+	        filetypes.update_file (file, filetypes.HYPERBLOCK_SUPERSCALAR,
+				       filetypes.ASSEMBLY, files)
+	    cmdParArgs.append ((file, lcodeFile))
+	# for file
+    if files.has_key (filetypes.LCODE):
+	lcodeFiles = lcodeFiles + files[filetypes.LCODE][:]
+	for file in files[filetypes.LCODE][:]:
+	    lcodeFile = filetypes.update_file (file, filetypes.LCODE,
+					       filetypes.ASSEMBLY, files)
+	    cmdParArgs.append ((file, lcodeFile))
+	# for file
+
+    cmd = "Ltahoe -p %s -Flayout_database_name=%s -Farch=TAHOE -Fmodel=%s \
+           -Fphase=7 %s %s -i %%s -o %%s" % \
+          (opts["parmfile"], opts["host-layout-info"], opts["model"],
+	   get_ltahoe_args (opts), opts["F"])
+    run_parallel (cmd, cmdParArgs, opts)
+
+    # __impact_data is not needed after Ltahoe, so remove it from the
+    # dictionary.
+    filetypes.remove_file ("__impact_data.s", filetypes.ASSEMBLY, files)
+
+    # Delete the superscalar Hyperblock files if they are not needed.
+    clean_files (lcodeFiles + ["iters.stats", "mark_ph1.stats",
+			       "mark_ph2.stats", "softpipe.stats",
+			       "__impact_data.s", "datafile"], opts)
+# def do_ltahoe
+
+
+# assemble_files takes the inputFiles dictionary as the first argument.
+# It takes the options dictionary as the second argument.
+# This function assembles each file using ias.
+# Input files: *.s
+# Output files: *.o
+def assemble_files (files, opts):
+    # Assemble and link the assembly files
+    # If -g was specified on the command line, tell ias to add debugging
+    # info.
+    assemblyFiles = files[filetypes.ASSEMBLY][:]
+    for file in files[filetypes.ASSEMBLY]:
+	# 11/27/02 REK Adding option to use GNU as.
+	if opts.has_key ("use-ias"):
+	    if opts.has_key ("g"):
+		cmd = "ias -d debug %s" % file
+	    else:
+		cmd = "ias %s" % file
+	else:
+	    if opts.has_key ("g"):
+		cmd = "as --gdwarf2 %s -o %s" % \
+		      (file, filetypes.rename_file (filetypes.OBJECT, file, 1))
+	    else:
+		cmd = "as %s -o %s" % \
+		      (file, filetypes.rename_file (filetypes.OBJECT, file, 1))
+
+	run_command (cmd, opts)
+
+	objectFile = filetypes.rename_file (filetypes.OBJECT, file, 1)
+
+	# If --insert-pcode is specified, pack the pcode version of this
+	# file into the object.
+	if opts.has_key ("insert-pcode"):
+	    pcodeName = filetypes.rename_file (filetypes.PCODE_WITH_SYM_TAB,
+					       file, 1)
+	    sectionName = os.path.basename (pcodeName)
+
+	    if os.path.exists (pcodeName):
+		# Gzip the Pcode before packing it into the object.
+		run_command ("gzip -c %s > %s.gz" % (pcodeName, pcodeName),
+			    opts)
+		cmd = "objcopy --add-section %s=%s.gz %s" % (sectionName,
+							     pcodeName,
+							     objectFile)
+		run_command (cmd, opts)
+
+		clean_files ([pcodeName, "%s.gz" % pcodeName], opts)
+	else:
+	    # Call objcopy on the new object files.  This simply massages
+	    # the elf files into a form that libelf will accept without
+	    # complaining.
+	    run_command ("objcopy %s %s" % (objectFile, objectFile), opts)
+    # for file
+
+    filetypes.update_files_by_type (filetypes.ASSEMBLY, filetypes.OBJECT,
+				    files)
+
+    # Delete the assembly files if they are not needed.
+    clean_files (assemblyFiles, opts)
+# def assemble_files
+
+
+def main (argv):
+    # MAIN              ***MAIN***
+    
+    (options, fileList) = read_command_line (argv[1:])
+    
+    # Make sure all input exists.
+    verify_input_existance (os.path.basename (argv[0]), fileList)
+
+    # Group the input files by type, then process them appropriately for the
+    # type.
+    inputFiles = filetypes.group_files (fileList)
+    
+    # Relocatable objects generated by ld -r may have multiple Pcode sections.
+    # compoundObjects will map the object name to a list of Pcode files.
+    compoundObjects = {}
+    
+    # We'll be updating the inputFiles dictionary throughout the compilation
+    # process, but I need a fresh copy at the end, so I'll back it up now.
+    origInputFiles = copy.deepcopy (inputFiles)
+    origFileList = copy.deepcopy (fileList)
+    
+    # origFileMap will map the original .c files to the .pc files (since they
+    # may be in different locations
+    origFileMap = {}
+    
+    # The script starts by determining if IMPACT's environment variables are
+    # set up properly.  If the variables aren't set, the script sets some
+    # based on the location of the script.
+    init_impact (argv)
+    
+    # Todo: handle errors gracefully
+    
+    if options.has_key ("version"):
+	print_version (argv)
+
+    if options.has_key ("h") or options.has_key ("help"):
+	print_usage_information (argv)
+
+    # Determine if we're compiling C++
+    if inputFiles.has_key (filetypes.CXX_SOURCE) or \
+	   os.path.basename (argv[0]) == cxxDriverName:
+	if options.has_key ("verbose"):
+	    sys.stderr.write ("Compiling C++\n")
+	options["CXX"] = 1
+	# 12/22/04 REK Changing this from $IMPACT_REL_PATH/platform/ia64lin_gcc
+	#              to $IMPACT_ROOT/lib now that libC.a is part of the
+	#              standard build system.
+	options["L"] = "%s -L%s/lib " % (options["L"],
+					 os.environ.get ("IMPACT_ROOT"))
+
+    # If we were given -print-file-name, -print-libgcc-file-name, or
+    # -print-prog-name arguments, pass those directly to gcc and quit.
+    if options.has_key ("print-file-name"):
+	status = os.system ("gcc -print-file-name=%s" % \
+			    options["print-file-name"])
+	exit (status >> 8)
+    if options.has_key ("print-libgcc-file-name"):
+	status = os.system ("gcc -print-libgcc-file-name")
+	exit (status >> 8)
+    if options.has_key ("print-prog-name"):
+	status = os.system ("gcc -print-prog-name=%s" % \
+			    options["print-prog-name"])
+	exit (status >> 8)
+
+    if options.has_key ("verbose"):
+	sys.stderr.write ("model=%s, mitanium=%s, mmckinley=%s\n" % \
+			  (options.get ("model"), options.get ("mitanium"),
+			   options.get ("mmckinley")))
+
+    # Set the type of processor to optimize for
+    if options.has_key ("mitanium") or options.get ("model") == "ITANIUM":
+	options["model"] = "ITANIUM"
+    else:
+	options["model"] = "MCKINLEY"
+
+    # Set delete-intermediate-files unless --keep-intermediate-files is
+    # specified
+    if not options.has_key ("keep-intermediate-files") and \
+	   not options.has_key ("save-temps"):
+	options["delete-intermediate-files"] = 1
+
+    # Set no-cspec when cspec is specified.
+    if not options.has_key ("cspec"):
+        options["no-cspec"] = 1
+	
+
+    # If --clean was specified, we'll delete all files listed in the
+    # oicc.tmpfiles file.  This file was generated on the previous run (if
+    # --keep-intermediate-files was specified) and contains the name of every
+    # temporary file.
+    if options.has_key ("clean"):
+	if os.path.exists ("oicc.tmpfiles"):
+	    run_command ("rm -rf `cat oicc.tmpfiles`", options)
+	    run_command ("rm -f ./oicc.tmpfiles", options)
+	exit (0)
+
+    if not options.has_key ("no-insert-pcode"):
+	options["insert-pcode"] = 1
+
+    # If the -j option is specified, run up to the given number of jobs in
+    # parallel.
+    if options.has_key ("j"):
+	options["j"] = int (options["j"])
+    else:
+	options["j"] = 1
+
+    if options.has_key ("collect-gprof-info"):
+	# Since every command writes the file gmon.out, --collect-gprof-info
+	# requires we run all commands serially.
+	if options["j"] > 1:
+	    sys.stderr.write ("--collect-gprof-info implies -j1.  ")
+	    sys.stderr.write ("Overriding -j%d.\n" % options["j"])
+	    options["j"] = 1
+
+    # If profile-stage is specified, set the profile options appropriately.
+    if options.has_key ("profile-stage"):
+	if int (options["profile-stage"]) == 1:
+	    options["pprof-gen"] = 1
+	elif int (options["profile-stage"]) == 2:
+	    if options.has_key ("pprof-gen"):
+		del options["pprof-gen"]
+	    options["pprof-use"] = 1
+	    options["lprof-gen"] = 1
+	elif int (options["profile-stage"]) == 3:
+	    if options.has_key ("pprof-gen"):
+		del options["pprof-gen"]
+	    if options.has_key ("pprof-use"):
+		del options["pprof-use"]
+	    if options.has_key ("lprof-gen"):
+		del options["lprof-gen"]
+	    options["lprof-use"] = 1
+	
+    # If --debugger isn't specified, use gdb
+    if not options.has_key ("debugger"):
+	options["debugger"] = "gdb"
+
+    # If one of the O* options is specified, set the optimization level.
+    if options.has_key ("O0"):
+	options["OPTIMIZATION_LEVEL"] = 0
+    elif options.has_key ("O") or options.has_key ("O1"):
+	options["OPTIMIZATION_LEVEL"] = 1
+    elif options.has_key ("O2"):
+	options["OPTIMIZATION_LEVEL"] = 2
+	options["do-pointer-analysis"] = 1
+	options["pipe"] = 1
+    elif options.has_key ("O3"):
+	options["OPTIMIZATION_LEVEL"] = 3
+	options["do-pointer-analysis"] = 1
+	options["pipe"] = 1
+	options["do-inlining"] = 1
+    else: # default to O1
+	options["OPTIMIZATION_LEVEL"] = 1
+
+    if options.has_key ("do-pip-gen-only"):
+	options["compile-all-files"] = 1
+	options["do-pointer-analysis"] = 1
+
+    if options.has_key ("i") or options.has_key ("r") or \
+	   options.has_key ("relocatable"):
+	options["relocatable"] = 1
+
+    # Inlining only works if we're doing profiling, so turn it off
+    # if no profiling options are set.
+    if options.has_key ("do-inlining") and \
+	   not (options.has_key ("pprof-gen") or \
+		options.has_key ("pprof-use") or \
+		options.has_key ("lprof-gen") or \
+		options.has_key ("lprof-use")):
+	del options["do-inlining"]
+
+    # Software pipelining requires pointer analysis.  If the user specified
+    # --pipe, turn pointer analysis on.
+    if options.has_key ("pipe"):
+	options["do-pointer-analysis"] = 1
+
+    # Set up the baseline parms file.  This is saved in an environment variable
+    # and may be included if a different parms file is specified with the
+    # --parmfile option.
+    defaultParmsFile = "%s/parms/STD_PARMS.IPF-%s" % \
+		       (os.environ["IMPACT_REL_PATH"], options["model"])
+
+    if not os.environ.has_key ("BASELINE_PARMS_FILE"):
+	os.environ["BASELINE_PARMS_FILE"] = defaultParmsFile
+
+    # Figure out which parm file to use.  The order used is as follows.
+    # 1. The file specified with the --parmfile option
+    # 2. The default (STD_PARMS.IPF-MCKINLEY)
+    if not options.has_key ("parmfile"):
+	options["parmfile"] = defaultParmsFile
+
+    # Determine which host_layout_info.md file to use.  This is either
+    # specified with the --host-layout-info option or is in $PLATFORM_DIR.
+    if not options.has_key ("host-layout-info"):
+	options["host-layout-info"] = read_platform_info ("-platform_dir") + \
+				      "/host_layout_info.md"
+
+    # At this point, options["parmfile"] is the file we will specify for every
+    # module that takes the -p option.
+
+    # profLibsToLink contains the -l options from the command line that do not
+    # refer to libraries built by the source we're compiling.  These libraries
+    # need to be probed, so we process them as object files, not as libraries.
+    # libsToLink contains all -l options from the command line.
+    libsToLink = ""
+    profLibsToLink = ""
+
+    # The directory to use for output files.  This will be empty or the
+    # directory of the file specified with -o.  Use os.path.join to prepend
+    # this to a filename.
+    outputDirectory = ""
+    # The name of the output file we're generating.  This defaults to a.out.
+    outputFile = "a.out"
+
+    # Set the output directory and output filename.
+    if options.has_key ("o"):
+	outputFile = options["o"]
+	outputDirectory = os.path.dirname (options["o"])
+
+    # Now that we have determined outputFile and outputDirectory, save them
+    # in the options dictionary.  Always use os.path.join to preprend
+    # OUTPUT_DIRECTORY to a filename.
+    options["o"] = outputFile
+    # The base name for the interprocedural symbol table will be the same
+    # as the output name, unless we determine we need to change it to avoid
+    # colliding with a source file.
+    options["IP_SYM_TAB_BASE"] = options["o"]
+    options["OUTPUT_DIRECTORY"] = outputDirectory
+
+    if options.has_key ("no-add-prof-ext"):
+	options["PROF_BINARY_NAME"] = options["o"]
+    else:
+	options["PROF_BINARY_NAME"] = "%s.prof" % options["o"]
+
+    # If we're resuming compilation after a profile run, restore
+    # profile state (state files and intermediate (pcf or O) files)
+    if options.has_key ("pprof-use") or options.has_key ("lprof-use"):
+	restore_profile_state (options)
+
+    # 09/06/02 REK Inspect any library files explicitly included on the
+    #              command line (not through -llib).  If there's any Pcode
+    #              embedded in them, extract it and add it to the list of
+    #              files to process.
+    if inputFiles.has_key (filetypes.AR_ARCHIVE):
+	for libraryFile in inputFiles[filetypes.AR_ARCHIVE][:]:
+	    pcodeFiles = extract_pcode_from_archive (libraryFile,
+						     compoundObjects, options)
+
+	    if len (pcodeFiles) != 0:
+		# If there's pcode in the input library, turn on insert-pcode
+		# so that it is inserted in the output code.
+		options["insert-pcode"] = 1
+
+		for pcodeFile in pcodeFiles:
+		    filetypes.add_file (pcodeFile, inputFiles)
+		# for pcodeFile
+
+		# Replace the library's name in fileList with the relative
+		# path to the directory just created for the pcode.
+		for i in range (len (fileList)):
+		    if fileList[i] == libraryFile:
+			del fileList[i]
+			fileList.insert (i,
+					 os.path.dirname (pcodeFiles[0]) + '/')
+		# for i
+	# for libraryFile
+
+    # 09/06/02 REK Inspect all libraries specified through -llib
+    # 10/02/02 REK -l is no longer specified as an option that is read by
+    #              getopt.  The libraries specified with -l will appear in
+    #              fileList, so we need to search for them.  This ensures we
+    #              process libraries in command line order.
+    libRegex = re.compile ("^-l")
+    for i in range (len (fileList)):
+	if libRegex.search (fileList[i]):
+	    libsToLink = libsToLink + fileList[i] + " "
+
+	    # Find the .a file corresponding to this library specifier.
+	    libraryFile = find_lib (options.get ("L"),
+				    libRegex.sub ("", fileList[i]),
+				    options.has_key ("verbose"))
+
+	    # Attempt to extract Pcode from the objects in the library.
+	    pcodeFiles = extract_pcode_from_archive (libraryFile,
+						     compoundObjects, options)
+
+	    if len (pcodeFiles) != 0:
+		# If there's pcode in the input library, turn on insert-pcode
+		# so that it is inserted in the output code.
+		options["insert-pcode"] = 1
+
+		for pcodeFile in pcodeFiles:
+		    if not filetypes.file_is_known \
+			     (inputFiles, filetypes.PCODE_WITH_SYM_TAB,
+			      pcodeFile):
+			filetypes.add_file (pcodeFile, inputFiles)
+		# for pcodeFile
+
+		# Replace the library's specifier in fileList with the relative
+		# path to the directory just created for the pcode.
+		del fileList[i]
+		fileList.insert (i, os.path.dirname (pcodeFiles[0]) + '/')
+
+		# Add the library
+		filetypes.add_file (libraryFile, inputFiles)
+	    else:
+		# Only add system libraries to profLibsToLink.  Libraries that
+		# are part of the package currently being compiled are profiled
+		# as object files.
+		profLibsToLink = profLibsToLink + fileList[i] + " "
+    # for i
+
+    # 09/06/02 REK If any object files have Pcode stored in them, extract
+    #              the Pcode.
+
+    if inputFiles.has_key (filetypes.OBJECT) and \
+	   not options.has_key ("insert-pcode-only"):
+	# The [:] at the end copies the array.  It is necessary to work on a
+	# copy of the array as we are modifying the array inside the loop.
+	for file in inputFiles[filetypes.OBJECT][:]:
+	    pcodeFiles = extract_pcode_from_object (file, options)
+
+	    if len (pcodeFiles) > 0:
+		if len (pcodeFiles) > 1:
+		    # If the object contains multiple Pcode sections, add an
+		    # entry to compoundObjects so we can regenerate this object
+		    # from all needed Pcode at the end of the compilation.
+		    compoundObjects[file] = pcodeFiles
+
+		    # There are multiple Pcode files in this object.  We need
+		    # to remove the object from the inputFiles dict and insert
+		    # each Pcode file.  We also need to remove the original
+		    # object from fileList and replace it with the new ones.
+		    filetypes.remove_file (file, filetypes.OBJECT, inputFiles)
+		    for pcodeFile in pcodeFiles:
+			filetypes.add_file (pcodeFile, inputFiles)
+		    # for pcodeFile
+
+		    for i in range (len (fileList)):
+			if fileList[i] == file:
+			    del fileList[i]
+			    for pcodeFile in \
+				    filetypes.rename_files (filetypes.OBJECT,
+							    pcodeFiles, 1):
+				fileList.insert (i, pcodeFile)
+			    # for pcodeFile
+		    # for i
+		else:
+		    origFileMap[file] = pcodeFiles[0]
+		    filetypes.update_file (file, filetypes.OBJECT,
+					   filetypes.PCODE_WITH_SYM_TAB,
+					   inputFiles)
+	# for file
+
+    # inputFiles contains all source files to be compiled at this point.
+    # If we're resuming compilation, find the output from the most advanced
+    # stage for each file and promote the file in the inputFiles dictionary.
+    # This will let us skip old stages.  This is automatically done when
+    # --pprof-use is specified.
+    # This needs to be updated to (optionally, probably) take the modification
+    # date of the different file versions into account so that having outdated
+    # files from later compilation stages don't confuse --resume.
+    if options.has_key ("resume") or options.has_key ("pprof-use") or \
+	   options.has_key ("lprof-use"):
+	# The [:] at the end makes a copy of the array.  This is necessary as
+	# we will modify inputFiles inside the loop.
+	for item in inputFiles.items ()[:]:
+	    tmpFileType = item[0]
+	    tmpFileList = item[1]
+	    if filetypes.type_in_main_sequence (tmpFileType):
+		for file in tmpFileList[:]:
+		    # Start at the most advanced type and work toward the least.
+		    # If we find the current file in a more advanced form, update
+		    # the inputFiles dict and break out of the for loop.
+		    # Select the most advanced type depending on whether we're
+		    # doing a general resume, or if pprof-use or lprof-use is
+		    # specified.
+		    startType = filetypes.C_SOURCE
+		    if options.has_key ("pprof-use"):
+			startType = filetypes.PCODE_FLAT_PROFILED
+		    elif options.has_key ("lprof-use"):
+			startType = filetypes.LCODE_PROFILED
+		    elif options.has_key ("resume"):
+			startType = filetypes.OBJECT
+
+		    for newType in filetypes.filetypes_between (startType,
+								tmpFileType):
+			newName = filetypes.rename_file (newType, file, 1)
+			if os.path.exists (newName) and \
+			       filetypes.examine_file (newName) == newType:
+			    # If the new type is not Pcode, delete the Pcode
+			    # files that we just extracted.
+			    if newType != filetypes.PCODE_WITH_SYM_TAB and \
+				   tmpFileType == filetypes.PCODE_WITH_SYM_TAB:
+				clean_files ([file], options)
+
+			    # If the file is being promoted from C_SOURCE,
+			    # Map the original .c name to the new name
+			    if tmpFileType == filetypes.C_SOURCE or \
+				   tmpFileType == filetypes.CXX_SOURCE:
+				origFileMap[file] = \
+				  filetypes.rename_file (newType, file, 1)
+
+			    filetypes.update_file (file, tmpFileType, newType,
+						   inputFiles)
+			    break
+		    # for newType
+		# for file
+	# for item
+
+	# If we're in the Pcode stages, find our IP symbol table.
+	# When linking, we added underscores to the IP name until we found
+	# a name that didn't exist.  Now we need to add underscores and take
+	# the last name that exists.
+	prev = ""
+	curBase = options["IP_SYM_TAB_BASE"]
+	while os.path.exists (filetypes.rename_file (newType, curBase, 0)):
+	    prev = curBase
+	    (dir, base) = os.path.split (curBase)
+	    curBase = os.path.join (dir, "_" + base)
+	# while
+	options["IP_SYM_TAB_BASE"] = prev
+	if options.has_key ("verbose"):
+	    sys.stderr.write ("symbol table is %s\n" % \
+			      options["IP_SYM_TAB_BASE"])
+
+	# If we're in the Lcode stages, add __impact_data.<ext>
+	if newType >= filetypes.LCODE and newType < filetypes.ASSEMBLY:
+	    filetypes.add_file (filetypes.rename_file (newType,
+						       "__impact_data", 0),
+				inputFiles)
+
+    # Set up preprocessorOptions as in ia64_compile_bench
+    options["PREPROCESSOR_OPTIONS"] = "%s %s " % (options.get ("I"),
+						  options.get ("D"))
+    # Add any preprocessor options passed with -Wp,
+    if options.has_key ("Wp,"):
+	options["PREPROCESSOR_OPTIONS"] = "%s %s " % \
+					  (options["PREPROCESSOR_OPTIONS"],
+					   options["Wp,"])
+    # Add in the -include and -imacros options to the preprocessor
+    if options.has_key ("include"):
+	options["PREPROCESSOR_OPTIONS"] = "%s -include %s " % \
+					  (options["PREPROCESSOR_OPTIONS"],
+					   options["include"])
+    if options.has_key ("imacros"):
+	options["PREPROCESSOR_OPTIONS"] = "%s -imacros %s " % \
+					  (options["PREPROCESSOR_OPTIONS"],
+					   options["include"])
+    if options.has_key ("krc"):
+	options["PREPROCESSOR_OPTIONS"] = options["PREPROCESSOR_OPTIONS"] + \
+					  "-krc "
+    if options.has_key ("undef"):
+	options["PREPROCESSOR_OPTIONS"] = options["PREPROCESSOR_OPTIONS"] + \
+					  "-undef "
+    
+    # IMS - 7/1/03
+    # Add Optimization Options (yes...this matters because it defines
+    # __OPTIMIZE__) The level of optimization does not appear to matter...so
+    # we will just do -O
+    if options.has_key ("preprocessor-opti") and \
+	   options["OPTIMIZATION_LEVEL"] > 0:
+	options["PREPROCESSOR_OPTIONS"] = options["PREPROCESSOR_OPTIONS"] + \
+					  "-O "
+
+    if options.has_key ("verbose"):
+	if options.has_key ("verbose"):
+	    sys.stderr.write ("options: ")
+	    for key in options.keys ():
+		sys.stderr.write ("options[%s]=%s\n" % (key, options[key]))
+	    # for key
+
+	sys.stderr.write ("preprocessorOptions=%s\n" % \
+			  options["PREPROCESSOR_OPTIONS"])
+
+	sys.stderr.write ("inputFiles:\n")
+	filetypes.dump_dict (inputFiles)
+
+	if inputFiles.has_key (filetypes.UNKNOWN):
+	    for file in inputFiles[filetypes.UNKNOWN]:
+		if file[0] == '-' and not file[0:2] == "-l":
+		    sys.stderr.write ("Warning: unrecognized option %s\n" % \
+				      file)
+	    # for file
+
+	# Start processing the source code.
+
+    # If -E is specified on the command line, simply run the preprocessor
+    # with our special options.
+    if (inputFiles.has_key (filetypes.C_SOURCE) or \
+	inputFiles.has_key (filetypes.CXX_SOURCE)) and options.has_key ("E"):
+	preprocess (inputFiles, options)
+    
+    # First, if the input is C, convert it to Pcode.
+    # This corresponds to part 1/6 from c2gp in ia64_compile_bench
+    # This does the same steps as gen_CtoP, when run on .c files with
+    # -no_layout_info specified.
+    # 10/17/02 REK This stage could be converted to use run_parallel, but
+    #              it doesn't take too long, and will typically only be run on
+    #              a single file, so I'm not doing it now.
+    if inputFiles.has_key (filetypes.C_SOURCE) or \
+	   inputFiles.has_key (filetypes.CXX_SOURCE):
+	origFileMap = do_c_to_p (inputFiles, options)
+	# All C_SOURCE files are now PCODE_WITH_SYM_TAB.  There are also object
+	# files (generated by gcc) with Pcode in them.  If --insert-pcode-only
+	# is specified, promote the file type to object so that we skip
+	# directly to the linking stage.
+	if options.has_key ("insert-pcode-only"):
+	    filetypes.update_files_by_type (filetypes.PCODE_WITH_SYM_TAB,
+					    filetypes.OBJECT, inputFiles)
+
+    # If this is a project with multiple files and we were called with
+    # only a few, we can't go any further than this.
+    if options.has_key ("c") or options.has_key ("stop-after-ctop"):
+	exit ()
+
+    # Link the Pcode.
+    if inputFiles.has_key (filetypes.PCODE_WITH_SYM_TAB):
+	link_files (fileList, origFileMap, inputFiles, options)
+
+    # 10/17/02 REK Most stages from here on can be parallelized.
+    #              These stages take most of the time, and the compiler usually
+    #              has several files to work on at this point.
+    
+    # Next, flatten the Pcode using Pflatten (c2gp part 2/6)
+    # 10/17/02 REK Changing this to run each instance of Pflatten in parallel.
+    # Input files: *.pc
+    # Output files: *.pcf
+    if inputFiles.has_key (filetypes.PCODE_LINKED):
+	ipTableName = filetypes.rename_file (filetypes.PCODE_LINKED,
+					     options["IP_SYM_TAB_BASE"], 0)
+	
+	cmd = "Pflatten -p %s %s -i %s -o %s" % \
+	      (options["parmfile"], options["F"], ipTableName,
+	       filetypes.extension_without_dot (filetypes.PCODE_FLAT))
+	run_command (cmd, options)
+
+	cleanFiles = inputFiles[filetypes.PCODE_LINKED][:]
+	cleanFiles.append (ipTableName)
+	clean_files (cleanFiles, options)
+
+	filetypes.update_files_by_type (filetypes.PCODE_LINKED,
+					filetypes.PCODE_FLAT, inputFiles)
+
+	if options.has_key ("stop-after-pflatten"):
+	    exit ()
+
+    # Next, if we are doing profiling, generate the profiled binary.
+    # Perform the Pcode profiling step (c2gp part 3/6)
+    # Although ia64_compile_bench does all the profiling steps automatically,
+    # this script only inserts the profiling information and builds a binary.
+    # It is up to the user to run the binary and make profiling information,
+    # then call this script again with the --prof-use option.  This script
+    # works like Intel's ecc in that respect.
+    if inputFiles.has_key (filetypes.PCODE_FLAT) and \
+	   options.has_key ("pprof-gen") and \
+	   not options.has_key ("pprof-use") and \
+	   not options.has_key ("lprof-use"):
+	generate_pprofiled_binary (inputFiles, options, profLibsToLink)
+
+
+    # Merge the Pcode profile information back into the Pcode files.
+    if inputFiles.has_key (filetypes.PCODE_FLAT) and \
+	   options.has_key ("pprof-use") and not options.has_key ("lprof-use"):
+	merge_pprofile_info (inputFiles, options)
+	# All PCODE_FLAT files are now PCODE_FLAT_PROFILED
+
+    if options.has_key ("stop-after-pcode-profiling"):
+	exit ()
+
+    # Run the inliner over the Pcode files.  (c2gp part 5/6).  If we're merging
+    # the Lcode profiling into the Lcode, we must have already done this step,
+    # so there's no need to repeat it.
+    # Input files: data_*.pcs, extern.pch, f_*.pcs, impact_filelist,
+    #              impact_mapping, impact_vararg, struct.pch
+    # Output files: *.pci, extern.pch, struct.pch
+    if inputFiles.has_key (filetypes.PCODE_FLAT_PROFILED) and \
+	   not options.has_key ("lprof-use"):
+	ipTableName = filetypes.rename_file (filetypes.PCODE_FLAT_PROFILED,
+					     options["IP_SYM_TAB_BASE"], 0)
+
+	cmd = "Pinline -p %s %s -i %s -o %s " % \
+	      (options["parmfile"], get_pinline_args (options), ipTableName,
+	       filetypes.extension_without_dot (filetypes.PCODE_INLINED))
+
+	cleanFiles = inputFiles[filetypes.PCODE_FLAT_PROFILED][:]
+	cleanFiles.append (ipTableName)
+	cleanFiles.append ("__impact_inlining_stats")
+
+	filetypes.update_files_by_type (filetypes.PCODE_FLAT_PROFILED,
+					filetypes.PCODE_INLINED, inputFiles)
+						 
+	run_command (cmd, options)
+
+	clean_files (cleanFiles, options)
+	
+	if options.has_key ("stop-after-pinline"):
+	    exit ()
+
+    # Run pointer analysis and convert to Lcode (c2gp part 6/6).  If we're
+    # merging the Lcode profiling into the Lcode, we must have already done
+    # this step, so there's no need to repeat it.
+    if (inputFiles.has_key (filetypes.PCODE_FLAT) or \
+	inputFiles.has_key (filetypes.PCODE_INLINED)) and \
+	not options.has_key ("lprof-use"):
+	do_ptol (inputFiles, options)
+#	if options.has_key ("do-pointer-analysis"):
+#	    filetypes.remove_file ("oicc.pip/__impact_lib.lc", filetypes.LCODE,
+#				   inputFiles)
+	# All PCODE_FLAT and PCODE_INLINED files are LCODE at this point
+    
+	if options.has_key ("stop-after-pointer-analysis") or \
+	       options.has_key ("stop-after-ptol"):
+	    exit ()
+
+    # Input files: *.lc
+    # Output files: *.gp
+    if inputFiles.has_key (filetypes.LCODE) and \
+	   (options["OPTIMIZATION_LEVEL"] > 0 or \
+	    options.has_key ("lprof-gen")) and \
+	   not options.has_key ("lprof-use"):
+	# Build a list of Lcode files to feed to Lgp_rel
+	tmpFilename = make_source_list (inputFiles, filetypes.LCODE)
+
+	lcodeFiles = inputFiles[filetypes.LCODE][:]
+    
+	cmd = "Lgp_rel -p %s -Flayout_database_name=%s " \
+	      "-Ffile_processing_model=filelist -Ffilelist_file_name=%s " \
+	      "-Foutput_file_extension=gp %s " % \
+	      (options["parmfile"], options["host-layout-info"], tmpFilename,
+	       options["F"])
+
+	run_command (cmd, options)
+
+	run_command ("rm -f %s" % tmpFilename, options)
+
+	filetypes.update_files_by_type (filetypes.LCODE, filetypes.GP,
+					inputFiles)
+
+	# Get rid of the .lc files if we don't need them.
+	clean_files (lcodeFiles, options)
+
+	if options.has_key ("stop-after-converting-to-gp"):
+	    exit ()
+
+    # Transform the .gp file to optimized Lcode.  If we're merging the Lcode
+    # profiling into the Lcode, we must have already done this step, so there's
+    # no need to repeat it.
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    # 10/17/02 REK Changing this to run in parallel.
+    # Input files: *.gp
+    # Output files: *.O
+    if inputFiles.has_key (filetypes.GP) and \
+	   (options["OPTIMIZATION_LEVEL"] > 0 or \
+	    options.has_key ("lprof-gen")) and \
+	   not options.has_key ("lprof-use"):
+	# Set up the extra options here so that it doesn't have to be done for
+	# every file.
+	extraOptions = get_lopti_args (options)
+    
+	# Run each file through Lopti
+	# The [:] at the end copies the array.  This is necessary as the array
+	# is modified inside the loop.
+	cmdParArgs = []
+	lcodeFiles = inputFiles[filetypes.GP][:]
+	for file in inputFiles[filetypes.GP][:]:
+	    lcodeFile = filetypes.update_file (file, filetypes.GP,
+					       filetypes.LCODE_OPTIMIZED,
+					       inputFiles)
+	    cmdParArgs.append ((file, lcodeFile))
+	# for file
+	
+	cmd = "Lopti -p %s -Flayout_database_name=%s -Fopti=4 -Farch=TAHOE " \
+	      "-Fmodel=%s %s %s -i %%s -o %%s" % \
+	      (options["parmfile"], options["host-layout-info"],
+	       options["model"], extraOptions, options["F"])
+
+	run_parallel (cmd, cmdParArgs, options)
+
+	# Remove the GP files if they are no longer needed.
+	clean_files (lcodeFiles, options)
+
+	if options.has_key ("stop-after-lopti"):
+	    exit ()
+
+    # Generate a probed binary for Lcode profiling if doBuildLProfiledBinary is
+    # set.
+    # Run Lencode on the lcode files
+    # Run Lemulate on the resulting files
+    # Compile the Lemulate files and run the binary through chatr
+    # Run Lprofile to do the profiling?
+    # The profiling is done by running Lprofile on the generated probed and
+    # encoded files.  Because the setup is more than just running a binary
+    # generated in this section, this part also writes a shell script that the
+    # user runs.  This script runs Lprofile on the probed and encoded files and
+    # generated the profile information.
+    if inputFiles.has_key (filetypes.LCODE_OPTIMIZED) and \
+	   options.has_key ("lprof-gen") and not options.has_key ("lprof-use"):
+	generate_lprofiled_binary (inputFiles, options, profLibsToLink)
+
+    # If --lprof-use was specified, use the profiling information generated
+    # by the binary created in the previous step.
+    # 10/17/02 REK Changing this to run in parallel.
+    if inputFiles.has_key (filetypes.LCODE_OPTIMIZED) and \
+	   options.has_key ("lprof-use"):
+	merge_lprofile_info (inputFiles, options)
+	# All LCODE_OPTIMIZED files are LCODE_PROFILED at this point.
+	
+	if options.has_key ("stop-after-lcode-profiling"):
+	    exit ()
+    
+    # Convert the profiled Lcode to Hyperblock (O_p2H from ia64_compile_bench)
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    # 10/17/02 REK Changing this to run in parallel.
+    if (inputFiles.has_key (filetypes.LCODE_OPTIMIZED) and \
+	options["OPTIMIZATION_LEVEL"] > 0) or \
+	inputFiles.has_key (filetypes.LCODE_PROFILED):
+	do_lblock (inputFiles, options)
+	# All LCODE_PROFILED or LCODE_OPTIMIZED files are HYPERBLOCK at this
+	# point.
+
+	if options.has_key ("stop-after-lblock"):
+	    exit ()
+
+    # Convert the Hyperblock to superscalar Hyperblock (H2HS from
+    # ia64_compile_bench)
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    # 10/17/02 REK Changing this to run in parallel.
+    if inputFiles.has_key (filetypes.HYPERBLOCK):
+	do_lsuperscalar (inputFiles, options)
+	# All HYPERBLOCK files are HYPERBLOCK_SUPERSCALAR at this point.
+
+	if options.has_key ("stop-after-lsuperscalar"):
+	    exit ()
+
+    # Convert the superscalar Hyperblock to assembly (HS2HS_s from
+    # ia64_compile_bench)
+    # 09/09/02 REK Adding support for the --no-cspec option.
+    # 10/17/02 REK Changing this to run in parallel.
+    if (inputFiles.has_key (filetypes.LCODE) or \
+	inputFiles.has_key (filetypes.HYPERBLOCK_SUPERSCALAR)):
+	do_ltahoe (inputFiles, options)
+	# All LCODE and HYPERBLOCK_SUPERSCALAR files are ASSEMBLY at this
+	# point.
+
+	if options.has_key ("stop-after-ltahoe") or options.has_key ("S"):
+	    exit ()
+
+    # 10/17/02 REK The rest of the compilation doesn't take too long, so I'm
+    #              not parallelizing it right now.
+    # Assemble the generated assembly files
+    if inputFiles.has_key (filetypes.ASSEMBLY):
+	assemble_files (inputFiles, options)
+
+	# Rebuild any objects that were generated with ld -r.
+	if len (compoundObjects) > 0:
+	    for file in compoundObjects.keys ():
+		cmd = "ld -r -o %s " % file
+		for pcodeFile in filetypes.rename_files (filetypes.OBJECT,
+							 compoundObjects[file],
+							 1):
+		    cmd = "%s %s " % (cmd, pcodeFile)
+		# for pcodeFile
+
+		run_command (cmd, options)
+	    # for file
+	# All ASSEMBLY files are OBJECT at this point.
+
+	if options.has_key ("stop-after-assembling"):
+	    exit ()
+
+    if inputFiles.has_key (filetypes.OBJECT):
+	# We have compiled to objects, so we can try to update the libraries.
+	if inputFiles.has_key (filetypes.AR_ARCHIVE):
+	    for library in inputFiles[filetypes.AR_ARCHIVE][:]:
+		update_library (library, options)
+
+	# oicc can take the following files as input
+	# C source code (.c), Pcode (generated after first stage, .o or .pc),
+	# object files (.o), real libraries (.a or specified with -l)
+	# The files need to be grouped by type, then processed.
+	# At this point, C source code, Pcode, and object files specified
+	# on the command line are all object files.  We can update the C code
+	# and Pcode from the original inputFile dict.
+	for curFileType in filetypes.main_sequence_types (origInputFiles):
+	    filetypes.update_files_by_type (curFileType, filetypes.OBJECT,
+					    origInputFiles)
+	# for curFileType
+
+	# We now have all our objects and libraries, so we can link them with
+	# gcc.
+	# Build a list of object files to link.
+	# 10/02/02 REK This list is now built from the origFileList list.
+	objectFiles = ""
+	objectsToDelete = []
+	for file in origFileList:
+	    # If the .c file was specified on the command line, add the
+	    # appropriate .o file to the list and to the list of objects
+	    # eligible for deletion at the end.  We use the origFileMap to
+	    # map the .c from the command line to the .pc file (since they
+	    # may be in different places), then rename the .pc file to a .o
+	    # file.
+	    if filetypes.get_ext_re (filetypes.C_SOURCE).search (file) or \
+	       filetypes.get_ext_re (filetypes.CXX_SOURCE).search (file):
+		objectName = filetypes.rename_file (filetypes.OBJECT,
+						    origFileMap[file], 1)
+		objectFiles = "%s %s " % (objectFiles, objectName)
+		objectsToDelete.append (objectName)
+
+	    else:
+		objectFiles = "%s %s " % (objectFiles, file)
+	# for file
+
+	if options.has_key ("CXX"):
+	    cmd = "g++ "
+	elif options.has_key ("relocatable"):
+	    cmd = "gcc -Wl,-r "
+	else:
+	    cmd = "gcc "
+
+	cmd = "%s %s %s %s %s %s %s %s -lm -o %s" % \
+	      (cmd, options.get ("Wl,"), options.get ("L"), options.get ("I"),
+	       options.get ("R"), options.get ("D"),
+	       options.get ("LINKER_OPTIONS"), objectFiles, options["o"])
+	
+	if options.has_key ("CXX"):
+	    cmd = "%s -lC %s/stub.o " % (cmd,
+					 read_platform_info ("-platform_dir"))
+
+	if options.has_key ("verbose"):
+	    sys.stderr.write ("%s\n" % cmd)
+	status = os.system(cmd)
+	if status:
+	    exit (status >> 8)
+
+	# Remove the objects for any .c files specified on the command line.
+	# If we got to this point from a .c file, we did it in one stage, so
+	# we shouldn't leave a .o.
+	clean_files (objectsToDelete, options)
+
+	# Run chatr on the binary to set it up for general speculation
+	# This will probably have to be an option once recovery code works.
+	if not (options.has_key ("no-cspec") or \
+		options.has_key ("no-control-speculation")):
+	    run_command ("chatr -r %s" % options["o"], options)
+
+	# Remove some extra files
+	cleanFiles = glob.glob ("*.nm")
+	cleanFiles = cleanFiles + ["host_layout_info.md", "./oicc.tmplib",
+				   "./pip", "./pip1"]
+	clean_files (cleanFiles, options)
+
+    return
+# def main
+
+# Run main if oicc is being run from the command line.  If we just
+# imported oicc into the interactive interpreter (such as for debugging),
+# nothing will execute until we tell it to.
+if __name__ == "__main__":
+    main (sys.argv)
+    exit (0)
+

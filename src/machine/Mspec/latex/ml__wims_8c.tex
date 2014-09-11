@@ -1,0 +1,1049 @@
+\section{ml\_\-wims.c File Reference}
+\label{ml__wims_8c}\index{ml_wims.c@{ml\_\-wims.c}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-wims.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-INT}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-LONG}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-LLONG}~32
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-FLOAT}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-DOUBLE}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-POINTER}~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-SIZE\_\-MAX}~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-INT}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-LONG}~16
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-LLONG}~32
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-FLOAT}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-DOUBLE}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-POINTER}~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-WIMS\_\-ALIGN\_\-MAX}~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)
+\item 
+\#define \bf{M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG}~0
+\item 
+\#define \bf{M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX}~32
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(32 $\ast$ 0)
+\item 
+\#define \bf{M\_\-WIMS\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-WIMS\_\-FLT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-WIMS\_\-RET\_\-F}~15
+\item 
+\#define \bf{M\_\-WIMS\_\-RET\_\-I32}~15
+\item 
+\#define \bf{M\_\-WIMS\_\-RET\_\-I64}~15
+\item 
+\#define \bf{M\_\-WIMS\_\-RET\_\-ST}~15
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-wims\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-wims\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-wims\_\-bit\_\-llong} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-wims\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-wims\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-wims\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-wims\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-wims\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-wims\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-wims\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-wims\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-wims\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-wims\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-wims\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-wims\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-wims\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-wims\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-wims\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-wims\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-wims\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-wims\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-wims\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-wims\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-wims\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-wims\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-wims\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-wims\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-wims\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-wims\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-wims\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-wims\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-wims\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-wims\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-wims\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-wims\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+int \bf{M\_\-wims\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-wims} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-wims} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-wims} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-wims} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-wims} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-wims} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-wims} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-wims} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-wims} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-wims} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-wims} (int ctype)
+\item 
+int \bf{M\_\-wims\_\-layout\_\-retvar} (\bf{M\_\-Param} param, int purpose)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_wims.c@{ml\_\-wims.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__wims_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_wims.c@{ml\_\-wims.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__wims_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_wims.c@{ml\_\-wims.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__wims_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_wims.c@{ml\_\-wims.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__wims_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_BIT@{M\_\-WIMS\_\-ALIGN\_\-BIT}}
+\index{M_WIMS_ALIGN_BIT@{M\_\-WIMS\_\-ALIGN\_\-BIT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-BIT~1}\label{ml__wims_8c_15309f7cc34644cc617a0aa53b8fc764}
+
+
+
+
+Definition at line 165 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_BLOCK@{M\_\-WIMS\_\-ALIGN\_\-BLOCK}}
+\index{M_WIMS_ALIGN_BLOCK@{M\_\-WIMS\_\-ALIGN\_\-BLOCK}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-BLOCK~-1}\label{ml__wims_8c_cf1bf4e9153a5c4825f0b99c40c794b8}
+
+
+
+
+Definition at line 176 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_CHAR@{M\_\-WIMS\_\-ALIGN\_\-CHAR}}
+\index{M_WIMS_ALIGN_CHAR@{M\_\-WIMS\_\-ALIGN\_\-CHAR}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-CHAR~8}\label{ml__wims_8c_71064fb4a6c00c1271a2b2af68715c58}
+
+
+
+
+Definition at line 166 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_DOUBLE@{M\_\-WIMS\_\-ALIGN\_\-DOUBLE}}
+\index{M_WIMS_ALIGN_DOUBLE@{M\_\-WIMS\_\-ALIGN\_\-DOUBLE}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-DOUBLE~-1}\label{ml__wims_8c_9cde6159cf5fe2a2b47eb89cf9739a0a}
+
+
+
+
+Definition at line 172 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_FLOAT@{M\_\-WIMS\_\-ALIGN\_\-FLOAT}}
+\index{M_WIMS_ALIGN_FLOAT@{M\_\-WIMS\_\-ALIGN\_\-FLOAT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-FLOAT~-1}\label{ml__wims_8c_76004af1f6bc9dd97d05c76dba137798}
+
+
+
+
+Definition at line 171 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_INT@{M\_\-WIMS\_\-ALIGN\_\-INT}}
+\index{M_WIMS_ALIGN_INT@{M\_\-WIMS\_\-ALIGN\_\-INT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-INT~16}\label{ml__wims_8c_9826d1e24dc9c8e02feadf58c7b4995a}
+
+
+
+
+Definition at line 168 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_LLONG@{M\_\-WIMS\_\-ALIGN\_\-LLONG}}
+\index{M_WIMS_ALIGN_LLONG@{M\_\-WIMS\_\-ALIGN\_\-LLONG}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-LLONG~32}\label{ml__wims_8c_a725adf4ca06adff0e6cb93272642ce9}
+
+
+
+
+Definition at line 170 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_LONG@{M\_\-WIMS\_\-ALIGN\_\-LONG}}
+\index{M_WIMS_ALIGN_LONG@{M\_\-WIMS\_\-ALIGN\_\-LONG}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-LONG~16}\label{ml__wims_8c_18589113dd20f6769745d1d9ebd7f990}
+
+
+
+
+Definition at line 169 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_MAX@{M\_\-WIMS\_\-ALIGN\_\-MAX}}
+\index{M_WIMS_ALIGN_MAX@{M\_\-WIMS\_\-ALIGN\_\-MAX}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-MAX~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)}\label{ml__wims_8c_32a038ae160b76c2d742ef24aea77564}
+
+
+
+
+Definition at line 177 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_POINTER@{M\_\-WIMS\_\-ALIGN\_\-POINTER}}
+\index{M_WIMS_ALIGN_POINTER@{M\_\-WIMS\_\-ALIGN\_\-POINTER}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-POINTER~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)}\label{ml__wims_8c_34e157683ee317daca943e0f1e3569c6}
+
+
+
+
+Definition at line 173 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_SHORT@{M\_\-WIMS\_\-ALIGN\_\-SHORT}}
+\index{M_WIMS_ALIGN_SHORT@{M\_\-WIMS\_\-ALIGN\_\-SHORT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-SHORT~16}\label{ml__wims_8c_9d0f96c41726956269fefabd7d200e6e}
+
+
+
+
+Definition at line 167 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_STRUCT@{M\_\-WIMS\_\-ALIGN\_\-STRUCT}}
+\index{M_WIMS_ALIGN_STRUCT@{M\_\-WIMS\_\-ALIGN\_\-STRUCT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-STRUCT~-1}\label{ml__wims_8c_151108b9e9c48be1fd46db7e427a81e6}
+
+
+
+
+Definition at line 175 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_UNION@{M\_\-WIMS\_\-ALIGN\_\-UNION}}
+\index{M_WIMS_ALIGN_UNION@{M\_\-WIMS\_\-ALIGN\_\-UNION}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-UNION~-1}\label{ml__wims_8c_eca7cc7c543fbc1736fb1cdfa3205919}
+
+
+
+
+Definition at line 174 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_ALIGN_VOID@{M\_\-WIMS\_\-ALIGN\_\-VOID}}
+\index{M_WIMS_ALIGN_VOID@{M\_\-WIMS\_\-ALIGN\_\-VOID}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-ALIGN\_\-VOID~-1}\label{ml__wims_8c_79e870bb3815d07e5bcbdb192cb658bc}
+
+
+
+
+Definition at line 164 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_FLT_BASE@{M\_\-WIMS\_\-FLT\_\-BASE}}
+\index{M_WIMS_FLT_BASE@{M\_\-WIMS\_\-FLT\_\-BASE}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-FLT\_\-BASE~0}\label{ml__wims_8c_f195dada5fa432152535d721d766841b}
+
+
+
+
+Definition at line 186 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-fnvar\_\-layout(), and M\_\-wims\_\-layout\_\-fnvar().\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_INT_BASE@{M\_\-WIMS\_\-INT\_\-BASE}}
+\index{M_WIMS_INT_BASE@{M\_\-WIMS\_\-INT\_\-BASE}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-INT\_\-BASE~0}\label{ml__wims_8c_819f5aee11a74e4d71a5bcf11c90dc8a}
+
+
+
+
+Definition at line 185 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-fnvar\_\-layout(), and M\_\-wims\_\-layout\_\-fnvar().\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_MAX_FNVAR_REG@{M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_WIMS_MAX_FNVAR_REG@{M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG~0}\label{ml__wims_8c_95ff52497f2b7089d64f189ea3e30691}
+
+
+
+
+Definition at line 180 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-fnvar\_\-layout(), and M\_\-wims\_\-layout\_\-fnvar().\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_RET_F@{M\_\-WIMS\_\-RET\_\-F}}
+\index{M_WIMS_RET_F@{M\_\-WIMS\_\-RET\_\-F}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-RET\_\-F~15}\label{ml__wims_8c_1467e61116daa65e5d796dfd0a58cf02}
+
+
+
+
+Definition at line 189 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_RET_I32@{M\_\-WIMS\_\-RET\_\-I32}}
+\index{M_WIMS_RET_I32@{M\_\-WIMS\_\-RET\_\-I32}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-RET\_\-I32~15}\label{ml__wims_8c_3ac37d56005b51933f1f53ab98706275}
+
+
+
+
+Definition at line 190 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-return\_\-register().\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_RET_I64@{M\_\-WIMS\_\-RET\_\-I64}}
+\index{M_WIMS_RET_I64@{M\_\-WIMS\_\-RET\_\-I64}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-RET\_\-I64~15}\label{ml__wims_8c_894b8c718d8265f7cbd5c3f850a43130}
+
+
+
+
+Definition at line 191 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_RET_ST@{M\_\-WIMS\_\-RET\_\-ST}}
+\index{M_WIMS_RET_ST@{M\_\-WIMS\_\-RET\_\-ST}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-RET\_\-ST~15}\label{ml__wims_8c_ab4053683c4cdc0b63c5da2f0312ce87}
+
+
+
+
+Definition at line 192 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-structure\_\-pointer().\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_BIT@{M\_\-WIMS\_\-SIZE\_\-BIT}}
+\index{M_WIMS_SIZE_BIT@{M\_\-WIMS\_\-SIZE\_\-BIT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-BIT~1}\label{ml__wims_8c_8dbe9284cda1ce15e904db2b2b0c70cd}
+
+
+
+
+Definition at line 150 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_BLOCK@{M\_\-WIMS\_\-SIZE\_\-BLOCK}}
+\index{M_WIMS_SIZE_BLOCK@{M\_\-WIMS\_\-SIZE\_\-BLOCK}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-BLOCK~-1}\label{ml__wims_8c_ca0ee342385e52791a63efa23deccd71}
+
+
+
+
+Definition at line 161 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_CHAR@{M\_\-WIMS\_\-SIZE\_\-CHAR}}
+\index{M_WIMS_SIZE_CHAR@{M\_\-WIMS\_\-SIZE\_\-CHAR}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-CHAR~8}\label{ml__wims_8c_b69fc61a84e79b1a0b5becb0f0154546}
+
+
+
+
+Definition at line 151 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_DOUBLE@{M\_\-WIMS\_\-SIZE\_\-DOUBLE}}
+\index{M_WIMS_SIZE_DOUBLE@{M\_\-WIMS\_\-SIZE\_\-DOUBLE}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-DOUBLE~-1}\label{ml__wims_8c_449cf8c59d50a0da679eb534e0f7f31a}
+
+
+
+
+Definition at line 157 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_FLOAT@{M\_\-WIMS\_\-SIZE\_\-FLOAT}}
+\index{M_WIMS_SIZE_FLOAT@{M\_\-WIMS\_\-SIZE\_\-FLOAT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-FLOAT~-1}\label{ml__wims_8c_d8f19fcb2e0fa99167d71432d0d2f868}
+
+
+
+
+Definition at line 156 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_INT@{M\_\-WIMS\_\-SIZE\_\-INT}}
+\index{M_WIMS_SIZE_INT@{M\_\-WIMS\_\-SIZE\_\-INT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-INT~16}\label{ml__wims_8c_b852654410a8ab2a76381ef7f816c963}
+
+
+
+
+Definition at line 153 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_LLONG@{M\_\-WIMS\_\-SIZE\_\-LLONG}}
+\index{M_WIMS_SIZE_LLONG@{M\_\-WIMS\_\-SIZE\_\-LLONG}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-LLONG~32}\label{ml__wims_8c_2f02c82d9f26ae5089fd5fd9e88f2f5a}
+
+
+
+
+Definition at line 155 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_LONG@{M\_\-WIMS\_\-SIZE\_\-LONG}}
+\index{M_WIMS_SIZE_LONG@{M\_\-WIMS\_\-SIZE\_\-LONG}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-LONG~16}\label{ml__wims_8c_9ac7dceccbec02abc96fdb80016851f1}
+
+
+
+
+Definition at line 154 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_MAX@{M\_\-WIMS\_\-SIZE\_\-MAX}}
+\index{M_WIMS_SIZE_MAX@{M\_\-WIMS\_\-SIZE\_\-MAX}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-MAX~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)}\label{ml__wims_8c_207f773b78fa96d0a558b02a804d968a}
+
+
+
+
+Definition at line 162 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_POINTER@{M\_\-WIMS\_\-SIZE\_\-POINTER}}
+\index{M_WIMS_SIZE_POINTER@{M\_\-WIMS\_\-SIZE\_\-POINTER}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-POINTER~((\bf{M\_\-model} == M\_\-WIMS\_\-16) ? 16 : 32)}\label{ml__wims_8c_ebe2eb629e9f5f81551d0f380ae04bad}
+
+
+
+
+Definition at line 158 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_SHORT@{M\_\-WIMS\_\-SIZE\_\-SHORT}}
+\index{M_WIMS_SIZE_SHORT@{M\_\-WIMS\_\-SIZE\_\-SHORT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-SHORT~16}\label{ml__wims_8c_f61b80664bea1c519a9621dff604ff15}
+
+
+
+
+Definition at line 152 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_STRUCT@{M\_\-WIMS\_\-SIZE\_\-STRUCT}}
+\index{M_WIMS_SIZE_STRUCT@{M\_\-WIMS\_\-SIZE\_\-STRUCT}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-STRUCT~-1}\label{ml__wims_8c_0456cc76e243b3dc8e89906907409584}
+
+
+
+
+Definition at line 160 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_UNION@{M\_\-WIMS\_\-SIZE\_\-UNION}}
+\index{M_WIMS_SIZE_UNION@{M\_\-WIMS\_\-SIZE\_\-UNION}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-UNION~-1}\label{ml__wims_8c_3a41f85b04228a432a0e60f50985c2f3}
+
+
+
+
+Definition at line 159 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SIZE_VOID@{M\_\-WIMS\_\-SIZE\_\-VOID}}
+\index{M_WIMS_SIZE_VOID@{M\_\-WIMS\_\-SIZE\_\-VOID}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SIZE\_\-VOID~0}\label{ml__wims_8c_dab221fb2d9e5375cc1bcee73209b2ea}
+
+
+
+
+Definition at line 149 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_WIMS_SMALL_STRUCT_MAX@{M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_WIMS_SMALL_STRUCT_MAX@{M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX~32}\label{ml__wims_8c_546af1320a24d1ac8c9673c9c261ca93}
+
+
+
+
+Definition at line 181 of file ml\_\-wims.c.
+
+Referenced by M\_\-wims\_\-fnvar\_\-layout(), and M\_\-wims\_\-layout\_\-fnvar().\index{ml_wims.c@{ml\_\-wims.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(32 $\ast$ 0)}\label{ml__wims_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 182 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__wims_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                   ((a->src[1]->ctype&0x30)==0x00)))||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_wims.c@{ml\_\-wims.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__wims_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_wims.c@{ml\_\-wims.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__wims_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_wims.c@{ml\_\-wims.c}!M_conflicting_operands_wims@{M\_\-conflicting\_\-operands\_\-wims}}
+\index{M_conflicting_operands_wims@{M\_\-conflicting\_\-operands\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-wims (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__wims_8c_79887eb474ee939c6542081d64a9c520}
+
+
+
+
+Definition at line 1658 of file ml\_\-wims.c.
+
+References M\_\-assert(), and WIMS\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_wims.c@{ml\_\-wims.c}!M_define_macros_wims@{M\_\-define\_\-macros\_\-wims}}
+\index{M_define_macros_wims@{M\_\-define\_\-macros\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-wims (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__wims_8c_5e1c8e632e72f22aa891e7d808aa77b4}
+
+
+
+
+Definition at line 1349 of file ml\_\-wims.c.
+
+References M\_\-add\_\-symbol, WIMS\_\-MAC\_\-ALLOC, WIMS\_\-MAC\_\-CALLEE\_\-I, WIMS\_\-MAC\_\-LEAF, WIMS\_\-MAC\_\-RETADDR, and WIMS\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-define\_\-macros().\index{ml_wims.c@{ml\_\-wims.c}!M_define_opcode_name_wims@{M\_\-define\_\-opcode\_\-name\_\-wims}}
+\index{M_define_opcode_name_wims@{M\_\-define\_\-opcode\_\-name\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-wims (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__wims_8c_0e78c613c5ab154c04604c59340153d4}
+
+
+
+
+Definition at line 1376 of file ml\_\-wims.c.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_get_macro_name_wims@{M\_\-get\_\-macro\_\-name\_\-wims}}
+\index{M_get_macro_name_wims@{M\_\-get\_\-macro\_\-name\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-wims (int {\em id})}\label{ml__wims_8c_05643ee355c8611bde56e54dff741120}
+
+
+
+
+Definition at line 1362 of file ml\_\-wims.c.
+
+References WIMS\_\-MAC\_\-ALLOC, WIMS\_\-MAC\_\-CALLEE\_\-I, WIMS\_\-MAC\_\-LEAF, WIMS\_\-MAC\_\-RETADDR, and WIMS\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_get_opcode_name_wims@{M\_\-get\_\-opcode\_\-name\_\-wims}}
+\index{M_get_opcode_name_wims@{M\_\-get\_\-opcode\_\-name\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-wims (int {\em id})}\label{ml__wims_8c_2e7f9b86291d868dde6d7b542436a637}
+
+
+
+
+Definition at line 1380 of file ml\_\-wims.c.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_is_stack_operand_wims@{M\_\-is\_\-stack\_\-operand\_\-wims}}
+\index{M_is_stack_operand_wims@{M\_\-is\_\-stack\_\-operand\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-wims (L\_\-Operand $\ast$ {\em operand})}\label{ml__wims_8c_154f51f7c771b787904d21d3292aa29a}
+
+
+
+
+Definition at line 1588 of file ml\_\-wims.c.
+
+References WIMS\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_wims.c@{ml\_\-wims.c}!M_is_unsafe_macro_wims@{M\_\-is\_\-unsafe\_\-macro\_\-wims}}
+\index{M_is_unsafe_macro_wims@{M\_\-is\_\-unsafe\_\-macro\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-wims (L\_\-Operand $\ast$ {\em operand})}\label{ml__wims_8c_24594990e1e6ade090136514ef713ae8}
+
+
+
+
+Definition at line 1605 of file ml\_\-wims.c.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_wims.c@{ml\_\-wims.c}!M_num_oper_required_for_wims@{M\_\-num\_\-oper\_\-required\_\-for\_\-wims}}
+\index{M_num_oper_required_for_wims@{M\_\-num\_\-oper\_\-required\_\-for\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-wims (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__wims_8c_70ac477eaa53977691c3857c822fd941}
+
+
+
+
+Definition at line 1432 of file ml\_\-wims.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_wims.c@{ml\_\-wims.c}!M_num_registers_wims@{M\_\-num\_\-registers\_\-wims}}
+\index{M_num_registers_wims@{M\_\-num\_\-registers\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-wims (int {\em ctype})}\label{ml__wims_8c_86ab7de92232fd31bc1014e5398b513b}
+
+
+
+
+Definition at line 1718 of file ml\_\-wims.c.
+
+References M\_\-assert(), M\_\-model, M\_\-WIMS\_\-16, and M\_\-WIMS\_\-24.
+
+Referenced by M\_\-num\_\-registers().\index{ml_wims.c@{ml\_\-wims.c}!M_oper_supported_in_arch_wims@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-wims}}
+\index{M_oper_supported_in_arch_wims@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-wims (int {\em opc})}\label{ml__wims_8c_f14f1f8edd6e62703b8dfc729724840a}
+
+
+
+
+Definition at line 1392 of file ml\_\-wims.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_wims.c@{ml\_\-wims.c}!M_operand_type_wims@{M\_\-operand\_\-type\_\-wims}}
+\index{M_operand_type_wims@{M\_\-operand\_\-type\_\-wims}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-wims (L\_\-Operand $\ast$ {\em operand})}\label{ml__wims_8c_a988cb6cc1f684e36ef347b82cc8aa3d}
+
+
+
+
+Definition at line 1624 of file ml\_\-wims.c.
+
+References FIELD\_\-11, FIELD\_\-14, FIELD\_\-5, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit11, MDES\_\-OPERAND\_\-Lit14, MDES\_\-OPERAND\_\-Lit21, MDES\_\-OPERAND\_\-Lit5, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_array_align@{M\_\-wims\_\-array\_\-align}}
+\index{M_wims_array_align@{M\_\-wims\_\-array\_\-align}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__wims_8c_153212309df8267a4886711a49217400}
+
+
+
+
+Definition at line 522 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_array_layout@{M\_\-wims\_\-array\_\-layout}}
+\index{M_wims_array_layout@{M\_\-wims\_\-array\_\-layout}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__wims_8c_61439c16abd828917d3676fc9b64546b}
+
+
+
+
+Definition at line 517 of file ml\_\-wims.c.
+
+Referenced by M\_\-array\_\-layout().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_array_size@{M\_\-wims\_\-array\_\-size}}
+\index{M_wims_array_size@{M\_\-wims\_\-array\_\-size}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__wims_8c_26f3f696afa4b7e4baae4c32ff22e42d}
+
+
+
+
+Definition at line 527 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_bit_char@{M\_\-wims\_\-bit\_\-char}}
+\index{M_wims_bit_char@{M\_\-wims\_\-bit\_\-char}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__wims_8c_e1b404e7db639f47814075359cdee0de}
+
+
+
+
+Definition at line 249 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-WIMS\_\-ALIGN\_\-BIT, M\_\-WIMS\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_bit_int@{M\_\-wims\_\-bit\_\-int}}
+\index{M_wims_bit_int@{M\_\-wims\_\-bit\_\-int}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__wims_8c_4c6dbdfcc06a2532550db73013f6a63b}
+
+
+
+
+Definition at line 229 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-INT, M\_\-WIMS\_\-ALIGN\_\-BIT, M\_\-WIMS\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_bit_llong@{M\_\-wims\_\-bit\_\-llong}}
+\index{M_wims_bit_llong@{M\_\-wims\_\-bit\_\-llong}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-bit\_\-llong (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__wims_8c_dab897a1dc50a1e95b6fdecbd018c07b}
+
+
+
+
+Definition at line 219 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-WIMS\_\-ALIGN\_\-BIT, M\_\-WIMS\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.\index{ml_wims.c@{ml\_\-wims.c}!M_wims_bit_long@{M\_\-wims\_\-bit\_\-long}}
+\index{M_wims_bit_long@{M\_\-wims\_\-bit\_\-long}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__wims_8c_4324396ea231660659caa9bc17416734}
+
+
+
+
+Definition at line 209 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-LONG, M\_\-WIMS\_\-ALIGN\_\-BIT, M\_\-WIMS\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_bit_short@{M\_\-wims\_\-bit\_\-short}}
+\index{M_wims_bit_short@{M\_\-wims\_\-bit\_\-short}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__wims_8c_2873a1e517d17841f6b590b42a7fde1e}
+
+
+
+
+Definition at line 239 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-WIMS\_\-ALIGN\_\-BIT, M\_\-WIMS\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_call_type@{M\_\-wims\_\-call\_\-type}}
+\index{M_wims_call_type@{M\_\-wims\_\-call\_\-type}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__wims_8c_69f1561aed1b0887a159687d8a744c58}
+
+
+
+
+Definition at line 369 of file ml\_\-wims.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), M\_\-wims\_\-llong(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_call_type2@{M\_\-wims\_\-call\_\-type2}}
+\index{M_wims_call_type2@{M\_\-wims\_\-call\_\-type2}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__wims_8c_f0f53b2aba589382fc3407ffcd8c585a}
+
+
+
+
+Definition at line 416 of file ml\_\-wims.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-pointer(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), M\_\-wims\_\-llong(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_cb_label_name@{M\_\-wims\_\-cb\_\-label\_\-name}}
+\index{M_wims_cb_label_name@{M\_\-wims\_\-cb\_\-label\_\-name}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__wims_8c_9ef233f7ce6f06e330494ac6b22158cb}
+
+
+
+
+Definition at line 1218 of file ml\_\-wims.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_double@{M\_\-wims\_\-double}}
+\index{M_wims_double@{M\_\-wims\_\-double}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__wims_8c_6be6ed3ff4ec5e30ae7b8c099b691fc4}
+
+
+
+
+Definition at line 269 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-DOUBLE, M\_\-WIMS\_\-ALIGN\_\-DOUBLE, M\_\-WIMS\_\-SIZE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_eval_type@{M\_\-wims\_\-eval\_\-type}}
+\index{M_wims_eval_type@{M\_\-wims\_\-eval\_\-type}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__wims_8c_e2eb5f2b02c0e0b3d097a56ab71f6a06}
+
+
+
+
+Definition at line 289 of file ml\_\-wims.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), M\_\-wims\_\-llong(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_eval_type2@{M\_\-wims\_\-eval\_\-type2}}
+\index{M_wims_eval_type2@{M\_\-wims\_\-eval\_\-type2}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__wims_8c_7542b1f9b6ac532563ad8708df6f87cd}
+
+
+
+
+Definition at line 325 of file ml\_\-wims.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), M\_\-wims\_\-llong(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_float@{M\_\-wims\_\-float}}
+\index{M_wims_float@{M\_\-wims\_\-float}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__wims_8c_47e5494bf5c6d5f4fb8a6d0db5852037}
+
+
+
+
+Definition at line 259 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-FLOAT, M\_\-WIMS\_\-ALIGN\_\-FLOAT, M\_\-WIMS\_\-SIZE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_fn_label_name@{M\_\-wims\_\-fn\_\-label\_\-name}}
+\index{M_wims_fn_label_name@{M\_\-wims\_\-fn\_\-label\_\-name}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-wims\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__wims_8c_8ee362ae84a6f9434982b4e1c837ce73}
+
+
+
+
+Definition at line 1286 of file ml\_\-wims.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_fn_name_from_label@{M\_\-wims\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_wims_fn_name_from_label@{M\_\-wims\_\-fn\_\-name\_\-from\_\-label}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-wims\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__wims_8c_21169e6a1c9a19297104e104b42b11f3}
+
+
+
+
+Definition at line 1298 of file ml\_\-wims.c.\index{ml_wims.c@{ml\_\-wims.c}!M_wims_fnvar_layout@{M\_\-wims\_\-fnvar\_\-layout}}
+\index{M_wims_fnvar_layout@{M\_\-wims\_\-fnvar\_\-layout}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__wims_8c_688045fdcb83e75df5f6b6af7a523cd5}
+
+
+
+
+Definition at line 971 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-WIMS\_\-ALIGN\_\-INT, M\_\-WIMS\_\-ALIGN\_\-MAX, M\_\-WIMS\_\-ALIGN\_\-POINTER, M\_\-WIMS\_\-FLT\_\-BASE, M\_\-WIMS\_\-INT\_\-BASE, M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG, M\_\-WIMS\_\-SIZE\_\-INT, M\_\-WIMS\_\-SIZE\_\-POINTER, M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_fragile_macro@{M\_\-wims\_\-fragile\_\-macro}}
+\index{M_wims_fragile_macro@{M\_\-wims\_\-fragile\_\-macro}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__wims_8c_6ad7dec34a11d248caed4379d0475929}
+
+
+
+
+Definition at line 1307 of file ml\_\-wims.c.
+
+References M\_\-assert(), M\_\-model, M\_\-WIMS\_\-16, and M\_\-WIMS\_\-24.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_is_cb_label@{M\_\-wims\_\-is\_\-cb\_\-label}}
+\index{M_wims_is_cb_label@{M\_\-wims\_\-is\_\-cb\_\-label}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__wims_8c_0da47fd5c010bd6a99c9ff439c9f52e7}
+
+
+
+
+Definition at line 1223 of file ml\_\-wims.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_is_jumptbl_label@{M\_\-wims\_\-is\_\-jumptbl\_\-label}}
+\index{M_wims_is_jumptbl_label@{M\_\-wims\_\-is\_\-jumptbl\_\-label}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__wims_8c_fabc9fa87765b3760076768f573c5724}
+
+
+
+
+Definition at line 1234 of file ml\_\-wims.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_jumptbl_label_name@{M\_\-wims\_\-jumptbl\_\-label\_\-name}}
+\index{M_wims_jumptbl_label_name@{M\_\-wims\_\-jumptbl\_\-label\_\-name}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__wims_8c_2aee614b4f83be73ddbbab47e7632e3d}
+
+
+
+
+Definition at line 1228 of file ml\_\-wims.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_layout_fnvar@{M\_\-wims\_\-layout\_\-fnvar}}
+\index{M_wims_layout_fnvar@{M\_\-wims\_\-layout\_\-fnvar}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__wims_8c_89f126df7c79a4237631ff3654f631d0}
+
+
+
+
+Definition at line 758 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, List\_\-next(), List\_\-start(), M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-WIMS\_\-ALIGN\_\-INT, M\_\-WIMS\_\-ALIGN\_\-MAX, M\_\-WIMS\_\-ALIGN\_\-POINTER, M\_\-WIMS\_\-FLT\_\-BASE, M\_\-WIMS\_\-INT\_\-BASE, M\_\-WIMS\_\-MAX\_\-FNVAR\_\-REG, M\_\-WIMS\_\-SIZE\_\-INT, M\_\-WIMS\_\-SIZE\_\-POINTER, M\_\-WIMS\_\-SMALL\_\-STRUCT\_\-MAX, MIN\_\-PARAM\_\-SIZE, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Type::size, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_layout_retvar@{M\_\-wims\_\-layout\_\-retvar}}
+\index{M_wims_layout_retvar@{M\_\-wims\_\-layout\_\-retvar}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-layout\_\-retvar (\bf{M\_\-Param} {\em param}, int {\em purpose})}\label{ml__wims_8c_37808766c8dda87bcefdc1ff2485fb03}
+
+
+
+
+Definition at line 1741 of file ml\_\-wims.c.
+
+References M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-THRU\_\-MEMORY, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-retvar().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_lvar_layout@{M\_\-wims\_\-lvar\_\-layout}}
+\index{M_wims_lvar_layout@{M\_\-wims\_\-lvar\_\-layout}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__wims_8c_d4929aae2a0828b6dedeb6e73afef9f3}
+
+
+
+
+Definition at line 1174 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-WIMS\_\-ALIGN\_\-MAX, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_no_short_int@{M\_\-wims\_\-no\_\-short\_\-int}}
+\index{M_wims_no_short_int@{M\_\-wims\_\-no\_\-short\_\-int}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-no\_\-short\_\-int (void)}\label{ml__wims_8c_971fbe33a88a0e70f29f09afaf1a126b}
+
+
+
+
+Definition at line 1214 of file ml\_\-wims.c.
+
+References M\_\-WIMS\_\-SIZE\_\-INT, and M\_\-WIMS\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_pointer@{M\_\-wims\_\-pointer}}
+\index{M_wims_pointer@{M\_\-wims\_\-pointer}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__wims_8c_e822751278a8ec6be431bebf9ee6721d}
+
+
+
+
+Definition at line 279 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-POINTER, M\_\-WIMS\_\-ALIGN\_\-POINTER, M\_\-WIMS\_\-SIZE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_return_register@{M\_\-wims\_\-return\_\-register}}
+\index{M_wims_return_register@{M\_\-wims\_\-return\_\-register}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__wims_8c_9c2e74ac65301e560a8faf09e05bbcd4}
+
+
+
+
+Definition at line 1271 of file ml\_\-wims.c.
+
+References M\_\-assert(), M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, and M\_\-WIMS\_\-RET\_\-I32.
+
+Referenced by M\_\-return\_\-register().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_struct_align@{M\_\-wims\_\-struct\_\-align}}
+\index{M_wims_struct_align@{M\_\-wims\_\-struct\_\-align}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__wims_8c_7d6387f52760c1d814b74b974c4e0932}
+
+
+
+
+Definition at line 687 of file ml\_\-wims.c.
+
+References M\_\-WIMS\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_struct_layout@{M\_\-wims\_\-struct\_\-layout}}
+\index{M_wims_struct_layout@{M\_\-wims\_\-struct\_\-layout}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__wims_8c_eb40c11e0e046cebe24f4b67a55d4336}
+
+
+
+
+Definition at line 600 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-WIMS\_\-SIZE\_\-CHAR, M\_\-WIMS\_\-SIZE\_\-INT, M\_\-WIMS\_\-SIZE\_\-LONG, M\_\-WIMS\_\-SIZE\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_struct_size@{M\_\-wims\_\-struct\_\-size}}
+\index{M_wims_struct_size@{M\_\-wims\_\-struct\_\-size}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__wims_8c_c046d2dbeca5c92cd1e6f6b73f7b97c6}
+
+
+
+
+Definition at line 703 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-WIMS\_\-ALIGN\_\-CHAR, M\_\-WIMS\_\-ALIGN\_\-LONG, M\_\-WIMS\_\-ALIGN\_\-SHORT, and M\_\-WIMS\_\-SIZE\_\-INT.
+
+Referenced by M\_\-struct\_\-size().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_structure_pointer@{M\_\-wims\_\-structure\_\-pointer}}
+\index{M_wims_structure_pointer@{M\_\-wims\_\-structure\_\-pointer}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-structure\_\-pointer (int {\em purpose})}\label{ml__wims_8c_ca63b33e49ddd314061fc0d1f6060726}
+
+
+
+
+Definition at line 1266 of file ml\_\-wims.c.
+
+References M\_\-WIMS\_\-RET\_\-ST.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_subroutine_call@{M\_\-wims\_\-subroutine\_\-call}}
+\index{M_wims_subroutine_call@{M\_\-wims\_\-subroutine\_\-call}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-subroutine\_\-call (int {\em opc})}\label{ml__wims_8c_7af3bb2870d3ec824153339ddaa32e45}
+
+
+
+
+Definition at line 1331 of file ml\_\-wims.c.
+
+References M\_\-assert(), M\_\-model, M\_\-WIMS\_\-16, and M\_\-WIMS\_\-24.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_union_align@{M\_\-wims\_\-union\_\-align}}
+\index{M_wims_union_align@{M\_\-wims\_\-union\_\-align}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__wims_8c_b39ca8b04b697536e7f8e25b1688bfb7}
+
+
+
+
+Definition at line 550 of file ml\_\-wims.c.
+
+References M\_\-WIMS\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_union_layout@{M\_\-wims\_\-union\_\-layout}}
+\index{M_wims_union_layout@{M\_\-wims\_\-union\_\-layout}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__wims_8c_67eff361295f7bf737e710c3cd2d421f}
+
+
+
+
+Definition at line 541 of file ml\_\-wims.c.
+
+Referenced by M\_\-union\_\-layout().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_union_size@{M\_\-wims\_\-union\_\-size}}
+\index{M_wims_union_size@{M\_\-wims\_\-union\_\-size}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-wims\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__wims_8c_bda748cea405973937a4d5eaa170fddd}
+
+
+
+
+Definition at line 568 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-WIMS\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_wims.c@{ml\_\-wims.c}!M_wims_void@{M\_\-wims\_\-void}}
+\index{M_wims_void@{M\_\-wims\_\-void}!ml_wims.c@{ml\_\-wims.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-wims\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__wims_8c_80f549af8edd654d729ec810b32913b6}
+
+
+
+
+Definition at line 200 of file ml\_\-wims.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-VOID, M\_\-WIMS\_\-ALIGN\_\-VOID, M\_\-WIMS\_\-SIZE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().

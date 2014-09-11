@@ -1,0 +1,631 @@
+\section{lmdes.h File Reference}
+\label{lmdes_8h}\index{lmdes.h@{lmdes.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$library/dynamic\_\-symbol.h$>$}\par
+{\tt \#include $<$library/set.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{mdes\_\-IO\_\-set\_\-st}
+\item 
+struct \bf{mdes\_\-IO\_\-item\_\-st}
+\item 
+struct \bf{mdes\_\-resource\_\-st}
+\item 
+struct \bf{mdes\_\-rmask\_\-st}
+\item 
+struct \bf{mdes\_\-Rused}
+\item 
+struct \bf{mdes\_\-reslist\_\-st}
+\item 
+struct \bf{mdes\_\-latency\_\-st}
+\item 
+struct \bf{mdes\_\-alt\_\-st}
+\item 
+struct \bf{Mdes\_\-Stats}
+\item 
+struct \bf{mdes\_\-operation\_\-st}
+\item 
+struct \bf{mdes\_\-st}
+\item 
+struct \bf{mdes\_\-compatable\_\-alt\_\-st}
+\item 
+struct \bf{Mdes\_\-Info}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MDES\_\-INFO}(oper)~((\bf{Mdes\_\-Info} $\ast$)(oper $\rightarrow$ mdes\_\-info))
+\item 
+\#define \bf{MDES\_\-PRED}~0
+\item 
+\#define \bf{MDES\_\-DEST}~1
+\item 
+\#define \bf{MDES\_\-SRC}~2
+\item 
+\#define \bf{MDES\_\-SYNC\_\-IN}~3
+\item 
+\#define \bf{MDES\_\-SYNC\_\-OUT}~4
+\item 
+\#define \bf{MDES\_\-SUPERSCALAR}~0
+\item 
+\#define \bf{MDES\_\-VLIW}~1
+\item 
+\#define \bf{MDES\_\-OVERLAPPING\_\-REQUEST}~0x00000001
+\item 
+\#define \bf{mdes\_\-processor\_\-model}()~\bf{lmdes} $\rightarrow$ processor\_\-model
+\item 
+\#define \bf{mdes\_\-total\_\-slots}()~\bf{lmdes} $\rightarrow$ num\_\-slots
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{mdes\_\-IO\_\-set\_\-st} \bf{Mdes\_\-IO\_\-Set}
+\item 
+typedef \bf{mdes\_\-IO\_\-item\_\-st} \bf{Mdes\_\-IO\_\-Item}
+\item 
+typedef \bf{mdes\_\-resource\_\-st} \bf{Mdes\_\-Resource}
+\item 
+typedef \bf{mdes\_\-rmask\_\-st} \bf{Mdes\_\-Rmask}
+\item 
+typedef \bf{mdes\_\-Rused} \bf{Mdes\_\-Rused}
+\item 
+typedef \bf{mdes\_\-reslist\_\-st} \bf{Mdes\_\-Res\-List}
+\item 
+typedef \bf{mdes\_\-latency\_\-st} \bf{Mdes\_\-Latency}
+\item 
+typedef \bf{mdes\_\-alt\_\-st} \bf{Mdes\_\-Alt}
+\item 
+typedef \bf{mdes\_\-operation\_\-st} \bf{Mdes\_\-Operation}
+\item 
+typedef \bf{mdes\_\-st} \bf{Mdes}
+\item 
+typedef \bf{mdes\_\-compatable\_\-alt\_\-st} \bf{Mdes\_\-Compatable\_\-Alt}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{L\_\-init\_\-lmdes} (char $\ast$mdes\_\-file\_\-name)
+\item 
+void \bf{L\_\-init\_\-lmdes2} (char $\ast$mdes\_\-file\_\-name, int num\_\-pred, int num\_\-dest, int num\_\-src, int num\_\-sync)
+\item 
+void \bf{print\_\-mdes} (FILE $\ast$out, \bf{Mdes} $\ast$mdes)
+\item 
+int \bf{lmdes\_\-initialized} (void)
+\item 
+\bf{Mdes\_\-Info} $\ast$ \bf{build\_\-mdes\_\-info} (unsigned int opcode, int $\ast$io\_\-list)
+\item 
+void \bf{free\_\-mdes\_\-info} (\bf{Mdes\_\-Info} $\ast$info)
+\item 
+void \bf{print\_\-mdes\_\-operand\_\-name} (FILE $\ast$out, \bf{Mdes} $\ast$mdes, unsigned int index)
+\item 
+void \bf{mdes\_\-print\_\-IO\_\-set} (FILE $\ast$out, unsigned int id)
+\item 
+int \bf{mdes\_\-defined\_\-opcode} (unsigned int opcode)
+\item 
+int \bf{op\_\-flag\_\-set} (unsigned int opcode, int mask)
+\item 
+int \bf{alt\_\-flag\_\-set} (unsigned int opcode, unsigned int alt\_\-no, int mask)
+\item 
+int \bf{any\_\-alt\_\-flag\_\-set} (\bf{Mdes\_\-Info} $\ast$mdes\_\-info, int mask)
+\item 
+int \bf{mdes\_\-max\_\-opcode} (void)
+\item 
+int \bf{mdes\_\-operand\_\-count} (void)
+\item 
+int \bf{mdes\_\-latency\_\-count} (void)
+\item 
+int \bf{mdes\_\-num\_\-operands} (unsigned int operand\_\-type)
+\item 
+int \bf{mdes\_\-null\_\-operand} (void)
+\item 
+int \bf{operand\_\-index} (unsigned int operand\_\-type, unsigned int operand\_\-number)
+\item 
+int \bf{operand\_\-type} (unsigned int operand\_\-index)
+\item 
+int \bf{operand\_\-number} (unsigned int operand\_\-index)
+\item 
+int \bf{max\_\-operand\_\-time} (\bf{Mdes\_\-Info} $\ast$mdes\_\-info, int operand\_\-index)
+\item 
+int \bf{min\_\-operand\_\-time} (\bf{Mdes\_\-Info} $\ast$mdes\_\-info, int operand\_\-index)
+\item 
+int \bf{mdes\_\-calc\_\-min\_\-ready\_\-time} (\bf{Mdes\_\-Info} $\ast$mdes\_\-info, int $\ast$ready\_\-time)
+\item 
+int \bf{mdes\_\-operand\_\-latency} (unsigned int opcode, unsigned int alt\_\-no, unsigned int operand\_\-index)
+\item 
+int \bf{mdes\_\-max\_\-completion\_\-time} (int opcode, int alt\_\-no)
+\item 
+int \bf{mdes\_\-heuristic\_\-alt\_\-id} (int opcode)
+\item 
+\bf{Mdes} $\ast$ \bf{load\_\-lmdes\_\-from\_\-version2} (char $\ast$mdes\_\-file\_\-name, int num\_\-pred, int num\_\-dest, int num\_\-src, int num\_\-sync)
+\item 
+void \bf{Malloc\_\-struct} (void $\ast$$\ast$ptr, int size)
+\item 
+void \bf{Malloc\_\-name} (char $\ast$$\ast$ptr, char $\ast$\bf{name})
+\item 
+void \bf{print\_\-mdes\_\-stats} (FILE $\ast$out, int prepass)
+\item 
+void \bf{increment\_\-check\_\-history} (\bf{INT\_\-Symbol\_\-Table} $\ast$table, int num\_\-checks, int inc)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{Mdes} $\ast$ \bf{lmdes}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{lmdes.h@{lmdes.h}!MDES_DEST@{MDES\_\-DEST}}
+\index{MDES_DEST@{MDES\_\-DEST}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-DEST~1}\label{lmdes_8h_6b7b3b9d34884591f194e9362a4d787e}
+
+
+
+
+Definition at line 74 of file lmdes.h.
+
+Referenced by L\_\-initialize\_\-build\_\-mdes\_\-info(), load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), mdes\_\-build\_\-iolist(), mdes\_\-max\_\-completion\_\-time(), print\_\-mdes(), print\_\-mdes\_\-info\_\-debug\_\-info(), and print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!MDES_INFO@{MDES\_\-INFO}}
+\index{MDES_INFO@{MDES\_\-INFO}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-INFO(oper)~((\bf{Mdes\_\-Info} $\ast$)(oper $\rightarrow$ mdes\_\-info))}\label{lmdes_8h_c3fee9a9b81fcd259ac346ef74766f48}
+
+
+
+
+Definition at line 70 of file lmdes.h.\index{lmdes.h@{lmdes.h}!MDES_OVERLAPPING_REQUEST@{MDES\_\-OVERLAPPING\_\-REQUEST}}
+\index{MDES_OVERLAPPING_REQUEST@{MDES\_\-OVERLAPPING\_\-REQUEST}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-OVERLAPPING\_\-REQUEST~0x00000001}\label{lmdes_8h_66e95518415e6886ce1ea4fea1f11f2a}
+
+
+
+
+Definition at line 84 of file lmdes.h.\index{lmdes.h@{lmdes.h}!MDES_PRED@{MDES\_\-PRED}}
+\index{MDES_PRED@{MDES\_\-PRED}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-PRED~0}\label{lmdes_8h_af4ae62f6ecd434d7159ead2988d8382}
+
+
+
+
+Definition at line 73 of file lmdes.h.
+
+Referenced by L\_\-initialize\_\-build\_\-mdes\_\-info(), load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), mdes\_\-build\_\-iolist(), print\_\-mdes(), print\_\-mdes\_\-info\_\-debug\_\-info(), and print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!mdes_processor_model@{mdes\_\-processor\_\-model}}
+\index{mdes_processor_model@{mdes\_\-processor\_\-model}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define mdes\_\-processor\_\-model()~\bf{lmdes} $\rightarrow$ processor\_\-model}\label{lmdes_8h_1c2eedb335670f5aab26b0b7b9686296}
+
+
+
+
+Definition at line 283 of file lmdes.h.\index{lmdes.h@{lmdes.h}!MDES_SRC@{MDES\_\-SRC}}
+\index{MDES_SRC@{MDES\_\-SRC}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-SRC~2}\label{lmdes_8h_d6662cf14c3f61ef04bbfa00fa496bba}
+
+
+
+
+Definition at line 75 of file lmdes.h.
+
+Referenced by L\_\-initialize\_\-build\_\-mdes\_\-info(), load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), mdes\_\-build\_\-iolist(), print\_\-mdes(), print\_\-mdes\_\-info\_\-debug\_\-info(), and print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!MDES_SUPERSCALAR@{MDES\_\-SUPERSCALAR}}
+\index{MDES_SUPERSCALAR@{MDES\_\-SUPERSCALAR}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-SUPERSCALAR~0}\label{lmdes_8h_2202ce53709c0e408a63030c29fead58}
+
+
+
+
+Definition at line 80 of file lmdes.h.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().\index{lmdes.h@{lmdes.h}!MDES_SYNC_IN@{MDES\_\-SYNC\_\-IN}}
+\index{MDES_SYNC_IN@{MDES\_\-SYNC\_\-IN}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-SYNC\_\-IN~3}\label{lmdes_8h_68139cefe2a913e6bf58ee671e70e620}
+
+
+
+
+Definition at line 76 of file lmdes.h.
+
+Referenced by load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), print\_\-mdes(), and print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!MDES_SYNC_OUT@{MDES\_\-SYNC\_\-OUT}}
+\index{MDES_SYNC_OUT@{MDES\_\-SYNC\_\-OUT}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-SYNC\_\-OUT~4}\label{lmdes_8h_8d186a9d28efc70dbedced22702e23f8}
+
+
+
+
+Definition at line 77 of file lmdes.h.
+
+Referenced by load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), print\_\-mdes(), and print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!mdes_total_slots@{mdes\_\-total\_\-slots}}
+\index{mdes_total_slots@{mdes\_\-total\_\-slots}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define mdes\_\-total\_\-slots()~\bf{lmdes} $\rightarrow$ num\_\-slots}\label{lmdes_8h_a3177b0b40f3125b0ce34d7938e2dbbd}
+
+
+
+
+Definition at line 284 of file lmdes.h.\index{lmdes.h@{lmdes.h}!MDES_VLIW@{MDES\_\-VLIW}}
+\index{MDES_VLIW@{MDES\_\-VLIW}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MDES\_\-VLIW~1}\label{lmdes_8h_1dd3b99b38350ea5ad6a1ae70624f7a4}
+
+
+
+
+Definition at line 81 of file lmdes.h.
+
+Referenced by load\_\-lmdes\_\-from\_\-version2().
+
+\subsection{Typedef Documentation}
+\index{lmdes.h@{lmdes.h}!Mdes@{Mdes}}
+\index{Mdes@{Mdes}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-st}
+ \bf{Mdes}}\label{lmdes_8h_81d40116ad293c4a88ed3f5ebde9a6c5}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Alt@{Mdes\_\-Alt}}
+\index{Mdes_Alt@{Mdes\_\-Alt}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-alt\_\-st}
+ \bf{Mdes\_\-Alt}}\label{lmdes_8h_4589dad1c6599eb0f74abbeda089e76c}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Compatable_Alt@{Mdes\_\-Compatable\_\-Alt}}
+\index{Mdes_Compatable_Alt@{Mdes\_\-Compatable\_\-Alt}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-compatable\_\-alt\_\-st}
+ \bf{Mdes\_\-Compatable\_\-Alt}}\label{lmdes_8h_7713e4afedbaa57e0062663a1b6cbe22}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_IO_Item@{Mdes\_\-IO\_\-Item}}
+\index{Mdes_IO_Item@{Mdes\_\-IO\_\-Item}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-IO\_\-item\_\-st}
+ \bf{Mdes\_\-IO\_\-Item}}\label{lmdes_8h_c87d75377929b8a420f63ec606b8507b}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_IO_Set@{Mdes\_\-IO\_\-Set}}
+\index{Mdes_IO_Set@{Mdes\_\-IO\_\-Set}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-IO\_\-set\_\-st}
+ \bf{Mdes\_\-IO\_\-Set}}\label{lmdes_8h_952cfc93036cec851c6113fcb7cdd4a2}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Latency@{Mdes\_\-Latency}}
+\index{Mdes_Latency@{Mdes\_\-Latency}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-latency\_\-st}
+ \bf{Mdes\_\-Latency}}\label{lmdes_8h_48360901c68bd565427b2570d662d0b5}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Operation@{Mdes\_\-Operation}}
+\index{Mdes_Operation@{Mdes\_\-Operation}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-operation\_\-st}
+ \bf{Mdes\_\-Operation}}\label{lmdes_8h_54073b7cc26278125d7a2d1737517542}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_ResList@{Mdes\_\-ResList}}
+\index{Mdes_ResList@{Mdes\_\-ResList}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-reslist\_\-st}
+ \bf{Mdes\_\-Res\-List}}\label{lmdes_8h_e3f1e591ab5452a9f1df447c9f7b5d2f}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Resource@{Mdes\_\-Resource}}
+\index{Mdes_Resource@{Mdes\_\-Resource}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-resource\_\-st}
+ \bf{Mdes\_\-Resource}}\label{lmdes_8h_34745f34bf859432de674d86f42ec32a}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Rmask@{Mdes\_\-Rmask}}
+\index{Mdes_Rmask@{Mdes\_\-Rmask}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-rmask\_\-st}
+ \bf{Mdes\_\-Rmask}}\label{lmdes_8h_01b9dc93e286b9da26feca2b34d88f3c}
+
+
+\index{lmdes.h@{lmdes.h}!Mdes_Rused@{Mdes\_\-Rused}}
+\index{Mdes_Rused@{Mdes\_\-Rused}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{mdes\_\-Rused}
+ \bf{Mdes\_\-Rused}}\label{lmdes_8h_6e56c6218e6e640a592e163cf3d0edbb}
+
+
+
+
+\subsection{Function Documentation}
+\index{lmdes.h@{lmdes.h}!alt_flag_set@{alt\_\-flag\_\-set}}
+\index{alt_flag_set@{alt\_\-flag\_\-set}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int alt\_\-flag\_\-set (unsigned int {\em opcode}, unsigned int {\em alt\_\-no}, int {\em mask})}\label{lmdes_8h_8170398096fe078ee847319d5f380200}
+
+
+
+
+Definition at line 156 of file lmdes.c.
+
+References mdes\_\-operation\_\-st::alt, mdes\_\-alt\_\-st::alt\_\-flags, mdes\_\-st::file\_\-name, I\_\-punt(), lmdes, mdes\_\-st::max\_\-opcode, NULL, mdes\_\-operation\_\-st::num\_\-alts, and mdes\_\-st::op\_\-table.\index{lmdes.h@{lmdes.h}!any_alt_flag_set@{any\_\-alt\_\-flag\_\-set}}
+\index{any_alt_flag_set@{any\_\-alt\_\-flag\_\-set}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int any\_\-alt\_\-flag\_\-set (\bf{Mdes\_\-Info} $\ast$ {\em mdes\_\-info}, int {\em mask})}\label{lmdes_8h_9605b95ef76210011ca535870490cd9a}
+
+
+
+
+Definition at line 189 of file lmdes.c.
+
+References mdes\_\-compatable\_\-alt\_\-st::alt, mdes\_\-alt\_\-st::alt\_\-flags, Mdes\_\-Info::compatable\_\-alts, mdes\_\-compatable\_\-alt\_\-st::next, and NULL.\index{lmdes.h@{lmdes.h}!build_mdes_info@{build\_\-mdes\_\-info}}
+\index{build_mdes_info@{build\_\-mdes\_\-info}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mdes\_\-Info}$\ast$ build\_\-mdes\_\-info (unsigned int {\em opcode}, int $\ast$ {\em io\_\-list})}\label{lmdes_8h_e14f6808b51ea8eeb57db97bb06a5fc3}
+
+
+
+
+Definition at line 356 of file lmdes.c.
+
+References mdes\_\-st::file\_\-name, mdes\_\-st::IO\_\-set\_\-table, lmdes, mdes\_\-st::max\_\-IO\_\-set\_\-id, mdes\_\-st::max\_\-opcode, NULL, mdes\_\-st::op\_\-table, mdes\_\-st::operand\_\-count, operand\_\-type(), mdes\_\-st::operand\_\-type\_\-buf, and print\_\-mdes\_\-operand\_\-name().
+
+Referenced by L\_\-build\_\-cb\_\-mdes\_\-info(), and L\_\-build\_\-oper\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!free_mdes_info@{free\_\-mdes\_\-info}}
+\index{free_mdes_info@{free\_\-mdes\_\-info}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-mdes\_\-info (\bf{Mdes\_\-Info} $\ast$ {\em info})}\label{lmdes_8h_3e2b7abcf414fa5c31b177b5fa743192}
+
+
+
+
+Definition at line 452 of file lmdes.c.
+
+References Mdes\_\-Info::compatable\_\-alts, L\_\-free(), Mdes\_\-Compatable\_\-Alt\_\-pool, mdes\_\-compatable\_\-alt\_\-st::next, and NULL.
+
+Referenced by L\_\-free\_\-cb\_\-mdes\_\-info(), and L\_\-free\_\-oper\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!increment_check_history@{increment\_\-check\_\-history}}
+\index{increment_check_history@{increment\_\-check\_\-history}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void increment\_\-check\_\-history (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em table}, int {\em num\_\-checks}, int {\em inc})}\label{lmdes_8h_29f817af40da58d6d2d8154a3d6f425f}
+
+
+
+
+Definition at line 1398 of file lmdes2.c.
+
+References INT\_\-Symbol::data, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), and NULL.
+
+Referenced by add\_\-check\_\-history().\index{lmdes.h@{lmdes.h}!L_init_lmdes@{L\_\-init\_\-lmdes}}
+\index{L_init_lmdes@{L\_\-init\_\-lmdes}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-init\_\-lmdes (char $\ast$ {\em mdes\_\-file\_\-name})}\label{lmdes_8h_8a5b297b5c6aff02e81706246fe2b37d}
+
+
+
+
+Definition at line 781 of file lmdes.c.
+
+References I\_\-punt(), L\_\-create\_\-alloc\_\-pool(), load\_\-lmdes(), Mdes\_\-Compatable\_\-Alt\_\-pool, and NULL.\index{lmdes.h@{lmdes.h}!L_init_lmdes2@{L\_\-init\_\-lmdes2}}
+\index{L_init_lmdes2@{L\_\-init\_\-lmdes2}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-init\_\-lmdes2 (char $\ast$ {\em mdes\_\-file\_\-name}, int {\em num\_\-pred}, int {\em num\_\-dest}, int {\em num\_\-src}, int {\em num\_\-sync})}\label{lmdes_8h_31b24a9481d90385d7406c58673a53d1}
+
+
+
+
+Definition at line 827 of file lmdes.c.
+
+References L\_\-create\_\-alloc\_\-pool(), load\_\-lmdes(), load\_\-lmdes\_\-from\_\-version2(), Mdes\_\-Compatable\_\-Alt\_\-pool, and NULL.\index{lmdes.h@{lmdes.h}!lmdes_initialized@{lmdes\_\-initialized}}
+\index{lmdes_initialized@{lmdes\_\-initialized}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int lmdes\_\-initialized (void)}\label{lmdes_8h_8036561f663279103ef2f7065b02f1dd}
+
+
+
+
+Definition at line 93 of file lmdes.c.
+
+References lmdes, and NULL.\index{lmdes.h@{lmdes.h}!load_lmdes_from_version2@{load\_\-lmdes\_\-from\_\-version2}}
+\index{load_lmdes_from_version2@{load\_\-lmdes\_\-from\_\-version2}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mdes}$\ast$ load\_\-lmdes\_\-from\_\-version2 (char $\ast$ {\em mdes\_\-file\_\-name}, int {\em num\_\-pred}, int {\em num\_\-dest}, int {\em num\_\-src}, int {\em num\_\-sync})}\label{lmdes_8h_e2378554663e4703270b58eafd85f52f}
+
+
+
+
+Definition at line 450 of file lmdes2.c.
+
+References mdes\_\-operation\_\-st::alt, mdes\_\-alt\_\-st::alt\_\-flags, mdes\_\-alt\_\-st::asm\_\-name, calc\_\-num\_\-alts(), calc\_\-num\_\-op\_\-alts(), calc\_\-op\_\-total\_\-string\_\-len(), calc\_\-total\_\-entry\_\-name\_\-len(), mdes\_\-operation\_\-st::can\_\-sched\_\-postpass, mdes\_\-operation\_\-st::can\_\-sched\_\-prepass, DEBUG\_\-LMDES2, entry, mdes\_\-latency\_\-st::exception, mdes\_\-IO\_\-set\_\-st::external\_\-id, mdes\_\-operation\_\-st::external\_\-name, find\_\-field\_\-by\_\-name(), get\_\-binary\_\-parm(), get\_\-int\_\-parm(), get\_\-int\_\-value(), get\_\-num\_\-entries(), get\_\-string\_\-parm(), mdes\_\-operation\_\-st::heuristic\_\-alt, I\_\-punt(), mdes\_\-IO\_\-set\_\-st::id, mdes\_\-IO\_\-item\_\-st::id, mdes\_\-resource\_\-st::id, mdes\_\-latency\_\-st::id, mdes\_\-operation\_\-st::id, mdes\_\-alt\_\-st::id, init\_\-stats(), mdes\_\-alt\_\-st::IO\_\-item, mdes\_\-operation\_\-st::lat\_\-class, mdes\_\-alt\_\-st::latency, load\_\-mdes2(), Malloc\_\-name(), Malloc\_\-struct(), mdes\_\-IO\_\-set\_\-st::mask, SM\_\-Port::mask, SM\_\-Syllable::mask, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-next\_\-entry(), MDES\_\-DEST, MDES\_\-PRED, MDES\_\-SRC, MDES\_\-SUPERSCALAR, MDES\_\-SYNC\_\-IN, MDES\_\-SYNC\_\-OUT, MDES\_\-VLIW, mdes\_\-IO\_\-set\_\-st::name, mdes\_\-IO\_\-item\_\-st::name, mdes\_\-resource\_\-st::name, mdes\_\-latency\_\-st::name, MD\_\-Entry::name, SM\_\-Nop::next\_\-nop, mdes\_\-operation\_\-st::nop, NULL, mdes\_\-operation\_\-st::num\_\-alts, SM\_\-Table::num\_\-choices, mdes\_\-operation\_\-st::num\_\-slots, SM\_\-Syllable::num\_\-slots, mdes\_\-operation\_\-st::op\_\-flags, mdes\_\-operation\_\-st::opcode, mdes\_\-latency\_\-st::operand\_\-latency, mdes\_\-IO\_\-item\_\-st::operand\_\-type, mdes\_\-alt\_\-st::operation, mdes\_\-operation\_\-st::port\_\-mask, SM\_\-Nop::prev\_\-nop, mdes\_\-alt\_\-st::reslist, mdes\_\-operation\_\-st::sched\_\-postpass, mdes\_\-operation\_\-st::sched\_\-prepass, MD\_\-Entry::section, Set\_\-add(), Set\_\-copy(), Set\_\-dispose(), set\_\-latencies(), Set\_\-new(), SM\_\-add\_\-ids\_\-to\_\-entries(), mdes\_\-operation\_\-st::syll\_\-mask, SM\_\-Port::syllable, and mdes\_\-alt\_\-st::table.
+
+Referenced by L\_\-init\_\-lmdes2().\index{lmdes.h@{lmdes.h}!Malloc_name@{Malloc\_\-name}}
+\index{Malloc_name@{Malloc\_\-name}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Malloc\_\-name (char $\ast$$\ast$ {\em ptr}, char $\ast$ {\em name})}\label{lmdes_8h_94186a85a4489b80b7d305e6e13fec4c}
+
+
+\index{lmdes.h@{lmdes.h}!Malloc_struct@{Malloc\_\-struct}}
+\index{Malloc_struct@{Malloc\_\-struct}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Malloc\_\-struct (void $\ast$$\ast$ {\em ptr}, int {\em size})}\label{lmdes_8h_44598a63bd3f29a90fdd27cb3531aff7}
+
+
+\index{lmdes.h@{lmdes.h}!max_operand_time@{max\_\-operand\_\-time}}
+\index{max_operand_time@{max\_\-operand\_\-time}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int max\_\-operand\_\-time (\bf{Mdes\_\-Info} $\ast$ {\em mdes\_\-info}, int {\em operand\_\-index})}\label{lmdes_8h_447043ce5a84413cb09ce4eb5ff1050c}
+
+
+
+
+Definition at line 536 of file lmdes.c.
+
+References mdes\_\-compatable\_\-alt\_\-st::alt, Mdes\_\-Info::compatable\_\-alts, I\_\-punt(), mdes\_\-alt\_\-st::latency, mdes\_\-compatable\_\-alt\_\-st::next, NULL, and mdes\_\-latency\_\-st::operand\_\-latency.\index{lmdes.h@{lmdes.h}!mdes_calc_min_ready_time@{mdes\_\-calc\_\-min\_\-ready\_\-time}}
+\index{mdes_calc_min_ready_time@{mdes\_\-calc\_\-min\_\-ready\_\-time}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-calc\_\-min\_\-ready\_\-time (\bf{Mdes\_\-Info} $\ast$ {\em mdes\_\-info}, int $\ast$ {\em ready\_\-time})}\label{lmdes_8h_aa82b5ba2b71f304d335536fd6ee607f}
+
+
+
+
+Definition at line 612 of file lmdes.c.
+
+References mdes\_\-compatable\_\-alt\_\-st::alt, Mdes\_\-Info::compatable\_\-alts, I\_\-punt(), mdes\_\-alt\_\-st::latency, mdes\_\-compatable\_\-alt\_\-st::next, NULL, and mdes\_\-latency\_\-st::operand\_\-latency.\index{lmdes.h@{lmdes.h}!mdes_defined_opcode@{mdes\_\-defined\_\-opcode}}
+\index{mdes_defined_opcode@{mdes\_\-defined\_\-opcode}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-defined\_\-opcode (unsigned int {\em opcode})}\label{lmdes_8h_ac3528f18876ca767f050631903e3552}
+
+
+
+
+Definition at line 106 of file lmdes.c.
+
+References lmdes, mdes\_\-st::max\_\-opcode, NULL, and mdes\_\-st::op\_\-table.\index{lmdes.h@{lmdes.h}!mdes_heuristic_alt_id@{mdes\_\-heuristic\_\-alt\_\-id}}
+\index{mdes_heuristic_alt_id@{mdes\_\-heuristic\_\-alt\_\-id}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-heuristic\_\-alt\_\-id (int {\em opcode})}\label{lmdes_8h_bcb6214dbe99b2a5c7b4fb47cc0b632e}
+
+
+
+
+Definition at line 699 of file lmdes.c.
+
+References mdes\_\-operation\_\-st::heuristic\_\-alt, I\_\-punt(), mdes\_\-max\_\-completion\_\-time(), NULL, and mdes\_\-operation\_\-st::num\_\-alts.\index{lmdes.h@{lmdes.h}!mdes_latency_count@{mdes\_\-latency\_\-count}}
+\index{mdes_latency_count@{mdes\_\-latency\_\-count}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-latency\_\-count (void)}\label{lmdes_8h_7c180927e995b9efb844141769e8752a}
+
+
+
+
+Definition at line 217 of file lmdes.c.
+
+References mdes\_\-st::latency\_\-count, and lmdes.\index{lmdes.h@{lmdes.h}!mdes_max_completion_time@{mdes\_\-max\_\-completion\_\-time}}
+\index{mdes_max_completion_time@{mdes\_\-max\_\-completion\_\-time}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-max\_\-completion\_\-time (int {\em opcode}, int {\em alt\_\-no})}\label{lmdes_8h_589f30951568d11531047a7b3404e6ac}
+
+
+
+
+Definition at line 738 of file lmdes.c.
+
+References mdes\_\-operation\_\-st::alt, I\_\-punt(), mdes\_\-alt\_\-st::latency, MDES\_\-DEST, NULL, mdes\_\-operation\_\-st::num\_\-alts, operand\_\-index(), and mdes\_\-latency\_\-st::operand\_\-latency.
+
+Referenced by mdes\_\-heuristic\_\-alt\_\-id().\index{lmdes.h@{lmdes.h}!mdes_max_opcode@{mdes\_\-max\_\-opcode}}
+\index{mdes_max_opcode@{mdes\_\-max\_\-opcode}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-max\_\-opcode (void)}\label{lmdes_8h_87c24ac7a003ff4ced90a725d84644f0}
+
+
+
+
+Definition at line 122 of file lmdes.c.
+
+References lmdes, and mdes\_\-st::max\_\-opcode.\index{lmdes.h@{lmdes.h}!mdes_null_operand@{mdes\_\-null\_\-operand}}
+\index{mdes_null_operand@{mdes\_\-null\_\-operand}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-null\_\-operand (void)}\label{lmdes_8h_57537f171f1012dd9f07c719b258cec3}
+
+
+
+
+Definition at line 241 of file lmdes.c.
+
+References lmdes, and mdes\_\-st::null\_\-external\_\-id.
+
+Referenced by L\_\-build\_\-cb\_\-mdes\_\-info(), and L\_\-build\_\-oper\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!mdes_num_operands@{mdes\_\-num\_\-operands}}
+\index{mdes_num_operands@{mdes\_\-num\_\-operands}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-num\_\-operands (unsigned int {\em operand\_\-type})}\label{lmdes_8h_16c4bed2c322b1d117acf2ad16a06f1c}
+
+
+
+
+Definition at line 226 of file lmdes.c.
+
+References I\_\-punt(), lmdes, NULL, and mdes\_\-st::number.
+
+Referenced by L\_\-initialize\_\-build\_\-mdes\_\-info(), mdes\_\-build\_\-iolist(), and print\_\-mdes\_\-info\_\-debug\_\-info().\index{lmdes.h@{lmdes.h}!mdes_operand_count@{mdes\_\-operand\_\-count}}
+\index{mdes_operand_count@{mdes\_\-operand\_\-count}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-operand\_\-count (void)}\label{lmdes_8h_89ed8771e0c0f175530396acc020c4fe}
+
+
+
+
+Definition at line 207 of file lmdes.c.
+
+References lmdes, and mdes\_\-st::operand\_\-count.
+
+Referenced by L\_\-build\_\-cb\_\-mdes\_\-info(), and L\_\-build\_\-oper\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!mdes_operand_latency@{mdes\_\-operand\_\-latency}}
+\index{mdes_operand_latency@{mdes\_\-operand\_\-latency}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mdes\_\-operand\_\-latency (unsigned int {\em opcode}, unsigned int {\em alt\_\-no}, unsigned int {\em operand\_\-index})}\label{lmdes_8h_8d6617c093d8f85c8fd4a7f493b2341e}
+
+
+
+
+Definition at line 656 of file lmdes.c.
+
+References mdes\_\-operation\_\-st::alt, I\_\-punt(), mdes\_\-alt\_\-st::latency, NULL, mdes\_\-operation\_\-st::num\_\-alts, and mdes\_\-latency\_\-st::operand\_\-latency.\index{lmdes.h@{lmdes.h}!mdes_print_IO_set@{mdes\_\-print\_\-IO\_\-set}}
+\index{mdes_print_IO_set@{mdes\_\-print\_\-IO\_\-set}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void mdes\_\-print\_\-IO\_\-set (FILE $\ast$ {\em out}, unsigned int {\em id})}\label{lmdes_8h_443caf6000199806854433e428d252b5}
+
+
+
+
+Definition at line 337 of file lmdes.c.
+
+References mdes\_\-st::IO\_\-set\_\-table, lmdes, mdes\_\-st::max\_\-IO\_\-set\_\-id, mdes\_\-IO\_\-set\_\-st::name, and NULL.
+
+Referenced by print\_\-mdes\_\-info\_\-debug\_\-info().\index{lmdes.h@{lmdes.h}!min_operand_time@{min\_\-operand\_\-time}}
+\index{min_operand_time@{min\_\-operand\_\-time}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int min\_\-operand\_\-time (\bf{Mdes\_\-Info} $\ast$ {\em mdes\_\-info}, int {\em operand\_\-index})}\label{lmdes_8h_4b89be1b05bc574c5cc042cdeb8bb750}
+
+
+
+
+Definition at line 574 of file lmdes.c.
+
+References mdes\_\-compatable\_\-alt\_\-st::alt, Mdes\_\-Info::compatable\_\-alts, I\_\-punt(), mdes\_\-alt\_\-st::latency, mdes\_\-compatable\_\-alt\_\-st::next, NULL, and mdes\_\-latency\_\-st::operand\_\-latency.\index{lmdes.h@{lmdes.h}!op_flag_set@{op\_\-flag\_\-set}}
+\index{op_flag_set@{op\_\-flag\_\-set}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int op\_\-flag\_\-set (unsigned int {\em opcode}, int {\em mask})}\label{lmdes_8h_67805a2222096472207405f876bd1303}
+
+
+
+
+Definition at line 134 of file lmdes.c.
+
+References mdes\_\-st::file\_\-name, I\_\-punt(), lmdes, mdes\_\-st::max\_\-opcode, NULL, mdes\_\-operation\_\-st::op\_\-flags, and mdes\_\-st::op\_\-table.\index{lmdes.h@{lmdes.h}!operand_index@{operand\_\-index}}
+\index{operand_index@{operand\_\-index}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int operand\_\-index (unsigned int {\em operand\_\-type}, unsigned int {\em operand\_\-number})}\label{lmdes_8h_e84d5f3f40b5dc3a74d29e1f3762c671}
+
+
+
+
+Definition at line 469 of file lmdes.c.
+
+References I\_\-punt(), and NULL.
+
+Referenced by L\_\-initialize\_\-build\_\-mdes\_\-info(), and mdes\_\-max\_\-completion\_\-time().\index{lmdes.h@{lmdes.h}!operand_number@{operand\_\-number}}
+\index{operand_number@{operand\_\-number}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int operand\_\-number (unsigned int {\em operand\_\-index})}\label{lmdes_8h_ff92d6b9d3171335fbe5b748e0b54a74}
+
+
+
+
+Definition at line 515 of file lmdes.c.
+
+References I\_\-punt().
+
+Referenced by print\_\-mdes\_\-operand\_\-name().\index{lmdes.h@{lmdes.h}!operand_type@{operand\_\-type}}
+\index{operand_type@{operand\_\-type}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int operand\_\-type (unsigned int {\em operand\_\-index})}\label{lmdes_8h_b5521bc27b7c95d668c2641a6dfcd715}
+
+
+
+
+Definition at line 495 of file lmdes.c.
+
+References I\_\-punt().
+
+Referenced by build\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!print_mdes@{print\_\-mdes}}
+\index{print_mdes@{print\_\-mdes}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-mdes (FILE $\ast$ {\em out}, \bf{Mdes} $\ast$ {\em mdes})}\label{lmdes_8h_41090f500ae1c4c9214bbbf9926b249a}
+
+
+
+
+Definition at line 1385 of file lmdes.c.
+
+References mdes\_\-operation\_\-st::alt, mdes\_\-alt\_\-st::alt\_\-flags, mdes\_\-alt\_\-st::asm\_\-name, mdes\_\-Rused::end\_\-usage, mdes\_\-latency\_\-st::exception, mdes\_\-IO\_\-set\_\-st::external\_\-id, mdes\_\-operation\_\-st::external\_\-name, mdes\_\-latency\_\-st::id, mdes\_\-reslist\_\-st::id, mdes\_\-resource\_\-st::id, mdes\_\-IO\_\-item\_\-st::id, mdes\_\-IO\_\-set\_\-st::id, mdes\_\-alt\_\-st::IO\_\-item, mdes\_\-st::IO\_\-item, mdes\_\-st::IO\_\-set, mdes\_\-st::IOmask\_\-width, mdes\_\-alt\_\-st::latency, mdes\_\-st::latency, mdes\_\-st::latency\_\-count, mdes\_\-IO\_\-set\_\-st::mask, mdes\_\-st::max\_\-opcode, MDES\_\-DEST, MDES\_\-PRED, MDES\_\-SRC, MDES\_\-SYNC\_\-IN, MDES\_\-SYNC\_\-OUT, mdes\_\-latency\_\-st::name, mdes\_\-reslist\_\-st::name, mdes\_\-resource\_\-st::name, mdes\_\-IO\_\-item\_\-st::name, mdes\_\-IO\_\-set\_\-st::name, NULL, mdes\_\-operation\_\-st::num\_\-alts, mdes\_\-st::num\_\-IO\_\-items, mdes\_\-st::num\_\-IO\_\-sets, mdes\_\-st::num\_\-latencies, mdes\_\-st::num\_\-operations, mdes\_\-Rused::num\_\-options, mdes\_\-st::num\_\-reslists, mdes\_\-st::num\_\-resources, mdes\_\-reslist\_\-st::num\_\-RU\_\-entries\_\-required, mdes\_\-reslist\_\-st::num\_\-slot\_\-options, mdes\_\-reslist\_\-st::num\_\-used, mdes\_\-st::number, mdes\_\-st::offset, mdes\_\-operation\_\-st::op\_\-flags, mdes\_\-st::op\_\-table, mdes\_\-operation\_\-st::opcode, mdes\_\-st::operand\_\-count, mdes\_\-latency\_\-st::operand\_\-latency, mdes\_\-IO\_\-item\_\-st::operand\_\-type, mdes\_\-st::operation, mdes\_\-Rused::option, mdes\_\-rmask\_\-st::pred, mdes\_\-alt\_\-st::reslist, mdes\_\-st::reslist, mdes\_\-st::resource, mdes\_\-st::Rmask\_\-width, mdes\_\-reslist\_\-st::slot\_\-options, mdes\_\-Rused::start\_\-usage, mdes\_\-rmask\_\-st::uncond, and mdes\_\-reslist\_\-st::used.\index{lmdes.h@{lmdes.h}!print_mdes_operand_name@{print\_\-mdes\_\-operand\_\-name}}
+\index{print_mdes_operand_name@{print\_\-mdes\_\-operand\_\-name}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-mdes\_\-operand\_\-name (FILE $\ast$ {\em out}, \bf{Mdes} $\ast$ {\em mdes}, unsigned int {\em index})}\label{lmdes_8h_9f72ff9b38d5ff16f0f12fc4a82d7cac}
+
+
+
+
+Definition at line 251 of file lmdes.c.
+
+References I\_\-punt(), mdes\_\-st::latency\_\-count, MDES\_\-DEST, MDES\_\-PRED, MDES\_\-SRC, MDES\_\-SYNC\_\-IN, MDES\_\-SYNC\_\-OUT, mdes\_\-st::offset, and operand\_\-number().
+
+Referenced by build\_\-mdes\_\-info().\index{lmdes.h@{lmdes.h}!print_mdes_stats@{print\_\-mdes\_\-stats}}
+\index{print_mdes_stats@{print\_\-mdes\_\-stats}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-mdes\_\-stats (FILE $\ast$ {\em out}, int {\em prepass})}\label{lmdes_8h_8df6c58c53e5c8878fdacd3b6bd89819}
+
+
+
+
+Definition at line 1566 of file lmdes2.c.
+
+References add\_\-stats(), mdes\_\-operation\_\-st::can\_\-sched\_\-postpass, mdes\_\-operation\_\-st::can\_\-sched\_\-prepass, mdes\_\-operation\_\-st::external\_\-name, Mdes\_\-Stats::fail\_\-option\_\-check\_\-dist, Mdes\_\-Stats::fail\_\-usage\_\-check\_\-dist, Mdes\_\-Stats::first\_\-choice\_\-dist, Heap\_\-Create(), Heap\_\-Extract\-Top(), Heap\_\-Insert(), HEAP\_\-MAX, init\_\-stats(), lmdes, mdes\_\-st::max\_\-opcode, mdes\_\-st::mdes2, NULL, Mdes\_\-Stats::num\_\-choice\_\-dist, Mdes\_\-Stats::num\_\-oper\_\-checks, Mdes\_\-Stats::num\_\-slot\_\-checks, Mdes\_\-Stats::num\_\-usage\_\-checks, mdes\_\-st::op\_\-table, print\_\-check\_\-history(), print\_\-op\_\-stats(), mdes\_\-operation\_\-st::sched\_\-postpass, mdes\_\-operation\_\-st::sched\_\-prepass, Mdes\_\-Stats::succeed\_\-option\_\-check\_\-dist, and Mdes\_\-Stats::succeed\_\-usage\_\-check\_\-dist.
+
+\subsection{Variable Documentation}
+\index{lmdes.h@{lmdes.h}!lmdes@{lmdes}}
+\index{lmdes@{lmdes}!lmdes.h@{lmdes.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mdes}$\ast$ \bf{lmdes}}\label{lmdes_8h_fccb3150d93023d97c16ad96e4db32dd}
+
+
+
+
+Definition at line 73 of file lmdes.c.
+
+Referenced by alt\_\-flag\_\-set(), build\_\-mdes\_\-info(), lmdes\_\-initialized(), mdes\_\-defined\_\-opcode(), mdes\_\-latency\_\-count(), mdes\_\-max\_\-opcode(), mdes\_\-null\_\-operand(), mdes\_\-num\_\-operands(), mdes\_\-operand\_\-count(), mdes\_\-print\_\-IO\_\-set(), op\_\-flag\_\-set(), print\_\-mdes\_\-info\_\-debug\_\-info(), and print\_\-mdes\_\-stats().

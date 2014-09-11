@@ -1,0 +1,2149 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       Adapted from compile_bench (John C. Gyllenhaal) for IA-64 use
+#       John W. Sias 3 Jan 2001
+#
+
+##############
+# Portability features
+
+LS="/bin/ls"
+RM="/bin/rm -f"
+
+##############
+# JWS 19991130 Modularity!
+
+Announce() {
+   echo " ";
+   echo "> ----------------------------------------------------------------------";
+   echo "> "$1;
+   echo "> `date`";
+   echo "> ----------------------------------------------------------------------";
+   echo " ";
+}
+
+Check() {
+   if [ "$1" != "0" ]; then echo "Exiting: non-zero exit code"; exit 1; fi
+}
+
+# Check to see if tgz or previous stage will provide starting materials
+CB_check_prev() {
+   PREV_STAGE=$1
+   PREV_EXT=$2
+   PREV_STAGE_NAME=$3
+
+   if [ ${PREV_STAGE} -eq 0 ]; then
+      if [ ! -f ${BASENAME}.${PREV_EXT}.tgz ]; then
+        echo "> Error: Expect ${BASENAME}.${PREV_EXT}.tgz in '.' "
+        echo "> or -${PREV_STAGE_NAME} option!";
+        VALID_ENV=0;
+      fi
+   fi
+}
+
+CB_tar_up() {
+   for TAR_EXT in "$@"; do
+      gen_tar ${BASENAME} ${TAR_EXT}
+      Check "$?"
+   done
+}
+
+# Restore files of ext $1 unless any of the following have been performed
+CB_restore_unless() {
+   UNTAR_EXT=$1
+   shift;
+   NEED_UNTAR=1
+   for arg in "$@"; do
+      if [ $arg -eq 1 ]; then
+         NEED_UNTAR=0
+      fi
+   done
+   if [ $NEED_UNTAR -eq 1 ]; then
+      ${RM} *.${UNTAR_EXT};
+      gen_untar ${BASENAME} ${UNTAR_EXT};
+      Check "$?"
+      echo " ";
+   fi
+}
+
+# Remove files of ext $1 unless any of the following parameters are set
+CB_remove_unless() {
+   UNTAR_EXT=$1
+   shift;
+   NEED_FILES=0
+   for arg in "$@"; do
+      if [ $arg -eq 1 ]; then
+         NEED_FILES=1
+      fi
+   done
+   if [ $NEED_FILES -eq 0 ]; then
+      echo " "
+      echo "> Removing untarred .${UNTAR_EXT} files"
+      ${RM} *.${UNTAR_EXT};
+   fi
+}
+
+IA64_codegen() {
+   EXT=$1
+
+   FILEOUT=`echo $EXT | sed -e 's/\(.*\)_[^_]*/\1/'`;
+
+   echo " * "
+   echo " * Ltahoe Phase 1,2 "
+   echo " * --------------------------------------------------------"
+
+   ${LS} *.${EXT} > impactlist~$$;
+
+   gen_Ltahoe_cb . ${MODEL} 3 "${OVR_LTAHOE}" < impactlist~$$;
+   Check "$?"
+
+   echo " * "
+   echo " * Ltahoe Phase 3"
+   echo " * --------------------------------------------------------"
+
+   ${LS} *.${FILEOUT}_mco > impactlist~$$;
+
+   gen_Ltahoe_cb . ${MODEL} 4 "${OVR_LTAHOE}" < impactlist~$$;
+   Check "$?"
+
+   CB_tar_up ${FILEOUT}_mco
+
+   CB_remove_unless ${FILEOUT}_mco
+
+   CB_tar_up ${FILEOUT}_s
+
+   ${RM} impactlist~$$;
+}
+
+IA64_assem() {
+   EXT=$1
+
+   Announce "Ltahoe assembly"
+
+   for file in `${LS} *.${EXT}_s`
+   do
+      ias $file
+      Check "$?"
+   done;
+}
+
+IA64_cg_test() {
+   EXT=$1
+
+   Announce "${EXT}2${EXT}_s: Schedule, reg allocate .${EXT} files"
+
+   ${RM} *.${EXT}_s
+
+   IA64_codegen ${EXT}
+
+   Announce "Testing ${EXT}_s assembly"
+
+   $BEGIN_SETX
+   ${TIME} gen_test_ia64 . $READ_PATHS $PROFILE_OPTIONS \
+      -ext ${EXT}_s \
+      $LPROF_INPUT_CMD "$EVAL_LIST" \
+      $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+      $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+      $CLEANUP_CMD "$CLEANUP_TEXT";
+   Check "$?"
+   $END_SETX
+
+   ${RM} *.${EXT}_s
+}
+
+# Assume the IMPACT environment has been properly set up
+VALID_ENV=1;
+
+# Determine if IMPACT_REL_PATH environment variable has been defined
+release="${IMPACT_REL_PATH}"
+if [ "$release" = "" ] ; then
+    echo "The environment variable IMPACT_REL_PATH is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_REL_PATH exists
+elif [ ! -d ${IMPACT_REL_PATH} ]; then
+    echo "The directory IMPACT_REL_PATH = ${IMPACT_REL_PATH} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Determine if IMPACT_ROOT environment variable has been defined
+root="${IMPACT_ROOT}"
+if [ "$root" = "" ] ; then
+    echo "The environment variable IMPACT_ROOT is not defined!!";
+    echo "IMPACT's README.install describes how to set up your environment.";
+    echo "";
+    VALID_ENV=0;
+
+# Determine if the directory IMPACT_ROOT exists
+elif [ ! -d ${IMPACT_ROOT} ]; then
+    echo "The directory IMPACT_ROOT = ${IMPACT_ROOT} is invalid!";
+    echo "";
+    VALID_ENV=0;
+fi;
+
+# Set up environment with default values
+BASELINE_PARMS_FILE="";
+READ_PATHS="";
+BEGIN_SETX="";
+END_SETX="";
+NOCLEAN=0;
+FIND_BENCH_DIR=1;
+PROJECT_NAME="$DEFAULT_PROJECT"; # Default project unless -project used
+LOCAL_SRC=0;
+
+# Parameter overrides for specific modules
+
+OVR_PINLINE="";
+OVR_PTOL="";
+OVR_LOPTI="";
+OVR_LBLOCK="";
+OVR_LSUPER="";
+OVR_LTAHOE="";
+
+MODEL="MCKINLEY";
+
+DO_SEGMENTS_SPECIFIED=0;
+DO_fe_1=0;
+DO_fe_2=0;
+DO_fe_3=0;
+DO_fe_4=0;
+DO_fe_5=0;
+
+DO_c2gp=0;
+DO_gp2O=0;
+
+DO_O2O_p=0;
+DO_O_p2O_s=0;
+DO_O2O_s=0;    
+
+DO_O_p2S=0;
+DO_S2S_s=0;    
+
+DO_O_p2H=0;
+DO_H2HS=0;
+DO_HS2HS_s=0;  
+
+OPT_DO_CPP=0;
+OPT_KRC_MODE=0;            # K&R (pre-ANSI) C Mode
+OPT_INLINE=1;              # Perform inlining
+OPT_IPA=1;                 # Interprocedrual Pointer Analysis
+ OPT_IPA_GCON="";
+ OPT_IPA_FIELD="";
+ OPT_IPA_FSAFE="";
+ OPT_IPA_CNTXT="";
+ OPT_IPA_CLONE="";
+ OPT_IPA_CLONE_GEN="";
+
+OPT_CTL_SPEC=1;            # Control speculative PEIs
+OPT_PRED_PROM=1;           # Predicate promotion
+OPT_IND_ANAL=0;            # Inductor analysis (Linduct)
+OPT_CSRISK_ANAL=0;         # Ctrl Spec Risk analysis (Linduct)
+OPT_SW_PIPE=0;             # Software pipelining
+OPT_RECOVERY_CODE=0;       # Recovery code
+OPT_PRE=0;                 # Do PRE in Lopti
+OPT_PDE=0;                 # Do PDE in Lopti
+OPT_FRP=0;                 # FRP Hyperblock Formation
+OPT_DEADSTORE=0;
+OPT_MEMAGGR=0;
+OPT_DO_SSA=0;
+OPT_DO_PCE=0;
+OPT_DO_OMEGA=0;
+OPT_MERGE_STRUCTS=1;
+
+PREPROCESSOR_OPTIONS="";
+PROFILE_OPTIONS="";
+PROBE_OPTIONS="";
+LMDES2_SPECIFIED=0;
+LMDES2="";
+TIME="";  # Set by -times option
+TRAIN_OPTION="";
+TRAIN_LIST="";
+TRAIN_PREFIX="";
+EVAL_OPTION="";
+EVAL_LIST="";
+EVAL_PREFIX="";
+
+# In order to get -setup, etc. to work properly, I need to break up
+# the '-setup' and the "text", so that the "text" can be presented
+# as one argument to gen_profiled_pcode and gen_profiled_lcode.
+SETUP_CMD="";
+SETUP_TEXT="";
+CPREFIX_CMD="";
+CPREFIX_TEXT="";
+ARGS_CMD="";
+ARGS_TEXT="";
+CHECK_CMD="";
+CHECK_TEXT="";
+CLEANUP_CMD="";
+CLEANUP_TEXT="";
+PPROF_INPUT_CMD="";
+LPROF_INPUT_CMD="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+############################
+# FIXED ARGUMENTS
+#
+
+if [ $# -ge 1 ]; then
+   BENCHMARK="$1";
+   BASENAME="$1";
+
+   COMPILE_BENCH_ARGS="$*";
+   TIME_STAMP=`date`;
+   START_DATE=`date +"%T %D"`;
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo "> Begin 'ia64_compile_bench ${COMPILE_BENCH_ARGS}'";
+   echo "> Started on $TIME_STAMP"
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo " "
+   
+   # skip the 1 set argument
+   shift 1;
+else
+   VALID_ARGS=0;
+fi
+
+############################
+# VARIABLE ARGUMENTS
+#
+
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+  # get the next option specified
+
+  OPTION="$1"
+  shift
+
+  # compatability conversions
+
+  case $OPTION in
+    -path)
+      echo "> Interpreting '$OPTION' as '-bench_dir', for backward compatibility"
+      OPTION="-bench_dir";;
+
+    -noinline|-no_inline)
+      echo "> Interpreting '$OPTION' as '-no_inlining'"
+      OPTION="-no_inlining";;
+
+    -noPIP|-no_PIP|-nopip|-no_pip|-nopointer|-no_pointer|-no_sync)
+      echo "> Interpreting '$OPTION' as '-nosync'"
+      OPTION="-nosync";;
+  esac
+
+  case $OPTION in
+    # Allow compilation segments to be specified individually, the related 
+    # messages will be printed out below.  Allow all caps for ease of use.
+    # May specify any combination of individual segments and segment combos.
+
+    -fe1)
+      DO_fe_1=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+    -fe2)
+      DO_fe_2=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+    -fe3)
+      DO_fe_3=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+    -fe4)
+      DO_fe_4=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+    -fe5)
+      DO_fe_5=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2p)
+      DO_fe_1=1;
+      DO_fe_2=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -pprof)
+      DO_fe_3=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -p2gp)
+      DO_fe_4=1;
+      DO_fe_5=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2gp)
+      DO_c2gp=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2O)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2O_p)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -gp2O)
+      DO_gp2O=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2S)
+      DO_O_p2S=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2H)
+      DO_O_p2H=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2HS)
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -H2HS)
+      DO_H2HS=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2O_p)
+      DO_O2O_p=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2O_s)
+      DO_O2O_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2O_s)
+      DO_O_p2O_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -S2S_s)
+      DO_S2S_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -HS2HS_s)
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    # Segment combos (of the above). 
+    -c2O)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2S)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O_p2S=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2HS)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2O_s)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2S_s)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2HS_s)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -gp2O_s)
+      DO_gp2O=1;
+      DO_O2O_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -gp2S_s)
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -gp2HS_s)
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2HS_s)
+      DO_O2O_p=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2S_s)
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O_p2HS_s)
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -H2HS_s)
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -c2X_s)
+      DO_c2gp=1;
+      DO_gp2O=1;
+      DO_O2O_s=1;
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -gp2X_s)
+      DO_gp2O=1;
+      DO_O2O_p=1;
+      DO_O2O_s=1;
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -O2X_s)
+      DO_O2O_s=1;
+      DO_O2O_p=1;
+      DO_O_p2S=1;
+      DO_S2S_s=1;
+      DO_O_p2H=1;
+      DO_H2HS=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -X2X_s)
+      DO_O2O_s=1;
+      DO_S2S_s=1;
+      DO_HS2HS_s=1;
+      DO_SEGMENTS_SPECIFIED=1;;
+
+    -omega)
+      echo "> Will perform Omega test";
+      OPT_DO_OMEGA=1;
+      OVR_PTOL="${OVR_PTOL} -Fannotate_omega=yes -Fdd_debug_omega=0";;
+
+    -noipa|-nosync)
+      echo "> Will not invoke sync arc generation (pointer analysis)"
+      OPT_IPA=0;;
+
+    -ipa-steensgaard)
+      echo "> In IPA, forcing Steensgaard ON"
+      OPT_IPA_GCON="stgd";;
+
+    -ipa-andersen)
+      echo "> In IPA, forcing Andersen ON"
+      OPT_IPA_GCON="and";;
+
+    -ipa-field)
+      echo "> In IPA, forcing field sensitivity ON"
+      OPT_IPA_FIELD="fdvs";;
+
+    -ipa-nofield)
+      echo "> In IPA, forcing field sensitivity OFF"
+      OPT_IPA_FIELD="fi";;
+
+    -ipa-fieldsafe)
+      echo "> In IPA, forcing field safety ON (2)"
+      OPT_IPA_FSAFE="2";;
+
+    -ipa-context)
+      echo "> In IPA, forcing context sensitivity ON"
+      OPT_IPA_CNTXT="cs";;
+
+    -ipa-nocontext)
+      echo "> In IPA, forcing context sensitivity OFF"
+      OPT_IPA_CNTXT="ci";;
+
+    -ipa-clone)
+      echo "> In IPA, forcing cloning ON"
+      OPT_IPA_CLONE="yes";;
+
+    -ipa-noclone|-ipa-nocloning)
+      echo "> In IPA, forcing cloning OFF"
+      OPT_IPA_CLONE="no";;
+
+    -ipa-cloning-gen)
+      OPT_IPA_CLONE_GEN="$1"
+      echo "> In IPA, setting cloning gen $OPT_IPA_CLONE_GEN"
+      shift;;
+
+    -unrestrict)
+      echo "> Allowing unrestricted casting (pointer analysis)"
+      OVR_PTOL="${OVR_PTOL} -Fallow_unrestricted_casting=yes";;
+    
+    # Allow remainder loop opti to be turned on
+    -remain)
+      echo "> Will turn on remainder loop optimization";
+      OVR_LSUPER="$OVR_LSUPER -Funroll_with_remainder_loop=yes -Funroll_pipelined_loops=yes";;
+
+    -nosb)
+      echo "> Preventing superblock formation"
+      OVR_LSUPER="$OVR_LSUPER -Fdo_sb_formation=no";;
+
+    -nobtx)
+      echo "> Preventing branch target expansion"
+      OVR_LSUPER="$OVR_LSUPER -Fdo_super_branch_target_exp=no";;
+
+    # Allow software pipeliner to be turned on
+    # Turn off multiway branch opti also.
+    -pipe)    
+      OPT_SW_PIPE=1;;
+
+    -nocspec)
+      OPT_CTL_SPEC=0;;
+
+    -induct)    
+      OPT_IND_ANAL=1;;
+
+    -csrisk)
+      OPT_CSRISK_ANAL=1;;
+
+    -rc)
+      OPT_RECOVERY_CODE=1;;
+
+    -pre)
+      OPT_PRE=1;;
+
+    -pde)
+      OPT_PDE=1;;
+
+    -frp)
+      OPT_FRP=1;;
+
+    -noprom)
+      OPT_PRED_PROM=0;;
+
+    -ita|-itanium)
+      MODEL="ITANIUM";;
+
+    -mck|-mckinley)
+      MODEL="MCKINLEY";;
+
+    -ssa)
+      OPT_DO_SSA=1;;
+
+    -pce)
+      OPT_DO_PCE=1;;
+
+    -c++)
+      OPT_DO_CPP=1;;
+
+    -memaggr)
+      OPT_MEMAGGR=1;;
+
+    -deadstore)
+      OPT_DEADSTORE=1;;
+
+    # Allow different projects to be used
+    -project)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects a name after -project"
+        exit 1;
+      fi
+      PROJECT_NAME="$1";
+      READ_PATHS="$READ_PATHS -project $PROJECT_NAME";
+      shift;;
+
+    # Allow an benchmark dir be specified
+    -bench_dir)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects a name after -bench_dir"
+        exit 1;
+      fi
+      BENCH_DIR="$1";
+      # Make sure specified path exists
+      if [ ! -d $BENCH_DIR ]; then
+        echo "Error: Invalid directory specified with -bench_dir option:"
+        echo "       '${BENCH_DIR}'"
+        exit 1;
+      fi
+      READ_PATHS="-bench_dir $BENCH_DIR $READ_PATHS";
+      FIND_BENCH_DIR=0;
+      shift;;
+    
+    -setx)
+      echo '> Will show key commands exactly via "set -x"';
+      BEGIN_SETX="set -x";
+      END_SETX="set +x";;
+
+    -copy_src)
+      echo '> Will compile source fetched via copy_bench_src script (now default)';
+      LOCAL_SRC=0;;
+
+    -local_src)
+      echo '> Will use the source in "." (instead of using copy_bench_src)';
+      LOCAL_SRC=1;;
+
+    -krc)
+      echo "> Source is K&R C";
+      OPT_KRC_MODE=1;;
+
+    -p)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      NEW_PARMS="$1";
+      shift;
+
+      # Make sure parameter file valid in current directory
+      if [ ! -f ${NEW_PARMS} ]; then
+        echo "Error: Parameter file specified with '-p' not found:";
+        echo "       '${NEW_PARMS}'"
+        exit 1;
+      fi
+
+      # Make absolute path, if not already
+      case $NEW_PARMS in
+          # If start with ~ or /, path already absolute
+          ~*|/*)
+            FIXED_PATH=0;;
+
+          # Otherwise, prepend current directory to make absolute path
+          *)
+             CUR_DIR=`pwd | sed s/.tmp_mnt//`;
+             if test "$?" != 0; then
+                echo "Error: Non-zero exit code returned by pwd while"
+               echo "       patching up '-p $NEW_PARMS' option";
+                exit 1;
+             fi
+             OLD_PARMS="${NEW_PARMS}";
+             NEW_PARMS="${CUR_DIR}/${NEW_PARMS}";
+
+             # Make sure new fixed up path valid
+             if [ ! -f ${NEW_PARMS} ]; then
+                echo "Unexpected error while converting specified parameter file (via -p):";
+                echo "    '$OLD_PARMS'";
+                echo "into absolute path to parameter file:";
+                echo "    '$NEW_PARMS'";
+                echo "The fixup up path is not valid!";
+                echo "Fix this script or use an absolute path!";
+                exit 1;
+             fi
+             echo "> Interpreting '-p $OLD_PARMS' as:";
+             echo ">   '-p $NEW_PARMS'";
+             FIXED_PATH=1;;
+      esac
+      echo "> Will use as the baseline parms for everything (except profiling):";
+      echo ">  '${NEW_PARMS}'"
+      BASELINE_PARMS_FILE="${NEW_PARMS}";;
+
+    -noclean|-no_clean)
+      echo "> Will save ALL the intermediate files using gen_tar";
+      NOCLEAN=1;;
+
+    -times)
+      echo "> Will perform time measurements on intermediate steps";
+      TIME="time";;
+
+    -max_unroll)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      MAX_UNROLL="$1";
+      shift;
+      # Make sure MAX_UNROLL starts with a number or a +
+      case ${MAX_UNROLL} in
+        [0-9+]*)
+  	  echo "> Will unroll loops a maximum of ${MAX_UNROLL} times.";;
+        *)
+	  echo "> Error: integer expected after -max_unroll, not '${MAX_UNROLL}'";
+        VALID_ARGS=0;;
+
+      esac;;
+
+    -pipe_unroll)
+      OVR_LSUPER="${OVR_LSUPER} -Funroll_pipelined_loops=yes";;
+
+    -tag_loads) #GAK 07.10.2003
+      OVR_LTAHOE="${OVR_LTAHOE} -Ftag_loads=yes -Fprint_cache_stats=yes";;
+
+    -ftz)
+      OVR_LTAHOE="${OVR_LTAHOE} -Ffp_ftz=yes";;
+
+    -no_inlining|-noinlining)
+      echo "> Preventing function inlining (significantly reduces performance)";
+      OPT_INLINE=0;
+      OVR_PINLINE="$OVR_PINLINE -Fregroup_only=yes";;
+
+    -inlrat)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+     INLRAT=$1;
+     shift;
+     echo "> Inlining ratio ${INLRAT}"
+     OVR_PINLINE="$OVR_PINLINE -Fmax_expansion_ratio=${INLRAT}";;
+
+    -inlcost)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+     INLCST=$1;
+     shift;
+     echo "> Inlining cost metric ${INLCST}"
+     OVR_PINLINE="$OVR_PINLINE -Finline_key_cost=${INLCST}";;
+
+    -inlidrat)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+     INLIDRAT=$1;
+     shift;
+     echo "> Inlining indir threshold ${INLIDRAT}"
+     OVR_PINLINE="$OVR_PINLINE -Findir_thresh=${INLIDRAT}";;
+
+    -inlarat)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+     INLARAT=$1;
+     shift;
+     echo "> Inlining arc ratio ${INLARAT}"
+     OVR_PINLINE="$OVR_PINLINE -Fmin_arc_ratio=${INLARAT}";;
+
+    -target)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      LMDES2="$1";
+      shift;
+      echo "> Using the following machine description for scheduling:"
+      echo ">   ${LMDES2}"
+      echo " "
+      if [ ! -f ${LMDES2} ]; then
+        echo "ERROR: ${LMDES2} not found!";
+        echo " ";
+        VALID_ARGS=0;
+      fi
+      OVR_LTAHOE="${OVR_LTAHOE} -Flmdes=${LMDES2}";
+      OVR_LSUPER="${OVR_LSUPER} -Flmdes=${LMDES2}";
+      OVR_LBLOCK="${OVR_LBLOCK} -Flmdes=${LMDES2}";
+      LMDES2_SPECIFIED=1;;
+
+    -bench)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      BENCHMARK="$1";
+      shift;
+      echo "> Using settings for '${BENCHMARK}' instead of for '${BASENAME}";;
+
+    -setup)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo " Setup text set to '$1'";
+      SETUP_CMD="-setup";
+      SETUP_TEXT="$1";
+      shift;;
+
+    -cprefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo " Prefixing '$1' to profile exec command";
+      CPREFIX_CMD="-cprefix";
+      CPREFIX_TEXT="$1";
+      shift;;
+
+    -args)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo " Args set to '$1'";
+      ARGS_CMD="-args";
+      ARGS_TEXT="$1";
+      shift;;
+
+    -check)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo " Check text set to '$1'";
+      CHECK_CMD="-check";
+      CHECK_TEXT="$1";
+      shift;;
+
+    -cleanup)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      echo " Cleanup text set to '$1'";
+      CLEANUP_CMD="-cleanup";
+      CLEANUP_TEXT="$1";
+      shift;;
+
+    -input)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_LIST="$1";
+      EVAL_OPTION="$OPTION";
+      EVAL_LIST="$1";
+      shift;;
+
+    -prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_PREFIX="$1";
+      EVAL_OPTION="$OPTION";
+      EVAL_PREFIX="$1";
+      shift;;
+
+    -train_eval)
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";;
+
+    -train_input)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_LIST="$1";
+      shift;;
+
+    -train_prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$TRAIN_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$TRAIN_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      TRAIN_OPTION="$OPTION";
+      TRAIN_PREFIX="$1";
+      shift;;
+
+    -eval_input)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      EVAL_OPTION="$OPTION";
+      EVAL_LIST="$1";
+      shift;;
+
+    -eval_prefix)
+      if [ $# -eq 0 ]; then
+        echo "Error: ia64_compile_bench expects an argument after $OPTION"
+        exit 1;
+      fi
+      if [ "$EVAL_OPTION" != "" ]; then
+        echo "Error: ia64_compile_bench does not expect both '$EVAL_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      EVAL_OPTION="$OPTION";
+      EVAL_PREFIX="$1";
+      shift;;
+
+# JWS Experimental options
+
+    -LB_sb_minwt)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LSUPER="${OVR_LSUPER} -Fminimum_superblock_weight=${VAL}";;
+      
+    -LB_sb_codegr)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LSUPER="${OVR_LSUPER} -Fmaximum_code_growth=${VAL}";;
+      
+    -LB_sb_minbrat)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LSUPER="${OVR_LSUPER} -Fmaximum_branch_ratio=${VAL}";;
+      
+    -LB_sb_mincrat)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LSUPER="${OVR_LSUPER} -Ftrace_min_cb_ratio=${VAL}";;
+      
+    -LB_no_peel)
+      OVR_LBLOCK="${OVR_LBLOCK} -Fpeel_enable=no";;
+      
+    -LB_issue_width)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LBLOCK="${OVR_LBLOCK} -Fissue_width=${VAL}";
+      shift;;
+     
+    -LB_path_max_op_growth)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LBLOCK="${OVR_LBLOCK} -Fpath_max_op_growth=${VAL}";
+      shift;;
+
+    -LB_path_max_dep_growth)
+      if [ $# -eq 0 ]; then echo "Error: $OPTION requires arg."; exit 1; fi;
+      VAL=$1;
+      OVR_LBLOCK="${OVR_LBLOCK} -Fpath_max_dep_growth=${VAL}";
+      shift;;
+
+# JWS END
+
+# 20040913 REK -nomerge tells Plink not to merge structs with the same
+#              name.  This is mainly for debugging.
+    -nomerge)
+      OPT_MERGE_STRUCTS=0;;
+
+    -report-crit-stld)
+      OVR_LTAHOE="${OVR_LTAHOE} -Freport_crit_st_deps=yes";;
+
+    -L*|-l*)
+      echo "> Will add '${OPTION}' to the link command";
+      if [ "$PROFILE_OPTIONS" != "" ]; then
+         PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";
+      else
+         PROFILE_OPTIONS="${OPTION}";
+      fi
+      if [ "$PROBE_OPTIONS" != "" ]; then
+         PROBE_OPTIONS="${PROBE_OPTIONS} ${OPTION}";
+      else
+         PROBE_OPTIONS="${OPTION}";
+      fi;;
+
+    -l*)
+      echo "> Will add '${OPTION}' to the link command";
+      if [ "$PROFILE_OPTIONS" != "" ]; then
+         PROFILE_OPTIONS="${PROFILE_OPTIONS} ${OPTION}";
+      else
+         PROFILE_OPTIONS="${OPTION}";
+      fi
+      if [ "$PROBE_OPTIONS" != "" ]; then
+         PROBE_OPTIONS="${PROBE_OPTIONS} ${OPTION}";
+      else
+         PROBE_OPTIONS="${OPTION}";
+      fi;;
+
+    -I*|-D*)
+      echo "> Adding '$OPTION' to the preprocessor command";
+      if [ "$PREPROCESSOR_OPTIONS" != "" ]; then
+         PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} ${OPTION}";
+      else
+         PREPROCESSOR_OPTIONS="${OPTION}";
+      fi;;
+
+    *)
+      echo "Error: Unknown option '${OPTION}'"
+      VALID_ARGS=0;;
+  esac
+done
+
+PROFILE_OPTIONS="-bench ${BENCHMARK} ${PROFILE_OPTIONS}";
+PREPROCESSOR_OPTIONS="-bench ${BENCHMARK} ${PREPROCESSOR_OPTIONS}";
+if [ "$BASENAME" != "$BENCHMARK" ]; then
+   PROBE_OPTIONS="-bench $BENCHMARK $PROBE_OPTIONS";
+fi
+
+if [ $OPT_DO_CPP -eq 1 ]; then
+   PROFILE_OPTIONS="${PROFILE_OPTIONS} -c++"
+fi
+
+# Allow software pipelining to be turned on by -pipe
+if [ $OPT_SW_PIPE -eq 1 ]; then
+   echo "> Will perform software pipelining (disables multiway branch opti)"
+   OVR_LTAHOE="${OVR_LTAHOE} -Fdo_software_pipelining=yes";
+   OVR_LSUPER="$OVR_LSUPER -Fmark_softpipe_loops=yes -Fdo_multiway_branch_opti=no";
+fi
+
+if [ $OPT_RECOVERY_CODE -eq 1 ]; then
+   echo "> Generating recovery code for IPF"
+   OVR_LOPTI="${OVR_LOPTI} -Fgenerate_spec_checks=yes";
+   OVR_LTAHOE="${OVR_LTAHOE} -Fgenerate_spec_checks=yes -Fdo_recovery_code=yes -Fclobber_unats=no";
+fi
+
+if [ $OPT_DO_PCE -eq 1 ]; then
+   echo "> Performing PCE in Lopti"
+   OVR_LOPTI="${OVR_LOPTI} -Fdo_PCE=yes -Fdo_PRE=yes -Fdo_PRE_speculative_code_motion=yes -Fdo_PDE=yes -Fdo_PDE_min_cut=yes";
+fi
+
+if [ $OPT_PRE -eq 1 ]; then
+   echo "> Performing PRE in Lopti"
+   OVR_LOPTI="${OVR_LOPTI} -Fdo_PCE=yes -Fdo_PRE=yes";
+fi
+
+if [ $OPT_PDE -eq 1 ]; then
+   echo "> Performing PDE in Lopti"
+   OVR_LOPTI="${OVR_LOPTI} -Fdo_PCE=yes -Fdo_PDE=yes";
+fi
+
+if [ $OPT_DEADSTORE -eq 1 ]; then
+   echo "> Performing DEAD STORE in Lopti"
+   OVR_LOPTI="${OVR_LOPTI} -Fdo_global_dead_store_removal=yes";
+fi
+
+if [ $OPT_MEMAGGR -eq 1 ]; then
+   echo "> Performing MEM-AGGRESSIVE PCE in Lopti"
+   OVR_LOPTI="${OVR_LOPTI} -Fdo_PCE_conservative_memory_opti=no";
+fi
+
+if [ $OPT_FRP -eq 1 ]; then
+   echo "> Performing FRP Hyperblock Formation in Lblock"
+   OVR_LBLOCK="${OVR_LBLOCK} -Fpredicate_formation_type=frp";
+   OVR_LSUPER="${OVR_LSUPER} -Fpredicate_formation_type=frp";
+fi
+
+
+
+# Don't do segment messages and checks if already in error state
+if [ $VALID_ARGS -eq 1 -a $VALID_ENV -eq 1 ]; then
+  # Find the benchmark dir if not user specified
+  if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+    fi
+  fi
+
+  # Make sure project name set!
+  if [ "${PROJECT_NAME}" = "" ]; then
+     echo " "
+     echo "> Exiting: Environment variable 'DEFAULT_PROJECT' must be defined by user!"
+     echo ">          See README.install for instructions on setting this variable."
+     exit 1;
+  fi
+
+  # Get project dir so we can export below
+  PROJECT_DIR=`find_project_dir ${PROJECT_NAME}`
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: Could not find '${PROJECT_NAME}' using find_project_dir!"
+     echo "> Error message returned by find_project_dir:"
+     echo "$PROJECT_DIR";
+     exit 1;
+  fi
+fi
+
+# Don't do segment messages and checks if already in error state
+if [ $VALID_ARGS -eq 1 -a $VALID_ENV -eq 1 ]; then
+
+  # If no segment or combo options were specified, default to settings
+  # for the -c2X_s option
+
+  if [ $DO_SEGMENTS_SPECIFIED -eq 0 ]; then
+    DO_c2gp=1;
+    DO_gp2O=1;
+    DO_O2O_p=1;
+    DO_O2O_s=1;
+#   DO_O_p2S=1;
+#   DO_S2S_s=1;
+    DO_O_p2H=1;
+    DO_H2HS=1;
+    DO_HS2HS_s=1;
+  fi
+
+  # Print out message for each segment invoked.   Also make sure each segment 
+  # has a producer or the appropriate tgz file exists
+   
+  if [ $DO_c2gp -eq 1 ]; then
+    echo "> Will do c (C source) to gp (unoptimized Lcode) segment"
+    DO_fe_1=1;
+    DO_fe_2=1;
+    DO_fe_3=1;
+    DO_fe_4=1;
+    DO_fe_5=1;
+  fi
+
+  if [ $DO_fe_1 -eq 1 ]; then
+    # If there is no /src directory in $BENCH_DIR, default to local src
+    if [ $LOCAL_SRC -ne 1 -a ! -d ${BENCH_DIR}/src ]; then
+      C_FILE_LIST="`${LS} *.c 2>/dev/null`"
+      if [ "$C_FILE_LIST" = "" ]; then
+        echo "> Error: There is no source provided for ${BENCHMARK} and"
+        echo ">        there are no .c files in '.'!"
+        echo " ";
+      else
+        echo "> Warning: There is no source provided for ${BENCHMARK}"
+        echo ">          so the .c files in "." will be used (-local_src)!";
+        echo ' '
+        LOCAL_SRC=1;
+      fi
+    fi;
+  fi
+
+  if [ $DO_gp2O -eq 1 ]; then
+    echo "> Will do gp to O (classical optimization, no ILP) segment"
+    CB_check_prev $DO_fe_5 gp c2gp
+  fi
+
+  if [ $DO_O2O_s -eq 1 ]; then
+    echo '> Will do O to O_s (scheduled/reg_allocated "assembly" + stats) segment';
+    CB_check_prev $DO_gp2O O gp2O
+  fi
+
+  if [ $DO_O_p2O_s -eq 1 ]; then
+    echo '> Will do O_p to O_s (scheduled/reg_allocated "assembly" + stats) segment';
+    CB_check_prev $DO_gp2O O_p O2O_p
+  fi
+
+  if [ $DO_O2O_p -eq 1 ]; then
+    echo '> Will do O to O_p segment';
+    CB_check_prev $DO_gp2O O gp2O
+  fi
+
+  if [ $DO_O_p2S -eq 1 ]; then
+    echo "> Will do O to S (superblocks + ILP, no predication) segment";
+    CB_check_prev $DO_O2O_p O_p O2O_p
+  fi
+
+  if [ $DO_S2S_s -eq 1 ]; then
+    echo '> Will do S to S_s (scheduled/reg_allocated "assembly" + stats) segment';
+    CB_check_prev $DO_O_p2S S O_p2S
+  fi
+
+  if [ $DO_O_p2H -eq 1 ]; then
+    echo "> Will do O_p to H (hyperblocks) segment";
+    CB_check_prev $DO_O2O_p O_p O2O_p
+  fi
+
+  if [ $DO_H2HS -eq 1 ]; then
+    echo "> Will do H to HS (ILP hyperblock optimization) segment";
+    CB_check_prev $DO_O_p2H H O_p2H
+  fi
+
+  if [ $DO_HS2HS_s -eq 1 ]; then
+    echo '> Will do HS to HS_s (scheduled/reg_allocated "assembly" + stats) segment'
+   CB_check_prev $DO_H2HS HS H2HS
+  fi
+
+fi
+
+# Make sure benchmark can be found by the bench_info scripts 
+# Assume benchmark info present
+VALID_BENCHMARK=1;
+
+# Don't bother with more tests if already in an error state
+if [ $VALID_ENV -eq 1 -a $VALID_ARGS -eq 1 ]; then
+
+  echo " ";
+  echo "> Will use the compilation and execution info for ${BENCHMARK} in:"
+  echo ">   $BENCH_DIR"
+
+  # Get and verify benchmark train inputs
+  TRAIN_ERROR_CODE=0;
+
+  # Handle -train_prefix and train portion of -prefix
+  if [ "$TRAIN_OPTION" = "-train_prefix" -o \
+       "$TRAIN_OPTION" = "-prefix" ]; then
+    echo "> Using train prefix '$TRAIN_PREFIX' to find inputs for Pcode profiling"
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$TRAIN_PREFIX\") 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+  
+  # Handle -train_input and train portion of -input
+  elif [ "$TRAIN_OPTION" = "-train_input" -o \
+         "$TRAIN_OPTION" = "-input" ]; then
+    echo "> Verifying specified train input list for Pcode profiling"
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$TRAIN_LIST\") 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+
+  elif [ "$TRAIN_OPTION" = "-train_eval" ]; then
+    echo "> UNSPEAKABLE EVIL! USING EVAL INPUTS FOR TRAINING!"
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+
+  # Handle default cause, using train_inputs
+  elif [ "$TRAIN_OPTION" = "" ]; then
+    TRAIN_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+    TRAIN_ERROR_CODE="$?";
+  fi
+
+  if test "$TRAIN_ERROR_CODE" != 0; then
+    echo " "
+    echo "> Exiting ia64_compile_bench, find_bench_inputs returned this error message:"
+    echo "$TRAIN_LIST";
+    exit 1;
+  fi
+
+  # Suppress train input info if not doing c2gp segment
+  if [ $DO_fe_3 -eq 1 ]; then
+     echo " "
+     echo "> The following input(s) will be used for Pcode profiling/training:"
+     echo ">   $TRAIN_LIST"
+  fi
+  # Cause TRAIN_LIST to be used (instead of ignored by gen_profiled_pcode)
+  PPROF_INPUT_CMD="-input";
+ 
+  # Get and verify benchmark eval inputs
+  EVAL_ERROR_CODE=0;
+
+  # Handle -eval_prefix and eval portion of -prefix
+  if [ "$EVAL_OPTION" = "-eval_prefix" -o \
+       "$EVAL_OPTION" = "-prefix" ]; then
+    echo "> Using eval prefix '$EVAL_PREFIX' to find inputs for .X_s file prof/eval"
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$EVAL_PREFIX\") 2>&1`";
+    EVAL_ERROR_CODE="$?";
+   
+  # Handle -eval_input and eval portion of -input
+  elif [ "$EVAL_OPTION" = "-eval_input" -o \
+         "$EVAL_OPTION" = "-input" ]; then
+    echo "> Verifying specified eval input list for .X_s file profiling/evaluation"
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$EVAL_LIST\") 2>&1`";
+    EVAL_ERROR_CODE="$?";
+
+  # Handle default cause, using eval_inputs
+  elif [ "$EVAL_OPTION" = "" ]; then
+    EVAL_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+    EVAL_ERROR_CODE="$?";
+  fi
+
+  if test "$EVAL_ERROR_CODE" != 0; then
+    echo " "
+    echo "> Exiting ia64_compile_bench, find_bench_inputs returned this error message:"
+    echo "$EVAL_LIST";
+    exit 1;
+  fi
+  # Suppress train input info if not doing a X2X_s segment
+  if [ $DO_O2O_s -eq 1 -o $DO_S2S_s -eq 1 -o $DO_HS2HS_s -eq 1 ]; then
+     echo " "
+     echo "> The following input(s) will be used to prof/eval the final .X_s files:"
+     echo ">   $EVAL_LIST"
+  fi
+  # Cause EVAL_LIST to be used (instead of ignored by gen_profiled_lcode)
+  LPROF_INPUT_CMD="-input";
+  # Cause EVAL_LIST to be used (instead of ignored by sim_bench)
+
+  # Read project_info to determine if override parameters needed to
+  # get benchmark to compile properly 
+  PROJECT_PARMS_FILE="`read_project_info $BENCHMARK $READ_PATHS -parm_override_file`";
+  if test "$?" != 0; then
+    echo "> Error: read_project_info ${BENCHMARK} -parm_override_file returned:"
+    echo "${PROJECT_PARMS_FILE}"
+    echo "> Exiting: unexpected error in ia64_compile_bench ";
+    exit 1;
+  fi    
+fi
+
+# If user specified different max unroll (through -max_unroll or -less_ILP,
+# override the Lsuperscalar parameter
+if [ "${MAX_UNROLL}" != "" ]; then
+    OVR_LSUPER="${OVR_LSUPER} \
+	-Fmax_unroll_allowed=${MAX_UNROLL}";
+fi
+
+if [ "${OPT_CTL_SPEC}" == "0" ]; then
+    echo "> Suppressing control speculation"
+    OVR_LOPTI="${OVR_LOPTI} -Fnon_excepting_ops=0";
+    OVR_LBLOCK="${OVR_LBLOCK} -Fnon_excepting_ops=0";
+    OVR_LSUPER="${OVR_LSUPER} -Fnon_excepting_ops=0";
+    OVR_LTAHOE="${OVR_LTAHOE} -Fnon_excepting_ops=0";
+fi
+
+if [ "${OPT_PRED_PROM}" == "0" ]; then
+    echo "> Suppressing predicate promotion"
+    OVR_LSUPER="${OVR_LSUPER} -Fpred_promotion_level=0";
+    OVR_LTAHOE="${OVR_LTAHOE} -Fpred_promotion_level=0";
+fi
+
+# Allow -krc to be specified in presets or on the command line
+if [ $OPT_KRC_MODE -eq 1 ]; then
+  PROFILE_OPTIONS="${PROFILE_OPTIONS} -krc";
+  PROBE_OPTIONS="${PROBE_OPTIONS} -krc";
+  PREPROCESSOR_OPTIONS="${PREPROCESSOR_OPTIONS} -krc";
+fi
+
+if [ "${BASELINE_PARMS_FILE}" == "" ]; then
+  BASELINE_PARMS_FILE="${IMPACT_REL_PATH}/parms/STD_PARMS.IPF-${MODEL}";
+fi
+
+# Make sure parameter file specified exists
+if [ $VALID_ARGS -eq 1 -a ! -f ${BASELINE_PARMS_FILE} ]; then
+    echo " "
+    echo "ERROR: The following baseline parameter file could not be found:"
+    echo "  ${BASELINE_PARMS_FILE}"
+    echo " "
+    echo "  One solution is to the '-p parms_file' option to pick a different file."
+    echo " "
+    VALID_ENV=0;
+fi
+
+if [ $VALID_ARGS -eq 0 -o $VALID_ENV -eq 0 -o $VALID_BENCHMARK -eq 0 ]; then
+    echo ' ';
+    echo '> Usage: ia64_compile_bench benchmark [options]';
+    echo '> ';
+    echo '> Generates ILP-optimized "assembly" from the benchmark'\''s .c files in the';
+    echo '> current directory using the IMPACT compiler (essentially "cc +O4 *.c").'
+    echo '> This source is initially profiled to drive inlining and ILP optimization.'
+    echo '> The final "assembly" is profiled to verify correctness.  Static performance'
+    echo '> estimates are generated based on the final code schedule and the new profile.';
+    echo '> Full system simulation of the final code may also be performed, if desired.';
+    echo '> ';
+    echo '> Compiler configuration determined by the project parameters and (unless'
+    echo '> "-p baseline_parms" is specified) impact/parms/STD_PARMS.IPF-${MODEL}.';
+    echo '> ';
+    echo '> Zero or more of the following options may be specified.';
+    echo '> ';
+    echo '> Individual compilation segment options (default combo is -c2X_s):';
+    echo '>   -c2gp                do c (C source) to gp (unoptimized Lcode) segment';
+    echo '>      -c2p              convert C to Pcode (pcf) using the EDG front end';
+    echo '>      -pprof            perform Pcode profiling (pcf -> pcf_p)';
+    echo '>      -p2gp             perform inlining, pointer analysis and Lcode generation';
+    echo '>   -gp2O                do gp to O (classical optimizations, no ILP) segment';
+    echo '>   -O_p2S               do O to S (superblocks + ILP, no predication) segment';
+    echo '>   -O_p2HS              do O to HS (ILP hyperblocks) segment';
+    echo '>      -O_p2H            do O to H (hyperblocks) segment';
+    echo '>      -H2HS             do H to HS (predicated ILP) segment';
+    echo '>   -O2O_s               do O to O_s (iA64 codegen)';
+    echo '>   -S2S_s               do S to S_s (iA64 codegen)';
+    echo '>   -HS2HS_s             do HS to HS_s (iA64 codegen)';
+    echo '> ';
+    echo '> Combo compilation segment options (combinations of above options):';
+    echo '>   -(start)2(end)       turn on segments required to get from (start) to (end)';
+    echo '>   -c2X_s               same as -c2O_s -c2S_s -c2HS_s (default)';
+    echo '>   -X2X_s               same as -O2O_s -S2S_s -HS2HS_s';
+    echo '> ';
+    echo '> General options:';
+    echo '>   -nosync              do not generate sync arcs (no pointer analysis)';
+    echo '>   -copy_src            use copy_bench_src to get benchmark source (default)';
+    echo '>   -local_src           use bench source in "." (default: copy over bench src)';
+    echo '>   -noclean             saves ALL the intermediate files using gen_tar';
+    echo '>   -times               perform time measurements on the intermediate steps';
+    echo '>   -setx                show key commands exactly via "set -x"';
+    echo '> ';
+    echo "> Options for selecting different bench_info settings:";
+    echo '>   -project "project"   project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -bench_dir "dir"     read info in "dir" (default: find_bench_dir used)';
+    echo '>   -bench "name"        uses settings for "name" (default: for "benchmark")';
+    echo '> ';
+    echo "> Options for overriding the benchmark's bench_info settings:";
+    echo '>   -input "name(s)"     train/eval with "name(s)" (default: project inputs)';
+    echo '>   -prefix "prefix"     train/eval with "prefix*" (default: project inputs)';
+    echo '>   -train_input "ns"    train with "name(s)" (default: project train inputs)';
+    echo '>   -train_prefix "p"    train with "p*" (default: project train inputs)';
+    echo '>   -eval_input "ns"     eval with "name(s)" (default: project eval inputs)';
+    echo '>   -eval_prefix "p"     eval with "p*" (default: project eval inputs)';
+    echo '>   -p baseline_parms    use baseline_parms (default: IMPACT_REL_PATH/parms/STD_PARMS.IPF-${MODEL})'
+    echo '>   -target "lmdes2"     schedule using "lmdes2" (default: project lmdes2 file)';
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -krc                 source is K&R c (default: Ansi-C)';
+    echo '>   -Dname=def           define name to the preprocessor';
+    echo '>   -Idir                adds "dir" to include search path';
+    echo '>   -Ldir                adds "dir" to library search path';
+    echo '>   -llibrary            use the library named "library" when linking';
+    echo '>   -max_unroll int      unroll loops a maximum of "int" times';
+    echo '>   -no_inlining         prevents function inlining (default: inlining)';
+
+    echo '> ';
+    echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+    echo '>   -setup   "text"      runs "text" to setup profile run';
+    echo '>   -cprefix "text"      prefixes "text" to profile_exec_command';
+    echo '>   -args    "text"      sets profile execution arguments to "text"';
+    echo '>   -check   "text"      runs "text" to check output';
+    echo '>   -cleanup "text"      runs "text" to cleanup after profile run';
+    echo '> '
+    echo '>   -str                 enables tracing of load speculation';
+    echo '>   -pred_opti           enables predicate define optimization';
+    exit 1;
+fi;
+
+PLATFORM_DIR_SRC="${IMPACT_REL_PATH}/platform/${IMPACT_HOST_PLATFORM}_${IMPACT_HOST_COMPILER}";
+PLATFORM_DIR_BLD="${IMPACT_ROOT}/platform/${IMPACT_HOST_PLATFORM}_${IMPACT_HOST_COMPILER}";
+
+############################################################################
+#       Starting compilation
+############################################################################
+
+Announce "Setting up for ${BASENAME}"
+
+############################################################################
+#       Copy benchmark source unless -local_src option selected 
+#       or not doing frontend
+############################################################################
+
+if [ $DO_fe_1 -eq 1 ]; then
+   if [ $LOCAL_SRC -eq 0 ]; then
+      echo " "
+      echo "> Creating 'impactbenchsrc' to hold copy of ${BENCHMARK} source"
+      ${RM} -r impactbenchsrc
+      mkdir impactbenchsrc
+
+      echo " ";
+      copy_bench_src ${BENCHMARK} $READ_PATHS -dest impactbenchsrc
+      Check "$?"
+      TARG_DIR="impactbenchsrc";
+   else
+      TARG_DIR=".";
+   fi
+
+   # If interprocedural analysis is to be performed, copy in Pcode
+   # for commonly called system functions.
+
+   if [ $OPT_IPA -eq 1 ]; then
+      cp ${PLATFORM_DIR_BLD}/IPA_lib/__impact_lib.pst ${TARG_DIR}/
+      Check "$?"
+
+      if [ $OPT_DO_CPP -eq 1 ]; then
+         cp ${PLATFORM_DIR_BLD}/IPA_lib/__impact_lib2.pst ${TARG_DIR}/
+         Check "$?"
+      fi
+   fi
+fi
+
+############################################################################
+#       Override user's STD_PARMS_FILE setting
+############################################################################
+
+# The bench info infrastructure requires that BASELINE_PARMS_FILE be
+# exported for use by the compile_parms file in each benchmark directory
+# (which in turn is used by the PROJECT_PARMS_FILE).  This is how
+# the user's parameters (if specified with -p), or the default 
+# compile benchmark parameters, are reached.
+echo " ";
+echo "> Exporting BASELINE_PARMS_FILE for use by ${BENCHMARK}/compile_parms:";
+echo ">   $BASELINE_PARMS_FILE";
+$BEGIN_SETX
+export BASELINE_PARMS_FILE;
+$END_SETX
+
+# The project info infrastructure requires that PROJECT_DIR and BENCH_DIR 
+# be exported for use by the PROJECT_PARMS_FILE.  This allows the
+# project to find and override the compile_parms in each benchmark 
+# directory.  
+echo ">"
+echo "> Exporting BENCH_DIR for use by ${PROJECT_NAME}/project_parms";
+echo ">   $BENCH_DIR";
+echo ">"
+echo "> Exporting PROJECT_DIR for use by ${PROJECT_NAME}/project_parms_${BENCHMARK}:";
+echo ">   $PROJECT_DIR";
+$BEGIN_SETX
+export PROJECT_DIR
+export BENCH_DIR
+$END_SETX
+
+
+# All the IMPACT modules will use STD_PARMS_FILE to determine the 
+# parameter file.  Set this to the PROJECT_PARMS_FILE and export.
+echo ">"
+echo "> Exporting STD_PARMS_FILE for use by IMPACT modules:"
+echo ">   $PROJECT_PARMS_FILE";
+$BEGIN_SETX
+STD_PARMS_FILE="$PROJECT_PARMS_FILE";
+export STD_PARMS_FILE;
+$END_SETX
+
+# CWL
+# for gdb
+
+#    echo "set environment BASELINE_PARMS_FILE=${BASELINE_PARMS_FILE}" > .gdbinit
+#    echo "set environment PROJECT_DIR=${PROJECT_DIR}" >> .gdbinit
+#    echo "set environment BENCH_DIR=${BENCH_DIR}" >> .gdbinit
+#    echo "set environment STD_PARMS_FILE=${STD_PARMS_FILE}" >> .gdbinit
+
+############################################################################
+#    Part 1/6 of the c2lc compilation segment
+#    Run the EDG front-end 
+############################################################################
+
+if [ -s gmon.out ]; then rm gmon.out; fi;
+
+if [ $DO_fe_1 -eq 1 ]; then
+    GEN_CTOP_ARG="";
+    ${RM} *.pc
+
+    if [ $OPT_MERGE_STRUCTS -eq 0 ]; then
+	GEN_CTOP_ARG="-nomerge";
+    fi
+
+    if [ $LOCAL_SRC -eq 0 ]; then
+	Announce "c2gp 1/6: EDG frontend on the *.c in impactbenchsrc";
+	cd impactbenchsrc
+	Check "$?"
+    else
+	Announce "c2lc 1/6: EDG frontend on the *.c in '.'";
+    fi
+
+    if [ $NOCLEAN -eq 1 ]; then
+      PREPROCESSOR_OPTIONS="$PREPROCESSOR_OPTIONS -noclean";
+    fi;
+
+    if [ "$PREPROCESSOR_OPTIONS" != "" -o "$READ_PATHS" != "" ]; then
+       echo " ";
+       echo "> The following options will be passed to gen_CtoP:"
+       echo ">   $GEN_CTOP_ARG $READ_PATHS $PREPROCESSOR_OPTIONS"
+    fi
+
+    echo " ";
+    SOURCES=`read_compile_info $BENCHMARK $READ_PATHS -sources`;
+    Check "$?"
+
+    if [ "$SOURCES" = "" ]; then
+      SOURCES="*.c";
+    fi;
+
+    echo $SOURCES;
+
+    $BEGIN_SETX
+    gen_CtoP $GEN_CTOP_ARG $READ_PATHS $PREPROCESSOR_OPTIONS $SOURCES;
+    Check "$?"
+    $END_SETX
+
+    # If compiled in impactbenchsrc, move back to original dir
+    if [ $LOCAL_SRC -eq 0 ]; then
+      mv *.pstl ..
+      Check "$?"
+      cd ..
+    fi    
+
+    if [ $NOCLEAN -eq 1 ]; then
+        CB_tar_up pstl
+    else
+        # If copied and preprocessed source in impactbenchsrc, delete it now 
+        # unless -noclean specified
+        if [ $LOCAL_SRC -eq 0 ]; then
+           echo " ";
+           echo "> Removing impactbenchsrc"
+	   ${RM} -r impactbenchsrc
+        fi
+    fi
+fi
+
+############################################################################
+#    Part 2/6 of the c2lc compilation segment
+#    Perform Pcode flattening
+############################################################################
+
+if [ $DO_fe_2 -eq 1 ]; then
+
+    Announce "c2lc 2/6: Performing Pcode flattening";
+
+    ${RM} *.pcf
+
+   Pflatten -i a.out.pstl -o pcf
+   Check "$?"
+
+   if [ $NOCLEAN -eq 1 ]; then
+      CB_tar_up pcf
+   fi
+
+   ${RM} *.pstl;
+fi
+
+############################################################################
+#    Part 3/6 of the c2lc compilation segment
+#    Perform Pcode profiling
+############################################################################
+
+if [ $DO_fe_3 -eq 1 ]; then
+
+    Announce "c2lc 3/6: Pcode profiling using settings for ${BENCHMARK}";
+
+    ${RM} *.pcf_p
+
+    $BEGIN_SETX
+    ${TIME} gen_profiled_pcode . -ext pcf -noflatten \
+        $READ_PATHS $PROFILE_OPTIONS \
+        $PPROF_INPUT_CMD "$TRAIN_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    Check "$?"
+    $END_SETX
+
+    if [ $NOCLEAN -eq 1 ]; then
+       CB_tar_up pcf_p
+    fi
+
+    ${RM} *.pcf;
+fi
+
+############################################################################
+#    Part 4/6 of the c2lc compilation segment
+#    Perform inlining on Pcode files
+############################################################################
+
+if [ $DO_fe_4 -eq 1 ]; then
+
+    if [ $OPT_INLINE -eq 1 ]; then
+        Announce "> c2gp 5/6: Performing Pcode inlining";
+    else
+        Announce "> c2gp 5/6: Skipping Pcode inlining";
+    fi
+
+    ${RM} *.pci
+
+    Pinline -i a.out.pcf_p -o pci ${OVR_PINLINE};
+
+    if [ $NOCLEAN -eq 1 ]; then
+	CB_tar_up pci
+    fi
+
+    ${RM} *.pcf_p;
+fi
+
+############################################################################
+#    Part 5/5 of the c2gp compilation segment
+#    Convert Pcode files to Lcode (plus pointer analysis)
+############################################################################
+
+if [ $DO_fe_5 -eq 1 ]; then
+
+    # Get benchmarks' default for disabling sync arcs for module's use
+    DISABLE_SYNCARCS=`read_compile_info ${BENCHMARK} $READ_PATHS -disable_syncarcs`;
+    if test "$?" != 0; then
+       echo " "
+       echo "> Exiting: Could not read default disable_syncarcs using read_compile_info!"
+       echo "> Error message returned by read_compile_info:"
+       echo "$DISABLE_SYNCARCS";
+       exit 1;
+    fi
+
+    if [ $DISABLE_SYNCARCS -eq 1 ]; then
+      echo "> c2lc segment 6/6:  Disabling sync arc generation from benchmark compile_info"
+      OPT_IPA=0;
+    fi
+
+    if [ $OPT_IPA -eq 1 ]; then
+       Announce "> c2gp 6/6:  Converting Pcode to Lcode (w/ sync arcs)"
+    else
+       Announce "> c2gp 6/6:  Converting Pcode to Lcode (no sync arcs)"
+    fi
+
+    OVR_PIPA="";
+    if [ "${OPT_IPA_GCON}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_gcon_option=${OPT_IPA_GCON}";
+    fi;
+    if [ "${OPT_IPA_FIELD}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_field_option=${OPT_IPA_FIELD}";
+    fi;
+    if [ "${OPT_IPA_FSAFE}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_field_safety=${OPT_IPA_FSAFE}";
+    fi;
+    if [ "${OPT_IPA_CNTXT}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_context_option=${OPT_IPA_CNTXT}";
+    fi;
+    if [ "${OPT_IPA_CLONE}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_cloning_option=${OPT_IPA_CLONE}";
+    fi;
+    if [ "${OPT_IPA_CLONE_GEN}" != "" ]; then
+       OVR_PIPA="${OVR_PIPA} -Fipa_cloning_gen=${OPT_IPA_CLONE_GEN}";
+    fi;
+
+    # Invoke PIP (pointer analysis), if desired
+    if [ $OPT_IPA -eq 1 ]; then
+       if [ $OPT_DO_OMEGA -eq 1 ]; then
+          echo "> Pipa -i a.out.pci -o pcjx ${OVR_PIPA}";
+          Pipa -i a.out.pci -o pcjx ${OVR_PIPA};
+          Check "$?";
+
+          echo "> Pomega -i a.out.pcjx -o pcj";
+          Pomega -i a.out.pcjx -o pcj;
+	  Check "$?";
+
+	  rm *.pcjx;
+       else
+          echo "> Pipa -i a.out.pci -o pcj ${OVR_PIPA}";
+          Pipa -i a.out.pci -o pcj ${OVR_PIPA};
+          Check "$?";
+       fi;
+
+       if [ $NOCLEAN -eq 1 ]; then
+          CB_tar_up pcj
+       fi;
+
+       echo "> PtoL -i a.out.pcj -Fgen_acc_specs=yes ${OVR_PTOL}";
+
+       PtoL -i a.out.pcj  -Fgen_acc_specs=yes ${OVR_PTOL};
+       Check "$?";
+
+       ${RM} *.pcj;
+    # Otherwise, use old path (no pointer analysis)
+    else
+       $BEGIN_SETX
+       PtoL -i a.out.pci -Fgen_acc_specs=no ${OVR_PTOL};
+       Check "$?"
+       $END_SETX
+    fi
+
+    cp ${PLATFORM_DIR_SRC}/host_layout_info.md .
+    Check "$?"
+
+    ${RM} impactlist~$$;
+    if [ $NOCLEAN -ne 1 ]; then
+       ${RM} impact_aggregate.dat impact_global.dat impact_vararg;
+    fi
+    ${RM} *.pci;
+    ${RM} *.pch;
+    ${RM} *.gp
+
+    CB_tar_up lc
+
+    if [ $OPT_DO_SSA -eq 1 ]; then
+       Lgp_rel -Ffile_processing_model=extension \
+               -Finput_file_extension=lc \
+               -Foutput_file_extension=gpx
+
+       gen_generic Lssaopti -in gpx -out gp
+
+       CB_remove_unless gpx
+    else
+       Lgp_rel -Ffile_processing_model=extension \
+               -Finput_file_extension=lc \
+               -Foutput_file_extension=gp
+    fi;
+
+    CB_remove_unless lc
+    CB_tar_up gp
+    CB_remove_unless gp $DO_gp2O
+fi
+
+############################################################################
+#    The lc2O compilation segment
+############################################################################
+if [ $DO_gp2O -eq 1 ]; then
+
+    Announce "gp2O:  Running Lopti on .gp files"
+
+    CB_restore_unless gp $DO_fe_5
+
+    ${LS} *.gp > impactlist~$$;
+    Check "$?"
+
+    $BEGIN_SETX
+    ${TIME} gen_Lopti . TAHOE ${MODEL} 4 "${OVR_LOPTI}" < impactlist~$$;
+    Check "$?"
+    $END_SETX
+    
+    CB_remove_unless gp
+
+    CB_tar_up O
+
+    CB_remove_unless O $DO_O2O_s $DO_O2O_p
+    ${RM} impactlist~$$;
+fi
+
+
+############################################################################
+#    The O2O_p compilation segment
+############################################################################
+if [ $DO_O2O_p -eq 1 ]; then
+
+    Announce "O2O_p: Profiling .O files"
+
+    CB_restore_unless O $DO_gp2O
+
+    ${RM} *.O_p
+
+    $BEGIN_SETX
+    ${TIME} gen_profiled_lcode . $READ_PATHS $PROFILE_OPTIONS \
+        -ext O -loop_iters -norc \
+        $LPROF_INPUT_CMD "$TRAIN_LIST" \
+        $SETUP_CMD "$SETUP_TEXT" $CPREFIX_CMD "$CPREFIX_TEXT" \
+        $ARGS_CMD "$ARGS_TEXT" $CHECK_CMD "$CHECK_TEXT" \
+        $CLEANUP_CMD "$CLEANUP_TEXT";
+    Check "$?"
+    $END_SETX
+
+    CB_remove_unless O $DO_O2O_s
+
+    CB_tar_up O_p
+
+    CB_remove_unless O_p $DO_O_p2O_s $DO_O_p2S $DO_O_p2H
+fi
+
+############################################################################
+#    The O2O_s compilation segment
+############################################################################
+if [ $DO_O2O_s -eq 1 ]; then
+    CB_restore_unless O $DO_gp2O
+    IA64_codegen O
+    CB_remove_unless O
+fi
+
+############################################################################
+#    The O_p2O_s compilation segment
+############################################################################
+if [ $DO_O_p2O_s -eq 1 ]; then
+    CB_restore_unless O_p
+    IA64_codegen O_p
+    CB_remove_unless O_p $DO_O_p2S $DO_O_p2H
+fi
+
+###########################################################################
+#    The O_p2S compilation segment
+############################################################################
+if [ $DO_O_p2S -eq 1 ]; then
+
+    Announce "O_p2S:  Running Lsuperscalar on .O files";
+
+    ${RM} *.S
+
+    CB_restore_unless O_p $DO_O2O_p
+
+    ${LS} *.O_p > impactlist~$$;
+    Check "$?"
+
+    $BEGIN_SETX
+    FLG_LSUPER="-Fcombine_exits=no ${OVR_LOPTI} ${OVR_LSUPER}"
+    ${TIME} gen_Lsuperscalar . TAHOE ${MODEL} "${FLG_LSUPER}" < impactlist~$$;
+    Check "$?"
+    $END_SETX
+
+    CB_tar_up S
+
+    ${RM} impactlist~$$;
+
+    CB_remove_unless O_p $DO_O_p2H
+    
+    CB_remove_unless S $DO_S2S_s
+fi
+
+############################################################################
+#    The S2S_s compilation segment
+############################################################################
+if [ $DO_S2S_s -eq 1 ]; then
+   CB_restore_unless S $DO_O_p2S
+   IA64_codegen S
+   CB_remove_unless S
+fi
+
+############################################################################
+#    Part 1 of 2 of the O_p2HS compilation segment
+#    Create hyperblocks using Lblock
+############################################################################
+if [ $DO_O_p2H -eq 1 ]; then
+
+    Announce "O_p2H: Running Lblock on .O files to create hyperblocks"
+
+    ${RM} *.H
+
+    CB_restore_unless O_p $DO_O2O_p
+
+    ${LS} *.O_p > impactlist~$$;
+    Check "$?"
+   
+    SSA_EXTRA="";
+    if [ $OPT_IND_ANAL -eq 1 ]; then
+       SSA_EXTRA="-Fssa_do_inductor=yes";
+    fi;
+    if [ $OPT_CSRISK_ANAL -eq 1 ]; then
+       SSA_EXTRA="$SSA_EXTRA -Fssa_do_cspec_risk_mgt=yes";
+    fi;
+
+    if [ $OPT_DO_SSA -eq 1 ]; then
+        gen_generic Lssaopti -out X -args "$SSA_EXTRA" < impactlist~$$;
+        Check "$?"
+
+	CB_tar_up X
+        ${LS} *.X > impactlist~$$;
+        Check "$?"
+    fi
+
+    $BEGIN_SETX
+    ${TIME} gen_Lblock . TAHOE ${MODEL} "${OVR_LOPTI} \
+	${OVR_LBLOCK}" < impactlist~$$;
+    Check "$?"
+    $END_SETX
+
+    ${RM} impactlist~$$;
+    ${RM} *.O_p;
+
+    if [ $OPT_DO_SSA -eq 1 ]; then
+        ${RM} *.X;
+    fi
+
+    CB_tar_up H
+    CB_remove_unless H $DO_H2HS
+fi
+
+############################################################################
+#    Part 2 of 2 of the O_p2HS compilation segment
+#    ILP optimize hyperblocks using Lsuperscalar
+############################################################################
+
+if [ $DO_H2HS -eq 1 ]; then
+
+    Announce "H2HS: Running Lsuperscalar on .H files"
+
+    ${RM} *.HS
+
+    CB_restore_unless H $DO_O_p2H
+
+    ${LS} *.H > impactlist~$$;
+    Check "$?"
+
+    $BEGIN_SETX
+    FLG_LSUPER="-Fdo_branch_combining=yes -Fpred_exec_support=yes -Fcombine_exits=no ${OVR_LOPTI} ${OVR_LSUPER}";
+    ${TIME} gen_LsuperscalarH . TAHOE ${MODEL} "${FLG_LSUPER}" < impactlist~$$;
+    Check "$?"
+    $END_SETX
+
+    ${RM} impactlist~$$;
+    ${RM} *.H;
+
+    CB_tar_up HS
+    CB_remove_unless HS $DO_HS2HS_s
+fi
+
+############################################################################
+#    The HS2HS_s compilation segment
+############################################################################
+
+if [ $DO_HS2HS_s -eq 1 ]; then
+
+    Announce "HS2HS_s: Optimized Lcode to IPF assembly";
+
+    CB_restore_unless HS $DO_H2HS
+
+    if [ $OPT_DO_SSA -eq 1 ]; then
+        ${LS} *.HS > impactlist~$$;
+        Check "$?"
+
+        gen_generic Lssaopti -out HSX < impactlist~$$;
+        Check "$?"
+
+        ${RM} impactlist~$$;
+        ${RM} *.HS;
+
+	CB_tar_up HSX
+        ${LS} *.HSX > impactlist~$$;
+        Check "$?"
+        IA64_codegen HSX
+        CB_remove_unless HSX
+    else
+        IA64_codegen HS
+        CB_remove_unless HS
+    fi
+fi
+
+############################################################################
+#       Done, whew!
+############################################################################
+
+END_DATE=`date +"%T %D"`;
+echo " "
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+echo "> Finished 'ia64_compile_bench ${COMPILE_BENCH_ARGS}'";
+echo "> Processed ${BASENAME} from $START_DATE to $END_DATE";
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";

@@ -1,0 +1,1104 @@
+\section{list.c File Reference}
+\label{list_8c}\index{list.c@{list.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}FIX\_\-list.h\char`\"{}}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$library/i\_\-types.h$>$}\par
+{\tt \#include \char`\"{}list.h\char`\"{}}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{yysvf}
+\item 
+struct \bf{String}
+\item 
+struct \bf{yywork}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{U}(x)~x
+\item 
+\#define \bf{NLSTATE}~\bf{yyprevious}=YYNEWLINE
+\item 
+\#define \bf{BEGIN}~\bf{yybgin} = \bf{yysvec} + 1 +
+\item 
+\#define \bf{INITIAL}~0
+\item 
+\#define \bf{YYLERR}~\bf{yysvec}
+\item 
+\#define \bf{YYSTATE}~(\bf{yyestate}-\bf{yysvec}-1)
+\item 
+\#define \bf{YYOPTIM}~1
+\item 
+\#define \bf{YYLMAX}~200
+\item 
+\#define \bf{output}(c)~(void)putc(c,\bf{yyout})
+\item 
+\#define \bf{input}()~(((\bf{yytchar}=\bf{yysptr}$>$\bf{yysbuf}?U($\ast$--\bf{yysptr}):getc(\bf{yyin}))==10?(\bf{yylineno}++,\bf{yytchar}):\bf{yytchar})==EOF?0:\bf{yytchar})
+\item 
+\#define \bf{unput}(c)~\{\bf{yytchar}= (c);if(\bf{yytchar}=='$\backslash$n')\bf{yylineno}--;$\ast$\bf{yysptr}++=\bf{yytchar};\}
+\item 
+\#define \bf{yymore}()~(\bf{yymorfg}=1)
+\item 
+\#define \bf{ECHO}~(void)fprintf(\bf{yyout}, \char`\"{}\%s\char`\"{},yytext)
+\item 
+\#define \bf{REJECT}~\{ nstr = yyreject(); goto yyfussy;\}
+\item 
+\#define \bf{YYLMAX}~2500
+\item 
+\#define \bf{To\-State}(n)~BEGIN(n)
+\item 
+\#define \bf{Default\-State}~0
+\item 
+\#define \bf{COMMENT}~2
+\item 
+\#define \bf{YYNEWLINE}~10
+\item 
+\#define \bf{MAX\_\-LEVEL}~20
+\item 
+\#define \bf{YYTYPE}~unsigned char
+\item 
+\#define \bf{YYU}(x)~x
+\item 
+\#define \bf{NLSTATE}~\bf{yyprevious}=YYNEWLINE
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int \bf{lex\-Open} (char $\ast$file\_\-name, int inclusion)
+\item 
+static int \bf{lex\-Close} (char $\ast$file\_\-name)
+\item 
+static int \bf{lex\-Int\-Lit} (void)
+\item 
+static int \bf{lex\-Real\-Lit} (void)
+\item 
+static int \bf{lex\-String\-Lit} (void)
+\item 
+static int \bf{lex\-Char\-Lit} (void)
+\item 
+static int \bf{lex\-Identifier} (void)
+\item 
+static void \bf{lex\-Error} (char $\ast$)
+\item 
+static char $\ast$ \bf{Find\-String} (char $\ast$str)
+\item 
+int \bf{yywrap} (void)
+\item 
+int \bf{yylex} ()
+\item 
+static void \bf{Push} (FILE $\ast$fpt, char $\ast$\bf{name})
+\item 
+static FILE $\ast$ \bf{Pop} (void)
+\item 
+static char $\ast$ \bf{Last\-File} (void)
+\item 
+static int \bf{lex\-Exist} (char $\ast$file\_\-name, int inclusion)
+\item 
+int \bf{old\_\-lex\-Open} (char $\ast$file\_\-name, int inclusion)
+\item 
+int \bf{old\_\-lex\-Close} (char $\ast$file\_\-name)
+\item 
+static FILE $\ast$ \bf{Switch\-File} (FILE $\ast$fpt)
+\item 
+static char $\ast$ \bf{lmalloc} (int size)
+\item 
+static char $\ast$ \bf{strsave} (char $\ast$str)
+\item 
+static \bf{String} $\ast$ \bf{Find\-S} (\bf{String} $\ast$T, char $\ast$str)
+\item 
+static \bf{String} $\ast$ \bf{Add\-S} (\bf{String} $\ast$T, char $\ast$str)
+\item 
+char $\ast$ \bf{old\_\-Find\-String} (char $\ast$str)
+\item 
+static \bf{LIST} \bf{New\-Node} (void)
+\item 
+\bf{LIST} \bf{Dispose\-Node} (\bf{LIST} \bf{node})
+\item 
+void \bf{Free\-Dead\-List} ()
+\item 
+static void \bf{Add\-Child\-Node} (\bf{LIST} parent, \bf{LIST} child)
+\item 
+\bf{LIST} \bf{Get\-Node} (void)
+\item 
+void \bf{print\_\-node} (\bf{LIST} \bf{node}, int indent)
+\item 
+void \bf{Print\-Node} (FILE $\ast$\bf{F}, \bf{LIST} \bf{node})
+\item 
+\bf{LIST} \bf{Get\-Integer} (\bf{LIST} \bf{list}, int $\ast$val)
+\item 
+\bf{LIST} \bf{Get\-Real} (\bf{LIST} \bf{list}, double $\ast$val)
+\item 
+\bf{LIST} \bf{Get\-String} (\bf{LIST} \bf{list}, char $\ast$$\ast$val)
+\item 
+\bf{LIST} \bf{Get\-Id} (\bf{LIST} \bf{list}, char $\ast$$\ast$val)
+\item 
+static void \bf{Remove\-S} (\bf{String} $\ast$ptr)
+\item 
+void \bf{Remove\-All\-String} ()
+\item 
+\bf{yylook} ()
+\item 
+\bf{yyback} (int $\ast$p, m)
+\item 
+\bf{yyinput} ()
+\item 
+\bf{yyoutput} (int c)
+\item 
+\bf{yyunput} (int c)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{yyleng}
+\item 
+char \bf{yytext} [$\,$]
+\item 
+int \bf{yymorfg}
+\item 
+char $\ast$ \bf{yysptr}
+\item 
+char \bf{yysbuf} [$\,$]
+\item 
+int \bf{yytchar}
+\item 
+FILE $\ast$ \bf{yyin} = NULL
+\item 
+FILE $\ast$ \bf{yyout} = NULL
+\item 
+int \bf{yylineno}
+\item 
+\bf{yysvf} $\ast$ \bf{yyestate}
+\item 
+\bf{yysvf} \bf{yysvec} [$\,$]
+\item 
+\bf{yysvf} $\ast$ \bf{yybgin}
+\item 
+int \bf{Token\-Type}
+\item 
+char $\ast$ \bf{Token\-Name}
+\item 
+\bf{ITintmax} \bf{Token\-Integer}
+\item 
+double \bf{Token\-Real}
+\item 
+static int \bf{lex\_\-error} = 0
+\item 
+static int \bf{stack\_\-top} = 0
+\item 
+static FILE $\ast$ \bf{stack} [MAX\_\-LEVEL]
+\item 
+static char $\ast$ \bf{fname} [MAX\_\-LEVEL]
+\item 
+static char $\ast$ \bf{current\_\-file} = \char`\"{}??\char`\"{}
+\item 
+static \bf{String} $\ast$ \bf{string\-Tree} = 0
+\item 
+static \bf{LIST} \bf{dead\_\-list} = 0
+\item 
+static int \bf{dead\_\-list\_\-length} = 0
+\item 
+static FILE $\ast$ \bf{FF} = NULL
+\item 
+int \bf{yyvstop} [$\,$]
+\item 
+\bf{yywork} \bf{yycrank} [$\,$]
+\item 
+\bf{yysvf} \bf{yysvec} [$\,$]
+\item 
+\bf{yywork} $\ast$ \bf{yytop} = \bf{yycrank} + 1556
+\item 
+\bf{yysvf} $\ast$ \bf{yybgin} = \bf{yysvec} + 1
+\item 
+char \bf{yymatch} [$\,$]
+\item 
+char \bf{yyextra} [$\,$]
+\item 
+int \bf{yylineno} = 1
+\item 
+\bf{yysvf} $\ast$ \bf{yylstate} [YYLMAX]
+\item 
+\bf{yysvf} $\ast$$\ast$ \bf{yylsp}
+\item 
+\bf{yysvf} $\ast$$\ast$ \bf{yyolsp}
+\item 
+char $\ast$ \bf{yysptr} = \bf{yysbuf}
+\item 
+int $\ast$ \bf{yyfnd}
+\item 
+\bf{yysvf} $\ast$ \bf{yyestate}
+\item 
+int \bf{yyprevious} = YYNEWLINE
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{list.c@{list.c}!BEGIN@{BEGIN}}
+\index{BEGIN@{BEGIN}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BEGIN~\bf{yybgin} = \bf{yysvec} + 1 +}\label{list_8c_b766bbbee08d04b67e3fe599d6900873}
+
+
+
+
+Definition at line 73 of file list.c.\index{list.c@{list.c}!COMMENT@{COMMENT}}
+\index{COMMENT@{COMMENT}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define COMMENT~2}\label{list_8c_180f5b3835bdbfc11b353fd2af5c8659}
+
+
+
+
+Definition at line 180 of file list.c.\index{list.c@{list.c}!DefaultState@{DefaultState}}
+\index{DefaultState@{DefaultState}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Default\-State~0}\label{list_8c_9931e72b5f7e6382d2e7b0aaaf4a01fe}
+
+
+
+
+Definition at line 176 of file list.c.\index{list.c@{list.c}!ECHO@{ECHO}}
+\index{ECHO@{ECHO}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ECHO~(void)fprintf(\bf{yyout}, \char`\"{}\%s\char`\"{},yytext)}\label{list_8c_ad1dc60a04a1d8cfc8b3ded13601e361}
+
+
+
+
+Definition at line 110 of file list.c.\index{list.c@{list.c}!INITIAL@{INITIAL}}
+\index{INITIAL@{INITIAL}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define INITIAL~0}\label{list_8c_a3d063564f6ab16f6d408b8369d0e9ff}
+
+
+
+
+Definition at line 74 of file list.c.\index{list.c@{list.c}!input@{input}}
+\index{input@{input}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define input()~(((\bf{yytchar}=\bf{yysptr}$>$\bf{yysbuf}?U($\ast$--\bf{yysptr}):getc(\bf{yyin}))==10?(\bf{yylineno}++,\bf{yytchar}):\bf{yytchar})==EOF?0:\bf{yytchar})}\label{list_8c_1dd66d9c1e77fe5c37ddce38fd30acb7}
+
+
+
+
+Definition at line 107 of file list.c.\index{list.c@{list.c}!MAX_LEVEL@{MAX\_\-LEVEL}}
+\index{MAX_LEVEL@{MAX\_\-LEVEL}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-LEVEL~20}\label{list_8c_5bb4257ca9fa4bfcf9391b7895b97761}
+
+
+
+
+Definition at line 435 of file list.c.\index{list.c@{list.c}!NLSTATE@{NLSTATE}}
+\index{NLSTATE@{NLSTATE}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NLSTATE~\bf{yyprevious}=YYNEWLINE}\label{list_8c_0a3c2dd7ec2541ed7035842c0e5cb7b1}
+
+
+
+
+Definition at line 2225 of file list.c.\index{list.c@{list.c}!NLSTATE@{NLSTATE}}
+\index{NLSTATE@{NLSTATE}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define NLSTATE~\bf{yyprevious}=YYNEWLINE}\label{list_8c_0a3c2dd7ec2541ed7035842c0e5cb7b1}
+
+
+
+
+Definition at line 2225 of file list.c.\index{list.c@{list.c}!output@{output}}
+\index{output@{output}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define output(c)~(void)putc(c,\bf{yyout})}\label{list_8c_1a757ed386b9ccb6fb369a7cdbeca52f}
+
+
+
+
+Definition at line 79 of file list.c.\index{list.c@{list.c}!REJECT@{REJECT}}
+\index{REJECT@{REJECT}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define REJECT~\{ nstr = yyreject(); goto yyfussy;\}}\label{list_8c_835f10dd1ab4bf9a80c4cd80ee6e3058}
+
+
+
+
+Definition at line 111 of file list.c.\index{list.c@{list.c}!ToState@{ToState}}
+\index{ToState@{ToState}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define To\-State(n)~BEGIN(n)}\label{list_8c_e4f339f05d10a7ba069f63a0d82ba7d4}
+
+
+
+
+Definition at line 175 of file list.c.\index{list.c@{list.c}!U@{U}}
+\index{U@{U}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define U(x)~x}\label{list_8c_2e9a0e2ee6ec47b10497aa3fa424707a}
+
+
+
+
+Definition at line 71 of file list.c.\index{list.c@{list.c}!unput@{unput}}
+\index{unput@{unput}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define unput(c)~\{\bf{yytchar}= (c);if(\bf{yytchar}=='$\backslash$n')\bf{yylineno}--;$\ast$\bf{yysptr}++=\bf{yytchar};\}}\label{list_8c_448a4e9041a09588332733c6846c770c}
+
+
+
+
+Definition at line 108 of file list.c.\index{list.c@{list.c}!YYLERR@{YYLERR}}
+\index{YYLERR@{YYLERR}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYLERR~\bf{yysvec}}\label{list_8c_21cf66c12b75036afb2bb450961f3913}
+
+
+
+
+Definition at line 75 of file list.c.\index{list.c@{list.c}!YYLMAX@{YYLMAX}}
+\index{YYLMAX@{YYLMAX}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYLMAX~2500}\label{list_8c_528b4a36c14b40b6b7a96b1df6362045}
+
+
+
+
+Definition at line 154 of file list.c.\index{list.c@{list.c}!YYLMAX@{YYLMAX}}
+\index{YYLMAX@{YYLMAX}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYLMAX~200}\label{list_8c_528b4a36c14b40b6b7a96b1df6362045}
+
+
+
+
+Definition at line 154 of file list.c.\index{list.c@{list.c}!yymore@{yymore}}
+\index{yymore@{yymore}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define yymore()~(\bf{yymorfg}=1)}\label{list_8c_745d37b5e002b2e5f93ad42ea7b554be}
+
+
+
+
+Definition at line 109 of file list.c.\index{list.c@{list.c}!YYNEWLINE@{YYNEWLINE}}
+\index{YYNEWLINE@{YYNEWLINE}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYNEWLINE~10}\label{list_8c_dd266327fc2a9d001a866e62efae8a68}
+
+
+
+
+Definition at line 181 of file list.c.\index{list.c@{list.c}!YYOPTIM@{YYOPTIM}}
+\index{YYOPTIM@{YYOPTIM}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYOPTIM~1}\label{list_8c_8e9c50a68401eb5c606c16ad45397fa2}
+
+
+
+
+Definition at line 77 of file list.c.\index{list.c@{list.c}!YYSTATE@{YYSTATE}}
+\index{YYSTATE@{YYSTATE}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYSTATE~(\bf{yyestate}-\bf{yysvec}-1)}\label{list_8c_32b5b960944f946b192d54f672569cd9}
+
+
+
+
+Definition at line 76 of file list.c.\index{list.c@{list.c}!YYTYPE@{YYTYPE}}
+\index{YYTYPE@{YYTYPE}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYTYPE~unsigned char}\label{list_8c_f36e924ed81943536b70cc1b4247df25}
+
+
+
+
+Definition at line 1622 of file list.c.\index{list.c@{list.c}!YYU@{YYU}}
+\index{YYU@{YYU}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define YYU(x)~x}\label{list_8c_94662a60a9be7f490003ed3f6dae26cc}
+
+
+
+
+Definition at line 2224 of file list.c.
+
+\subsection{Function Documentation}
+\index{list.c@{list.c}!AddChildNode@{AddChildNode}}
+\index{AddChildNode@{AddChildNode}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Add\-Child\-Node (\bf{LIST} {\em parent}, \bf{LIST} {\em child})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_287edc7edce485b8735738ffcc5c332d}
+
+
+
+
+Definition at line 894 of file list.c.
+
+References Child\-Of, Last\-Child\-Of, and Sibling\-Of.
+
+Referenced by Get\-Node().\index{list.c@{list.c}!AddS@{AddS}}
+\index{AddS@{AddS}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{String}$\ast$ Add\-S (\bf{String} $\ast$ {\em T}, char $\ast$ {\em str})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_86072d6f98027c19c8489b4f82ae91fc}
+
+
+
+
+Definition at line 770 of file list.c.
+
+References Add\-S(), String::left, lmalloc(), String::name, String::right, and strsave().\index{list.c@{list.c}!DisposeNode@{DisposeNode}}
+\index{DisposeNode@{DisposeNode}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Dispose\-Node (\bf{LIST} {\em node})}\label{list_8c_b1cb91e33a6f7af3a3cd4d93beb46128}
+
+
+
+
+Definition at line 856 of file list.c.
+
+References Child\-Of, dead\_\-list, Dispose\-Node(), Free\-Dead\-List(), node, Node\-Type, Sibling\-Of, and T\_\-LIST.
+
+Referenced by Dispose\-Node(), and Read\-Graph().\index{list.c@{list.c}!FindS@{FindS}}
+\index{FindS@{FindS}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{String}$\ast$ Find\-S (\bf{String} $\ast$ {\em T}, char $\ast$ {\em str})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_b081a5f42c774c6a9fbdeff7f7d5d6f9}
+
+
+
+
+Definition at line 753 of file list.c.
+
+References Find\-S(), String::left, String::name, and String::right.\index{list.c@{list.c}!FindString@{FindString}}
+\index{FindString@{FindString}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static char $\ast$ Find\-String (char $\ast$ {\em str})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_2439ea9453fafeb47922b2ceb85f1115}
+
+
+
+
+Definition at line 808 of file list.c.
+
+References Add\-S(), Find\-S(), String::name, and string\-Tree.
+
+Referenced by Get\-Node(), lex\-Exist(), lex\-Open(), and old\_\-Find\-String().\index{list.c@{list.c}!FreeDeadList@{FreeDeadList}}
+\index{FreeDeadList@{FreeDeadList}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Free\-Dead\-List (void)}\label{list_8c_1cd16918933d99b392a4a015c61bceab}
+
+
+
+
+Definition at line 877 of file list.c.
+
+References dead\_\-list, and Sibling\-Of.
+
+Referenced by Dispose\-Node().\index{list.c@{list.c}!GetId@{GetId}}
+\index{GetId@{GetId}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Get\-Id (\bf{LIST} {\em list}, char $\ast$$\ast$ {\em val})}\label{list_8c_5189d4c03dfea6104c2f48b2fc5eb828}
+
+
+
+
+Definition at line 1108 of file list.c.
+
+References Node\-Type, Sibling\-Of, String\-Of, and T\_\-ID.\index{list.c@{list.c}!GetInteger@{GetInteger}}
+\index{GetInteger@{GetInteger}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Get\-Integer (\bf{LIST} {\em list}, int $\ast$ {\em val})}\label{list_8c_53c6fbf833b124ea448e957301340d90}
+
+
+
+
+Definition at line 1078 of file list.c.
+
+References Node\-Type, Scalar\-Of, Sibling\-Of, and T\_\-INT.\index{list.c@{list.c}!GetNode@{GetNode}}
+\index{GetNode@{GetNode}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Get\-Node (void)}\label{list_8c_b0c44cb8e74f854814958212aaab6408}
+
+
+
+
+Definition at line 936 of file list.c.
+
+References Add\-Child\-Node(), Child\-Of, Find\-String(), Get\-Node(), L\_\-CHAR, L\_\-ERROR, L\_\-ID, L\_\-INT, L\_\-REAL, L\_\-STRING, new\_\-node(), New\-Node(), Node\-Type, Real\-Of, Scalar\-Of, String\-Of, T\_\-CHAR, T\_\-EOF, T\_\-ID, T\_\-INT, T\_\-LIST, T\_\-NULL, T\_\-REAL, T\_\-STRING, Token\-Integer, Token\-Name, Token\-Real, and yylex.
+
+Referenced by Get\-Node(), and Read\-Graph().\index{list.c@{list.c}!GetReal@{GetReal}}
+\index{GetReal@{GetReal}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Get\-Real (\bf{LIST} {\em list}, double $\ast$ {\em val})}\label{list_8c_c6e4ef39bbdabddec435b0fb40116354}
+
+
+
+
+Definition at line 1088 of file list.c.
+
+References Node\-Type, Real\-Of, Sibling\-Of, and T\_\-REAL.\index{list.c@{list.c}!GetString@{GetString}}
+\index{GetString@{GetString}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} Get\-String (\bf{LIST} {\em list}, char $\ast$$\ast$ {\em val})}\label{list_8c_20272db4a1f8faaab032a53689f15ebd}
+
+
+
+
+Definition at line 1098 of file list.c.
+
+References Node\-Type, Sibling\-Of, String\-Of, and T\_\-STRING.\index{list.c@{list.c}!LastFile@{LastFile}}
+\index{LastFile@{LastFile}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static char$\ast$ Last\-File (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_1c995961755fb61d0e4b2014f4324324}
+
+
+
+
+Definition at line 470 of file list.c.
+
+References fname, and stack\_\-top.
+
+Referenced by lex\-Close().\index{list.c@{list.c}!lexCharLit@{lexCharLit}}
+\index{lexCharLit@{lexCharLit}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Char\-Lit (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_f3210843f5cc57eda44b272601a0c0fa}
+
+
+
+
+Definition at line 702 of file list.c.
+
+References L\_\-CHAR, Token\-Buffer, Token\-Name, and Token\-Type.
+
+Referenced by yylex().\index{list.c@{list.c}!lexClose@{lexClose}}
+\index{lexClose@{lexClose}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Close (char $\ast$ {\em file\_\-name})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_51814ae811f4e5f86d669f8fa92f630e}
+
+
+
+
+Definition at line 599 of file list.c.
+
+References current\_\-file, Last\-File(), Pop(), and yyin.
+
+Referenced by old\_\-lex\-Close().\index{list.c@{list.c}!lexError@{lexError}}
+\index{lexError@{lexError}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void lex\-Error (char $\ast$)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_195af11d4c5e4c090938429100b952e1}
+
+
+
+
+Definition at line 443 of file list.c.
+
+References current\_\-file, and lex\_\-error.
+
+Referenced by lex\-Open(), Push(), Switch\-File(), and yylex().\index{list.c@{list.c}!lexExist@{lexExist}}
+\index{lexExist@{lexExist}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Exist (char $\ast$ {\em file\_\-name}, int {\em inclusion})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_9e2315c508005bbb2a721bced909ddd0}
+
+
+
+
+Definition at line 486 of file list.c.
+
+References current\_\-file, Find\-String(), and NULL.\index{list.c@{list.c}!lexIdentifier@{lexIdentifier}}
+\index{lexIdentifier@{lexIdentifier}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Identifier (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_7a3fc4e536d8cd6557813fc268c7ab17}
+
+
+
+
+Definition at line 710 of file list.c.
+
+References L\_\-ID, Token\-Buffer, Token\-Name, and Token\-Type.
+
+Referenced by yylex().\index{list.c@{list.c}!lexIntLit@{lexIntLit}}
+\index{lexIntLit@{lexIntLit}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Int\-Lit (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_b4d80c79ae9eee0f23503a14992b15f3}
+
+
+
+
+Definition at line 675 of file list.c.
+
+References ITintmaxformat, ITuintmaxformat, L\_\-INT, Token\-Buffer, Token\-Integer, and Token\-Type.
+
+Referenced by yylex().\index{list.c@{list.c}!lexOpen@{lexOpen}}
+\index{lexOpen@{lexOpen}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Open (char $\ast$ {\em file\_\-name}, int {\em inclusion})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_f4bc9d1d5f9f8832227337132a15154f}
+
+
+
+
+Definition at line 537 of file list.c.
+
+References current\_\-file, Find\-String(), lex\-Error(), NULL, Push(), yyin, and yyout.
+
+Referenced by old\_\-lex\-Open().\index{list.c@{list.c}!lexRealLit@{lexRealLit}}
+\index{lexRealLit@{lexRealLit}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-Real\-Lit (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_23866f3da76c821001534f69cda63967}
+
+
+
+
+Definition at line 686 of file list.c.
+
+References atof(), L\_\-REAL, Token\-Buffer, Token\-Real, and Token\-Type.
+
+Referenced by yylex().\index{list.c@{list.c}!lexStringLit@{lexStringLit}}
+\index{lexStringLit@{lexStringLit}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int lex\-String\-Lit (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_7e3e64d8a728a5815a25108ab11980ae}
+
+
+
+
+Definition at line 694 of file list.c.
+
+References L\_\-STRING, Token\-Buffer, Token\-Name, and Token\-Type.
+
+Referenced by yylex().\index{list.c@{list.c}!lmalloc@{lmalloc}}
+\index{lmalloc@{lmalloc}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static char$\ast$ lmalloc (int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_0970a28bf64c34bb465120ff6e0ccabb}
+
+
+
+
+Definition at line 731 of file list.c.
+
+Referenced by Add\-S(), New\-Node(), and strsave().\index{list.c@{list.c}!NewNode@{NewNode}}
+\index{NewNode@{NewNode}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{LIST} New\-Node (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_bdaba8a4f6b31bc25f87d5f823b42a6b}
+
+
+
+
+Definition at line 830 of file list.c.
+
+References Child\-Of, dead\_\-list, Last\-Child\-Of, lmalloc(), new\_\-node(), Node\-Type, Sibling\-Of, and T\_\-NULL.\index{list.c@{list.c}!old_FindString@{old\_\-FindString}}
+\index{old_FindString@{old\_\-FindString}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ old\_\-Find\-String (char $\ast$ {\em str})}\label{list_8c_4e0e7d8552688931b3a78bc432005db0}
+
+
+
+
+Definition at line 802 of file list.c.
+
+References Find\-String().\index{list.c@{list.c}!old_lexClose@{old\_\-lexClose}}
+\index{old_lexClose@{old\_\-lexClose}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int old\_\-lex\-Close (char $\ast$ {\em file\_\-name})}\label{list_8c_1221695f0862f44e98c6ba5c5e6bb749}
+
+
+
+
+Definition at line 593 of file list.c.
+
+References lex\-Close().\index{list.c@{list.c}!old_lexOpen@{old\_\-lexOpen}}
+\index{old_lexOpen@{old\_\-lexOpen}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int old\_\-lex\-Open (char $\ast$ {\em file\_\-name}, int {\em inclusion})}\label{list_8c_d316fdb7af85c1d1a1d01c7b1fa548f7}
+
+
+
+
+Definition at line 531 of file list.c.
+
+References lex\-Open().\index{list.c@{list.c}!Pop@{Pop}}
+\index{Pop@{Pop}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static FILE$\ast$ Pop (void)\hspace{0.3cm}{\tt  [static]}}\label{list_8c_38956204c5cb61bd81087c8b0af86c8f}
+
+
+
+
+Definition at line 461 of file list.c.
+
+References stack, and stack\_\-top.
+
+Referenced by lex\-Close().\index{list.c@{list.c}!print_node@{print\_\-node}}
+\index{print_node@{print\_\-node}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-node (\bf{LIST} {\em node}, int {\em indent})}\label{list_8c_e7f191c0df600c02d7fd68f6da542f1f}
+
+
+
+
+Definition at line 1012 of file list.c.
+
+References Child\-Of, Integer\-Of, ITintmaxformat, node, Node\-Type, NULL, print\_\-node(), Real\-Of, Scalar\-Of, Sibling\-Of, String\-Of, T\_\-CHAR, T\_\-EOF, T\_\-ID, T\_\-INT, T\_\-LIST, T\_\-NULL, T\_\-OPER, T\_\-REAL, and T\_\-STRING.\index{list.c@{list.c}!PrintNode@{PrintNode}}
+\index{PrintNode@{PrintNode}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Print\-Node (FILE $\ast$ {\em F}, \bf{LIST} {\em node})}\label{list_8c_506b579eb7fea8a1580d4ce37aa1386c}
+
+
+
+
+Definition at line 1069 of file list.c.
+
+References node, and print\_\-node().\index{list.c@{list.c}!Push@{Push}}
+\index{Push@{Push}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Push (FILE $\ast$ {\em fpt}, char $\ast$ {\em name})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_a596c5439ad97688494a64ac06612745}
+
+
+
+
+Definition at line 451 of file list.c.
+
+References fname, lex\-Error(), MAX\_\-LEVEL, stack, and stack\_\-top.
+
+Referenced by lex\-Open().\index{list.c@{list.c}!RemoveAllString@{RemoveAllString}}
+\index{RemoveAllString@{RemoveAllString}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Remove\-All\-String (void)}\label{list_8c_dd4ce9fcdce5715e5a9702624d8c9bf6}
+
+
+
+
+Definition at line 1134 of file list.c.
+
+References Remove\-S(), and string\-Tree.\index{list.c@{list.c}!RemoveS@{RemoveS}}
+\index{RemoveS@{RemoveS}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Remove\-S (\bf{String} $\ast$ {\em ptr})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_144c1be59bb040db9394b54f9e5f4222}
+
+
+
+
+Definition at line 1120 of file list.c.
+
+References String::left, String::name, Remove\-S(), and String::right.\index{list.c@{list.c}!strsave@{strsave}}
+\index{strsave@{strsave}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static char$\ast$ strsave (char $\ast$ {\em str})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_ef71b190c2a5ff9efc175eb002a20c0c}
+
+
+
+
+Definition at line 744 of file list.c.
+
+References lmalloc().
+
+Referenced by Add\-S().\index{list.c@{list.c}!SwitchFile@{SwitchFile}}
+\index{SwitchFile@{SwitchFile}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static FILE$\ast$ Switch\-File (FILE $\ast$ {\em fpt})\hspace{0.3cm}{\tt  [static]}}\label{list_8c_ad4d6ccb475e09380a86ee120c423d55}
+
+
+
+
+Definition at line 609 of file list.c.
+
+References lex\-Error(), NULL, and yyin.
+
+Referenced by Read\-Graph().\index{list.c@{list.c}!yyback@{yyback}}
+\index{yyback@{yyback}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}yyback (int $\ast$ {\em p}, m)}\label{list_8c_7e7fd61eff95f28431f23795998f2c8e}
+
+
+
+
+Definition at line 2455 of file list.c.\index{list.c@{list.c}!yyinput@{yyinput}}
+\index{yyinput@{yyinput}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}yyinput ()}\label{list_8c_4899c6bb0b1b5863637b480d7901f4ae}
+
+
+
+
+Definition at line 2473 of file list.c.
+
+References input.\index{list.c@{list.c}!yylex@{yylex}}
+\index{yylex@{yylex}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int yylex (void)}\label{list_8c_a40b27ae32d6d1ae7160bd6256e08eb8}
+
+
+
+
+Definition at line 183 of file list.c.
+
+References COMMENT, Default\-State, L\_\-ERROR, lex\-Char\-Lit(), lex\-Error(), lex\-Identifier(), lex\-Int\-Lit(), lex\-Real\-Lit(), lex\-String\-Lit(), Token\-Buffer, Token\-Char, Token\-Type, To\-State, yylook, yyout, yyprevious, and yywrap.\index{list.c@{list.c}!yylook@{yylook}}
+\index{yylook@{yylook}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}yylook ()}\label{list_8c_81f50fcab7a210c90eb561a3ebeb3b52}
+
+
+
+
+Definition at line 2237 of file list.c.
+
+References yywork::advance, input, output, unput, yywork::verify, yyback, yybgin, yycrank, yyestate, yyleng, YYLERR, YYLMAX, yylsp, yylstate, yymorfg, YYNEWLINE, yyolsp, yysvf::yyother, yyout, yysvf::yystoff, yysvec, and YYU.\index{list.c@{list.c}!yyoutput@{yyoutput}}
+\index{yyoutput@{yyoutput}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}yyoutput (int {\em c})}\label{list_8c_83bc497bbfffab9fd911e1f1262fb342}
+
+
+
+
+Definition at line 2482 of file list.c.
+
+References output.\index{list.c@{list.c}!yyunput@{yyunput}}
+\index{yyunput@{yyunput}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}yyunput (int {\em c})}\label{list_8c_76ac9a27c10c26d1c6ed0d61caf1251f}
+
+
+
+
+Definition at line 2492 of file list.c.
+
+References unput.\index{list.c@{list.c}!yywrap@{yywrap}}
+\index{yywrap@{yywrap}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int yywrap (void)}\label{list_8c_9ae7dd87893ed6cebc02d0d5f84c2ede}
+
+
+
+
+\subsection{Variable Documentation}
+\index{list.c@{list.c}!current_file@{current\_\-file}}
+\index{current_file@{current\_\-file}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{current\_\-file} = \char`\"{}??\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{list_8c_f6dfd479b7e5d3e23f4813dd488fe43b}
+
+
+
+
+Definition at line 439 of file list.c.
+
+Referenced by lex\-Close(), lex\-Error(), lex\-Exist(), and lex\-Open().\index{list.c@{list.c}!dead_list@{dead\_\-list}}
+\index{dead_list@{dead\_\-list}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{LIST} \bf{dead\_\-list} = 0\hspace{0.3cm}{\tt  [static]}}\label{list_8c_ef78b18d84652dec932b6e7dfed4708b}
+
+
+
+
+Definition at line 825 of file list.c.\index{list.c@{list.c}!dead_list_length@{dead\_\-list\_\-length}}
+\index{dead_list_length@{dead\_\-list\_\-length}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{dead\_\-list\_\-length} = 0\hspace{0.3cm}{\tt  [static]}}\label{list_8c_ea6824d55afb12532be8a47236e7b05f}
+
+
+
+
+Definition at line 826 of file list.c.\index{list.c@{list.c}!FF@{FF}}
+\index{FF@{FF}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{FF} = NULL\hspace{0.3cm}{\tt  [static]}}\label{list_8c_8d300a1bc2030270e6d8c8d7223b708c}
+
+
+
+
+Definition at line 1010 of file list.c.\index{list.c@{list.c}!fname@{fname}}
+\index{fname@{fname}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{fname}[MAX\_\-LEVEL]\hspace{0.3cm}{\tt  [static]}}\label{list_8c_57ef393a21195639a311f07a06a25cde}
+
+
+
+
+Definition at line 438 of file list.c.\index{list.c@{list.c}!lex_error@{lex\_\-error}}
+\index{lex_error@{lex\_\-error}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{lex\_\-error} = 0\hspace{0.3cm}{\tt  [static]}}\label{list_8c_814c1953c80a71fb62fbc43f524d6914}
+
+
+
+
+Definition at line 173 of file list.c.\index{list.c@{list.c}!stack@{stack}}
+\index{stack@{stack}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{stack}[MAX\_\-LEVEL]\hspace{0.3cm}{\tt  [static]}}\label{list_8c_ec647b16f5623906de8a6cef44727e7f}
+
+
+
+
+Definition at line 437 of file list.c.\index{list.c@{list.c}!stack_top@{stack\_\-top}}
+\index{stack_top@{stack\_\-top}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{stack\_\-top} = 0\hspace{0.3cm}{\tt  [static]}}\label{list_8c_93e250e5a47f250cbd802e9e7e3c8d2e}
+
+
+
+
+Definition at line 436 of file list.c.
+
+Referenced by Last\-File(), Pop(), pop\_\-file(), Push(), and push\_\-file().\index{list.c@{list.c}!stringTree@{stringTree}}
+\index{stringTree@{stringTree}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{String}$\ast$ \bf{string\-Tree} = 0\hspace{0.3cm}{\tt  [static]}}\label{list_8c_4880fa06008b6d08b85db8c8eadd082a}
+
+
+
+
+Definition at line 728 of file list.c.
+
+Referenced by Find\-String(), and Remove\-All\-String().\index{list.c@{list.c}!TokenInteger@{TokenInteger}}
+\index{TokenInteger@{TokenInteger}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{ITintmax} \bf{Token\-Integer}}\label{list_8c_a05a98db4e5f1adf600353b409c73337}
+
+
+
+
+Definition at line 171 of file list.c.\index{list.c@{list.c}!TokenName@{TokenName}}
+\index{TokenName@{TokenName}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{Token\-Name}}\label{list_8c_285ec8e248204d1c7093e162ff8a9cf3}
+
+
+
+
+Definition at line 170 of file list.c.\index{list.c@{list.c}!TokenReal@{TokenReal}}
+\index{TokenReal@{TokenReal}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{Token\-Real}}\label{list_8c_433b5350d88710b59c923b53834edf5c}
+
+
+
+
+Definition at line 172 of file list.c.\index{list.c@{list.c}!TokenType@{TokenType}}
+\index{TokenType@{TokenType}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Token\-Type}}\label{list_8c_58872325a7ea09786c3253d71a4ea503}
+
+
+
+
+Definition at line 169 of file list.c.\index{list.c@{list.c}!yybgin@{yybgin}}
+\index{yybgin@{yybgin}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf}$\ast$ \bf{yybgin} = \bf{yysvec} + 1}\label{list_8c_53189c29d05a62c3bf9859c4219161a1}
+
+
+
+
+Definition at line 2176 of file list.c.\index{list.c@{list.c}!yybgin@{yybgin}}
+\index{yybgin@{yybgin}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf} $\ast$ \bf{yybgin}}\label{list_8c_6b7fc351a473ee81fd6c1d10a14c9491}
+
+
+
+
+Definition at line 2603 of file c\_\-list.c.\index{list.c@{list.c}!yycrank@{yycrank}}
+\index{yycrank@{yycrank}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yywork}
+ \bf{yycrank}[$\,$]}\label{list_8c_20ec935b8e234333e0a8e746c5022ba0}
+
+
+\index{list.c@{list.c}!yyestate@{yyestate}}
+\index{yyestate@{yyestate}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf}$\ast$ \bf{yyestate}}\label{list_8c_8c65940e3c94c87a535845e35eb385f7}
+
+
+
+
+Definition at line 111 of file c\_\-list.c.\index{list.c@{list.c}!yyestate@{yyestate}}
+\index{yyestate@{yyestate}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf}$\ast$ \bf{yyestate}}\label{list_8c_8c65940e3c94c87a535845e35eb385f7}
+
+
+
+
+Definition at line 130 of file list.c.\index{list.c@{list.c}!yyextra@{yyextra}}
+\index{yyextra@{yyextra}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char \bf{yyextra}[$\,$]}\label{list_8c_eb421468715aed80be580763fa9d99b8}
+
+
+\textbf{Initial value:}
+
+\begin{Code}\begin{verbatim} {
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0
+}
+\end{verbatim}\end{Code}
+
+
+Definition at line 2212 of file list.c.\index{list.c@{list.c}!yyfnd@{yyfnd}}
+\index{yyfnd@{yyfnd}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{yyfnd}}\label{list_8c_51dfeda0833f16663c3597f98752ba7f}
+
+
+
+
+Definition at line 2230 of file list.c.\index{list.c@{list.c}!yyin@{yyin}}
+\index{yyin@{yyin}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ \bf{yyin} = NULL}\label{list_8c_46af646807e0797e72b6e8945e7ea88b}
+
+
+
+
+Definition at line 122 of file list.c.\index{list.c@{list.c}!yyleng@{yyleng}}
+\index{yyleng@{yyleng}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yyleng}}\label{list_8c_1b5865350b5ca5c1d69f429c2a652953}
+
+
+
+
+Definition at line 112 of file list.c.\index{list.c@{list.c}!yylineno@{yylineno}}
+\index{yylineno@{yylineno}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yylineno} = 1}\label{list_8c_5e36364965360da7b7cdfc2188e0af84}
+
+
+
+
+Definition at line 2223 of file list.c.\index{list.c@{list.c}!yylineno@{yylineno}}
+\index{yylineno@{yylineno}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yylineno}}\label{list_8c_5e36364965360da7b7cdfc2188e0af84}
+
+
+
+
+Definition at line 2650 of file c\_\-list.c.\index{list.c@{list.c}!yylsp@{yylsp}}
+\index{yylsp@{yylsp}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf} $\ast$$\ast$ \bf{yylsp}}\label{list_8c_73a1886259f2d6f6fb1e493c9775adf5}
+
+
+
+
+Definition at line 2227 of file list.c.\index{list.c@{list.c}!yylstate@{yylstate}}
+\index{yylstate@{yylstate}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf}$\ast$ \bf{yylstate}[YYLMAX]}\label{list_8c_d22325dc0887c43d7e63b21ad8659e6a}
+
+
+
+
+Definition at line 2227 of file list.c.\index{list.c@{list.c}!yymatch@{yymatch}}
+\index{yymatch@{yymatch}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char \bf{yymatch}[$\,$]}\label{list_8c_8043df7c7db8b5a6a86a6e34340d8d86}
+
+
+
+
+Definition at line 2177 of file list.c.\index{list.c@{list.c}!yymorfg@{yymorfg}}
+\index{yymorfg@{yymorfg}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yymorfg}}\label{list_8c_36702dc8caf59c02fba363377b123171}
+
+
+
+
+Definition at line 114 of file list.c.\index{list.c@{list.c}!yyolsp@{yyolsp}}
+\index{yyolsp@{yyolsp}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf} $\ast$$\ast$ \bf{yyolsp}}\label{list_8c_ee96721f15c2dbe2efd58f2b9186a801}
+
+
+
+
+Definition at line 2227 of file list.c.\index{list.c@{list.c}!yyout@{yyout}}
+\index{yyout@{yyout}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE $\ast$ \bf{yyout} = NULL}\label{list_8c_296847b42b0baa62e2af36cb79f3c0eb}
+
+
+
+
+Definition at line 122 of file list.c.\index{list.c@{list.c}!yyprevious@{yyprevious}}
+\index{yyprevious@{yyprevious}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yyprevious} = YYNEWLINE}\label{list_8c_c38b368bcd0914edeacaf81bb7ac17f8}
+
+
+
+
+Definition at line 2232 of file list.c.\index{list.c@{list.c}!yysbuf@{yysbuf}}
+\index{yysbuf@{yysbuf}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char \bf{yysbuf}[YYLMAX]}\label{list_8c_46af289f9828b895efd9c1fdf93b241f}
+
+
+
+
+Definition at line 2228 of file list.c.\index{list.c@{list.c}!yysptr@{yysptr}}
+\index{yysptr@{yysptr}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{yysptr} = \bf{yysbuf}}\label{list_8c_c2e277904ae84b934c585198523d740b}
+
+
+
+
+Definition at line 2229 of file list.c.\index{list.c@{list.c}!yysptr@{yysptr}}
+\index{yysptr@{yysptr}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{yysptr}}\label{list_8c_c2e277904ae84b934c585198523d740b}
+
+
+
+
+Definition at line 2656 of file c\_\-list.c.\index{list.c@{list.c}!yysvec@{yysvec}}
+\index{yysvec@{yysvec}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf} \bf{yysvec}[$\,$]}\label{list_8c_2011359449066c5432dae89171db9d17}
+
+
+
+
+Definition at line 2018 of file list.c.\index{list.c@{list.c}!yysvec@{yysvec}}
+\index{yysvec@{yysvec}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yysvf} \bf{yysvec}[$\,$]}\label{list_8c_2011359449066c5432dae89171db9d17}
+
+
+
+
+Definition at line 2425 of file c\_\-list.c.\index{list.c@{list.c}!yytchar@{yytchar}}
+\index{yytchar@{yytchar}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yytchar}}\label{list_8c_620e886e7e57cf0fcb0d54c2b9255521}
+
+
+
+
+Definition at line 116 of file list.c.\index{list.c@{list.c}!yytext@{yytext}}
+\index{yytext@{yytext}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char \bf{yytext}[YYLMAX]}\label{list_8c_4ba51ee9c23e5cafe9859550167f6e2c}
+
+
+
+
+Definition at line 2226 of file list.c.\index{list.c@{list.c}!yytop@{yytop}}
+\index{yytop@{yytop}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{yywork}$\ast$ \bf{yytop} = \bf{yycrank} + 1556}\label{list_8c_a50ced6fc1dcd0ac66c184ddbc4ebca7}
+
+
+
+
+Definition at line 2175 of file list.c.\index{list.c@{list.c}!yyvstop@{yyvstop}}
+\index{yyvstop@{yyvstop}!list.c@{list.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{yyvstop}[$\,$]}\label{list_8c_9cb00a23aa4d95b81cc33535ad4b1d49}
+
+
+
+
+Definition at line 1139 of file list.c.

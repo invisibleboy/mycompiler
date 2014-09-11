@@ -1,0 +1,521 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#       Diffs the trace of two probed for profiling executibles using
+#       Ldiff_trace
+#
+#       Run this script with no arguments for usage information.
+#
+#       Author: John Gyllenhaal, Wen-mei Hwu 4/99  (based on Lsim_bench)
+#
+
+BATCH_NAME="diff_bench_trace"
+RESULT_FILE="result.out"
+STDERR_FILE="stderr.out"
+READ_PATHS="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="undefined";
+FIND_BENCH_DIR=1;
+LDIFF_ARGS="";
+DIR=".";
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 3 ]; then
+   BENCHMARK="$1";
+   BASENAME="$1";
+   DIR1="$2";
+   DIR2="$3";
+
+   echo "> Preparing to simulate ${BASENAME}"
+   echo "> ${BATCH_NAME} invoked with the following arguments:"
+   echo ">   $*"
+   echo " "
+
+   # skip the 3 set argument
+   shift 3;
+else
+   VALID_ARGS=0;
+fi
+
+# Check DIR1 and DIR2 to make sure exist
+if [ $VALID_ARGS -eq 1 ]; then
+   if [ ! -d $DIR1 ]; then
+      echo "Error: Invalid directory specified for \"dir1\":"
+      echo "       '${DIR1}'"
+      echo " "
+      VALID_ARGS=0;
+   fi
+
+   if [ ! -d $DIR2 ]; then
+      echo "Error: Invalid directory specified for \"dir2\":"
+      echo "       '${DIR2}'"
+      echo " "
+      VALID_ARGS=0;
+   fi
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+    # get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: ${BATCH_NAME} expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="$READ_PATHS -project $1"
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: ${BATCH_NAME} expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            # Explicitly specify bench dir
+            READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: ${BATCH_NAME} does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: ${BATCH_NAME} expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            shift;;
+
+
+	-dir)
+	    DIR="$1";
+	    shift;
+	    echo "> Use files in directory ${DIR}";;
+
+	-p)
+	    PARMS="$1";
+	    shift;
+	    echo "> Use parameter file ${PARMS}"
+	    LDIFF_ARGS="-p ${PARMS} ${LDIFF_ARGS}";;
+
+	-F*|-P*)
+	    echo "> Passing ${OPTION} to Lsim"
+	    LDIFF_ARGS="${LDIFF_ARGS} ${OPTION}";;
+
+        -bench)
+            if [ $# -eq 0 ]; then
+               echo "Error: ${BATCH_NAME} expects an argument after $OPTION"
+               exit 1;
+            fi
+            BENCHMARK="$1";
+
+            echo "> Using inputs for '${BENCHMARK}' during simulation of '${BASENAME}'";
+            shift;;
+
+
+	-setup)
+	    SETUP="$1";
+	    shift;
+	    USE_USER_SETUP=1;
+	    echo "> Setup text set to '${SETUP}'";;
+	
+	-cprefix)
+	    CPREFIX="$1";
+	    shift;
+	    USE_USER_CPREFIX=1;
+	    echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+	-args)
+	    ARGS="$1";
+	    shift;
+	    USE_USER_ARGS=1;
+	    echo "> Args set to '${ARGS}'";;
+	
+	-check)
+	    CHECK="$1";
+	    shift;
+	    DOCHECK=1;
+	    USE_USER_CHECK=1;
+	    echo "> Check text set to '${CHECK}'";;
+
+	-cleanup)
+	    CLEANUP="$1";
+	    shift;
+	    USE_USER_CLEANUP=1;
+	    echo "> Cleanup text set to '${CLEANUP}'";;
+
+        *)
+            echo "Error: Unknown option '$OPTION'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+   echo "> Usage: ${BATCH_NAME} \"benchmark\" \"dir1\" \"dir2\" [options]";
+   echo '> ';
+   echo '> "benchmark" is benchmark name (ie wc, 008.espresso)';
+   echo '> "dir1" is the first dir containing the probed for profiling exec (i.e. good)';
+   echo '> "dir2" is the second dir containing the probed for profiling exec (i.e. good)';
+   echo '> ';
+   echo '> Zero or more of the following options may be specified';
+   echo '> ';
+   echo '> General Options (parameter overrides, bench_info settings, etc):';
+   echo '>   -bench "name"      uses settings for "name" instead of for "benchmark"';
+   echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+   echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+   echo '>   -input "name(s)"   run with "name(s)" instead of project'\''s EVAL_INPUTS';
+   echo '>   -prefix "prefix"   run with "prefix*" instead of project'\''s EVAL_INPUTS';
+   echo '>   -dir "dir"         use files found in directory "dir" (default: ".")';
+   echo '>   -p "parmsfile"     sets Lsim parm file to "parmsfile"';
+   echo '>   -Fparm=value       sets Lsim parm to value';
+   echo '>   -Pmacro=value      sets Lsim parm macro value';
+   echo '> ';
+   echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+   echo '>   -setup   "text"    runs "text" to setup profile run';
+   echo '>   -cprefix "text"    prefixes "text" to profile_exec_command';
+   echo '>   -args    "text"    sets profile execution arguments to "text"';
+   echo '>   -check   "text"    runs "text" to check output';
+   echo '>   -cleanup "text"    runs "text" to cleanup after profile run';
+
+   exit 0200;
+fi
+
+#
+#       Find the benchmark info
+#
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+   echo " ";
+   echo "> Finding the info for ${BENCHMARK} using find_bench_dir";
+   BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+   fi
+   # Explicitly specify bench dir
+   READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+fi
+echo " ";
+echo "> Will use the execution info for ${BENCHMARK} in:"
+echo ">   $BENCH_DIR"
+
+echo " "
+
+# Get and verify benchmark inputs
+INPUT_ERROR_CODE=0;
+
+# Handle -prefix
+if [ "$INPUT_OPTION" = "-prefix" ]; then
+   echo "> Using prefix '$INPUT_ARG' to find inputs for simulation"
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+   INPUT_ERROR_CODE="$?";
+
+# Handle -input
+elif [ "$INPUT_OPTION" = "-input" ]; then
+   echo "> Verifying specified input list for simulation"
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+   INPUT_ERROR_CODE="$?";
+
+# Handle default cause, using eval_inputs
+elif [ "$INPUT_OPTION" = "" ]; then
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+   INPUT_ERROR_CODE="$?";
+fi
+
+if test "$INPUT_ERROR_CODE" != 0; then
+   echo " "
+   echo "> Exiting ${BATCH_NAME}, find_bench_inputs returned this error message:"
+   echo "$INPUT_LIST";
+   exit 1;
+fi
+
+echo " "
+echo "> The following input(s) will be used for simulation:"
+echo ">   $INPUT_LIST"
+echo " "
+
+#MAKE SURE DIRECTORY EXISTS
+if [ ! -d $DIR ] ; then
+	echo "> $BATCH_NAME, directory doesn't exits: $DIR";
+	exit 0220;
+fi
+
+cd ${DIR}
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+# Get date info to help determine when simulation started and completed
+START_DATE=`date +"%T %D"`;
+
+for INPUT_NAME in $INPUT_LIST
+do
+
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${BASENAME}_${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${BASENAME}_${INPUT_NAME}.stderr"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+     ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+     if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo "> "
+  echo ">  Input name: '${INPUT_NAME}' (for ${BENCHMARK})"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> "
+
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+
+    /bin/sh -c "cd $DIR1; $SETUP"
+    /bin/sh -c "cd $DIR2; $SETUP"
+    
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  # Changed from csh to sh, added './' to executable path -JCG 8/15/98 
+  TRACE_COMMAND="($CPREFIX ./${BASENAME}.probed $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+  echo " "
+  echo "> Starting diff trace for ${BASENAME}/${INPUT_NAME} on:"
+  TIME_STAMP=`date`;
+  echo "> $TIME_STAMP"
+  echo " "
+  echo "> Command that will be simulated (via /bin/sh) for ${BASENAME}/${INPUT_NAME}:"
+  echo ">   ${TRACE_COMMAND}"
+  echo " "
+
+
+  
+  # Add INPUT_NAME to base name, so all the output files will be different
+  # from each input.  Need to explicitly specify input files that
+  # should not change with input (i.e., source_file, addr_file, and
+  # perhaps others later).
+  nice \
+  Ldiff_trace ${DIR1} ${DIR2} ${BASENAME}.encoded ${BASENAME}.probed \
+  "${TRACE_COMMAND}" ${LDIFF_ARGS}; 
+
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: ${LSIM_EXEC} returned non-zero value!"
+     exit 1;
+  fi 
+  echo " "
+  echo "> Ldiff_trace of ${BASENAME}/${INPUT_NAME} has completed on:"
+  TIME_STAMP=`date`;
+  echo "> $TIME_STAMP"
+  echo " "
+
+  CHECK_FILE="${BASENAME}_${INPUT_NAME}.check";
+  if [ "$CHECK" != "" ]; then
+     TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+  else
+     echo "> Warning: no check specified for ${BASENAME}/${INPUT_NAME}."
+     echo ">          Using 'cat $RESULT_FILE'"
+     TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+     CHECK_WARNINGS=1;
+  fi
+  echo " "
+  echo "> Checking results (via /bin/sh):"
+  echo ">   ${TRUE_CHECK}"
+  echo ">"
+  echo "> RESULT CHECK BEGIN IN ${DIR1} FOR ${BASENAME}/${INPUT_NAME}";
+  # Shell out to do check so expresssions evaulated properly
+  /bin/sh -c "cd $DIR1; $TRUE_CHECK"
+
+  # Print warning if CHECK_FILE not empty
+  if [ -s ${DIR1}/$CHECK_FILE ]; then
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     echo "> Warning: check failed for ${BASENAME}/${INPUT_NAME}"
+     echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+     echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     head -n 30 $CHECK_FILE
+     CHECK_WARNINGS=1;
+     CMESG="(MISMATCH)"
+  else
+     CMESG="(PASSED)"
+  fi
+  echo "> RESULT CHECK END IN ${DIR1} FOR ${BASENAME}/${INPUT_NAME} $CMESG";
+  echo ">"
+
+  if [ -s ${DIR1}/$CHECK_FILE ]; then
+    echo "> Leaving $CHECK_FILE around for inspection"
+    echo "> Leaving $RESULT_FILE around for inspection"
+    echo "> Leaving $STDFILE_FILE around for inspection"
+  else
+    echo "> Removing $CHECK_FILE";
+    rm -f ${DIR1}/$CHECK_FILE;
+    echo "> Removing $RESULT_FILE";
+    rm -f ${DIR1}/$RESULT_FILE;
+    echo "> Removing $STDERR_FILE";
+    rm -f ${DIR1}/$STDERR_FILE;
+  fi
+
+  echo ">"
+  echo "> RESULT CHECK BEGIN IN ${DIR2} FOR ${BASENAME}/${INPUT_NAME}";
+  # Shell out to do check so expresssions evaulated properly
+  /bin/sh -c "cd $DIR2; $TRUE_CHECK"
+
+  # Print warning if CHECK_FILE not empty
+  if [ -s ${DIR2}/$CHECK_FILE ]; then
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     echo "> Warning: check failed for ${BASENAME}/${INPUT_NAME}"
+     echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+     echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     head -n 30 $CHECK_FILE
+     CHECK_WARNINGS=1;
+     CMESG="(MISMATCH)"
+  else
+     CMESG="(PASSED)"
+  fi
+  echo "> RESULT CHECK END IN ${DIR2} FOR ${BASENAME}/${INPUT_NAME} $CMESG";
+  echo ">"
+
+  if [ -s ${DIR2}/$CHECK_FILE ]; then
+    echo "> Leaving $CHECK_FILE around for inspection"
+    echo "> Leaving $RESULT_FILE around for inspection"
+    echo "> Leaving $STDERR_FILE around for inspection"
+  else
+    echo "> Removing $CHECK_FILE";
+    rm -f ${DIR2}/$CHECK_FILE;
+    echo "> Removing $RESULT_FILE";
+    rm -f ${DIR2}/$RESULT_FILE;
+    echo "> Removing $STDERR_FILE";
+    rm -f ${DIR2}/$STDERR_FILE;
+  fi
+
+  if [ "$CLEANUP" != "" ]; then
+    echo "> Doing rest of cleanup using (via /bin/sh):"
+    echo ">   $CLEANUP"
+    /bin/sh -c "cd ${DIR1}; $CLEANUP";
+    /bin/sh -c "cd ${DIR2}; $CLEANUP";
+  else
+    echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+  fi
+done
+END_DATE=`date +"%T %D"`;
+echo " "
+echo "> Ldiff_traced $BASENAME from $START_DATE to $END_DATE"
+echo " "
+WARNINGS_ISSUED=0;
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BASENAME"
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   echo "> Done, ${BATCH_NAME} may have failed (see above warnings) for $BASENAME"
+else
+   echo "> Done, ${BATCH_NAME} succeeded for $BASENAME"
+fi
+

@@ -1,0 +1,552 @@
+\section{mia\_\-opti.c File Reference}
+\label{mia__opti_8c}\index{mia_opti.c@{mia\_\-opti.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}mia\_\-internal.h\char`\"{}}\par
+{\tt \#include $<$Lcode/l\_\-disjvreg.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{Mopti\_\-imax\_\-num\_\-iterations}~(4)
+\item 
+\#define \bf{Mopti\_\-omax\_\-num\_\-iterations}~(4)
+\item 
+\#define \bf{MAX\_\-NUM\_\-GLOB\_\-ITERATION}~10
+\item 
+\#define \bf{MAX\_\-RD}~16
+\item 
+\#define \bf{TEST\_\-GLOB\_\-COPY\_\-PROP}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{Mopti\_\-init} ()
+\item 
+static void \bf{Mopti\_\-deinit} ()
+\item 
+static int \bf{M\_\-global\_\-code\_\-optimization} (L\_\-Func $\ast$fn)
+\item 
+static int \bf{M\_\-global\_\-common\_\-subexpression} (L\_\-Cb $\ast$cb\-A, L\_\-Cb $\ast$cb\-B, int move\_\-flags)
+\item 
+static int \bf{M\_\-global\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb\-A, L\_\-Cb $\ast$cb\-B)
+\item 
+static int \bf{M\_\-local\_\-add\_\-regrouping} (L\_\-Cb $\ast$cb)
+\item 
+static int \bf{Mopti\_\-global\_\-dead\_\-code\_\-optimization} (L\_\-Func $\ast$fn)
+\item 
+static int \bf{M\_\-local\_\-redmov\_\-removal} (L\_\-Cb $\ast$cb)
+\item 
+static int \bf{M\_\-local\_\-cmp\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb)
+\item 
+static int \bf{M\_\-local\_\-cmp\_\-rev\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb)
+\item 
+static int \bf{M\_\-global\_\-cmp\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb\-A, L\_\-Cb $\ast$cb\-B)
+\item 
+int \bf{M\_\-local\_\-constant\_\-folding} (L\_\-Cb $\ast$cb)
+\item 
+int \bf{M\_\-local\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb, int use\_\-dem)
+\item 
+int \bf{M\_\-local\_\-rev\_\-copy\_\-propagation} (L\_\-Cb $\ast$cb, int use\_\-dem)
+\item 
+int \bf{M\_\-local\_\-constant\_\-propagation} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{L\_\-read\_\-parm\_\-mopti} (Parm\_\-Parse\_\-Info $\ast$ppi)
+\item 
+void \bf{Mopti\_\-perform\_\-optimizations\_\-tahoe} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Mopti\_\-phase2\_\-optimizations} (L\_\-Func $\ast$fn)
+\item 
+static int \bf{Mopti\_\-redundant\_\-ext\_\-rev\_\-set} (L\_\-Func $\ast$fn, L\_\-Oper $\ast$oper, Set rd\_\-set)
+\item 
+int \bf{Mopti\_\-global\_\-sxt\_\-elimination} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Mopti\_\-debug} (char $\ast$fmt,...)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static int \bf{Mopti\_\-init\_\-performed} = 0
+\item 
+int \bf{Mopti\_\-print\_\-stats} = 0
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-opti} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-common\_\-subs} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-copy\_\-prop} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-const\_\-prop} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-const\_\-fold} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-local\_\-add\_\-regrouping} = 0
+\item 
+static int \bf{Mopti\_\-do\_\-dead\_\-code} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-global\_\-opti} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-global\_\-common\_\-subs} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-global\_\-copy\_\-prop} = 1
+\item 
+static int \bf{Mopti\_\-do\_\-coalescing} = 1
+\item 
+int \bf{Mopti\_\-do\_\-compare\_\-height\_\-reduction} = 0
+\item 
+int \bf{Mopti\_\-constant\_\-preloading} = 0
+\item 
+int \bf{Mopti\_\-shift\_\-add\_\-merge} = 0
+\item 
+int \bf{Mopti\_\-do\_\-epilogue\_\-merge} = 0
+\item 
+int \bf{Mopti2\_\-redundant\_\-memory\_\-ops} = 0
+\item 
+int \bf{Mopti\_\-debug\_\-messages} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mia_opti.c@{mia\_\-opti.c}!MAX_NUM_GLOB_ITERATION@{MAX\_\-NUM\_\-GLOB\_\-ITERATION}}
+\index{MAX_NUM_GLOB_ITERATION@{MAX\_\-NUM\_\-GLOB\_\-ITERATION}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \bf{MAX\_\-NUM\_\-GLOB\_\-ITERATION}~10}\label{mia__opti_8c_7710e11cc3b7e2b41794e3e16b339039}
+
+
+
+
+Definition at line 1306 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-global\_\-dead\_\-code\_\-optimization().\index{mia_opti.c@{mia\_\-opti.c}!MAX_RD@{MAX\_\-RD}}
+\index{MAX_RD@{MAX\_\-RD}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-RD~16}\label{mia__opti_8c_1ae192442d9e050e872356cd095ae18f}
+
+
+
+
+Definition at line 1356 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-global\_\-sxt\_\-elimination().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_imax_num_iterations@{Mopti\_\-imax\_\-num\_\-iterations}}
+\index{Mopti_imax_num_iterations@{Mopti\_\-imax\_\-num\_\-iterations}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Mopti\_\-imax\_\-num\_\-iterations~(4)}\label{mia__opti_8c_995c4a8c06b5e07bb030f4076dfb24e2}
+
+
+
+
+Definition at line 91 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_omax_num_iterations@{Mopti\_\-omax\_\-num\_\-iterations}}
+\index{Mopti_omax_num_iterations@{Mopti\_\-omax\_\-num\_\-iterations}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Mopti\_\-omax\_\-num\_\-iterations~(4)}\label{mia__opti_8c_d3fac62b60f73e33cfe102020c40ea2f}
+
+
+
+
+Definition at line 92 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!TEST_GLOB_COPY_PROP@{TEST\_\-GLOB\_\-COPY\_\-PROP}}
+\index{TEST_GLOB_COPY_PROP@{TEST\_\-GLOB\_\-COPY\_\-PROP}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TEST\_\-GLOB\_\-COPY\_\-PROP}\label{mia__opti_8c_af60ad1a1361c3d327f1125e6f3cd23b}
+
+
+
+
+Referenced by M\_\-global\_\-copy\_\-propagation().
+
+\subsection{Function Documentation}
+\index{mia_opti.c@{mia\_\-opti.c}!L_read_parm_mopti@{L\_\-read\_\-parm\_\-mopti}}
+\index{L_read_parm_mopti@{L\_\-read\_\-parm\_\-mopti}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-mopti (Parm\_\-Parse\_\-Info $\ast$ {\em ppi})}\label{mia__opti_8c_c4127ccba417f74a6dda847e3908e13f}
+
+
+
+
+Definition at line 149 of file mia\_\-opti.c.
+
+References Mopti2\_\-redundant\_\-memory\_\-ops, Mopti\_\-constant\_\-preloading, Mopti\_\-debug\_\-messages, Mopti\_\-do\_\-coalescing, Mopti\_\-do\_\-compare\_\-height\_\-reduction, Mopti\_\-do\_\-dead\_\-code, Mopti\_\-do\_\-epilogue\_\-merge, Mopti\_\-do\_\-global\_\-common\_\-subs, Mopti\_\-do\_\-global\_\-copy\_\-prop, Mopti\_\-do\_\-local\_\-add\_\-regrouping, Mopti\_\-do\_\-local\_\-common\_\-subs, Mopti\_\-do\_\-local\_\-const\_\-fold, Mopti\_\-do\_\-local\_\-const\_\-prop, Mopti\_\-do\_\-local\_\-copy\_\-prop, Mopti\_\-do\_\-local\_\-opti, Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop, Mopti\_\-print\_\-stats, and Mopti\_\-shift\_\-add\_\-merge.\index{mia_opti.c@{mia\_\-opti.c}!M_global_cmp_copy_propagation@{M\_\-global\_\-cmp\_\-copy\_\-propagation}}
+\index{M_global_cmp_copy_propagation@{M\_\-global\_\-cmp\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-global\_\-cmp\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb\-A}, L\_\-Cb $\ast$ {\em cb\-B})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_7b7e8106a32096cc469acedf6fd9cbd3}
+
+
+
+
+Definition at line 1569 of file mia\_\-opti.c.
+
+References L\_\-global\_\-no\_\-defs\_\-between(), L\_\-global\_\-same\_\-def\_\-reachs(), and TAHOE\_\-MAC\_\-ZERO.\index{mia_opti.c@{mia\_\-opti.c}!M_global_code_optimization@{M\_\-global\_\-code\_\-optimization}}
+\index{M_global_code_optimization@{M\_\-global\_\-code\_\-optimization}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-global\_\-code\_\-optimization (L\_\-Func $\ast$ {\em fn})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_efb384e57ee7a4b575333ba00dcc9af4}
+
+
+
+
+Definition at line 522 of file mia\_\-opti.c.
+
+References L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-FLT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-INT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-LABEL\_\-CONSTANT, M\_\-global\_\-common\_\-subexpression(), M\_\-global\_\-copy\_\-propagation(), Mopti\_\-do\_\-global\_\-common\_\-subs, Mopti\_\-do\_\-global\_\-copy\_\-prop, and Mopti\_\-print\_\-stats.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!M_global_common_subexpression@{M\_\-global\_\-common\_\-subexpression}}
+\index{M_global_common_subexpression@{M\_\-global\_\-common\_\-subexpression}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-global\_\-common\_\-subexpression (L\_\-Cb $\ast$ {\em cb\-A}, L\_\-Cb $\ast$ {\em cb\-B}, int {\em move\_\-flags})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_120aab48a0f35d564a275f386ee97ff7}
+
+
+
+
+Definition at line 965 of file mia\_\-opti.c.
+
+References L\_\-all\_\-dest\_\-operand\_\-global\_\-no\_\-defs\_\-between(), L\_\-all\_\-src\_\-operand\_\-global\_\-same\_\-def\_\-reachs(), L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-FLT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-INT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-LABEL\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-STRING\_\-CONSTANT, L\_\-compatible\_\-opcodes(), L\_\-convert\_\-to\_\-move(), L\_\-global\_\-no\_\-danger(), L\_\-move\_\-from\_\-ctype(), Lopti\_\-inter\_\-region\_\-global\_\-common\_\-sub\_\-elim\_\-wgt, MOD, and TAHOEop\_\-MOV\_\-GR.
+
+Referenced by M\_\-global\_\-code\_\-optimization().\index{mia_opti.c@{mia\_\-opti.c}!M_global_copy_propagation@{M\_\-global\_\-copy\_\-propagation}}
+\index{M_global_copy_propagation@{M\_\-global\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-global\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb\-A}, L\_\-Cb $\ast$ {\em cb\-B})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_3fb0912ca5bfeb41eb69edd4e45911b9}
+
+
+
+
+Definition at line 1168 of file mia\_\-opti.c.
+
+References L\_\-global\_\-no\_\-danger(), L\_\-global\_\-no\_\-danger\_\-to\_\-boundary(), L\_\-global\_\-no\_\-defs\_\-between(), L\_\-global\_\-same\_\-def\_\-reachs(), Lopti\_\-inter\_\-region\_\-global\_\-copy\_\-prop\_\-wgt, TAHOEop\_\-MOVL, and TEST\_\-GLOB\_\-COPY\_\-PROP.
+
+Referenced by M\_\-global\_\-code\_\-optimization().\index{mia_opti.c@{mia\_\-opti.c}!M_local_add_regrouping@{M\_\-local\_\-add\_\-regrouping}}
+\index{M_local_add_regrouping@{M\_\-local\_\-add\_\-regrouping}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-local\_\-add\_\-regrouping (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_6f2dfadb3ed374c1b6a8569bcbf34e28}
+
+
+
+
+Definition at line 581 of file mia\_\-opti.c.
+
+References L\_\-no\_\-other\_\-use\_\-in\_\-cb\_\-after().
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!M_local_cmp_copy_propagation@{M\_\-local\_\-cmp\_\-copy\_\-propagation}}
+\index{M_local_cmp_copy_propagation@{M\_\-local\_\-cmp\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-local\_\-cmp\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_e06573b2db767a2f5ddc594506a1e09a}
+
+
+
+
+Definition at line 1624 of file mia\_\-opti.c.
+
+References TAHOE\_\-MAC\_\-ZERO.\index{mia_opti.c@{mia\_\-opti.c}!M_local_cmp_rev_copy_propagation@{M\_\-local\_\-cmp\_\-rev\_\-copy\_\-propagation}}
+\index{M_local_cmp_rev_copy_propagation@{M\_\-local\_\-cmp\_\-rev\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-local\_\-cmp\_\-rev\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_e8bc412e2658f0d8d627b02e5a720f4c}
+
+
+
+
+Definition at line 1680 of file mia\_\-opti.c.
+
+References L\_\-can\_\-change\_\-all\_\-later\_\-uses\_\-with(), L\_\-not\_\-live\_\-at\_\-cb\_\-end(), and TAHOE\_\-MAC\_\-ZERO.\index{mia_opti.c@{mia\_\-opti.c}!M_local_constant_folding@{M\_\-local\_\-constant\_\-folding}}
+\index{M_local_constant_folding@{M\_\-local\_\-constant\_\-folding}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-local\_\-constant\_\-folding (L\_\-Cb $\ast$ {\em cb})}\label{mia__opti_8c_2f87ad062e11eb5db1b41aebeeb33243}
+
+
+
+
+Definition at line 1919 of file mia\_\-opti.c.
+
+References SIMM\_\-14, and TAHOEop\_\-ADDS.
+
+Referenced by Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!M_local_constant_propagation@{M\_\-local\_\-constant\_\-propagation}}
+\index{M_local_constant_propagation@{M\_\-local\_\-constant\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-local\_\-constant\_\-propagation (L\_\-Cb $\ast$ {\em cb})}\label{mia__opti_8c_3c620088a0f7a670d6e77a6563761dc4}
+
+
+
+
+Definition at line 2352 of file mia\_\-opti.c.
+
+References ERR, and M\_\-num\_\-oper\_\-required\_\-for().
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!M_local_copy_propagation@{M\_\-local\_\-copy\_\-propagation}}
+\index{M_local_copy_propagation@{M\_\-local\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-local\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb}, int {\em use\_\-dem})}\label{mia__opti_8c_c1d1622c65471a90dd6bc5177f3b781c}
+
+
+
+
+Definition at line 2000 of file mia\_\-opti.c.
+
+References L\_\-extension\_\-compatible\_\-ctype(), L\_\-redundant\_\-extension\_\-fwd(), and M\_\-subroutine\_\-call().
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!M_local_redmov_removal@{M\_\-local\_\-redmov\_\-removal}}
+\index{M_local_redmov_removal@{M\_\-local\_\-redmov\_\-removal}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-local\_\-redmov\_\-removal (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_ed2068a7c6bbc404d8f5efc063bac047}
+
+
+
+
+Definition at line 1138 of file mia\_\-opti.c.
+
+References TAHOEop\_\-MOVL.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!M_local_rev_copy_propagation@{M\_\-local\_\-rev\_\-copy\_\-propagation}}
+\index{M_local_rev_copy_propagation@{M\_\-local\_\-rev\_\-copy\_\-propagation}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-local\_\-rev\_\-copy\_\-propagation (L\_\-Cb $\ast$ {\em cb}, int {\em use\_\-dem})}\label{mia__opti_8c_fdb6e98593a83266abde366ac047f0a4}
+
+
+
+
+Definition at line 2130 of file mia\_\-opti.c.
+
+References L\_\-can\_\-change\_\-all\_\-later\_\-uses\_\-with(), L\_\-can\_\-change\_\-all\_\-uses\_\-between(), L\_\-not\_\-live\_\-at\_\-cb\_\-end(), L\_\-redundant\_\-extension\_\-rev(), and L\_\-single\_\-use\_\-of().
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_debug@{Mopti\_\-debug}}
+\index{Mopti_debug@{Mopti\_\-debug}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mopti\_\-debug (char $\ast$ {\em fmt},  {\em ...})}\label{mia__opti_8c_ca52ba4b3401fe69d84481a0a4e0cb94}
+
+
+
+
+Definition at line 2428 of file mia\_\-opti.c.\index{mia_opti.c@{mia\_\-opti.c}!Mopti_deinit@{Mopti\_\-deinit}}
+\index{Mopti_deinit@{Mopti\_\-deinit}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Mopti\_\-deinit ()\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_df86bc56421172be873863d24f1c2c81}
+
+
+
+
+Definition at line 195 of file mia\_\-opti.c.
+
+References L\_\-alloc\_\-danger\_\-ext, MOD, and Mopti\_\-init\_\-performed.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_global_dead_code_optimization@{Mopti\_\-global\_\-dead\_\-code\_\-optimization}}
+\index{Mopti_global_dead_code_optimization@{Mopti\_\-global\_\-dead\_\-code\_\-optimization}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mopti\_\-global\_\-dead\_\-code\_\-optimization (L\_\-Func $\ast$ {\em fn})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_565d7b26894474523f285a8b2769081b}
+
+
+
+
+Definition at line 1309 of file mia\_\-opti.c.
+
+References L\_\-global\_\-dead\_\-code\_\-removal(), Lopti\_\-cnt\_\-global\_\-dead\_\-code\_\-rem, Lopti\_\-cnt\_\-global\_\-opti, Lopti\_\-debug\_\-global\_\-opti, Lopti\_\-do\_\-global\_\-dead\_\-code\_\-rem, Lopti\_\-do\_\-global\_\-opti, and MAX\_\-NUM\_\-GLOB\_\-ITERATION.\index{mia_opti.c@{mia\_\-opti.c}!Mopti_global_sxt_elimination@{Mopti\_\-global\_\-sxt\_\-elimination}}
+\index{Mopti_global_sxt_elimination@{Mopti\_\-global\_\-sxt\_\-elimination}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mopti\_\-global\_\-sxt\_\-elimination (L\_\-Func $\ast$ {\em fn})}\label{mia__opti_8c_258d13a44eb860f3f27738a61d97f914}
+
+
+
+
+Definition at line 1384 of file mia\_\-opti.c.
+
+References LT\_\-is\_\-R0\_\-operand, MAX\_\-RD, Mopti\_\-redundant\_\-ext\_\-rev\_\-set(), TAHOEop\_\-LD1, TAHOEop\_\-LD2, TAHOEop\_\-LD4, TAHOEop\_\-SXT1, TAHOEop\_\-SXT2, and TAHOEop\_\-SXT4.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_init@{Mopti\_\-init}}
+\index{Mopti_init@{Mopti\_\-init}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Mopti\_\-init ()\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_fd207341cfc48b1d9e2d578bbcd21f17}
+
+
+
+
+Definition at line 184 of file mia\_\-opti.c.
+
+References L\_\-alloc\_\-danger\_\-ext, MOD, and Mopti\_\-init\_\-performed.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_perform_optimizations_tahoe@{Mopti\_\-perform\_\-optimizations\_\-tahoe}}
+\index{Mopti_perform_optimizations_tahoe@{Mopti\_\-perform\_\-optimizations\_\-tahoe}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mopti\_\-perform\_\-optimizations\_\-tahoe (L\_\-Func $\ast$ {\em fn})}\label{mia__opti_8c_b608d83646fb9d2a6cb3198df341cb05}
+
+
+
+
+Definition at line 204 of file mia\_\-opti.c.
+
+References L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-FLT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-INT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-LABEL\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-STRING\_\-CONSTANT, L\_\-compute\_\-danger\_\-info(), L\_\-delete\_\-all\_\-danger\_\-ext(), L\_\-local\_\-common\_\-subexpression(), L\_\-local\_\-dead\_\-code\_\-removal(), L\_\-rename\_\-coalesce\_\-disjoint\_\-virtual\_\-registers(), M\_\-global\_\-code\_\-optimization(), M\_\-local\_\-add\_\-regrouping(), M\_\-local\_\-constant\_\-propagation(), M\_\-local\_\-copy\_\-propagation(), M\_\-local\_\-redmov\_\-removal(), M\_\-local\_\-rev\_\-copy\_\-propagation(), MOD, Mopti\_\-compare\_\-height\_\-reduction(), Mopti\_\-deinit(), Mopti\_\-do\_\-coalescing, Mopti\_\-do\_\-compare\_\-height\_\-reduction, Mopti\_\-do\_\-global\_\-opti, Mopti\_\-do\_\-local\_\-add\_\-regrouping, Mopti\_\-do\_\-local\_\-common\_\-subs, Mopti\_\-do\_\-local\_\-const\_\-prop, Mopti\_\-do\_\-local\_\-copy\_\-prop, Mopti\_\-do\_\-local\_\-opti, Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop, Mopti\_\-global\_\-sxt\_\-elimination(), Mopti\_\-imax\_\-num\_\-iterations, Mopti\_\-init(), Mopti\_\-init\_\-performed, Mopti\_\-loop\_\-compare\_\-height\_\-reduction(), Mopti\_\-omax\_\-num\_\-iterations, and Mopti\_\-print\_\-stats.\index{mia_opti.c@{mia\_\-opti.c}!Mopti_phase2_optimizations@{Mopti\_\-phase2\_\-optimizations}}
+\index{Mopti_phase2_optimizations@{Mopti\_\-phase2\_\-optimizations}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mopti\_\-phase2\_\-optimizations (L\_\-Func $\ast$ {\em fn})}\label{mia__opti_8c_858bb385579a19e2bd869f96a17e52ee}
+
+
+
+
+Definition at line 395 of file mia\_\-opti.c.
+
+References L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-FLT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-INT\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-LABEL\_\-CONSTANT, L\_\-COMMON\_\-SUB\_\-MOVES\_\-WITH\_\-STRING\_\-CONSTANT, L\_\-compute\_\-danger\_\-info(), L\_\-delete\_\-all\_\-danger\_\-ext(), L\_\-local\_\-common\_\-subexpression(), M\_\-global\_\-code\_\-optimization(), M\_\-local\_\-constant\_\-folding(), M\_\-local\_\-constant\_\-propagation(), M\_\-local\_\-copy\_\-propagation(), M\_\-local\_\-redmov\_\-removal(), M\_\-local\_\-rev\_\-copy\_\-propagation(), MOD, Mopti\_\-debug\_\-messages, Mopti\_\-deinit(), Mopti\_\-do\_\-global\_\-opti, Mopti\_\-do\_\-local\_\-common\_\-subs, Mopti\_\-do\_\-local\_\-const\_\-fold, Mopti\_\-do\_\-local\_\-const\_\-prop, Mopti\_\-do\_\-local\_\-copy\_\-prop, Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop, Mopti\_\-imax\_\-num\_\-iterations, Mopti\_\-init(), Mopti\_\-init\_\-performed, Mopti\_\-omax\_\-num\_\-iterations, and Mopti\_\-print\_\-stats.\index{mia_opti.c@{mia\_\-opti.c}!Mopti_redundant_ext_rev_set@{Mopti\_\-redundant\_\-ext\_\-rev\_\-set}}
+\index{Mopti_redundant_ext_rev_set@{Mopti\_\-redundant\_\-ext\_\-rev\_\-set}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Mopti\_\-redundant\_\-ext\_\-rev\_\-set (L\_\-Func $\ast$ {\em fn}, L\_\-Oper $\ast$ {\em oper}, Set {\em rd\_\-set})\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_a3796c3a20e6502bbe4e88682fc485b6}
+
+
+
+
+Definition at line 1360 of file mia\_\-opti.c.
+
+References L\_\-redundant\_\-extension\_\-rev().
+
+Referenced by Mopti\_\-global\_\-sxt\_\-elimination().
+
+\subsection{Variable Documentation}
+\index{mia_opti.c@{mia\_\-opti.c}!Mopti2_redundant_memory_ops@{Mopti2\_\-redundant\_\-memory\_\-ops}}
+\index{Mopti2_redundant_memory_ops@{Mopti2\_\-redundant\_\-memory\_\-ops}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti2\_\-redundant\_\-memory\_\-ops} = 0}\label{mia__opti_8c_3080904fd0567421bcd0c45db18b2aab}
+
+
+
+
+Definition at line 145 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_constant_preloading@{Mopti\_\-constant\_\-preloading}}
+\index{Mopti_constant_preloading@{Mopti\_\-constant\_\-preloading}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-constant\_\-preloading} = 0}\label{mia__opti_8c_833cedb394552394eaa0a30f872527ea}
+
+
+
+
+Definition at line 141 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_debug_messages@{Mopti\_\-debug\_\-messages}}
+\index{Mopti_debug_messages@{Mopti\_\-debug\_\-messages}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-debug\_\-messages} = 0}\label{mia__opti_8c_a3765515b3e09be198267ef29d84be58}
+
+
+
+
+Definition at line 146 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_coalescing@{Mopti\_\-do\_\-coalescing}}
+\index{Mopti_do_coalescing@{Mopti\_\-do\_\-coalescing}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-coalescing} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_b33ccb053f8564ebe14188666d0b8400}
+
+
+
+
+Definition at line 138 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_compare_height_reduction@{Mopti\_\-do\_\-compare\_\-height\_\-reduction}}
+\index{Mopti_do_compare_height_reduction@{Mopti\_\-do\_\-compare\_\-height\_\-reduction}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-compare\_\-height\_\-reduction} = 0}\label{mia__opti_8c_ec0d753452d49056ce88896a11e5c07a}
+
+
+
+
+Definition at line 140 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_dead_code@{Mopti\_\-do\_\-dead\_\-code}}
+\index{Mopti_do_dead_code@{Mopti\_\-do\_\-dead\_\-code}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-dead\_\-code} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_319796a6594f619cc0efe25feb90c54d}
+
+
+
+
+Definition at line 131 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_epilogue_merge@{Mopti\_\-do\_\-epilogue\_\-merge}}
+\index{Mopti_do_epilogue_merge@{Mopti\_\-do\_\-epilogue\_\-merge}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-epilogue\_\-merge} = 0}\label{mia__opti_8c_909d1a63e2b2648bd22f598ab4c7db89}
+
+
+
+
+Definition at line 143 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_global_common_subs@{Mopti\_\-do\_\-global\_\-common\_\-subs}}
+\index{Mopti_do_global_common_subs@{Mopti\_\-do\_\-global\_\-common\_\-subs}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-global\_\-common\_\-subs} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_d3250bc71ba3b4303a01b77d4e319b76}
+
+
+
+
+Definition at line 135 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and M\_\-global\_\-code\_\-optimization().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_global_copy_prop@{Mopti\_\-do\_\-global\_\-copy\_\-prop}}
+\index{Mopti_do_global_copy_prop@{Mopti\_\-do\_\-global\_\-copy\_\-prop}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-global\_\-copy\_\-prop} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_7e79cada54396ebd2f6ad61b82e592bd}
+
+
+
+
+Definition at line 136 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and M\_\-global\_\-code\_\-optimization().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_global_opti@{Mopti\_\-do\_\-global\_\-opti}}
+\index{Mopti_do_global_opti@{Mopti\_\-do\_\-global\_\-opti}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-global\_\-opti} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_f02ec830d5166dbd8655a1434360c610}
+
+
+
+
+Definition at line 133 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_add_regrouping@{Mopti\_\-do\_\-local\_\-add\_\-regrouping}}
+\index{Mopti_do_local_add_regrouping@{Mopti\_\-do\_\-local\_\-add\_\-regrouping}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-add\_\-regrouping} = 0\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_728c5c38380b2b2061bb6c6a2ce8cce0}
+
+
+
+
+Definition at line 130 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_common_subs@{Mopti\_\-do\_\-local\_\-common\_\-subs}}
+\index{Mopti_do_local_common_subs@{Mopti\_\-do\_\-local\_\-common\_\-subs}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-common\_\-subs} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_4234ca7ed3370ad04a9d1344b1dd986a}
+
+
+
+
+Definition at line 125 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_const_fold@{Mopti\_\-do\_\-local\_\-const\_\-fold}}
+\index{Mopti_do_local_const_fold@{Mopti\_\-do\_\-local\_\-const\_\-fold}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-const\_\-fold} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_5087c7715b6125da5a7ddba1849771b8}
+
+
+
+
+Definition at line 129 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_const_prop@{Mopti\_\-do\_\-local\_\-const\_\-prop}}
+\index{Mopti_do_local_const_prop@{Mopti\_\-do\_\-local\_\-const\_\-prop}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-const\_\-prop} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_155dcb4cd0276c909547111069daa448}
+
+
+
+
+Definition at line 128 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_copy_prop@{Mopti\_\-do\_\-local\_\-copy\_\-prop}}
+\index{Mopti_do_local_copy_prop@{Mopti\_\-do\_\-local\_\-copy\_\-prop}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-copy\_\-prop} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_dab9fc8b7eef6f82391c1a1bbba0af86}
+
+
+
+
+Definition at line 126 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_opti@{Mopti\_\-do\_\-local\_\-opti}}
+\index{Mopti_do_local_opti@{Mopti\_\-do\_\-local\_\-opti}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-opti} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_ecc68a11b0c65b24fdb4f45c54c07c56}
+
+
+
+
+Definition at line 123 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), and Mopti\_\-perform\_\-optimizations\_\-tahoe().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_do_local_rev_copy_prop@{Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop}}
+\index{Mopti_do_local_rev_copy_prop@{Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-do\_\-local\_\-rev\_\-copy\_\-prop} = 1\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_b12d2173535cfb38b1e6331b4dece929}
+
+
+
+
+Definition at line 127 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_init_performed@{Mopti\_\-init\_\-performed}}
+\index{Mopti_init_performed@{Mopti\_\-init\_\-performed}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-init\_\-performed} = 0\hspace{0.3cm}{\tt  [static]}}\label{mia__opti_8c_381daf2a188a9e511257baf6324a6c41}
+
+
+
+
+Definition at line 116 of file mia\_\-opti.c.
+
+Referenced by Mopti\_\-deinit(), Mopti\_\-init(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_print_stats@{Mopti\_\-print\_\-stats}}
+\index{Mopti_print_stats@{Mopti\_\-print\_\-stats}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-print\_\-stats} = 0}\label{mia__opti_8c_8b2b3e7d98bd625d28e844932802ef08}
+
+
+
+
+Definition at line 121 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti(), M\_\-global\_\-code\_\-optimization(), Mopti\_\-perform\_\-optimizations\_\-tahoe(), and Mopti\_\-phase2\_\-optimizations().\index{mia_opti.c@{mia\_\-opti.c}!Mopti_shift_add_merge@{Mopti\_\-shift\_\-add\_\-merge}}
+\index{Mopti_shift_add_merge@{Mopti\_\-shift\_\-add\_\-merge}!mia_opti.c@{mia\_\-opti.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Mopti\_\-shift\_\-add\_\-merge} = 0}\label{mia__opti_8c_3b37cc605784201bd63a25c531aa19c7}
+
+
+
+
+Definition at line 142 of file mia\_\-opti.c.
+
+Referenced by L\_\-read\_\-parm\_\-mopti().

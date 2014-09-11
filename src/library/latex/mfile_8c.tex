@@ -1,0 +1,186 @@
+\section{mfile.c File Reference}
+\label{mfile_8c}\index{mfile.c@{mfile.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include \char`\"{}mfile.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{print\_\-buf\_\-with\_\-arrow} (FILE $\ast$out, char $\ast$buf, int pos)
+\item 
+void \bf{Merror} (\bf{Mptr} $\ast$mptr, char $\ast$fmt,...)
+\item 
+\bf{Mfile} $\ast$ \bf{create\_\-Mfile} (FILE $\ast$in, char $\ast$input\_\-file\_\-name, char $\ast$desc)
+\item 
+void \bf{free\_\-Mfile} (\bf{Mfile} $\ast$mfile)
+\item 
+\bf{Mptr} $\ast$ \bf{create\_\-Mptr} (\bf{Mfile} $\ast$mfile)
+\item 
+\bf{Mptr} $\ast$ \bf{copy\_\-Mptr} (\bf{Mptr} $\ast$orig\_\-mptr)
+\item 
+void \bf{move\_\-Mptr} (\bf{Mptr} $\ast$old\_\-mptr, \bf{Mptr} $\ast$new\_\-mptr)
+\item 
+void \bf{free\_\-Mptr} (\bf{Mptr} $\ast$mptr)
+\item 
+int \bf{Mgetc} (\bf{Mptr} $\ast$mptr)
+\item 
+int \bf{Mptr\_\-pos} (\bf{Mptr} $\ast$mptr)
+\item 
+int \bf{Mpeekc} (\bf{Mptr} $\ast$mptr)
+\item 
+void \bf{Mbackupc} (\bf{Mptr} $\ast$mptr)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Mfile\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Mline\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Mptr\_\-pool} = NULL
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{mfile.c@{mfile.c}!copy_Mptr@{copy\_\-Mptr}}
+\index{copy_Mptr@{copy\_\-Mptr}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mptr}$\ast$ copy\_\-Mptr (\bf{Mptr} $\ast$ {\em orig\_\-mptr})}\label{mfile_8c_e4de11aabd9bbe6c94fbd767a635472e}
+
+
+
+
+Definition at line 330 of file mfile.c.
+
+References L\_\-alloc(), Mptr::mfile, Mptr::mline, Mptr\_\-pool, and Mptr::pos.\index{mfile.c@{mfile.c}!create_Mfile@{create\_\-Mfile}}
+\index{create_Mfile@{create\_\-Mfile}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mfile}$\ast$ create\_\-Mfile (FILE $\ast$ {\em in}, char $\ast$ {\em input\_\-file\_\-name}, char $\ast$ {\em desc})}\label{mfile_8c_a2e916b84e74841612e659290c2b2ec2}
+
+
+
+
+Definition at line 203 of file mfile.c.
+
+References addc\_\-to\_\-Mbuf(), Mline::buf, clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), create\_\-Mbuf(), Mfile::desc, free\_\-Mbuf(), Mfile::head, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), Mline::len, len\_\-of\_\-Mbuf(), Mfile::line\_\-count, Mline::line\_\-no, Mline::mfile, Mfile\_\-pool, Mline\_\-pool, Mfile::name, Mline::next, NULL, Mline::prev, and Mfile::tail.\index{mfile.c@{mfile.c}!create_Mptr@{create\_\-Mptr}}
+\index{create_Mptr@{create\_\-Mptr}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mptr}$\ast$ create\_\-Mptr (\bf{Mfile} $\ast$ {\em mfile})}\label{mfile_8c_1e4ac468a7c460378f6752e97b392b25}
+
+
+
+
+Definition at line 310 of file mfile.c.
+
+References Mfile::head, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), Mptr::mfile, Mptr::mline, Mptr\_\-pool, NULL, and Mptr::pos.\index{mfile.c@{mfile.c}!free_Mfile@{free\_\-Mfile}}
+\index{free_Mfile@{free\_\-Mfile}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Mfile (\bf{Mfile} $\ast$ {\em mfile})}\label{mfile_8c_7da12f4f5725e6715e26a4d50211d759}
+
+
+
+
+Definition at line 287 of file mfile.c.
+
+References Mline::buf, Mfile::desc, Mfile::head, L\_\-free(), Mfile\_\-pool, Mline\_\-pool, Mfile::name, Mline::next, and NULL.\index{mfile.c@{mfile.c}!free_Mptr@{free\_\-Mptr}}
+\index{free_Mptr@{free\_\-Mptr}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Mptr (\bf{Mptr} $\ast$ {\em mptr})}\label{mfile_8c_68642c4e139f1f85fc082dea0fb57369}
+
+
+
+
+Definition at line 355 of file mfile.c.
+
+References L\_\-free(), and Mptr\_\-pool.\index{mfile.c@{mfile.c}!Mbackupc@{Mbackupc}}
+\index{Mbackupc@{Mbackupc}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mbackupc (\bf{Mptr} $\ast$ {\em mptr})}\label{mfile_8c_464243e3327e775445c8c26552489906}
+
+
+
+
+Definition at line 410 of file mfile.c.
+
+References I\_\-punt(), Mline::len, Mptr::mfile, Mptr::mline, NULL, Mptr::pos, Mline::prev, and Mfile::tail.\index{mfile.c@{mfile.c}!Merror@{Merror}}
+\index{Merror@{Merror}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Merror (\bf{Mptr} $\ast$ {\em mptr}, char $\ast$ {\em fmt},  {\em ...})}\label{mfile_8c_a088b3c38141dc63cd443ac3a5ffc324}
+
+
+
+
+Definition at line 153 of file mfile.c.
+
+References Mline::buf, Mfile::desc, Mline::line\_\-no, Mptr::mfile, Mptr::mline, Mfile::name, NULL, Mptr::pos, and print\_\-buf\_\-with\_\-arrow().\index{mfile.c@{mfile.c}!Mgetc@{Mgetc}}
+\index{Mgetc@{Mgetc}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mgetc (\bf{Mptr} $\ast$ {\em mptr})}\label{mfile_8c_c4664739cce4f26f42fdd71d8cc13119}
+
+
+
+
+Definition at line 363 of file mfile.c.
+
+References Mline::buf, Mline::len, Mptr::mline, Mline::next, NULL, and Mptr::pos.\index{mfile.c@{mfile.c}!move_Mptr@{move\_\-Mptr}}
+\index{move_Mptr@{move\_\-Mptr}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void move\_\-Mptr (\bf{Mptr} $\ast$ {\em old\_\-mptr}, \bf{Mptr} $\ast$ {\em new\_\-mptr})}\label{mfile_8c_081956979b1e3c7cf53099a1c0817e08}
+
+
+
+
+Definition at line 346 of file mfile.c.
+
+References Mptr::mfile, Mptr::mline, and Mptr::pos.\index{mfile.c@{mfile.c}!Mpeekc@{Mpeekc}}
+\index{Mpeekc@{Mpeekc}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mpeekc (\bf{Mptr} $\ast$ {\em mptr})}\label{mfile_8c_74cd5a01b920e491f3ce448ad36f0f24}
+
+
+
+
+Definition at line 394 of file mfile.c.
+
+References Mline::buf, Mptr::mline, NULL, and Mptr::pos.\index{mfile.c@{mfile.c}!Mptr_pos@{Mptr\_\-pos}}
+\index{Mptr_pos@{Mptr\_\-pos}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mptr\_\-pos (\bf{Mptr} $\ast$ {\em mptr})}\label{mfile_8c_e28a4a586b7c05dfa562605ba3d9e45c}
+
+
+
+
+Definition at line 387 of file mfile.c.
+
+References Mptr::pos.\index{mfile.c@{mfile.c}!print_buf_with_arrow@{print\_\-buf\_\-with\_\-arrow}}
+\index{print_buf_with_arrow@{print\_\-buf\_\-with\_\-arrow}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-buf\_\-with\_\-arrow (FILE $\ast$ {\em out}, char $\ast$ {\em buf}, int {\em pos})}\label{mfile_8c_e37a5305948b839a902a0e8fc79b9dce}
+
+
+
+
+Definition at line 78 of file mfile.c.
+
+Referenced by Merror().
+
+\subsection{Variable Documentation}
+\index{mfile.c@{mfile.c}!Mfile_pool@{Mfile\_\-pool}}
+\index{Mfile_pool@{Mfile\_\-pool}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Mfile\_\-pool} = NULL}\label{mfile_8c_34fe8c10585e8ec69a209e452195fa80}
+
+
+
+
+Definition at line 72 of file mfile.c.
+
+Referenced by create\_\-Mfile(), and free\_\-Mfile().\index{mfile.c@{mfile.c}!Mline_pool@{Mline\_\-pool}}
+\index{Mline_pool@{Mline\_\-pool}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Mline\_\-pool} = NULL}\label{mfile_8c_3af5625a492421cf10b0f3788ea61b0c}
+
+
+
+
+Definition at line 73 of file mfile.c.
+
+Referenced by create\_\-Mfile(), and free\_\-Mfile().\index{mfile.c@{mfile.c}!Mptr_pool@{Mptr\_\-pool}}
+\index{Mptr_pool@{Mptr\_\-pool}!mfile.c@{mfile.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Mptr\_\-pool} = NULL}\label{mfile_8c_1516aa853d883bc45fa7834d030050f5}
+
+
+
+
+Definition at line 74 of file mfile.c.
+
+Referenced by copy\_\-Mptr(), create\_\-Mptr(), and free\_\-Mptr().

@@ -1,0 +1,1954 @@
+\section{lmdes2\_\-customizer.c File Reference}
+\label{lmdes2__customizer_8c}\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$strings.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/dynamic\_\-symbol.h$>$}\par
+{\tt \#include $<$library/heap.h$>$}\par
+{\tt \#include $<$stdarg.h$>$}\par
+{\tt \#include $<$time.h$>$}\par
+{\tt \#include $<$sys/time.h$>$}\par
+{\tt \#include $<$library/md.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Pointer\_\-Mapping}
+\item 
+struct \bf{Resource\_\-Info}
+\item 
+struct \bf{Pair\_\-Node}
+\item 
+struct \bf{ENTRY\_\-Contents\_\-Table}
+\item 
+struct \bf{ENTRY\_\-Contents\_\-Node}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{SLOT\_\-RESOURCE}~0x00000001
+\item 
+\#define \bf{DEBUG\_\-OPTI}~0
+\item 
+\#define \bf{VERBOSE\_\-OPTI}~0
+\item 
+\#define \bf{VERBOSE\_\-STATS}~0
+\item 
+\#define \bf{MAX\_\-IDENT\_\-LEN}~(100+1)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{STRING\_\-Symbol\_\-Table} $\ast$ \bf{read\_\-header\_\-file} (char $\ast$file\_\-name, int print\_\-warnings)
+\item 
+void \bf{customize\_\-md} (\bf{MD} $\ast$md)
+\item 
+int \bf{eliminate\_\-redundant\_\-new\_\-entries\_\-only} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+int \bf{CU\_\-redundant\_\-entries} (\bf{MD\_\-Entry} $\ast$entry1, \bf{MD\_\-Entry} $\ast$entry2, char $\ast$ignore\_\-field)
+\item 
+void \bf{print\_\-generating\_\-set} (FILE $\ast$out, \bf{INT\_\-Symbol\_\-Table} $\ast$generating\_\-set, \bf{MD\_\-Entry} $\ast$$\ast$unit\_\-array, int committed)
+\item 
+void \bf{commit\_\-usage} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+void \bf{print\_\-table\_\-trees} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+static void \bf{C\_\-punt} (\bf{MD} $\ast$md, char $\ast$fmt,...)
+\item 
+void \bf{print\_\-time\_\-stamp} (FILE $\ast$out)
+\item 
+void \bf{print\_\-usage} (char $\ast$fmt,...)
+\item 
+void \bf{read\_\-command\_\-line\_\-parameters} (int argc, char $\ast$$\ast$arg\_\-ptr)
+\item 
+int \bf{main} (int argc, char $\ast$$\ast$argv)
+\item 
+void \bf{read\_\-header\_\-tables} (\bf{MD} $\ast$md)
+\item 
+int \bf{find\_\-header\_\-value} (\bf{MD} $\ast$md, char $\ast$\bf{name}, int $\ast$value)
+\item 
+void \bf{annotate\_\-header\_\-values} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name, char $\ast$prefix, int required)
+\item 
+void \bf{annotate\_\-hash} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+void \bf{annotate\_\-latency\_\-class} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$src\_\-field\_\-name, char $\ast$dest\_\-field\_\-name)
+\item 
+void \bf{convert\_\-to\_\-bit\_\-representation} (\bf{MD} $\ast$md, char $\ast$src\_\-section\_\-name, char $\ast$src\_\-field\_\-name, char $\ast$value\_\-section\_\-name, char $\ast$value\_\-field\_\-name, char $\ast$dest\_\-field\_\-name)
+\item 
+void \bf{find\_\-children} (\bf{INT\_\-Symbol\_\-Table} $\ast$child\_\-table, \bf{MD\_\-Entry} $\ast$\bf{entry}, \bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+void \bf{add\_\-all\_\-children\_\-to\_\-list} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name)
+\item 
+void \bf{convert\_\-to\_\-int\_\-list} (\bf{MD} $\ast$md, char $\ast$src\_\-section\_\-name, char $\ast$src\_\-field\_\-name, char $\ast$value\_\-section\_\-name, char $\ast$value\_\-field\_\-name, char $\ast$dest\_\-field\_\-name)
+\item 
+void \bf{convert\_\-to\_\-int\_\-list\_\-all\_\-targets} (\bf{MD} $\ast$md, char $\ast$src\_\-section\_\-name, char $\ast$src\_\-field\_\-name, char $\ast$value\_\-field\_\-name, char $\ast$dest\_\-field\_\-name)
+\item 
+void \bf{check\_\-int\_\-bounds} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name, int lower\_\-bound, int upper\_\-bound)
+\item 
+void \bf{check\_\-proc\_\-opcs} (\bf{MD} $\ast$md)
+\item 
+void \bf{check\_\-table\_\-option\_\-count} (\bf{MD} $\ast$md)
+\item 
+void \bf{check\_\-bidirectional\_\-links} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name)
+\item 
+\bf{MD\_\-Section} $\ast$ \bf{CU\_\-find\_\-section} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+\bf{MD\_\-Field\_\-Decl} $\ast$ \bf{CU\_\-find\_\-field\_\-decl} (\bf{MD\_\-Section} $\ast$section, char $\ast$field\_\-name)
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{CU\_\-find\_\-field} (\bf{MD\_\-Entry} $\ast$\bf{entry}, \bf{MD\_\-Field\_\-Decl} $\ast$field\_\-decl)
+\item 
+\bf{MD\_\-Field} $\ast$ \bf{CU\_\-find\_\-field\_\-by\_\-name} (\bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$field\_\-name)
+\item 
+void \bf{CU\_\-get\_\-unique\_\-name} (\bf{MD} $\ast$md, \bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$base\_\-name, char $\ast$new\_\-name)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{CU\_\-dup\_\-entry} (\bf{MD\_\-Entry} $\ast$orig\_\-entry)
+\item 
+void \bf{CU\_\-rename\_\-entry} (\bf{MD\_\-Entry} $\ast$\bf{entry}, char $\ast$new\_\-name)
+\item 
+void \bf{CU\_\-add\_\-link\_\-at} (\bf{MD\_\-Field} $\ast$field, int at\_\-index, \bf{MD\_\-Entry} $\ast$new\_\-link)
+\item 
+void \bf{CU\_\-delete\_\-link\_\-at} (\bf{MD\_\-Field} $\ast$field, int at\_\-index)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{CU\_\-dup\_\-alt} (\bf{MD\_\-Entry} $\ast$orig\_\-alt)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{CU\_\-dup\_\-res\_\-table} (\bf{MD\_\-Entry} $\ast$orig\_\-res\_\-table)
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{CU\_\-dup\_\-resource\_\-usage} (\bf{MD\_\-Entry} $\ast$orig\_\-ru)
+\item 
+int \bf{CU\_\-get\_\-slot} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+int \bf{CU\_\-get\_\-min\_\-time} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+int \bf{CU\_\-overlapping\_\-resource\_\-usage} (\bf{MD\_\-Entry} $\ast$entry1, \bf{MD\_\-Entry} $\ast$entry2)
+\item 
+int \bf{CU\_\-make\_\-res\_\-table\_\-orthogonal} (\bf{MD\_\-Entry} $\ast$res\_\-table)
+\item 
+void \bf{CU\_\-consolidate\_\-res\_\-table\_\-usages} (\bf{MD\_\-Entry} $\ast$res\_\-table)
+\item 
+int \bf{usage\_\-cycle\_\-compatable} (\bf{MD\_\-Entry} $\ast$usage\_\-entry, \bf{MD\_\-Entry} $\ast$option\_\-entry)
+\item 
+int \bf{usage\_\-resource\_\-compatable} (\bf{MD\_\-Entry} $\ast$usage\_\-entry, \bf{MD\_\-Entry} $\ast$option\_\-entry)
+\item 
+void \bf{distribute\_\-usage} (\bf{MD\_\-Field} $\ast$table\_\-use\_\-field, int index, \bf{MD\_\-Entry} $\ast$usage\_\-entry)
+\item 
+void \bf{CU\_\-distribute\_\-unconditional\_\-usages} (\bf{MD\_\-Entry} $\ast$table\_\-entry)
+\item 
+void \bf{CU\_\-homogenize\_\-table\_\-options} (\bf{MD\_\-Entry} $\ast$table\_\-option)
+\item 
+void \bf{CU\_\-homogenize\_\-resource\_\-usages} (\bf{MD\_\-Entry} $\ast$ru\_\-entry)
+\item 
+void \bf{CU\_\-optimize\_\-resource\_\-usage\_\-times} (\bf{MD} $\ast$md)
+\item 
+int \bf{CU\_\-get\_\-ru\_\-time} (\bf{MD\_\-Entry} $\ast$ru\_\-entry)
+\item 
+int \bf{CU\_\-num\_\-table\_\-uses} (\bf{MD\_\-Entry} $\ast$option\_\-entry)
+\item 
+void \bf{CU\_\-order\_\-use\_\-fields} (\bf{MD} $\ast$md, int min\_\-reorder)
+\item 
+void \bf{homogenize\_\-reservation\_\-tables} (\bf{MD} $\ast$md)
+\item 
+void \bf{check\_\-for\_\-unconditional\_\-overlap} (\bf{MD} $\ast$md)
+\item 
+int \bf{assign\_\-resource\_\-map\_\-locations} (\bf{MD} $\ast$md)
+\item 
+int \bf{usage\_\-common\_\-to\_\-all\_\-options} (\bf{MD\_\-Entry} $\ast$option\_\-entry, \bf{MD\_\-Entry} $\ast$ru\_\-entry)
+\item 
+int \bf{option\_\-usage\_\-common\_\-at\_\-time} (\bf{MD\_\-Entry} $\ast$option\_\-entry, \bf{MD\_\-Entry} $\ast$usage\_\-entry)
+\item 
+void \bf{remove\_\-common\_\-usage} (\bf{MD\_\-Entry} $\ast$option\_\-entry, \bf{MD\_\-Entry} $\ast$usage\_\-entry)
+\item 
+void \bf{CU\_\-coalesce\_\-unconditional\_\-usages} (\bf{MD} $\ast$md)
+\item 
+void \bf{optimize\_\-resource\_\-units} (\bf{MD} $\ast$md, int max\_\-offset)
+\item 
+void \bf{free\_\-link\_\-table} (\bf{INT\_\-Symbol\_\-Table} $\ast$link\_\-table)
+\item 
+\bf{INT\_\-Symbol\_\-Table} $\ast$ \bf{build\_\-link\_\-table} (\bf{MD} $\ast$md, \bf{MD\_\-Section} $\ast$target\_\-section)
+\item 
+void \bf{free\_\-remap\_\-table} (\bf{INT\_\-Symbol\_\-Table} $\ast$remap\_\-table)
+\item 
+\bf{INT\_\-Symbol\_\-Table} $\ast$ \bf{build\_\-remap\_\-table} (\bf{MD\_\-Section} $\ast$section)
+\item 
+void \bf{add\_\-remap\_\-entry} (\bf{INT\_\-Symbol\_\-Table} $\ast$remap\_\-table, \bf{MD\_\-Entry} $\ast$from\_\-entry, \bf{MD\_\-Entry} $\ast$to\_\-entry)
+\item 
+void \bf{free\_\-referenced\_\-table} (\bf{INT\_\-Symbol\_\-Table} $\ast$referenced\_\-table)
+\item 
+\bf{INT\_\-Symbol\_\-Table} $\ast$ \bf{build\_\-referenced\_\-table} (\bf{INT\_\-Symbol\_\-Table} $\ast$link\_\-table, int init\_\-size)
+\item 
+int \bf{entry\_\-referenced} (\bf{INT\_\-Symbol\_\-Table} $\ast$referenced\_\-table, \bf{MD\_\-Entry} $\ast$test\_\-entry)
+\item 
+int \bf{remove\_\-unreferenced\_\-entries} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+unsigned int \bf{CU\_\-hash\_\-string} (char $\ast$string)
+\item 
+\bf{ENTRY\_\-Contents\_\-Table} $\ast$ \bf{ENTRY\_\-new\_\-contents\_\-table} (char $\ast$ignore\_\-field, int size)
+\item 
+unsigned int \bf{ENTRY\_\-hash\_\-contents} (\bf{MD\_\-Entry} $\ast$entry1, char $\ast$ignore\_\-field)
+\item 
+void \bf{ENTRY\_\-add\_\-contents} (\bf{ENTRY\_\-Contents\_\-Table} $\ast$table, \bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+\bf{MD\_\-Entry} $\ast$ \bf{ENTRY\_\-find\_\-match} (\bf{ENTRY\_\-Contents\_\-Table} $\ast$table, \bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+void \bf{ENTRY\_\-free\_\-nodes} (\bf{ENTRY\_\-Contents\_\-Node} $\ast$first\_\-node)
+\item 
+void \bf{ENTRY\_\-delete\_\-contents\_\-table} (\bf{ENTRY\_\-Contents\_\-Table} $\ast$table)
+\item 
+void \bf{CU\_\-replace\_\-references} (\bf{INT\_\-Symbol\_\-Table} $\ast$link\_\-table, \bf{INT\_\-Symbol\_\-Table} $\ast$remap\_\-table)
+\item 
+int \bf{eliminate\_\-redundant\_\-entries} (\bf{MD} $\ast$md, char $\ast$section\_\-name)
+\item 
+void \bf{remove\_\-original\_\-name} (\bf{MD} $\ast$md)
+\item 
+void \bf{rename\_\-section\_\-entries} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$prefix)
+\item 
+int \bf{optimize\_\-alt\_\-lists} (\bf{MD} $\ast$md)
+\item 
+int \bf{do\_\-classical\_\-optimizations} (\bf{MD} $\ast$md)
+\item 
+int \bf{CU\_\-count\_\-section\_\-entries} (\bf{MD\_\-Section} $\ast$section)
+\item 
+int \bf{CU\_\-count\_\-entries} (\bf{MD} $\ast$md)
+\item 
+void \bf{check\_\-slot\_\-specification} (\bf{MD} $\ast$md)
+\item 
+void \bf{mark\_\-resource\_\-unit\_\-slots} (\bf{MD} $\ast$md)
+\item 
+int \bf{CU\_\-num\_\-options} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+int \bf{CU\_\-max\_\-usage\_\-time} (\bf{MD\_\-Entry} $\ast$\bf{entry})
+\item 
+void \bf{format\_\-reservation\_\-tables} (\bf{MD} $\ast$md)
+\item 
+int \bf{CU\_\-parm\_\-exists} (\bf{MD} $\ast$md, char $\ast$\bf{name})
+\item 
+void \bf{CU\_\-set\_\-string\_\-parm} (\bf{MD} $\ast$md, char $\ast$\bf{name}, char $\ast$string\_\-value)
+\item 
+void \bf{CU\_\-set\_\-int\_\-parm} (\bf{MD} $\ast$md, char $\ast$\bf{name}, int value)
+\item 
+void \bf{expand\_\-options} (\bf{MD\_\-Entry} $\ast$dest\_\-option, \bf{MD\_\-Entry} $\ast$src\_\-option)
+\item 
+void \bf{expand\_\-out\_\-reservation\_\-tables} (\bf{MD} $\ast$md)
+\item 
+void \bf{calc\_\-forbidden\_\-latencies} (\bf{INT\_\-Symbol\_\-Table} $\ast$forbidden\_\-set, \bf{MD\_\-Field} $\ast$use1\_\-field, \bf{MD\_\-Field} $\ast$use2\_\-field)
+\item 
+void \bf{add\_\-usage} (\bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+int \bf{usage\_\-exists} (\bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+int \bf{is\_\-forbidden} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, int user1, int user2, int latency)
+\item 
+int \bf{is\_\-compatable} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource, int new\_\-user, int new\_\-time)
+\item 
+void \bf{add\_\-to\_\-generating\_\-set} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{INT\_\-Symbol\_\-Table} $\ast$set, int user1, int user2, int latency)
+\item 
+int \bf{resource\_\-redundant} (\bf{Resource\_\-Info} $\ast$resource1, \bf{Resource\_\-Info} $\ast$resource2)
+\item 
+void \bf{delete\_\-resource} (\bf{Resource\_\-Info} $\ast$resource)
+\item 
+\bf{INT\_\-Symbol\_\-Table} $\ast$ \bf{build\_\-generating\_\-set} (\bf{MD} $\ast$md, \bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{MD\_\-Entry} $\ast$$\ast$unit\_\-array, int num\_\-units)
+\item 
+void \bf{enumerate\_\-pairs} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource)
+\item 
+int \bf{mark\_\-covered} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+int \bf{is\_\-usage\_\-committed} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+int \bf{count\_\-num\_\-covered} (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, \bf{Resource\_\-Info} $\ast$resource, int user, int time)
+\item 
+void \bf{minimize\_\-generating\_\-set} (\bf{INT\_\-Symbol\_\-Table} $\ast$generating\_\-set, \bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$forbidden\_\-matrix, int num\_\-units, \bf{MD\_\-Entry} $\ast$$\ast$unit\_\-array)
+\item 
+void \bf{free\_\-generating\_\-set} (\bf{INT\_\-Symbol\_\-Table} $\ast$generating\_\-set)
+\item 
+void \bf{instantiate\_\-generating\_\-set} (\bf{INT\_\-Symbol\_\-Table} $\ast$generating\_\-set, \bf{MD\_\-Field} $\ast$$\ast$use\_\-array, int num\_\-units, \bf{MD\_\-Section} $\ast$usage\_\-section)
+\item 
+void \bf{reduce\_\-resource\_\-units} (\bf{MD} $\ast$md)
+\item 
+int \bf{count\_\-table\_\-uses} (\bf{MD} $\ast$md, \bf{MD\_\-Entry} $\ast$table\_\-entry)
+\item 
+double \bf{average\_\-usage\_\-checks} (\bf{MD} $\ast$md)
+\item 
+int \bf{calc\_\-best\_\-case\_\-succeed} (\bf{MD\_\-Entry} $\ast$alt\_\-entry)
+\item 
+int \bf{calc\_\-best\_\-case\_\-fail} (\bf{MD\_\-Entry} $\ast$alt\_\-entry)
+\item 
+int \bf{calc\_\-worst\_\-case\_\-fail} (\bf{MD\_\-Entry} $\ast$alt\_\-entry)
+\item 
+int \bf{calc\_\-memory\_\-size} (\bf{MD} $\ast$md)
+\item 
+void \bf{print\_\-static\_\-stats} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{print\_\-ru\_\-tree} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$ru\_\-entry)
+\item 
+void \bf{print\_\-unit\_\-tree} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$unit\_\-entry, int option\_\-id)
+\item 
+void \bf{print\_\-option\_\-tree} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$option\_\-entry)
+\item 
+void \bf{print\_\-and\_\-or\_\-tree} (FILE $\ast$out, \bf{MD\_\-Entry} $\ast$table)
+\item 
+int \bf{CU\_\-calc\_\-max\_\-field\_\-size} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name)
+\item 
+int \bf{CU\_\-calc\_\-int\_\-field\_\-max\_\-value} (\bf{MD} $\ast$md, char $\ast$section\_\-name, char $\ast$field\_\-name)
+\item 
+void \bf{CU\_\-set\_\-slot\_\-parameters} (\bf{MD} $\ast$md)
+\item 
+void \bf{dump\_\-md} (char $\ast$file\_\-name, \bf{MD} $\ast$md)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+char $\ast$ \bf{program\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}
+\item 
+int \bf{using\_\-stdin} = 0
+\item 
+char $\ast$ \bf{output\_\-mode} = \bf{NULL}
+\item 
+char $\ast$ \bf{input\_\-mode} = \bf{NULL}
+\item 
+int \bf{output\_\-page\_\-width} = 80
+\item 
+int \bf{verbose} = 0
+\item 
+int \bf{expand\_\-tables} = 0
+\item 
+int \bf{tree\_\-opti} = 1
+\item 
+int \bf{place\_\-slots\_\-first} = 0
+\item 
+int \bf{static\_\-stats} = 0
+\item 
+int \bf{print\_\-trees} = 0
+\item 
+int \bf{resource\_\-minimization} = 1
+\item 
+int \bf{opti\_\-level} = 4
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{ENTRY\_\-Contents\_\-Table\_\-pool} = \bf{NULL}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{ENTRY\_\-Contents\_\-Node\_\-pool} = \bf{NULL}
+\item 
+\bf{STRING\_\-Symbol\_\-Table} $\ast$ \bf{header\_\-table\_\-table} = \bf{NULL}
+\item 
+\bf{STRING\_\-Symbol\_\-Table} $\ast$ \bf{rename\_\-table} = \bf{NULL}
+\item 
+int \bf{header\_\-errors} = 0
+\item 
+int \bf{customization\_\-errors} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!DEBUG_OPTI@{DEBUG\_\-OPTI}}
+\index{DEBUG_OPTI@{DEBUG\_\-OPTI}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEBUG\_\-OPTI~0}\label{lmdes2__customizer_8c_6ae2868cfb34bf62378235a206c9800c}
+
+
+
+
+Definition at line 122 of file lmdes2\_\-customizer.c.
+
+Referenced by CU\_\-coalesce\_\-unconditional\_\-usages(), optimize\_\-alt\_\-lists(), print\_\-static\_\-stats(), and remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!MAX_IDENT_LEN@{MAX\_\-IDENT\_\-LEN}}
+\index{MAX_IDENT_LEN@{MAX\_\-IDENT\_\-LEN}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-IDENT\_\-LEN~(100+1)}\label{lmdes2__customizer_8c_9cf0008f332fed26b2b4149b66205559}
+
+
+
+
+Definition at line 701 of file lmdes2\_\-customizer.c.
+
+Referenced by annotate\_\-header\_\-values().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!SLOT_RESOURCE@{SLOT\_\-RESOURCE}}
+\index{SLOT_RESOURCE@{SLOT\_\-RESOURCE}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SLOT\_\-RESOURCE~0x00000001}\label{lmdes2__customizer_8c_d2fffad840fe164eb77141c323a1bc9b}
+
+
+
+
+Definition at line 84 of file lmdes2\_\-customizer.c.
+
+Referenced by add\_\-to\_\-generating\_\-set(), build\_\-generating\_\-set(), and minimize\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!VERBOSE_OPTI@{VERBOSE\_\-OPTI}}
+\index{VERBOSE_OPTI@{VERBOSE\_\-OPTI}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VERBOSE\_\-OPTI~0}\label{lmdes2__customizer_8c_c6d967d290f940fb8143bf141f311a2a}
+
+
+
+
+Definition at line 127 of file lmdes2\_\-customizer.c.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!VERBOSE_STATS@{VERBOSE\_\-STATS}}
+\index{VERBOSE_STATS@{VERBOSE\_\-STATS}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define VERBOSE\_\-STATS~0}\label{lmdes2__customizer_8c_a0fa4d0652fbff641ed614b478884266}
+
+
+
+
+Definition at line 132 of file lmdes2\_\-customizer.c.
+
+\subsection{Function Documentation}
+\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!add_all_children_to_list@{add\_\-all\_\-children\_\-to\_\-list}}
+\index{add_all_children_to_list@{add\_\-all\_\-children\_\-to\_\-list}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-all\_\-children\_\-to\_\-list (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_63b739f1e28f24f379411fb7743e6b44}
+
+
+
+
+Definition at line 1153 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, entry, find\_\-children(), INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-delete\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), INT\_\-find\_\-symbol(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-set\_\-link, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!add_remap_entry@{add\_\-remap\_\-entry}}
+\index{add_remap_entry@{add\_\-remap\_\-entry}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-remap\_\-entry (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em remap\_\-table}, \bf{MD\_\-Entry} $\ast$ {\em from\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em to\_\-entry})}\label{lmdes2__customizer_8c_81b5e74760544ee45c3246205a9db199}
+
+
+
+
+Definition at line 4963 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, Pointer\_\-Mapping::from, I\_\-punt(), INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), INT\_\-Symbol::next\_\-symbol, NULL, and Pointer\_\-Mapping::to.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!add_to_generating_set@{add\_\-to\_\-generating\_\-set}}
+\index{add_to_generating_set@{add\_\-to\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-to\_\-generating\_\-set (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{INT\_\-Symbol\_\-Table} $\ast$ {\em set}, int {\em user1}, int {\em user2}, int {\em latency})}\label{lmdes2__customizer_8c_c56e6d5cf030a514b50156a8d5705302}
+
+
+
+
+Definition at line 7189 of file lmdes2\_\-customizer.c.
+
+References add\_\-usage(), C\_\-punt(), INT\_\-Symbol::data, Resource\_\-Info::flags, INT\_\-Symbol\_\-Table::head\_\-symbol, is\_\-compatable(), Resource\_\-Info::name, INT\_\-Symbol::next\_\-symbol, NULL, SLOT\_\-RESOURCE, and usage\_\-exists().
+
+Referenced by build\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!add_usage@{add\_\-usage}}
+\index{add_usage@{add\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void add\_\-usage (\bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_8c6ba9919f402479699c8861c5e39512}
+
+
+
+
+Definition at line 7067 of file lmdes2\_\-customizer.c.
+
+References INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), INT\_\-new\_\-symbol\_\-table(), Resource\_\-Info::name, NULL, and Resource\_\-Info::time\_\-table.
+
+Referenced by add\_\-to\_\-generating\_\-set(), and build\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!annotate_hash@{annotate\_\-hash}}
+\index{annotate_hash@{annotate\_\-hash}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void annotate\_\-hash (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2__customizer_8c_9269b069890aaa0c3eadf5b9e64e2a72}
+
+
+
+
+Definition at line 857 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!annotate_header_values@{annotate\_\-header\_\-values}}
+\index{annotate_header_values@{annotate\_\-header\_\-values}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void annotate\_\-header\_\-values (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name}, char $\ast$ {\em prefix}, int {\em required})}\label{lmdes2__customizer_8c_66d922d9b46761dde0bd9e8d03168a2a}
+
+
+
+
+Definition at line 773 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), entry, find\_\-header\_\-value(), header\_\-errors, MAX\_\-IDENT\_\-LEN, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!annotate_latency_class@{annotate\_\-latency\_\-class}}
+\index{annotate_latency_class@{annotate\_\-latency\_\-class}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void annotate\_\-latency\_\-class (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em src\_\-field\_\-name}, char $\ast$ {\em dest\_\-field\_\-name})}\label{lmdes2__customizer_8c_4f7bcf59270a7e4092afdc10b639fc36}
+
+
+
+
+Definition at line 905 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field::max\_\-element\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, NULL, and MD\_\-Entry::section.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!assign_resource_map_locations@{assign\_\-resource\_\-map\_\-locations}}
+\index{assign_resource_map_locations@{assign\_\-resource\_\-map\_\-locations}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int assign\_\-resource\_\-map\_\-locations (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_80f65397ab1027641ff4bae7d6b48595}
+
+
+
+
+Definition at line 4292 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-section(), MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!average_usage_checks@{average\_\-usage\_\-checks}}
+\index{average_usage_checks@{average\_\-usage\_\-checks}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double average\_\-usage\_\-checks (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_6eb3b2ecf46c562b81d39d54afd41f36}
+
+
+
+
+Definition at line 8705 of file lmdes2\_\-customizer.c.
+
+References count\_\-table\_\-uses(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!build_generating_set@{build\_\-generating\_\-set}}
+\index{build_generating_set@{build\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{INT\_\-Symbol\_\-Table}$\ast$ build\_\-generating\_\-set (\bf{MD} $\ast$ {\em md}, \bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{MD\_\-Entry} $\ast$$\ast$ {\em unit\_\-array}, int {\em num\_\-units})}\label{lmdes2__customizer_8c_e427d30cb6d003905bbbf42b3fa712b5}
+
+
+
+
+Definition at line 7356 of file lmdes2\_\-customizer.c.
+
+References add\_\-to\_\-generating\_\-set(), add\_\-usage(), C\_\-punt(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), INT\_\-Symbol::data, delete\_\-resource(), Resource\_\-Info::flags, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-add\_\-symbol(), INT\_\-delete\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-next\_\-entry(), Resource\_\-Info::name, MD\_\-Entry::name, INT\_\-Symbol::next\_\-symbol, NULL, print\_\-generating\_\-set(), Resource\_\-Info::resource\_\-entry, resource\_\-redundant(), SLOT\_\-RESOURCE, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!build_link_table@{build\_\-link\_\-table}}
+\index{build_link_table@{build\_\-link\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{INT\_\-Symbol\_\-Table}$\ast$ build\_\-link\_\-table (\bf{MD} $\ast$ {\em md}, \bf{MD\_\-Section} $\ast$ {\em target\_\-section})}\label{lmdes2__customizer_8c_5c514dd5e4fda6d0660bfaf6ea103344}
+
+
+
+
+Definition at line 4872 of file lmdes2\_\-customizer.c.
+
+References INT\_\-add\_\-symbol(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-first\_\-field\_\-decl(), MD\_\-first\_\-section(), MD\_\-LINK, MD\_\-next\_\-field\_\-decl(), MD\_\-next\_\-section(), NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by eliminate\_\-redundant\_\-entries(), eliminate\_\-redundant\_\-new\_\-entries\_\-only(), and remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!build_referenced_table@{build\_\-referenced\_\-table}}
+\index{build_referenced_table@{build\_\-referenced\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{INT\_\-Symbol\_\-Table}$\ast$ build\_\-referenced\_\-table (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em link\_\-table}, int {\em init\_\-size})}\label{lmdes2__customizer_8c_a6b6366bf2fed45e215362f0acf2c5ba}
+
+
+
+
+Definition at line 5022 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, MD\_\-Field::element, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-LINK, MD\_\-next\_\-entry(), INT\_\-Symbol::next\_\-symbol, NULL, MD\_\-Field\_\-Decl::section, and MD\_\-Element::type.
+
+Referenced by remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!build_remap_table@{build\_\-remap\_\-table}}
+\index{build_remap_table@{build\_\-remap\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{INT\_\-Symbol\_\-Table}$\ast$ build\_\-remap\_\-table (\bf{MD\_\-Section} $\ast$ {\em section})}\label{lmdes2__customizer_8c_7a6ced70906068dcb26b7acce31d0ca9}
+
+
+
+
+Definition at line 4947 of file lmdes2\_\-customizer.c.
+
+References MD\_\-Section::entry\_\-table, INT\_\-new\_\-symbol\_\-table(), and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!C_punt@{C\_\-punt}}
+\index{C_punt@{C\_\-punt}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void C\_\-punt (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em fmt},  {\em ...})\hspace{0.3cm}{\tt  [static]}}\label{lmdes2__customizer_8c_6efdeefd9e046fe3a6d8369c3a48758b}
+
+
+
+
+Definition at line 216 of file lmdes2\_\-customizer.c.
+
+References MD::name, and NULL.
+
+Referenced by add\_\-all\_\-children\_\-to\_\-list(), add\_\-to\_\-generating\_\-set(), annotate\_\-hash(), annotate\_\-header\_\-values(), annotate\_\-latency\_\-class(), build\_\-generating\_\-set(), check\_\-bidirectional\_\-links(), check\_\-int\_\-bounds(), check\_\-proc\_\-opcs(), check\_\-table\_\-option\_\-count(), commit\_\-usage(), convert\_\-to\_\-bit\_\-representation(), convert\_\-to\_\-int\_\-list(), convert\_\-to\_\-int\_\-list\_\-all\_\-targets(), count\_\-num\_\-covered(), count\_\-table\_\-uses(), CU\_\-add\_\-link\_\-at(), CU\_\-calc\_\-int\_\-field\_\-max\_\-value(), CU\_\-consolidate\_\-res\_\-table\_\-usages(), CU\_\-delete\_\-link\_\-at(), CU\_\-distribute\_\-unconditional\_\-usages(), CU\_\-dup\_\-alt(), CU\_\-dup\_\-entry(), CU\_\-dup\_\-res\_\-table(), CU\_\-dup\_\-resource\_\-usage(), CU\_\-find\_\-field(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-min\_\-time(), CU\_\-get\_\-slot(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-make\_\-res\_\-table\_\-orthogonal(), CU\_\-max\_\-usage\_\-time(), CU\_\-num\_\-table\_\-uses(), CU\_\-optimize\_\-resource\_\-usage\_\-times(), CU\_\-redundant\_\-entries(), CU\_\-rename\_\-entry(), customize\_\-md(), eliminate\_\-redundant\_\-entries(), eliminate\_\-redundant\_\-new\_\-entries\_\-only(), ENTRY\_\-add\_\-contents(), ENTRY\_\-hash\_\-contents(), enumerate\_\-pairs(), expand\_\-options(), find\_\-header\_\-value(), format\_\-reservation\_\-tables(), is\_\-usage\_\-committed(), main(), mark\_\-covered(), optimize\_\-alt\_\-lists(), optimize\_\-resource\_\-units(), read\_\-header\_\-tables(), reduce\_\-resource\_\-units(), remove\_\-common\_\-usage(), and remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!calc_best_case_fail@{calc\_\-best\_\-case\_\-fail}}
+\index{calc_best_case_fail@{calc\_\-best\_\-case\_\-fail}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-best\_\-case\_\-fail (\bf{MD\_\-Entry} $\ast$ {\em alt\_\-entry})}\label{lmdes2__customizer_8c_ceb3d2d68fbf7f1698accb82d5742719}
+
+
+
+
+Definition at line 8842 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Entry::name, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by print\_\-static\_\-stats().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!calc_best_case_succeed@{calc\_\-best\_\-case\_\-succeed}}
+\index{calc_best_case_succeed@{calc\_\-best\_\-case\_\-succeed}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-best\_\-case\_\-succeed (\bf{MD\_\-Entry} $\ast$ {\em alt\_\-entry})}\label{lmdes2__customizer_8c_6953d208b5ecd712ff502c07d454e67b}
+
+
+
+
+Definition at line 8795 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by print\_\-static\_\-stats().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!calc_forbidden_latencies@{calc\_\-forbidden\_\-latencies}}
+\index{calc_forbidden_latencies@{calc\_\-forbidden\_\-latencies}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void calc\_\-forbidden\_\-latencies (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em forbidden\_\-set}, \bf{MD\_\-Field} $\ast$ {\em use1\_\-field}, \bf{MD\_\-Field} $\ast$ {\em use2\_\-field})}\label{lmdes2__customizer_8c_4b2133824eaddc147250f9325ba07988}
+
+
+
+
+Definition at line 6992 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), MD\_\-Field::entry, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-find\_\-field, MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-Entry::name, NULL, and MD\_\-Entry::section.
+
+Referenced by reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!calc_memory_size@{calc\_\-memory\_\-size}}
+\index{calc_memory_size@{calc\_\-memory\_\-size}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-memory\_\-size (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_d54eaab305504150964b0f25c12b30d2}
+
+
+
+
+Definition at line 8934 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), expand\_\-tables, MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), and MD\_\-num\_\-entries.
+
+Referenced by print\_\-static\_\-stats().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!calc_worst_case_fail@{calc\_\-worst\_\-case\_\-fail}}
+\index{calc_worst_case_fail@{calc\_\-worst\_\-case\_\-fail}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int calc\_\-worst\_\-case\_\-fail (\bf{MD\_\-Entry} $\ast$ {\em alt\_\-entry})}\label{lmdes2__customizer_8c_d0902b41af4b8f27f9e37f303a00cada}
+
+
+
+
+Definition at line 8885 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by print\_\-static\_\-stats().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_bidirectional_links@{check\_\-bidirectional\_\-links}}
+\index{check_bidirectional_links@{check\_\-bidirectional\_\-links}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-bidirectional\_\-links (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_6740c00001d924e1656171ce296a54d0}
+
+
+
+
+Definition at line 1726 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customization\_\-errors, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-Entry::name, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_for_unconditional_overlap@{check\_\-for\_\-unconditional\_\-overlap}}
+\index{check_for_unconditional_overlap@{check\_\-for\_\-unconditional\_\-overlap}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-for\_\-unconditional\_\-overlap (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_2fcefe048bbfcd44785ed45ad58bde9d}
+
+
+
+
+Definition at line 4213 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), CU\_\-overlapping\_\-resource\_\-usage(), customization\_\-errors, MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_int_bounds@{check\_\-int\_\-bounds}}
+\index{check_int_bounds@{check\_\-int\_\-bounds}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-int\_\-bounds (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name}, int {\em lower\_\-bound}, int {\em upper\_\-bound})}\label{lmdes2__customizer_8c_41d1d44089b9ab6bbc29aa96db125b25}
+
+
+
+
+Definition at line 1523 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customization\_\-errors, entry, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-INT, MD\_\-next\_\-entry(), NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_proc_opcs@{check\_\-proc\_\-opcs}}
+\index{check_proc_opcs@{check\_\-proc\_\-opcs}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-proc\_\-opcs (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_9bfc7ce417705fe84aae84f4d1403015}
+
+
+
+
+Definition at line 1582 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customization\_\-errors, entry, INT\_\-add\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), INT\_\-find\_\-symbol\_\-data(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-INT, MD\_\-next\_\-entry(), MD\_\-Entry::name, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_slot_specification@{check\_\-slot\_\-specification}}
+\index{check_slot_specification@{check\_\-slot\_\-specification}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-slot\_\-specification (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_e58a6292d04bae2e646a784873aff4da}
+
+
+
+
+Definition at line 6212 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-slot(), customization\_\-errors, entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!check_table_option_count@{check\_\-table\_\-option\_\-count}}
+\index{check_table_option_count@{check\_\-table\_\-option\_\-count}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void check\_\-table\_\-option\_\-count (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_d7581428a805b5351485f9d09da4aad0}
+
+
+
+
+Definition at line 1684 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customization\_\-errors, entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!commit_usage@{commit\_\-usage}}
+\index{commit_usage@{commit\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void commit\_\-usage (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_7bbd7a4ef676ca025d871cea39549a0d}
+
+
+
+
+Definition at line 7780 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, INT\_\-find\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), mark\_\-covered(), NULL, and Resource\_\-Info::time\_\-table.
+
+Referenced by minimize\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!convert_to_bit_representation@{convert\_\-to\_\-bit\_\-representation}}
+\index{convert_to_bit_representation@{convert\_\-to\_\-bit\_\-representation}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void convert\_\-to\_\-bit\_\-representation (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em src\_\-section\_\-name}, char $\ast$ {\em src\_\-field\_\-name}, char $\ast$ {\em value\_\-section\_\-name}, char $\ast$ {\em value\_\-field\_\-name}, char $\ast$ {\em dest\_\-field\_\-name})}\label{lmdes2__customizer_8c_8d183a09983eb17f4c21eba43c6ac1cc}
+
+
+
+
+Definition at line 978 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-INT, MD\_\-LINK, MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!convert_to_int_list@{convert\_\-to\_\-int\_\-list}}
+\index{convert_to_int_list@{convert\_\-to\_\-int\_\-list}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void convert\_\-to\_\-int\_\-list (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em src\_\-section\_\-name}, char $\ast$ {\em src\_\-field\_\-name}, char $\ast$ {\em value\_\-section\_\-name}, char $\ast$ {\em value\_\-field\_\-name}, char $\ast$ {\em dest\_\-field\_\-name})}\label{lmdes2__customizer_8c_21573698051dc7050183b82a6f62e003}
+
+
+
+
+Definition at line 1246 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-INT, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-LINK, MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!convert_to_int_list_all_targets@{convert\_\-to\_\-int\_\-list\_\-all\_\-targets}}
+\index{convert_to_int_list_all_targets@{convert\_\-to\_\-int\_\-list\_\-all\_\-targets}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void convert\_\-to\_\-int\_\-list\_\-all\_\-targets (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em src\_\-section\_\-name}, char $\ast$ {\em src\_\-field\_\-name}, char $\ast$ {\em value\_\-field\_\-name}, char $\ast$ {\em dest\_\-field\_\-name})}\label{lmdes2__customizer_8c_634270b643e7deeab2184f71ca619024}
+
+
+
+
+Definition at line 1366 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customization\_\-errors, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-INT, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-LINK, MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-int, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!count_num_covered@{count\_\-num\_\-covered}}
+\index{count_num_covered@{count\_\-num\_\-covered}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int count\_\-num\_\-covered (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_ab8af320e914a5226e613527f8e57a63}
+
+
+
+
+Definition at line 7837 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol(), Resource\_\-Info::name, INT\_\-Symbol::next\_\-symbol, NULL, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!count_table_uses@{count\_\-table\_\-uses}}
+\index{count_table_uses@{count\_\-table\_\-uses}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int count\_\-table\_\-uses (\bf{MD} $\ast$ {\em md}, \bf{MD\_\-Entry} $\ast$ {\em table\_\-entry})}\label{lmdes2__customizer_8c_4ce135688fc954521f1946964d6d3025}
+
+
+
+
+Definition at line 8610 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Section::name, MD\_\-Entry::name, opti\_\-level, and MD\_\-Entry::section.
+
+Referenced by average\_\-usage\_\-checks().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_add_link_at@{CU\_\-add\_\-link\_\-at}}
+\index{CU_add_link_at@{CU\_\-add\_\-link\_\-at}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-add\_\-link\_\-at (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em at\_\-index}, \bf{MD\_\-Entry} $\ast$ {\em new\_\-link})}\label{lmdes2__customizer_8c_6654d07ff1321b2e08dfd348ff1e3e2b}
+
+
+
+
+Definition at line 2162 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-get\_\-link, MD\_\-LINK, MD\_\-set\_\-link, NULL, MD\_\-Entry::section, and MD\_\-Element::type.
+
+Referenced by CU\_\-dup\_\-alt(), CU\_\-dup\_\-resource\_\-usage(), and expand\_\-options().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_calc_int_field_max_value@{CU\_\-calc\_\-int\_\-field\_\-max\_\-value}}
+\index{CU_calc_int_field_max_value@{CU\_\-calc\_\-int\_\-field\_\-max\_\-value}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-calc\_\-int\_\-field\_\-max\_\-value (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_5dd5fab3cd53184cc8789f2e2c3ba33a}
+
+
+
+
+Definition at line 9260 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-int, and MD\_\-next\_\-entry().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_calc_max_field_size@{CU\_\-calc\_\-max\_\-field\_\-size}}
+\index{CU_calc_max_field_size@{CU\_\-calc\_\-max\_\-field\_\-size}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-calc\_\-max\_\-field\_\-size (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_ebb6e3da59774d2be9fea3034f0e749a}
+
+
+
+
+Definition at line 9224 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), and MD\_\-next\_\-entry().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_coalesce_unconditional_usages@{CU\_\-coalesce\_\-unconditional\_\-usages}}
+\index{CU_coalesce_unconditional_usages@{CU\_\-coalesce\_\-unconditional\_\-usages}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-coalesce\_\-unconditional\_\-usages (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_f2197180102ce352a30d4087b462e14e}
+
+
+
+
+Definition at line 4473 of file lmdes2\_\-customizer.c.
+
+References CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-unique\_\-name(), DEBUG\_\-OPTI, MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Section::name, MD\_\-Entry::name, NULL, option\_\-usage\_\-common\_\-at\_\-time(), remove\_\-common\_\-usage(), and MD\_\-Entry::section.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_consolidate_res_table_usages@{CU\_\-consolidate\_\-res\_\-table\_\-usages}}
+\index{CU_consolidate_res_table_usages@{CU\_\-consolidate\_\-res\_\-table\_\-usages}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-consolidate\_\-res\_\-table\_\-usages (\bf{MD\_\-Entry} $\ast$ {\em res\_\-table})}\label{lmdes2__customizer_8c_0ef75bfb7f290b6513271853e6fd74fc}
+
+
+
+
+Definition at line 2991 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-get\_\-link, MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_count_entries@{CU\_\-count\_\-entries}}
+\index{CU_count_entries@{CU\_\-count\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-count\_\-entries (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_d85163db809465f91b4a016d3862ad69}
+
+
+
+
+Definition at line 6191 of file lmdes2\_\-customizer.c.
+
+References CU\_\-count\_\-section\_\-entries(), MD\_\-first\_\-section(), MD\_\-next\_\-section(), and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_count_section_entries@{CU\_\-count\_\-section\_\-entries}}
+\index{CU_count_section_entries@{CU\_\-count\_\-section\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-count\_\-section\_\-entries (\bf{MD\_\-Section} $\ast$ {\em section})}\label{lmdes2__customizer_8c_5bc12c0dabc53b4b665ed97e99dde230}
+
+
+
+
+Definition at line 6183 of file lmdes2\_\-customizer.c.
+
+References MD\_\-Section::entry\_\-table, and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by CU\_\-count\_\-entries(), customize\_\-md(), and reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_delete_link_at@{CU\_\-delete\_\-link\_\-at}}
+\index{CU_delete_link_at@{CU\_\-delete\_\-link\_\-at}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-delete\_\-link\_\-at (\bf{MD\_\-Field} $\ast$ {\em field}, int {\em at\_\-index})}\label{lmdes2__customizer_8c_92c91ed1ca364644c08508886798782e}
+
+
+
+
+Definition at line 2198 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field::decl, MD\_\-Field::element, MD\_\-Field::entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-LINK, MD\_\-Field\_\-Decl::name, MD\_\-Entry::name, MD\_\-Section::name, NULL, MD\_\-Entry::section, and MD\_\-Element::type.
+
+Referenced by CU\_\-make\_\-res\_\-table\_\-orthogonal(), optimize\_\-alt\_\-lists(), and remove\_\-common\_\-usage().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_distribute_unconditional_usages@{CU\_\-distribute\_\-unconditional\_\-usages}}
+\index{CU_distribute_unconditional_usages@{CU\_\-distribute\_\-unconditional\_\-usages}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-distribute\_\-unconditional\_\-usages (\bf{MD\_\-Entry} $\ast$ {\em table\_\-entry})}\label{lmdes2__customizer_8c_edcc55f67d62d16fa42c8dc98dec4a43}
+
+
+
+
+Definition at line 3270 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Section::name, MD\_\-Entry::name, NULL, and MD\_\-Entry::section.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_dup_alt@{CU\_\-dup\_\-alt}}
+\index{CU_dup_alt@{CU\_\-dup\_\-alt}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ CU\_\-dup\_\-alt (\bf{MD\_\-Entry} $\ast$ {\em orig\_\-alt})}\label{lmdes2__customizer_8c_21fc335b4dfe1e7941cdc26722a47457}
+
+
+
+
+Definition at line 2259 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-add\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-rename\_\-entry(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by CU\_\-dup\_\-res\_\-table().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_dup_entry@{CU\_\-dup\_\-entry}}
+\index{CU_dup_entry@{CU\_\-dup\_\-entry}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ CU\_\-dup\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em orig\_\-entry})}\label{lmdes2__customizer_8c_0f5365fc4e33bb5f9ed676c4fbba9ea1}
+
+
+
+
+Definition at line 1960 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-get\_\-unique\_\-name(), MD\_\-Field::element, MD\_\-Field::max\_\-element\_\-index, MD\_\-DOUBLE, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-field\_\-decl(), MD\_\-get\_\-double, MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-get\_\-string, MD\_\-INT, MD\_\-LINK, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-next\_\-field\_\-decl(), MD\_\-set\_\-double, MD\_\-set\_\-int, MD\_\-set\_\-link, MD\_\-set\_\-string, MD\_\-STRING, MD\_\-Entry::name, NULL, MD\_\-Entry::section, and MD\_\-Element::type.
+
+Referenced by CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-dup\_\-alt(), CU\_\-dup\_\-res\_\-table(), CU\_\-dup\_\-resource\_\-usage(), CU\_\-make\_\-res\_\-table\_\-orthogonal(), distribute\_\-usage(), expand\_\-options(), optimize\_\-alt\_\-lists(), optimize\_\-resource\_\-units(), and remove\_\-common\_\-usage().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_dup_res_table@{CU\_\-dup\_\-res\_\-table}}
+\index{CU_dup_res_table@{CU\_\-dup\_\-res\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ CU\_\-dup\_\-res\_\-table (\bf{MD\_\-Entry} $\ast$ {\em orig\_\-res\_\-table})}\label{lmdes2__customizer_8c_ba4d5d0af6041b1626b8cd7186b2e73f}
+
+
+
+
+Definition at line 2321 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-dup\_\-alt(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-rename\_\-entry(), MD\_\-Section::md, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by CU\_\-make\_\-res\_\-table\_\-orthogonal().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_dup_resource_usage@{CU\_\-dup\_\-resource\_\-usage}}
+\index{CU_dup_resource_usage@{CU\_\-dup\_\-resource\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ CU\_\-dup\_\-resource\_\-usage (\bf{MD\_\-Entry} $\ast$ {\em orig\_\-ru})}\label{lmdes2__customizer_8c_5908c785db2a738c076ba133610e281f}
+
+
+
+
+Definition at line 2381 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-add\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-rename\_\-entry(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by CU\_\-homogenize\_\-resource\_\-usages().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_find_field@{CU\_\-find\_\-field}}
+\index{CU_find_field@{CU\_\-find\_\-field}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ CU\_\-find\_\-field (\bf{MD\_\-Entry} $\ast$ {\em entry}, \bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{lmdes2__customizer_8c_dfba5ab2edf1d22c8eef8e33bfbb4e8f}
+
+
+
+
+Definition at line 1844 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), entry, MD\_\-find\_\-field, MD\_\-Field\_\-Decl::name, and NULL.
+
+Referenced by CU\_\-num\_\-table\_\-uses().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_find_field_by_name@{CU\_\-find\_\-field\_\-by\_\-name}}
+\index{CU_find_field_by_name@{CU\_\-find\_\-field\_\-by\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field}$\ast$ CU\_\-find\_\-field\_\-by\_\-name (\bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_92da4a5722a22962930cd80ebcbfe551}
+
+
+
+
+Definition at line 1859 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), entry, and MD\_\-find\_\-field.
+
+Referenced by average\_\-usage\_\-checks(), calc\_\-best\_\-case\_\-fail(), calc\_\-best\_\-case\_\-succeed(), calc\_\-memory\_\-size(), calc\_\-worst\_\-case\_\-fail(), check\_\-for\_\-unconditional\_\-overlap(), check\_\-slot\_\-specification(), CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-consolidate\_\-res\_\-table\_\-usages(), CU\_\-distribute\_\-unconditional\_\-usages(), CU\_\-get\_\-min\_\-time(), CU\_\-get\_\-ru\_\-time(), CU\_\-get\_\-slot(), CU\_\-homogenize\_\-resource\_\-usages(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-make\_\-res\_\-table\_\-orthogonal(), CU\_\-max\_\-usage\_\-time(), CU\_\-num\_\-options(), CU\_\-order\_\-use\_\-fields(), CU\_\-overlapping\_\-resource\_\-usage(), distribute\_\-usage(), expand\_\-options(), expand\_\-out\_\-reservation\_\-tables(), format\_\-reservation\_\-tables(), optimize\_\-alt\_\-lists(), optimize\_\-resource\_\-units(), option\_\-usage\_\-common\_\-at\_\-time(), print\_\-and\_\-or\_\-tree(), print\_\-option\_\-tree(), print\_\-ru\_\-tree(), print\_\-static\_\-stats(), print\_\-unit\_\-tree(), reduce\_\-resource\_\-units(), remove\_\-common\_\-usage(), usage\_\-common\_\-to\_\-all\_\-options(), usage\_\-cycle\_\-compatable(), and usage\_\-resource\_\-compatable().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_find_field_decl@{CU\_\-find\_\-field\_\-decl}}
+\index{CU_find_field_decl@{CU\_\-find\_\-field\_\-decl}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Field\_\-Decl}$\ast$ CU\_\-find\_\-field\_\-decl (\bf{MD\_\-Section} $\ast$ {\em section}, char $\ast$ {\em field\_\-name})}\label{lmdes2__customizer_8c_b75391e91939a490c363358e9c12f40c}
+
+
+
+
+Definition at line 1830 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Section::md, MD\_\-find\_\-field\_\-decl, MD\_\-Section::name, and NULL.
+
+Referenced by build\_\-generating\_\-set(), calc\_\-forbidden\_\-latencies(), check\_\-slot\_\-specification(), count\_\-table\_\-uses(), CU\_\-calc\_\-int\_\-field\_\-max\_\-value(), CU\_\-calc\_\-max\_\-field\_\-size(), CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-dup\_\-alt(), CU\_\-dup\_\-res\_\-table(), CU\_\-dup\_\-resource\_\-usage(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-get\_\-slot(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-num\_\-table\_\-uses(), CU\_\-optimize\_\-resource\_\-usage\_\-times(), CU\_\-set\_\-slot\_\-parameters(), CU\_\-set\_\-string\_\-parm(), expand\_\-out\_\-reservation\_\-tables(), format\_\-reservation\_\-tables(), instantiate\_\-generating\_\-set(), optimize\_\-alt\_\-lists(), and optimize\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_find_section@{CU\_\-find\_\-section}}
+\index{CU_find_section@{CU\_\-find\_\-section}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Section}$\ast$ CU\_\-find\_\-section (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2__customizer_8c_5b29c261eac5c2802f9c5ef741c7ef12}
+
+
+
+
+Definition at line 1819 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-find\_\-section, and NULL.
+
+Referenced by assign\_\-resource\_\-map\_\-locations(), average\_\-usage\_\-checks(), build\_\-generating\_\-set(), calc\_\-forbidden\_\-latencies(), calc\_\-memory\_\-size(), check\_\-for\_\-unconditional\_\-overlap(), check\_\-slot\_\-specification(), count\_\-table\_\-uses(), CU\_\-calc\_\-int\_\-field\_\-max\_\-value(), CU\_\-calc\_\-max\_\-field\_\-size(), CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-dup\_\-alt(), CU\_\-dup\_\-res\_\-table(), CU\_\-dup\_\-resource\_\-usage(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-num\_\-table\_\-uses(), CU\_\-optimize\_\-resource\_\-usage\_\-times(), CU\_\-order\_\-use\_\-fields(), CU\_\-parm\_\-exists(), CU\_\-set\_\-slot\_\-parameters(), CU\_\-set\_\-string\_\-parm(), customize\_\-md(), eliminate\_\-redundant\_\-entries(), eliminate\_\-redundant\_\-new\_\-entries\_\-only(), expand\_\-out\_\-reservation\_\-tables(), format\_\-reservation\_\-tables(), homogenize\_\-reservation\_\-tables(), mark\_\-resource\_\-unit\_\-slots(), optimize\_\-alt\_\-lists(), optimize\_\-resource\_\-units(), print\_\-static\_\-stats(), print\_\-table\_\-trees(), reduce\_\-resource\_\-units(), remove\_\-unreferenced\_\-entries(), and rename\_\-section\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_get_min_time@{CU\_\-get\_\-min\_\-time}}
+\index{CU_get_min_time@{CU\_\-get\_\-min\_\-time}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-get\_\-min\_\-time (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_04c8d543fffa447091d73d185e5e6765}
+
+
+
+
+Definition at line 2560 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, and MD\_\-get\_\-link.
+
+Referenced by CU\_\-order\_\-use\_\-fields().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_get_ru_time@{CU\_\-get\_\-ru\_\-time}}
+\index{CU_get_ru_time@{CU\_\-get\_\-ru\_\-time}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-get\_\-ru\_\-time (\bf{MD\_\-Entry} $\ast$ {\em ru\_\-entry})}\label{lmdes2__customizer_8c_9c7268b691bd7ad874ab904435b25527}
+
+
+
+
+Definition at line 3772 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), and MD\_\-get\_\-int.
+
+Referenced by CU\_\-order\_\-use\_\-fields().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_get_slot@{CU\_\-get\_\-slot}}
+\index{CU_get_slot@{CU\_\-get\_\-slot}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-get\_\-slot (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_68cc9dad453a2e899020a7ee00ae52bb}
+
+
+
+
+Definition at line 2446 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-get\_\-int, MD\_\-get\_\-link, NULL, and MD\_\-Entry::section.
+
+Referenced by check\_\-slot\_\-specification(), CU\_\-order\_\-use\_\-fields(), and mark\_\-resource\_\-unit\_\-slots().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_get_unique_name@{CU\_\-get\_\-unique\_\-name}}
+\index{CU_get_unique_name@{CU\_\-get\_\-unique\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-get\_\-unique\_\-name (\bf{MD} $\ast$ {\em md}, \bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em base\_\-name}, char $\ast$ {\em new\_\-name})}\label{lmdes2__customizer_8c_0d6d799591481b18affc74f76c135c41}
+
+
+
+
+Definition at line 1888 of file lmdes2\_\-customizer.c.
+
+References STRING\_\-Symbol::data, entry, I\_\-punt(), MD\_\-find\_\-entry, MD\_\-first\_\-section(), MD\_\-next\_\-section(), NULL, rename\_\-table, STRING\_\-add\_\-symbol(), and STRING\_\-find\_\-symbol().
+
+Referenced by CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-dup\_\-entry(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-rename\_\-entry(), expand\_\-out\_\-reservation\_\-tables(), and format\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_hash_string@{CU\_\-hash\_\-string}}
+\index{CU_hash_string@{CU\_\-hash\_\-string}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int CU\_\-hash\_\-string (char $\ast$ {\em string})}\label{lmdes2__customizer_8c_2c1c0879b965f678466adfa8d6c8e412}
+
+
+
+
+Definition at line 5173 of file lmdes2\_\-customizer.c.
+
+Referenced by ENTRY\_\-hash\_\-contents().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_homogenize_resource_usages@{CU\_\-homogenize\_\-resource\_\-usages}}
+\index{CU_homogenize_resource_usages@{CU\_\-homogenize\_\-resource\_\-usages}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-homogenize\_\-resource\_\-usages (\bf{MD\_\-Entry} $\ast$ {\em ru\_\-entry})}\label{lmdes2__customizer_8c_3332767efcdc1ab552393d010b97bf22}
+
+
+
+
+Definition at line 3509 of file lmdes2\_\-customizer.c.
+
+References CU\_\-dup\_\-resource\_\-usage(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-delete\_\-element(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-set\_\-int, and MD\_\-set\_\-link.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_homogenize_table_options@{CU\_\-homogenize\_\-table\_\-options}}
+\index{CU_homogenize_table_options@{CU\_\-homogenize\_\-table\_\-options}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-homogenize\_\-table\_\-options (\bf{MD\_\-Entry} $\ast$ {\em table\_\-option})}\label{lmdes2__customizer_8c_722d64044c191dff9b39056217e3cb8a}
+
+
+
+
+Definition at line 3442 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-unique\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-get\_\-link, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_make_res_table_orthogonal@{CU\_\-make\_\-res\_\-table\_\-orthogonal}}
+\index{CU_make_res_table_orthogonal@{CU\_\-make\_\-res\_\-table\_\-orthogonal}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-make\_\-res\_\-table\_\-orthogonal (\bf{MD\_\-Entry} $\ast$ {\em res\_\-table})}\label{lmdes2__customizer_8c_5b210418b87ea11a38a9685106fcadb0}
+
+
+
+
+Definition at line 2764 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-delete\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-dup\_\-res\_\-table(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-overlapping\_\-resource\_\-usage(), CU\_\-rename\_\-entry(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-delete\_\-entry, MD\_\-get\_\-link, MD\_\-print\_\-entry(), MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_max_usage_time@{CU\_\-max\_\-usage\_\-time}}
+\index{CU_max_usage_time@{CU\_\-max\_\-usage\_\-time}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-max\_\-usage\_\-time (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_345b1023db31d3c2ed2cde83095ae799}
+
+
+
+
+Definition at line 6427 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), entry, MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, MD\_\-get\_\-link, and NULL.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_num_options@{CU\_\-num\_\-options}}
+\index{CU_num_options@{CU\_\-num\_\-options}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-num\_\-options (\bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_b856325e80c0fe729a87901b233899df}
+
+
+
+
+Definition at line 6411 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), entry, and MD\_\-Field::max\_\-element\_\-index.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_num_table_uses@{CU\_\-num\_\-table\_\-uses}}
+\index{CU_num_table_uses@{CU\_\-num\_\-table\_\-uses}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-num\_\-table\_\-uses (\bf{MD\_\-Entry} $\ast$ {\em option\_\-entry})}\label{lmdes2__customizer_8c_fdf290d1fef84d92c3a52bb51e638226}
+
+
+
+
+Definition at line 3785 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), MD\_\-Section::md, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-max\_\-element\_\-index, MD\_\-next\_\-entry(), MD\_\-Entry::name, NULL, and MD\_\-Entry::section.
+
+Referenced by CU\_\-order\_\-use\_\-fields().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_optimize_resource_usage_times@{CU\_\-optimize\_\-resource\_\-usage\_\-times}}
+\index{CU_optimize_resource_usage_times@{CU\_\-optimize\_\-resource\_\-usage\_\-times}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-optimize\_\-resource\_\-usage\_\-times (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_772a2fd220caf518585c5ed7bfe622be}
+
+
+
+
+Definition at line 3612 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-set\_\-int, MD\_\-Entry::name, NULL, and opti\_\-level.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_order_use_fields@{CU\_\-order\_\-use\_\-fields}}
+\index{CU_order_use_fields@{CU\_\-order\_\-use\_\-fields}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-order\_\-use\_\-fields (\bf{MD} $\ast$ {\em md}, int {\em min\_\-reorder})}\label{lmdes2__customizer_8c_09e11110f5b6a98ed4d840057dc1e125}
+
+
+
+
+Definition at line 3841 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), CU\_\-get\_\-min\_\-time(), CU\_\-get\_\-ru\_\-time(), CU\_\-get\_\-slot(), CU\_\-num\_\-table\_\-uses(), MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Section::name, MD\_\-Entry::name, NULL, opti\_\-level, and MD\_\-Entry::section.
+
+Referenced by customize\_\-md(), and homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_overlapping_resource_usage@{CU\_\-overlapping\_\-resource\_\-usage}}
+\index{CU_overlapping_resource_usage@{CU\_\-overlapping\_\-resource\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-overlapping\_\-resource\_\-usage (\bf{MD\_\-Entry} $\ast$ {\em entry1}, \bf{MD\_\-Entry} $\ast$ {\em entry2})}\label{lmdes2__customizer_8c_409c425142d1a29b7cd608ce586bb35a}
+
+
+
+
+Definition at line 2639 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Section::name, and MD\_\-Entry::section.
+
+Referenced by check\_\-for\_\-unconditional\_\-overlap(), and CU\_\-make\_\-res\_\-table\_\-orthogonal().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_parm_exists@{CU\_\-parm\_\-exists}}
+\index{CU_parm_exists@{CU\_\-parm\_\-exists}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-parm\_\-exists (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name})}\label{lmdes2__customizer_8c_77b3447d0de2a17ecaa97e21cad307d5}
+
+
+
+
+Definition at line 6796 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-section(), MD\_\-find\_\-entry, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_redundant_entries@{CU\_\-redundant\_\-entries}}
+\index{CU_redundant_entries@{CU\_\-redundant\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int CU\_\-redundant\_\-entries (\bf{MD\_\-Entry} $\ast$ {\em entry1}, \bf{MD\_\-Entry} $\ast$ {\em entry2}, char $\ast$ {\em ignore\_\-field})}\label{lmdes2__customizer_8c_33651693828cf0dceddf0652bb22eac0}
+
+
+
+
+Definition at line 5458 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Element::d, MD\_\-Field::element, MD\_\-Element::i, MD\_\-Element::l, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-DOUBLE, MD\_\-find\_\-field, MD\_\-first\_\-field\_\-decl(), MD\_\-INT, MD\_\-LINK, MD\_\-next\_\-field\_\-decl(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by ENTRY\_\-add\_\-contents(), ENTRY\_\-find\_\-match(), and optimize\_\-alt\_\-lists().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_rename_entry@{CU\_\-rename\_\-entry}}
+\index{CU_rename_entry@{CU\_\-rename\_\-entry}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-rename\_\-entry (\bf{MD\_\-Entry} $\ast$ {\em entry}, char $\ast$ {\em new\_\-name})}\label{lmdes2__customizer_8c_1a485003e9cc947cf64e3769e68af28e}
+
+
+
+
+Definition at line 2083 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-get\_\-unique\_\-name(), entry, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-Section::md, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-get\_\-string, MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-print\_\-field\_\-decl(), MD\_\-rename\_\-entry(), MD\_\-require\_\-string(), MD\_\-set\_\-string, MD\_\-STRING, MD\_\-Field\_\-Decl::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Element\_\-Req::type, and MD\_\-Field\_\-Decl::type.
+
+Referenced by CU\_\-dup\_\-alt(), CU\_\-dup\_\-res\_\-table(), CU\_\-dup\_\-resource\_\-usage(), and CU\_\-make\_\-res\_\-table\_\-orthogonal().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_replace_references@{CU\_\-replace\_\-references}}
+\index{CU_replace_references@{CU\_\-replace\_\-references}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-replace\_\-references (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em link\_\-table}, \bf{INT\_\-Symbol\_\-Table} $\ast$ {\em remap\_\-table})}\label{lmdes2__customizer_8c_e91f10afbc8636670c067c17090d0cf3}
+
+
+
+
+Definition at line 5561 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, MD\_\-Field::element, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol\_\-data(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Entry::name, INT\_\-Symbol::next\_\-symbol, NULL, MD\_\-Field\_\-Decl::section, Pointer\_\-Mapping::to, and MD\_\-Element::type.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_set_int_parm@{CU\_\-set\_\-int\_\-parm}}
+\index{CU_set_int_parm@{CU\_\-set\_\-int\_\-parm}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-set\_\-int\_\-parm (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name}, int {\em value})}\label{lmdes2__customizer_8c_41d97bbca3aeb3d1e569f1e822129a16}
+
+
+
+
+Definition at line 6838 of file lmdes2\_\-customizer.c.
+
+References CU\_\-set\_\-string\_\-parm().
+
+Referenced by CU\_\-set\_\-slot\_\-parameters(), and customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_set_slot_parameters@{CU\_\-set\_\-slot\_\-parameters}}
+\index{CU_set_slot_parameters@{CU\_\-set\_\-slot\_\-parameters}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-set\_\-slot\_\-parameters (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_c9352cf521d85bfd11ab88a863ae1459}
+
+
+
+
+Definition at line 9310 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-set\_\-int\_\-parm(), MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-int, and MD\_\-next\_\-entry().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!CU_set_string_parm@{CU\_\-set\_\-string\_\-parm}}
+\index{CU_set_string_parm@{CU\_\-set\_\-string\_\-parm}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void CU\_\-set\_\-string\_\-parm (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name}, char $\ast$ {\em string\_\-value})}\label{lmdes2__customizer_8c_81e61dd51203a0bd0d4756451d4b6c78}
+
+
+
+
+Definition at line 6812 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), MD\_\-delete\_\-entry, MD\_\-find\_\-entry, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-set\_\-string, and NULL.
+
+Referenced by CU\_\-set\_\-int\_\-parm(), and customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!customize_md@{customize\_\-md}}
+\index{customize_md@{customize\_\-md}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void customize\_\-md (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_325650c03d399b4e850fe3a9bda3df17}
+
+
+
+
+Definition at line 9374 of file lmdes2\_\-customizer.c.
+
+References add\_\-all\_\-children\_\-to\_\-list(), annotate\_\-hash(), annotate\_\-header\_\-values(), annotate\_\-latency\_\-class(), assign\_\-resource\_\-map\_\-locations(), average\_\-usage\_\-checks(), C\_\-punt(), check\_\-bidirectional\_\-links(), check\_\-for\_\-unconditional\_\-overlap(), check\_\-int\_\-bounds(), check\_\-proc\_\-opcs(), check\_\-slot\_\-specification(), check\_\-table\_\-option\_\-count(), convert\_\-to\_\-bit\_\-representation(), convert\_\-to\_\-int\_\-list\_\-all\_\-targets(), CU\_\-calc\_\-int\_\-field\_\-max\_\-value(), CU\_\-calc\_\-max\_\-field\_\-size(), CU\_\-coalesce\_\-unconditional\_\-usages(), CU\_\-count\_\-entries(), CU\_\-count\_\-section\_\-entries(), CU\_\-find\_\-section(), CU\_\-order\_\-use\_\-fields(), CU\_\-parm\_\-exists(), CU\_\-set\_\-int\_\-parm(), CU\_\-set\_\-slot\_\-parameters(), CU\_\-set\_\-string\_\-parm(), customization\_\-errors, do\_\-classical\_\-optimizations(), dump\_\-md(), expand\_\-out\_\-reservation\_\-tables(), expand\_\-tables, format\_\-reservation\_\-tables(), header\_\-errors, homogenize\_\-reservation\_\-tables(), mark\_\-resource\_\-unit\_\-slots(), MD\_\-find\_\-section, opti\_\-level, optimize\_\-resource\_\-units(), print\_\-static\_\-stats(), print\_\-table\_\-trees(), print\_\-time\_\-stamp(), print\_\-trees, read\_\-header\_\-tables(), reduce\_\-resource\_\-units(), remove\_\-original\_\-name(), rename\_\-section\_\-entries(), rename\_\-table, resource\_\-minimization, static\_\-stats, STRING\_\-delete\_\-symbol\_\-table(), STRING\_\-new\_\-symbol\_\-table(), and tree\_\-opti.
+
+Referenced by main().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!delete_resource@{delete\_\-resource}}
+\index{delete_resource@{delete\_\-resource}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void delete\_\-resource (\bf{Resource\_\-Info} $\ast$ {\em resource})}\label{lmdes2__customizer_8c_bfdef3d3f07e9a7c115420edfd247755}
+
+
+
+
+Definition at line 7324 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-delete\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), INT\_\-Symbol::next\_\-symbol, NULL, and Resource\_\-Info::time\_\-table.
+
+Referenced by build\_\-generating\_\-set(), and free\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!distribute_usage@{distribute\_\-usage}}
+\index{distribute_usage@{distribute\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void distribute\_\-usage (\bf{MD\_\-Field} $\ast$ {\em table\_\-use\_\-field}, int {\em index}, \bf{MD\_\-Entry} $\ast$ {\em usage\_\-entry})}\label{lmdes2__customizer_8c_ec658bc2635a4784ff353fc3cad8bb0b}
+
+
+
+
+Definition at line 3226 of file lmdes2\_\-customizer.c.
+
+References CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-set\_\-link, and MD\_\-Entry::name.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!do_classical_optimizations@{do\_\-classical\_\-optimizations}}
+\index{do_classical_optimizations@{do\_\-classical\_\-optimizations}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int do\_\-classical\_\-optimizations (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_609ff85ad7bd0ce810ba3f0732aef469}
+
+
+
+
+Definition at line 6106 of file lmdes2\_\-customizer.c.
+
+References eliminate\_\-redundant\_\-entries(), opti\_\-level, optimize\_\-alt\_\-lists(), print\_\-time\_\-stamp(), and remove\_\-unreferenced\_\-entries().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!dump_md@{dump\_\-md}}
+\index{dump_md@{dump\_\-md}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void dump\_\-md (char $\ast$ {\em file\_\-name}, \bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_e15b6758241bc43ed7472236b84c63bd}
+
+
+
+
+Definition at line 9353 of file lmdes2\_\-customizer.c.
+
+References I\_\-punt(), MD\_\-write\_\-md(), and print\_\-time\_\-stamp().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!eliminate_redundant_entries@{eliminate\_\-redundant\_\-entries}}
+\index{eliminate_redundant_entries@{eliminate\_\-redundant\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int eliminate\_\-redundant\_\-entries (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2__customizer_8c_31d467358cd44db3f94464165d183232}
+
+
+
+
+Definition at line 5624 of file lmdes2\_\-customizer.c.
+
+References add\_\-remap\_\-entry(), build\_\-link\_\-table(), build\_\-remap\_\-table(), C\_\-punt(), CU\_\-find\_\-section(), CU\_\-replace\_\-references(), INT\_\-Symbol::data, ENTRY\_\-add\_\-contents(), ENTRY\_\-delete\_\-contents\_\-table(), ENTRY\_\-find\_\-match(), ENTRY\_\-new\_\-contents\_\-table(), MD\_\-Section::entry\_\-table, free\_\-link\_\-table(), free\_\-remap\_\-table(), Pointer\_\-Mapping::from, INT\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-delete\_\-entry, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), MD\_\-Section::name, INT\_\-Symbol::next\_\-symbol, NULL, and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by do\_\-classical\_\-optimizations().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!eliminate_redundant_new_entries_only@{eliminate\_\-redundant\_\-new\_\-entries\_\-only}}
+\index{eliminate_redundant_new_entries_only@{eliminate\_\-redundant\_\-new\_\-entries\_\-only}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int eliminate\_\-redundant\_\-new\_\-entries\_\-only (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2__customizer_8c_4286ee81d149a7bd3dda9056304a94bd}
+
+
+
+
+Definition at line 5746 of file lmdes2\_\-customizer.c.
+
+References add\_\-remap\_\-entry(), build\_\-link\_\-table(), build\_\-remap\_\-table(), C\_\-punt(), CU\_\-find\_\-section(), CU\_\-replace\_\-references(), INT\_\-Symbol::data, ENTRY\_\-add\_\-contents(), ENTRY\_\-delete\_\-contents\_\-table(), ENTRY\_\-find\_\-match(), ENTRY\_\-new\_\-contents\_\-table(), MD\_\-Section::entry\_\-table, free\_\-link\_\-table(), free\_\-remap\_\-table(), Pointer\_\-Mapping::from, INT\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-delete\_\-entry, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), MD\_\-Section::name, INT\_\-Symbol::next\_\-symbol, NULL, and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by homogenize\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_add_contents@{ENTRY\_\-add\_\-contents}}
+\index{ENTRY_add_contents@{ENTRY\_\-add\_\-contents}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void ENTRY\_\-add\_\-contents (\bf{ENTRY\_\-Contents\_\-Table} $\ast$ {\em table}, \bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_f8b740c45578bf755315091df166950f}
+
+
+
+
+Definition at line 5336 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-redundant\_\-entries(), INT\_\-Symbol::data, entry, ENTRY\_\-Contents\_\-Node\_\-pool, ENTRY\_\-hash\_\-contents(), ENTRY\_\-Contents\_\-Table::hash\_\-table, ENTRY\_\-Contents\_\-Table::ignore\_\-field, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), node, and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_delete_contents_table@{ENTRY\_\-delete\_\-contents\_\-table}}
+\index{ENTRY_delete_contents_table@{ENTRY\_\-delete\_\-contents\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void ENTRY\_\-delete\_\-contents\_\-table (\bf{ENTRY\_\-Contents\_\-Table} $\ast$ {\em table})}\label{lmdes2__customizer_8c_935d5d6ef4bbee76bfd07e7f15b71b71}
+
+
+
+
+Definition at line 5438 of file lmdes2\_\-customizer.c.
+
+References ENTRY\_\-Contents\_\-Table\_\-pool, ENTRY\_\-free\_\-nodes(), ENTRY\_\-Contents\_\-Table::hash\_\-table, ENTRY\_\-Contents\_\-Table::ignore\_\-field, INT\_\-delete\_\-symbol\_\-table(), L\_\-free(), and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_find_match@{ENTRY\_\-find\_\-match}}
+\index{ENTRY_find_match@{ENTRY\_\-find\_\-match}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD\_\-Entry}$\ast$ ENTRY\_\-find\_\-match (\bf{ENTRY\_\-Contents\_\-Table} $\ast$ {\em table}, \bf{MD\_\-Entry} $\ast$ {\em entry})}\label{lmdes2__customizer_8c_7b037f4ab90fd72816810e1990293073}
+
+
+
+
+Definition at line 5391 of file lmdes2\_\-customizer.c.
+
+References CU\_\-redundant\_\-entries(), INT\_\-Symbol::data, entry, ENTRY\_\-hash\_\-contents(), ENTRY\_\-Contents\_\-Table::hash\_\-table, ENTRY\_\-Contents\_\-Table::ignore\_\-field, INT\_\-find\_\-symbol(), node, and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_free_nodes@{ENTRY\_\-free\_\-nodes}}
+\index{ENTRY_free_nodes@{ENTRY\_\-free\_\-nodes}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void ENTRY\_\-free\_\-nodes (\bf{ENTRY\_\-Contents\_\-Node} $\ast$ {\em first\_\-node})}\label{lmdes2__customizer_8c_9ce7b111a4ff0767a08abb0fd60b3ad3}
+
+
+
+
+Definition at line 5423 of file lmdes2\_\-customizer.c.
+
+References ENTRY\_\-Contents\_\-Node\_\-pool, L\_\-free(), ENTRY\_\-Contents\_\-Node::next\_\-node, node, and NULL.
+
+Referenced by ENTRY\_\-delete\_\-contents\_\-table().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_hash_contents@{ENTRY\_\-hash\_\-contents}}
+\index{ENTRY_hash_contents@{ENTRY\_\-hash\_\-contents}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int ENTRY\_\-hash\_\-contents (\bf{MD\_\-Entry} $\ast$ {\em entry1}, char $\ast$ {\em ignore\_\-field})}\label{lmdes2__customizer_8c_5111443c1c6b69caeee383c07d23fdc1}
+
+
+
+
+Definition at line 5245 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-hash\_\-string(), MD\_\-Element::d, MD\_\-Field::element, MD\_\-Element::i, MD\_\-Element::l, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::md, MD\_\-DOUBLE, MD\_\-find\_\-field, MD\_\-first\_\-field\_\-decl(), MD\_\-INT, MD\_\-LINK, MD\_\-next\_\-field\_\-decl(), MD\_\-STRING, MD\_\-Field\_\-Decl::name, NULL, MD\_\-Element::s, MD\_\-Entry::section, MD\_\-Element::type, and MD\_\-Element::value.
+
+Referenced by ENTRY\_\-add\_\-contents(), and ENTRY\_\-find\_\-match().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_new_contents_table@{ENTRY\_\-new\_\-contents\_\-table}}
+\index{ENTRY_new_contents_table@{ENTRY\_\-new\_\-contents\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{ENTRY\_\-Contents\_\-Table}$\ast$ ENTRY\_\-new\_\-contents\_\-table (char $\ast$ {\em ignore\_\-field}, int {\em size})}\label{lmdes2__customizer_8c_f16fbbf8f638e1751157ef9598f2ef3a}
+
+
+
+
+Definition at line 5215 of file lmdes2\_\-customizer.c.
+
+References ENTRY\_\-Contents\_\-Table\_\-pool, ENTRY\_\-Contents\_\-Table::hash\_\-table, ENTRY\_\-Contents\_\-Table::ignore\_\-field, INT\_\-new\_\-symbol\_\-table(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!entry_referenced@{entry\_\-referenced}}
+\index{entry_referenced@{entry\_\-referenced}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int entry\_\-referenced (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em referenced\_\-table}, \bf{MD\_\-Entry} $\ast$ {\em test\_\-entry})}\label{lmdes2__customizer_8c_576134def61f55e5825097f6c622e8be}
+
+
+
+
+Definition at line 5088 of file lmdes2\_\-customizer.c.
+
+References INT\_\-find\_\-symbol(), and NULL.
+
+Referenced by remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!enumerate_pairs@{enumerate\_\-pairs}}
+\index{enumerate_pairs@{enumerate\_\-pairs}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void enumerate\_\-pairs (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource})}\label{lmdes2__customizer_8c_f5f197f8e2818c8aeebcad98a7af54ba}
+
+
+
+
+Definition at line 7558 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol(), Resource\_\-Info::name, Pair\_\-Node::next, INT\_\-Symbol::next\_\-symbol, NULL, Pair\_\-Node::resource, Pair\_\-Node::time1, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by minimize\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!expand_options@{expand\_\-options}}
+\index{expand_options@{expand\_\-options}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void expand\_\-options (\bf{MD\_\-Entry} $\ast$ {\em dest\_\-option}, \bf{MD\_\-Entry} $\ast$ {\em src\_\-option})}\label{lmdes2__customizer_8c_77106874c18f2790c5bb0073dadf1313}
+
+
+
+
+Definition at line 6846 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-add\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by expand\_\-out\_\-reservation\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!expand_out_reservation_tables@{expand\_\-out\_\-reservation\_\-tables}}
+\index{expand_out_reservation_tables@{expand\_\-out\_\-reservation\_\-tables}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void expand\_\-out\_\-reservation\_\-tables (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_fc9ac81a9950e113cd26337a38f6079c}
+
+
+
+
+Definition at line 6928 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-unique\_\-name(), expand\_\-options(), MD\_\-Field::max\_\-element\_\-index, MD\_\-delete\_\-element(), MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Entry::name, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!find_children@{find\_\-children}}
+\index{find_children@{find\_\-children}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void find\_\-children (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em child\_\-table}, \bf{MD\_\-Entry} $\ast$ {\em entry}, \bf{MD\_\-Field\_\-Decl} $\ast$ {\em field\_\-decl})}\label{lmdes2__customizer_8c_f1a4477e115e0eba3990744a657173c2}
+
+
+
+
+Definition at line 1118 of file lmdes2\_\-customizer.c.
+
+References entry, INT\_\-add\_\-symbol(), INT\_\-find\_\-symbol(), MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-get\_\-link, and NULL.
+
+Referenced by add\_\-all\_\-children\_\-to\_\-list().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!find_header_value@{find\_\-header\_\-value}}
+\index{find_header_value@{find\_\-header\_\-value}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int find\_\-header\_\-value (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em name}, int $\ast$ {\em value})}\label{lmdes2__customizer_8c_3104e311f120343924d365c7d4a9f816}
+
+
+
+
+Definition at line 704 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), STRING\_\-Symbol::data, STRING\_\-Symbol\_\-Table::head\_\-symbol, header\_\-errors, header\_\-table\_\-table, MD::name, STRING\_\-Symbol::next\_\-symbol, NULL, and STRING\_\-find\_\-symbol\_\-data().
+
+Referenced by annotate\_\-header\_\-values().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!format_reservation_tables@{format\_\-reservation\_\-tables}}
+\index{format_reservation_tables@{format\_\-reservation\_\-tables}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void format\_\-reservation\_\-tables (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_7633a9393e597832a6f16c70d882d3b5}
+
+
+
+
+Definition at line 6528 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-get\_\-unique\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-require\_\-int(), MD\_\-require\_\-multi\_\-target\_\-link(), MD\_\-REQUIRED\_\-FIELD, MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Section::name, NULL, and MD\_\-Entry::section.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!free_generating_set@{free\_\-generating\_\-set}}
+\index{free_generating_set@{free\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-generating\_\-set (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em generating\_\-set})}\label{lmdes2__customizer_8c_4327d8c541da78d5f3f9cf53831da30d}
+
+
+
+
+Definition at line 8338 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, delete\_\-resource(), INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-delete\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), and INT\_\-Symbol::next\_\-symbol.
+
+Referenced by reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!free_link_table@{free\_\-link\_\-table}}
+\index{free_link_table@{free\_\-link\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-link\_\-table (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em link\_\-table})}\label{lmdes2__customizer_8c_fa4c4f19e0105b0a4fb487dafb37bd84}
+
+
+
+
+Definition at line 4866 of file lmdes2\_\-customizer.c.
+
+References INT\_\-delete\_\-symbol\_\-table(), and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), eliminate\_\-redundant\_\-new\_\-entries\_\-only(), and remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!free_referenced_table@{free\_\-referenced\_\-table}}
+\index{free_referenced_table@{free\_\-referenced\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-referenced\_\-table (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em referenced\_\-table})}\label{lmdes2__customizer_8c_4b79fa02bfedc02fd8a999e382611b64}
+
+
+
+
+Definition at line 5016 of file lmdes2\_\-customizer.c.
+
+References INT\_\-delete\_\-symbol\_\-table(), and NULL.
+
+Referenced by remove\_\-unreferenced\_\-entries().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!free_remap_table@{free\_\-remap\_\-table}}
+\index{free_remap_table@{free\_\-remap\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-remap\_\-table (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em remap\_\-table})}\label{lmdes2__customizer_8c_7b841160a37c9819cb24c2709727eb58}
+
+
+
+
+Definition at line 4933 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-delete\_\-symbol\_\-table(), INT\_\-Symbol::next\_\-symbol, and NULL.
+
+Referenced by eliminate\_\-redundant\_\-entries(), and eliminate\_\-redundant\_\-new\_\-entries\_\-only().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!homogenize_reservation_tables@{homogenize\_\-reservation\_\-tables}}
+\index{homogenize_reservation_tables@{homogenize\_\-reservation\_\-tables}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void homogenize\_\-reservation\_\-tables (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_3f2c2ef62b99bf93eba2656e2f742c67}
+
+
+
+
+Definition at line 4091 of file lmdes2\_\-customizer.c.
+
+References CU\_\-consolidate\_\-res\_\-table\_\-usages(), CU\_\-distribute\_\-unconditional\_\-usages(), CU\_\-find\_\-section(), CU\_\-homogenize\_\-resource\_\-usages(), CU\_\-homogenize\_\-table\_\-options(), CU\_\-make\_\-res\_\-table\_\-orthogonal(), CU\_\-optimize\_\-resource\_\-usage\_\-times(), CU\_\-order\_\-use\_\-fields(), eliminate\_\-redundant\_\-new\_\-entries\_\-only(), MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), NULL, opti\_\-level, and tree\_\-opti.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!instantiate_generating_set@{instantiate\_\-generating\_\-set}}
+\index{instantiate_generating_set@{instantiate\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void instantiate\_\-generating\_\-set (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em generating\_\-set}, \bf{MD\_\-Field} $\ast$$\ast$ {\em use\_\-array}, int {\em num\_\-units}, \bf{MD\_\-Section} $\ast$ {\em usage\_\-section})}\label{lmdes2__customizer_8c_9e2ad332512f8a39005bb239d100eef6}
+
+
+
+
+Definition at line 8365 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-decl(), INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-delete\_\-element(), MD\_\-delete\_\-entry, MD\_\-first\_\-entry(), MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-next\_\-entry(), MD\_\-set\_\-int, MD\_\-set\_\-link, Resource\_\-Info::name, INT\_\-Symbol::next\_\-symbol, Resource\_\-Info::resource\_\-entry, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!is_compatable@{is\_\-compatable}}
+\index{is_compatable@{is\_\-compatable}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-compatable (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em new\_\-user}, int {\em new\_\-time})}\label{lmdes2__customizer_8c_e57b1f371837875dcd922b96c5d4099d}
+
+
+
+
+Definition at line 7147 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, is\_\-forbidden(), INT\_\-Symbol::next\_\-symbol, NULL, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by add\_\-to\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!is_forbidden@{is\_\-forbidden}}
+\index{is_forbidden@{is\_\-forbidden}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-forbidden (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, int {\em user1}, int {\em user2}, int {\em latency})}\label{lmdes2__customizer_8c_ac6b4ad0603ffe89733d6f648fe92f55}
+
+
+
+
+Definition at line 7116 of file lmdes2\_\-customizer.c.
+
+References INT\_\-find\_\-symbol(), and NULL.
+
+Referenced by is\_\-compatable().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!is_usage_committed@{is\_\-usage\_\-committed}}
+\index{is_usage_committed@{is\_\-usage\_\-committed}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-usage\_\-committed (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_9de3070c3c12a6fffae5eab9c66d1925}
+
+
+
+
+Definition at line 7811 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, INT\_\-find\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), NULL, and Resource\_\-Info::time\_\-table.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!main@{main}}
+\index{main@{main}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int main (int {\em argc}, char $\ast$$\ast$ {\em argv})}\label{lmdes2__customizer_8c_3c04138a5bfe5d72780bb7e82a18e627}
+
+
+
+
+Definition at line 510 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), customize\_\-md(), input\_\-file\_\-name, MD\_\-check\_\-md(), MD\_\-delete\_\-md(), MD\_\-print\_\-md(), MD\_\-print\_\-md\_\-declarations(), MD\_\-read\_\-md(), MD\_\-write\_\-md(), MD::name, NULL, output\_\-file\_\-name, output\_\-mode, read\_\-command\_\-line\_\-parameters(), using\_\-stdin, and verbose.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!mark_covered@{mark\_\-covered}}
+\index{mark_covered@{mark\_\-covered}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int mark\_\-covered (\bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, \bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_9f86fef88cfa05bb7b44606ba6d92f8b}
+
+
+
+
+Definition at line 7635 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol(), Resource\_\-Info::name, Pair\_\-Node::next, INT\_\-Symbol::next\_\-symbol, NULL, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by commit\_\-usage().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!mark_resource_unit_slots@{mark\_\-resource\_\-unit\_\-slots}}
+\index{mark_resource_unit_slots@{mark\_\-resource\_\-unit\_\-slots}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void mark\_\-resource\_\-unit\_\-slots (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_5654a965175dc1d0b0e5b172cead0ac7}
+
+
+
+
+Definition at line 6369 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-section(), CU\_\-get\_\-slot(), MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-entry(), MD\_\-new\_\-field(), MD\_\-new\_\-field\_\-decl(), MD\_\-next\_\-entry(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-require\_\-int(), MD\_\-set\_\-int, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!minimize_generating_set@{minimize\_\-generating\_\-set}}
+\index{minimize_generating_set@{minimize\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void minimize\_\-generating\_\-set (\bf{INT\_\-Symbol\_\-Table} $\ast$ {\em generating\_\-set}, \bf{INT\_\-Symbol\_\-Table} $\ast$$\ast$$\ast$ {\em forbidden\_\-matrix}, int {\em num\_\-units}, \bf{MD\_\-Entry} $\ast$$\ast$ {\em unit\_\-array})}\label{lmdes2__customizer_8c_4a7cfc80caf1cc2ac73c2347fa710f63}
+
+
+
+
+Definition at line 7955 of file lmdes2\_\-customizer.c.
+
+References commit\_\-usage(), INT\_\-Symbol::data, enumerate\_\-pairs(), Resource\_\-Info::flags, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol\_\-data(), Resource\_\-Info::name, Pair\_\-Node::next, INT\_\-Symbol::next\_\-symbol, NULL, Pair\_\-Node::resource, SLOT\_\-RESOURCE, Pair\_\-Node::time1, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!optimize_alt_lists@{optimize\_\-alt\_\-lists}}
+\index{optimize_alt_lists@{optimize\_\-alt\_\-lists}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int optimize\_\-alt\_\-lists (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_68281f2aaba233f2380c5774122253be}
+
+
+
+
+Definition at line 5926 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-delete\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), CU\_\-redundant\_\-entries(), DEBUG\_\-OPTI, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-field, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), MD\_\-set\_\-link, MD\_\-Entry::name, and NULL.
+
+Referenced by do\_\-classical\_\-optimizations().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!optimize_resource_units@{optimize\_\-resource\_\-units}}
+\index{optimize_resource_units@{optimize\_\-resource\_\-units}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void optimize\_\-resource\_\-units (\bf{MD} $\ast$ {\em md}, int {\em max\_\-offset})}\label{lmdes2__customizer_8c_2160faed9e117c61232adfb550843aaa}
+
+
+
+
+Definition at line 4603 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-field\_\-decl(), CU\_\-find\_\-section(), INT\_\-Symbol::data, Heap\_\-Create(), Heap\_\-Dispose(), Heap\_\-Extract\-Top(), Heap\_\-Insert(), HEAP\_\-MIN, INT\_\-add\_\-symbol(), INT\_\-delete\_\-symbol\_\-table(), INT\_\-find\_\-symbol(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Element\_\-Req::kleene\_\-starred, MD\_\-Element\_\-Req::link, MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-element(), MD\_\-first\_\-entry(), MD\_\-get\_\-int, MD\_\-get\_\-link, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-print\_\-field\_\-decl(), MD\_\-require\_\-link(), MD\_\-set\_\-link, MD\_\-Entry::name, MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::require, and MD\_\-Element\_\-Req::type.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!option_usage_common_at_time@{option\_\-usage\_\-common\_\-at\_\-time}}
+\index{option_usage_common_at_time@{option\_\-usage\_\-common\_\-at\_\-time}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int option\_\-usage\_\-common\_\-at\_\-time (\bf{MD\_\-Entry} $\ast$ {\em option\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em usage\_\-entry})}\label{lmdes2__customizer_8c_b3184354774cd9adb6c800a4751ca015}
+
+
+
+
+Definition at line 4383 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, MD\_\-get\_\-link, and usage\_\-common\_\-to\_\-all\_\-options().
+
+Referenced by CU\_\-coalesce\_\-unconditional\_\-usages().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_and_or_tree@{print\_\-and\_\-or\_\-tree}}
+\index{print_and_or_tree@{print\_\-and\_\-or\_\-tree}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-and\_\-or\_\-tree (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em table})}\label{lmdes2__customizer_8c_b3fc3f2427e4193ddc11562a6ed56f7b}
+
+
+
+
+Definition at line 9185 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Section::name, MD\_\-Entry::name, print\_\-option\_\-tree(), print\_\-unit\_\-tree(), and MD\_\-Entry::section.
+
+Referenced by print\_\-table\_\-trees().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_generating_set@{print\_\-generating\_\-set}}
+\index{print_generating_set@{print\_\-generating\_\-set}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-generating\_\-set (FILE $\ast$ {\em out}, \bf{INT\_\-Symbol\_\-Table} $\ast$ {\em generating\_\-set}, \bf{MD\_\-Entry} $\ast$$\ast$ {\em unit\_\-array}, int {\em committed})}\label{lmdes2__customizer_8c_ebeba51fe729c503fd5b0918d2631671}
+
+
+
+
+Definition at line 8291 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, Resource\_\-Info::name, INT\_\-Symbol::next\_\-symbol, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by build\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_option_tree@{print\_\-option\_\-tree}}
+\index{print_option_tree@{print\_\-option\_\-tree}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-option\_\-tree (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em option\_\-entry})}\label{lmdes2__customizer_8c_403032539b9119ba7e8100ea00975277}
+
+
+
+
+Definition at line 9170 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, and print\_\-unit\_\-tree().
+
+Referenced by print\_\-and\_\-or\_\-tree().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_ru_tree@{print\_\-ru\_\-tree}}
+\index{print_ru_tree@{print\_\-ru\_\-tree}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-ru\_\-tree (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em ru\_\-entry})}\label{lmdes2__customizer_8c_fb00d3f1fdaa1c335512b34734911cd3}
+
+
+
+
+Definition at line 9131 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, MD\_\-get\_\-link, and MD\_\-Entry::name.
+
+Referenced by print\_\-unit\_\-tree().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_static_stats@{print\_\-static\_\-stats}}
+\index{print_static_stats@{print\_\-static\_\-stats}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-static\_\-stats (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_b970674a582a8ea1ad5140f669f34581}
+
+
+
+
+Definition at line 9030 of file lmdes2\_\-customizer.c.
+
+References calc\_\-best\_\-case\_\-fail(), calc\_\-best\_\-case\_\-succeed(), calc\_\-memory\_\-size(), calc\_\-worst\_\-case\_\-fail(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), DEBUG\_\-OPTI, MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-get\_\-link, MD\_\-next\_\-entry(), and MD\_\-Entry::name.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_table_trees@{print\_\-table\_\-trees}}
+\index{print_table_trees@{print\_\-table\_\-trees}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-table\_\-trees (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_a2b1793d18fb89fc6b66c789c85cc39a}
+
+
+
+
+Definition at line 9205 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-section(), MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), and print\_\-and\_\-or\_\-tree().
+
+Referenced by customize\_\-md(), and reduce\_\-resource\_\-units().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_time_stamp@{print\_\-time\_\-stamp}}
+\index{print_time_stamp@{print\_\-time\_\-stamp}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-time\_\-stamp (FILE $\ast$ {\em out})}\label{lmdes2__customizer_8c_0544d5712b0f4afe9036291b18aab413}
+
+
+
+
+Definition at line 240 of file lmdes2\_\-customizer.c.
+
+References NULL.
+
+Referenced by customize\_\-md(), do\_\-classical\_\-optimizations(), and dump\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_unit_tree@{print\_\-unit\_\-tree}}
+\index{print_unit_tree@{print\_\-unit\_\-tree}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-unit\_\-tree (FILE $\ast$ {\em out}, \bf{MD\_\-Entry} $\ast$ {\em unit\_\-entry}, int {\em option\_\-id})}\label{lmdes2__customizer_8c_a8a42d2c311cc844d1ba895443b70aa4}
+
+
+
+
+Definition at line 9154 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-Entry::name, and print\_\-ru\_\-tree().
+
+Referenced by print\_\-and\_\-or\_\-tree(), and print\_\-option\_\-tree().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_usage@{print\_\-usage}}
+\index{print_usage@{print\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-usage (char $\ast$ {\em fmt},  {\em ...})}\label{lmdes2__customizer_8c_62ac7a1cfa066f61a3317977c936b8f2}
+
+
+
+
+Definition at line 256 of file lmdes2\_\-customizer.c.
+
+References NULL, and program\_\-name.
+
+Referenced by read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}}
+\index{read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void read\_\-command\_\-line\_\-parameters (int {\em argc}, char $\ast$$\ast$ {\em arg\_\-ptr})}\label{lmdes2__customizer_8c_b5ad1e75f3e95a8372855846f911efe1}
+
+
+
+
+Definition at line 308 of file lmdes2\_\-customizer.c.
+
+References bypass\_\-alloc\_\-routines, expand\_\-tables, input\_\-file\_\-name, NULL, opti\_\-level, output\_\-file\_\-name, output\_\-mode, output\_\-page\_\-width, print\_\-trees, print\_\-usage(), program\_\-name, resource\_\-minimization, static\_\-stats, tree\_\-opti, using\_\-stdin, and verbose.
+
+Referenced by main().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!read_header_file@{read\_\-header\_\-file}}
+\index{read_header_file@{read\_\-header\_\-file}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{STRING\_\-Symbol\_\-Table}$\ast$ read\_\-header\_\-file (char $\ast$ {\em file\_\-name}, int {\em print\_\-warnings})}\label{lmdes2__customizer_8c_33574aec74728b493ce42679b1c18d10}
+
+
+
+
+Definition at line 91 of file header\_\-reader2.c.
+
+References hparse\_\-info\_\-st::comment\_\-level, hparse\_\-info\_\-st::endif\_\-level, Hget\_\-next\_\-line(), Hparse\_\-line(), Hskip\_\-to\_\-endif(), I\_\-punt(), hparse\_\-info\_\-st::in, hparse\_\-info\_\-st::line, MLINE\_\-SIZE, hparse\_\-info\_\-st::name, name, NULL, STRING\_\-add\_\-symbol(), STRING\_\-find\_\-symbol(), STRING\_\-find\_\-symbol\_\-data(), STRING\_\-new\_\-symbol\_\-table(), and hparse\_\-info\_\-st::table.
+
+Referenced by read\_\-header\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!read_header_tables@{read\_\-header\_\-tables}}
+\index{read_header_tables@{read\_\-header\_\-tables}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void read\_\-header\_\-tables (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_335c1116a90b866de4a2951d0bb9eca0}
+
+
+
+
+Definition at line 624 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), MD\_\-Field::decl, header\_\-table\_\-table, MD\_\-Field::max\_\-element\_\-index, MD\_\-find\_\-entry, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-get\_\-string, MD\_\-Field\_\-Decl::name, NULL, read\_\-header\_\-file(), STRING\_\-add\_\-symbol(), STRING\_\-find\_\-symbol(), STRING\_\-new\_\-symbol\_\-table(), and verbose.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!reduce_resource_units@{reduce\_\-resource\_\-units}}
+\index{reduce_resource_units@{reduce\_\-resource\_\-units}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void reduce\_\-resource\_\-units (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_80bbeee5328a5227004302dbc729efa9}
+
+
+
+
+Definition at line 8450 of file lmdes2\_\-customizer.c.
+
+References build\_\-generating\_\-set(), C\_\-punt(), calc\_\-forbidden\_\-latencies(), CU\_\-count\_\-section\_\-entries(), CU\_\-find\_\-field\_\-by\_\-name(), CU\_\-find\_\-section(), free\_\-generating\_\-set(), instantiate\_\-generating\_\-set(), INT\_\-delete\_\-symbol\_\-table(), INT\_\-new\_\-symbol\_\-table(), MD\_\-Field::max\_\-element\_\-index, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), minimize\_\-generating\_\-set(), name, MD::name, and print\_\-table\_\-trees().
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!remove_common_usage@{remove\_\-common\_\-usage}}
+\index{remove_common_usage@{remove\_\-common\_\-usage}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void remove\_\-common\_\-usage (\bf{MD\_\-Entry} $\ast$ {\em option\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em usage\_\-entry})}\label{lmdes2__customizer_8c_bd8894f969d13c98f666bbf98a5383a3}
+
+
+
+
+Definition at line 4424 of file lmdes2\_\-customizer.c.
+
+References C\_\-punt(), CU\_\-delete\_\-link\_\-at(), CU\_\-dup\_\-entry(), CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-link, MD\_\-set\_\-link, MD\_\-Entry::name, and NULL.
+
+Referenced by CU\_\-coalesce\_\-unconditional\_\-usages().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!remove_original_name@{remove\_\-original\_\-name}}
+\index{remove_original_name@{remove\_\-original\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void remove\_\-original\_\-name (\bf{MD} $\ast$ {\em md})}\label{lmdes2__customizer_8c_6747e11fe0efbbeea18472c8a80f3a2c}
+
+
+
+
+Definition at line 5878 of file lmdes2\_\-customizer.c.
+
+References MD\_\-delete\_\-field\_\-decl(), MD\_\-find\_\-field\_\-decl, MD\_\-first\_\-section(), MD\_\-next\_\-section(), MD\_\-Field\_\-Decl::name, and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!remove_unreferenced_entries@{remove\_\-unreferenced\_\-entries}}
+\index{remove_unreferenced_entries@{remove\_\-unreferenced\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int remove\_\-unreferenced\_\-entries (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name})}\label{lmdes2__customizer_8c_a4a74696d0e80cb977df64ded2259566}
+
+
+
+
+Definition at line 5101 of file lmdes2\_\-customizer.c.
+
+References build\_\-link\_\-table(), build\_\-referenced\_\-table(), C\_\-punt(), CU\_\-find\_\-section(), DEBUG\_\-OPTI, entry\_\-referenced(), MD\_\-Section::entry\_\-table, free\_\-link\_\-table(), free\_\-referenced\_\-table(), INT\_\-Symbol\_\-Table::head\_\-symbol, MD\_\-delete\_\-entry, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), MD\_\-Section::name, NULL, and MD\_\-Symbol\_\-Table::symbol\_\-count.
+
+Referenced by do\_\-classical\_\-optimizations().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!rename_section_entries@{rename\_\-section\_\-entries}}
+\index{rename_section_entries@{rename\_\-section\_\-entries}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void rename\_\-section\_\-entries (\bf{MD} $\ast$ {\em md}, char $\ast$ {\em section\_\-name}, char $\ast$ {\em prefix})}\label{lmdes2__customizer_8c_7c5c454e016c0ad79e30d314beb9f3fd}
+
+
+
+
+Definition at line 5904 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-section(), entry, MD\_\-first\_\-entry(), MD\_\-next\_\-entry(), MD\_\-rename\_\-entry(), and NULL.
+
+Referenced by customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!resource_redundant@{resource\_\-redundant}}
+\index{resource_redundant@{resource\_\-redundant}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int resource\_\-redundant (\bf{Resource\_\-Info} $\ast$ {\em resource1}, \bf{Resource\_\-Info} $\ast$ {\em resource2})}\label{lmdes2__customizer_8c_ddf6fc9b02168b82e781ab4cfb4f96a2}
+
+
+
+
+Definition at line 7279 of file lmdes2\_\-customizer.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol\_\-Table::head\_\-symbol, INT\_\-find\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), INT\_\-Symbol::next\_\-symbol, NULL, Resource\_\-Info::time\_\-table, and INT\_\-Symbol::value.
+
+Referenced by build\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!usage_common_to_all_options@{usage\_\-common\_\-to\_\-all\_\-options}}
+\index{usage_common_to_all_options@{usage\_\-common\_\-to\_\-all\_\-options}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int usage\_\-common\_\-to\_\-all\_\-options (\bf{MD\_\-Entry} $\ast$ {\em option\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em ru\_\-entry})}\label{lmdes2__customizer_8c_9676b54b21aedb75cd1024a8d8192b82}
+
+
+
+
+Definition at line 4345 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, and MD\_\-get\_\-link.
+
+Referenced by option\_\-usage\_\-common\_\-at\_\-time().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!usage_cycle_compatable@{usage\_\-cycle\_\-compatable}}
+\index{usage_cycle_compatable@{usage\_\-cycle\_\-compatable}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int usage\_\-cycle\_\-compatable (\bf{MD\_\-Entry} $\ast$ {\em usage\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em option\_\-entry})}\label{lmdes2__customizer_8c_aa03acc0339bfa5eb1dfac59e896fe1a}
+
+
+
+
+Definition at line 3142 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, MD\_\-get\_\-int, and MD\_\-get\_\-link.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!usage_exists@{usage\_\-exists}}
+\index{usage_exists@{usage\_\-exists}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int usage\_\-exists (\bf{Resource\_\-Info} $\ast$ {\em resource}, int {\em user}, int {\em time})}\label{lmdes2__customizer_8c_50502d936ec33def8a9137058724306b}
+
+
+
+
+Definition at line 7093 of file lmdes2\_\-customizer.c.
+
+References INT\_\-find\_\-symbol(), INT\_\-find\_\-symbol\_\-data(), NULL, and Resource\_\-Info::time\_\-table.
+
+Referenced by add\_\-to\_\-generating\_\-set().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!usage_resource_compatable@{usage\_\-resource\_\-compatable}}
+\index{usage_resource_compatable@{usage\_\-resource\_\-compatable}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int usage\_\-resource\_\-compatable (\bf{MD\_\-Entry} $\ast$ {\em usage\_\-entry}, \bf{MD\_\-Entry} $\ast$ {\em option\_\-entry})}\label{lmdes2__customizer_8c_bc7d12e76acc86904bdebd5296230f21}
+
+
+
+
+Definition at line 3184 of file lmdes2\_\-customizer.c.
+
+References CU\_\-find\_\-field\_\-by\_\-name(), MD\_\-Field::max\_\-element\_\-index, and MD\_\-get\_\-link.
+
+\subsection{Variable Documentation}
+\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!customization_errors@{customization\_\-errors}}
+\index{customization_errors@{customization\_\-errors}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{customization\_\-errors} = 0}\label{lmdes2__customizer_8c_d3c82b27bc8b51337e625c1969a5e7bc}
+
+
+
+
+Definition at line 199 of file lmdes2\_\-customizer.c.
+
+Referenced by check\_\-bidirectional\_\-links(), check\_\-for\_\-unconditional\_\-overlap(), check\_\-int\_\-bounds(), check\_\-proc\_\-opcs(), check\_\-slot\_\-specification(), check\_\-table\_\-option\_\-count(), convert\_\-to\_\-int\_\-list\_\-all\_\-targets(), and customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_Contents_Node_pool@{ENTRY\_\-Contents\_\-Node\_\-pool}}
+\index{ENTRY_Contents_Node_pool@{ENTRY\_\-Contents\_\-Node\_\-pool}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{ENTRY\_\-Contents\_\-Node\_\-pool} = \bf{NULL}}\label{lmdes2__customizer_8c_8f9a19ca198e5d6477591152edc4b9e9}
+
+
+
+
+Definition at line 185 of file lmdes2\_\-customizer.c.
+
+Referenced by ENTRY\_\-add\_\-contents(), and ENTRY\_\-free\_\-nodes().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!ENTRY_Contents_Table_pool@{ENTRY\_\-Contents\_\-Table\_\-pool}}
+\index{ENTRY_Contents_Table_pool@{ENTRY\_\-Contents\_\-Table\_\-pool}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{ENTRY\_\-Contents\_\-Table\_\-pool} = \bf{NULL}}\label{lmdes2__customizer_8c_28bf32dd862451062fe00d50a0e83cac}
+
+
+
+
+Definition at line 184 of file lmdes2\_\-customizer.c.
+
+Referenced by ENTRY\_\-delete\_\-contents\_\-table(), and ENTRY\_\-new\_\-contents\_\-table().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!expand_tables@{expand\_\-tables}}
+\index{expand_tables@{expand\_\-tables}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{expand\_\-tables} = 0}\label{lmdes2__customizer_8c_563cdd5e89becf23ee5a738704c6f08f}
+
+
+
+
+Definition at line 155 of file lmdes2\_\-customizer.c.
+
+Referenced by calc\_\-memory\_\-size(), customize\_\-md(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!header_errors@{header\_\-errors}}
+\index{header_errors@{header\_\-errors}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{header\_\-errors} = 0}\label{lmdes2__customizer_8c_b0b0139b9ffe1f2089e4e43fb71fb4d3}
+
+
+
+
+Definition at line 194 of file lmdes2\_\-customizer.c.
+
+Referenced by annotate\_\-header\_\-values(), customize\_\-md(), and find\_\-header\_\-value().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!header_table_table@{header\_\-table\_\-table}}
+\index{header_table_table@{header\_\-table\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{STRING\_\-Symbol\_\-Table}$\ast$ \bf{header\_\-table\_\-table} = \bf{NULL}}\label{lmdes2__customizer_8c_f225bb0e4137fd9f5fc16ee72bfbd988}
+
+
+
+
+Definition at line 188 of file lmdes2\_\-customizer.c.
+
+Referenced by find\_\-header\_\-value(), and read\_\-header\_\-tables().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!input_file_name@{input\_\-file\_\-name}}
+\index{input_file_name@{input\_\-file\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}}\label{lmdes2__customizer_8c_a91ff4ee3ee60baee9c097d4da3e3d18}
+
+
+
+
+Definition at line 148 of file lmdes2\_\-customizer.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!input_mode@{input\_\-mode}}
+\index{input_mode@{input\_\-mode}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{input\_\-mode} = \bf{NULL}}\label{lmdes2__customizer_8c_f81839da89e889adb517d1fc96a456f9}
+
+
+
+
+Definition at line 152 of file lmdes2\_\-customizer.c.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!opti_level@{opti\_\-level}}
+\index{opti_level@{opti\_\-level}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{opti\_\-level} = 4}\label{lmdes2__customizer_8c_20ad8b535e62b1a107e319b7d900a640}
+
+
+
+
+Definition at line 180 of file lmdes2\_\-customizer.c.
+
+Referenced by count\_\-table\_\-uses(), CU\_\-optimize\_\-resource\_\-usage\_\-times(), CU\_\-order\_\-use\_\-fields(), customize\_\-md(), do\_\-classical\_\-optimizations(), homogenize\_\-reservation\_\-tables(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!output_file_name@{output\_\-file\_\-name}}
+\index{output_file_name@{output\_\-file\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}}\label{lmdes2__customizer_8c_cdcd0d11bb729145f180d52a0755cddf}
+
+
+
+
+Definition at line 149 of file lmdes2\_\-customizer.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!output_mode@{output\_\-mode}}
+\index{output_mode@{output\_\-mode}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{output\_\-mode} = \bf{NULL}}\label{lmdes2__customizer_8c_14a61661c70b91f945e8456ead9fb6c1}
+
+
+
+
+Definition at line 151 of file lmdes2\_\-customizer.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!output_page_width@{output\_\-page\_\-width}}
+\index{output_page_width@{output\_\-page\_\-width}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{output\_\-page\_\-width} = 80}\label{lmdes2__customizer_8c_bbe586720dc5d6766839fbdc260002c1}
+
+
+
+
+Definition at line 153 of file lmdes2\_\-customizer.c.
+
+Referenced by read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!place_slots_first@{place\_\-slots\_\-first}}
+\index{place_slots_first@{place\_\-slots\_\-first}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{place\_\-slots\_\-first} = 0}\label{lmdes2__customizer_8c_b5d3cfa3af0f0d0f3aae26ebc6253224}
+
+
+
+
+Definition at line 157 of file lmdes2\_\-customizer.c.\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!print_trees@{print\_\-trees}}
+\index{print_trees@{print\_\-trees}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{print\_\-trees} = 0}\label{lmdes2__customizer_8c_34ea62a4bb6a61dc0899f0f65c9b8f46}
+
+
+
+
+Definition at line 159 of file lmdes2\_\-customizer.c.
+
+Referenced by customize\_\-md(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!program_name@{program\_\-name}}
+\index{program_name@{program\_\-name}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{program\_\-name} = \bf{NULL}}\label{lmdes2__customizer_8c_289c5900d90626d909f0a85d5a0ed61d}
+
+
+
+
+Definition at line 145 of file lmdes2\_\-customizer.c.
+
+Referenced by print\_\-usage(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!rename_table@{rename\_\-table}}
+\index{rename_table@{rename\_\-table}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{STRING\_\-Symbol\_\-Table}$\ast$ \bf{rename\_\-table} = \bf{NULL}}\label{lmdes2__customizer_8c_b4ce2bf45b0a0cbca226867bcee5970f}
+
+
+
+
+Definition at line 191 of file lmdes2\_\-customizer.c.
+
+Referenced by CU\_\-get\_\-unique\_\-name(), and customize\_\-md().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!resource_minimization@{resource\_\-minimization}}
+\index{resource_minimization@{resource\_\-minimization}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{resource\_\-minimization} = 1}\label{lmdes2__customizer_8c_138a3fb2763ae65b4e1a58716ed69355}
+
+
+
+
+Definition at line 160 of file lmdes2\_\-customizer.c.
+
+Referenced by customize\_\-md(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!static_stats@{static\_\-stats}}
+\index{static_stats@{static\_\-stats}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{static\_\-stats} = 0}\label{lmdes2__customizer_8c_0464ae67d9a81d2af58909687534f835}
+
+
+
+
+Definition at line 158 of file lmdes2\_\-customizer.c.
+
+Referenced by customize\_\-md(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!tree_opti@{tree\_\-opti}}
+\index{tree_opti@{tree\_\-opti}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{tree\_\-opti} = 1}\label{lmdes2__customizer_8c_b8dfd5ac67573c68c04e14078ea2aeee}
+
+
+
+
+Definition at line 156 of file lmdes2\_\-customizer.c.
+
+Referenced by customize\_\-md(), homogenize\_\-reservation\_\-tables(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!using_stdin@{using\_\-stdin}}
+\index{using_stdin@{using\_\-stdin}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{using\_\-stdin} = 0}\label{lmdes2__customizer_8c_bc340a0cfa46e3f25a4d1adab28331c0}
+
+
+
+
+Definition at line 150 of file lmdes2\_\-customizer.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{lmdes2_customizer.c@{lmdes2\_\-customizer.c}!verbose@{verbose}}
+\index{verbose@{verbose}!lmdes2_customizer.c@{lmdes2\_\-customizer.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{verbose} = 0}\label{lmdes2__customizer_8c_0b2caeb4b6f130be43e5a2f0267dd453}
+
+
+
+
+Definition at line 154 of file lmdes2\_\-customizer.c.

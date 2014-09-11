@@ -1,0 +1,273 @@
+\section{r\_\-regspill.c File Reference}
+\label{r__regspill_8c}\index{r_regspill.c@{r\_\-regspill.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}r\_\-regalloc.h\char`\"{}}\par
+{\tt \#include $<$machine/m\_\-tahoe.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{R\_\-renumber\_\-oper\_\-vreg} (L\_\-Oper $\ast$oper, int fvreg\_\-id, int tvreg\_\-id)
+\item 
+static void \bf{R\_\-cbsplit\_\-spilled\_\-live\_\-range} (L\_\-Func $\ast$fn, \bf{R\_\-Reg} $\ast$vreg, \bf{Stack} $\ast$vreg\_\-stack)
+\item 
+static void \bf{R\_\-isplit\_\-spilled\_\-live\_\-range} (L\_\-Func $\ast$fn, \bf{R\_\-Reg} $\ast$vreg, \bf{Stack} $\ast$vreg\_\-stack)
+\item 
+void \bf{R\_\-handle\_\-unallocatable\_\-vreg} (L\_\-Func $\ast$fn, \bf{R\_\-Reg} $\ast$vreg, \bf{Stack} $\ast$vreg\_\-stack)
+\item 
+int \bf{R\_\-insert\_\-spill\_\-code\_\-before} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper, L\_\-Oper $\ast$spill)
+\item 
+int \bf{R\_\-insert\_\-spill\_\-code\_\-after} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper, L\_\-Oper $\ast$spill)
+\item 
+static int \bf{R\_\-in\_\-physical\_\-register} (int vreg\_\-id, int base, int vreg\_\-type, int vreg\_\-class)
+\item 
+static void \bf{R\_\-put\_\-in\_\-physical\_\-register} (int vreg\_\-id, int base, int vreg\_\-type, int vreg\_\-class)
+\item 
+static int \bf{R\_\-same\_\-register} (\bf{R\_\-Reg} $\ast$vreg1, \bf{R\_\-Reg} $\ast$vreg2)
+\item 
+static int \bf{R\_\-register\_\-spill\_\-is\_\-required} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper, \bf{R\_\-Reg} $\ast$vreg)
+\item 
+static int \bf{R\_\-max\_\-bank\_\-offset} (void)
+\item 
+void \bf{R\_\-insert\_\-spill\_\-fill\_\-code} (L\_\-Region $\ast$\bf{region})
+\item 
+int \bf{R\_\-jsr\_\-defines\_\-vreg} (L\_\-Oper $\ast$jsr, int vreg\_\-id)
+\item 
+static L\_\-Oper $\ast$ \bf{O\_\-pred\_\-save\_\-operation} (L\_\-Operand $\ast$pred, L\_\-Operand $\ast$dest)
+\item 
+static L\_\-Oper $\ast$ \bf{O\_\-pred\_\-restore\_\-operation} (L\_\-Operand $\ast$pred, L\_\-Operand $\ast$src, \bf{ITintmax} mask)
+\item 
+static int \bf{R\_\-last\_\-jsr\_\-in\_\-cb} (L\_\-Oper $\ast$jsr)
+\begin{CompactList}\small\item\em Determines if a jsr is the last one in a CB. \item\end{CompactList}\item 
+static int \bf{R\_\-used\_\-between\_\-jsrs} (int vreg\_\-id, L\_\-Oper $\ast$jsr1, L\_\-Oper $\ast$jsr2)
+\begin{CompactList}\small\item\em Determines if a register is used between two jsrs. \item\end{CompactList}\item 
+int \bf{R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code} (L\_\-Func $\ast$fn, int $\ast$int\_\-jsr\_\-swap\_\-space, int $\ast$fp\_\-jsr\_\-swap\_\-space, int $\ast$pred\_\-jsr\_\-swap\_\-space)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{r_regspill.c@{r\_\-regspill.c}!O_pred_restore_operation@{O\_\-pred\_\-restore\_\-operation}}
+\index{O_pred_restore_operation@{O\_\-pred\_\-restore\_\-operation}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper$\ast$ O\_\-pred\_\-restore\_\-operation (L\_\-Operand $\ast$ {\em pred}, L\_\-Operand $\ast$ {\em src}, \bf{ITintmax} {\em mask})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_07f079031db330b05de69510cd89c256}
+
+
+
+
+Definition at line 975 of file r\_\-regspill.c.
+
+References TAHOE\_\-PRED\_\-BLK\_\-REG, and TAHOEop\_\-MOV\_\-TOPR.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!O_pred_save_operation@{O\_\-pred\_\-save\_\-operation}}
+\index{O_pred_save_operation@{O\_\-pred\_\-save\_\-operation}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper$\ast$ O\_\-pred\_\-save\_\-operation (L\_\-Operand $\ast$ {\em pred}, L\_\-Operand $\ast$ {\em dest})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_e8b27599cd550519351e5663ed271667}
+
+
+
+
+Definition at line 961 of file r\_\-regspill.c.
+
+References TAHOE\_\-PRED\_\-BLK\_\-REG, and TAHOEop\_\-MOV\_\-FRPR.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!R_cbsplit_spilled_live_range@{R\_\-cbsplit\_\-spilled\_\-live\_\-range}}
+\index{R_cbsplit_spilled_live_range@{R\_\-cbsplit\_\-spilled\_\-live\_\-range}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void R\_\-cbsplit\_\-spilled\_\-live\_\-range (L\_\-Func $\ast$ {\em fn}, \bf{R\_\-Reg} $\ast$ {\em vreg}, \bf{Stack} $\ast$ {\em vreg\_\-stack})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_e3f63c4cb3d3df638e13989228ca8cad}
+
+
+
+
+Definition at line 121 of file r\_\-regspill.c.
+
+References R\_\-Reg::callee\_\-benefit, R\_\-Reg::caller\_\-benefit, R\_\-Reg::constraints, R\_\-Reg::flags, \_\-Set::id, R\_\-Reg::illegal\_\-reg, R\_\-Reg::index, R\_\-Reg::interfere, R\_\-Reg::live\_\-range, R\_\-Arc::lr, R\_\-Arc::next, NULL, R\_\-Reg::priority, Push\_\-Top(), R\_\-Reg::pvreg, R\_\-add\_\-interference\_\-arc(), R\_\-add\_\-register(), R\_\-buf, R\_\-CALLER, R\_\-CB\_\-SPLIT, R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-find\_\-free\_\-vreg(), R\_\-Invariant\_\-Vreg\_\-Priorities, R\_\-pbuf, R\_\-remove\_\-interference(), R\_\-renumber\_\-oper\_\-vreg(), R\_\-SPILLED, R\_\-Reg::rclass, R\_\-Reg::ref\_\-instr, Set\_\-2array(), Set\_\-add(), Set\_\-copy(), Set\_\-dispose(), Set\_\-intersect\_\-empty(), R\_\-Reg::spill\_\-loc, R\_\-Reg::type, and VREG.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg().\index{r_regspill.c@{r\_\-regspill.c}!R_handle_unallocatable_vreg@{R\_\-handle\_\-unallocatable\_\-vreg}}
+\index{R_handle_unallocatable_vreg@{R\_\-handle\_\-unallocatable\_\-vreg}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-handle\_\-unallocatable\_\-vreg (L\_\-Func $\ast$ {\em fn}, \bf{R\_\-Reg} $\ast$ {\em vreg}, \bf{Stack} $\ast$ {\em vreg\_\-stack})}\label{r__regspill_8c_5f3a7dd764326338bc738c443c4987f9}
+
+
+
+
+Definition at line 406 of file r\_\-regspill.c.
+
+References R\_\-Reg::callee\_\-benefit, R\_\-Reg::caller\_\-benefit, R\_\-Reg::flags, R\_\-Reg::index, R\_\-Reg::interfere, L\_\-free(), R\_\-Reg::live\_\-range, R\_\-Arc::lr, R\_\-Arc::next, NULL, R\_\-Reg::priority, R\_\-alloc\_\-interference\_\-arc, R\_\-CALLER, R\_\-CB\_\-SPLIT, R\_\-cbsplit\_\-spilled\_\-live\_\-range(), R\_\-INSTR\_\-SPLIT, R\_\-Invariant\_\-Vreg\_\-Priorities, R\_\-isplit\_\-spilled\_\-live\_\-range(), R\_\-MCB\_\-PRELOAD, R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills, R\_\-Region, R\_\-remove\_\-interference(), R\_\-spill\_\-loc(), R\_\-SPILLED, R\_\-Reg::rclass, R\_\-Reg::ref\_\-instr, Set\_\-dispose(), Set\_\-intersect\_\-empty(), Set\_\-size(), R\_\-Reg::spill\_\-loc, and R\_\-Reg::type.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers().\index{r_regspill.c@{r\_\-regspill.c}!R_in_physical_register@{R\_\-in\_\-physical\_\-register}}
+\index{R_in_physical_register@{R\_\-in\_\-physical\_\-register}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-in\_\-physical\_\-register (int {\em vreg\_\-id}, int {\em base}, int {\em vreg\_\-type}, int {\em vreg\_\-class})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_901fdba198e2708ba1273c9eec6acd24}
+
+
+
+
+Definition at line 574 of file r\_\-regspill.c.
+
+References R\_\-bank, R\_\-register\_\-contents, and R\_\-Physical\_\-Bank::reg\_\-size.
+
+Referenced by R\_\-insert\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!R_insert_jsr_spill_fill_code@{R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code}}
+\index{R_insert_jsr_spill_fill_code@{R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code (L\_\-Func $\ast$ {\em fn}, int $\ast$ {\em int\_\-jsr\_\-swap\_\-space}, int $\ast$ {\em fp\_\-jsr\_\-swap\_\-space}, int $\ast$ {\em pred\_\-jsr\_\-swap\_\-space})}\label{r__regspill_8c_e8e1bc7ebb045aa975a3d459b9f8cca0}
+
+
+
+
+Definition at line 1077 of file r\_\-regspill.c.
+
+References CALLOC, R\_\-Reg::flags, fp\_\-spill\_\-stack, \_\-Set::id, R\_\-Reg::index, int\_\-spill\_\-stack, ld\_\-cnt, ld\_\-wgt, List\_\-next(), List\_\-size(), List\_\-start(), R\_\-Reg::live\_\-range, M\_\-arch, M\_\-TAHOE, MALLOC, R\_\-Reg::next\-Reg, NULL, O\_\-fill\_\-reg(), O\_\-pred\_\-restore\_\-operation(), O\_\-pred\_\-save\_\-operation(), O\_\-spill\_\-reg(), R\_\-Reg::phys\_\-reg, pred\_\-spill\_\-stack, R\_\-bank, R\_\-BTR, R\_\-CALLEE, R\_\-CALLER, R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-DOUBLE, R\_\-FLOAT, R\_\-insert\_\-spill\_\-code\_\-after(), R\_\-insert\_\-spill\_\-code\_\-before(), R\_\-INT, R\_\-jsr\_\-defines\_\-vreg(), R\_\-jsr\_\-list, R\_\-JSR\_\-SAVE\_\-CODE, R\_\-last\_\-jsr\_\-in\_\-cb(), R\_\-MACRO\_\-CALLER, R\_\-Minimize\_\-Spill\_\-Fill, R\_\-POINTER, R\_\-PREALLOCATED\_\-FLYBY, R\_\-PREALLOCATED\_\-MACRO, R\_\-PREDICATE, R\_\-QUAD, R\_\-spill\_\-loc(), R\_\-SPILLED, R\_\-used\_\-between\_\-jsrs(), R\_\-vreg, R\_\-Reg::rclass, Set\_\-2array(), Set\_\-add(), Set\_\-copy(), Set\_\-delete(), Set\_\-dispose(), Set\_\-in(), Set\_\-size(), Set\_\-subtract(), R\_\-Reg::spill\_\-loc, st\_\-cnt, st\_\-wgt, TAHOE\_\-INT\_\-REG\_\-BASE, TAHOE\_\-PRED\_\-REG\_\-BASE, total\_\-caller\_\-weight, R\_\-Reg::type, R\_\-Physical\_\-Bank::used\_\-reg, and VREG.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regspill.c@{r\_\-regspill.c}!R_insert_spill_code_after@{R\_\-insert\_\-spill\_\-code\_\-after}}
+\index{R_insert_spill_code_after@{R\_\-insert\_\-spill\_\-code\_\-after}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-insert\_\-spill\_\-code\_\-after (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper}, L\_\-Oper $\ast$ {\em spill})}\label{r__regspill_8c_0f3f5aec000f08fc43f41acf49f12abd}
+
+
+
+
+Definition at line 557 of file r\_\-regspill.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regspill.c@{r\_\-regspill.c}!R_insert_spill_code_before@{R\_\-insert\_\-spill\_\-code\_\-before}}
+\index{R_insert_spill_code_before@{R\_\-insert\_\-spill\_\-code\_\-before}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-insert\_\-spill\_\-code\_\-before (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper}, L\_\-Oper $\ast$ {\em spill})}\label{r__regspill_8c_1db85fe134ec9b6246968d8aed301d5c}
+
+
+
+
+Definition at line 540 of file r\_\-regspill.c.
+
+References NULL.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code(), R\_\-insert\_\-spill\_\-fill\_\-code(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regspill.c@{r\_\-regspill.c}!R_insert_spill_fill_code@{R\_\-insert\_\-spill\_\-fill\_\-code}}
+\index{R_insert_spill_fill_code@{R\_\-insert\_\-spill\_\-fill\_\-code}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-insert\_\-spill\_\-fill\_\-code (L\_\-Region $\ast$ {\em region})}\label{r__regspill_8c_333b12c97f89b00c2e5f48150f08dbeb}
+
+
+
+
+Definition at line 721 of file r\_\-regspill.c.
+
+References NULL, O\_\-fill\_\-reg(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-in\_\-physical\_\-register(), R\_\-insert\_\-spill\_\-code\_\-before(), R\_\-max\_\-bank\_\-offset(), R\_\-register\_\-contents, R\_\-SPILL\_\-CODE, R\_\-SPILLED, and VREG.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regspill.c@{r\_\-regspill.c}!R_isplit_spilled_live_range@{R\_\-isplit\_\-spilled\_\-live\_\-range}}
+\index{R_isplit_spilled_live_range@{R\_\-isplit\_\-spilled\_\-live\_\-range}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void R\_\-isplit\_\-spilled\_\-live\_\-range (L\_\-Func $\ast$ {\em fn}, \bf{R\_\-Reg} $\ast$ {\em vreg}, \bf{Stack} $\ast$ {\em vreg\_\-stack})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_a7c850aab587fee3c8d18f7d382e2765}
+
+
+
+
+Definition at line 267 of file r\_\-regspill.c.
+
+References R\_\-Reg::callee\_\-benefit, R\_\-Reg::caller\_\-benefit, R\_\-Reg::constraints, R\_\-Reg::flags, \_\-Set::id, R\_\-Reg::illegal\_\-reg, R\_\-Reg::index, R\_\-Reg::interfere, L\_\-free(), R\_\-Reg::live\_\-range, R\_\-Arc::lr, R\_\-Arc::next, NULL, R\_\-Reg::priority, R\_\-Reg::pvreg, R\_\-add\_\-interference\_\-arc(), R\_\-add\_\-register(), R\_\-alloc\_\-interference\_\-arc, R\_\-buf, R\_\-CALLER, R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-determine\_\-reserved\_\-registers(), R\_\-find\_\-free\_\-register(), R\_\-find\_\-free\_\-vreg(), R\_\-INSTR\_\-SPLIT, R\_\-Invariant\_\-Vreg\_\-Priorities, R\_\-remove\_\-interference(), R\_\-renumber\_\-oper\_\-vreg(), R\_\-SPILLED, R\_\-Reg::rclass, R\_\-Reg::ref\_\-instr, Set\_\-2array(), Set\_\-add(), Set\_\-copy(), Set\_\-delete(), Set\_\-dispose(), Set\_\-in(), Set\_\-intersect\_\-empty(), Set\_\-print(), Set\_\-size(), Set\_\-subtract(), R\_\-Reg::spill\_\-loc, and R\_\-Reg::type.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg().\index{r_regspill.c@{r\_\-regspill.c}!R_jsr_defines_vreg@{R\_\-jsr\_\-defines\_\-vreg}}
+\index{R_jsr_defines_vreg@{R\_\-jsr\_\-defines\_\-vreg}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-jsr\_\-defines\_\-vreg (L\_\-Oper $\ast$ {\em jsr}, int {\em vreg\_\-id})}\label{r__regspill_8c_735a121bb45e5a19217cae1224f23bcb}
+
+
+
+
+Definition at line 940 of file r\_\-regspill.c.
+
+References NULL.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!R_last_jsr_in_cb@{R\_\-last\_\-jsr\_\-in\_\-cb}}
+\index{R_last_jsr_in_cb@{R\_\-last\_\-jsr\_\-in\_\-cb}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-last\_\-jsr\_\-in\_\-cb (L\_\-Oper $\ast$ {\em jsr})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_2006e634fa5bcd5d8706f61534879f98}
+
+
+Determines if a jsr is the last one in a CB. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em jsr}]the jsr oper to inspect\end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]If {\em jsr\/} is the last jsr in its CB, returns 1. Otherwise, returns 0. \end{Desc}
+
+
+Definition at line 1000 of file r\_\-regspill.c.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!R_max_bank_offset@{R\_\-max\_\-bank\_\-offset}}
+\index{R_max_bank_offset@{R\_\-max\_\-bank\_\-offset}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-max\_\-bank\_\-offset (void)\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_a9445d3553d88ccb8288bebc089b91d1}
+
+
+
+
+Definition at line 688 of file r\_\-regspill.c.
+
+References R\_\-Physical\_\-Bank::base\_\-index, R\_\-Physical\_\-Bank::defined, R\_\-Physical\_\-Bank::num\_\-reg, R\_\-bank, R\_\-MAX\_\-BANK, and R\_\-Physical\_\-Bank::reg\_\-size.
+
+Referenced by R\_\-insert\_\-spill\_\-fill\_\-code().\index{r_regspill.c@{r\_\-regspill.c}!R_put_in_physical_register@{R\_\-put\_\-in\_\-physical\_\-register}}
+\index{R_put_in_physical_register@{R\_\-put\_\-in\_\-physical\_\-register}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void R\_\-put\_\-in\_\-physical\_\-register (int {\em vreg\_\-id}, int {\em base}, int {\em vreg\_\-type}, int {\em vreg\_\-class})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_4b219c2fd7c58744317fcae1b6446822}
+
+
+
+
+Definition at line 587 of file r\_\-regspill.c.
+
+References R\_\-bank, R\_\-register\_\-contents, and R\_\-Physical\_\-Bank::reg\_\-size.\index{r_regspill.c@{r\_\-regspill.c}!R_register_spill_is_required@{R\_\-register\_\-spill\_\-is\_\-required}}
+\index{R_register_spill_is_required@{R\_\-register\_\-spill\_\-is\_\-required}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-register\_\-spill\_\-is\_\-required (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper}, \bf{R\_\-Reg} $\ast$ {\em vreg})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_d51beac778398dd52f829ab3ba89a102}
+
+
+
+
+Definition at line 617 of file r\_\-regspill.c.
+
+References R\_\-Reg::flags, R\_\-Reg::index, R\_\-Reg::pvreg, R\_\-CB\_\-SPLIT, R\_\-INSTR\_\-SPLIT, R\_\-n\_\-oper, R\_\-Register\_\-Allocation, R\_\-same\_\-register(), and VREG.\index{r_regspill.c@{r\_\-regspill.c}!R_renumber_oper_vreg@{R\_\-renumber\_\-oper\_\-vreg}}
+\index{R_renumber_oper_vreg@{R\_\-renumber\_\-oper\_\-vreg}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void R\_\-renumber\_\-oper\_\-vreg (L\_\-Oper $\ast$ {\em oper}, int {\em fvreg\_\-id}, int {\em tvreg\_\-id})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_0c4816c3203c41f8eb51c8eeb17332a0}
+
+
+
+
+Definition at line 72 of file r\_\-regspill.c.
+
+Referenced by R\_\-cbsplit\_\-spilled\_\-live\_\-range(), and R\_\-isplit\_\-spilled\_\-live\_\-range().\index{r_regspill.c@{r\_\-regspill.c}!R_same_register@{R\_\-same\_\-register}}
+\index{R_same_register@{R\_\-same\_\-register}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-same\_\-register (\bf{R\_\-Reg} $\ast$ {\em vreg1}, \bf{R\_\-Reg} $\ast$ {\em vreg2})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_18cf7a10e3b80ddef9146001b566a570}
+
+
+
+
+Definition at line 598 of file r\_\-regspill.c.
+
+References R\_\-Reg::base\_\-index, R\_\-bank, R\_\-Reg::rclass, and R\_\-Reg::type.
+
+Referenced by R\_\-register\_\-spill\_\-is\_\-required().\index{r_regspill.c@{r\_\-regspill.c}!R_used_between_jsrs@{R\_\-used\_\-between\_\-jsrs}}
+\index{R_used_between_jsrs@{R\_\-used\_\-between\_\-jsrs}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int R\_\-used\_\-between\_\-jsrs (int {\em vreg\_\-id}, L\_\-Oper $\ast$ {\em jsr1}, L\_\-Oper $\ast$ {\em jsr2})\hspace{0.3cm}{\tt  [static]}}\label{r__regspill_8c_04d0b4aee0f4b904ef7eb3b713134bc4}
+
+
+Determines if a register is used between two jsrs. 
+
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em vreg\_\-id}]the register's id (L\_\-Operand-$>$value.r, R\_\-Reg-$>$phys\_\-reg) \item[{\em jsr1}]the first jsr \item[{\em jsr2}]the second jsr\end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]If any opers between {\em jsr1\/} and {\em jsr2\/} use register {\em vreg\_\-id\/}, returns 1. Otherwise, returns 0.\end{Desc}
+This function is used to try to conservatively spill and fill registers between jsrs. If a register is not used between two jsrs, there's no reason to fill it after the first and spill it before the second. This is particularly important in C++, where almost every operation is a jsr (See bug 323).
+
+Added 11/29/04 REK 
+
+Definition at line 1033 of file r\_\-regspill.c.
+
+References NULL.
+
+Referenced by R\_\-insert\_\-jsr\_\-spill\_\-fill\_\-code().
+
+\subsection{Variable Documentation}
+\index{r_regspill.c@{r\_\-regspill.c}!R_Prevent_MCB_Preload_Spills@{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}}
+\index{R_Prevent_MCB_Preload_Spills@{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}!r_regspill.c@{r\_\-regspill.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{R\_\-Prevent\_\-MCB\_\-Preload\_\-Spills}}\label{r__regspill_8c_524ba9bc74fe12c1750b3b0af8b451cf}
+
+
+
+
+Definition at line 129 of file r\_\-regalloc.c.
+
+Referenced by R\_\-handle\_\-unallocatable\_\-vreg(), R\_\-process\_\-cb(), and R\_\-read\_\-parm\_\-regalloc().

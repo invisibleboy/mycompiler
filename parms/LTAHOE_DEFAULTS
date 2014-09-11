@@ -1,0 +1,178 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#
+# Ltahoe default parameters.
+# ----------------------------------------------------------------------------
+# JWS 20010118 Cleaned up, deprecated parameters removed.
+#
+
+(Ltahoe
+
+#
+# PHASE I PARAMETERS
+# ----------------------------------------------------------------------------
+
+   use_gp_rel_addressing = yes;		   # All memory accesses conform to
+					   # relocatable ABI spec.  May be
+					   # required for functionality.
+   input_param_subst = yes;		   # ???
+   do_lcode_peephole = yes;
+   prologue_merge =  yes;                  # Merge single-predecessor cb's
+
+   print_opti_stats = no;
+   add_mov_ap = no;                        # Setup ap before func calls
+   do_lightweight_pred_opti = yes;         # Optimize pred defines, pre-annot.
+   do_repeated_mopti = yes;                # Perform machine-specific optis
+   do_redux = yes;
+    do_tbit_redux = yes;
+    do_extr_redux = yes;
+    do_depo_redux = no;
+    do_ldf_redux = yes;
+
+   postinc_st = yes;			   # Post-increment stores
+   postinc_ld = no;			   # Post-increment loads
+					   #   Speculative postinc ld are
+					   #   UNSAFE in general speculation
+					   #   model.
+
+   bitopt = no;
+
+   vulcan = no;             		   # Processing Lcode created by 
+	                                   # Vulcan Bridge (See RDB)
+
+#
+# PHASE II PARAMETERS
+# ----------------------------------------------------------------------------
+
+   padding_threshold = 1000;               # for cb alignment
+   debug_stack_frame = no;
+   check_for_stop_bits = no;
+
+   do_postreg_const_fold = yes;
+   clobber_unats = no;
+   do_sp_removal = no;
+
+#
+# BRANCH HINTING PARAMETERS
+# ----------------------------------------------------------------------------
+
+   insert_branch_hints = no;               # insert branch/prefetch hints
+      min_fe_cycles_for_prefetch_brp = 12; # min front end cycles between 
+                                           # prefetch brp and branch
+      aggressive_hints = no;               # if insert_branch_hints=yes this
+                                           # controls whether aggressive
+					   # hinting is used.  Not recommended
+                                           # unless the profile is correct!
+      dont_expand_for_hints = yes;         # don't uncompact a bundle in
+                                           # order to add a prefetch hint
+
+   dynamic_hint_upper_prob = 0.97;         # above this taken probability
+					   # use a static taken prediction
+   dynamic_hint_lower_prob = 0.03;	   # below this fallthru probability
+					   # use a static fallthru prediction
+
+   # Following do not depend on setting of "insert_branch_hints"
+
+   correct_profile_info = yes;             # Correct profile available
+   print_hint_info = no;		   # Print summary
+   use_many_hint_on_all_branches = no;     # insert many-hints on all branches
+   use_many_hint_on_call = no;             # insert many-hints on calls
+   use_many_hint_on_return = no;           # insert many-hints on ret's
+   use_many_hint_on_brp = no;              # insert many-hints on brp's
+   use_imp_hint_on_brp = yes               # insert imp hints on brp's
+   
+   # McKinley hint parameters
+
+   use_counted_prefetch_hints = no;        # use mckinley style cpf hints
+   use_streaming_only = no;                # use only streaming, similiar to
+                                           # many on calls, returns and brs
+                                           # with or with out brps.
+   advanced_prefetch = no;                 # Use .flsh hints with cpf
+   insert_with_full_coverage = no;         # Try and cover all paths with 
+                                           # one hint.  (Doesn't work well)
+   insert_with_retries = no;               # If we can't insert the hint in
+                                           # the minimum number of cycles
+                                           # reduce by 2 and try again.
+   mckinley_hints = no;                    # mainly for selecting branches to 
+                                           # be hinted.  We don't care what
+                                           # slot the br is in and it must be
+                                           # taken more than 80% of the time.
+                                           # This must be on cpf to function.
+
+#
+# PHASE III PARAMETERS
+# ----------------------------------------------------------------------------
+
+   # Recovery code testing
+
+   force_recovery_execution = no;
+   force_recovery_lower = 0;
+   force_recovery_upper = 1000000;
+
+   # Stack unwind directives for debugging
+	
+   generate_unwind_directives = yes;
+
+   # Human-readable asm output enhancements
+
+   print_characteristics = yes;            # Block header, pred, succ lists
+   print_live_registers = no;              # print live registers on a cb
+   print_issue_time = yes;                 # op cycle
+   print_latency = no;                     # op latency
+   print_op_id = yes;                      # op id from IL
+   print_offset = no;                      # instr count from first op
+   print_iteration = yes;                  # iteration in unrolled loops 
+   print_real_regs = no;                   # yes = print all regs as r\d+
+					   # no = use fancy names
+   output_for_ias = yes;                    # yes = output assembly for ias
+					   # no = output assembly for GNU as
+
+   print_cache_stats = no;
+   tag_loads = no;
+end)

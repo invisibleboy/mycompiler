@@ -1,0 +1,83 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	Split Pcode files
+#
+#	Usage: gen_Pinline ["extra_args"]
+#
+#	Ben-Chung Cheng, Wen-mei Hwu
+
+if [ $# -eq 0 ]; then
+        EXTRA_ARGS="";
+elif [ $# -eq 1 ]; then
+        EXTRA_ARGS="$1";
+else
+  echo $#
+  echo '> Usage gen_Pinline ["extra_args"]';
+  echo '>';
+  echo '> "extra_args" are Pcode options plus:';
+  echo '>	-Fil_dir = output_dir';
+  echo '>	-Fsp_output_spec = mapping_filename';
+  echo '>	-Fminimum_inline_weight = float';
+  echo '>	-Fmaximum_bodysize = integer';
+  echo '>	-Fmaximum_stacksize = integer';
+  exit 0200;
+fi;
+
+	echo "> Inline functions";
+	Pinline ${EXTRA_ARGS}
+	ERROR=$?;
+	if [ $ERROR -ne 0 ]; then
+	    echo "> Pinline failed";
+	    echo "> error_code= ${ERROR}";
+	    exit 1;
+	fi;
+
+echo "> done";
+

@@ -1,0 +1,535 @@
+IALU (
+   mov                             #opc 62
+   add                             #opc 65
+   add_u                           #opc 66
+   sub                             #opc 67
+   sub_u                           #opc 68
+   mul                             #opc 69
+   mul_u                           #opc 70
+   div                             #opc 71
+   div_u                           #opc 72
+   rem                             #opc 73
+   rem_u                           #opc 74
+   abs                             #opc 75
+   or                              #opc 82
+   and                             #opc 83
+   xor                             #opc 84
+   nor                             #opc 85
+   nand                            #opc 86
+   nxor                            #opc 87
+   or_compl                        #opc 90
+   and_compl                       #opc 91
+   eq                              #opc 92
+   ne                              #opc 93
+   gt                              #opc 94
+   gt_u                            #opc 95
+   ge                              #opc 96
+   ge_u                            #opc 97
+   lt                              #opc 98
+   lt_u                            #opc 99
+   le                              #opc 100
+   le_u                            #opc 101
+   lsl                             #opc 102
+   lsr                             #opc 103
+   asr                             #opc 104
+   pred_eq                         #opc 200
+   pred_ne                         #opc 201
+   pred_gt                         #opc 202
+   pred_gt_u                       #opc 203
+   pred_ge                         #opc 204
+   pred_ge_u                       #opc 205
+   pred_lt                         #opc 206
+   pred_lt_u                       #opc 207
+   pred_le                         #opc 208
+   pred_le_u                       #opc 209
+   PLAYDOHop_PBRR                  #opc 1000
+   PLAYDOHop_PBRA                  #opc 1001
+   PLAYDOHop_EXTRSB                #opc 1002
+   PLAYDOHop_EXTRSH                #opc 1003
+   PLAYDOHop_MOVEGF_L              #opc 1004
+   PLAYDOHop_MOVEGF_U              #opc 1005
+   PLAYDOHop_MOVEPG                #opc 1008
+   PLAYDOHop_LDCM                  #opc 1009
+   PLAYDOHop_SH1ADDL               #opc 1398
+   PLAYDOHop_SH2ADDL               #opc 1399
+   PLAYDOHop_SH3ADDL               #opc 1400
+   PLAYDOHop_CMPR_FALSE            #opc 1403
+   PLAYDOHop_CMPR_TRUE             #opc 1404
+   PLAYDOHop_CMPR_OD               #opc 1405
+   PLAYDOHop_CMPR_EV               #opc 1406
+)
+
+MEMORY (
+    pred_ld                         # opc 195
+    pred_st                         # opc 196
+    pred_ld_blk                     # opc 197
+    pred_st_blk                     # opc 198
+    PLAYDOHop_L_B_V1_V1             # opc 1033
+    PLAYDOHop_L_B_V1_C1             # opc 1034
+    PLAYDOHop_L_B_V1_C2             # opc 1035
+    PLAYDOHop_L_B_V1_C3             # opc 1036
+    PLAYDOHop_L_B_C1_V1             # opc 1037
+    PLAYDOHop_L_B_C1_C1             # opc 1038
+    PLAYDOHop_L_B_C1_C2             # opc 1039
+    PLAYDOHop_L_B_C1_C3             # opc 1040
+    PLAYDOHop_L_B_C2_V1             # opc 1041
+    PLAYDOHop_L_B_C2_C1             # opc 1042
+    PLAYDOHop_L_B_C2_C2             # opc 1043
+    PLAYDOHop_L_B_C2_C3             # opc 1044
+    PLAYDOHop_L_B_C3_V1             # opc 1045
+    PLAYDOHop_L_B_C3_C1             # opc 1046
+    PLAYDOHop_L_B_C3_C2             # opc 1047
+    PLAYDOHop_L_B_C3_C3             # opc 1048
+    PLAYDOHop_L_H_V1_V1             # opc 1049
+    PLAYDOHop_L_H_V1_C1             # opc 1050
+    PLAYDOHop_L_H_V1_C2             # opc 1051
+    PLAYDOHop_L_H_V1_C3             # opc 1052
+    PLAYDOHop_L_H_C1_V1             # opc 1053
+    PLAYDOHop_L_H_C1_C1             # opc 1054
+    PLAYDOHop_L_H_C1_C2             # opc 1055
+    PLAYDOHop_L_H_C1_C3             # opc 1056
+    PLAYDOHop_L_H_C2_V1             # opc 1057
+    PLAYDOHop_L_H_C2_C1             # opc 1058
+    PLAYDOHop_L_H_C2_C2             # opc 1059
+    PLAYDOHop_L_H_C2_C3             # opc 1060
+    PLAYDOHop_L_H_C3_V1             # opc 1061
+    PLAYDOHop_L_H_C3_C1             # opc 1062
+    PLAYDOHop_L_H_C3_C2             # opc 1063
+    PLAYDOHop_L_H_C3_C3             # opc 1064
+    PLAYDOHop_L_W_V1_V1             # opc 1065
+    PLAYDOHop_L_W_V1_C1             # opc 1066
+    PLAYDOHop_L_W_V1_C2             # opc 1067
+    PLAYDOHop_L_W_V1_C3             # opc 1068
+    PLAYDOHop_L_W_C1_V1             # opc 1069
+    PLAYDOHop_L_W_C1_C1             # opc 1070
+    PLAYDOHop_L_W_C1_C2             # opc 1071
+    PLAYDOHop_L_W_C1_C3             # opc 1072
+    PLAYDOHop_L_W_C2_V1             # opc 1073
+    PLAYDOHop_L_W_C2_C1             # opc 1074
+    PLAYDOHop_L_W_C2_C2             # opc 1075
+    PLAYDOHop_L_W_C2_C3             # opc 1076
+    PLAYDOHop_L_W_C3_V1             # opc 1077
+    PLAYDOHop_L_W_C3_C1             # opc 1078
+    PLAYDOHop_L_W_C3_C2             # opc 1079
+    PLAYDOHop_L_W_C3_C3             # opc 1080
+    PLAYDOHop_LI_B_V1_V1            # opc 1081
+    PLAYDOHop_LI_B_V1_C1            # opc 1082
+    PLAYDOHop_LI_B_V1_C2            # opc 1083
+    PLAYDOHop_LI_B_V1_C3            # opc 1084
+    PLAYDOHop_LI_B_C1_V1            # opc 1085
+    PLAYDOHop_LI_B_C1_C1            # opc 1086
+    PLAYDOHop_LI_B_C1_C2            # opc 1087
+    PLAYDOHop_LI_B_C1_C3            # opc 1088
+    PLAYDOHop_LI_B_C2_V1            # opc 1089
+    PLAYDOHop_LI_B_C2_C1            # opc 1090
+    PLAYDOHop_LI_B_C2_C2            # opc 1091
+    PLAYDOHop_LI_B_C2_C3            # opc 1092
+    PLAYDOHop_LI_B_C3_V1            # opc 1093
+    PLAYDOHop_LI_B_C3_C1            # opc 1094
+    PLAYDOHop_LI_B_C3_C2            # opc 1095
+    PLAYDOHop_LI_B_C3_C3            # opc 1096
+    PLAYDOHop_LI_H_V1_V1            # opc 1097
+    PLAYDOHop_LI_H_V1_C1            # opc 1098
+    PLAYDOHop_LI_H_V1_C2            # opc 1099
+    PLAYDOHop_LI_H_V1_C3            # opc 1100
+    PLAYDOHop_LI_H_C1_V1            # opc 1101
+    PLAYDOHop_LI_H_C1_C1            # opc 1102
+    PLAYDOHop_LI_H_C1_C2            # opc 1103
+    PLAYDOHop_LI_H_C1_C3            # opc 1104
+    PLAYDOHop_LI_H_C2_V1            # opc 1105
+    PLAYDOHop_LI_H_C2_C1            # opc 1106
+    PLAYDOHop_LI_H_C2_C2            # opc 1107
+    PLAYDOHop_LI_H_C2_C3            # opc 1108
+    PLAYDOHop_LI_H_C3_V1            # opc 1109
+    PLAYDOHop_LI_H_C3_C1            # opc 1110
+    PLAYDOHop_LI_H_C3_C2            # opc 1111
+    PLAYDOHop_LI_H_C3_C3            # opc 1112
+    PLAYDOHop_LI_W_V1_V1            # opc 1113
+    PLAYDOHop_LI_W_V1_C1            # opc 1114
+    PLAYDOHop_LI_W_V1_C2            # opc 1115
+    PLAYDOHop_LI_W_V1_C3            # opc 1116
+    PLAYDOHop_LI_W_C1_V1            # opc 1117
+    PLAYDOHop_LI_W_C1_C1            # opc 1118
+    PLAYDOHop_LI_W_C1_C2            # opc 1119
+    PLAYDOHop_LI_W_C1_C3            # opc 1120
+    PLAYDOHop_LI_W_C2_V1            # opc 1121
+    PLAYDOHop_LI_W_C2_C1            # opc 1122
+    PLAYDOHop_LI_W_C2_C2            # opc 1123
+    PLAYDOHop_LI_W_C2_C3            # opc 1124
+    PLAYDOHop_LI_W_C3_V1            # opc 1125
+    PLAYDOHop_LI_W_C3_C1            # opc 1126
+    PLAYDOHop_LI_W_C3_C2            # opc 1127
+    PLAYDOHop_LI_W_C3_C3            # opc 1128
+    PLAYDOHop_FL_S_V1_V1            # opc 1153
+    PLAYDOHop_FL_S_V1_C1            # opc 1154
+    PLAYDOHop_FL_S_V1_C2            # opc 1155
+    PLAYDOHop_FL_S_V1_C3            # opc 1156
+    PLAYDOHop_FL_S_C1_V1            # opc 1157
+    PLAYDOHop_FL_S_C1_C1            # opc 1158
+    PLAYDOHop_FL_S_C1_C2            # opc 1159
+    PLAYDOHop_FL_S_C1_C3            # opc 1160
+    PLAYDOHop_FL_S_C2_V1            # opc 1161
+    PLAYDOHop_FL_S_C2_C1            # opc 1162
+    PLAYDOHop_FL_S_C2_C2            # opc 1163
+    PLAYDOHop_FL_S_C2_C3            # opc 1164
+    PLAYDOHop_FL_S_C3_V1            # opc 1165
+    PLAYDOHop_FL_S_C3_C1            # opc 1166
+    PLAYDOHop_FL_S_C3_C2            # opc 1167
+    PLAYDOHop_FL_S_C3_C3            # opc 1168
+    PLAYDOHop_FL_D_V1_V1            # opc 1169
+    PLAYDOHop_FL_D_V1_C1            # opc 1170
+    PLAYDOHop_FL_D_V1_C2            # opc 1171
+    PLAYDOHop_FL_D_V1_C3            # opc 1172
+    PLAYDOHop_FL_D_C1_V1            # opc 1173
+    PLAYDOHop_FL_D_C1_C1            # opc 1174
+    PLAYDOHop_FL_D_C1_C2            # opc 1175
+    PLAYDOHop_FL_D_C1_C3            # opc 1176
+    PLAYDOHop_FL_D_C2_V1            # opc 1177
+    PLAYDOHop_FL_D_C2_C1            # opc 1178
+    PLAYDOHop_FL_D_C2_C2            # opc 1179
+    PLAYDOHop_FL_D_C2_C3            # opc 1180
+    PLAYDOHop_FL_D_C3_V1            # opc 1181
+    PLAYDOHop_FL_D_C3_C1            # opc 1182
+    PLAYDOHop_FL_D_C3_C2            # opc 1183
+    PLAYDOHop_FL_D_C3_C3            # opc 1184
+    PLAYDOHop_FLI_S_V1_V1           # opc 1185
+    PLAYDOHop_FLI_S_V1_C1           # opc 1186
+    PLAYDOHop_FLI_S_V1_C2           # opc 1187
+    PLAYDOHop_FLI_S_V1_C3           # opc 1188
+    PLAYDOHop_FLI_S_C1_V1           # opc 1189
+    PLAYDOHop_FLI_S_C1_C1           # opc 1190
+    PLAYDOHop_FLI_S_C1_C2           # opc 1191
+    PLAYDOHop_FLI_S_C1_C3           # opc 1192
+    PLAYDOHop_FLI_S_C2_V1           # opc 1193
+    PLAYDOHop_FLI_S_C2_C1           # opc 1194
+    PLAYDOHop_FLI_S_C2_C2           # opc 1195
+    PLAYDOHop_FLI_S_C2_C3           # opc 1196
+    PLAYDOHop_FLI_S_C3_V1           # opc 1197
+    PLAYDOHop_FLI_S_C3_C1           # opc 1198
+    PLAYDOHop_FLI_S_C3_C2           # opc 1199
+    PLAYDOHop_FLI_S_C3_C3           # opc 1200
+    PLAYDOHop_FLI_D_V1_V1           # opc 1201
+    PLAYDOHop_FLI_D_V1_C1           # opc 1202
+    PLAYDOHop_FLI_D_V1_C2           # opc 1203
+    PLAYDOHop_FLI_D_V1_C3           # opc 1204
+    PLAYDOHop_FLI_D_C1_V1           # opc 1205
+    PLAYDOHop_FLI_D_C1_C1           # opc 1206
+    PLAYDOHop_FLI_D_C1_C2           # opc 1207
+    PLAYDOHop_FLI_D_C1_C3           # opc 1208
+    PLAYDOHop_FLI_D_C2_V1           # opc 1209
+    PLAYDOHop_FLI_D_C2_C1           # opc 1210
+    PLAYDOHop_FLI_D_C2_C2           # opc 1211
+    PLAYDOHop_FLI_D_C2_C3           # opc 1212
+    PLAYDOHop_FLI_D_C3_V1           # opc 1213
+    PLAYDOHop_FLI_D_C3_C1           # opc 1214
+    PLAYDOHop_FLI_D_C3_C2           # opc 1215
+    PLAYDOHop_FLI_D_C3_C3           # opc 1216
+    PLAYDOHop_LDS_B_V1_V1           # opc 1233
+    PLAYDOHop_LDS_B_V1_C1           # opc 1234
+    PLAYDOHop_LDS_B_V1_C2           # opc 1235
+    PLAYDOHop_LDS_B_V1_C3           # opc 1236
+    PLAYDOHop_LDS_B_C1_V1           # opc 1237
+    PLAYDOHop_LDS_B_C1_C1           # opc 1238
+    PLAYDOHop_LDS_B_C1_C2           # opc 1239
+    PLAYDOHop_LDS_B_C1_C3           # opc 1240
+    PLAYDOHop_LDS_B_C2_V1           # opc 1241
+    PLAYDOHop_LDS_B_C2_C1           # opc 1242
+    PLAYDOHop_LDS_B_C2_C2           # opc 1243
+    PLAYDOHop_LDS_B_C2_C3           # opc 1244
+    PLAYDOHop_LDS_B_C3_V1           # opc 1245
+    PLAYDOHop_LDS_B_C3_C1           # opc 1246
+    PLAYDOHop_LDS_B_C3_C2           # opc 1247
+    PLAYDOHop_LDS_B_C3_C3           # opc 1248
+    PLAYDOHop_LDS_H_V1_V1           # opc 1249
+    PLAYDOHop_LDS_H_V1_C1           # opc 1250
+    PLAYDOHop_LDS_H_V1_C2           # opc 1251
+    PLAYDOHop_LDS_H_V1_C3           # opc 1252
+    PLAYDOHop_LDS_H_C1_V1           # opc 1253
+    PLAYDOHop_LDS_H_C1_C1           # opc 1254
+    PLAYDOHop_LDS_H_C1_C2           # opc 1255
+    PLAYDOHop_LDS_H_C1_C3           # opc 1256
+    PLAYDOHop_LDS_H_C2_V1           # opc 1257
+    PLAYDOHop_LDS_H_C2_C1           # opc 1258
+    PLAYDOHop_LDS_H_C2_C2           # opc 1259
+    PLAYDOHop_LDS_H_C2_C3           # opc 1260
+    PLAYDOHop_LDS_H_C3_V1           # opc 1261
+    PLAYDOHop_LDS_H_C3_C1           # opc 1262
+    PLAYDOHop_LDS_H_C3_C2           # opc 1263
+    PLAYDOHop_LDS_H_C3_C3           # opc 1264
+    PLAYDOHop_LDS_W_V1_V1           # opc 1265
+    PLAYDOHop_LDS_W_V1_C1           # opc 1266
+    PLAYDOHop_LDS_W_V1_C2           # opc 1267
+    PLAYDOHop_LDS_W_V1_C3           # opc 1268
+    PLAYDOHop_LDS_W_C1_V1           # opc 1269
+    PLAYDOHop_LDS_W_C1_C1           # opc 1270
+    PLAYDOHop_LDS_W_C1_C2           # opc 1271
+    PLAYDOHop_LDS_W_C1_C3           # opc 1272
+    PLAYDOHop_LDS_W_C2_V1           # opc 1273
+    PLAYDOHop_LDS_W_C2_C1           # opc 1274
+    PLAYDOHop_LDS_W_C2_C2           # opc 1275
+    PLAYDOHop_LDS_W_C2_C3           # opc 1276
+    PLAYDOHop_LDS_W_C3_V1           # opc 1277
+    PLAYDOHop_LDS_W_C3_C1           # opc 1278
+    PLAYDOHop_LDS_W_C3_C2           # opc 1279
+    PLAYDOHop_LDS_W_C3_C3           # opc 1280
+    PLAYDOHop_LDSI_B_V1_V1          # opc 1281
+    PLAYDOHop_LDSI_B_V1_C1          # opc 1282
+    PLAYDOHop_LDSI_B_V1_C2          # opc 1283
+    PLAYDOHop_LDSI_B_V1_C3          # opc 1284
+    PLAYDOHop_LDSI_B_C1_V1          # opc 1285
+    PLAYDOHop_LDSI_B_C1_C1          # opc 1286
+    PLAYDOHop_LDSI_B_C1_C2          # opc 1287
+    PLAYDOHop_LDSI_B_C1_C3          # opc 1288
+    PLAYDOHop_LDSI_B_C2_V1          # opc 1289
+    PLAYDOHop_LDSI_B_C2_C1          # opc 1290
+    PLAYDOHop_LDSI_B_C2_C2          # opc 1291
+    PLAYDOHop_LDSI_B_C2_C3          # opc 1292
+    PLAYDOHop_LDSI_B_C3_V1          # opc 1293
+    PLAYDOHop_LDSI_B_C3_C1          # opc 1294
+    PLAYDOHop_LDSI_B_C3_C2          # opc 1295
+    PLAYDOHop_LDSI_B_C3_C3          # opc 1296
+    PLAYDOHop_LDSI_H_V1_V1          # opc 1297
+    PLAYDOHop_LDSI_H_V1_C1          # opc 1298
+    PLAYDOHop_LDSI_H_V1_C2          # opc 1299
+    PLAYDOHop_LDSI_H_V1_C3          # opc 1300
+    PLAYDOHop_LDSI_H_C1_V1          # opc 1301
+    PLAYDOHop_LDSI_H_C1_C1          # opc 1302
+    PLAYDOHop_LDSI_H_C1_C2          # opc 1303
+    PLAYDOHop_LDSI_H_C1_C3          # opc 1304
+    PLAYDOHop_LDSI_H_C2_V1          # opc 1305
+    PLAYDOHop_LDSI_H_C2_C1          # opc 1306
+    PLAYDOHop_LDSI_H_C2_C2          # opc 1307
+    PLAYDOHop_LDSI_H_C2_C3          # opc 1308
+    PLAYDOHop_LDSI_H_C3_V1          # opc 1309
+    PLAYDOHop_LDSI_H_C3_C1          # opc 1310
+    PLAYDOHop_LDSI_H_C3_C2          # opc 1311
+    PLAYDOHop_LDSI_H_C3_C3          # opc 1312
+    PLAYDOHop_LDSI_W_V1_V1          # opc 1313
+    PLAYDOHop_LDSI_W_V1_C1          # opc 1314
+    PLAYDOHop_LDSI_W_V1_C2          # opc 1315
+    PLAYDOHop_LDSI_W_V1_C3          # opc 1316
+    PLAYDOHop_LDSI_W_C1_V1          # opc 1317
+    PLAYDOHop_LDSI_W_C1_C1          # opc 1318
+    PLAYDOHop_LDSI_W_C1_C2          # opc 1319
+    PLAYDOHop_LDSI_W_C1_C3          # opc 1320
+    PLAYDOHop_LDSI_W_C2_V1          # opc 1321
+    PLAYDOHop_LDSI_W_C2_C1          # opc 1322
+    PLAYDOHop_LDSI_W_C2_C2          # opc 1323
+    PLAYDOHop_LDSI_W_C2_C3          # opc 1324
+    PLAYDOHop_LDSI_W_C3_V1          # opc 1325
+    PLAYDOHop_LDSI_W_C3_C1          # opc 1326
+    PLAYDOHop_LDSI_W_C3_C2          # opc 1327
+    PLAYDOHop_LDSI_W_C3_C3          # opc 1328
+    PLAYDOHop_FLDS_S_V1_V1          # opc 1329
+    PLAYDOHop_FLDS_S_V1_C1          # opc 1330
+    PLAYDOHop_FLDS_S_V1_C2          # opc 1331
+    PLAYDOHop_FLDS_S_V1_C3          # opc 1332
+    PLAYDOHop_FLDS_S_C1_V1          # opc 1333
+    PLAYDOHop_FLDS_S_C1_C1          # opc 1334
+    PLAYDOHop_FLDS_S_C1_C2          # opc 1335
+    PLAYDOHop_FLDS_S_C1_C3          # opc 1336
+    PLAYDOHop_FLDS_S_C2_V1          # opc 1337
+    PLAYDOHop_FLDS_S_C2_C1          # opc 1338
+    PLAYDOHop_FLDS_S_C2_C2          # opc 1339
+    PLAYDOHop_FLDS_S_C2_C3          # opc 1340
+    PLAYDOHop_FLDS_S_C3_V1          # opc 1341
+    PLAYDOHop_FLDS_S_C3_C1          # opc 1342
+    PLAYDOHop_FLDS_S_C3_C2          # opc 1343
+    PLAYDOHop_FLDS_S_C3_C3          # opc 1344
+    PLAYDOHop_FLDS_D_V1_V1          # opc 1345
+    PLAYDOHop_FLDS_D_V1_C1          # opc 1346
+    PLAYDOHop_FLDS_D_V1_C2          # opc 1347
+    PLAYDOHop_FLDS_D_V1_C3          # opc 1348
+    PLAYDOHop_FLDS_D_C1_V1          # opc 1349
+    PLAYDOHop_FLDS_D_C1_C1          # opc 1350
+    PLAYDOHop_FLDS_D_C1_C2          # opc 1351
+    PLAYDOHop_FLDS_D_C1_C3          # opc 1352
+    PLAYDOHop_FLDS_D_C2_V1          # opc 1353
+    PLAYDOHop_FLDS_D_C2_C1          # opc 1354
+    PLAYDOHop_FLDS_D_C2_C2          # opc 1355
+    PLAYDOHop_FLDS_D_C2_C3          # opc 1356
+    PLAYDOHop_FLDS_D_C3_V1          # opc 1357
+    PLAYDOHop_FLDS_D_C3_C1          # opc 1358
+    PLAYDOHop_FLDS_D_C3_C2          # opc 1359
+    PLAYDOHop_FLDS_D_C3_C3          # opc 1360
+    PLAYDOHop_FLDSI_S_V1_V1         # opc 1361
+    PLAYDOHop_FLDSI_S_V1_C1         # opc 1362
+    PLAYDOHop_FLDSI_S_V1_C2         # opc 1363
+    PLAYDOHop_FLDSI_S_V1_C3         # opc 1364
+    PLAYDOHop_FLDSI_S_C1_V1         # opc 1365
+    PLAYDOHop_FLDSI_S_C1_C1         # opc 1366
+    PLAYDOHop_FLDSI_S_C1_C2         # opc 1367
+    PLAYDOHop_FLDSI_S_C1_C3         # opc 1368
+    PLAYDOHop_FLDSI_S_C2_V1         # opc 1369
+    PLAYDOHop_FLDSI_S_C2_C1         # opc 1370
+    PLAYDOHop_FLDSI_S_C2_C2         # opc 1371
+    PLAYDOHop_FLDSI_S_C2_C3         # opc 1372
+    PLAYDOHop_FLDSI_S_C3_V1         # opc 1373
+    PLAYDOHop_FLDSI_S_C3_C1         # opc 1374
+    PLAYDOHop_FLDSI_S_C3_C2         # opc 1375
+    PLAYDOHop_FLDSI_S_C3_C3         # opc 1376
+    PLAYDOHop_FLDSI_D_V1_V1         # opc 1377
+    PLAYDOHop_FLDSI_D_V1_C1         # opc 1378
+    PLAYDOHop_FLDSI_D_V1_C2         # opc 1379
+    PLAYDOHop_FLDSI_D_V1_C3         # opc 1380
+    PLAYDOHop_FLDSI_D_C1_V1         # opc 1381
+    PLAYDOHop_FLDSI_D_C1_C1         # opc 1382
+    PLAYDOHop_FLDSI_D_C1_C2         # opc 1383
+    PLAYDOHop_FLDSI_D_C1_C3         # opc 1384
+    PLAYDOHop_FLDSI_D_C2_V1         # opc 1385
+    PLAYDOHop_FLDSI_D_C2_C1         # opc 1386
+    PLAYDOHop_FLDSI_D_C2_C2         # opc 1387
+    PLAYDOHop_FLDSI_D_C2_C3         # opc 1388
+    PLAYDOHop_FLDSI_D_C3_V1         # opc 1389
+    PLAYDOHop_FLDSI_D_C3_C1         # opc 1390
+    PLAYDOHop_FLDSI_D_C3_C2         # opc 1391
+    PLAYDOHop_FLDSI_D_C3_C3         # opc 1392
+    PLAYDOHop_LDV_B                 # opc 1393
+    PLAYDOHop_LDV_H                 # opc 1394
+    PLAYDOHop_LDV_W                 # opc 1395
+    PLAYDOHop_FLDV_S                # opc 1396
+    PLAYDOHop_FLDV_D                # opc 1397
+    PLAYDOHop_S_B_V1                # opc 1129
+    PLAYDOHop_S_B_C1                # opc 1130
+    PLAYDOHop_S_B_C2                # opc 1131
+    PLAYDOHop_S_B_C3                # opc 1132
+    PLAYDOHop_S_H_V1                # opc 1133
+    PLAYDOHop_S_H_C1                # opc 1134
+    PLAYDOHop_S_H_C2                # opc 1135
+    PLAYDOHop_S_H_C3                # opc 1136
+    PLAYDOHop_S_W_V1                # opc 1137
+    PLAYDOHop_S_W_C1                # opc 1138
+    PLAYDOHop_S_W_C2                # opc 1139
+    PLAYDOHop_S_W_C3                # opc 1140
+    PLAYDOHop_SI_B_V1               # opc 1141
+    PLAYDOHop_SI_B_C1               # opc 1142
+    PLAYDOHop_SI_B_C2               # opc 1143
+    PLAYDOHop_SI_B_C3               # opc 1144
+    PLAYDOHop_SI_H_V1               # opc 1145
+    PLAYDOHop_SI_H_C1               # opc 1146
+    PLAYDOHop_SI_H_C2               # opc 1147
+    PLAYDOHop_SI_H_C3               # opc 1148
+    PLAYDOHop_SI_W_V1               # opc 1149
+    PLAYDOHop_SI_W_C1               # opc 1150
+    PLAYDOHop_SI_W_C2               # opc 1151
+    PLAYDOHop_SI_W_C3               # opc 1152
+    PLAYDOHop_FS_S_V1               # opc 1217
+    PLAYDOHop_FS_S_C1               # opc 1218
+    PLAYDOHop_FS_S_C2               # opc 1219
+    PLAYDOHop_FS_S_C3               # opc 1220
+    PLAYDOHop_FS_D_V1               # opc 1221
+    PLAYDOHop_FS_D_C1               # opc 1222
+    PLAYDOHop_FS_D_C2               # opc 1223
+    PLAYDOHop_FS_D_C3               # opc 1224
+    PLAYDOHop_FSI_S_V1              # opc 1225
+    PLAYDOHop_FSI_S_C1              # opc 1226
+    PLAYDOHop_FSI_S_C2              # opc 1227
+    PLAYDOHop_FSI_S_C3              # opc 1228
+    PLAYDOHop_FSI_D_V1              # opc 1229
+    PLAYDOHop_FSI_D_C1              # opc 1230
+    PLAYDOHop_FSI_D_C2              # opc 1231
+    PLAYDOHop_FSI_D_C3              # opc 1232
+)
+
+FALU (
+   mov_f                           #opc 63
+   mov_f2                          #opc 64
+   add_f2                          #opc 107
+   sub_f2                          #opc 108
+   mul_f2                          #opc 109
+   div_f2                          #opc 110
+   abs_f2                          #opc 111
+   mul_add_f2                      #opc 112
+   mul_sub_f2                      #opc 113
+   mul_sub_rev_f2                  #opc 114
+   sqrt_f2                         #opc 115
+   eq_f2                           #opc 116
+   ne_f2                           #opc 117
+   gt_f2                           #opc 118
+   ge_f2                           #opc 119
+   lt_f2                           #opc 120
+   le_f2                           #opc 121
+   add_f                           #opc 122
+   sub_f                           #opc 123
+   mul_f                           #opc 124
+   div_f                           #opc 125
+   abs_f                           #opc 126
+   mul_add_f                       #opc 127
+   mul_sub_f                       #opc 128
+   mul_sub_rev_f                   #opc 129
+   sqrt_f                          #opc 130
+   eq_f                            #opc 131
+   ne_f                            #opc 132
+   gt_f                            #opc 133
+   ge_f                            #opc 134
+   lt_f                            #opc 135
+   le_f                            #opc 136
+   f2_i                            #opc 137
+   i_f2                            #opc 138
+   f_i                             #opc 139
+   i_f                             #opc 140
+   f2_f                            #opc 141
+   f_f2                            #opc 142
+   pred_eq_f2                      #opc 210
+   pred_ne_f2                      #opc 211
+   pred_gt_f2                      #opc 212
+   pred_ge_f2                      #opc 213
+   pred_lt_f2                      #opc 214
+   pred_le_f2                      #opc 215
+   pred_eq_f                       #opc 216
+   pred_ne_f                       #opc 217
+   pred_gt_f                       #opc 218
+   pred_ge_f                       #opc 219
+   pred_lt_f                       #opc 220
+   pred_le_f                       #opc 221
+   rcp_f2                          #opc 243
+   max_f2                          #opc 244
+   min_f2                          #opc 245
+   rcp_f                           #opc 246
+   max_f                           #opc 247
+   min_f                           #opc 248
+   PLAYDOHop_FMPYADDN_S            #opc 1401
+   PLAYDOHop_FMPYADDN_D            #opc 1402
+   PLAYDOHop_FCMPR_S_FALSE         #opc 1409
+   PLAYDOHop_FCMPR_S_TRUE          #opc 1410
+   PLAYDOHop_FCMPR_D_FALSE         #opc 1411
+   PLAYDOHop_FCMPR_D_TRUE          #opc 1412
+   PLAYDOHop_MOVEFG_L              #opc 1006
+   PLAYDOHop_MOVEFG_U              #opc 1007
+)
+
+BRANCH (
+    PLAYDOHop_BRCT                  # opc 1011
+    PLAYDOHop_BRCF                  # opc 1012
+    PLAYDOHop_BRLC                  # opc 1014
+    PLAYDOHop_BRF_B_B_F             # opc 1016
+    PLAYDOHop_BRF_B_F_F             # opc 1018
+    PLAYDOHop_BRF_F_B_B             # opc 1019
+    PLAYDOHop_BRF_F_F_B             # opc 1021
+    PLAYDOHop_BRF_F_F_F             # opc 1022
+    PLAYDOHop_BRW_B_B_F             # opc 1024
+    PLAYDOHop_BRW_B_F_F             # opc 1026
+    PLAYDOHop_BRW_F_B_B             # opc 1027
+    PLAYDOHop_BRW_F_F_B             # opc 1029
+    PLAYDOHop_BRW_F_F_F             # opc 1030
+    PLAYDOHop_BRDVI                 # opc 1031
+    PLAYDOHop_BRDVF                 # opc 1032
+    PLAYDOHop_BRU                   # opc 1010
+    rts                             # opc 3
+    PLAYDOHop_BRL                   # opc 1013
+)
+
+NO_OP (
+    no_op                           #opc 0
+)
+
+IGNORE (
+    prologue                        # opc 5
+    define                          # opc 7
+    pred_clear                      # opc 193
+    pred_set                        # opc 194
+    sim_dir                         # opc 240
+    epilogue                        #opc 6
+    alloc                           #opc 8
+)
+

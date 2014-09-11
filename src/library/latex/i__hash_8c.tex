@@ -1,0 +1,211 @@
+\section{i\_\-hash.c File Reference}
+\label{i__hash_8c}\index{i_hash.c@{i\_\-hash.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/i\_\-global.h$>$}\par
+{\tt \#include $<$library/i\_\-hash.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Hash\-Table} \bf{Hash\-Table\_\-create} (int size)
+\item 
+void \bf{Hash\-Table\_\-free} (\bf{Hash\-Table} hash\_\-table)
+\item 
+void \bf{Hash\-Table\_\-free\_\-func} (\bf{Hash\-Table} hash\_\-table, void($\ast$ptr\_\-free\_\-func)(void $\ast$))
+\item 
+void \bf{Hash\-Table\_\-reset} (\bf{Hash\-Table} hash\_\-table)
+\item 
+void \bf{Hash\-Table\_\-reset\_\-func} (\bf{Hash\-Table} hash\_\-table, void($\ast$ptr\_\-free\_\-func)(void $\ast$))
+\item 
+void $\ast$ \bf{Hash\-Table\_\-find} (\bf{Hash\-Table} hash\_\-table, int key)
+\item 
+void $\ast$ \bf{Hash\-Table\_\-find\_\-or\_\-null} (\bf{Hash\-Table} hash\_\-table, int key)
+\item 
+int \bf{Hash\-Table\_\-member} (\bf{Hash\-Table} hash\_\-table, int key)
+\item 
+void \bf{Hash\-Table\_\-insert} (\bf{Hash\-Table} hash\_\-table, int key, void $\ast$ptr)
+\item 
+void \bf{Hash\-Table\_\-remove} (\bf{Hash\-Table} hash\_\-table, int key)
+\item 
+void \bf{Hash\-Table\_\-update} (\bf{Hash\-Table} hash\_\-table, int key, void $\ast$ptr)
+\item 
+void \bf{Hash\-Table\_\-start} (\bf{Hash\-Table} hash\_\-table)
+\item 
+void $\ast$ \bf{Hash\-Table\_\-next} (\bf{Hash\-Table} hash\_\-table)
+\item 
+int \bf{Hash\-Table\_\-key} (\bf{Hash\-Table} hash\_\-table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Hash\-Element\-Pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Hash\-Table\-Pool} = NULL
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{i_hash.c@{i\_\-hash.c}!HashTable_create@{HashTable\_\-create}}
+\index{HashTable_create@{HashTable\_\-create}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Hash\-Table} Hash\-Table\_\-create (int {\em size})}\label{i__hash_8c_ccc5de33b1b451799d22a19f9d768c6a}
+
+
+
+
+Definition at line 73 of file i\_\-hash.c.
+
+References Hash\-Element\-Pool, Hash\-Table\-Pool, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), \_\-hash\_\-table::mask, NULL, and \_\-hash\_\-table::tbl.
+
+Referenced by Graph\_\-create\_\-graph().\index{i_hash.c@{i\_\-hash.c}!HashTable_find@{HashTable\_\-find}}
+\index{HashTable_find@{HashTable\_\-find}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Hash\-Table\_\-find (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key})}\label{i__hash_8c_a4b73ed98723e1c8083a9ceda8ffe15d}
+
+
+
+
+Definition at line 174 of file i\_\-hash.c.
+
+References HASH\_\-FUNC, I\_\-punt(), \_\-hash\_\-element::key, \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, \_\-hash\_\-element::ptr, and \_\-hash\_\-table::tbl.
+
+Referenced by Graph\_\-arc\_\-from\_\-id(), Graph\_\-equiv\_\-cd\_\-from\_\-id(), and Graph\_\-node\_\-from\_\-id().\index{i_hash.c@{i\_\-hash.c}!HashTable_find_or_null@{HashTable\_\-find\_\-or\_\-null}}
+\index{HashTable_find_or_null@{HashTable\_\-find\_\-or\_\-null}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Hash\-Table\_\-find\_\-or\_\-null (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key})}\label{i__hash_8c_08585a8f2a9e0291220a7fc41739060d}
+
+
+
+
+Definition at line 191 of file i\_\-hash.c.
+
+References HASH\_\-FUNC, \_\-hash\_\-element::key, \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, \_\-hash\_\-element::ptr, and \_\-hash\_\-table::tbl.
+
+Referenced by Graph\_\-arc\_\-from\_\-id\_\-or\_\-null(), and Graph\_\-node\_\-from\_\-id\_\-or\_\-null().\index{i_hash.c@{i\_\-hash.c}!HashTable_free@{HashTable\_\-free}}
+\index{HashTable_free@{HashTable\_\-free}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-free (\bf{Hash\-Table} {\em hash\_\-table})}\label{i__hash_8c_cc9ab22eb7e09aca78cbe0188a4b7122}
+
+
+
+
+Definition at line 109 of file i\_\-hash.c.
+
+References Hash\-Table\_\-reset(), Hash\-Table\-Pool, L\_\-free(), and \_\-hash\_\-table::tbl.
+
+Referenced by Graph\_\-free\_\-graph().\index{i_hash.c@{i\_\-hash.c}!HashTable_free_func@{HashTable\_\-free\_\-func}}
+\index{HashTable_free_func@{HashTable\_\-free\_\-func}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-free\_\-func (\bf{Hash\-Table} {\em hash\_\-table}, void($\ast$)(void $\ast$) {\em ptr\_\-free\_\-func})}\label{i__hash_8c_6d092f1a97c02895a48a10d19abd7493}
+
+
+
+
+Definition at line 120 of file i\_\-hash.c.
+
+References Hash\-Table\_\-reset\_\-func(), Hash\-Table\-Pool, L\_\-free(), and \_\-hash\_\-table::tbl.\index{i_hash.c@{i\_\-hash.c}!HashTable_insert@{HashTable\_\-insert}}
+\index{HashTable_insert@{HashTable\_\-insert}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-insert (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key}, void $\ast$ {\em ptr})}\label{i__hash_8c_c25cfe5a8697fe45eb5dd0644d604b0c}
+
+
+
+
+Definition at line 223 of file i\_\-hash.c.
+
+References HASH\_\-FUNC, Hash\-Element\-Pool, \_\-hash\_\-element::key, L\_\-alloc(), \_\-hash\_\-table::mask, \_\-hash\_\-element::next, \_\-hash\_\-element::ptr, and \_\-hash\_\-table::tbl.
+
+Referenced by Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-create\_\-graph\_\-equiv\_\-cd(), and Graph\_\-create\_\-graph\_\-node\_\-given\_\-id().\index{i_hash.c@{i\_\-hash.c}!HashTable_key@{HashTable\_\-key}}
+\index{HashTable_key@{HashTable\_\-key}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Hash\-Table\_\-key (\bf{Hash\-Table} {\em hash\_\-table})}\label{i__hash_8c_9c43b8611c01aad5912e93506fc8679b}
+
+
+
+
+Definition at line 331 of file i\_\-hash.c.
+
+References \_\-hash\_\-table::elem\_\-indx, and \_\-hash\_\-element::key.\index{i_hash.c@{i\_\-hash.c}!HashTable_member@{HashTable\_\-member}}
+\index{HashTable_member@{HashTable\_\-member}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Hash\-Table\_\-member (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key})}\label{i__hash_8c_8f1e3168c1a6e919af2fa763326df894}
+
+
+
+
+Definition at line 207 of file i\_\-hash.c.
+
+References FALSE, HASH\_\-FUNC, \_\-hash\_\-element::key, \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, \_\-hash\_\-table::tbl, and TRUE.\index{i_hash.c@{i\_\-hash.c}!HashTable_next@{HashTable\_\-next}}
+\index{HashTable_next@{HashTable\_\-next}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Hash\-Table\_\-next (\bf{Hash\-Table} {\em hash\_\-table})}\label{i__hash_8c_e11b578b4892e91f3062ef6927ddd638}
+
+
+
+
+Definition at line 304 of file i\_\-hash.c.
+
+References \_\-hash\_\-table::elem\_\-indx, \_\-hash\_\-table::key\_\-indx, \_\-hash\_\-element::next, NULL, \_\-hash\_\-element::ptr, and \_\-hash\_\-table::tbl.\index{i_hash.c@{i\_\-hash.c}!HashTable_remove@{HashTable\_\-remove}}
+\index{HashTable_remove@{HashTable\_\-remove}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-remove (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key})}\label{i__hash_8c_c6da04ef7158c1acb2f51ace02a6328d}
+
+
+
+
+Definition at line 240 of file i\_\-hash.c.
+
+References HASH\_\-FUNC, Hash\-Element\-Pool, I\_\-punt(), \_\-hash\_\-element::key, L\_\-free(), \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, and \_\-hash\_\-table::tbl.\index{i_hash.c@{i\_\-hash.c}!HashTable_reset@{HashTable\_\-reset}}
+\index{HashTable_reset@{HashTable\_\-reset}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-reset (\bf{Hash\-Table} {\em hash\_\-table})}\label{i__hash_8c_20bd9c4f2ba872347f363ba175dbd9a3}
+
+
+
+
+Definition at line 131 of file i\_\-hash.c.
+
+References Hash\-Element\-Pool, L\_\-free(), \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, and \_\-hash\_\-table::tbl.
+
+Referenced by Hash\-Table\_\-free().\index{i_hash.c@{i\_\-hash.c}!HashTable_reset_func@{HashTable\_\-reset\_\-func}}
+\index{HashTable_reset_func@{HashTable\_\-reset\_\-func}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-reset\_\-func (\bf{Hash\-Table} {\em hash\_\-table}, void($\ast$)(void $\ast$) {\em ptr\_\-free\_\-func})}\label{i__hash_8c_bd05eb52a931576fa22dd08b47aa2411}
+
+
+
+
+Definition at line 152 of file i\_\-hash.c.
+
+References Hash\-Element\-Pool, L\_\-free(), \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, and \_\-hash\_\-table::tbl.
+
+Referenced by Hash\-Table\_\-free\_\-func().\index{i_hash.c@{i\_\-hash.c}!HashTable_start@{HashTable\_\-start}}
+\index{HashTable_start@{HashTable\_\-start}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-start (\bf{Hash\-Table} {\em hash\_\-table})}\label{i__hash_8c_b5ceafd74e84938d3431eda4274d97f3}
+
+
+
+
+Definition at line 296 of file i\_\-hash.c.
+
+References \_\-hash\_\-table::elem\_\-indx, \_\-hash\_\-table::key\_\-indx, and NULL.\index{i_hash.c@{i\_\-hash.c}!HashTable_update@{HashTable\_\-update}}
+\index{HashTable_update@{HashTable\_\-update}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Hash\-Table\_\-update (\bf{Hash\-Table} {\em hash\_\-table}, int {\em key}, void $\ast$ {\em ptr})}\label{i__hash_8c_25f7582db136efb2599666381506437d}
+
+
+
+
+Definition at line 270 of file i\_\-hash.c.
+
+References HASH\_\-FUNC, Hash\-Element\-Pool, \_\-hash\_\-element::key, L\_\-alloc(), \_\-hash\_\-table::mask, \_\-hash\_\-element::next, NULL, \_\-hash\_\-element::ptr, and \_\-hash\_\-table::tbl.
+
+\subsection{Variable Documentation}
+\index{i_hash.c@{i\_\-hash.c}!HashElementPool@{HashElementPool}}
+\index{HashElementPool@{HashElementPool}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Hash\-Element\-Pool} = NULL}\label{i__hash_8c_000917fef40551778dc8b425b32a1d1a}
+
+
+
+
+Definition at line 70 of file i\_\-hash.c.
+
+Referenced by Hash\-Table\_\-create(), Hash\-Table\_\-insert(), Hash\-Table\_\-remove(), Hash\-Table\_\-reset(), Hash\-Table\_\-reset\_\-func(), and Hash\-Table\_\-update().\index{i_hash.c@{i\_\-hash.c}!HashTablePool@{HashTablePool}}
+\index{HashTablePool@{HashTablePool}!i_hash.c@{i\_\-hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Hash\-Table\-Pool} = NULL}\label{i__hash_8c_51ba8cadbb11bf5bb3e5e7d12a75ede2}
+
+
+
+
+Definition at line 71 of file i\_\-hash.c.
+
+Referenced by Hash\-Table\_\-create(), Hash\-Table\_\-free(), and Hash\-Table\_\-free\_\-func().

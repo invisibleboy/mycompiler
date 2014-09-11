@@ -1,0 +1,109 @@
+#!/usr/local/bin/perl
+
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#####################################################################
+#	File: addr_build
+#	Author: Teresa Johnson
+#	Copyright (c) 1996 Teresa Johnson and Wen-mei Hwu. All rights
+#       reserved.  All rights granted to the University of Illinois.
+#       The University of Illinois software License Agreement
+#       specifies the terms and conditions for redistribution.
+#####################################################################
+
+# Perl script to call nm on a probed executable and parse the resulting
+# output. It gets the address for each function in the encoded file,
+# choosing the largest address if there is more than one, and
+# prints to stdout in the format used for the addr_list file read
+# by Lsim.
+
+$ARGV = shift;
+$encoded_file = $ARGV.".encoded";
+$source_file = $ARGV.".probed";
+$nm_file = $ARGV.".nm";
+
+open(ENCODED_FILE,$encoded_file);
+ 
+# Find each function in the encoded file, and set it's corresponding
+# address to 0.
+while (<ENCODED_FILE>) {
+    @line = split(" ");
+    if ($line[0] eq "Function") {
+	$addrs{$line[2]} = 0;
+    }
+}
+
+# Call nm (must be gnu nm!!) on the probed file
+system("rm -f $nm_file");
+system("/usr/local/gnu/bin/nm $source_file > $nm_file");
+open(NM_FILE,$nm_file);
+
+# Parse the nm output
+while (<NM_FILE>) {
+    @line = split(" ");
+    # Only need address if this is a function from encoded file
+    if (defined($line[2]) && defined($addrs{$line[2]})) {
+	# If this is the first address found for function, save it
+	if (hex($addrs{$line[2]}) == 0) {
+	    $addrs{$line[2]} = $line[0];
+	}
+	else {
+	    # If this address is bigger, save it
+	    if (hex($addrs{$line[2]}) <= hex($line[0])) {
+	        $addrs{$line[2]} = $line[0];
+	    }
+	}
+    }
+}
+
+# For each function, print out name and address
+while (($name,$addr) = each %addrs) {
+    print sprintf("_%s %4X\n",$name,hex($addr));
+}
+
+system("rm -f $nm_file");

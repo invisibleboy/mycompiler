@@ -1,0 +1,445 @@
+\section{cudd\-Compose.c File Reference}
+\label{cuddCompose_8c}\index{cuddCompose.c@{cuddCompose.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Add\-Permute\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$node, int $\ast$permut))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Add\-Vector\-Compose\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, int deepest))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Add\-Non\-Sim\-Compose\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, \bf{Dd\-Node} $\ast$key, \bf{Dd\-Node} $\ast$cube, int lastsub))
+\item 
+static DD\_\-INLINE int dd\-Is\-Ith\-Add\-Var \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, unsigned int i))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Compose} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int v)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Compose} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int v)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Permute} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int $\ast$permut)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Swap\-Variables} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Permute} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int $\ast$permut)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Swap\-Variables} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Adj\-Permute\-X} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$x, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Vector\-Compose} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Non\-Sim\-Compose} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Vector\-Compose} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Compose\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$proj)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Compose\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$proj)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Permute\-Recur} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$node, int $\ast$permut)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Permute\-Recur} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$node, int $\ast$permut)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Vector\-Compose\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, int deepest)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Add\-Non\-Sim\-Compose\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, \bf{Dd\-Node} $\ast$key, \bf{Dd\-Node} $\ast$cube, int lastsub)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Vector\-Compose\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, int deepest)
+\item 
+static DD\_\-INLINE int \bf{dd\-Is\-Ith\-Add\-Var} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, unsigned int i)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Compose.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddCompose.c@{cudd\-Compose.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE int dd\-Is\-Ith\-Add\-Var ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, unsigned int i))\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_864fd165c691f4e7f213e861ac357760}
+
+
+\index{cuddCompose.c@{cudd\-Compose.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Add\-Non\-Sim\-Compose\-Recur ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, \bf{Dd\-Node} $\ast$key, \bf{Dd\-Node} $\ast$cube, int lastsub))\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_4b3bcf1c24583d029a635017b316d5a9}
+
+
+\index{cuddCompose.c@{cudd\-Compose.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node} $\ast$cudd\-Bdd\-Vector\-Compose\-Recur ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$$\ast$vector, int deepest))\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_2b727e6c682f5230d09500a9b2fc73b6}
+
+
+\index{cuddCompose.c@{cudd\-Compose.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node} $\ast$cudd\-Bdd\-Permute\-Recur ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Hash\-Table} $\ast$table, \bf{Dd\-Node} $\ast$node, int $\ast$permut))\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_b391e320d5bfa387680f180c2285f86b}
+
+
+Automatic\-Start \index{cuddCompose.c@{cudd\-Compose.c}!Cudd_addCompose@{Cudd\_\-addCompose}}
+\index{Cudd_addCompose@{Cudd\_\-addCompose}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Compose (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, int {\em v})}\label{cuddCompose_8c_d050bd964c7386f2a9eed09b8a1d25d7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Substitutes g for x\_\-v in the ADD for f.]
+
+Description [Substitutes g for x\_\-v in the ADD for f. v is the index of the variable to be substituted. g must be a 0-1 ADD. Cudd\_\-bdd\-Compose passes the corresponding projection function to the recursive procedure, so that the cache may be used. Returns the composed ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Compose] 
+
+Definition at line 163 of file cudd\-Compose.c.
+
+References cudd\-Add\-Compose\-Recur(), Dd\-Manager::reordered, Dd\-Manager::size, and Dd\-Manager::vars.\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_addNonSimCompose@{Cudd\_\-addNonSimCompose}}
+\index{Cudd_addNonSimCompose@{Cudd\_\-addNonSimCompose}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Non\-Sim\-Compose (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector})}\label{cuddCompose_8c_74339b069aaea8dbf1b321eaa773b59a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Composes an ADD with a vector of 0-1 ADDs.]
+
+Description [Given a vector of 0-1 ADDs, creates a new ADD by substituting the 0-1 ADDs for the variables of the ADD f. There should be an entry in vector for each variable in the manager. This function implements non-simultaneous composition. If any of the functions being composed depends on any of the variables being substituted, then the result depends on the order of composition, which in turn depends on the variable order: The variables farther from the roots in the order are substituted first. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Vector\-Compose Cudd\_\-add\-Permute Cudd\_\-add\-Compose] 
+
+Definition at line 490 of file cudd\-Compose.c.
+
+References Cudd\_\-add\-Apply(), Cudd\_\-add\-Ith\-Var(), Cudd\_\-add\-Times(), Cudd\_\-add\-Xnor(), Cudd\_\-Recursive\-Deref(), cudd\-Add\-Non\-Sim\-Compose\-Recur(), cudd\-Deref, cudd\-Ref, DD\_\-ONE, dd\-Is\-Ith\-Add\-Var(), Dd\-Manager::reordered, and Dd\-Manager::size.
+
+Referenced by cudd\-Add\-Non\-Sim\-Compose\-Recur().\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_addPermute@{Cudd\_\-addPermute}}
+\index{Cudd_addPermute@{Cudd\_\-addPermute}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Permute (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em permut})}\label{cuddCompose_8c_4926a513ab721d9bbc866740d40cbfcf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Permutes the variables of an ADD.]
+
+Description [Given a permutation in array permut, creates a new ADD with permuted variables. There should be an entry in array permut for each variable in the manager. The i-th entry of permut holds the index of the variable that is to substitute the i-th variable. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Permute Cudd\_\-add\-Swap\-Variables] 
+
+Definition at line 201 of file cudd\-Compose.c.
+
+References cudd\-Add\-Permute\-Recur(), cudd\-Deref, cudd\-Hash\-Table\-Init(), cudd\-Hash\-Table\-Quit(), cudd\-Ref, and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-add\-Swap\-Variables().\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_addSwapVariables@{Cudd\_\-addSwapVariables}}
+\index{Cudd_addSwapVariables@{Cudd\_\-addSwapVariables}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Swap\-Variables (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$ {\em y}, int {\em n})}\label{cuddCompose_8c_2ab066ce29ac83aa7d3891b96d4356e1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two sets of variables of the same size (x and y) in the ADD f.]
+
+Description [Swaps two sets of variables of the same size (x and y) in the ADD f. The size is given by n. The two sets of variables are assumed to be disjoint. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Permute Cudd\_\-bdd\-Swap\-Variables] 
+
+Definition at line 242 of file cudd\-Compose.c.
+
+References ALLOC, Cudd\_\-add\-Permute(), CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, and Dd\-Manager::size.\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_addVectorCompose@{Cudd\_\-addVectorCompose}}
+\index{Cudd_addVectorCompose@{Cudd\_\-addVectorCompose}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Vector\-Compose (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector})}\label{cuddCompose_8c_62543c529dab3780047f2a45f1e5c50f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Composes an ADD with a vector of 0-1 ADDs.]
+
+Description [Given a vector of 0-1 ADDs, creates a new ADD by substituting the 0-1 ADDs for the variables of the ADD f. There should be an entry in vector for each variable in the manager. If no substitution is sought for a given variable, the corresponding projection function should be specified in the vector. This function implements simultaneous composition. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Non\-Sim\-Compose Cudd\_\-add\-Permute Cudd\_\-add\-Compose Cudd\_\-bdd\-Vector\-Compose] 
+
+Definition at line 431 of file cudd\-Compose.c.
+
+References cudd\-Add\-Vector\-Compose\-Recur(), cudd\-Deref, cudd\-Hash\-Table\-Init(), cudd\-Hash\-Table\-Quit(), cudd\-Ref, dd\-Is\-Ith\-Add\-Var(), Dd\-Manager::invperm, Dd\-Manager::reordered, and Dd\-Manager::size.\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_bddAdjPermuteX@{Cudd\_\-bddAdjPermuteX}}
+\index{Cudd_bddAdjPermuteX@{Cudd\_\-bddAdjPermuteX}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Adj\-Permute\-X (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em B}, \bf{Dd\-Node} $\ast$$\ast$ {\em x}, int {\em n})}\label{cuddCompose_8c_6e976b573531badb9a023f86dcdbeb40}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Rearranges a set of variables in the BDD B.]
+
+Description [Rearranges a set of variables in the BDD B. The size of the set is given by n. This procedure is intended for the `randomization' of the priority functions. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Permute Cudd\_\-bdd\-Swap\-Variables Cudd\_\-Dxygtdxz Cudd\_\-Dxygtdyz Cudd\_\-Priority\-Select] 
+
+Definition at line 380 of file cudd\-Compose.c.
+
+References ALLOC, Cudd\_\-bdd\-Permute(), CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, and Dd\-Manager::size.\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_bddCompose@{Cudd\_\-bddCompose}}
+\index{Cudd_bddCompose@{Cudd\_\-bddCompose}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Compose (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, int {\em v})}\label{cuddCompose_8c_b5ccb7b9d27d9d383d0f407cf894f118}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Substitutes g for x\_\-v in the BDD for f.]
+
+Description [Substitutes g for x\_\-v in the BDD for f. v is the index of the variable to be substituted. Cudd\_\-bdd\-Compose passes the corresponding projection function to the recursive procedure, so that the cache may be used. Returns the composed BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Compose] 
+
+Definition at line 126 of file cudd\-Compose.c.
+
+References cudd\-Bdd\-Compose\-Recur(), Dd\-Manager::reordered, Dd\-Manager::size, and Dd\-Manager::vars.
+
+Referenced by cudd\-Verify\-Sol().\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_bddPermute@{Cudd\_\-bddPermute}}
+\index{Cudd_bddPermute@{Cudd\_\-bddPermute}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Permute (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em permut})}\label{cuddCompose_8c_fa877bf86c670ea10d67d4f6e91fcc98}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Permutes the variables of a BDD.]
+
+Description [Given a permutation in array permut, creates a new BDD with permuted variables. There should be an entry in array permut for each variable in the manager. The i-th entry of permut holds the index of the variable that is to substitute the i-th variable. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Permute Cudd\_\-bdd\-Swap\-Variables] 
+
+Definition at line 291 of file cudd\-Compose.c.
+
+References cudd\-Bdd\-Permute\-Recur(), cudd\-Deref, cudd\-Hash\-Table\-Init(), cudd\-Hash\-Table\-Quit(), cudd\-Ref, and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-bdd\-Adj\-Permute\-X(), and Cudd\_\-bdd\-Swap\-Variables().\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_bddSwapVariables@{Cudd\_\-bddSwapVariables}}
+\index{Cudd_bddSwapVariables@{Cudd\_\-bddSwapVariables}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Swap\-Variables (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$ {\em y}, int {\em n})}\label{cuddCompose_8c_2ab6b6123e102f9b0b61c9d2961f707e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two sets of variables of the same size (x and y) in the BDD f.]
+
+Description [Swaps two sets of variables of the same size (x and y) in the BDD f. The size is given by n. The two sets of variables are assumed to be disjoint. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Permute Cudd\_\-add\-Swap\-Variables] 
+
+Definition at line 332 of file cudd\-Compose.c.
+
+References ALLOC, Cudd\_\-bdd\-Permute(), CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, and Dd\-Manager::size.
+
+Referenced by Cudd\_\-Priority\-Select().\index{cuddCompose.c@{cudd\-Compose.c}!Cudd_bddVectorCompose@{Cudd\_\-bddVectorCompose}}
+\index{Cudd_bddVectorCompose@{Cudd\_\-bddVectorCompose}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Vector\-Compose (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector})}\label{cuddCompose_8c_0bffb3a79510753ee6648a998aaaae97}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Composes a BDD with a vector of BDDs.]
+
+Description [Given a vector of BDDs, creates a new BDD by substituting the BDDs for the variables of the BDD f. There should be an entry in vector for each variable in the manager. If no substitution is sought for a given variable, the corresponding projection function should be specified in the vector. This function implements simultaneous composition. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Permute Cudd\_\-bdd\-Compose Cudd\_\-add\-Vector\-Compose] 
+
+Definition at line 599 of file cudd\-Compose.c.
+
+References cudd\-Bdd\-Vector\-Compose\-Recur(), cudd\-Deref, cudd\-Hash\-Table\-Init(), cudd\-Hash\-Table\-Quit(), cudd\-Ref, Dd\-Manager::invperm, Dd\-Manager::reordered, Dd\-Manager::size, and Dd\-Manager::vars.\index{cuddCompose.c@{cudd\-Compose.c}!cuddAddComposeRecur@{cuddAddComposeRecur}}
+\index{cuddAddComposeRecur@{cuddAddComposeRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Add\-Compose\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em proj})}\label{cuddCompose_8c_13d26ec582df94635299038b44d4cb4b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Compose.]
+
+Description [Performs the recursive step of Cudd\_\-add\-Compose. Returns the composed BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Compose] 
+
+Definition at line 759 of file cudd\-Compose.c.
+
+References Cudd\_\-Recursive\-Deref(), cudd\-Add\-Ite\-Recur(), cudd\-Cache\-Insert(), cudd\-Cache\-Lookup(), cudd\-Deref, cudd\-E, cudd\-I, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), Dd\-Node::index, and Dd\-Manager::perm.
+
+Referenced by Cudd\_\-add\-Compose().\index{cuddCompose.c@{cudd\-Compose.c}!cuddAddNonSimComposeRecur@{cuddAddNonSimComposeRecur}}
+\index{cuddAddNonSimComposeRecur@{cuddAddNonSimComposeRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Add\-Non\-Sim\-Compose\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector}, \bf{Dd\-Node} $\ast$ {\em key}, \bf{Dd\-Node} $\ast$ {\em cube}, int {\em lastsub})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_c5bad014827255f25a62c401df4dbd8b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Non\-Sim\-Compose.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1113 of file cudd\-Compose.c.
+
+References ALLOC, Cudd\_\-add\-Ith\-Var(), Cudd\_\-add\-Non\-Sim\-Compose(), Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Cache\-Lookup(), cudd\-E, cudd\-I, cudd\-Ref, cudd\-T, DD\_\-ONE, dd\-Min, Dd\-Manager::error\-Code, FREE, Dd\-Node::index, and Dd\-Manager::invperm.
+
+Referenced by Cudd\_\-add\-Non\-Sim\-Compose().\index{cuddCompose.c@{cudd\-Compose.c}!cuddAddPermuteRecur@{cuddAddPermuteRecur}}
+\index{cuddAddPermuteRecur@{cuddAddPermuteRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Add\-Permute\-Recur (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Hash\-Table} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em permut})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_b5857292c431da5fa962b23c0ccabda2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of add\-Permute.]
+
+Description [ Recursively puts the ADD in the order given in the array permut. Checks for trivial cases to terminate recursion, then splits on the children of this node. Once the solutions for the children are obtained, it puts into the current position the node from the rest of the ADD that should be here. Then returns this ADD. The key here is that the node being visited is NOT put in its proper place by this instance, but rather is switched when its proper position is reached in the recursion tree.
+
+The \doxyref{Dd\-Node}{p.}{structDdNode} $\ast$ that is returned is the same ADD as passed in as node, but in the new order.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Bdd\-Permute\-Recur] 
+
+Definition at line 863 of file cudd\-Compose.c.
+
+References Cudd\_\-Recursive\-Deref(), cudd\-Add\-Ite\-Recur(), cudd\-Deref, cudd\-E, cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Lookup1(), cudd\-Is\-Constant, cudd\-Ref, cudd\-Sat\-Dec, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Node::index, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-add\-Permute().\index{cuddCompose.c@{cudd\-Compose.c}!cuddAddVectorComposeRecur@{cuddAddVectorComposeRecur}}
+\index{cuddAddVectorComposeRecur@{cuddAddVectorComposeRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Add\-Vector\-Compose\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Hash\-Table} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector}, int {\em deepest})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_0724509f334eefd7b42fb863960fd5ce}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Vector\-Compose.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1038 of file cudd\-Compose.c.
+
+References Cudd\_\-Recursive\-Deref(), cudd\-Add\-Ite\-Recur(), cudd\-Deref, cudd\-E, cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Lookup1(), cudd\-I, cudd\-Ref, cudd\-Sat\-Dec, cudd\-T, Dd\-Node::index, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-add\-Vector\-Compose().\index{cuddCompose.c@{cudd\-Compose.c}!cuddBddComposeRecur@{cuddBddComposeRecur}}
+\index{cuddBddComposeRecur@{cuddBddComposeRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Compose\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em proj})}\label{cuddCompose_8c_133d2162f21001ffd87160c1ba9ee761}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Compose.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Compose. Exploits the fact that the composition of f' with g produces the complement of the composition of f with g to better utilize the cache. Returns the composed BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Compose] 
+
+Definition at line 658 of file cudd\-Compose.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-Ite\-Recur(), cudd\-Cache\-Insert(), cudd\-Cache\-Lookup(), cudd\-Deref, cudd\-E, cudd\-I, cudd\-Ref, cudd\-T, Dd\-Node::index, Dd\-Manager::perm, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-bdd\-Compose(), and cudd\-Solve\-Eqn\-Recur().\index{cuddCompose.c@{cudd\-Compose.c}!cuddBddPermuteRecur@{cuddBddPermuteRecur}}
+\index{cuddBddPermuteRecur@{cuddBddPermuteRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Permute\-Recur (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Hash\-Table} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em permut})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_afe391f4d9382e7ac57e6bfae5d35eab}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of bdd\-Permute.]
+
+Description [ Recursively puts the BDD in the order given in the array permut. Checks for trivial cases to terminate recursion, then splits on the children of this node. Once the solutions for the children are obtained, it puts into the current position the node from the rest of the BDD that should be here. Then returns this BDD. The key here is that the node being visited is NOT put in its proper place by this instance, but rather is switched when its proper position is reached in the recursion tree.
+
+The \doxyref{Dd\-Node}{p.}{structDdNode} $\ast$ that is returned is the same BDD as passed in as node, but in the new order.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Add\-Permute\-Recur] 
+
+Definition at line 955 of file cudd\-Compose.c.
+
+References Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-E, cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Lookup1(), cudd\-Is\-Constant, cudd\-Ref, cudd\-Sat\-Dec, cudd\-T, Dd\-Node::index, Dd\-Node::ref, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-bdd\-Permute().\index{cuddCompose.c@{cudd\-Compose.c}!cuddBddVectorComposeRecur@{cuddBddVectorComposeRecur}}
+\index{cuddBddVectorComposeRecur@{cuddBddVectorComposeRecur}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Vector\-Compose\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Hash\-Table} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$$\ast$ {\em vector}, int {\em deepest})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_79955dcae643990f810d79bf93fe1f72}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Vector\-Compose.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1275 of file cudd\-Compose.c.
+
+References Cudd\_\-Iter\-Deref\-Bdd(), Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-E, cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Lookup1(), cudd\-I, cudd\-Ref, cudd\-Sat\-Dec, cudd\-T, Dd\-Node::index, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-bdd\-Vector\-Compose().\index{cuddCompose.c@{cudd\-Compose.c}!ddIsIthAddVar@{ddIsIthAddVar}}
+\index{ddIsIthAddVar@{ddIsIthAddVar}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE int dd\-Is\-Ith\-Add\-Var (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, unsigned int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_b8317a8fd7f83951a50622c75fa5bb56}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison of a function to the i-th ADD variable.]
+
+Description [Comparison of a function to the i-th ADD variable. Returns 1 if the function is the i-th ADD variable; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1358 of file cudd\-Compose.c.
+
+References cudd\-E, cudd\-T, DD\_\-ONE, DD\_\-ZERO, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Non\-Sim\-Compose(), and Cudd\_\-add\-Vector\-Compose().
+
+\subsection{Variable Documentation}
+\index{cuddCompose.c@{cudd\-Compose.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddCompose.c@{cudd\-Compose.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Compose.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddCompose_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Compose.c}{p.}{cuddCompose_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functional composition and variable permutation of DDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Compose()}{p.}{cuddCompose_8c_b5ccb7b9d27d9d383d0f407cf894f118} \item \doxyref{Cudd\_\-add\-Compose()}{p.}{cuddCompose_8c_d050bd964c7386f2a9eed09b8a1d25d7} \item \doxyref{Cudd\_\-add\-Permute()}{p.}{cuddCompose_8c_4926a513ab721d9bbc866740d40cbfcf} \item \doxyref{Cudd\_\-add\-Swap\-Variables()}{p.}{cuddCompose_8c_2ab066ce29ac83aa7d3891b96d4356e1} \item \doxyref{Cudd\_\-bdd\-Permute()}{p.}{cuddCompose_8c_fa877bf86c670ea10d67d4f6e91fcc98} \item \doxyref{Cudd\_\-bdd\-Swap\-Variables()}{p.}{cuddCompose_8c_2ab6b6123e102f9b0b61c9d2961f707e} \item \doxyref{Cudd\_\-bdd\-Adj\-Permute\-X()}{p.}{cuddCompose_8c_6e976b573531badb9a023f86dcdbeb40} \item \doxyref{Cudd\_\-add\-Vector\-Compose()}{p.}{cuddCompose_8c_62543c529dab3780047f2a45f1e5c50f} \item \doxyref{Cudd\_\-add\-Non\-Sim\-Compose()}{p.}{cuddCompose_8c_74339b069aaea8dbf1b321eaa773b59a} \item \doxyref{Cudd\_\-bdd\-Vector\-Compose()}{p.}{cuddCompose_8c_0bffb3a79510753ee6648a998aaaae97} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Compose\-Recur()}{p.}{cuddCompose_8c_133d2162f21001ffd87160c1ba9ee761} \item \doxyref{cudd\-Add\-Compose\-Recur()}{p.}{cuddCompose_8c_13d26ec582df94635299038b44d4cb4b} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Add\-Permute\-Recur()}{p.}{cuddCompose_8c_b5857292c431da5fa962b23c0ccabda2} \item \doxyref{cudd\-Bdd\-Permute\-Recur()}{p.}{cuddCompose_8c_afe391f4d9382e7ac57e6bfae5d35eab} \item \doxyref{cudd\-Add\-Vector\-Compose\-Recur()}{p.}{cuddCompose_8c_0724509f334eefd7b42fb863960fd5ce} \item \doxyref{cudd\-Add\-Non\-Sim\-Compose\-Recur()}{p.}{cuddCompose_8c_c5bad014827255f25a62c401df4dbd8b} \item \doxyref{cudd\-Bdd\-Vector\-Compose\-Recur()}{p.}{cuddCompose_8c_79955dcae643990f810d79bf93fe1f72} \item \doxyref{dd\-Is\-Ith\-Add\-Var()}{p.}{cuddCompose_8c_b8317a8fd7f83951a50622c75fa5bb56} \end{itemize}
+The permutation functions use a local cache because the results to be remembered depend on the permutation being applied. Since the permutation is just an array, it cannot be stored in the global cache. There are different procedured for BDDs and ADDs. This is because bdd\-Permute\-Recur uses cudd\-Bdd\-Ite\-Recur. If this were changed, the procedures could be merged.]
+
+Author [Fabio Somenzi and Kavita Ravi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 75 of file cudd\-Compose.c.

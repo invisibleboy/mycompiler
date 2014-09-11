@@ -1,0 +1,1548 @@
+#############################################################################
+#
+#		      Illinois Open Source License
+#                     University of Illinois/NCSA
+#                         Open Source License
+#
+# Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+# All rights reserved.
+#
+# Developed by:             
+#
+#		IMPACT Research Group
+#
+#		University of Illinois at Urbana-Champaign
+#
+#              http://www.crhc.uiuc.edu/IMPACT
+#              http://www.gelato.org
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal with the Software without
+# restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimers.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimers in
+# the documentation and/or other materials provided with the
+# distribution.
+#
+# Neither the names of the IMPACT Research Group, the University of
+# Illinois, nor the names of its contributors may be used to endorse
+# or promote products derived from this Software without specific
+# prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+# WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+# LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+# OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+# OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+#
+##############################################################################
+#
+# This file defines the data structures used to build the Ltahoe opcode
+# table.  This file defines the perl data structures that are used to
+# generate the C header file.
+
+# The list of header files to include.  The script will print double quotes
+# at each end unless you specify angle brackets here.
+@includes=( "<config.h>",
+	    "<Lcode/l_code.h>",
+	    "<machine/m_tahoe.h>",
+	    "<ltahoe_completers.h>",
+	    "<phase1_bitopt.h>",
+	    "<phase3_oper.h>", );
+
+# This is the name of the type defined for the struct that is used for each
+# opcode.
+$structTypeName = "opcode_handler";
+
+# This structure defines the C struct that is stored at each offset in
+# the table array.  It is a list of hashes.  Each hash has up to four fields.
+#  name: This is the name of the field in the struct.
+#  dlim: When initializing this field, this character is printed at the 
+#        beginning and end of the initial value.  For a string, this should
+#        be '"', for a char `'`.
+#  decl: The C declaration for this field.  This is the exact declaration 
+#        that will be written to the header file.
+#  dflt: The default value for this field.  If an instruction does not specify
+#        a value for this field, the default will be used.
+@struct=( {
+	    name => "opc_str",           # The name of the struct field
+	    dlim => "\"",		 # The delimiter for this data.  This
+					 # is printed at both ends of the value
+	    decl => "char opc_str[30];", # The C declaration
+	    dflt => ""                   # The default value
+	  },
+# A field to hold a pointer to a function to verify only valid bits are
+# set in the completers field.
+	  {
+	    name => "completer_sanity_check",
+	    decl => "int (*completer_sanity_check)(L_Oper *);",
+	    dflt => NULL
+	  },
+# A field to hold a pointer to a function to print the completers for an
+# opcode.  If this field is NULL, no completers will be printed for the
+# opcode.  If an opcode uses only completers defined in the standard fields,
+# you can use the print_standard_completers function here.  In this case,
+# be sure to provide a sanity checking function to make sure that only
+# the standard fields that the opcode actually uses are set.
+	  {
+	    name => "print_completers",
+	    decl => "void (*print_completers)(L_Oper *);",
+	    dflt => NULL
+	  },
+# A field to hold a pointer to a function that is called by 
+# phase3_oper.c/P_print_oper to actually print this opcode.
+	  {
+	    name => "print_opcode",
+	    decl => "void (*print_opcode)(L_Oper *);",
+	    dflt => NULL
+	  },
+# A field to hold a pointer to a function that is called by 
+# phase1_bitopt.c/ComputeKnownBitsFlow to process this opcode.
+	  {
+	    name => "ComputeKnownBitsFlow",
+	    decl => "void (*ComputeKnownBitsFlow)(L_Func *, L_Cb *, L_Oper *);",
+	    dflt => NULL
+	  },
+# A field to hold a pointer to a function that is called by
+# phase1_bitopt.c/ProcessOperUsingTD to process this opcode.
+	  {
+	    name => "ProcessOperUsingTD",
+	    decl => "void (*ProcessOperUsingTD)(L_Func *, L_Cb *, L_Oper *);",
+	    dflt => NULL
+	  },
+# A field to hold a pointer to a function that is called by
+# phase1_bitopt.c/ComputeBitsUsedLocal to process this opcode.
+	  {
+	    name => "ComputeBitsUsedLocal",
+	    decl => "void (*ComputeBitsUsedLocal)(L_Func *, L_Cb *, L_Oper *);",
+	    dflt => NULL
+	  },
+	 );
+
+# This is the name that the table variable will have in the source code.
+$tableName = "Ltahoe_table";
+
+# This structure defines the values in the struct for each opcode.  It is
+# a hash of hashes.  The hashes are keyed by the Ltahoe constant that
+# represents the opcode.  The inner hash defines one or more fields in the
+# struct.  Fields not specified will be filled with the default value
+# defined above.
+%table=( "TAHOEop_NOP_B"   => {
+		 "opc_str"	=> "nop.b",
+		 "print_opcode" => "P_print_nop",
+			      },
+         "TAHOEop_NOP_F"   => {
+		 "opc_str"	=> "nop.f",
+		 "print_opcode" => "P_print_nop",
+			      },
+         "TAHOEop_NOP_I"   => {
+		 "opc_str"	=> "nop.i",
+		 "print_opcode" => "P_print_nop",
+			      },
+         "TAHOEop_NOP_M"   => {
+		 "opc_str"	=> "nop.m",
+		 "print_opcode" => "P_print_nop",
+			      },
+         "TAHOEop_NOP_X"   => {
+		 "opc_str"	=> "nop.x",
+		 "print_opcode" => "P_print_nop",
+			      },
+	 "TAHOEop_BREAK_B" => {
+		 "opc_str"	=> "break.b",
+		 "print_opcode" => "P_print_break",
+			      },
+	 "TAHOEop_BREAK_F" => {
+		 "opc_str"	=> "break.f",
+		 "print_opcode" => "P_print_break",
+			      },
+	 "TAHOEop_BREAK_I" => {
+		 "opc_str"	=> "break.i",
+		 "print_opcode" => "P_print_break",
+			      },
+	 "TAHOEop_BREAK_M" => {
+		 "opc_str"	=> "break.m",
+		 "print_opcode" => "P_print_break",
+			      },
+	 "TAHOEop_BREAK_X" => {
+		 "opc_str"	=> "break.x",
+		 "print_opcode" => "P_print_break",
+			      },
+	 "TAHOEop_ADD"     => {
+		 "opc_str"      => "add",
+		 "print_opcode" => "P_print_add",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_ADDL"    => {
+		 "opc_str"      => "addl",
+		 "print_opcode" => "P_print_add",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_ADDS"    => {
+		 "opc_str"	=> "adds",
+		 "print_opcode" => "P_print_add",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_SHLADD"  => {
+		 "opc_str"	=> "shladd",
+			      },
+	 "TAHOEop_SUB"     => {
+		 "opc_str"	=> "sub",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_AND"     => {
+		 "opc_str"	=> "and",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_AND",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_AND",
+			      },
+	 "TAHOEop_ANDCM"   => {
+		 "opc_str"	=> "andcm",
+			      },
+	 "TAHOEop_OR"      => {
+		 "opc_str"	=> "or",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_OR",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_XOR"     => {
+		 "opc_str"	=> "xor",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ARITH_OP",
+			      },
+	 "TAHOEop_DEP"     => {
+		 "opc_str"	=> "dep",
+			      },
+	 "TAHOEop_DEP_Z"   => {
+		 "opc_str"	=> "dep.z",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_DEP_Z",
+			      },
+	 "TAHOEop_EXTR"    => {
+		 "opc_str"	=> "extr",
+			      },
+	 "TAHOEop_EXTR_U"  => {
+		 "opc_str"	=> "extr.u",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_EXTR_U",
+			      },
+	 "TAHOEop_SHRP"    => {
+		 "opc_str"	=> "shrp",
+			      },
+	 "TAHOEop_SXT1"    => {
+		 "opc_str"	=> "sxt1",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_SXT1",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_SXT1",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_SXT1",
+			      },
+	 "TAHOEop_SXT2"    => {
+		 "opc_str"	=> "sxt2",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_SXT2",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_SXT2",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_SXT2",
+			      },
+	 "TAHOEop_SXT4"    => {
+		 "opc_str"	=> "sxt4",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_SXT4",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_SXT4",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_SXT4",
+			      },
+	 "TAHOEop_ZXT1"    => {
+		 "opc_str"	=> "zxt1",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_ZXT1",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_ZXT1",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ZXT1",
+			      },
+	 "TAHOEop_ZXT2"    => {
+		 "opc_str"	=> "zxt2",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_ZXT2",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_ZXT2",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ZXT2",
+			      },
+	 "TAHOEop_ZXT4"    => {
+		 "opc_str"	=> "zxt4",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_ZXT4",
+		 "ProcessOperUsingTD" => "ProcessOperUsingTD_ZXT4",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ZXT4",
+			      },
+	 "TAHOEop_CZX1_L"  => {
+		 "opc_str"	=> "czx1.l",
+			      },
+	 "TAHOEop_CZX1_R"  => {
+		 "opc_str"	=> "czx1.r",
+			      },
+	 "TAHOEop_CZX2_L"  => {
+		 "opc_str"	=> "czx2.l",
+			      },
+	 "TAHOEop_CZX2_R"  => {
+		 "opc_str"	=> "czx2.r",
+			      },
+	 "TAHOEop_LD1"     => {
+		 "opc_str"      => "ld1",                # The mnemonic
+		 "completer_sanity_check" => "check_LD", # The name of the
+							 # sanity checking
+							 # function
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD1",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD1_ACQ" => { 
+		 "opc_str"      => "ld1.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD1",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD1_BIAS" => {
+		 "opc_str"	=> "ld1.bias",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD1",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD2"     => {
+		 "opc_str"	=> "ld2",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD2",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD2_ACQ" => {
+		 "opc_str"	=> "ld2.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD2",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD2_BIAS" => {
+		 "opc_str"	=> "ld2.bias",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD2",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD4"     => {
+		 "opc_str"	=> "ld4",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD4",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD4_ACQ" => {
+		 "opc_str"	=> "ld4.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD4",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD4_BIAS" => {
+		 "opc_str"	=> "ld4.bias",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD4",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD8"     => {
+		 "opc_str"	=> "ld8",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD8",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD8_ACQ" => {
+		 "opc_str"	=> "ld8.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD8",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD8_BIAS" => {
+		 "opc_str"	=> "ld8.bias",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD8",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD8_FILL" => {
+		 "opc_str"	=> "ld8.fill",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD8",
+		 "print_opcode" => "P_print_fill_int_load",
+			      },
+	 "TAHOEop_LFETCH"  => {
+		 "opc_str"	=> "lfetch",
+		 "print_completers" => "print_LFETCH_completers",
+		 "print_opcode" => "P_print_lfetch",
+			      },
+	 "TAHOEop_LFETCH_FAULT" => {
+		 "opc_str"	=> "lfetch.fault",
+		 "print_completers" => "print_LFETCH_completers",
+		 "print_opcode" => "P_print_lfetch",
+			      },
+	 "TAHOEop_LDF_FILL" => {
+		 "opc_str"	=> "ldf.fill",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDF8"    => {
+		 "opc_str"	=> "ldf8",
+		 "completer_sanity_check" => "check_LDF",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDF8_A"  => {
+		 "opc_str"	=> "ldf8",
+		 "completer_sanity_check" => "check_LDF_A",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFD"    => {
+		 "opc_str"	=> "ldfd",
+		 "completer_sanity_check" => "check_LDF",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFD_A"  => {
+		 "opc_str"	=> "ldfd",
+		 "completer_sanity_check" => "check_LDF_A",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFE"    => {
+		 "opc_str"	=> "ldfe",
+		 "completer_sanity_check" => "check_LDF",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFE_A"  => {
+		 "opc_str"	=> "ldfe",
+		 "completer_sanity_check" => "check_LDF_A",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFS"    => {
+		 "opc_str"	=> "ldfs",
+		 "completer_sanity_check" => "check_LDF",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFS_A"  => {
+		 "opc_str"	=> "ldfs",
+		 "completer_sanity_check" => "check_LDF_A",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFP8"   => {
+		 "opc_str"	=> "ldfp8",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFPD"   => {
+		 "opc_str"	=> "ldfpd",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFPS"   => {
+		 "opc_str"	=> "ldfps",
+		 "completer_sanity_check" => "check_LD",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD1_C"   => {
+		 "opc_str"	=> "ld1.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD1",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD2_C"   => {
+		 "opc_str"	=> "ld2.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD2",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD4_C"   => {
+		 "opc_str"	=> "ld4.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD4",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LD8_C"   => {
+		 "opc_str"	=> "ld8.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_LD8",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDF8_C"  => {
+		 "opc_str"	=> "ldf8.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LDF_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFD_C"  => {
+		 "opc_str"	=> "ldfd.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFE_C"  => {
+		 "opc_str"	=> "ldfe.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFP8_C" => {
+		 "opc_str"	=> "ldfp8.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFPD_C" => {
+		 "opc_str"	=> "ldfpd.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFPS_C" => {
+		 "opc_str"	=> "ldfps.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_LDFS_C"  => {
+		 "opc_str"	=> "ldfs.c",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_load",
+			      },
+	 "TAHOEop_CHK_A"   => {
+		 "opc_str"	=> "chk.a",
+		 "print_completers" => "print_CHK_A_completers",
+		 "print_opcode" => "P_print_check",
+			      },
+	 "TAHOEop_CHK_S_I" => {
+		 "opc_str"	=> "chk.s.i",
+		 "print_opcode" => "P_print_check",
+			      },
+	 "TAHOEop_CHK_S_F" => {
+		 "opc_str"	=> "chk.s",
+		 "print_opcode" => "P_print_check",
+			      },
+	 "TAHOEop_CHK_S_M" => {
+		 "opc_str"	=> "chk.s.m",
+		 "print_opcode" => "P_print_check",
+			      },
+	 "TAHOEop_XMA_H"   => {
+		 "opc_str"	=> "xma.h",
+			      },
+	 "TAHOEop_XMA_HU"  => {
+		 "opc_str"	=> "xma.hu",
+			      },
+	 "TAHOEop_XMA_L"   => {
+		 "opc_str"	=> "xma.l",
+			      },
+	 "TAHOEop_FMA_D"   => {
+		 "opc_str"	=> "fma.d",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMA_S"   => {
+		 "opc_str"	=> "fma.s",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMA"     => {
+		 "opc_str"	=> "fma",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMS_D"   => {
+		 "opc_str"	=> "fms.d",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMS_S"   => {
+		 "opc_str"	=> "fms.s",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMS"     => {
+		 "opc_str"	=> "fms",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FNMA_D"  => {
+		 "opc_str"	=> "fnma.d",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FNMA_S"  => {
+		 "opc_str"	=> "fnma.s",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FNMA"    => {
+		 "opc_str"	=> "fnma",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FAMAX"   => {
+		 "opc_str"	=> "famax",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FAMIN"   => {
+		 "opc_str"	=> "famin",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FAND"    => {
+		 "opc_str"	=> "fand",
+			      },
+	 "TAHOEop_FANDCM"  => {
+		 "opc_str"	=> "fandcm",
+			      },
+	 "TAHOEop_FMAX"    => {
+		 "opc_str"	=> "fmax",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMERGE_NS" => {
+		 "opc_str"	=> "fmerge.ns",
+			      },
+	 "TAHOEop_FMERGE_S" => {
+		 "opc_str"	=> "fmerge.s",
+			      },
+	 "TAHOEop_FMERGE_SE" => {
+		 "opc_str"	=> "fmerge.se",
+			      },
+	 "TAHOEop_FMIN"    => {
+		 "opc_str"	=> "fmin",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FMIX_L"  => {
+		 "opc_str"	=> "fmix.l",
+			      },
+	 "TAHOEop_FMIX_LR" => {
+		 "opc_str"	=> "fmix.lr",
+			      },
+	 "TAHOEop_FMIX_R"  => {
+		 "opc_str"	=> "fmix.r",
+			      },
+	 "TAHOEop_FOR"     => {
+		 "opc_str"	=> "for",
+			      },
+	 "TAHOEop_FPACK"   => {
+		 "opc_str"	=> "fpack",
+			      },
+	 "TAHOEop_FRCPA"   => {
+		 "opc_str"	=> "frcpa",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FRSQRTA" => {
+		 "opc_str"	=> "frsqrta",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FSELECT" => {
+		 "opc_str"	=> "fselect",
+			      },
+	 "TAHOEop_FSWAP"   => {
+		 "opc_str"	=> "fswap",
+			      },
+	 "TAHOEop_FSWAP_NL" => {
+		 "opc_str"	=> "fswap.nl",
+			      },
+	 "TAHOEop_FSWAP_NR" => {
+		 "opc_str"	=> "fswap.nr",
+			      },
+	 "TAHOEop_FSXT_L"  => {
+		 "opc_str"	=> "fsxt.l",
+			      },
+	 "TAHOEop_FSXT_R"  => {
+		 "opc_str"	=> "fsxt.r",
+			      },
+	 "TAHOEop_FXOR"    => {
+		 "opc_str"	=> "fxor",
+			      },
+	 "TAHOEop_FCHKF"   => {
+		 "opc_str"	=> "fchkf",
+		 "print_completers" => "print_FP_S_REG_completers",
+		 "print_opcode" => "P_print_fchkf",
+			      },
+	 "TAHOEop_FCLRF"   => {
+		 "opc_str"	=> "fclrf",
+		 "print_completers" => "print_FP_S_REG_completers",
+		 "print_opcode" => "P_print_fclrf",
+			      },
+	 "TAHOEop_FSETC"   => {
+		 "opc_str"	=> "fsetc",
+		 "print_completers" => "print_FP_S_REG_completers",
+		 "print_opcode" => "P_print_fsetc",
+			      },
+	 "TAHOEop_MOV_TOAR_I" => {
+		 "opc_str"	=> "mov.i",
+			      },
+	 "TAHOEop_MOV_FRAR_I" => {
+		 "opc_str"	=> "mov.i",
+		 "print_opcode" => "P_print_mov_from_ar",
+			      },
+	 "TAHOEop_MOV_TOAR_M" => {
+		 "opc_str"	=> "mov.m",
+			      },
+	 "TAHOEop_MOV_FRAR_M" => {
+		 "opc_str"	=> "mov",
+		 "print_opcode" => "P_print_mov_from_ar",
+			      },
+	 "TAHOEop_MOV_FRCR" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOV_TOCR" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOV_FRIP" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOV_FRPR" => {
+		 "opc_str"	=> "mov",
+		 "print_opcode" => "P_print_mov_from_pr",
+			      },
+	 "TAHOEop_MOV_TOPR" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOV_TOPR_ROT" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_SETF_D"  => {
+		 "opc_str"	=> "setf.d",
+			      },
+	 "TAHOEop_SETF_EXP" => {
+		 "opc_str"	=> "setf.exp",
+			      },
+	 "TAHOEop_SETF_S"  => {
+		 "opc_str"	=> "setf.s",
+			      },
+	 "TAHOEop_SETF_SIG" => {
+		 "opc_str"	=> "setf.sig",
+			      },
+	 "TAHOEop_GETF_D"  => {
+		 "opc_str"	=> "getf.d",
+			      },
+	 "TAHOEop_GETF_EXP" => {
+		 "opc_str"	=> "getf.exp",
+			      },
+	 "TAHOEop_GETF_S"  => {
+		 "opc_str"	=> "getf.s",
+			      },
+	 "TAHOEop_GETF_SIG" => {
+		 "opc_str"	=> "getf.sig",
+			      },
+	 "TAHOEop_MOV_FRBR" => {
+		 "opc_str"	=> "mov",
+		 "print_opcode" => "P_print_mov_from_br",
+			      },
+	 "TAHOEop_MOV_TOBR" => {
+		 "opc_str"	=> "mov",
+		 "completer_sanity_check" => "check_MOV_TOBR",
+		 "print_completers" => "print_MOV_TOBR_completers",
+			      },
+	 "TAHOEop_MOV_TOSYST" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOV_FRSYST" => {
+		 "opc_str"	=> "mov",
+			      },
+	 "TAHOEop_MOVL"    => {
+		 "opc_str"	=> "movl",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_MOV",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_MOV",
+			      },
+	 "TAHOEop_MOVI"    => {
+		 "opc_str"      => "mov",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_MOV",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_MOV",
+			      },
+	 "TAHOEop_MOV_GR"  => {
+		 "opc_str"      => "mov",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_MOV",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_MOV",
+			      },
+	 "TAHOEop_CMP"     => {
+		 "opc_str"	=> "cmp",
+		 "completer_sanity_check" => "check_CMP",
+		 "print_completers" => "print_CMP_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_CMP",
+			      },
+	 "TAHOEop_TBIT"    => {
+		 "opc_str"	=> "tbit",
+		 "completer_sanity_check" => "check_TBIT_TNAT",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_TBIT_TNAT",
+			      },
+	 "TAHOEop_TNAT"    => {
+		 "opc_str"	=> "tnat",
+		 "completer_sanity_check" => "check_TBIT_TNAT",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_TBIT_TNAT",
+			      },
+	 "TAHOEop_BR_CALL" => {
+		 "opc_str"	=> "br.call",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_COND" => {
+		 "opc_str"	=> "br.cond",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_IA"   => {
+		 "opc_str"	=> "br.ia",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_RET"  => {
+		 "opc_str"	=> "br.ret",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BRL_CALL" => {
+		 "opc_str"	=> "brl.call",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BRL_COND" => {
+		 "opc_str"	=> "brl.cond",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BRP"     => {
+		 "opc_str"	=> "brp",
+		 "completer_sanity_check" => "check_BRP",
+		 "print_completers" => "print_BRP_completers",
+		 "print_opcode" => "P_print_branch_hint",
+			      },
+	 "TAHOEop_BRP_RET" => {
+		 "opc_str"	=> "brp.ret",
+		 "completer_sanity_check" => "check_BRP_RET",
+		 "print_completers" => "print_BRP_completers",
+		 "print_opcode" => "P_print_branch_hint",
+			      },
+	 "TAHOEop_BR_CEXIT" => {
+		 "opc_str"	=> "br.cexit",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_CLOOP" => {
+		 "opc_str"	=> "br.cloop",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_CTOP" => {
+		 "opc_str"	=> "br.ctop",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_WEXIT" => {
+		 "opc_str"	=> "br.wexit",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_BR_WTOP" => {
+		 "opc_str"	=> "br.wtop",
+		 "print_completers" => "print_BR_completers",
+		 "print_opcode" => "P_print_branch",
+			      },
+	 "TAHOEop_PADD1"   => {
+		 "opc_str"	=> "padd1",
+			      },
+	 "TAHOEop_PADD1_SSS" => {
+		 "opc_str"	=> "padd1.sss",
+			      },
+	 "TAHOEop_PADD1_UUS" => {
+		 "opc_str"	=> "padd1.uus",
+			      },
+	 "TAHOEop_PADD1_UUU" => {
+		 "opc_str"	=> "padd1.uuu",
+			      },
+	 "TAHOEop_PADD2"   => {
+		 "opc_str"	=> "padd2",
+			      },
+	 "TAHOEop_PADD2_SSS" => {
+		 "opc_str"	=> "padd2.sss",
+			      },
+	 "TAHOEop_PADD2_UUS" => {
+		 "opc_str"	=> "padd2.uus",
+			      },
+	 "TAHOEop_PADD2_UUU" => {
+		 "opc_str"	=> "padd2.uuu",
+			      },
+	 "TAHOEop_PADD4"   => {
+		 "opc_str"	=> "padd4",
+			      },
+	 "TAHOEop_PAVG1"   => {
+		 "opc_str"	=> "pavg1",
+			      },
+	 "TAHOEop_PAVG1_RAZ" => {
+		 "opc_str"	=> "pavg1.raz",
+			      },
+	 "TAHOEop_PAVG2"   => {
+		 "opc_str"	=> "pavg2",
+			      },
+	 "TAHOEop_PAVG2_RAZ" => {
+		 "opc_str"	=> "pavg2.raz",
+			      },
+	 "TAHOEop_PAVGSUB1" => {
+		 "opc_str"	=> "pavgsub1",
+			      },
+	 "TAHOEop_PAVGSUB2" => {
+		 "opc_str"	=> "pavgsub2",
+			      },
+	 "TAHOEop_PCMP1_EQ" => {
+		 "opc_str"	=> "pcmp1.eq",
+			      },
+	 "TAHOEop_PCMP1_GT" => {
+		 "opc_str"	=> "pcmp1.gt",
+			      },
+	 "TAHOEop_PCMP2_EQ" => {
+		 "opc_str"	=> "pcmp2.eq",
+			      },
+	 "TAHOEop_PCMP2_GT" => {
+		 "opc_str"	=> "pcmp2.gt",
+			      },
+	 "TAHOEop_PCMP_EQ" => {
+		 "opc_str"	=> "pcmp4.eq",
+			      },
+	 "TAHOEop_PCMP_GT" => {
+		 "opc_str"	=> "pcmp4.gt",
+			      },
+	 "TAHOEop_PSHLADD2" => {
+		 "opc_str"	=> "pshladd2",
+			      },
+	 "TAHOEop_PSHRADD2" => {
+		 "opc_str"	=> "pshradd2",
+			      },
+	 "TAHOEop_PSUB1"   => {
+		 "opc_str"	=> "psub1",
+			      },
+	 "TAHOEop_PSUB1_SSS" => {
+		 "opc_str"	=> "psub1.sss",
+			      },
+	 "TAHOEop_PSUB1_UUS" => {
+		 "opc_str"	=> "psub1.uus",
+			      },
+	 "TAHOEop_PSUB1_UUU" => {
+		 "opc_str"	=> "psub1.uuu",
+			      },
+	 "TAHOEop_PSUB2"   => {
+		 "opc_str"	=> "psub2",
+			      },
+	 "TAHOEop_PSUB2_SSS" => {
+		 "opc_str"	=> "psub2.sss",
+			      },
+	 "TAHOEop_PSUB2_UUS" => {
+		 "opc_str"	=> "psub2.uus",
+			      },
+	 "TAHOEop_PSUB2_UUU" => {
+		 "opc_str"	=> "psub2.uuu",
+			      },
+	 "TAHOEop_PSUB4"   => {
+		 "opc_str"	=> "psub4",
+			      },
+	 "TAHOEop_PMAX1_U" => {
+		 "opc_str"	=> "pmax1.u",
+			      },
+	 "TAHOEop_PMAX2"   => {
+		 "opc_str"	=> "pmax2",
+			      },
+	 "TAHOEop_PMIN1_U" => {
+		 "opc_str"	=> "pmin1.u",
+			      },
+	 "TAHOEop_PMIN2"   => {
+		 "opc_str"	=> "pmin2",
+			      },
+	 "TAHOEop_PSAD1"   => {
+		 "opc_str"	=> "psad1",
+			      },
+	 "TAHOEop_PMPY2_L" => {
+		 "opc_str"	=> "pmpy2.l",
+			      },
+	 "TAHOEop_PMPY2_R" => {
+		 "opc_str"	=> "pmpy2.r",
+			      },
+	 "TAHOEop_PMPYSHR2" => {
+		 "opc_str"	=> "pmpyshr2",
+			      },
+	 "TAHOEop_PMPYSHR2_U" => {
+		 "opc_str"	=> "pmpyshr2.u",
+			      },
+	 "TAHOEop_POPCNT"  => {
+		 "opc_str"	=> "popcnt",
+			      },
+	 "TAHOEop_MIX1_L"  => {
+		 "opc_str"	=> "mix1.l",
+			      },
+	 "TAHOEop_MIX1_R"  => {
+		 "opc_str"	=> "mix1.r",
+			      },
+	 "TAHOEop_MIX2_L"  => {
+		 "opc_str"	=> "mix2.l",
+			      },
+	 "TAHOEop_MIX2_R"  => {
+		 "opc_str"	=> "mix2.r",
+			      },
+	 "TAHOEop_MIX4_L"  => {
+		 "opc_str"	=> "mix4.l",
+			      },
+	 "TAHOEop_MIX4_R"  => {
+		 "opc_str"	=> "mix4.r",
+			      },
+	 "TAHOEop_MUX1"    => {
+		 "opc_str"	=> "mux1",
+			      },
+	 "TAHOEop_MUX2"    => {
+		 "opc_str"	=> "mux2",
+			      },
+	 "TAHOEop_PACK2_SSS" => {
+		 "opc_str"	=> "pack2.sss",
+			      },
+	 "TAHOEop_PACK2_USS" => {
+		 "opc_str"	=> "pack2.uss",
+			      },
+	 "TAHOEop_PACK4_SSS" => {
+		 "opc_str"	=> "pack4.sss",
+			      },
+	 "TAHOEop_PSHL2"   => {
+		 "opc_str"	=> "pshl2",
+			      },
+	 "TAHOEop_PSHL4"   => {
+		 "opc_str"	=> "pshl4",
+			      },
+	 "TAHOEop_PSHR2"   => {
+		 "opc_str"	=> "pshr2",
+			      },
+	 "TAHOEop_PSHR2_U" => {
+		 "opc_str"	=> "pshr2.u",
+			      },
+	 "TAHOEop_PSHR4"   => {
+		 "opc_str"	=> "pshr4",
+			      },
+	 "TAHOEop_PSHR4_U" => {
+		 "opc_str"	=> "pshr4.u",
+			      },
+	 "TAHOEop_SHL"     => {
+		 "opc_str"	=> "shl",
+			      },
+	 "TAHOEop_SHR"     => {
+		 "opc_str"	=> "shr",
+			      },
+	 "TAHOEop_SHR_U"   => {
+		 "opc_str"	=> "shr.u",
+			      },
+	 "TAHOEop_UNPACK1_H" => {
+		 "opc_str"	=> "unpack1.h",
+			      },
+	 "TAHOEop_UNPACK1_L" => {
+		 "opc_str"	=> "unpack1.l",
+			      },
+	 "TAHOEop_UNPACK2_H" => {
+		 "opc_str"	=> "unpack2.h",
+			      },
+	 "TAHOEop_UNPACK2_L" => {
+		 "opc_str"	=> "unpack2.l",
+			      },
+	 "TAHOEop_UNPACK4_H" => {
+		 "opc_str"	=> "unpack4.h",
+			      },
+	 "TAHOEop_UNPACK4_L" => {
+		 "opc_str"	=> "unpack4.l",
+			      },
+	 "TAHOEop_ADDP4"   => {
+		 "opc_str"	=> "addp4",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_ADDP4",
+			      },
+	 "TAHOEop_SHLADDP4" => {
+		 "opc_str"	=> "shladdp4",
+		 "ComputeKnownBitsFlow" => "ComputeKnownBitsFlow_SHLADDP4",
+			      },
+	 "TAHOEop_CLRRRB"  => {
+		 "opc_str"	=> "clrrrb",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_CLRRRB_PR" => {
+		 "opc_str"	=> "clrrrb.pr",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_COVER"   => {
+		 "opc_str"	=> "cover",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_FLUSHRS" => {
+		 "opc_str"	=> "flushrs",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_LOADRS"  => {
+		 "opc_str"	=> "loadrs",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_CMPXCHG1_ACQ" => {
+		 "opc_str"	=> "cmpxchg1.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG1_REL" => {
+		 "opc_str"	=> "cmpxchg1.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG2_ACQ" => {
+		 "opc_str"	=> "cmpxchg2.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG2_REL" => {
+		 "opc_str"	=> "cmpxchg2.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG4_ACQ" => {
+		 "opc_str"	=> "cmpxchg4.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG4_REL" => {
+		 "opc_str"	=> "cmpxchg4.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG8_ACQ" => {
+		 "opc_str"	=> "cmpxchg8.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_CMPXCHG8_REL" => {
+		 "opc_str"	=> "cmpxchg8.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_cmpxchg",
+			      },
+	 "TAHOEop_FETCHADD4_ACQ" => {
+		 "opc_str"	=> "fetchadd4.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_FETCHADD4_REL" => {
+		 "opc_str"	=> "fetchadd4.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_FETCHADD8_ACQ" => {
+		 "opc_str"	=> "fetchadd8.acq",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_FETCHADD8_REL" => {
+		 "opc_str"	=> "fetchadd8.rel",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_XCHG1"   => {
+		 "opc_str"	=> "xchg1",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_XCHG2"   => {
+		 "opc_str"	=> "xchg2",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_XCHG4"   => {
+		 "opc_str"	=> "xchg4",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_XCHG8"   => {
+		 "opc_str"	=> "xchg8",
+		 "completer_sanity_check" => "check_ACQ_REL_BIAS_FILL",
+		 "print_completers" => "print_LD_C_completers",
+		 "print_opcode" => "P_print_fetchadd_xchg",
+			      },
+	 "TAHOEop_FCLASS"  => {
+		 "opc_str"	=> "fclass",
+		 "completer_sanity_check" => "check_FCLASS",
+		 "print_completers" => "print_standard_completers",
+			      },
+	 "TAHOEop_FCMP"    => {
+		 "opc_str"	=> "fcmp",
+		 "completer_sanity_check" => "check_FCMP",
+		 "print_completers" => "print_FCMP_completers",
+			      },
+	 "TAHOEop_FCVT_FX" => {
+		 "opc_str"	=> "fcvt.fx",
+		 "print_completers" => "print_FCVT_completers",
+			      },
+	 "TAHOEop_FCVT_FXU" => {
+		 "opc_str"	=> "fcvt.fxu",
+		 "print_completers" => "print_FCVT_completers",
+			      },
+	 "TAHOEop_FCVT_XF" => {
+		 "opc_str"	=> "fcvt.xf",
+			      },
+	 "TAHOEop_FPCVT_FX" => {
+		 "opc_str"	=> "fpcvt.fx",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPCVT_FX_TRUNC" => {
+		 "opc_str"	=> "fpcvt.fx.trunc",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPCVT_FXU" => {
+		 "opc_str"	=> "fpcvt.fxu",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPCVT_FXU_TRUNC" => {
+		 "opc_str"	=> "fpcvt.fxu.trunc",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPMA"    => {
+		 "opc_str"	=> "fpma",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPMS"    => {
+		 "opc_str"	=> "fpms",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPNMA"   => {
+		 "opc_str"	=> "fpnma",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPMERGE" => {
+		 "opc_str"	=> "fpmerge",
+			      },
+	 "TAHOEop_FPAMAX"  => {
+		 "opc_str"	=> "fpamax",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPAMIN"  => {
+		 "opc_str"	=> "fpamin",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPCMP"   => {
+		 "opc_str"	=> "fpcmp",
+		 "completer_sanity_check" => "check_FPCMP",
+		 "print_completers" => "print_FPCMP_completers",
+			      },
+	 "TAHOEop_FPMAX"   => {
+		 "opc_str"	=> "fpmax",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPMERGE_NS" => {
+		 "opc_str"	=> "fpmerge.ns",
+			      },
+	 "TAHOEop_FPMERGE_S" => {
+		 "opc_str"	=> "fpmerge.s",
+			      },
+	 "TAHOEop_FPMIN"   => {
+		 "opc_str"	=> "fpmin",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPRCPA"  => {
+		 "opc_str"	=> "fprcpa",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FPRSQRTA" => {
+		 "opc_str"	=> "fprsqrta",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_ST1"     => {
+		 "opc_str"	=> "st1",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST1",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST1_REL" => {
+		 "opc_str"	=> "st1.rel",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST1",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST2"     => {
+		 "opc_str"	=> "st2",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST2",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST2_REL" => {
+		 "opc_str"	=> "st2.rel",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST2",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST4"     => {
+		 "opc_str"	=> "st4",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST4",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST4_REL" => {
+		 "opc_str"	=> "st4.rel",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "ComputeBitsUsedLocal" => "ComputeBitsUsedLocal_ST4",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST8"     => {
+		 "opc_str"	=> "st8",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST8_REL" => {
+		 "opc_str"	=> "st8.rel",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_ST8_SPILL" => {
+		 "opc_str"	=> "st8.spill",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_STF_SPILL" => {
+		 "opc_str"	=> "stf.spill",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_STF8"    => {
+		 "opc_str"	=> "stf8",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_STFD"    => {
+		 "opc_str"	=> "stfd",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_STFE"    => {
+		 "opc_str"	=> "stfe",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_STFS"    => {
+		 "opc_str"	=> "stfs",
+		 "completer_sanity_check" => "check_ST",
+		 "print_completers" => "print_standard_completers",
+		 "print_opcode" => "P_print_store",
+			      },
+	 "TAHOEop_EPC"     => {
+		 "opc_str"	=> "epc",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_BSW_0"   => {
+		 "opc_str"	=> "bsw.0",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_BSW_1"   => {
+		 "opc_str"	=> "bsw.1",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_RFI"     => {
+		 "opc_str"	=> "rfi",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_INVALA"  => {
+		 "opc_str"	=> "invala",
+		 "print_opcode" => "P_print_invala",
+			      },
+	 "TAHOEop_INVALA_E" => {
+		 "opc_str"	=> "invala.e",
+		 "print_opcode" => "P_print_invala",
+			      },
+	 "TAHOEop_INVALA_E_F" => {
+		 "opc_str"	=> "invala.e",
+		 "print_opcode" => "P_print_invala",
+			      },
+	 "TAHOEop_CC"      => {
+		 "opc_str"	=> "cc",
+		 "print_opcode" => "P_print_cc",
+			      },
+	 "TAHOEop_FWB"     => {
+		 "opc_str"	=> "fwb",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_HALT"    => {
+		 "opc_str"	=> "halt",
+		 "print_opcode" => "P_print_halt",
+			      },
+	 "TAHOEop_HALT_MF" => {
+		 "opc_str"	=> "halt.mf",
+		 "print_opcode" => "P_print_halt",
+			      },
+	 "TAHOEop_MF"      => {
+		 "opc_str"	=> "mf",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_MF_A"    => {
+		 "opc_str"	=> "mf.a",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_SRLZ_D"  => {
+		 "opc_str"	=> "srlz.d",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_SRLZ_I"  => {
+		 "opc_str"	=> "srlz.i",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_SYNC_I"  => {
+		 "opc_str"	=> "sync.i",
+		 "print_opcode" => "P_print_mnemonic_only",
+			      },
+	 "TAHOEop_ALLOC"   => {
+		 "opc_str"	=> "alloc",
+		 "print_opcode" => "P_print_alloc",
+			      },
+	 "TAHOEop_FC"      => {
+		 "opc_str"	=> "fc",
+		 "print_opcode" => "P_print_fc",
+			      },
+	 "TAHOEop_ITC_D"   => {
+		 "opc_str"	=> "itc.d",
+		 "print_opcode" => "P_print_itc",
+			      },
+	 "TAHOEop_ITC_I"   => {
+		 "opc_str"	=> "itc.i",
+		 "print_opcode" => "P_print_itc",
+			      },
+	 "TAHOEop_ITR_D"   => {
+		 "opc_str"	=> "itr.d",
+		 "print_opcode" => "P_print_itr",
+			      },
+	 "TAHOEop_ITR_I"   => {
+		 "opc_str"	=> "itr.i",
+		 "print_opcode" => "P_print_itr",
+			      },
+	 "TAHOEop_PROBE_R" => {
+		 "opc_str"	=> "probe.r",
+			      },
+	 "TAHOEop_PROBE_R_FAULT" => {
+		 "opc_str"	=> "probe.r.fault",
+		 "print_opcode" => "P_print_probe_fault",
+			      },
+	 "TAHOEop_PROBE_RW_FAULT" => {
+		 "opc_str"	=> "probe.rw.fault",
+		 "print_opcode" => "P_print_probe_fault",
+			      },
+	 "TAHOEop_PROBE_W" => {
+		 "opc_str"	=> "probe.w",
+			      },
+	 "TAHOEop_PROBE_W_FAULT" => {
+		 "opc_str"	=> "probe.w.fault",
+		 "print_opcode" => "P_print_probe_fault",
+			      },
+	 "TAHOEop_PTC_E"   => {
+		 "opc_str"	=> "ptc.e",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_PTC_G"   => {
+		 "opc_str"	=> "ptc.g",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_PTC_GA"  => {
+		 "opc_str"	=> "ptc.ga",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_PTC_L"   => {
+		 "opc_str"	=> "ptc.l",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_PTR_D"   => {
+		 "opc_str"	=> "ptr.d",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_PTR_I"   => {
+		 "opc_str"	=> "ptr.i",
+		 "print_opcode" => "P_print_purge",
+			      },
+	 "TAHOEop_RSM"     => {
+		 "opc_str"	=> "rsm",
+		 "print_opcode" => "P_print_mask_op",
+			      },
+	 "TAHOEop_RUM"     => {
+		 "opc_str"	=> "rum",
+		 "print_opcode" => "P_print_mask_op",
+			      },
+	 "TAHOEop_SSM"     => {
+		 "opc_str"	=> "ssm",
+		 "print_opcode" => "P_print_mask_op",
+			      },
+	 "TAHOEop_SUM"     => {
+		 "opc_str"	=> "sum",
+		 "print_opcode" => "P_print_mask_op",
+			      },
+	 "TAHOEop_TAK"     => {
+		 "opc_str"	=> "tak",
+			      },
+	 "TAHOEop_THASH"   => {
+		 "opc_str"	=> "thash",
+			      },
+	 "TAHOEop_TPA"     => {
+		 "opc_str"	=> "tpa",
+			      },
+	 "TAHOEop_TTAG"    => {
+		 "opc_str"	=> "ttag",
+			      },
+	 "TAHOEop_FABS"    => {
+		 "opc_str"      => "fabs",
+			      },
+	 "TAHOEop_FADD_D"  => {
+		 "opc_str"      => "fadd.d",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FADD_S"  => {
+		 "opc_str"      => "fadd.s",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FADD"    => {
+		 "opc_str"      => "fadd",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_CHK_S"   => {
+		 "opc_str"      => "chk.s",
+		 "print_opcode" => "P_print_check",
+			      },
+	 "TAHOEop_MOV_FR"  => {
+		 "opc_str"      => "mov",
+			      },
+	 "TAHOEop_FSUB_D"  => {
+		 "opc_str"      => "fsub.d",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FSUB_S"  => {
+		 "opc_str"      => "fsub.s",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      },
+	 "TAHOEop_FSUB"    => {
+		 "opc_str"      => "fsub",
+		 "print_completers" => "print_FP_S_REG_completers",
+			      }, );

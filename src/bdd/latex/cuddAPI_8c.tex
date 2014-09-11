@@ -1,0 +1,2206 @@
+\section{cudd\-API.c File Reference}
+\label{cuddAPI_8c}\index{cuddAPI.c@{cuddAPI.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void fix\-Var\-Tree \bf{ARGS} ((\bf{Mtr\-Node} $\ast$treenode, int $\ast$perm, int \bf{size}))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-New\-Var} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-New\-Var\-At\-Level} (\bf{Dd\-Manager} $\ast$dd, int level)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-New\-Var} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-New\-Var\-At\-Level} (\bf{Dd\-Manager} $\ast$dd, int level)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Ith\-Var} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Ith\-Var} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Ith\-Var} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+int \bf{Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars} (\bf{Dd\-Manager} $\ast$dd, int multiplicity)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Const} (\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE c)
+\item 
+void \bf{Cudd\_\-Autodyn\-Enable} (\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} method)
+\item 
+void \bf{Cudd\_\-Autodyn\-Disable} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+int \bf{Cudd\_\-Reordering\-Status} (\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} $\ast$method)
+\item 
+void \bf{Cudd\_\-Autodyn\-Enable\-Zdd} (\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} method)
+\item 
+void \bf{Cudd\_\-Autodyn\-Disable\-Zdd} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+int \bf{Cudd\_\-Reordering\-Status\-Zdd} (\bf{Dd\-Manager} $\ast$unique, \bf{Cudd\_\-Reordering\-Type} $\ast$method)
+\item 
+int \bf{Cudd\_\-zdd\-Realignment\-Enabled} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+void \bf{Cudd\_\-zdd\-Realign\-Enable} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+void \bf{Cudd\_\-zdd\-Realign\-Disable} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+int \bf{Cudd\_\-bdd\-Realignment\-Enabled} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+void \bf{Cudd\_\-bdd\-Realign\-Enable} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+void \bf{Cudd\_\-bdd\-Realign\-Disable} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-One} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Zdd\-One} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Zero} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Logic\-Zero} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Plus\-Infinity} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Minus\-Infinity} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Background} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Background} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$bck)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Cache\-Slots} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Cache\-Used\-Slots} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Cache\-Look\-Ups} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Cache\-Hits} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Min\-Hit} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Min\-Hit} (\bf{Dd\-Manager} $\ast$dd, unsigned int hr)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Loose\-Up\-To} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Loose\-Up\-To} (\bf{Dd\-Manager} $\ast$dd, unsigned int lut)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Max\-Cache} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Max\-Cache} (\bf{Dd\-Manager} $\ast$dd, unsigned int mc)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Max\-Cache\-Hard} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Max\-Cache\-Hard} (\bf{Dd\-Manager} $\ast$dd, unsigned int mc)
+\item 
+int \bf{Cudd\_\-Read\-Size} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Read\-Zdd\-Size} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Slots} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Used\-Slots} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Keys} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Dead} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Read\-Min\-Dead} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Read\-Reorderings} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+long \bf{Cudd\_\-Read\-Reordering\-Time} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Read\-Garbage\-Collections} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+long \bf{Cudd\_\-Read\-Garbage\-Collection\-Time} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Nodes\-Freed} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Nodes\-Dropped} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Unique\-Look\-Ups} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+double \bf{Cudd\_\-Read\-Unique\-Links} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Read\-Sift\-Max\-Var} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Sift\-Max\-Var} (\bf{Dd\-Manager} $\ast$dd, int smv)
+\item 
+int \bf{Cudd\_\-Read\-Sift\-Max\-Swap} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Sift\-Max\-Swap} (\bf{Dd\-Manager} $\ast$dd, int sms)
+\item 
+double \bf{Cudd\_\-Read\-Max\-Growth} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Max\-Growth} (\bf{Dd\-Manager} $\ast$dd, double mg)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Cudd\_\-Read\-Tree} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Tree} (\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$tree)
+\item 
+void \bf{Cudd\_\-Free\-Tree} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Cudd\_\-Read\-Zdd\-Tree} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Zdd\-Tree} (\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$tree)
+\item 
+void \bf{Cudd\_\-Free\-Zdd\-Tree} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+unsigned int \bf{Cudd\_\-Node\-Read\-Index} (\bf{Dd\-Node} $\ast$node)
+\item 
+int \bf{Cudd\_\-Read\-Perm} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+int \bf{Cudd\_\-Read\-Perm\-Zdd} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+int \bf{Cudd\_\-Read\-Inv\-Perm} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+int \bf{Cudd\_\-Read\-Inv\-Perm\-Zdd} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Read\-Vars} (\bf{Dd\-Manager} $\ast$dd, int i)
+\item 
+CUDD\_\-VALUE\_\-TYPE \bf{Cudd\_\-Read\-Epsilon} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Epsilon} (\bf{Dd\-Manager} $\ast$dd, CUDD\_\-VALUE\_\-TYPE ep)
+\item 
+\bf{Cudd\_\-Aggregation\-Type} \bf{Cudd\_\-Read\-Groupcheck} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Groupcheck} (\bf{Dd\-Manager} $\ast$dd, \bf{Cudd\_\-Aggregation\-Type} gc)
+\item 
+int \bf{Cudd\_\-Garbage\-Collection\-Enabled} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Enable\-Garbage\-Collection} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Disable\-Garbage\-Collection} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Dead\-Are\-Counted} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Turn\-On\-Count\-Dead} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Turn\-Off\-Count\-Dead} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Read\-Recomb} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Recomb} (\bf{Dd\-Manager} $\ast$dd, int recomb)
+\item 
+int \bf{Cudd\_\-Read\-Symmviolation} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Symmviolation} (\bf{Dd\-Manager} $\ast$dd, int symmviolation)
+\item 
+int \bf{Cudd\_\-Read\-Arcviolation} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Arcviolation} (\bf{Dd\-Manager} $\ast$dd, int arcviolation)
+\item 
+int \bf{Cudd\_\-Read\-Population\-Size} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Population\-Size} (\bf{Dd\-Manager} $\ast$dd, int population\-Size)
+\item 
+int \bf{Cudd\_\-Read\-Number\-Xovers} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Set\-Number\-Xovers} (\bf{Dd\-Manager} $\ast$dd, int number\-Xovers)
+\item 
+long \bf{Cudd\_\-Read\-Memory\-In\-Use} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Print\-Info} (\bf{Dd\-Manager} $\ast$dd, FILE $\ast$fp)
+\item 
+long \bf{Cudd\_\-Read\-Peak\-Node\-Count} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+long \bf{Cudd\_\-Read\-Node\-Count} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+long \bf{Cudd\_\-zdd\-Read\-Node\-Count} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Add\-Hook} (\bf{Dd\-Manager} $\ast$dd, int($\ast$f)(\bf{Dd\-Manager} $\ast$, void $\ast$), \bf{Cudd\_\-Hook\-Type} where)
+\item 
+int \bf{Cudd\_\-Remove\-Hook} (\bf{Dd\-Manager} $\ast$dd, int($\ast$f)(\bf{Dd\-Manager} $\ast$, void $\ast$), \bf{Cudd\_\-Hook\-Type} where)
+\item 
+int \bf{Cudd\_\-Is\-In\-Hook} (\bf{Dd\-Manager} $\ast$dd, int($\ast$f)(\bf{Dd\-Manager} $\ast$, void $\ast$), \bf{Cudd\_\-Hook\-Type} where)
+\item 
+int \bf{Cudd\_\-Std\-Pre\-Reord\-Hook} (\bf{Dd\-Manager} $\ast$dd, void $\ast$data)
+\item 
+int \bf{Cudd\_\-Std\-Post\-Reord\-Hook} (\bf{Dd\-Manager} $\ast$dd, void $\ast$data)
+\item 
+int \bf{Cudd\_\-Enable\-Reordering\-Reporting} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Disable\-Reordering\-Reporting} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+int \bf{Cudd\_\-Reordering\-Reporting} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+\bf{Cudd\_\-Error\-Type} \bf{Cudd\_\-Read\-Error\-Code} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{Cudd\_\-Clear\-Error\-Code} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+static void \bf{fix\-Var\-Tree} (\bf{Mtr\-Node} $\ast$treenode, int $\ast$perm, int \bf{size})
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-API.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddAPI.c@{cudd\-API.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void fix\-Var\-Tree ARGS ((\bf{Mtr\-Node} $\ast$treenode, int $\ast$perm, int \bf{size}))\hspace{0.3cm}{\tt  [static]}}\label{cuddAPI_8c_76f3e46711e76c2215b0f1b6d0ea8699}
+
+
+Automatic\-Start \index{cuddAPI.c@{cudd\-API.c}!Cudd_addConst@{Cudd\_\-addConst}}
+\index{Cudd_addConst@{Cudd\_\-addConst}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Const (\bf{Dd\-Manager} $\ast$ {\em dd}, CUDD\_\-VALUE\_\-TYPE {\em c})}\label{cuddAPI_8c_8b8fb347b6c5324ef9bce64aa73a63bb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the ADD for constant c.]
+
+Description [Retrieves the ADD for constant c if it already exists, or creates a new ADD. Returns a pointer to the ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-New\-Var Cudd\_\-add\-Ith\-Var] 
+
+Definition at line 532 of file cudd\-API.c.
+
+References cudd\-Unique\-Const().\index{cuddAPI.c@{cudd\-API.c}!Cudd_AddHook@{Cudd\_\-AddHook}}
+\index{Cudd_AddHook@{Cudd\_\-AddHook}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Add\-Hook (\bf{Dd\-Manager} $\ast$ {\em dd}, int($\ast$)(\bf{Dd\-Manager} $\ast$, void $\ast$) {\em f}, \bf{Cudd\_\-Hook\-Type} {\em where})}\label{cuddAPI_8c_ddeff00513ecb3aa2051e9b5358c89b5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Adds a function to a hook.]
+
+Description [Adds a function to a hook. A hook is a list of application-provided functions called on certain occasions by the package. Returns 1 if the function is successfully added; 2 if the function was already in the list; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Remove\-Hook] 
+
+Definition at line 2904 of file cudd\-API.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, CUDD\_\-POST\_\-GC\_\-HOOK, CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-GC\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, Dd\-Manager::error\-Code, Dd\-Hook::next, Dd\-Manager::post\-GCHook, Dd\-Manager::post\-Reordering\-Hook, Dd\-Manager::pre\-GCHook, and Dd\-Manager::pre\-Reordering\-Hook.
+
+Referenced by Cudd\_\-Enable\-Reordering\-Reporting().\index{cuddAPI.c@{cudd\-API.c}!Cudd_addIthVar@{Cudd\_\-addIthVar}}
+\index{Cudd_addIthVar@{Cudd\_\-addIthVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Ith\-Var (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_19967d7c87650f63fc312f38c318e3e9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the ADD variable with index i.]
+
+Description [Retrieves the ADD variable with index i if it already exists, or creates a new ADD variable. Returns a pointer to the variable if successful; NULL otherwise. An ADD variable differs from a BDD variable because it points to the arithmetic zero, instead of having a complement pointer to 1. ]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-New\-Var Cudd\_\-bdd\-Ith\-Var Cudd\_\-add\-Const Cudd\_\-add\-New\-Var\-At\-Level] 
+
+Definition at line 314 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-add\-New\-Var\-At\-Level(), Cudd\_\-add\-Non\-Sim\-Compose(), and cudd\-Add\-Non\-Sim\-Compose\-Recur().\index{cuddAPI.c@{cudd\-API.c}!Cudd_addNewVar@{Cudd\_\-addNewVar}}
+\index{Cudd_addNewVar@{Cudd\_\-addNewVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-New\-Var (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_d77f4dd2911bac8e25633fe84c6cfb8b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns a new ADD variable.]
+
+Description [Creates a new ADD variable. The new variable has an index equal to the largest previous index plus 1. Returns a pointer to the new variable if successful; NULL otherwise. An ADD variable differs from a BDD variable because it points to the arithmetic zero, instead of having a complement pointer to 1. ]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-New\-Var Cudd\_\-add\-Ith\-Var Cudd\_\-add\-Const Cudd\_\-add\-New\-Var\-At\-Level] 
+
+Definition at line 189 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::reordered, and Dd\-Manager::size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_addNewVarAtLevel@{Cudd\_\-addNewVarAtLevel}}
+\index{Cudd_addNewVarAtLevel@{Cudd\_\-addNewVarAtLevel}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-New\-Var\-At\-Level (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em level})}\label{cuddAPI_8c_acea7b5ed8dc2595a1c0e01788bc205a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns a new ADD variable at a specified level.]
+
+Description [Creates a new ADD variable. The new variable has an index equal to the largest previous index plus 1 and is positioned at the specified level in the order. Returns a pointer to the new variable if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-New\-Var Cudd\_\-add\-Ith\-Var Cudd\_\-bdd\-New\-Var\-At\-Level] 
+
+Definition at line 220 of file cudd\-API.c.
+
+References Cudd\_\-add\-Ith\-Var(), CUDD\_\-MAXINDEX, cudd\-Insert\-Subtables(), cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::reordered, and Dd\-Manager::size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_AutodynDisable@{Cudd\_\-AutodynDisable}}
+\index{Cudd_AutodynDisable@{Cudd\_\-AutodynDisable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Autodyn\-Disable (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_ffd2c1c2a110944c1d760de577aed431}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables automatic dynamic reordering.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Autodyn\-Enable Cudd\_\-Reordering\-Status Cudd\_\-Autodyn\-Disable\-Zdd] 
+
+Definition at line 583 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn.\index{cuddAPI.c@{cudd\-API.c}!Cudd_AutodynDisableZdd@{Cudd\_\-AutodynDisableZdd}}
+\index{Cudd_AutodynDisableZdd@{Cudd\_\-AutodynDisableZdd}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Autodyn\-Disable\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_219ccb201e3c1aa25ebef007399849fa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables automatic dynamic reordering of ZDDs.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Autodyn\-Enable\-Zdd Cudd\_\-Reordering\-Status\-Zdd Cudd\_\-Autodyn\-Disable] 
+
+Definition at line 661 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_AutodynEnable@{Cudd\_\-AutodynEnable}}
+\index{Cudd_AutodynEnable@{Cudd\_\-AutodynEnable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Autodyn\-Enable (\bf{Dd\-Manager} $\ast$ {\em unique}, \bf{Cudd\_\-Reordering\-Type} {\em method})}\label{cuddAPI_8c_6a0d69b4288f36d5d377c460d49066a6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables automatic dynamic reordering of BDDs and ADDs.]
+
+Description [Enables automatic dynamic reordering of BDDs and ADDs. Parameter method is used to determine the method used for reordering. If CUDD\_\-REORDER\_\-SAME is passed, the method is unchanged.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Autodyn\-Disable Cudd\_\-Reordering\-Status Cudd\_\-Autodyn\-Enable\-Zdd] 
+
+Definition at line 557 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn, Dd\-Manager::auto\-Method, and CUDD\_\-REORDER\_\-SAME.\index{cuddAPI.c@{cudd\-API.c}!Cudd_AutodynEnableZdd@{Cudd\_\-AutodynEnableZdd}}
+\index{Cudd_AutodynEnableZdd@{Cudd\_\-AutodynEnableZdd}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Autodyn\-Enable\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, \bf{Cudd\_\-Reordering\-Type} {\em method})}\label{cuddAPI_8c_709e0e15a38d6d6e9c83ff8b8a9d07f2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables automatic dynamic reordering of ZDDs.]
+
+Description [Enables automatic dynamic reordering of ZDDs. Parameter method is used to determine the method used for reordering ZDDs. If CUDD\_\-REORDER\_\-SAME is passed, the method is unchanged.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Autodyn\-Disable\-Zdd Cudd\_\-Reordering\-Status\-Zdd Cudd\_\-Autodyn\-Enable] 
+
+Definition at line 635 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn\-Z, Dd\-Manager::auto\-Method\-Z, and CUDD\_\-REORDER\_\-SAME.\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddIthVar@{Cudd\_\-bddIthVar}}
+\index{Cudd_bddIthVar@{Cudd\_\-bddIthVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Ith\-Var (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_40fd71665cde402bd5bc4f39015c09ae}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the BDD variable with index i.]
+
+Description [Retrieves the BDD variable with index i if it already exists, or creates a new BDD variable. Returns a pointer to the variable if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-New\-Var Cudd\_\-add\-Ith\-Var Cudd\_\-bdd\-New\-Var\-At\-Level] 
+
+Definition at line 345 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Cudd\_\-Not, cudd\-Unique\-Inter(), Dd\-Manager::one, size, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-bdd\-New\-Var\-At\-Level(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), and Cudd\_\-Indices\-To\-Cube().\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddNewVar@{Cudd\_\-bddNewVar}}
+\index{Cudd_bddNewVar@{Cudd\_\-bddNewVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-New\-Var (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_475c50e1a273569cc0ffc19ab98c28ce}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns a new BDD variable.]
+
+Description [Creates a new BDD variable. The new variable has an index equal to the largest previous index plus 1. Returns a pointer to the new variable if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-New\-Var Cudd\_\-bdd\-Ith\-Var Cudd\_\-bdd\-New\-Var\-At\-Level] 
+
+Definition at line 253 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Cudd\_\-Not, cudd\-Unique\-Inter(), Dd\-Manager::one, and Dd\-Manager::size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddNewVarAtLevel@{Cudd\_\-bddNewVarAtLevel}}
+\index{Cudd_bddNewVarAtLevel@{Cudd\_\-bddNewVarAtLevel}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-New\-Var\-At\-Level (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em level})}\label{cuddAPI_8c_e35eac7df807101795efe0d582ff05fa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns a new BDD variable at a specified level.]
+
+Description [Creates a new BDD variable. The new variable has an index equal to the largest previous index plus 1 and is positioned at the specified level in the order. Returns a pointer to the new variable if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-New\-Var Cudd\_\-bdd\-Ith\-Var Cudd\_\-add\-New\-Var\-At\-Level] 
+
+Definition at line 281 of file cudd\-API.c.
+
+References Cudd\_\-bdd\-Ith\-Var(), CUDD\_\-MAXINDEX, cudd\-Insert\-Subtables(), Dd\-Manager::size, and Dd\-Manager::vars.\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddRealignDisable@{Cudd\_\-bddRealignDisable}}
+\index{Cudd_bddRealignDisable@{Cudd\_\-bddRealignDisable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-bdd\-Realign\-Disable (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_3eb093bdd80db0b880f61017f3e36de2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables realignment of ZDD order to BDD order.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Realign\-Enable Cudd\_\-bdd\-Realignment\-Enabled Cudd\_\-zdd\-Realign\-Enable Cudd\_\-zdd\-Realignment\-Enabled] 
+
+Definition at line 840 of file cudd\-API.c.
+
+References Dd\-Manager::realign\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddRealignEnable@{Cudd\_\-bddRealignEnable}}
+\index{Cudd_bddRealignEnable@{Cudd\_\-bddRealignEnable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-bdd\-Realign\-Enable (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_2d0d34d836668fc62e7c7835fa95132d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables realignment of BDD order to ZDD order.]
+
+Description [Enables realignment of the BDD variable order to the ZDD variable order after the ZDDs have been reordered. The number of ZDD variables must be a multiple of the number of BDD variables for realignment to make sense. If this condition is not met, Cudd\_\-zdd\-Reduce\-Heap will return 0. Let {\tt M} be the ratio of the two numbers. For the purpose of realignment, the ZDD variables from {\tt M$\ast$i} to {\tt (M+1)$\ast$i-1} are reagarded as corresponding to BDD variable {\tt i}. Realignment is initially disabled.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Reduce\-Heap Cudd\_\-bdd\-Realign\-Disable Cudd\_\-bdd\-Realignment\-Enabled Cudd\_\-zdd\-Realign\-Disable Cudd\_\-zdd\-Realignment\-Enabled] 
+
+Definition at line 818 of file cudd\-API.c.
+
+References Dd\-Manager::realign\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_bddRealignmentEnabled@{Cudd\_\-bddRealignmentEnabled}}
+\index{Cudd_bddRealignmentEnabled@{Cudd\_\-bddRealignmentEnabled}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Realignment\-Enabled (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_516183604a75b38337b81fd17c291826}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tells whether the realignment of BDD order to ZDD order is enabled.]
+
+Description [Returns 1 if the realignment of BDD order to ZDD order is enabled; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Realign\-Enable Cudd\_\-bdd\-Realign\-Disable Cudd\_\-zdd\-Realign\-Enable Cudd\_\-zdd\-Realign\-Disable] 
+
+Definition at line 788 of file cudd\-API.c.
+
+References Dd\-Manager::realign\-Z.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ClearErrorCode@{Cudd\_\-ClearErrorCode}}
+\index{Cudd_ClearErrorCode@{Cudd\_\-ClearErrorCode}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Clear\-Error\-Code (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_ed3a189c261ed9f698ace55ade32af01}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Clear the error code of a manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Error\-Code] 
+
+Definition at line 3283 of file cudd\-API.c.
+
+References CUDD\_\-NO\_\-ERROR, and Dd\-Manager::error\-Code.\index{cuddAPI.c@{cudd\-API.c}!Cudd_DeadAreCounted@{Cudd\_\-DeadAreCounted}}
+\index{Cudd_DeadAreCounted@{Cudd\_\-DeadAreCounted}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Dead\-Are\-Counted (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_e34d186620ce66627e57bbccfa24a892}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tells whether dead nodes are counted towards triggering reordering.]
+
+Description [Tells whether dead nodes are counted towards triggering reordering. Returns 1 if dead nodes are counted; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Turn\-On\-Count\-Dead Cudd\_\-Turn\-Off\-Count\-Dead] 
+
+Definition at line 2288 of file cudd\-API.c.
+
+References Dd\-Manager::count\-Dead.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_DisableGarbageCollection@{Cudd\_\-DisableGarbageCollection}}
+\index{Cudd_DisableGarbageCollection@{Cudd\_\-DisableGarbageCollection}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Disable\-Garbage\-Collection (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_b1def55437ab00e012fba1a98bc3a941}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables garbage collection.]
+
+Description [Disables garbage collection. Garbage collection is initially enabled. This function may be called to disable it. However, garbage collection will still occur when a new node must be created and no memory is left, or when garbage collection is required for correctness. (E.g., before reordering.)]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Enable\-Garbage\-Collection Cudd\_\-Garbage\-Collection\-Enabled] 
+
+Definition at line 2266 of file cudd\-API.c.
+
+References Dd\-Manager::gc\-Enabled.\index{cuddAPI.c@{cudd\-API.c}!Cudd_DisableReorderingReporting@{Cudd\_\-DisableReorderingReporting}}
+\index{Cudd_DisableReorderingReporting@{Cudd\_\-DisableReorderingReporting}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Disable\-Reordering\-Reporting (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_249298e38710246ab1ead014cfe54dd9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables reporting of reordering stats.]
+
+Description [Disables reporting of reordering stats. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [Removes functions from the pre-reordering and post-reordering hooks.]
+
+See\-Also [Cudd\_\-Enable\-Reordering\-Reporting Cudd\_\-Reordering\-Reporting] 
+
+Definition at line 3215 of file cudd\-API.c.
+
+References CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, Cudd\_\-Remove\-Hook(), Cudd\_\-Std\-Post\-Reord\-Hook(), and Cudd\_\-Std\-Pre\-Reord\-Hook().\index{cuddAPI.c@{cudd\-API.c}!Cudd_EnableGarbageCollection@{Cudd\_\-EnableGarbageCollection}}
+\index{Cudd_EnableGarbageCollection@{Cudd\_\-EnableGarbageCollection}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Enable\-Garbage\-Collection (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_95a5511bcc805af71fc1fb5abba96f1e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables garbage collection.]
+
+Description [Enables garbage collection. Garbage collection is initially enabled. Therefore it is necessary to call this function only if garbage collection has been explicitly disabled.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Disable\-Garbage\-Collection Cudd\_\-Garbage\-Collection\-Enabled] 
+
+Definition at line 2242 of file cudd\-API.c.
+
+References Dd\-Manager::gc\-Enabled.\index{cuddAPI.c@{cudd\-API.c}!Cudd_EnableReorderingReporting@{Cudd\_\-EnableReorderingReporting}}
+\index{Cudd_EnableReorderingReporting@{Cudd\_\-EnableReorderingReporting}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Enable\-Reordering\-Reporting (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_dfe5374e85cf3fb0827307b1e3cc5e07}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables reporting of reordering stats.]
+
+Description [Enables reporting of reordering stats. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [Installs functions in the pre-reordering and post-reordering hooks.]
+
+See\-Also [Cudd\_\-Disable\-Reordering\-Reporting Cudd\_\-Reordering\-Reporting] 
+
+Definition at line 3187 of file cudd\-API.c.
+
+References Cudd\_\-Add\-Hook(), CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, Cudd\_\-Std\-Post\-Reord\-Hook(), and Cudd\_\-Std\-Pre\-Reord\-Hook().\index{cuddAPI.c@{cudd\-API.c}!Cudd_FreeTree@{Cudd\_\-FreeTree}}
+\index{Cudd_FreeTree@{Cudd\_\-FreeTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Free\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_f5c6ecb39244a6db49494d1f1e31bd1a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Tree Cudd\_\-Read\-Tree Cudd\_\-Free\-Zdd\-Tree] 
+
+Definition at line 1885 of file cudd\-API.c.
+
+References Mtr\_\-Free\-Tree(), and Dd\-Manager::tree.\index{cuddAPI.c@{cudd\-API.c}!Cudd_FreeZddTree@{Cudd\_\-FreeZddTree}}
+\index{Cudd_FreeZddTree@{Cudd\_\-FreeZddTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Free\-Zdd\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_c9a25622e38ad302c050803d520f5fce}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Zdd\-Tree Cudd\_\-Read\-Zdd\-Tree Cudd\_\-Free\-Tree] 
+
+Definition at line 1957 of file cudd\-API.c.
+
+References Mtr\_\-Free\-Tree(), and Dd\-Manager::tree\-Z.
+
+Referenced by Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars().\index{cuddAPI.c@{cudd\-API.c}!Cudd_GarbageCollectionEnabled@{Cudd\_\-GarbageCollectionEnabled}}
+\index{Cudd_GarbageCollectionEnabled@{Cudd\_\-GarbageCollectionEnabled}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Garbage\-Collection\-Enabled (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_df441cdb56f24a9e3e20f6e87cc571c8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tells whether garbage collection is enabled.]
+
+Description [Returns 1 if garbage collection is enabled; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Enable\-Garbage\-Collection Cudd\_\-Disable\-Garbage\-Collection] 
+
+Definition at line 2220 of file cudd\-API.c.
+
+References Dd\-Manager::gc\-Enabled.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_IsInHook@{Cudd\_\-IsInHook}}
+\index{Cudd_IsInHook@{Cudd\_\-IsInHook}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Is\-In\-Hook (\bf{Dd\-Manager} $\ast$ {\em dd}, int($\ast$)(\bf{Dd\-Manager} $\ast$, void $\ast$) {\em f}, \bf{Cudd\_\-Hook\-Type} {\em where})}\label{cuddAPI_8c_7f4618dba6d16a8b846844c6af87decf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks whether a function is in a hook.]
+
+Description [Checks whether a function is in a hook. A hook is a list of application-provided functions called on certain occasions by the package. Returns 1 if the function is found; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Add\-Hook Cudd\_\-Remove\-Hook] 
+
+Definition at line 3019 of file cudd\-API.c.
+
+References CUDD\_\-POST\_\-GC\_\-HOOK, CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-GC\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, Dd\-Hook::next, Dd\-Manager::post\-GCHook, Dd\-Manager::post\-Reordering\-Hook, Dd\-Manager::pre\-GCHook, and Dd\-Manager::pre\-Reordering\-Hook.
+
+Referenced by Cudd\_\-Reordering\-Reporting().\index{cuddAPI.c@{cudd\-API.c}!Cudd_NodeReadIndex@{Cudd\_\-NodeReadIndex}}
+\index{Cudd_NodeReadIndex@{Cudd\_\-NodeReadIndex}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Node\-Read\-Index (\bf{Dd\-Node} $\ast$ {\em node})}\label{cuddAPI_8c_53c38a74f4362bd57bcb44593a3f515d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the index of the node.]
+
+Description [Returns the index of the node. The node pointer can be either regular or complemented.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Index] 
+
+Definition at line 1982 of file cudd\-API.c.
+
+References Cudd\_\-Regular, and Dd\-Gen::node.
+
+Referenced by Build\-Subset\-Bdd().\index{cuddAPI.c@{cudd\-API.c}!Cudd_PrintInfo@{Cudd\_\-PrintInfo}}
+\index{Cudd_PrintInfo@{Cudd\_\-PrintInfo}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Print\-Info (\bf{Dd\-Manager} $\ast$ {\em dd}, FILE $\ast$ {\em fp})}\label{cuddAPI_8c_0883e74086d9f61c2988ba614e9e649e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints out statistics and settings for a CUDD manager.]
+
+Description [Prints out statistics and settings for a CUDD manager. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2640 of file cudd\-API.c.
+
+References Dd\-Manager::allocated, Dd\-Manager::cachecollisions, Dd\-Manager::cachedeletions, Dd\-Manager::cacheinserts, Dd\-Manager::cache\-Slots, Cudd\_\-bdd\-Realignment\-Enabled(), Cudd\_\-Dead\-Are\-Counted(), Cudd\_\-Garbage\-Collection\-Enabled(), Cudd\_\-Read\-Arcviolation(), Cudd\_\-Read\-Cache\-Hits(), Cudd\_\-Read\-Cache\-Look\-Ups(), Cudd\_\-Read\-Garbage\-Collections(), Cudd\_\-Read\-Garbage\-Collection\-Time(), Cudd\_\-Read\-Groupcheck(), Cudd\_\-Read\-Loose\-Up\-To(), Cudd\_\-Read\-Max\-Cache\-Hard(), Cudd\_\-Read\-Max\-Growth(), Cudd\_\-Read\-Memory\-In\-Use(), Cudd\_\-Read\-Min\-Hit(), Cudd\_\-Read\-Number\-Xovers(), Cudd\_\-Read\-Peak\-Node\-Count(), Cudd\_\-Read\-Population\-Size(), Cudd\_\-Read\-Recomb(), Cudd\_\-Read\-Reordering\-Time(), Cudd\_\-Read\-Sift\-Max\-Swap(), Cudd\_\-Read\-Sift\-Max\-Var(), Cudd\_\-Read\-Symmviolation(), Cudd\_\-Read\-Used\-Slots(), Cudd\_\-Reordering\-Status(), Cudd\_\-Reordering\-Status\-Zdd(), Cudd\_\-zdd\-Realignment\-Enabled(), cudd\-Cache\-Profile(), Dd\-Manager::dead, Dd\-Manager::dead\-Z, Dd\-Manager::keys, Dd\-Manager::keys\-Z, Dd\-Manager::max\-Cache, Dd\-Manager::reclaimed, Dd\-Manager::size, Dd\-Manager::size\-Z, and Dd\-Manager::slots.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadArcviolation@{Cudd\_\-ReadArcviolation}}
+\index{Cudd_ReadArcviolation@{Cudd\_\-ReadArcviolation}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Arcviolation (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_89117a52be055c338311b1380d511375}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current value of the arcviolation parameter used in group sifting.]
+
+Description [Returns the current value of the arcviolation parameter. This parameter is used in group sifting to decide how many arcs into {\tt y} not coming from {\tt x} are tolerable when checking for aggregation due to extended symmetry. The value should be between 0 and 100. A small value causes fewer variables to be aggregated. The default value is 0.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Arcviolation] 
+
+Definition at line 2467 of file cudd\-API.c.
+
+References Dd\-Manager::arcviolation.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadBackground@{Cudd\_\-ReadBackground}}
+\index{Cudd_ReadBackground@{Cudd\_\-ReadBackground}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Background (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_041d561f9d388a943104665fe0c850c0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the background constant of the manager.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 987 of file cudd\-API.c.
+
+References Dd\-Manager::background.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadCacheHits@{Cudd\_\-ReadCacheHits}}
+\index{Cudd_ReadCacheHits@{Cudd\_\-ReadCacheHits}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Cache\-Hits (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_2281582d99df044cf8892204026b64b9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of cache hits.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Cache\-Look\-Ups] 
+
+Definition at line 1100 of file cudd\-API.c.
+
+References Dd\-Manager::cache\-Hits, and Dd\-Manager::tot\-Cachehits.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadCacheLookUps@{Cudd\_\-ReadCacheLookUps}}
+\index{Cudd_ReadCacheLookUps@{Cudd\_\-ReadCacheLookUps}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Cache\-Look\-Ups (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_b4595bfefe543b3f8f74248c048b53fe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of cache look-ups.]
+
+Description [Returns the number of cache look-ups.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Cache\-Hits] 
+
+Definition at line 1079 of file cudd\-API.c.
+
+References Dd\-Manager::cache\-Hits, Dd\-Manager::cache\-Misses, Dd\-Manager::tot\-Cachehits, and Dd\-Manager::tot\-Cache\-Misses.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadCacheSlots@{Cudd\_\-ReadCacheSlots}}
+\index{Cudd_ReadCacheSlots@{Cudd\_\-ReadCacheSlots}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Cache\-Slots (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_b588943f358faadd3c7e8a4caf813fce}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the number of slots in the cache.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Cache\-Used\-Slots] 
+
+Definition at line 1027 of file cudd\-API.c.
+
+References Dd\-Manager::cache\-Slots.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadCacheUsedSlots@{Cudd\_\-ReadCacheUsedSlots}}
+\index{Cudd_ReadCacheUsedSlots@{Cudd\_\-ReadCacheUsedSlots}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Cache\-Used\-Slots (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_ac309a335487dbb3ba77b088c90e085c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the fraction of used slots in the cache.]
+
+Description [Reads the fraction of used slots in the cache. The unused slots are those in which no valid data is stored. Garbage collection, variable reordering, and cache resizing may cause used slots to become unused.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Cache\-Slots] 
+
+Definition at line 1050 of file cudd\-API.c.
+
+References Dd\-Manager::cache, and Dd\-Manager::cache\-Slots.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadDead@{Cudd\_\-ReadDead}}
+\index{Cudd_ReadDead@{Cudd\_\-ReadDead}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Dead (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_4074f697e7ea725a1b853d9a468a082e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of dead nodes in the unique table.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Keys] 
+
+Definition at line 1451 of file cudd\-API.c.
+
+References Dd\-Manager::dead.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadEpsilon@{Cudd\_\-ReadEpsilon}}
+\index{Cudd_ReadEpsilon@{Cudd\_\-ReadEpsilon}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}CUDD\_\-VALUE\_\-TYPE Cudd\_\-Read\-Epsilon (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_c711d8ce9d243e16246b83e3c1f04199}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the epsilon parameter of the manager.]
+
+Description [Reads the epsilon parameter of the manager. The epsilon parameter control the comparison between floating point numbers.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Epsilon] 
+
+Definition at line 2133 of file cudd\-API.c.
+
+References Dd\-Manager::epsilon.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadErrorCode@{Cudd\_\-ReadErrorCode}}
+\index{Cudd_ReadErrorCode@{Cudd\_\-ReadErrorCode}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Cudd\_\-Error\-Type} Cudd\_\-Read\-Error\-Code (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_988b83058c815b1ca112c6a9c74525ad}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the code of the last error.]
+
+Description [Returns the code of the last error. The error codes are defined in \doxyref{cudd.h}{p.}{cudd_8h}.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Clear\-Error\-Code] 
+
+Definition at line 3263 of file cudd\-API.c.
+
+References Dd\-Manager::error\-Code.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadGarbageCollections@{Cudd\_\-ReadGarbageCollections}}
+\index{Cudd_ReadGarbageCollections@{Cudd\_\-ReadGarbageCollections}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Garbage\-Collections (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_50aaebdd320041ddca11fdb0f3414f0c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of times garbage collection has occurred.]
+
+Description [Returns the number of times garbage collection has occurred in the manager. The number includes both the calls from reordering procedures and those caused by requests to create new nodes.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Garbage\-Collection\-Time] 
+
+Definition at line 1546 of file cudd\-API.c.
+
+References Dd\-Manager::garbage\-Collections.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadGarbageCollectionTime@{Cudd\_\-ReadGarbageCollectionTime}}
+\index{Cudd_ReadGarbageCollectionTime@{Cudd\_\-ReadGarbageCollectionTime}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Read\-Garbage\-Collection\-Time (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_653fa9231b3d68947521175de74f26b8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the time spent in garbage collection.]
+
+Description [Returns the number of milliseconds spent doing garbage collection since the manager was initialized.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Garbage\-Collections] 
+
+Definition at line 1567 of file cudd\-API.c.
+
+References Dd\-Manager::GCTime.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadGroupcheck@{Cudd\_\-ReadGroupcheck}}
+\index{Cudd_ReadGroupcheck@{Cudd\_\-ReadGroupcheck}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Cudd\_\-Aggregation\-Type} Cudd\_\-Read\-Groupcheck (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_8f2639c79f7b9c58367cbfc0f55ca3b5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the groupcheck parameter of the manager.]
+
+Description [Reads the groupcheck parameter of the manager. The groupcheck parameter determines the aggregation criterion in group sifting.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Groupcheck] 
+
+Definition at line 2177 of file cudd\-API.c.
+
+References Dd\-Manager::groupcheck.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadInvPerm@{Cudd\_\-ReadInvPerm}}
+\index{Cudd_ReadInvPerm@{Cudd\_\-ReadInvPerm}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Inv\-Perm (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_e16ce73ed2e5afcd0dd1c1db43884d2a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the index of the variable currently in the i-th position of the order.]
+
+Description [Returns the index of the variable currently in the i-th position of the order. If the index is CUDD\_\-MAXINDEX, returns CUDD\_\-MAXINDEX; otherwise, if the index is out of bounds returns -1.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Perm Cudd\_\-Read\-Inv\-Perm\-Zdd] 
+
+Definition at line 2057 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Dd\-Manager::invperm, and Dd\-Manager::size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadInvPermZdd@{Cudd\_\-ReadInvPermZdd}}
+\index{Cudd_ReadInvPermZdd@{Cudd\_\-ReadInvPermZdd}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Inv\-Perm\-Zdd (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_30f47219044e26a1be7699014dcc021a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the index of the ZDD variable currently in the i-th position of the order.]
+
+Description [Returns the index of the ZDD variable currently in the i-th position of the order. If the index is CUDD\_\-MAXINDEX, returns CUDD\_\-MAXINDEX; otherwise, if the index is out of bounds returns -1.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Perm Cudd\_\-Read\-Inv\-Perm\-Zdd] 
+
+Definition at line 2083 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Dd\-Manager::invperm\-Z, and Dd\-Manager::size\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadKeys@{Cudd\_\-ReadKeys}}
+\index{Cudd_ReadKeys@{Cudd\_\-ReadKeys}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Keys (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_5bc6805752cf0bc83080322d778759e6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of nodes in the unique table.]
+
+Description [Returns the total number of nodes currently in the unique table, including the dead nodes.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Dead] 
+
+Definition at line 1431 of file cudd\-API.c.
+
+References Dd\-Manager::keys.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadLogicZero@{Cudd\_\-ReadLogicZero}}
+\index{Cudd_ReadLogicZero@{Cudd\_\-ReadLogicZero}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Logic\-Zero (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_1dd42d8cb5c86659170103a3068e13a6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the logic zero constant of the manager.]
+
+Description [Returns the zero constant of the manager. The logic zero constant is the complement of the one constant, and is distinct from the arithmetic zero.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-One Cudd\_\-Read\-Zero] 
+
+Definition at line 933 of file cudd\-API.c.
+
+References Cudd\_\-Not, and DD\_\-ONE.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadLooseUpTo@{Cudd\_\-ReadLooseUpTo}}
+\index{Cudd_ReadLooseUpTo@{Cudd\_\-ReadLooseUpTo}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Loose\-Up\-To (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_b452b9f1bbcdb8bf49cbea25f6e8ed8d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the loose\-Up\-To parameter of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Loose\-Up\-To Cudd\_\-Read\-Min\-Hit Cudd\_\-Read\-Min\-Dead] 
+
+Definition at line 1170 of file cudd\-API.c.
+
+References Dd\-Manager::loose\-Up\-To.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMaxCache@{Cudd\_\-ReadMaxCache}}
+\index{Cudd_ReadMaxCache@{Cudd\_\-ReadMaxCache}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Max\-Cache (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_7dafbaafff7055890cce20fa791b2092}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the max\-Cache parameter of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Max\-Cache Cudd\_\-Read\-Max\-Cache] 
+
+Definition at line 1220 of file cudd\-API.c.
+
+References Dd\-Manager::max\-Cache.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMaxCacheHard@{Cudd\_\-ReadMaxCacheHard}}
+\index{Cudd_ReadMaxCacheHard@{Cudd\_\-ReadMaxCacheHard}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Max\-Cache\-Hard (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_cfac0e32bb4bcfe7f0035f4fff401a0e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the max\-Cache\-Hard parameter of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Max\-Cache\-Hard Cudd\_\-Read\-Max\-Cache] 
+
+Definition at line 1265 of file cudd\-API.c.
+
+References Dd\-Manager::max\-Cache\-Hard.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMaxGrowth@{Cudd\_\-ReadMaxGrowth}}
+\index{Cudd_ReadMaxGrowth@{Cudd\_\-ReadMaxGrowth}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Max\-Growth (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_23f3600540de47d20e85eb4036af6e49}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the max\-Growth parameter of the manager.]
+
+Description [Reads the max\-Growth parameter of the manager. This parameter determines how much the number of nodes can grow during sifting of a variable. Overall, sifting never increases the size of the decision diagrams. This parameter only refers to intermediate results. A lower value will speed up sifting, possibly at the expense of quality.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Max\-Growth] 
+
+Definition at line 1792 of file cudd\-API.c.
+
+References Dd\-Manager::max\-Growth.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMemoryInUse@{Cudd\_\-ReadMemoryInUse}}
+\index{Cudd_ReadMemoryInUse@{Cudd\_\-ReadMemoryInUse}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Read\-Memory\-In\-Use (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_2eefc3d88f42942ab253f56f60d90111}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the memory in use by the manager measured in bytes.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2619 of file cudd\-API.c.
+
+References Dd\-Manager::memused.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMinDead@{Cudd\_\-ReadMinDead}}
+\index{Cudd_ReadMinDead@{Cudd\_\-ReadMinDead}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Min\-Dead (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_ce82092e4e785b388c83f554daa23283}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the min\-Dead parameter of the manager.]
+
+Description [Reads the min\-Dead parameter of the manager. The min\-Dead parameter is used by the package to decide whether to collect garbage or resize a subtable of the unique table when the subtable becomes too full. The application can indirectly control the value of min\-Dead by setting the loose\-Up\-To parameter.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Dead Cudd\_\-Read\-Loose\-Up\-To Cudd\_\-Set\-Loose\-Up\-To] 
+
+Definition at line 1475 of file cudd\-API.c.
+
+References Dd\-Manager::min\-Dead.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMinHit@{Cudd\_\-ReadMinHit}}
+\index{Cudd_ReadMinHit@{Cudd\_\-ReadMinHit}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Min\-Hit (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_79695ef1e6f821d310f5613a6d8ba148}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the hit ratio that causes resizinig of the computed table.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Min\-Hit] 
+
+Definition at line 1121 of file cudd\-API.c.
+
+References Dd\-Manager::min\-Hit.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadMinusInfinity@{Cudd\_\-ReadMinusInfinity}}
+\index{Cudd_ReadMinusInfinity@{Cudd\_\-ReadMinusInfinity}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Minus\-Infinity (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_e0ff7f850bf0b84af8ea0779ec0800ac}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the minus-infinity constant from the manager.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 969 of file cudd\-API.c.
+
+References Dd\-Manager::minusinfinity.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadNodeCount@{Cudd\_\-ReadNodeCount}}
+\index{Cudd_ReadNodeCount@{Cudd\_\-ReadNodeCount}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Read\-Node\-Count (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_9ba2c88b8f70df51791c26ffde800fc7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reports the number of nodes in BDDs and ADDs.]
+
+Description [Reports the number of nodes in BDDs and ADDs. This number does not include the isolated projection functions and the unused constants. These nodes that are not counted are not part of the DDs manipulated by the application.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Peak\-Node\-Count Cudd\_\-zdd\-Read\-Node\-Count] 
+
+Definition at line 2845 of file cudd\-API.c.
+
+References DD\_\-MINUS\_\-INFINITY, DD\_\-PLUS\_\-INFINITY, DD\_\-ZERO, Dd\-Manager::dead, Dd\-Manager::keys, Dd\-Node::ref, Dd\-Manager::size, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-Std\-Post\-Reord\-Hook(), and Cudd\_\-Std\-Pre\-Reord\-Hook().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadNodesDropped@{Cudd\_\-ReadNodesDropped}}
+\index{Cudd_ReadNodesDropped@{Cudd\_\-ReadNodesDropped}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Nodes\-Dropped (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_e7e283a368a08c5ac96101ee7e9b525c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of nodes dropped.]
+
+Description [Returns the number of nodes killed by dereferencing if the keeping of this statistic is enabled; -1 otherwise. This statistic is enabled only if the package is compiled with DD\_\-STATS defined.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Nodes\-Freed] 
+
+Definition at line 1615 of file cudd\-API.c.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadNodesFreed@{Cudd\_\-ReadNodesFreed}}
+\index{Cudd_ReadNodesFreed@{Cudd\_\-ReadNodesFreed}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Nodes\-Freed (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_f525911b0006fddcbcf698a077b874cb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of nodes freed.]
+
+Description [Returns the number of nodes returned to the free list if the keeping of this statistic is enabled; -1 otherwise. This statistic is enabled only if the package is compiled with DD\_\-STATS defined.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Nodes\-Dropped] 
+
+Definition at line 1589 of file cudd\-API.c.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadNumberXovers@{Cudd\_\-ReadNumberXovers}}
+\index{Cudd_ReadNumberXovers@{Cudd\_\-ReadNumberXovers}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Number\-Xovers (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_2609fe9051be1a8ab6d305d38bfb5956}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the current number of crossovers used by the genetic algorithm for reordering.]
+
+Description [Reads the current number of crossovers used by the genetic algorithm for variable reordering. A larger number of crossovers will cause the genetic algorithm to take more time, but will generally produce better results. The default value is 0, in which case the package uses three times the number of variables as number of crossovers, with a maximum of 60.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Number\-Xovers] 
+
+Definition at line 2573 of file cudd\-API.c.
+
+References Dd\-Manager::number\-Xovers.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadOne@{Cudd\_\-ReadOne}}
+\index{Cudd_ReadOne@{Cudd\_\-ReadOne}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-One (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_2651c953d81570d3f4f794bcbef40afe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the one constant of the manager.]
+
+Description [Returns the one constant of the manager. The one constant is common to ADDs and BDDs.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Zero Cudd\_\-Read\-Logic\-Zero Cudd\_\-Read\-Zdd\-One] 
+
+Definition at line 862 of file cudd\-API.c.
+
+References Dd\-Manager::one.
+
+Referenced by Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), and cudd\-Subset\-Heavy\-Branch().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadPeakNodeCount@{Cudd\_\-ReadPeakNodeCount}}
+\index{Cudd_ReadPeakNodeCount@{Cudd\_\-ReadPeakNodeCount}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Read\-Peak\-Node\-Count (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_39633df05be731b6b145d65f83aed572}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reports the peak number of nodes.]
+
+Description [Reports the peak number of nodes. This number includes node on the free list. At the peak, the number of nodes on the free list is guaranteed to be less than DD\_\-MEM\_\-CHUNK.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Node\-Count Cudd\_\-Print\-Info] 
+
+Definition at line 2808 of file cudd\-API.c.
+
+References DD\_\-MEM\_\-CHUNK, Dd\-Manager::memory\-List, and scan.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadPerm@{Cudd\_\-ReadPerm}}
+\index{Cudd_ReadPerm@{Cudd\_\-ReadPerm}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Perm (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_acfa59899b792c9f47a612ceba42c976}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current position of the i-th variable in the order.]
+
+Description [Returns the current position of the i-th variable in the order. If the index is CUDD\_\-MAXINDEX, returns CUDD\_\-MAXINDEX; otherwise, if the index is out of bounds returns -1.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Inv\-Perm Cudd\_\-Read\-Perm\-Zdd] 
+
+Definition at line 2005 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Dd\-Manager::perm, and Dd\-Manager::size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadPermZdd@{Cudd\_\-ReadPermZdd}}
+\index{Cudd_ReadPermZdd@{Cudd\_\-ReadPermZdd}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Perm\-Zdd (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_965c64ce6822b03441ce7445e8187aa3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current position of the i-th ZDD variable in the order.]
+
+Description [Returns the current position of the i-th ZDD variable in the order. If the index is CUDD\_\-MAXINDEX, returns CUDD\_\-MAXINDEX; otherwise, if the index is out of bounds returns -1.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Inv\-Perm\-Zdd Cudd\_\-Read\-Perm] 
+
+Definition at line 2031 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Dd\-Manager::perm\-Z, and Dd\-Manager::size\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadPlusInfinity@{Cudd\_\-ReadPlusInfinity}}
+\index{Cudd_ReadPlusInfinity@{Cudd\_\-ReadPlusInfinity}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Plus\-Infinity (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_f581badbfb76ba5909f83482c47d743e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the plus-infinity constant from the manager.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 951 of file cudd\-API.c.
+
+References Dd\-Manager::plusinfinity.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadPopulationSize@{Cudd\_\-ReadPopulationSize}}
+\index{Cudd_ReadPopulationSize@{Cudd\_\-ReadPopulationSize}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Population\-Size (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_1e760e63a14cd28172b2371c8419b0d9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the current size of the population used by the genetic algorithm for reordering.]
+
+Description [Reads the current size of the population used by the genetic algorithm for variable reordering. A larger population size will cause the genetic algorithm to take more time, but will generally produce better results. The default value is 0, in which case the package uses three times the number of variables as population size, with a maximum of 120.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Population\-Size] 
+
+Definition at line 2520 of file cudd\-API.c.
+
+References Dd\-Manager::population\-Size.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadRecomb@{Cudd\_\-ReadRecomb}}
+\index{Cudd_ReadRecomb@{Cudd\_\-ReadRecomb}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Recomb (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_c305e7d5aaa2c3808db94795dc0a1150}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current value of the recombination parameter used in group sifting.]
+
+Description [Returns the current value of the recombination parameter used in group sifting. A larger (positive) value makes the aggregation of variables due to the second difference criterion more likely. A smaller (negative) value makes aggregation less likely.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Recomb] 
+
+Definition at line 2360 of file cudd\-API.c.
+
+References Dd\-Manager::recomb.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadReorderings@{Cudd\_\-ReadReorderings}}
+\index{Cudd_ReadReorderings@{Cudd\_\-ReadReorderings}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Reorderings (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_e9e9406f636370e6027a6f1caa09d3aa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of times reordering has occurred.]
+
+Description [Returns the number of times reordering has occurred in the manager. The number includes both the calls to Cudd\_\-Reduce\-Heap from the application program and those automatically performed by the package. However, calls that do not even initiate reordering are not counted. A call may not initiate reordering if there are fewer than minsize live nodes in the manager, or if CUDD\_\-REORDER\_\-NONE is specified as reordering method. The calls to Cudd\_\-Shuffle\-Heap are not counted.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Reduce\-Heap Cudd\_\-Read\-Reordering\-Time] 
+
+Definition at line 1501 of file cudd\-API.c.
+
+References Dd\-Manager::reorderings.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadReorderingTime@{Cudd\_\-ReadReorderingTime}}
+\index{Cudd_ReadReorderingTime@{Cudd\_\-ReadReorderingTime}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-Read\-Reordering\-Time (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_61141274ba36755e4c88a4c1597b9847}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the time spent in reordering.]
+
+Description [Returns the number of milliseconds spent reordering variables since the manager was initialized. The time spent in collecting garbage before reordering is included.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Reorderings] 
+
+Definition at line 1523 of file cudd\-API.c.
+
+References Dd\-Manager::reord\-Time.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadSiftMaxSwap@{Cudd\_\-ReadSiftMaxSwap}}
+\index{Cudd_ReadSiftMaxSwap@{Cudd\_\-ReadSiftMaxSwap}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Sift\-Max\-Swap (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_54fbfd8fa0597af542ad9dfa4eefa2da}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the sift\-Max\-Swap parameter of the manager.]
+
+Description [Reads the sift\-Max\-Swap parameter of the manager. This parameter gives the maximum number of swaps that will be attempted for each invocation of sifting. The real number of swaps may exceed the set limit because the package will always complete the sifting of the variable that causes the limit to be reached.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Sift\-Max\-Var Cudd\_\-Set\-Sift\-Max\-Swap] 
+
+Definition at line 1743 of file cudd\-API.c.
+
+References Dd\-Manager::sift\-Max\-Swap.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadSiftMaxVar@{Cudd\_\-ReadSiftMaxVar}}
+\index{Cudd_ReadSiftMaxVar@{Cudd\_\-ReadSiftMaxVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Sift\-Max\-Var (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_112841ed78d8f90d31ee879684775b51}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the sift\-Max\-Var parameter of the manager.]
+
+Description [Reads the sift\-Max\-Var parameter of the manager. This parameter gives the maximum number of variables that will be sifted for each invocation of sifting.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Sift\-Max\-Swap Cudd\_\-Set\-Sift\-Max\-Var] 
+
+Definition at line 1696 of file cudd\-API.c.
+
+References Dd\-Manager::sift\-Max\-Var.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadSize@{Cudd\_\-ReadSize}}
+\index{Cudd_ReadSize@{Cudd\_\-ReadSize}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Size (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_b1647f3f86f4e555bea35673f9539f94}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of BDD variables in existance.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Zdd\-Size] 
+
+Definition at line 1315 of file cudd\-API.c.
+
+References Dd\-Manager::size.
+
+Referenced by cudd\-Subset\-Short\-Paths().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadSlots@{Cudd\_\-ReadSlots}}
+\index{Cudd_ReadSlots@{Cudd\_\-ReadSlots}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Read\-Slots (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_3787560300153655851b4fe3c7646b0c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the total number of slots of the unique table.]
+
+Description [Returns the total number of slots of the unique table. This number ismainly for diagnostic purposes.]
+
+Side\-Effects [None] 
+
+Definition at line 1354 of file cudd\-API.c.
+
+References Dd\-Manager::slots.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadSymmviolation@{Cudd\_\-ReadSymmviolation}}
+\index{Cudd_ReadSymmviolation@{Cudd\_\-ReadSymmviolation}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Symmviolation (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_3028ccbe6fb46efd6565d0f4aab78738}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the current value of the symmviolation parameter used in group sifting.]
+
+Description [Returns the current value of the symmviolation parameter. This parameter is used in group sifting to decide how many violations to the symmetry conditions {\tt f10 = f01} or {\tt f11 = f00} are tolerable when checking for aggregation due to extended symmetry. The value should be between 0 and 100. A small value causes fewer variables to be aggregated. The default value is 0.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Symmviolation] 
+
+Definition at line 2413 of file cudd\-API.c.
+
+References Dd\-Manager::symmviolation.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadTree@{Cudd\_\-ReadTree}}
+\index{Cudd_ReadTree@{Cudd\_\-ReadTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Cudd\_\-Read\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_6ee8468f5b7fe67a0f609412e211632b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Tree Cudd\_\-Free\-Tree Cudd\_\-Read\-Zdd\-Tree] 
+
+Definition at line 1837 of file cudd\-API.c.
+
+References Dd\-Manager::tree.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadUniqueLinks@{Cudd\_\-ReadUniqueLinks}}
+\index{Cudd_ReadUniqueLinks@{Cudd\_\-ReadUniqueLinks}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Unique\-Links (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_aaa1d598d1d5830c72b33aca86e511c1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of links followed in the unique table.]
+
+Description [Returns the number of links followed during look-ups in the unique table if the keeping of this statistic is enabled; -1 otherwise. If an item is found in the first position of its collision list, the number of links followed is taken to be 0. If it is in second position, the number of links is 1, and so on. This statistic is enabled only if the package is compiled with DD\_\-UNIQUE\_\-PROFILE defined.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Unique\-Look\-Ups] 
+
+Definition at line 1670 of file cudd\-API.c.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadUniqueLookUps@{Cudd\_\-ReadUniqueLookUps}}
+\index{Cudd_ReadUniqueLookUps@{Cudd\_\-ReadUniqueLookUps}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Unique\-Look\-Ups (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_cebf224e24889082c229d56db1f982f3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of look-ups in the unique table.]
+
+Description [Returns the number of look-ups in the unique table if the keeping of this statistic is enabled; -1 otherwise. This statistic is enabled only if the package is compiled with DD\_\-UNIQUE\_\-PROFILE defined.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Unique\-Links] 
+
+Definition at line 1641 of file cudd\-API.c.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadUsedSlots@{Cudd\_\-ReadUsedSlots}}
+\index{Cudd_ReadUsedSlots@{Cudd\_\-ReadUsedSlots}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double Cudd\_\-Read\-Used\-Slots (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_0941cb7338ba1a71f3451f4c2a747093}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads the fraction of used slots in the unique table.]
+
+Description [Reads the fraction of used slots in the unique table. The unused slots are those in which no valid data is stored. Garbage collection, variable reordering, and subtable resizing may cause used slots to become unused.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Slots] 
+
+Definition at line 1377 of file cudd\-API.c.
+
+References Dd\-Gen::node, Dd\-Subtable::nodelist, Dd\-Manager::size, size, Dd\-Manager::size\-Z, Dd\-Manager::slots, Dd\-Manager::subtables, and Dd\-Manager::subtable\-Z.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadVars@{Cudd\_\-ReadVars}}
+\index{Cudd_ReadVars@{Cudd\_\-ReadVars}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Vars (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_44d8f64c98953fd110d0e5146bcadaca}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the i-th element of the vars array.]
+
+Description [Returns the i-th element of the vars array if it falls within the array bounds; NULL otherwise. If i is the index of an existing variable, this function produces the same result as Cudd\_\-bdd\-Ith\-Var. However, if the i-th var does not exist yet, Cudd\_\-bdd\-Ith\-Var will create it, whereas Cudd\_\-Read\-Vars will not.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ith\-Var] 
+
+Definition at line 2110 of file cudd\-API.c.
+
+References Dd\-Manager::size, and Dd\-Manager::vars.
+
+Referenced by Build\-Subset\-Bdd().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadZddOne@{Cudd\_\-ReadZddOne}}
+\index{Cudd_ReadZddOne@{Cudd\_\-ReadZddOne}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Zdd\-One (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_d6d6950021b06a3bf4a6bcd05b1753e7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the ZDD for the constant 1 function.]
+
+Description [Returns the ZDD for the constant 1 function. The representation of the constant 1 function as a ZDD depends on how many variables it (nominally) depends on. The index of the topmost variable in the support is given as argument {\tt i}.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-One] 
+
+Definition at line 885 of file cudd\-API.c.
+
+References DD\_\-ONE, and Dd\-Manager::univ.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadZddSize@{Cudd\_\-ReadZddSize}}
+\index{Cudd_ReadZddSize@{Cudd\_\-ReadZddSize}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Zdd\-Size (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_82a5d45fa3fb62aa72a3aa280c563f9d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the number of ZDD variables in existance.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Size] 
+
+Definition at line 1335 of file cudd\-API.c.
+
+References Dd\-Manager::size\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadZddTree@{Cudd\_\-ReadZddTree}}
+\index{Cudd_ReadZddTree@{Cudd\_\-ReadZddTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Cudd\_\-Read\-Zdd\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_d3d3dbe0fa509a7f70691dcb6d8726ad}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Zdd\-Tree Cudd\_\-Free\-Zdd\-Tree Cudd\_\-Read\-Tree] 
+
+Definition at line 1909 of file cudd\-API.c.
+
+References Dd\-Manager::tree\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReadZero@{Cudd\_\-ReadZero}}
+\index{Cudd_ReadZero@{Cudd\_\-ReadZero}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Read\-Zero (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_92900f3320df460a72eacc4ed801d69e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the zero constant of the manager.]
+
+Description [Returns the zero constant of the manager. The zero constant is the arithmetic zero, rather than the logic zero. The latter is the complement of the one constant.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-One Cudd\_\-Read\-Logic\-Zero] 
+
+Definition at line 911 of file cudd\-API.c.
+
+References DD\_\-ZERO.\index{cuddAPI.c@{cudd\-API.c}!Cudd_RemoveHook@{Cudd\_\-RemoveHook}}
+\index{Cudd_RemoveHook@{Cudd\_\-RemoveHook}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Remove\-Hook (\bf{Dd\-Manager} $\ast$ {\em dd}, int($\ast$)(\bf{Dd\-Manager} $\ast$, void $\ast$) {\em f}, \bf{Cudd\_\-Hook\-Type} {\em where})}\label{cuddAPI_8c_38fd70faa255ec309bbb0eabc8fe1741}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Removes a function from a hook.]
+
+Description [Removes a function from a hook. A hook is a list of application-provided functions called on certain occasions by the package. Returns 1 if successful; 0 the function was not in the list.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Add\-Hook] 
+
+Definition at line 2966 of file cudd\-API.c.
+
+References CUDD\_\-POST\_\-GC\_\-HOOK, CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-GC\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, FREE, Dd\-Hook::next, Dd\-Manager::post\-GCHook, Dd\-Manager::post\-Reordering\-Hook, Dd\-Manager::pre\-GCHook, and Dd\-Manager::pre\-Reordering\-Hook.
+
+Referenced by Cudd\_\-Disable\-Reordering\-Reporting(), and cudd\-Free\-Table().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReorderingReporting@{Cudd\_\-ReorderingReporting}}
+\index{Cudd_ReorderingReporting@{Cudd\_\-ReorderingReporting}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Reordering\-Reporting (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_4a634a339969d6d84e3db858f3f77be4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns 1 if reporting of reordering stats is enabled.]
+
+Description [Returns 1 if reporting of reordering stats is enabled; 0 otherwise.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Enable\-Reordering\-Reporting Cudd\_\-Disable\-Reordering\-Reporting] 
+
+Definition at line 3242 of file cudd\-API.c.
+
+References Cudd\_\-Is\-In\-Hook(), CUDD\_\-PRE\_\-REORDERING\_\-HOOK, and Cudd\_\-Std\-Pre\-Reord\-Hook().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReorderingStatus@{Cudd\_\-ReorderingStatus}}
+\index{Cudd_ReorderingStatus@{Cudd\_\-ReorderingStatus}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Reordering\-Status (\bf{Dd\-Manager} $\ast$ {\em unique}, \bf{Cudd\_\-Reordering\-Type} $\ast$ {\em method})}\label{cuddAPI_8c_3806c2327487b3cea3c7ffff75aead83}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reports the status of automatic dynamic reordering of BDDs and ADDs.]
+
+Description [Reports the status of automatic dynamic reordering of BDDs and ADDs. Parameter method is set to the reordering method currently selected. Returns 1 if automatic reordering is enabled; 0 otherwise.]
+
+Side\-Effects [Parameter method is set to the reordering method currently selected.]
+
+See\-Also [Cudd\_\-Autodyn\-Enable Cudd\_\-Autodyn\-Disable Cudd\_\-Reordering\-Status\-Zdd] 
+
+Definition at line 610 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn, and Dd\-Manager::auto\-Method.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_ReorderingStatusZdd@{Cudd\_\-ReorderingStatusZdd}}
+\index{Cudd_ReorderingStatusZdd@{Cudd\_\-ReorderingStatusZdd}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Reordering\-Status\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, \bf{Cudd\_\-Reordering\-Type} $\ast$ {\em method})}\label{cuddAPI_8c_c6f65c44244489bfbb37137929baf0cd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reports the status of automatic dynamic reordering of ZDDs.]
+
+Description [Reports the status of automatic dynamic reordering of ZDDs. Parameter method is set to the ZDD reordering method currently selected. Returns 1 if automatic reordering is enabled; 0 otherwise.]
+
+Side\-Effects [Parameter method is set to the ZDD reordering method currently selected.]
+
+See\-Also [Cudd\_\-Autodyn\-Enable\-Zdd Cudd\_\-Autodyn\-Disable\-Zdd Cudd\_\-Reordering\-Status] 
+
+Definition at line 687 of file cudd\-API.c.
+
+References Dd\-Manager::auto\-Dyn\-Z, and Dd\-Manager::auto\-Method\-Z.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetArcviolation@{Cudd\_\-SetArcviolation}}
+\index{Cudd_SetArcviolation@{Cudd\_\-SetArcviolation}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Arcviolation (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em arcviolation})}\label{cuddAPI_8c_3064405f352a9d93a6ee16cfa5d2512c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the value of the arcviolation parameter used in group sifting.]
+
+Description [Sets the value of the arcviolation parameter. This parameter is used in group sifting to decide how many arcs into {\tt y} not coming from {\tt x} are tolerable when checking for aggregation due to extended symmetry. The value should be between 0 and 100. A small value causes fewer variables to be aggregated. The default value is 0.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Arcviolation] 
+
+Definition at line 2493 of file cudd\-API.c.
+
+References Dd\-Manager::arcviolation.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetBackground@{Cudd\_\-SetBackground}}
+\index{Cudd_SetBackground@{Cudd\_\-SetBackground}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Background (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em bck})}\label{cuddAPI_8c_3792749a2a10045b60d2a3d99d99928e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the background constant of the manager.]
+
+Description [Sets the background constant of the manager. It assumes that the \doxyref{Dd\-Node}{p.}{structDdNode} pointer bck is already referenced.]
+
+Side\-Effects [None] 
+
+Definition at line 1006 of file cudd\-API.c.
+
+References Dd\-Manager::background.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetEpsilon@{Cudd\_\-SetEpsilon}}
+\index{Cudd_SetEpsilon@{Cudd\_\-SetEpsilon}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Epsilon (\bf{Dd\-Manager} $\ast$ {\em dd}, CUDD\_\-VALUE\_\-TYPE {\em ep})}\label{cuddAPI_8c_30ef132c1f56bdb0e26efc81fa695cf3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the epsilon parameter of the manager to ep.]
+
+Description [Sets the epsilon parameter of the manager to ep. The epsilon parameter control the comparison between floating point numbers.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Epsilon] 
+
+Definition at line 2154 of file cudd\-API.c.
+
+References Dd\-Manager::epsilon.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetGroupcheck@{Cudd\_\-SetGroupcheck}}
+\index{Cudd_SetGroupcheck@{Cudd\_\-SetGroupcheck}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Groupcheck (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Cudd\_\-Aggregation\-Type} {\em gc})}\label{cuddAPI_8c_ee7e7fa94656ed131aa67ca1ea15a031}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the parameter groupcheck of the manager to gc.]
+
+Description [Sets the parameter groupcheck of the manager to gc. The groupcheck parameter determines the aggregation criterion in group sifting.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Group\-Check] 
+
+Definition at line 2199 of file cudd\-API.c.
+
+References Dd\-Manager::groupcheck.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetLooseUpTo@{Cudd\_\-SetLooseUpTo}}
+\index{Cudd_SetLooseUpTo@{Cudd\_\-SetLooseUpTo}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Loose\-Up\-To (\bf{Dd\-Manager} $\ast$ {\em dd}, unsigned int {\em lut})}\label{cuddAPI_8c_1952bb97db9782bcf607d169c842b7ce}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the loose\-Up\-To parameter of the manager.]
+
+Description [Sets the loose\-Up\-To parameter of the manager. This parameter of the manager controls the threshold beyond which no fast growth of the unique table is allowed. The threshold is given as a number of slots. If the value passed to this function is 0, the function determines a suitable value based on the available memory.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Loose\-Up\-To Cudd\_\-Set\-Min\-Hit] 
+
+Definition at line 1194 of file cudd\-API.c.
+
+References DD\_\-MAX\_\-LOOSE\_\-FRACTION, get\-Soft\-Data\-Limit(), and Dd\-Manager::loose\-Up\-To.
+
+Referenced by Cudd\_\-Init(), and cudd\-Init\-Table().\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetMaxCache@{Cudd\_\-SetMaxCache}}
+\index{Cudd_SetMaxCache@{Cudd\_\-SetMaxCache}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Max\-Cache (\bf{Dd\-Manager} $\ast$ {\em dd}, unsigned int {\em mc})}\label{cuddAPI_8c_266266da3edc0b910da8140013a4e63a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the max\-Cache parameter of the manager.]
+
+Description [Sets the max\-Cache parameter of the manager. This parameter is normally automatically determined by the package based on the total number of nodes and the parameter max\-Cache\-Hard. Applications should normally change max\-Cache\-Hard rather than max\-Cache if they want to explicitly control the trade-off of memory versus speed.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Max\-Cache Cudd\_\-Set\-Max\-Cache\-Hard] 
+
+Definition at line 1244 of file cudd\-API.c.
+
+References Dd\-Manager::max\-Cache.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetMaxCacheHard@{Cudd\_\-SetMaxCacheHard}}
+\index{Cudd_SetMaxCacheHard@{Cudd\_\-SetMaxCacheHard}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Max\-Cache\-Hard (\bf{Dd\-Manager} $\ast$ {\em dd}, unsigned int {\em mc})}\label{cuddAPI_8c_4ced83212c4c45f94d8957e3fab485c5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the max\-Cache\-Hard parameter of the manager.]
+
+Description [Sets the max\-Cache\-Hard parameter of the manager. The cache cannot grow larger than max\-Cache\-Hard entries. This parameter allows an application to control the trade-off of memory versus speed. If the value passed to this function is 0, the function determines a suitable maximum cache size based on the available memory.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Max\-Cache\-Hard Cudd\_\-Set\-Max\-Cache] 
+
+Definition at line 1289 of file cudd\-API.c.
+
+References DD\_\-MAX\_\-CACHE\_\-FRACTION, get\-Soft\-Data\-Limit(), and Dd\-Manager::max\-Cache\-Hard.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetMaxGrowth@{Cudd\_\-SetMaxGrowth}}
+\index{Cudd_SetMaxGrowth@{Cudd\_\-SetMaxGrowth}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Max\-Growth (\bf{Dd\-Manager} $\ast$ {\em dd}, double {\em mg})}\label{cuddAPI_8c_a3a621a6133ce4203b8bfa351d5de4ea}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the max\-Growth parameter of the manager.]
+
+Description [Sets the max\-Growth parameter of the manager. This parameter determines how much the number of nodes can grow during sifting of a variable. Overall, sifting never increases the size of the decision diagrams. This parameter only refers to intermediate results. A lower value will speed up sifting, possibly at the expense of quality.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Max\-Growth] 
+
+Definition at line 1816 of file cudd\-API.c.
+
+References Dd\-Manager::max\-Growth.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetMinHit@{Cudd\_\-SetMinHit}}
+\index{Cudd_SetMinHit@{Cudd\_\-SetMinHit}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Min\-Hit (\bf{Dd\-Manager} $\ast$ {\em dd}, unsigned int {\em hr})}\label{cuddAPI_8c_e96f3e2036a77ab8c1318e607dea232b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the hit ratio that causes resizinig of the computed table.]
+
+Description [Sets the min\-Hit parameter of the manager. This parameter controls the resizing of the computed table. If the hit ratio is larger than the specified value, and the cache is not already too large, then its size is doubled.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Min\-Hit] 
+
+Definition at line 1147 of file cudd\-API.c.
+
+References Dd\-Manager::min\-Hit.
+
+Referenced by cudd\-Init\-Cache().\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetNumberXovers@{Cudd\_\-SetNumberXovers}}
+\index{Cudd_SetNumberXovers@{Cudd\_\-SetNumberXovers}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Number\-Xovers (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em number\-Xovers})}\label{cuddAPI_8c_e8b2c48e26b4178cf6536f4ce253d9b1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the number of crossovers used by the genetic algorithm for reordering.]
+
+Description [Sets the number of crossovers used by the genetic algorithm for variable reordering. A larger number of crossovers will cause the genetic algorithm to take more time, but will generally produce better results. The default value is 0, in which case the package uses three times the number of variables as number of crossovers, with a maximum of 60.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Number\-Xovers] 
+
+Definition at line 2599 of file cudd\-API.c.
+
+References Dd\-Manager::number\-Xovers.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetPopulationSize@{Cudd\_\-SetPopulationSize}}
+\index{Cudd_SetPopulationSize@{Cudd\_\-SetPopulationSize}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Population\-Size (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em population\-Size})}\label{cuddAPI_8c_bbdf2ca87a414bb36bfbb6247a8915ec}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the size of the population used by the genetic algorithm for reordering.]
+
+Description [Sets the size of the population used by the genetic algorithm for variable reordering. A larger population size will cause the genetic algorithm to take more time, but will generally produce better results. The default value is 0, in which case the package uses three times the number of variables as population size, with a maximum of 120.]
+
+Side\-Effects [Changes the manager.]
+
+See\-Also [Cudd\_\-Read\-Population\-Size] 
+
+Definition at line 2546 of file cudd\-API.c.
+
+References Dd\-Manager::population\-Size.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetRecomb@{Cudd\_\-SetRecomb}}
+\index{Cudd_SetRecomb@{Cudd\_\-SetRecomb}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Recomb (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em recomb})}\label{cuddAPI_8c_c68f934b27bc1d1ea947f410c8aedd36}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the value of the recombination parameter used in group sifting.]
+
+Description [Sets the value of the recombination parameter used in group sifting. A larger (positive) value makes the aggregation of variables due to the second difference criterion more likely. A smaller (negative) value makes aggregation less likely. The default value is 0.]
+
+Side\-Effects [Changes the manager.]
+
+See\-Also [Cudd\_\-Read\-Recomb] 
+
+Definition at line 2385 of file cudd\-API.c.
+
+References Dd\-Manager::recomb.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetSiftMaxSwap@{Cudd\_\-SetSiftMaxSwap}}
+\index{Cudd_SetSiftMaxSwap@{Cudd\_\-SetSiftMaxSwap}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Sift\-Max\-Swap (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em sms})}\label{cuddAPI_8c_40246082da9de77243088f935be6e2e6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the sift\-Max\-Swap parameter of the manager.]
+
+Description [Sets the sift\-Max\-Swap parameter of the manager. This parameter gives the maximum number of swaps that will be attempted for each invocation of sifting. The real number of swaps may exceed the set limit because the package will always complete the sifting of the variable that causes the limit to be reached.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Sift\-Max\-Var Cudd\_\-Read\-Sift\-Max\-Swap] 
+
+Definition at line 1767 of file cudd\-API.c.
+
+References Dd\-Manager::sift\-Max\-Swap.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetSiftMaxVar@{Cudd\_\-SetSiftMaxVar}}
+\index{Cudd_SetSiftMaxVar@{Cudd\_\-SetSiftMaxVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Sift\-Max\-Var (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em smv})}\label{cuddAPI_8c_23ad3e7bf12607f58756e15f2b1251aa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the sift\-Max\-Var parameter of the manager.]
+
+Description [Sets the sift\-Max\-Var parameter of the manager. This parameter gives the maximum number of variables that will be sifted for each invocation of sifting.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Set\-Sift\-Max\-Swap Cudd\_\-Read\-Sift\-Max\-Var] 
+
+Definition at line 1718 of file cudd\-API.c.
+
+References Dd\-Manager::sift\-Max\-Var.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetSymmviolation@{Cudd\_\-SetSymmviolation}}
+\index{Cudd_SetSymmviolation@{Cudd\_\-SetSymmviolation}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Symmviolation (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em symmviolation})}\label{cuddAPI_8c_5bb84b628160417172cb44e22e2067b7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the value of the symmviolation parameter used in group sifting.]
+
+Description [Sets the value of the symmviolation parameter. This parameter is used in group sifting to decide how many violations to the symmetry conditions {\tt f10 = f01} or {\tt f11 = f00} are tolerable when checking for aggregation due to extended symmetry. The value should be between 0 and 100. A small value causes fewer variables to be aggregated. The default value is 0.]
+
+Side\-Effects [Changes the manager.]
+
+See\-Also [Cudd\_\-Read\-Symmviolation] 
+
+Definition at line 2440 of file cudd\-API.c.
+
+References Dd\-Manager::symmviolation.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetTree@{Cudd\_\-SetTree}}
+\index{Cudd_SetTree@{Cudd\_\-SetTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Mtr\-Node} $\ast$ {\em tree})}\label{cuddAPI_8c_2aa3827dfffcc29254520628b15aab55}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Free\-Tree Cudd\_\-Read\-Tree Cudd\_\-Set\-Zdd\-Tree] 
+
+Definition at line 1857 of file cudd\-API.c.
+
+References fix\-Var\-Tree(), Mtr\_\-Free\-Tree(), Dd\-Manager::perm, Dd\-Manager::size, and Dd\-Manager::tree.\index{cuddAPI.c@{cudd\-API.c}!Cudd_SetZddTree@{Cudd\_\-SetZddTree}}
+\index{Cudd_SetZddTree@{Cudd\_\-SetZddTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Set\-Zdd\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Mtr\-Node} $\ast$ {\em tree})}\label{cuddAPI_8c_2cdbbc9e78a4f0684a118f304eb1a455}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets the ZDD variable group tree of the manager.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Free\-Zdd\-Tree Cudd\_\-Read\-Zdd\-Tree Cudd\_\-Set\-Tree] 
+
+Definition at line 1929 of file cudd\-API.c.
+
+References fix\-Var\-Tree(), Mtr\_\-Free\-Tree(), Dd\-Manager::perm\-Z, Dd\-Manager::size\-Z, and Dd\-Manager::tree\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_StdPostReordHook@{Cudd\_\-StdPostReordHook}}
+\index{Cudd_StdPostReordHook@{Cudd\_\-StdPostReordHook}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Std\-Post\-Reord\-Hook (\bf{Dd\-Manager} $\ast$ {\em dd}, void $\ast$ {\em data})}\label{cuddAPI_8c_d3f0d04e8fca2fe9061bafebd806ef51}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sample hook function to call after reordering.]
+
+Description [Sample hook function to call after reordering. Prints on stdout final size and reordering time. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Std\-Pre\-Reord\-Hook] 
+
+Definition at line 3156 of file cudd\-API.c.
+
+References Cudd\_\-Read\-Node\-Count(), and util\_\-cpu\_\-time().
+
+Referenced by Cudd\_\-Disable\-Reordering\-Reporting(), and Cudd\_\-Enable\-Reordering\-Reporting().\index{cuddAPI.c@{cudd\-API.c}!Cudd_StdPreReordHook@{Cudd\_\-StdPreReordHook}}
+\index{Cudd_StdPreReordHook@{Cudd\_\-StdPreReordHook}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Std\-Pre\-Reord\-Hook (\bf{Dd\-Manager} $\ast$ {\em dd}, void $\ast$ {\em data})}\label{cuddAPI_8c_9a744a313f94c49615288b4c635dbfb3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sample hook function to call before reordering.]
+
+Description [Sample hook function to call before reordering. Prints on stdout reordering method and initial size. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Std\-Post\-Reord\-Hook] 
+
+Definition at line 3068 of file cudd\-API.c.
+
+References Cudd\_\-Read\-Node\-Count(), CUDD\_\-REORDER\_\-ANNEALING, CUDD\_\-REORDER\_\-EXACT, CUDD\_\-REORDER\_\-GENETIC, CUDD\_\-REORDER\_\-GROUP\_\-SIFT, CUDD\_\-REORDER\_\-GROUP\_\-SIFT\_\-CONV, CUDD\_\-REORDER\_\-LINEAR, CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE, CUDD\_\-REORDER\_\-RANDOM, CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT, CUDD\_\-REORDER\_\-SIFT, CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE, CUDD\_\-REORDER\_\-SYMM\_\-SIFT, CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV, CUDD\_\-REORDER\_\-WINDOW2, CUDD\_\-REORDER\_\-WINDOW2\_\-CONV, CUDD\_\-REORDER\_\-WINDOW3, CUDD\_\-REORDER\_\-WINDOW3\_\-CONV, CUDD\_\-REORDER\_\-WINDOW4, and CUDD\_\-REORDER\_\-WINDOW4\_\-CONV.
+
+Referenced by Cudd\_\-Disable\-Reordering\-Reporting(), Cudd\_\-Enable\-Reordering\-Reporting(), and Cudd\_\-Reordering\-Reporting().\index{cuddAPI.c@{cudd\-API.c}!Cudd_TurnOffCountDead@{Cudd\_\-TurnOffCountDead}}
+\index{Cudd_TurnOffCountDead@{Cudd\_\-TurnOffCountDead}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Turn\-Off\-Count\-Dead (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_5b822894a35380ffca9e555286213484}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Causes the dead nodes not to be counted towards triggering reordering.]
+
+Description [Causes the dead nodes not to be counted towards triggering reordering. This causes less frequent reorderings. By default dead nodes are not counted. Therefore there is no need to call this function unless Cudd\_\-Turn\-On\-Count\-Dead has been previously called.]
+
+Side\-Effects [Changes the manager.]
+
+See\-Also [Cudd\_\-Turn\-On\-Count\-Dead Cudd\_\-Dead\-Are\-Counted] 
+
+Definition at line 2336 of file cudd\-API.c.
+
+References Dd\-Manager::count\-Dead.\index{cuddAPI.c@{cudd\-API.c}!Cudd_TurnOnCountDead@{Cudd\_\-TurnOnCountDead}}
+\index{Cudd_TurnOnCountDead@{Cudd\_\-TurnOnCountDead}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Turn\-On\-Count\-Dead (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_f0b407453f68498df9b9783f88401cf5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Causes the dead nodes to be counted towards triggering reordering.]
+
+Description [Causes the dead nodes to be counted towards triggering reordering. This causes more frequent reorderings. By default dead nodes are not counted.]
+
+Side\-Effects [Changes the manager.]
+
+See\-Also [Cudd\_\-Turn\-Off\-Count\-Dead Cudd\_\-Dead\-Are\-Counted] 
+
+Definition at line 2311 of file cudd\-API.c.
+
+References Dd\-Manager::count\-Dead.\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddIthVar@{Cudd\_\-zddIthVar}}
+\index{Cudd_zddIthVar@{Cudd\_\-zddIthVar}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Ith\-Var (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em i})}\label{cuddAPI_8c_cbf8017813ae9a60790ae4f8a445800d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the ZDD variable with index i.]
+
+Description [Retrieves the ZDD variable with index i if it already exists, or creates a new ZDD variable. Returns a pointer to the variable if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Ith\-Var Cudd\_\-add\-Ith\-Var] 
+
+Definition at line 377 of file cudd\-API.c.
+
+References CUDD\_\-MAXINDEX, Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::invperm\-Z, Dd\-Manager::perm\-Z, Dd\-Manager::reordered, Dd\-Manager::size\-Z, and Dd\-Manager::univ.\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddReadNodeCount@{Cudd\_\-zddReadNodeCount}}
+\index{Cudd_zddReadNodeCount@{Cudd\_\-zddReadNodeCount}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long Cudd\_\-zdd\-Read\-Node\-Count (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddAPI_8c_4c015c746d9c71fb9b57249f2a4ccd72}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reports the number of nodes in ZDDs.]
+
+Description [Reports the number of nodes in ZDDs. This number always includes the two constants 1 and 0.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Read\-Peak\-Node\-Count Cudd\_\-Read\-Node\-Count] 
+
+Definition at line 2881 of file cudd\-API.c.
+
+References Dd\-Manager::dead\-Z, and Dd\-Manager::keys\-Z.\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddRealignDisable@{Cudd\_\-zddRealignDisable}}
+\index{Cudd_zddRealignDisable@{Cudd\_\-zddRealignDisable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-zdd\-Realign\-Disable (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_fea01466660ca226539a66a014a4da00}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disables realignment of ZDD order to BDD order.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Realign\-Enable Cudd\_\-zdd\-Realignment\-Enabled Cudd\_\-bdd\-Realign\-Enable Cudd\_\-bdd\-Realignment\-Enabled] 
+
+Definition at line 764 of file cudd\-API.c.
+
+References Dd\-Manager::realign.\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddRealignEnable@{Cudd\_\-zddRealignEnable}}
+\index{Cudd_zddRealignEnable@{Cudd\_\-zddRealignEnable}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-zdd\-Realign\-Enable (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_a57aff1886a1fea0cb8b5bf8d66cf50e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Enables realignment of ZDD order to BDD order.]
+
+Description [Enables realignment of the ZDD variable order to the BDD variable order after the BDDs and ADDs have been reordered. The number of ZDD variables must be a multiple of the number of BDD variables for realignment to make sense. If this condition is not met, Cudd\_\-Reduce\-Heap will return 0. Let {\tt M} be the ratio of the two numbers. For the purpose of realignment, the ZDD variables from {\tt M$\ast$i} to {\tt (M+1)$\ast$i-1} are reagarded as corresponding to BDD variable {\tt i}. Realignment is initially disabled.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Reduce\-Heap Cudd\_\-zdd\-Realign\-Disable Cudd\_\-zdd\-Realignment\-Enabled Cudd\_\-bdd\-Realign\-Disable Cudd\_\-bdd\-Realignment\-Enabled] 
+
+Definition at line 742 of file cudd\-API.c.
+
+References Dd\-Manager::realign.\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddRealignmentEnabled@{Cudd\_\-zddRealignmentEnabled}}
+\index{Cudd_zddRealignmentEnabled@{Cudd\_\-zddRealignmentEnabled}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-zdd\-Realignment\-Enabled (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddAPI_8c_34225975eef55170213a0a9efed5a891}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tells whether the realignment of ZDD order to BDD order is enabled.]
+
+Description [Returns 1 if the realignment of ZDD order to BDD order is enabled; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Realign\-Enable Cudd\_\-zdd\-Realign\-Disable Cudd\_\-bdd\-Realign\-Enable Cudd\_\-bdd\-Realign\-Disable] 
+
+Definition at line 712 of file cudd\-API.c.
+
+References Dd\-Manager::realign.
+
+Referenced by Cudd\_\-Print\-Info().\index{cuddAPI.c@{cudd\-API.c}!Cudd_zddVarsFromBddVars@{Cudd\_\-zddVarsFromBddVars}}
+\index{Cudd_zddVarsFromBddVars@{Cudd\_\-zddVarsFromBddVars}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em multiplicity})}\label{cuddAPI_8c_45d898e3087539ceaaf5ff86aa62c471}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates one or more ZDD variables for each BDD variable.]
+
+Description [Creates one or more ZDD variables for each BDD variable. If some ZDD variables already exist, only the missing variables are created. Parameter multiplicity allows the caller to control how many variables are created for each BDD variable in existence. For instance, if ZDDs are used to represent covers, two ZDD variables are required for each BDD variable. The order of the BDD variables is transferred to the ZDD variables. If a variable group tree exists for the BDD variables, a corresponding ZDD variable group tree is created by expanding the BDD variable tree. In any case, the ZDD variables derived from the same BDD variable are merged in a ZDD variable group. If a ZDD variable group tree exists, it is freed. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-New\-Var Cudd\_\-bdd\-Ith\-Var Cudd\_\-bdd\-New\-Var\-At\-Level] 
+
+Definition at line 448 of file cudd\-API.c.
+
+References ALLOC, Cudd\_\-Free\-Zdd\-Tree(), Cudd\_\-Make\-Zdd\-Tree\-Node(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-zdd\-Shuffle\-Heap(), cudd\-Resize\-Table\-Zdd(), Dd\-Manager::error\-Code, FREE, Mtr\-Node::index, Dd\-Node::index, Dd\-Manager::invperm, Dd\-Manager::invperm\-Z, Mtr\_\-Copy\-Tree(), MTR\_\-DEFAULT, Mtr\_\-Init\-Group\-Tree(), Dd\-Gen::node, Dd\-Manager::perm, Dd\-Manager::perm\-Z, Dd\-Manager::size, Dd\-Manager::size\-Z, Dd\-Manager::tree, Dd\-Manager::tree\-Z, and Dd\-Manager::univ.\index{cuddAPI.c@{cudd\-API.c}!fixVarTree@{fixVarTree}}
+\index{fixVarTree@{fixVarTree}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void fix\-Var\-Tree (\bf{Mtr\-Node} $\ast$ {\em treenode}, int $\ast$ {\em perm}, int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{cuddAPI_8c_9a7571d0ca349667f3912593b8a7d8d1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Fixes a variable group tree.]
+
+Description []
+
+Side\-Effects [Changes the variable group tree.]
+
+See\-Also [] 
+
+Definition at line 3312 of file cudd\-API.c.
+
+References Mtr\-Node::child, Mtr\-Node::index, Mtr\-Node::low, and Mtr\-Node::younger.
+
+Referenced by Cudd\_\-Set\-Tree(), and Cudd\_\-Set\-Zdd\-Tree().
+
+\subsection{Variable Documentation}
+\index{cuddAPI.c@{cudd\-API.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddAPI.c@{cudd\-API.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-API.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddAPI_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-API.c}{p.}{cuddAPI_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Application interface functions.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-add\-New\-Var()}{p.}{cuddAPI_8c_d77f4dd2911bac8e25633fe84c6cfb8b} \item \doxyref{Cudd\_\-add\-New\-Var\-At\-Level()}{p.}{cuddAPI_8c_acea7b5ed8dc2595a1c0e01788bc205a} \item \doxyref{Cudd\_\-bdd\-New\-Var()}{p.}{cuddAPI_8c_475c50e1a273569cc0ffc19ab98c28ce} \item \doxyref{Cudd\_\-bdd\-New\-Var\-At\-Level()}{p.}{cuddAPI_8c_e35eac7df807101795efe0d582ff05fa} \item \doxyref{Cudd\_\-add\-Ith\-Var()}{p.}{cuddAPI_8c_19967d7c87650f63fc312f38c318e3e9} \item \doxyref{Cudd\_\-bdd\-Ith\-Var()}{p.}{cuddAPI_8c_40fd71665cde402bd5bc4f39015c09ae} \item \doxyref{Cudd\_\-zdd\-Ith\-Var()}{p.}{cuddAPI_8c_cbf8017813ae9a60790ae4f8a445800d} \item \doxyref{Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars()}{p.}{cuddAPI_8c_45d898e3087539ceaaf5ff86aa62c471} \item \doxyref{Cudd\_\-add\-Const()}{p.}{cuddAPI_8c_8b8fb347b6c5324ef9bce64aa73a63bb} \item \doxyref{Cudd\_\-Autodyn\-Enable()}{p.}{cuddAPI_8c_6a0d69b4288f36d5d377c460d49066a6} \item \doxyref{Cudd\_\-Autodyn\-Disable()}{p.}{cuddAPI_8c_ffd2c1c2a110944c1d760de577aed431} \item \doxyref{Cudd\_\-Reordering\-Status()}{p.}{cuddAPI_8c_3806c2327487b3cea3c7ffff75aead83} \item \doxyref{Cudd\_\-Autodyn\-Enable\-Zdd()}{p.}{cuddAPI_8c_709e0e15a38d6d6e9c83ff8b8a9d07f2} \item \doxyref{Cudd\_\-Autodyn\-Disable\-Zdd()}{p.}{cuddAPI_8c_219ccb201e3c1aa25ebef007399849fa} \item \doxyref{Cudd\_\-Reordering\-Status\-Zdd()}{p.}{cuddAPI_8c_c6f65c44244489bfbb37137929baf0cd} \item \doxyref{Cudd\_\-zdd\-Realignment\-Enabled()}{p.}{cuddAPI_8c_34225975eef55170213a0a9efed5a891} \item \doxyref{Cudd\_\-zdd\-Realign\-Enable()}{p.}{cuddAPI_8c_a57aff1886a1fea0cb8b5bf8d66cf50e} \item \doxyref{Cudd\_\-zdd\-Realign\-Disable()}{p.}{cuddAPI_8c_fea01466660ca226539a66a014a4da00} \item \doxyref{Cudd\_\-bdd\-Realignment\-Enabled()}{p.}{cuddAPI_8c_516183604a75b38337b81fd17c291826} \item \doxyref{Cudd\_\-bdd\-Realign\-Enable()}{p.}{cuddAPI_8c_2d0d34d836668fc62e7c7835fa95132d} \item \doxyref{Cudd\_\-bdd\-Realign\-Disable()}{p.}{cuddAPI_8c_3eb093bdd80db0b880f61017f3e36de2} \item \doxyref{Cudd\_\-Read\-One()}{p.}{cuddAPI_8c_2651c953d81570d3f4f794bcbef40afe} \item \doxyref{Cudd\_\-Read\-Zdd\-One()}{p.}{cuddAPI_8c_d6d6950021b06a3bf4a6bcd05b1753e7} \item \doxyref{Cudd\_\-Read\-Zero()}{p.}{cuddAPI_8c_92900f3320df460a72eacc4ed801d69e} \item \doxyref{Cudd\_\-Read\-Logic\-Zero()}{p.}{cuddAPI_8c_1dd42d8cb5c86659170103a3068e13a6} \item \doxyref{Cudd\_\-Read\-Plus\-Infinity()}{p.}{cuddAPI_8c_f581badbfb76ba5909f83482c47d743e} \item \doxyref{Cudd\_\-Read\-Minus\-Infinity()}{p.}{cuddAPI_8c_e0ff7f850bf0b84af8ea0779ec0800ac} \item \doxyref{Cudd\_\-Read\-Background()}{p.}{cuddAPI_8c_041d561f9d388a943104665fe0c850c0} \item \doxyref{Cudd\_\-Set\-Background()}{p.}{cuddAPI_8c_3792749a2a10045b60d2a3d99d99928e} \item \doxyref{Cudd\_\-Read\-Cache\-Slots()}{p.}{cuddAPI_8c_b588943f358faadd3c7e8a4caf813fce} \item \doxyref{Cudd\_\-Read\-Cache\-Used\-Slots()}{p.}{cuddAPI_8c_ac309a335487dbb3ba77b088c90e085c} \item \doxyref{Cudd\_\-Read\-Cache\-Look\-Ups()}{p.}{cuddAPI_8c_b4595bfefe543b3f8f74248c048b53fe} \item \doxyref{Cudd\_\-Read\-Cache\-Hits()}{p.}{cuddAPI_8c_2281582d99df044cf8892204026b64b9} \item \doxyref{Cudd\_\-Read\-Min\-Hit()}{p.}{cuddAPI_8c_79695ef1e6f821d310f5613a6d8ba148} \item \doxyref{Cudd\_\-Set\-Min\-Hit()}{p.}{cuddAPI_8c_e96f3e2036a77ab8c1318e607dea232b} \item \doxyref{Cudd\_\-Read\-Loose\-Up\-To()}{p.}{cuddAPI_8c_b452b9f1bbcdb8bf49cbea25f6e8ed8d} \item \doxyref{Cudd\_\-Set\-Loose\-Up\-To()}{p.}{cuddAPI_8c_1952bb97db9782bcf607d169c842b7ce} \item \doxyref{Cudd\_\-Read\-Max\-Cache()}{p.}{cuddAPI_8c_7dafbaafff7055890cce20fa791b2092} \item \doxyref{Cudd\_\-Set\-Max\-Cache()}{p.}{cuddAPI_8c_266266da3edc0b910da8140013a4e63a} \item \doxyref{Cudd\_\-Read\-Max\-Cache\-Hard()}{p.}{cuddAPI_8c_cfac0e32bb4bcfe7f0035f4fff401a0e} \item \doxyref{Cudd\_\-Set\-Max\-Cache\-Hard()}{p.}{cuddAPI_8c_4ced83212c4c45f94d8957e3fab485c5} \item \doxyref{Cudd\_\-Read\-Size()}{p.}{cuddAPI_8c_b1647f3f86f4e555bea35673f9539f94} \item \doxyref{Cudd\_\-Read\-Slots()}{p.}{cuddAPI_8c_3787560300153655851b4fe3c7646b0c} \item \doxyref{Cudd\_\-Read\-Keys()}{p.}{cuddAPI_8c_5bc6805752cf0bc83080322d778759e6} \item \doxyref{Cudd\_\-Read\-Dead()}{p.}{cuddAPI_8c_4074f697e7ea725a1b853d9a468a082e} \item \doxyref{Cudd\_\-Read\-Min\-Dead()}{p.}{cuddAPI_8c_ce82092e4e785b388c83f554daa23283} \item \doxyref{Cudd\_\-Read\-Reorderings()}{p.}{cuddAPI_8c_e9e9406f636370e6027a6f1caa09d3aa} \item \doxyref{Cudd\_\-Read\-Reordering\-Time()}{p.}{cuddAPI_8c_61141274ba36755e4c88a4c1597b9847} \item \doxyref{Cudd\_\-Read\-Garbage\-Collections()}{p.}{cuddAPI_8c_50aaebdd320041ddca11fdb0f3414f0c} \item \doxyref{Cudd\_\-Read\-Garbage\-Collection\-Time()}{p.}{cuddAPI_8c_653fa9231b3d68947521175de74f26b8} \item \doxyref{Cudd\_\-Read\-Nodes\-Freed()}{p.}{cuddAPI_8c_f525911b0006fddcbcf698a077b874cb} \item \doxyref{Cudd\_\-Read\-Nodes\-Dropped()}{p.}{cuddAPI_8c_e7e283a368a08c5ac96101ee7e9b525c} \item \doxyref{Cudd\_\-Read\-Unique\-Look\-Ups()}{p.}{cuddAPI_8c_cebf224e24889082c229d56db1f982f3} \item \doxyref{Cudd\_\-Read\-Unique\-Links()}{p.}{cuddAPI_8c_aaa1d598d1d5830c72b33aca86e511c1} \item \doxyref{Cudd\_\-Read\-Sift\-Max\-Var()}{p.}{cuddAPI_8c_112841ed78d8f90d31ee879684775b51} \item \doxyref{Cudd\_\-Set\-Sift\-Max\-Var()}{p.}{cuddAPI_8c_23ad3e7bf12607f58756e15f2b1251aa} \item \doxyref{Cudd\_\-Read\-Max\-Growth()}{p.}{cuddAPI_8c_23f3600540de47d20e85eb4036af6e49} \item \doxyref{Cudd\_\-Set\-Max\-Growth()}{p.}{cuddAPI_8c_a3a621a6133ce4203b8bfa351d5de4ea} \item \doxyref{Cudd\_\-Read\-Tree()}{p.}{cuddAPI_8c_6ee8468f5b7fe67a0f609412e211632b} \item \doxyref{Cudd\_\-Set\-Tree()}{p.}{cuddAPI_8c_2aa3827dfffcc29254520628b15aab55} \item \doxyref{Cudd\_\-Free\-Tree()}{p.}{cuddAPI_8c_f5c6ecb39244a6db49494d1f1e31bd1a} \item \doxyref{Cudd\_\-Read\-Zdd\-Tree()}{p.}{cuddAPI_8c_d3d3dbe0fa509a7f70691dcb6d8726ad} \item \doxyref{Cudd\_\-Set\-Zdd\-Tree()}{p.}{cuddAPI_8c_2cdbbc9e78a4f0684a118f304eb1a455} \item \doxyref{Cudd\_\-Free\-Zdd\-Tree()}{p.}{cuddAPI_8c_c9a25622e38ad302c050803d520f5fce} \item \doxyref{Cudd\_\-Node\-Read\-Index()}{p.}{cuddAPI_8c_53c38a74f4362bd57bcb44593a3f515d} \item \doxyref{Cudd\_\-Read\-Perm()}{p.}{cuddAPI_8c_acfa59899b792c9f47a612ceba42c976} \item \doxyref{Cudd\_\-Read\-Inv\-Perm()}{p.}{cuddAPI_8c_e16ce73ed2e5afcd0dd1c1db43884d2a} \item \doxyref{Cudd\_\-Read\-Vars()}{p.}{cuddAPI_8c_44d8f64c98953fd110d0e5146bcadaca} \item \doxyref{Cudd\_\-Read\-Epsilon()}{p.}{cuddAPI_8c_c711d8ce9d243e16246b83e3c1f04199} \item \doxyref{Cudd\_\-Set\-Epsilon()}{p.}{cuddAPI_8c_30ef132c1f56bdb0e26efc81fa695cf3} \item Cudd\_\-Read\-Group\-Check() \item \doxyref{Cudd\_\-Set\-Groupcheck()}{p.}{cuddAPI_8c_ee7e7fa94656ed131aa67ca1ea15a031} \item \doxyref{Cudd\_\-Garbage\-Collection\-Enabled()}{p.}{cuddAPI_8c_df441cdb56f24a9e3e20f6e87cc571c8} \item \doxyref{Cudd\_\-Enable\-Garbage\-Collection()}{p.}{cuddAPI_8c_95a5511bcc805af71fc1fb5abba96f1e} \item \doxyref{Cudd\_\-Disable\-Garbage\-Collection()}{p.}{cuddAPI_8c_b1def55437ab00e012fba1a98bc3a941} \item \doxyref{Cudd\_\-Dead\-Are\-Counted()}{p.}{cuddAPI_8c_e34d186620ce66627e57bbccfa24a892} \item \doxyref{Cudd\_\-Turn\-On\-Count\-Dead()}{p.}{cuddAPI_8c_f0b407453f68498df9b9783f88401cf5} \item \doxyref{Cudd\_\-Turn\-Off\-Count\-Dead()}{p.}{cuddAPI_8c_5b822894a35380ffca9e555286213484} \item \doxyref{Cudd\_\-Read\-Recomb()}{p.}{cuddAPI_8c_c305e7d5aaa2c3808db94795dc0a1150} \item \doxyref{Cudd\_\-Set\-Recomb()}{p.}{cuddAPI_8c_c68f934b27bc1d1ea947f410c8aedd36} \item \doxyref{Cudd\_\-Read\-Symmviolation()}{p.}{cuddAPI_8c_3028ccbe6fb46efd6565d0f4aab78738} \item \doxyref{Cudd\_\-Set\-Symmviolation()}{p.}{cuddAPI_8c_5bb84b628160417172cb44e22e2067b7} \item \doxyref{Cudd\_\-Read\-Arcviolation()}{p.}{cuddAPI_8c_89117a52be055c338311b1380d511375} \item \doxyref{Cudd\_\-Set\-Arcviolation()}{p.}{cuddAPI_8c_3064405f352a9d93a6ee16cfa5d2512c} \item \doxyref{Cudd\_\-Read\-Population\-Size()}{p.}{cuddAPI_8c_1e760e63a14cd28172b2371c8419b0d9} \item \doxyref{Cudd\_\-Set\-Population\-Size()}{p.}{cuddAPI_8c_bbdf2ca87a414bb36bfbb6247a8915ec} \item \doxyref{Cudd\_\-Read\-Number\-Xovers()}{p.}{cuddAPI_8c_2609fe9051be1a8ab6d305d38bfb5956} \item \doxyref{Cudd\_\-Set\-Number\-Xovers()}{p.}{cuddAPI_8c_e8b2c48e26b4178cf6536f4ce253d9b1} \item \doxyref{Cudd\_\-Read\-Memory\-In\-Use()}{p.}{cuddAPI_8c_2eefc3d88f42942ab253f56f60d90111} \item \doxyref{Cudd\_\-Print\-Info()}{p.}{cuddAPI_8c_0883e74086d9f61c2988ba614e9e649e} \item \doxyref{Cudd\_\-Read\-Peak\-Node\-Count()}{p.}{cuddAPI_8c_39633df05be731b6b145d65f83aed572} \item \doxyref{Cudd\_\-Read\-Node\-Count()}{p.}{cuddAPI_8c_9ba2c88b8f70df51791c26ffde800fc7} \item \doxyref{Cudd\_\-zdd\-Read\-Node\-Count()}{p.}{cuddAPI_8c_4c015c746d9c71fb9b57249f2a4ccd72} \item \doxyref{Cudd\_\-Add\-Hook()}{p.}{cuddAPI_8c_ddeff00513ecb3aa2051e9b5358c89b5} \item \doxyref{Cudd\_\-Remove\-Hook()}{p.}{cuddAPI_8c_38fd70faa255ec309bbb0eabc8fe1741} \item \doxyref{Cudd\_\-Is\-In\-Hook()}{p.}{cuddAPI_8c_7f4618dba6d16a8b846844c6af87decf} \item \doxyref{Cudd\_\-Std\-Pre\-Reord\-Hook()}{p.}{cuddAPI_8c_9a744a313f94c49615288b4c635dbfb3} \item \doxyref{Cudd\_\-Std\-Post\-Reord\-Hook()}{p.}{cuddAPI_8c_d3f0d04e8fca2fe9061bafebd806ef51} \item \doxyref{Cudd\_\-Enable\-Reordering\-Reporting()}{p.}{cuddAPI_8c_dfe5374e85cf3fb0827307b1e3cc5e07} \item \doxyref{Cudd\_\-Disable\-Reordering\-Reporting()}{p.}{cuddAPI_8c_249298e38710246ab1ead014cfe54dd9} \item \doxyref{Cudd\_\-Reordering\-Reporting()}{p.}{cuddAPI_8c_4a634a339969d6d84e3db858f3f77be4} \item \doxyref{Cudd\_\-Read\-Error\-Code()}{p.}{cuddAPI_8c_988b83058c815b1ca112c6a9c74525ad} \item \doxyref{Cudd\_\-Clear\-Error\-Code()}{p.}{cuddAPI_8c_ed3a189c261ed9f698ace55ade32af01} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 149 of file cudd\-API.c.

@@ -1,0 +1,625 @@
+\section{cudd\-Subset\-HB.c File Reference}
+\label{cuddSubsetHB_8c}\index{cuddSubsetHB.c@{cuddSubsetHB.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Node\-Data}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DBL\_\-MAX\_\-EXP}~1024
+\item 
+\#define \bf{DEFAULT\_\-PAGE\_\-SIZE}~2048
+\item 
+\#define \bf{DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE}~1024
+\item 
+\#define \bf{INITIAL\_\-PAGES}~128
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{Node\-Data} \bf{Node\-Data\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void Resize\-Node\-Data\-Pages \bf{ARGS} (())
+\item 
+static double Subset\-Count\-Minterm\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))
+\item 
+static \bf{st\_\-table} $\ast$Subset\-Count\-Minterm \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, int nvars))
+\item 
+static int Subset\-Count\-Nodes\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, double \bf{max}))
+\item 
+static int Subset\-Count\-Nodes \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, int nvars))
+\item 
+static void Store\-Nodes \bf{ARGS} ((\bf{st\_\-table} $\ast$store\-Table, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node))
+\item 
+static \bf{Dd\-Node} $\ast$Build\-Subset\-Bdd \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$\bf{size}, \bf{st\_\-table} $\ast$visited\-Table, int threshold, \bf{st\_\-table} $\ast$store\-Table, \bf{st\_\-table} $\ast$approx\-Table))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Subset\-Heavy\-Branch} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Superset\-Heavy\-Branch} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Subset\-Heavy\-Branch} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold)
+\item 
+static void \bf{Resize\-Node\-Data\-Pages} ()
+\item 
+static void \bf{Resize\-Count\-Minterm\-Pages} ()
+\item 
+static void \bf{Resize\-Count\-Node\-Pages} ()
+\item 
+static double \bf{Subset\-Count\-Minterm\-Aux} (\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table)
+\item 
+static \bf{st\_\-table} $\ast$ \bf{Subset\-Count\-Minterm} (\bf{Dd\-Node} $\ast$node, int nvars)
+\item 
+static int \bf{Subset\-Count\-Nodes\-Aux} (\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, double \bf{max})
+\item 
+static int \bf{Subset\-Count\-Nodes} (\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, int nvars)
+\item 
+static void \bf{Store\-Nodes} (\bf{st\_\-table} $\ast$store\-Table, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{Build\-Subset\-Bdd} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$\bf{size}, \bf{st\_\-table} $\ast$visited\-Table, int threshold, \bf{st\_\-table} $\ast$store\-Table, \bf{st\_\-table} $\ast$approx\-Table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Subset\-HB.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int \bf{mem\-Out}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{one}
+\item 
+static double $\ast$$\ast$ \bf{minterm\-Pages}
+\item 
+static int $\ast$$\ast$ \bf{node\-Pages}
+\item 
+static int $\ast$$\ast$ \bf{light\-Node\-Pages}
+\item 
+static double $\ast$ \bf{current\-Minterm\-Page}
+\item 
+static double \bf{max}
+\item 
+static int $\ast$ \bf{current\-Node\-Page}
+\item 
+static int $\ast$ \bf{current\-Light\-Node\-Page}
+\item 
+static int \bf{page\-Index}
+\item 
+static int \bf{page}
+\item 
+static int \bf{page\-Size} = DEFAULT\_\-PAGE\_\-SIZE
+\item 
+static int \bf{max\-Pages}
+\item 
+static \bf{Node\-Data\_\-t} $\ast$ \bf{current\-Node\-Data\-Page}
+\item 
+static int \bf{node\-Data\-Page}
+\item 
+static int \bf{node\-Data\-Page\-Index}
+\item 
+static \bf{Node\-Data\_\-t} $\ast$$\ast$ \bf{node\-Data\-Pages}
+\item 
+static int \bf{node\-Data\-Page\-Size} = DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE
+\item 
+static int \bf{max\-Node\-Data\-Pages}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!DBL_MAX_EXP@{DBL\_\-MAX\_\-EXP}}
+\index{DBL_MAX_EXP@{DBL\_\-MAX\_\-EXP}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DBL\_\-MAX\_\-EXP~1024}\label{cuddSubsetHB_8c_539f2dd258b96fac8f4dc9bc139d75c9}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Subset\-HB.c}{p.}{cuddSubsetHB_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Procedure to subset the given BDD by choosing the heavier branches]
+
+Description [External procedures provided by this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Subset\-Heavy\-Branch()}{p.}{cuddSubsetHB_8c_7579ecbb0187c4061cc2d45a3a21e68e} \item \doxyref{Cudd\_\-Superset\-Heavy\-Branch()}{p.}{cuddSubsetHB_8c_5562f42d8ed481485bcb9d5469b2cedd} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Subset\-Heavy\-Branch()}{p.}{cuddSubsetHB_8c_2073c43a05383ffdeb39ecb7c4d1c395} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{Resize\-Count\-Minterm\-Pages()}{p.}{cuddSubsetHB_8c_ece3dbf9469b84a1d38d477328d6e0e8}; \item \doxyref{Resize\-Node\-Data\-Pages()}{p.}{cuddSubsetHB_8c_f1d6aeb94dc494ad9920c5083adbc0cf} \item \doxyref{Resize\-Count\-Node\-Pages()}{p.}{cuddSubsetHB_8c_c5f76141944391795cb01c58c48e7b3d} \item \doxyref{Subset\-Count\-Minterm\-Aux()}{p.}{cuddSubsetHB_8c_fa0344fb6e004bc847a98b882f30190b} \item \doxyref{Subset\-Count\-Minterm()}{p.}{cuddSubsetHB_8c_45e1669b9444436c0e6d9c84c7597c55} \item \doxyref{Subset\-Count\-Nodes\-Aux()}{p.}{cuddSubsetHB_8c_3a492b7afc3d117a1405735851038b42} \item \doxyref{Subset\-Count\-Nodes()}{p.}{cuddSubsetHB_8c_dc74acddd03ddb7119879a3cbfa7bca5} \item \doxyref{Build\-Subset\-Bdd()}{p.}{cuddSubsetHB_8c_7483b3b5d83e9472a0cf3a133efddcd9} \end{itemize}
+]
+
+See\-Also [\doxyref{cudd\-Subset\-SP.c}{p.}{cuddSubsetSP_8c}]
+
+Author [Kavita Ravi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 50 of file cudd\-Subset\-HB.c.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!DEFAULT_NODE_DATA_PAGE_SIZE@{DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE}}
+\index{DEFAULT_NODE_DATA_PAGE_SIZE@{DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE~1024}\label{cuddSubsetHB_8c_b96e72e4474b45e444456e135b322a64}
+
+
+
+
+Definition at line 61 of file cudd\-Subset\-HB.c.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!DEFAULT_PAGE_SIZE@{DEFAULT\_\-PAGE\_\-SIZE}}
+\index{DEFAULT_PAGE_SIZE@{DEFAULT\_\-PAGE\_\-SIZE}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEFAULT\_\-PAGE\_\-SIZE~2048}\label{cuddSubsetHB_8c_a2f776dcebe2f31589b20e618ebe94fd}
+
+
+
+
+Definition at line 60 of file cudd\-Subset\-HB.c.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!INITIAL_PAGES@{INITIAL\_\-PAGES}}
+\index{INITIAL_PAGES@{INITIAL\_\-PAGES}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define INITIAL\_\-PAGES~128}\label{cuddSubsetHB_8c_720b383515a395e68179923b81add86e}
+
+
+
+
+Definition at line 62 of file cudd\-Subset\-HB.c.
+
+Referenced by Create\-Path\-Table(), Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Resize\-Node\-Data\-Pages(), Resize\-Node\-Dist\-Pages(), Resize\-Queue\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Nodes().
+
+\subsection{Typedef Documentation}
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!NodeData_t@{NodeData\_\-t}}
+\index{NodeData_t@{NodeData\_\-t}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{Node\-Data} \bf{Node\-Data\_\-t}}\label{cuddSubsetHB_8c_b7877499042be4c00d40f289fa7b176c}
+
+
+
+
+Definition at line 86 of file cudd\-Subset\-HB.c.
+
+\subsection{Function Documentation}
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ Build\-Subset\-Bdd ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int $\ast$\bf{size}, \bf{st\_\-table} $\ast$visited\-Table, int threshold, \bf{st\_\-table} $\ast$store\-Table, \bf{st\_\-table} $\ast$approx\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_a8e71b13dd3435310275496cd34ff36a}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Store\-Nodes ARGS ((\bf{st\_\-table} $\ast$store\-Table, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_eb2db53c6955397e90feef39552b5a47}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Subset\-Count\-Nodes ARGS ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, int nvars))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_b27217062ddfebe97593ad56e10440fa}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Subset\-Count\-Nodes\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table, double \bf{max}))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_4b18ebfa9a468ae072b40361613c3b43}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{st\_\-table}$\ast$ Subset\-Count\-Minterm ARGS ((\bf{Dd\-Node} $\ast$node, int nvars))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_2cb663ba5ec34ef3b8d2b456cd2f9108}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double Subset\-Count\-Minterm\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_458b56590f4f1080cdd75b2433c9d836}
+
+
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Node\-Data\-Pages ARGS (())\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_da29139ccd963dfc2ddfd4647e4600f6}
+
+
+Automatic\-Start \index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!BuildSubsetBdd@{BuildSubsetBdd}}
+\index{BuildSubsetBdd@{BuildSubsetBdd}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ Build\-Subset\-Bdd (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int $\ast$ {\em size}, \bf{st\_\-table} $\ast$ {\em visited\-Table}, int {\em threshold}, \bf{st\_\-table} $\ast$ {\em store\-Table}, \bf{st\_\-table} $\ast$ {\em approx\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_7483b3b5d83e9472a0cf3a133efddcd9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the subset BDD using the heavy branch method.]
+
+Description [The procedure carries out the building of the subset BDD starting at the root. Using the three different counts labelling each node, the procedure chooses the heavier branch starting from the root and keeps track of the number of nodes it discards at each step, thus keeping count of the size of the subset BDD dynamically. Once the threshold is satisfied, the procedure then calls ITE to build the BDD.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1138 of file cudd\-Subset\-HB.c.
+
+References Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Node\-Read\-Index(), Cudd\_\-Not\-Cond, Cudd\_\-Read\-Vars(), Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, Cudd\_\-T, cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-Ref, max, NIL, st\_\-insert(), st\_\-lookup(), Store\-Nodes(), and zero.
+
+Referenced by Build\-Subset\-Bdd(), cudd\-Subset\-Heavy\-Branch(), and cudd\-Subset\-Short\-Paths().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!Cudd_SubsetHeavyBranch@{Cudd\_\-SubsetHeavyBranch}}
+\index{Cudd_SubsetHeavyBranch@{Cudd\_\-SubsetHeavyBranch}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Subset\-Heavy\-Branch (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold})}\label{cuddSubsetHB_8c_7579ecbb0187c4061cc2d45a3a21e68e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense subset from a BDD with the heavy branch heuristic.]
+
+Description [Extracts a dense subset from a BDD. This procedure builds a subset by throwing away one of the children of each node, starting from the root, until the result is small enough. The child that is eliminated from the result is the one that contributes the fewer minterms. Returns a pointer to the BDD of the subset if successful. NULL if the procedure runs out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation and node count calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Short\-Paths Cudd\_\-Superset\-Heavy\-Branch Cudd\_\-Read\-Size] 
+
+Definition at line 182 of file cudd\-Subset\-HB.c.
+
+References cudd\-Subset\-Heavy\-Branch(), mem\-Out, and Dd\-Manager::reordered.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!Cudd_SupersetHeavyBranch@{Cudd\_\-SupersetHeavyBranch}}
+\index{Cudd_SupersetHeavyBranch@{Cudd\_\-SupersetHeavyBranch}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Superset\-Heavy\-Branch (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold})}\label{cuddSubsetHB_8c_5562f42d8ed481485bcb9d5469b2cedd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense superset from a BDD with the heavy branch heuristic.]
+
+Description [Extracts a dense superset from a BDD. The procedure is identical to the subset procedure except for the fact that it receives the complement of the given function. Extracting the subset of the complement function is equivalent to extracting the superset of the function. This procedure builds a superset by throwing away one of the children of each node starting from the root of the complement function, until the result is small enough. The child that is eliminated from the result is the one that contributes the fewer minterms. Returns a pointer to the BDD of the superset if successful. NULL if intermediate result causes the procedure to run out of memory. The parameter num\-Vars is the maximum number of variables to be used in minterm calculation and node count calculation. The optimal number should be as close as possible to the size of the support of f. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars when the number of variables is under 1023. If num\-Vars is larger than 1023, it will overflow. If a 0 parameter is passed then the procedure will compute a value which will avoid overflow but will cause underflow with 2046 variables or more.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Heavy\-Branch Cudd\_\-Superset\-Short\-Paths Cudd\_\-Read\-Size] 
+
+Definition at line 232 of file cudd\-Subset\-HB.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, cudd\-Subset\-Heavy\-Branch(), mem\-Out, and Dd\-Manager::reordered.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!cuddSubsetHeavyBranch@{cuddSubsetHeavyBranch}}
+\index{cuddSubsetHeavyBranch@{cuddSubsetHeavyBranch}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Subset\-Heavy\-Branch (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold})}\label{cuddSubsetHB_8c_2073c43a05383ffdeb39ecb7c4d1c395}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [The main procedure that returns a subset by choosing the heavier branch in the BDD.]
+
+Description [Here a subset BDD is built by throwing away one of the children. Starting at root, annotate each node with the number of minterms (in terms of the total number of variables specified - num\-Vars), number of nodes taken by the DAG rooted at this node and number of additional nodes taken by the child that has the lesser minterms. The child with the lower number of minterms is thrown away and a dyanmic count of the nodes of the subset is kept. Once the threshold is reached the subset is returned to the calling procedure.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Heavy\-Branch] 
+
+Definition at line 277 of file cudd\-Subset\-HB.c.
+
+References ALLOC, Build\-Subset\-Bdd(), Cudd\_\-bdd\-Leq(), Cudd\_\-Check\-Keys(), Cudd\_\-Debug\-Check(), Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Read\-One(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, DBL\_\-MAX\_\-EXP, Dd\-Manager::error\-Code, exit(), FREE, light\-Node\-Pages, max, mem\-Out, minterm\-Pages, NIL, node\-Data\-Page, node\-Data\-Pages, node\-Pages, one, page, size, st\_\-free\_\-gen(), st\_\-free\_\-table(), st\_\-gen(), st\_\-init\_\-gen(), st\_\-init\_\-table(), st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, st\_\-ptrcmp(), st\_\-ptrhash(), Subset\-Count\-Minterm(), Subset\-Count\-Nodes(), and zero.
+
+Referenced by Cudd\_\-Subset\-Heavy\-Branch(), and Cudd\_\-Superset\-Heavy\-Branch().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ResizeCountMintermPages@{ResizeCountMintermPages}}
+\index{ResizeCountMintermPages@{ResizeCountMintermPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Count\-Minterm\-Pages ()\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_ece3dbf9469b84a1d38d477328d6e0e8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resize the number of pages allocated to store the minterm counts. ]
+
+Description [Resize the number of pages allocated to store the minterm counts. The procedure moves the counter to the next page when the end of the page is reached and allocates new pages when necessary.]
+
+Side\-Effects [Changes the size of minterm pages, page, page index, maximum number of pages freeing stuff in case of memory out. ]
+
+See\-Also [] 
+
+Definition at line 502 of file cudd\-Subset\-HB.c.
+
+References ALLOC, current\-Minterm\-Page, FREE, INITIAL\_\-PAGES, max\-Pages, mem\-Out, minterm\-Pages, page, page\-Index, and page\-Size.
+
+Referenced by Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ResizeCountNodePages@{ResizeCountNodePages}}
+\index{ResizeCountNodePages@{ResizeCountNodePages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Count\-Node\-Pages ()\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_c5f76141944391795cb01c58c48e7b3d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resize the number of pages allocated to store the node counts.]
+
+Description [Resize the number of pages allocated to store the node counts. The procedure moves the counter to the next page when the end of the page is reached and allocates new pages when necessary.]
+
+Side\-Effects [Changes the size of pages, page, page index, maximum number of pages freeing stuff in case of memory out.]
+
+See\-Also [] 
+
+Definition at line 560 of file cudd\-Subset\-HB.c.
+
+References ALLOC, current\-Light\-Node\-Page, current\-Node\-Page, FREE, INITIAL\_\-PAGES, light\-Node\-Pages, max\-Pages, mem\-Out, node\-Pages, page, page\-Index, and page\-Size.
+
+Referenced by Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!ResizeNodeDataPages@{ResizeNodeDataPages}}
+\index{ResizeNodeDataPages@{ResizeNodeDataPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Node\-Data\-Pages ()\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_f1d6aeb94dc494ad9920c5083adbc0cf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resize the number of pages allocated to store the node data.]
+
+Description [Resize the number of pages allocated to store the node data The procedure moves the counter to the next page when the end of the page is reached and allocates new pages when necessary.]
+
+Side\-Effects [Changes the size of pages, page, page index, maximum number of pages freeing stuff in case of memory out. ]
+
+See\-Also [] 
+
+Definition at line 442 of file cudd\-Subset\-HB.c.
+
+References ALLOC, current\-Node\-Data\-Page, FREE, INITIAL\_\-PAGES, max\-Node\-Data\-Pages, mem\-Out, node\-Data\-Page, node\-Data\-Page\-Index, node\-Data\-Pages, and node\-Data\-Page\-Size.
+
+Referenced by Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!StoreNodes@{StoreNodes}}
+\index{StoreNodes@{StoreNodes}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Store\-Nodes (\bf{st\_\-table} $\ast$ {\em store\-Table}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_4b5b177b1b840fc9ca33c7e1899d4960}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Procedure to recursively store nodes that are retained in the subset.]
+
+Description [rocedure to recursively store nodes that are retained in the subset.]
+
+Side\-Effects [None]
+
+See\-Also [Store\-Nodes] 
+
+Definition at line 1091 of file cudd\-Subset\-HB.c.
+
+References Cudd\_\-E, Cudd\_\-Is\-Constant, Cudd\_\-Regular, Cudd\_\-T, cudd\-Ref, NIL, st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Build\-Subset\-Bdd().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!SubsetCountMinterm@{SubsetCountMinterm}}
+\index{SubsetCountMinterm@{SubsetCountMinterm}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{st\_\-table}$\ast$ Subset\-Count\-Minterm (\bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_45e1669b9444436c0e6d9c84c7597c55}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts minterms of each node in the DAG]
+
+Description [Counts minterms of each node in the DAG. Similar to the Cudd\_\-Count\-Minterm procedure except this returns the minterm count for all the nodes in the bdd in an \doxyref{st\_\-table}{p.}{structst__table}.]
+
+Side\-Effects [none]
+
+See\-Also [Subset\-Count\-Minterm\-Aux] 
+
+Definition at line 762 of file cudd\-Subset\-HB.c.
+
+References ALLOC, current\-Minterm\-Page, current\-Node\-Data\-Page, FREE, INITIAL\_\-PAGES, max, max\-Node\-Data\-Pages, max\-Pages, mem\-Out, minterm\-Pages, node\-Data\-Page, node\-Data\-Page\-Index, node\-Data\-Pages, node\-Data\-Page\-Size, page, page\-Index, page\-Size, st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), and Subset\-Count\-Minterm\-Aux().
+
+Referenced by cudd\-Subset\-Heavy\-Branch().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!SubsetCountMintermAux@{SubsetCountMintermAux}}
+\index{SubsetCountMintermAux@{SubsetCountMintermAux}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double Subset\-Count\-Minterm\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, double {\em max}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_fa0344fb6e004bc847a98b882f30190b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursively counts minterms of each node in the DAG.]
+
+Description [Recursively counts minterms of each node in the DAG. Similar to the cudd\-Count\-Minterm\-Aux which recursively counts the number of minterms for the dag rooted at each node in terms of the total number of variables (max). This procedure creates the node data structure and stores the minterm count as part of the node data structure. ]
+
+Side\-Effects [Creates structures of type node quality and fills the \doxyref{st\_\-table}{p.}{structst__table}]
+
+See\-Also [Subset\-Count\-Minterm] 
+
+Definition at line 651 of file cudd\-Subset\-HB.c.
+
+References Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not\-Cond, Cudd\_\-Regular, Cudd\_\-T, current\-Minterm\-Page, current\-Node\-Data\-Page, FREE, mem\-Out, minterm\-Pages, Node\-Data::minterm\-Pointer, node\-Data\-Page, node\-Data\-Page\-Index, node\-Data\-Pages, node\-Data\-Page\-Size, Node\-Data::nodes\-Pointer, page, page\-Index, page\-Size, Resize\-Count\-Minterm\-Pages(), Resize\-Node\-Data\-Pages(), st\_\-free\_\-table(), st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by Subset\-Count\-Minterm().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!SubsetCountNodes@{SubsetCountNodes}}
+\index{SubsetCountNodes@{SubsetCountNodes}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Subset\-Count\-Nodes (\bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em table}, int {\em nvars})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_dc74acddd03ddb7119879a3cbfa7bca5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the nodes under the current node and its lighter child]
+
+Description [Counts the nodes under the current node and its lighter child. Calls a recursive procedure to count the number of nodes of a DAG rooted at a particular node and the number of nodes taken by its lighter child.]
+
+Side\-Effects [None]
+
+See\-Also [Subset\-Count\-Nodes\-Aux] 
+
+Definition at line 1013 of file cudd\-Subset\-HB.c.
+
+References ALLOC, current\-Light\-Node\-Page, current\-Node\-Page, FREE, INITIAL\_\-PAGES, light\-Node\-Pages, max, max\-Pages, mem\-Out, minterm\-Pages, node\-Data\-Page, node\-Data\-Pages, node\-Pages, page, page\-Index, page\-Size, and Subset\-Count\-Nodes\-Aux().
+
+Referenced by cudd\-Subset\-Heavy\-Branch().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!SubsetCountNodesAux@{SubsetCountNodesAux}}
+\index{SubsetCountNodesAux@{SubsetCountNodesAux}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Subset\-Count\-Nodes\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em table}, double {\em max})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_3a492b7afc3d117a1405735851038b42}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursively counts the number of nodes under the dag. Also counts the number of nodes under the lighter child of this node.]
+
+Description [Recursively counts the number of nodes under the dag. Also counts the number of nodes under the lighter child of this node. . Note that the same dag may be the lighter child of two different nodes and have different counts. As with the minterm counts, the node counts are stored in pages to be space efficient and the address for these node counts are stored in an \doxyref{st\_\-table}{p.}{structst__table} associated to each node. ]
+
+Side\-Effects [Updates the node data table with node counts]
+
+See\-Also [Subset\-Count\-Nodes] 
+
+Definition at line 845 of file cudd\-Subset\-HB.c.
+
+References Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, Cudd\_\-T, current\-Light\-Node\-Page, current\-Node\-Page, FREE, mem\-Out, minterm\-Pages, node\-Data\-Page, node\-Data\-Pages, Node\-Data::nodes\-Pointer, page, page\-Index, page\-Size, Resize\-Count\-Node\-Pages(), st\_\-free\_\-table(), st\_\-lookup(), and zero.
+
+Referenced by Subset\-Count\-Nodes().
+
+\subsection{Variable Documentation}
+\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!currentLightNodePage@{currentLightNodePage}}
+\index{currentLightNodePage@{currentLightNodePage}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{current\-Light\-Node\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_360a8686bd3b106bfe82afb8640e2e78}
+
+
+
+
+Definition at line 112 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Node\-Pages(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!currentMintermPage@{currentMintermPage}}
+\index{currentMintermPage@{currentMintermPage}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ \bf{current\-Minterm\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_fd81db70196b188b49c9f2690dd788de}
+
+
+
+
+Definition at line 105 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Minterm\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!currentNodeDataPage@{currentNodeDataPage}}
+\index{currentNodeDataPage@{currentNodeDataPage}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node\-Data\_\-t}$\ast$ \bf{current\-Node\-Data\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_630f1b3209083c6c77e6db74350475d2}
+
+
+
+
+Definition at line 119 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Node\-Data\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!currentNodePage@{currentNodePage}}
+\index{currentNodePage@{currentNodePage}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{current\-Node\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_d93ae4d355f7ec0de52754699f50796e}
+
+
+
+
+Definition at line 110 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Node\-Pages(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Subset\-HB.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 93 of file cudd\-Subset\-HB.c.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!lightNodePages@{lightNodePages}}
+\index{lightNodePages@{lightNodePages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$$\ast$ \bf{light\-Node\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_3127399e33a1f0cdf8af08521f162440}
+
+
+
+
+Definition at line 104 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Count\-Node\-Pages(), and Subset\-Count\-Nodes().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!max@{max}}
+\index{max@{max}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{max}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_0b0ede69e8156eb97acc579b88e883de}
+
+
+
+
+Definition at line 107 of file cudd\-Subset\-HB.c.
+
+Referenced by Build\-Subset\-Bdd(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Split\-Set(), cudd\-Cache\-Profile(), cudd\-Conjuncts\-Aux(), cudd\-Subset\-Heavy\-Branch(), cudd\-Swapping(), cudd\-Zdd\-Swapping(), minterms\-From\-Universe(), Subset\-Count\-Minterm(), and Subset\-Count\-Nodes().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!maxNodeDataPages@{maxNodeDataPages}}
+\index{maxNodeDataPages@{maxNodeDataPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{max\-Node\-Data\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_fb3b49835736161d775ae4704c0dc5f3}
+
+
+
+
+Definition at line 126 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Node\-Data\-Pages(), and Subset\-Count\-Minterm().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!maxPages@{maxPages}}
+\index{maxPages@{maxPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{max\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_cb4d0ef8bfe9ae2c3d3b2085ec10850f}
+
+
+
+
+Definition at line 117 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Nodes().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!memOut@{memOut}}
+\index{memOut@{memOut}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{mem\-Out}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_9a7d0759bd21567c811c1be4f0eed131}
+
+
+
+
+Definition at line 96 of file cudd\-Subset\-HB.c.
+
+Referenced by Build\-Subset\-Bdd(), Create\-Path\-Table(), Create\-Top\-Dist(), Cudd\_\-Subset\-Heavy\-Branch(), Cudd\_\-Subset\-Short\-Paths(), Cudd\_\-Superset\-Heavy\-Branch(), Cudd\_\-Superset\-Short\-Paths(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Resize\-Node\-Data\-Pages(), Resize\-Node\-Dist\-Pages(), Resize\-Queue\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!mintermPages@{mintermPages}}
+\index{mintermPages@{mintermPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$$\ast$ \bf{minterm\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_21bf825622328272e501567323ef591e}
+
+
+
+
+Definition at line 102 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Count\-Minterm\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!nodeDataPage@{nodeDataPage}}
+\index{nodeDataPage@{nodeDataPage}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Data\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_ad0579ab26226ff05d7184decbffae22}
+
+
+
+
+Definition at line 121 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Node\-Data\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!nodeDataPageIndex@{nodeDataPageIndex}}
+\index{nodeDataPageIndex@{nodeDataPageIndex}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Data\-Page\-Index}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_9d0744c7837b6bd618fee975368a68f6}
+
+
+
+
+Definition at line 122 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Node\-Data\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!nodeDataPages@{nodeDataPages}}
+\index{nodeDataPages@{nodeDataPages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node\-Data\_\-t}$\ast$$\ast$ \bf{node\-Data\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_1340c93379ac354bfd48716d1799419b}
+
+
+
+
+Definition at line 123 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Node\-Data\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!nodeDataPageSize@{nodeDataPageSize}}
+\index{nodeDataPageSize@{nodeDataPageSize}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Data\-Page\-Size} = DEFAULT\_\-NODE\_\-DATA\_\-PAGE\_\-SIZE\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_1d94ff19b9bb52f3762c6ca4747b7336}
+
+
+
+
+Definition at line 124 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Node\-Data\-Pages(), Subset\-Count\-Minterm(), and Subset\-Count\-Minterm\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!nodePages@{nodePages}}
+\index{nodePages@{nodePages}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$$\ast$ \bf{node\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_d905c12a00d71dd0c431fee9970b630b}
+
+
+
+
+Definition at line 103 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Count\-Node\-Pages(), and Subset\-Count\-Nodes().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!one@{one}}
+\index{one@{one}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{one}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_96c768055484e4df6e4a62f438fbf219}
+
+
+
+
+Definition at line 101 of file cudd\-Subset\-HB.c.\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!page@{page}}
+\index{page@{page}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_df406aa6822ceac22d62ef63cc2879c0}
+
+
+
+
+Definition at line 115 of file cudd\-Subset\-HB.c.
+
+Referenced by cudd\-Subset\-Heavy\-Branch(), Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!pageIndex@{pageIndex}}
+\index{pageIndex@{pageIndex}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{page\-Index}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_07bcd8b8ee33a71099d08a6c3e9523d9}
+
+
+
+
+Definition at line 114 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!pageSize@{pageSize}}
+\index{pageSize@{pageSize}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{page\-Size} = DEFAULT\_\-PAGE\_\-SIZE\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_0f8fcbb2d8136c7d33c2e72f3642d6f2}
+
+
+
+
+Definition at line 116 of file cudd\-Subset\-HB.c.
+
+Referenced by Resize\-Count\-Minterm\-Pages(), Resize\-Count\-Node\-Pages(), Subset\-Count\-Minterm(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes(), and Subset\-Count\-Nodes\-Aux().\index{cuddSubsetHB.c@{cudd\-Subset\-HB.c}!zero@{zero}}
+\index{zero@{zero}!cuddSubsetHB.c@{cudd\-Subset\-HB.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetHB_8c_9abc0d9e19b938006511a811e90606a1}
+
+
+
+
+Definition at line 101 of file cudd\-Subset\-HB.c.

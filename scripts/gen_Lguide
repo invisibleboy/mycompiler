@@ -1,0 +1,131 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#   Guide file Profiles lcode/mcode using the hppa code generator
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script rewritten by Dan Connors 9/97
+
+
+# Assume arguments valid
+VALID_ARGS=1;
+LOCAL=0;
+
+# get fixed arguments
+if [ $# -ge 3 ]; then
+    PREFIX="$1";
+    GUIDE_MODE="$2";
+    GUIDE_FILE="$3";
+    # skip the 3 set arguments
+    shift 3;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+	case $OPTION in
+           -ext)
+            EXT="$1";
+            shift;
+            echo "> Will use files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+        *)
+            echo "Error: Unknown option '$OPTION'"
+            VALID_ARGS=0;;
+    esac
+done
+	
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo '> Usage: gen_Lguide dir guide_mode guide_file_name [options] < "list"';
+    echo '>'
+    echo '> guide_mode may be sync,low-level,local'
+    echo '> guide_file_name is the file being generated for memory dependence profiling'
+    echo '>'
+    echo '> Options (zero or more of the the following may be specified):';
+    echo ">   -ext 'ext'      uses files in dir with .ext, instead of file list";
+    exit 0200;
+fi;
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+else
+    while read FILE;
+    do
+        FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+fi
+
+rm -f ${PREFIX}/${GUIDE_FILE}
+
+for FILE in $FILE_LIST
+do
+
+    echo "> Processing ${PREFIX}/$FILE for guide "
+    Lguide \
+	-Fguide_mode=${GUIDE_MODE} \
+	-Fwarn_parm_not_used=no \
+ 	-Fguide_file=${PREFIX}/${GUIDE_FILE} \
+	-i ${PREFIX}/${FILE}
+
+done;
+
+echo "> done";
+

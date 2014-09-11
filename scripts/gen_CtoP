@@ -1,0 +1,573 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script generates Pcode files from C files using the platform
+#       info provided by read_platform_info 
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by IMPACT Technologies Inc (John Gyllenhaal) 1/99
+#
+
+ANSI_C_SOURCE=1;
+USE_USER_ANSI_C_SOURCE=0;
+FIND_BENCH_DIR=1;
+BENCHMARK="NONE";
+READ_PATHS="";
+VALID_ARGS=1;
+BENCH_PREPROCESSING_OPTIONS="";
+NOCLEAN=0;
+
+DO_LINK=1;
+PLINK_EXTRA_ARG="";
+
+GET_PATH_ARG=0;
+GET_BENCH_ARG=0;
+GET_PROJECT_ARG=0;
+
+EDGBIN="impact-edgcpfe";
+
+# 11/07/02 REK If IMPACT_ROOT isn't defined, set it to be the same as
+#              IMPACT_REL_PATH.  This will allow the script to still work if
+#              someone doesn't have IMPACT_ROOT set and allow the script
+#              to work with the new autoconf split source/build directories.
+if [ "x${IMPACT_ROOT}" = "x" ]; then
+    export IMPACT_ROOT = ${IMPACT_REL_PATH};
+fi
+
+for OPTION in $*
+do
+    # I don't want to process the arguments directly yet (since causes
+    # some weirdness with spaces in args, etc.)  So do some special
+    # case handling of the options that take an argument.
+    if [ $GET_PATH_ARG -eq 1 ]; then
+       GET_PATH_ARG=0;
+       BENCH_DIR="$OPTION";
+       READ_PATHS="$READ_PATHS -bench_dir $BENCH_DIR";
+       # Make sure specified path exists
+       if [ ! -d $BENCH_DIR ]; then
+          echo "Error: Invalid directory specified with -bench_dir option:"
+          echo "       '${BENCH_DIR}'"
+          exit 1;
+       fi
+       FIND_BENCH_DIR=0;
+
+    elif [ $GET_BENCH_ARG -eq 1 ]; then
+       GET_BENCH_ARG=0;
+       BENCHMARK="$OPTION";
+       echo "> Using settings for '${BENCHMARK}'";
+
+    elif [ $GET_PROJECT_ARG -eq 1 ]; then
+       GET_PROJECT_ARG=0;
+       READ_PATHS="$READ_PATHS -project $OPTION";
+
+    else
+       # Ignore options we don't recognize and just pass to preprocessor later
+       case $OPTION in
+          # Allow an benchmark dir be specified
+          -bench_dir|-path)
+	     GET_PATH_ARG=1;;
+
+          -bench)
+	     GET_BENCH_ARG=1;;
+
+          -project)
+	     GET_PROJECT_ARG=1;;
+
+          -noclean|-no_clean)
+             NOCLEAN=1;;
+
+          -krc)
+              ANSI_C_SOURCE=0;
+	      USE_USER_ANSI_C_SOURCE=1;;
+
+          -ansi)
+              ANSI_C_SOURCE=1;
+    	      USE_USER_ANSI_C_SOURCE=1;;
+
+	  -nolink)
+	      echo "> SUPPRESSING LINK STEP";
+	      DO_LINK=0;;
+
+	  -nomerge)
+	      echo "> Will not merge structs with same names";
+	      PLINK_EXTRA_ARG="${PLINK_EXTRA_ARG} --no-merge-structs";;
+       esac
+    fi
+done
+
+# Make sure we got the second arguments we expected.
+if [ $GET_PATH_ARG -eq 1 ]; then
+   echo "Error: gen_CtoP expects a name after -bench_dir"
+   exit 1;
+elif [ $GET_BENCH_ARG -eq 1 ]; then
+   echo "Error: gen_CtoP expects an argument after -bench"
+   exit 1;
+elif [ $GET_PROJECT_ARG -eq 1 ]; then
+   echo "Error: gen_CtoP expects an argument after -project"
+   exit 1;
+fi
+
+# Don't bother with finding benchmark info if already in an error state
+if [ $VALID_ARGS -eq 1 ]; then
+
+    #       Find the benchmark info
+    #
+    # Find the benchmark dir if not user specified
+    if [ $FIND_BENCH_DIR -eq 1 ]; then
+      BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+      if [ "$?" != 0 ]; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+        exit 1;
+      fi
+    fi
+    echo " ";
+    echo "> Will use the compilation info for ${BENCHMARK} in:"
+    echo ">   $BENCH_DIR"
+
+    echo " "
+
+    # Read in preprocessing options
+    BENCH_PREPROCESSING_OPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -preprocessing_options`;
+    if [ "$?" != 0 ]; then echo "Unexpected Exit (BENCH_PREPROCESSING_OPTIONS)!: non-zero exit code";echo "$BENCH_PREPROCESSING_OPTIONS";exit 1;fi
+
+    # Read compilation mode from compile info if not set by user 
+    if [ $USE_USER_ANSI_C_SOURCE -eq 0 ]; then
+       ANSI_C_SOURCE=`read_compile_info ${BENCHMARK} $READ_PATHS -ansi_c_source`;
+       if [ "$?" != 0 ]; then echo "Unexpected Exit (ANSI_C_SOURCE)!: non-zero exit code";echo "$ANSI_C_SOURCE";exit 1;fi
+    fi
+fi
+
+
+if [ $# -le 0 ]; then
+   echo ' ';
+   echo "> Usage: gen_CtoP [preprocessing_options] *.c";
+   echo '> ';
+   echo '> Generates Pcode files (.pc) and a layout info file (host_layout_info.md)'
+   echo '> from the specified .c files, using the following steps:'
+   echo '> ';
+   echo "> 1) If -bench 'name' specified, with use benchmark's compile info to";
+   echo '>    determine the appropriate preprocessor settings to use.';
+   echo '> ';
+   echo '> 2) Preprocess the C files using the host compiler (using info read by'
+   echo '>    read_platform_info) and the preprocessing_options to generate .i files.'
+   echo '> ';
+   echo '> 3) Generate .pc files from .i files using the IMPACT-enhanced EDG front-end.';
+   echo '> ';
+   echo '> 4) Generate a special C program from the .pc files, compile it with the host';
+   echo '>    compiler, and run it to generate host_layout_info.md.  This file'
+   echo '>    specifies exactly how the host compiler wants each structure, etc.,'
+   echo '>    defined in the .c (and .h) files to be handled by IMPACT.'
+   echo '> ';
+   echo '> Zero or more of the following options may be specified';
+   echo '> ';
+   echo '> General Options (bench_info settings, etc):';
+   echo ">   -bench 'name'    Uses compile_info for 'name' instead of simple defaults";
+   echo '>   -bench_dir  "dir"     Read info in "dir" (find_bench_dir used by default)';
+   echo ">   -no_layout_info  Don't generate host_layout_info.md"
+   echo ">   -noclean         Save all intermediate files generated"
+   echo '> ';
+   echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+   echo '>   -ansi            Use Ansi-C compilation mode (default, if no bench info)';
+   echo '>   -krc             Use K&R C compilation mode';
+   echo ">   -[option]        All other -[option]s passed to preprocessor" 
+   echo ">   +[option]        All +[option]s passed to preprocessor" 
+   exit 0200;
+fi
+
+if [ $ANSI_C_SOURCE -eq 1 ]; then
+   echo "> IMPACT frontend in Ansi-C mode"   
+else
+   echo "> IMPACT frontend in K&R-C mode"
+fi
+
+# Read in impact info
+IMPACT_VERSION=`print_impact_info -version`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not get IMPACT version using print_impact_info!"
+   echo "> Error message returned by print_impact_info:"
+   echo "$IMPACT_VERSION";
+   exit 1;
+fi
+
+IMPACT_TYPE=`print_impact_info -type`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not get IMPACT type using print_impact_info!"
+   echo "> Error message returned by print_impact_info:"
+   echo "$IMPACT_TYPE";
+   exit 1;
+fi
+
+IMPACT_DATE=`print_impact_info -date`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not get IMPACT date using print_impact_info!"
+   echo "> Error message returned by print_impact_info:"
+   echo "$IMPACT_DATE";
+   exit 1;
+fi
+
+IMPACT_LCODE_VERSION=`print_impact_info -lcode`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not get IMPACT Lcode version using print_impact_info!"
+   echo "> Error message returned by print_impact_info:"
+   echo "$IMPACT_LCODE_VERSION";
+   exit 1;
+fi
+
+# Make sure valid platform info specified
+HOST_PLATFORM=`read_platform_info -host_platform`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+HOST_COMPILER_VERSION=`read_platform_info -host_compiler_version`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read host compiler version using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER_VERSION";
+   exit 1;
+fi
+
+LN_COMMAND=`read_platform_info -ln_command`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read option ln_command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+EXTRA_PREPROCESSING_OPTIONS=`read_platform_info -include_path_options`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read include path options using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$EXTRA_PREPROCESSING_OPTIONS";
+   exit 1;
+fi
+
+PREPROCESSOR_INVOCATION=`read_platform_info -preprocessor_invocation`
+if [ "$?" != 0 ]; then
+   echo " "
+   echo "> Exiting: Could not read preprocessor invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$PREPROCESSOR_INVOCATION";
+   exit 1;
+fi
+
+USE_KRC_MODE=`read_platform_info -use_krc_mode`
+if [ $ANSI_C_SOURCE -eq 1 -o $USE_KRC_MODE -eq 0 ]; then
+   C_MODE_SPECIFIER=`read_platform_info -ansi_c_mode_specifier`
+   if [ "$?" != 0 ]; then
+      echo " "
+      echo "> Exiting: Could not read Ansi-C mode specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$C_MODE_SPECIFIER";
+      exit 1;
+   fi
+  # This will be used in the preprocess_info pragma
+   PREPROCESS_MODE="Ansi-C"
+   USE_KRC_MODE=0
+else
+   C_MODE_SPECIFIER=`read_platform_info -krc_mode_specifier`
+   if [ "$?" != 0 ]; then
+      echo " "
+      echo "> Exiting: Could not read K&R-C mode specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$C_MODE_SPECIFIER";
+      exit 1;
+   fi
+  # This will be used in the preprocess_info pragma
+   PREPROCESS_MODE="K&R-C"
+   USE_KRC_MODE=`read_platform_info -use_krc_mode`
+   if [ "$?" != 0 ]; then
+      echo " "
+      echo "> Exiting: Could not read \"Use K&R-C Mode\" using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$USE_KRC_MODE_SPECIFIER";
+      exit 1;
+   fi
+fi
+
+# Record when the files were preprocessed (must all have same date!)
+# This will be used in the preprocess_info pragma
+PREPROCESS_DATE=`date`;
+
+# If have non-empty C_MODE_SPECIFIER, add to PREPROCESSOR_INVOCATION
+if [ "$C_MODE_SPECIFIER" != "" ]; then
+   PREPROCESSOR_INVOCATION="$PREPROCESSOR_INVOCATION $C_MODE_SPECIFIER";
+fi
+
+echo "> Starting generation of Pcode from C files"
+echo ">"
+echo ">      IMPACT Release Version: '$IMPACT_VERSION'"
+echo ">         IMPACT Release Type: '$IMPACT_TYPE'"
+echo ">         IMPACT Release Date: '$IMPACT_DATE'"
+echo ">        IMPACT Lcode Version: '$IMPACT_LCODE_VERSION'"
+echo ">               Host Platform: '$HOST_PLATFORM'"
+echo ">               Host Compiler: '$HOST_COMPILER'"
+echo ">       Host Compiler Version: '$HOST_COMPILER_VERSION'"
+echo ">           Preprocessor Mode: '$PREPROCESS_MODE'"
+echo ">   Base Preprocessor Command: '$PREPROCESSOR_INVOCATION'"
+echo ">        Include Path Options: '$EXTRA_PREPROCESSING_OPTIONS'"
+echo "> Benchmark-Specific Commands: '$BENCH_PREPROCESSING_OPTIONS'"
+echo ">         gen_CtoP Started On: '$PREPROCESS_DATE'"
+echo ">"
+
+
+# In general, preprocessing a file on one platform and linking/compiling on
+# another platform causes subtle and hard to track down bugs on non-trival
+# programs like SPEC!  To help detect these cases, the IMPACT's front-end
+# was modified to "brand" each function with the platform and compiler
+# used to preprocess, so these cases can be more easily detected.
+# It was enhanced in versions 2.30 and 2.32 to include more information, 
+# including IMPACT release info and host compiler version.   Mixing code 
+# compiled with different version of IMPACT Lcode or a host compiler can 
+# cause subtle problems also.
+
+IMPACT_INFO_PRAGMA="${IMPACT_VERSION}\\\$${IMPACT_TYPE}\\\$${IMPACT_DATE}\\\$${IMPACT_LCODE_VERSION}";
+export IMPACT_INFO_PRAGMA
+
+HOST_INFO_PRAGMA="${HOST_PLATFORM}\\\$${HOST_COMPILER}\\\$${HOST_COMPILER_VERSION}";
+export HOST_INFO_PRAGMA
+
+C_FILES_FOUND=0;
+
+while [ $# -gt 0 ]
+do
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+      # -krc|-ansi options taken care of earlier
+      -krc|-ansi|-no_layout_info|-noclean|-no_clean|-nolink|-nomerge)
+         ;;
+	 
+      # taken care of, but consume one more arg
+      -bench|-bench_dir|-project|-path|-info)
+         shift;;
+
+      -*|+*)
+         echo "> Adding '${OPTION}' to preprocessor command";
+         if [ "$EXTRA_PREPROCESSING_OPTIONS" != "" ]; then
+            EXTRA_PREPROCESSING_OPTIONS="${EXTRA_PREPROCESSING_OPTIONS} ${OPTION}";
+	 else
+            EXTRA_PREPROCESSING_OPTIONS="${OPTION}";
+         fi;;
+
+      *.c)
+         FILE_NAME="$OPTION"
+         BASE_NAME=`echo ${FILE_NAME} | awk -F. '{ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+         if [ "$BENCH_PREPROCESSING_OPTIONS" != "" ]; then
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION} ${BENCH_PREPROCESSING_OPTIONS}";
+         else
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION}";
+         fi
+
+         if [ "$EXTRA_PREPROCESSING_OPTIONS" != "" ]; then
+  	    IMPACT_PREPROCESSOR_INVOCATION="${BASE_PREPROCESSOR_INVOCATION} ${EXTRA_PREPROCESSING_OPTIONS}";
+         else
+  	    IMPACT_PREPROCESSOR_INVOCATION="${BASE_PREPROCESSOR_INVOCATION}";
+         fi
+
+	 echo "> Processing ${FILE_NAME}"
+
+	 echo "${IMPACT_PREPROCESSOR_INVOCATION} ${FILE_NAME} > ${BASE_NAME}.i"
+         rm -f ${BASE_NAME}.i
+         $IMPACT_PREPROCESSOR_INVOCATION $FILE_NAME > ${BASE_NAME}.i
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+         # ART - clean any strange modifiers that Pcode can't handle
+         if [ -f ${IMPACT_REL_PATH}/platform/${HOST_PLATFORM}_${HOST_COMPILER}/cleani.sed ]; then
+             echo "sed -f ${IMPACT_REL_PATH}/platform/${HOST_PLATFORM}_${HOST_COMPILER}/cleani.sed ${BASE_NAME}.i";
+             mv ${BASE_NAME}.i ${BASE_NAME}.i.dirty
+             sed -f ${IMPACT_REL_PATH}/platform/${HOST_PLATFORM}_${HOST_COMPILER}/cleani.sed ${BASE_NAME}.i.dirty > ${BASE_NAME}.i;
+             rm -f ${BASE_NAME}.i.dirty
+         fi
+
+         # Add preprocess info pragma to each .pc file (see above for more 
+         # details)
+         PREPROCESS_INFO_PRAGMA="${PREPROCESS_MODE}\\\$${BASE_PREPROCESSOR_INVOCATION}\\\$${EXTRA_PREPROCESSING_OPTIONS}\\\$${PREPROCESS_DATE}";
+         export PREPROCESS_INFO_PRAGMA
+
+         # Generate .pc file (implicit destination) (based on source type)
+         # NOTE: x86nt_cl should never use edg's K&R C mode,  ANSI_C_SOURCE is only
+         # used for x86nt to disable language extensions and define __STDC__
+         if [ $ANSI_C_SOURCE -eq 1 -o $USE_KRC_MODE -eq 0 ]; then
+	    EDGMODE="-m"
+         else
+	    EDGMODE="-K"
+         fi
+
+	 echo "${EDGBIN} --pcode ${EDGMODE} -w ${BASE_NAME}.i"
+	 ${EDGBIN} --pcode ${EDGMODE} -w ${BASE_NAME}.i
+
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+	 Psymtab -i ${BASE_NAME}.pc -o ${BASE_NAME}.pst
+
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+         # Cleanup unless -noclean specified
+         if [ $NOCLEAN -eq 0 ]; then
+            rm -f ${BASE_NAME}.i ${BASE_NAME}.pc
+         fi
+
+         C_FILES_FOUND=1;;
+
+      *.cc)
+         FILE_NAME="$OPTION"
+         BASE_NAME=`echo ${FILE_NAME} | awk -F. '{ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+         if [ "$BENCH_PREPROCESSING_OPTIONS" != "" ]; then
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION} ${BENCH_PREPROCESSING_OPTIONS}";
+         else
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION}";
+         fi
+
+         if [ "$EXTRA_PREPROCESSING_OPTIONS" != "" ]; then
+  	    IMPACT_PREPROCESSOR_INVOCATION="${BASE_PREPROCESSOR_INVOCATION} ${EXTRA_PREPROCESSING_OPTIONS}";
+         else
+  	    IMPACT_PREPROCESSOR_INVOCATION="${BASE_PREPROCESSOR_INVOCATION}";
+         fi
+
+	 echo "> Processing C++ ${FILE_NAME}"
+
+	 echo "${IMPACT_PREPROCESSOR_INVOCATION} ${FILE_NAME} > ${BASE_NAME}.ii"
+	 $IMPACT_PREPROCESSOR_INVOCATION $FILE_NAME > ${BASE_NAME}.ix
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+         # Add preprocess info pragma to each .pc file (see above for more 
+         # details)
+         PREPROCESS_INFO_PRAGMA="${PREPROCESS_MODE}\\\$${BASE_PREPROCESSOR_INVOCATION}\\\$${EXTRA_PREPROCESSING_OPTIONS}\\\$${PREPROCESS_DATE}";
+         export PREPROCESS_INFO_PRAGMA
+
+	 echo "${EDGBIN} -w --instantiate used --g++ --pcode ${BASE_NAME}.ix";
+         ${EDGBIN} -w --instantiate used --g++ --pcode ${BASE_NAME}.ix
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+	 echo "Psymtab -i ${BASE_NAME}.pc -o ${BASE_NAME}.pst";
+  	 Psymtab -i ${BASE_NAME}.pc -o ${BASE_NAME}.pst
+         if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+         # Cleanup unless -noclean specified
+         if [ $NOCLEAN -eq 0 ]; then
+            rm -f ${BASE_NAME}.ix ${BASE_NAME}.pc
+         fi
+
+         C_FILES_FOUND=1;;
+
+      *.pc) 
+         FILE_NAME="$OPTION"
+         BASE_NAME=`echo ${FILE_NAME} | awk -F. '{ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+         if [ "$BENCH_PREPROCESSING_OPTIONS" != "" ]; then
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION} ${BENCH_PREPROCESSING_OPTIONS}";
+         else
+  	    BASE_PREPROCESSOR_INVOCATION="${PREPROCESSOR_INVOCATION}";
+         fi
+
+         echo "> $FILE_NAME:"
+
+         # Add preprocess info pragma to each .pc file (see above for more 
+         # details)
+         PREPROCESS_INFO_PRAGMA="${PREPROCESS_MODE}\\\$${BASE_PREPROCESSOR_INVOCATION}\\\$${EXTRA_PREPROCESSING_OPTIONS}\\\$${PREPROCESS_DATE}";
+         export PREPROCESS_INFO_PRAGMA
+
+         C_FILES_FOUND=1;;
+
+      *)
+         echo "Error, unknown gen_CtoP option: '${OPTION}'";
+         exit 1;;
+    esac
+done
+
+if [ $DO_LINK -eq 1 ]; then
+  echo "> Linking Pcode"
+
+  FPST="";
+  for F in `\ls [^_]*.pst` ; do FPST="$FPST $F"; done;
+  for F in `\ls _*.pst` ; do FPST="$FPST $F"; done;
+
+  echo "Plink ${PLINK_EXTRA_ARG} -e pstl $FPST"
+  Plink -e pstl $FPST
+  if [ "$?" != 0 ]; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+  # Cleanup unless -noclean specified
+  if [ $NOCLEAN -eq 0 ]; then
+    rm -f *.pst
+  fi
+fi;
+
+# Make sure actually did something
+if [ $C_FILES_FOUND -eq 0 ]; then
+  echo "Error:  No C files specified in gen_CtoP invocation"
+  exit 1;
+fi

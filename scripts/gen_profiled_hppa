@@ -1,0 +1,547 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#   Profiles lcode/mcode using the hppa code generator
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script rewritten by John Gyllenhaal 12/94
+
+ARCH=`host_arch`
+if test "$?" != 0; then echo "Terminating: error in arch ($ARCH)"; exit 1;fi
+
+case $ARCH in
+    hppa)
+        VALID_ARCH=1;;
+
+
+    *)
+        VALID_ARCH=0;;
+esac
+
+
+# set up environment with default values:
+INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_new";
+READ_DATABASE=0;
+PROBE_FLAGS="";	
+SHOW=0;
+CLEAN=1;
+TEST_ONLY=0;
+VERBOSE=0;
+BENCHMARK="prof_exec";
+PREFIX="";
+ARGS="";
+CHECK="";
+CLEANUP="";
+DOCHECK=0;
+DOSETUP=0;
+DOCLEANUP=0;
+LOCAL=0;
+FILE_LIST="";
+
+TASK_BROKER=0;
+TASK_BROKER_SLAVE=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    DIR="$1";
+
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-lcode)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Source is Lcode";
+	    PROBE_FLAGS="${PROBE_FLAGS} -lcode";;
+
+	-playdoh)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Source is Playdoh code";
+	    PROBE_FLAGS="${PROBE_FLAGS} -playdoh";;
+
+	-playdoh_seq)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Will use sequential Playdoh emulation";
+	    PROBE_FLAGS="${PROBE_FLAGS} -playdoh_seq";;
+
+	-mcb)
+#           Suppress message, gen_probed_hppa will print out message
+#           echo "> Will insert MCB emulation code"
+	    PROBE_FLAGS="${PROBE_FLAGS} -mcb";;
+
+	-hpux10_curses)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Will include -ldld for HP-UX 10 curses library"
+	    PROBE_FLAGS="${PROBE_FLAGS} -hpux10_curses";;
+	
+	-loop_iters)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Will generate loop iteration info"
+	    PROBE_FLAGS="${PROBE_FLAGS} -loop_iters";;
+	
+	-flush_trace)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Trace buffer will be flushed after every oper (slow, for debug only).";
+	    PROBE_FLAGS="${PROBE_FLAGS} -flush_trace";;
+
+	-test_only)
+	    echo "> Will only test to see if lcode executes properly";
+	    PROBE_FLAGS="${PROBE_FLAGS} -noprobes";
+	    TEST_ONLY=1;;
+
+	-info)
+            if test $READ_DATABASE = 1; then
+               echo "> Error: You must place '-info' before '-bench' on command line! (sorry)";
+               exit 0200;
+            fi
+	    INFO_SCRIPT="$1";
+            shift;
+            echo "> Using the setting database '${INFO_SCRIPT}'";;
+
+	-spiff)
+            if test $READ_DATABASE = 1; then
+               echo "*** Error: You must place '-spiff' before '-bench' on command line! (sorry)";
+               exit 0200;
+            fi
+            INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_spiff";
+            echo "> Using the spiff-version database '${INFO_SCRIPT}'";;
+
+	-train)
+            if test $READ_DATABASE = 1; then
+               echo "*** Error: You must place '-train' before '-bench' on command line! (sorry)";
+               exit 0200;
+            fi
+            INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_training_info";
+            echo "> Using the training database '${INFO_SCRIPT}'";;
+
+	-bench)
+	    READ_DATABASE=1;
+	    BENCHMARK="$1";
+	    shift;	
+            echo "> Using standard settings for '${BENCHMARK}'";
+  	    SETUP=`${INFO_SCRIPT} SETUP ${BENCHMARK}`
+            PREFIX=`${INFO_SCRIPT} PREFIX ${BENCHMARK}`
+            ARGS=`${INFO_SCRIPT} ARGS ${BENCHMARK}`
+            CHECK=`${INFO_SCRIPT} CHECK ${BENCHMARK} result.out`
+            CLEANUP=`${INFO_SCRIPT} CLEANUP ${BENCHMARK}`
+   	    # Make sure worked (test only last command since all same script)
+            if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$CLEANUP"; exit 1;fi
+	    NEW_LIB_DIR=`${INFO_SCRIPT} LIBDIRS ${BENCHMARK}`
+	    # Make sure worked
+            if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$NEW_LIB_DIR"; exit 1;fi
+	    NEW_LIB=`${INFO_SCRIPT} LIBS ${BENCHMARK}`
+	    # Make sure worked
+            if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$NEW_LIB"; exit 1;fi
+
+	    PROBE_FLAGS="${PROBE_FLAGS} ${NEW_LIB_DIR} ${NEW_LIB}";
+
+	    # Flag that we have set setup, check and cleanup to something
+            DOSETUP=1;
+	    DOCHECK=1;
+	    DOCLEANUP=1;
+
+	    # Add redirection to result.out in ARGS, and removal to CLEANUP 
+            ARGS="${ARGS} >& result.out";
+	    CLEANUP="rm -f result.out; ${CLEANUP}";;
+
+	-setup)
+	    SETUP="$1";
+	    shift;
+	    DOSETUP=1;
+	    echo "> Setup text set to '${SETUP}'";;
+	
+	-prefix)
+	    PREFIX="$1";
+	    shift;
+	    echo "> Prefixing '${PREFIX}' to profile exec command";;
+
+	-args)
+	    ARGS="$1";
+	    shift;
+	    echo "> Args set to '${ARGS}'";;
+	
+	-check)
+	    CHECK="$1";
+	    shift;
+	    DOCHECK=1;
+	    echo "> Check text set to '${CHECK}'";;
+
+	-cleanup)
+	    CLEANUP="$1";
+	    shift;
+	    DOCLEANUP=1;
+	    echo "> Cleanup text set to '${CLEANUP}'";;
+
+        # Silently ignore -ignore and the next argument -JCG 5/12/98
+        # Used by compile_benchmark to allow -setup, etc to be used.
+	-ignore)
+	    shift;;  
+
+        -show)
+	    echo "> Show commands mode on (commands prefixed with +)"
+	    SHOW=1;;
+
+	-noclean)
+	    echo "> Will not clean up temp files"
+            PROBE_FLAGS="${PROBE_FLAGS} -noclean";
+	    CLEAN=0;;
+
+	-verbose)
+	    echo "> Verbose mode on"
+	    VERBOSE=1;;
+
+	-verbose_probe)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Verbose probing mode on"
+            PROBE_FLAGS="${PROBE_FLAGS} -verbose";;
+
+	-f2c)
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Linking in f2c libraries"
+            PROBE_FLAGS="${PROBE_FLAGS} -f2c";;
+
+        -mco)
+#           Suppress message, gen_probed_hppa will print out message
+#           echo "> .mco files will be generated"
+            PROBE_FLAGS="${PROBE_FLAGS} -mco";;
+
+        -fastreg)
+#           Suppress message, gen_probed_hppa will print out message
+#           echo "> Using fast register allocation (spill everything)"
+            PROBE_FLAGS="${PROBE_FLAGS} -fastreg";;
+
+        -nofastreg|-no_fastreg)
+#           Suppress message, gen_probed_hppa will print out message
+            PROBE_FLAGS="${PROBE_FLAGS} -nofastreg";;
+
+        -ext)
+            EXT="$1";
+            shift;
+            echo "> Will use files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+	-task_broker)
+	    TASK_BROKER=1;	
+		;;
+
+	-task_broker_slave)
+	    TASK_BROKER_SLAVE=1;
+		;;
+
+	-lib_dir)
+	    NEW_LIB_DIR="$1";
+	    shift;
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Add ${NEW_LIB_DIR} to library directories";
+            PROBE_FLAGS="${PROBE_FLAGS} -lib_dir ${NEW_LIB_DIR}";;
+
+        -L*)
+#           Suppress message, gen_probed_hppa will print out message
+#           echo "> Adding '${OPTION}' to the link command";
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+
+	-add_lib)
+	    NEW_LIB="$1";
+	    shift;
+#           Suppress message, gen_probed_hppa will print out message
+#	    echo "> Add ${NEW_LIB} to libraries";
+            PROBE_FLAGS="${PROBE_FLAGS} -add_lib ${NEW_LIB}";;
+
+        -l*)
+#           Suppress message, gen_probed_hppa will print out message 
+#           echo "> Adding '${OPTION}' to the link command";
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+	*)
+	    echo "Error: Unknown option '${OPTION}'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARCH -eq 0 -o $VALID_ARGS -eq 0 ]; then
+
+    if [ $VALID_ARCH -eq 0 ]; then
+        echo ' ';
+        echo '==> This should be run on a hppa machine '
+        echo ' ';
+    fi
+
+    echo "${PROBE_FLAGS}";
+
+    echo ' ';
+    echo "> Usage: gen_profiled_hppa dir [options] < list";
+    echo '> ';
+    echo '> Profiles lcode/mcode using the settings specified in the options';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -lcode          indicates lcode is being probed (the default is mcode)';
+    echo '>   -playdoh_lcode  indicates playdoh lcode is being probed';
+    echo '>   -playdoh_seq    use sequential mode emulation for playdoh';
+    echo '>   -mcb            mcb emulation code will be inserted.';
+    echo '>   -hpux10_curses  adds library so curses library links correctly for HP-UX 10';
+    echo '>   -verbose        prints message at every step';
+    echo '>   -verbose_probe  turns on verbose during probing';
+    echo '>   -show           shows script commands (uses set -x)';
+    echo '>   -noclean        prevents clean up of temp files';
+    echo '>   -f2c            links in f2c libraries';
+    echo '>   -mco            generates probed .mco files';
+    echo '>   -test_only      only tests if lcode works properly (no profiling)';
+    echo '>   -loop_iters     generates loop iteration info';
+    echo '>   -flush_trace    flushes trace buffer at every oper (slow, for debug only)';
+    echo ">   -ext 'ext'      uses files in dir with .ext, instead of file list";
+    echo '>   -fastreg        spill everything (now the default, so -fastreg unnecessary)';
+    echo '>   -nofastreg      use normal register allocation (can take a long time)';
+    echo ">   -lib_dir 'dir'  also search 'dir' for libs";
+    echo ">   -Ldir           also search 'dir' for libs (cc-like version of -lib_dir)";
+    echo ">   -add_lib 'lib'  also link in 'lib'";
+    echo ">   -llibrary       also link in 'library' (cc-like version of -add_lib)";
+
+    echo "> "
+    echo ">   -bench 'name'   Uses the 5 standard benchmark settings for 'name'";
+    echo ">   -info 'name'    Sets the setting database file to use";
+    echo ">   -spiff          Use the spiff version of the benchmark database";
+    echo ">   -train          Use the training version of the benchmark database";
+    echo "> "
+    echo ">   -setup 'text'   Runs 'text' to setup profile run";
+    echo ">   -prefix 'text'  Prefixes 'text' to profile_exec_command";
+    echo ">   -args 'text'    Sets profile execution arguments to 'text'";
+    echo ">   -check 'text'   Runs 'text' to check output";
+    echo ">   -cleanup 'text' Runs 'text' to cleanup after profile run";
+    echo ">   -ignore  'text' Totally ignored, silently (used by compile_benchmark)"
+    echo ">"
+
+
+    exit 0200;
+fi;
+
+if [ $TASK_BROKER_SLAVE -eq 1 ]; then
+   TASK_BROKER=0
+fi;
+
+if [ $TASK_BROKER -eq 1 ]; then
+   export DIR;
+   export ARGUMENTS;
+   tsub -b -s ProfileHPPA -o ${DIR}/tbprhp.out -e ${DIR}/tbprhp.out /dev/null;
+   exit 0;
+fi;
+
+if [ $READ_DATABASE -eq 0 ]; then
+        echo "> Benchmark name not specified.  Using settings (if any) from -setup,";
+        echo "> -prefix, -args, -check, and -cleanup";
+        echo " ";
+fi;
+
+# Turn on debugging if -show used
+if test $SHOW = 1; then
+  set -x
+fi
+	
+# Make sure directory specified exists
+if [ ! -d ${DIR} ]; then
+        echo "> ERROR: Directory '${DIR}' doesn't exist"
+        exit 0200;
+fi
+
+cd ${DIR}
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+else
+    while read FILE;
+    do
+	FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+fi
+
+# Make temp profile directory
+if test $VERBOSE = 1; then
+  echo "> **************************************************************";
+  echo "> Creating 'impactprof' for use as temp diretory"
+  echo "> **************************************************************";
+  echo ">"
+fi
+rm -rf impactprof
+mkdir impactprof
+
+if test $VERBOSE = 1; then
+echo "> **************************************************************";
+echo "> Linking files into 'impactprof'"
+echo "> **************************************************************";
+echo ">"
+fi
+
+# read files from list, and put in list in impactprof
+for FILE in $FILE_LIST
+do
+    # Make sure file exists
+    if [ ! -f ${FILE} ]; then
+         echo "> ERROR: '${FILE}' does not exist in '${DIR}'";
+	 exit 0200;
+    fi
+
+    # Make link to file in impactprof
+    cd impactprof; ln -s ../${FILE} .; cd ..
+
+    # Add file name to source list
+    echo ${FILE} >> impactprof/srclist;
+done
+
+
+# Generated probed executable for profiling
+if test $VERBOSE = 1; then
+  if test $TEST_ONLY = 0; then
+    echo "> **************************************************************";
+    echo "> Generating probed executable for profiling";
+    echo "> **************************************************************";
+  else
+    echo "> **************************************************************";
+    echo "> Generating probed executable for testing";
+    echo "> **************************************************************";
+
+  fi
+fi 
+echo ">"
+
+gen_probed_hppa impactprof profiling ${BENCHMARK} ${PROBE_FLAGS} < impactprof/srclist
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+
+# Generate the profile
+if test $VERBOSE = 1; then
+  echo "> **************************************************************";
+fi
+echo "> "
+if test $TEST_ONLY = 0; then
+  echo "> Profiling ${BENCHMARK} in directory '${DIR}'";
+else
+  echo "> Testing ${BENCHMARK} in directory '${DIR}'";
+fi
+echo "> "
+echo ">     Setup: '${SETUP}'"
+echo ">    Prefix: '${PREFIX}'"
+echo "> Prof Args: '${ARGS}'"
+echo ">     Check: '${CHECK}'"
+echo ">   Cleanup: '${CLEANUP}'"
+echo "> "
+if test $VERBOSE = 1; then
+  echo "> **************************************************************";
+fi
+# Setup the profiling run
+if test $DOSETUP = 1; then
+  # Shell out ot do setup so expresssions evaulated properly
+  /bin/sh -c "${SETUP}"
+fi
+
+if test $TEST_ONLY = 0; then
+  # Run the profiler, niced
+  nice -10 Lprofile impactprof/${BENCHMARK}.encoded impactprof/${BENCHMARK}.profile impactprof/${BENCHMARK}.probed "${PREFIX} impactprof/${BENCHMARK}.probed ${ARGS}" -p ${IMPACT_REL_PATH}/parms/PROBE_HPPA
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+else
+  /bin/csh -c "${PREFIX} impactprof/${BENCHMARK}.probed ${ARGS}"
+fi
+   
+# Check the results, if check specified
+if test $DOCHECK = 1; then
+  echo ">"
+  echo "> RESULT CHECK BEGIN FOR ${BENCHMARK}";
+  # Shell out ot do check so expresssions evaulated properly
+  /bin/sh -c "${CHECK}"
+  echo "> RESULT CHECK END FOR ${BENCHMARK}";
+  echo ">"
+fi
+
+if test $TEST_ONLY = 0; then
+  # Merge profile into files
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+    echo "> Merging profile info into files ";
+    echo "> **************************************************************";
+    echo ">"
+  fi
+
+  gen_Lget . impactprof/${BENCHMARK}.profile impactprof/${BENCHMARK}.index -p ${IMPACT_REL_PATH}/parms/PROBE_HPPA < impactprof/srclist
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Clean up unless using -noclean option
+if test $CLEAN = 1; then
+   if test $VERBOSE = 1; then
+     echo "> **************************************************************";
+     echo "> Removing 'impactprof' temp directory and cleaning up"
+     echo "> **************************************************************";
+     echo ">"
+   fi
+   rm -rf impactprof
+   if test $DOCLEANUP = 1; then
+     # Shell out to do cleanup so expression evalulated properly
+     /bin/sh -c "${CLEANUP}"
+   fi
+fi
+
+

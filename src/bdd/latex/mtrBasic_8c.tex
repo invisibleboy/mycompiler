@@ -1,0 +1,266 @@
+\section{mtr\-Basic.c File Reference}
+\label{mtrBasic_8c}\index{mtrBasic.c@{mtrBasic.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/mtr\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Alloc\-Node} ()
+\item 
+void \bf{Mtr\_\-Dealloc\-Node} (\bf{Mtr\-Node} $\ast$node)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Init\-Tree} ()
+\item 
+void \bf{Mtr\_\-Free\-Tree} (\bf{Mtr\-Node} $\ast$node)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Copy\-Tree} (\bf{Mtr\-Node} $\ast$node, int expansion)
+\item 
+void \bf{Mtr\_\-Make\-First\-Child} (\bf{Mtr\-Node} $\ast$parent, \bf{Mtr\-Node} $\ast$child)
+\item 
+void \bf{Mtr\_\-Make\-Last\-Child} (\bf{Mtr\-Node} $\ast$parent, \bf{Mtr\-Node} $\ast$child)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Create\-First\-Child} (\bf{Mtr\-Node} $\ast$parent)
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Mtr\_\-Create\-Last\-Child} (\bf{Mtr\-Node} $\ast$parent)
+\item 
+void \bf{Mtr\_\-Make\-Next\-Sibling} (\bf{Mtr\-Node} $\ast$first, \bf{Mtr\-Node} $\ast$second)
+\item 
+void \bf{Mtr\_\-Print\-Tree} (\bf{Mtr\-Node} $\ast$node)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{MTR\_\-UNUSED} = \char`\"{}\$Id: mtr\-Basic.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_AllocNode@{Mtr\_\-AllocNode}}
+\index{Mtr_AllocNode@{Mtr\_\-AllocNode}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Alloc\-Node ()}\label{mtrBasic_8c_d7d09199583169f0226dabb9ccb6f8e0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Allocates new tree node.]
+
+Description [Allocates new tree node. Returns pointer to node.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Dealloc\-Node] 
+
+Definition at line 91 of file mtr\-Basic.c.
+
+References ALLOC.
+
+Referenced by Mtr\_\-Copy\-Tree(), Mtr\_\-Create\-First\-Child(), Mtr\_\-Create\-Last\-Child(), Mtr\_\-Init\-Tree(), and Mtr\_\-Make\-Group().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_CopyTree@{Mtr\_\-CopyTree}}
+\index{Mtr_CopyTree@{Mtr\_\-CopyTree}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Copy\-Tree (\bf{Mtr\-Node} $\ast$ {\em node}, int {\em expansion})}\label{mtrBasic_8c_ac5a8d0fc9e75da460866c2443cafff4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes a copy of tree.]
+
+Description [Makes a copy of tree. If parameter expansion is greater than 1, it will expand the tree by that factor. It is an error for expansion to be less than 1. Returns a pointer to the copy if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Init\-Tree] 
+
+Definition at line 190 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\-Node::index, Mtr\-Node::low, Mtr\_\-Alloc\-Node(), Mtr\_\-Dealloc\-Node(), Mtr\_\-Free\-Tree(), Mtr\-Node::parent, Mtr\-Node::size, and Mtr\-Node::younger.
+
+Referenced by Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_CreateFirstChild@{Mtr\_\-CreateFirstChild}}
+\index{Mtr_CreateFirstChild@{Mtr\_\-CreateFirstChild}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Create\-First\-Child (\bf{Mtr\-Node} $\ast$ {\em parent})}\label{mtrBasic_8c_481a581477e981a71efbebf5f4a8967d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates a new node and makes it the first child of parent.]
+
+Description [Creates a new node and makes it the first child of parent. Returns pointer to new child.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Make\-First\-Child Mtr\_\-Create\-Last\-Child] 
+
+Definition at line 312 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\_\-Alloc\-Node(), Mtr\_\-Make\-First\-Child(), Mtr\-Node::parent, and Mtr\-Node::younger.\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_CreateLastChild@{Mtr\_\-CreateLastChild}}
+\index{Mtr_CreateLastChild@{Mtr\_\-CreateLastChild}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Create\-Last\-Child (\bf{Mtr\-Node} $\ast$ {\em parent})}\label{mtrBasic_8c_09ea5cf8dea68a4c6ab9b47750160edf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates a new node and makes it the last child of parent.]
+
+Description [Creates a new node and makes it the last child of parent. Returns pointer to new child.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Make\-Last\-Child Mtr\_\-Create\-First\-Child] 
+
+Definition at line 341 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\_\-Alloc\-Node(), Mtr\_\-Make\-Last\-Child(), Mtr\-Node::parent, and Mtr\-Node::younger.\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_DeallocNode@{Mtr\_\-DeallocNode}}
+\index{Mtr_DeallocNode@{Mtr\_\-DeallocNode}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Dealloc\-Node (\bf{Mtr\-Node} $\ast$ {\em node})}\label{mtrBasic_8c_ffc778ae15cfca3b58c1a61a0462e439}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Deallocates tree node.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Alloc\-Node] 
+
+Definition at line 114 of file mtr\-Basic.c.
+
+References FREE.
+
+Referenced by Mtr\_\-Copy\-Tree(), Mtr\_\-Dissolve\-Group(), and Mtr\_\-Free\-Tree().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_FreeTree@{Mtr\_\-FreeTree}}
+\index{Mtr_FreeTree@{Mtr\_\-FreeTree}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Free\-Tree (\bf{Mtr\-Node} $\ast$ {\em node})}\label{mtrBasic_8c_671ef677efc74ca81519aa279d02f1c9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Disposes of tree rooted at node.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Init\-Tree] 
+
+Definition at line 163 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\_\-Dealloc\-Node(), MTR\_\-TERMINAL, MTR\_\-TEST, and Mtr\-Node::younger.
+
+Referenced by Cudd\_\-Free\-Tree(), Cudd\_\-Free\-Zdd\-Tree(), Cudd\_\-Set\-Tree(), Cudd\_\-Set\-Zdd\-Tree(), cudd\-Free\-Table(), and Mtr\_\-Copy\-Tree().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_InitTree@{Mtr\_\-InitTree}}
+\index{Mtr_InitTree@{Mtr\_\-InitTree}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Mtr\_\-Init\-Tree ()}\label{mtrBasic_8c_590f5495a2ae1aba01cebf2f8108d86e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes tree with one node.]
+
+Description [Initializes tree with one node. Returns pointer to node.]
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Free\-Tree Mtr\_\-Init\-Group\-Tree] 
+
+Definition at line 135 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, Mtr\_\-Alloc\-Node(), Mtr\-Node::parent, and Mtr\-Node::younger.
+
+Referenced by Mtr\_\-Init\-Group\-Tree().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_MakeFirstChild@{Mtr\_\-MakeFirstChild}}
+\index{Mtr_MakeFirstChild@{Mtr\_\-MakeFirstChild}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Make\-First\-Child (\bf{Mtr\-Node} $\ast$ {\em parent}, \bf{Mtr\-Node} $\ast$ {\em child})}\label{mtrBasic_8c_7dfd9596fe4fab5e50996e6b02ed8f8f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes child the first child of parent.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Make\-Last\-Child Mtr\_\-Create\-First\-Child] 
+
+Definition at line 244 of file mtr\-Basic.c.
+
+References assert, Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::parent, and Mtr\-Node::younger.
+
+Referenced by Mtr\_\-Create\-First\-Child().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_MakeLastChild@{Mtr\_\-MakeLastChild}}
+\index{Mtr_MakeLastChild@{Mtr\_\-MakeLastChild}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Make\-Last\-Child (\bf{Mtr\-Node} $\ast$ {\em parent}, \bf{Mtr\-Node} $\ast$ {\em child})}\label{mtrBasic_8c_ba92afe238a3b408d9e57efedf7c9979}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes child the last child of parent.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Make\-First\-Child Mtr\_\-Create\-Last\-Child] 
+
+Definition at line 275 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::parent, and Mtr\-Node::younger.
+
+Referenced by Mtr\_\-Create\-Last\-Child().\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_MakeNextSibling@{Mtr\_\-MakeNextSibling}}
+\index{Mtr_MakeNextSibling@{Mtr\_\-MakeNextSibling}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Make\-Next\-Sibling (\bf{Mtr\-Node} $\ast$ {\em first}, \bf{Mtr\-Node} $\ast$ {\em second})}\label{mtrBasic_8c_690167afd1d44c49e1da09c6401e93fc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes second the next sibling of first.]
+
+Description [Makes second the next sibling of first. Second becomes a child of the parent of first.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 370 of file mtr\-Basic.c.
+
+References Mtr\-Node::elder, Mtr\-Node::parent, and Mtr\-Node::younger.\index{mtrBasic.c@{mtr\-Basic.c}!Mtr_PrintTree@{Mtr\_\-PrintTree}}
+\index{Mtr_PrintTree@{Mtr\_\-PrintTree}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Mtr\_\-Print\-Tree (\bf{Mtr\-Node} $\ast$ {\em node})}\label{mtrBasic_8c_2b74ec8b38ff7acb55691cb2a476bfe9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints a tree, one node per line.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Mtr\_\-Print\-Groups] 
+
+Definition at line 398 of file mtr\-Basic.c.
+
+References Mtr\-Node::child, Mtr\-Node::elder, Mtr\-Node::flags, MTR\_\-TERMINAL, MTR\_\-TEST, Mtr\-Node::parent, and Mtr\-Node::younger.
+
+\subsection{Variable Documentation}
+\index{mtrBasic.c@{mtr\-Basic.c}!MTR_UNUSED@{MTR\_\-UNUSED}}
+\index{MTR_UNUSED@{MTR\_\-UNUSED}!mtrBasic.c@{mtr\-Basic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{MTR\_\-UNUSED} = \char`\"{}\$Id: mtr\-Basic.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{mtrBasic_8c_71385e18c061c8783c806fedd390bb6a}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{mtr\-Basic.c}{p.}{mtrBasic_8c}]
+
+Package\-Name [mtr]
+
+Synopsis [Basic manipulation of multiway branching trees.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Mtr\_\-Alloc\-Node()}{p.}{mtrBasic_8c_d7d09199583169f0226dabb9ccb6f8e0} \item \doxyref{Mtr\_\-Dealloc\-Node()}{p.}{mtrBasic_8c_ffc778ae15cfca3b58c1a61a0462e439} \item \doxyref{Mtr\_\-Init\-Tree()}{p.}{mtrBasic_8c_590f5495a2ae1aba01cebf2f8108d86e} \item \doxyref{Mtr\_\-Free\-Tree()}{p.}{mtrBasic_8c_671ef677efc74ca81519aa279d02f1c9} \item \doxyref{Mtr\_\-Make\-First\-Child()}{p.}{mtrBasic_8c_7dfd9596fe4fab5e50996e6b02ed8f8f} \item \doxyref{Mtr\_\-Make\-Last\-Child()}{p.}{mtrBasic_8c_ba92afe238a3b408d9e57efedf7c9979} \item \doxyref{Mtr\_\-Create\-First\-Child()}{p.}{mtrBasic_8c_481a581477e981a71efbebf5f4a8967d} \item \doxyref{Mtr\_\-Create\-Last\-Child()}{p.}{mtrBasic_8c_09ea5cf8dea68a4c6ab9b47750160edf} \item \doxyref{Mtr\_\-Make\-Next\-Sibling()}{p.}{mtrBasic_8c_690167afd1d44c49e1da09c6401e93fc} \item \doxyref{Mtr\_\-Print\-Tree()}{p.}{mtrBasic_8c_2b74ec8b38ff7acb55691cb2a476bfe9} \end{itemize}
+]
+
+See\-Also [cudd package]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 58 of file mtr\-Basic.c.

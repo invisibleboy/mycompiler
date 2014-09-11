@@ -1,0 +1,763 @@
+\section{cudd\-Table.c File Reference}
+\label{cuddTable_8c}\index{cuddTable.c@{cuddTable.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+union \bf{hack}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DD\_\-STACK\_\-SIZE}~128
+\item 
+\#define \bf{DD\_\-RED}~0
+\item 
+\#define \bf{DD\_\-BLACK}~1
+\item 
+\#define \bf{DD\_\-PAGE\_\-SIZE}~8192
+\item 
+\#define \bf{DD\_\-PAGE\_\-MASK}~$\sim$(DD\_\-PAGE\_\-SIZE - 1)
+\item 
+\#define \bf{DD\_\-INSERT\_\-COMPARE}(x, y)
+\item 
+\#define \bf{DD\_\-COLOR}(p)~((p) $\rightarrow$ index)
+\item 
+\#define \bf{DD\_\-IS\_\-BLACK}(p)~((p) $\rightarrow$ index == DD\_\-BLACK)
+\item 
+\#define \bf{DD\_\-IS\_\-RED}(p)~((p) $\rightarrow$ index == DD\_\-RED)
+\item 
+\#define \bf{DD\_\-LEFT}(p)~cudd\-T(p)
+\item 
+\#define \bf{DD\_\-RIGHT}(p)~cudd\-E(p)
+\item 
+\#define \bf{DD\_\-NEXT}(p)~((p) $\rightarrow$ next)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void dd\-Rehash \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique, int i))
+\item 
+static int dd\-Resize\-Table \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique, int index))
+\item 
+static int cudd\-Find\-Parent \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node))
+\item 
+static DD\_\-INLINE void dd\-Fix\-Limits \bf{ARGS} ((\bf{Dd\-Manager} $\ast$unique))
+\item 
+static void cudd\-Ordered\-Insert \bf{ARGS} ((\bf{Dd\-Node} $\ast$$\ast$root, \bf{Dd\-Node} $\ast$node))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Ordered\-Thread \bf{ARGS} ((\bf{Dd\-Node} $\ast$root, \bf{Dd\-Node} $\ast$list))
+\item 
+static void cudd\-Rotate\-Left \bf{ARGS} ((\bf{Dd\-Node} $\ast$$\ast$node\-P))
+\item 
+static void cudd\-Do\-Rebalance \bf{ARGS} ((\bf{Dd\-Node} $\ast$$\ast$$\ast$stack, int stack\-N))
+\item 
+static void dd\-Patch\-Tree \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$treenode))
+\item 
+unsigned int \bf{Cudd\_\-Prime} (unsigned int p)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Alloc\-Node} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+\bf{Dd\-Manager} $\ast$ \bf{cudd\-Init\-Table} (unsigned int num\-Vars, unsigned int num\-Vars\-Z, unsigned int num\-Slots)
+\item 
+void \bf{cudd\-Free\-Table} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+int \bf{cudd\-Garbage\-Collect} (\bf{Dd\-Manager} $\ast$unique, int clear\-Cache)
+\item 
+int \bf{cudd\-Garbage\-Collect\-Zdd} (\bf{Dd\-Manager} $\ast$unique, int clear\-Cache)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Get\-Node} (\bf{Dd\-Manager} $\ast$zdd, int id, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Get\-Node\-IVO} (\bf{Dd\-Manager} $\ast$dd, int index, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$h)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Unique\-Inter} (\bf{Dd\-Manager} $\ast$unique, int index, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Unique\-Inter\-Zdd} (\bf{Dd\-Manager} $\ast$unique, int index, \bf{Dd\-Node} $\ast$T, \bf{Dd\-Node} $\ast$E)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Unique\-Const} (\bf{Dd\-Manager} $\ast$unique, CUDD\_\-VALUE\_\-TYPE value)
+\item 
+int \bf{cudd\-Insert\-Subtables} (\bf{Dd\-Manager} $\ast$unique, int n, int level)
+\item 
+int \bf{cudd\-Destroy\-Subtables} (\bf{Dd\-Manager} $\ast$unique, int n)
+\item 
+int \bf{cudd\-Resize\-Table\-Zdd} (\bf{Dd\-Manager} $\ast$unique, int index)
+\item 
+static void \bf{dd\-Rehash} (\bf{Dd\-Manager} $\ast$unique, int i)
+\item 
+static void \bf{dd\-Rehash\-Zdd} (\bf{Dd\-Manager} $\ast$unique, int i)
+\item 
+static int \bf{dd\-Resize\-Table} (\bf{Dd\-Manager} $\ast$unique, int index)
+\item 
+static int \bf{cudd\-Find\-Parent} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node)
+\item 
+static DD\_\-INLINE void \bf{dd\-Fix\-Limits} (\bf{Dd\-Manager} $\ast$unique)
+\item 
+static void \bf{cudd\-Ordered\-Insert} (\bf{Dd\-Node} $\ast$$\ast$root, \bf{Dd\-Node} $\ast$node)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Ordered\-Thread} (\bf{Dd\-Node} $\ast$root, \bf{Dd\-Node} $\ast$list)
+\item 
+static DD\_\-INLINE void \bf{cudd\-Rotate\-Left} (\bf{Dd\-Node} $\ast$$\ast$node\-P)
+\item 
+static DD\_\-INLINE void \bf{cudd\-Rotate\-Right} (\bf{Dd\-Node} $\ast$$\ast$node\-P)
+\item 
+static void \bf{cudd\-Do\-Rebalance} (\bf{Dd\-Node} $\ast$$\ast$$\ast$stack, int stack\-N)
+\item 
+static void \bf{dd\-Patch\-Tree} (\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$treenode)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Table.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddTable.c@{cudd\-Table.c}!DD_BLACK@{DD\_\-BLACK}}
+\index{DD_BLACK@{DD\_\-BLACK}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-BLACK~1}\label{cuddTable_8c_3393b17c83fd0bd63c762fc129d8666d}
+
+
+
+
+Definition at line 66 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance().\index{cuddTable.c@{cudd\-Table.c}!DD_COLOR@{DD\_\-COLOR}}
+\index{DD_COLOR@{DD\_\-COLOR}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-COLOR(p)~((p) $\rightarrow$ index)}\label{cuddTable_8c_dbb9299880c4cb8be50d018c754deb6f}
+
+
+
+
+Definition at line 103 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance(), and cudd\-Ordered\-Insert().\index{cuddTable.c@{cudd\-Table.c}!DD_INSERT_COMPARE@{DD\_\-INSERT\_\-COMPARE}}
+\index{DD_INSERT_COMPARE@{DD\_\-INSERT\_\-COMPARE}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-INSERT\_\-COMPARE(x, y)}\label{cuddTable_8c_c1e447f72d7717d02cda96a448bc8e3d}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((unsigned long) (x) & DD_PAGE_MASK) - \
+         ((unsigned long) (y) & DD_PAGE_MASK))
+\end{verbatim}\end{Code}
+
+
+Definition at line 69 of file cudd\-Table.c.
+
+Referenced by cudd\-Ordered\-Insert().\index{cuddTable.c@{cudd\-Table.c}!DD_IS_BLACK@{DD\_\-IS\_\-BLACK}}
+\index{DD_IS_BLACK@{DD\_\-IS\_\-BLACK}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-IS\_\-BLACK(p)~((p) $\rightarrow$ index == DD\_\-BLACK)}\label{cuddTable_8c_4026587e93dea6b6bc0290904a2a02e5}
+
+
+
+
+Definition at line 104 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance().\index{cuddTable.c@{cudd\-Table.c}!DD_IS_RED@{DD\_\-IS\_\-RED}}
+\index{DD_IS_RED@{DD\_\-IS\_\-RED}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-IS\_\-RED(p)~((p) $\rightarrow$ index == DD\_\-RED)}\label{cuddTable_8c_cbea3916a6d99cf01f139b9edeb8717e}
+
+
+
+
+Definition at line 105 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance().\index{cuddTable.c@{cudd\-Table.c}!DD_LEFT@{DD\_\-LEFT}}
+\index{DD_LEFT@{DD\_\-LEFT}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-LEFT(p)~cudd\-T(p)}\label{cuddTable_8c_8b49b4c8ad893ff97a41df58aa568e90}
+
+
+
+
+Definition at line 106 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance(), cudd\-Ordered\-Insert(), cudd\-Ordered\-Thread(), cudd\-Rotate\-Left(), and cudd\-Rotate\-Right().\index{cuddTable.c@{cudd\-Table.c}!DD_NEXT@{DD\_\-NEXT}}
+\index{DD_NEXT@{DD\_\-NEXT}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-NEXT(p)~((p) $\rightarrow$ next)}\label{cuddTable_8c_19a024d2c808a2f255536566406d55c5}
+
+
+
+
+Definition at line 108 of file cudd\-Table.c.
+
+Referenced by cudd\-Ordered\-Insert(), and cudd\-Ordered\-Thread().\index{cuddTable.c@{cudd\-Table.c}!DD_PAGE_MASK@{DD\_\-PAGE\_\-MASK}}
+\index{DD_PAGE_MASK@{DD\_\-PAGE\_\-MASK}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-PAGE\_\-MASK~$\sim$(DD\_\-PAGE\_\-SIZE - 1)}\label{cuddTable_8c_27478ee9124f6aa2730ded398386992f}
+
+
+
+
+Definition at line 68 of file cudd\-Table.c.\index{cuddTable.c@{cudd\-Table.c}!DD_PAGE_SIZE@{DD\_\-PAGE\_\-SIZE}}
+\index{DD_PAGE_SIZE@{DD\_\-PAGE\_\-SIZE}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-PAGE\_\-SIZE~8192}\label{cuddTable_8c_b99dcc693dcceba31954d311468c8e5b}
+
+
+
+
+Definition at line 67 of file cudd\-Table.c.\index{cuddTable.c@{cudd\-Table.c}!DD_RED@{DD\_\-RED}}
+\index{DD_RED@{DD\_\-RED}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-RED~0}\label{cuddTable_8c_23a961dca89293232b739d0a99c46425}
+
+
+
+
+Definition at line 65 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance(), and cudd\-Ordered\-Insert().\index{cuddTable.c@{cudd\-Table.c}!DD_RIGHT@{DD\_\-RIGHT}}
+\index{DD_RIGHT@{DD\_\-RIGHT}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-RIGHT(p)~cudd\-E(p)}\label{cuddTable_8c_f8c0c4f7e904cc30ec5f39ccee2dafa8}
+
+
+
+
+Definition at line 107 of file cudd\-Table.c.
+
+Referenced by cudd\-Do\-Rebalance(), cudd\-Ordered\-Insert(), cudd\-Ordered\-Thread(), cudd\-Rotate\-Left(), and cudd\-Rotate\-Right().\index{cuddTable.c@{cudd\-Table.c}!DD_STACK_SIZE@{DD\_\-STACK\_\-SIZE}}
+\index{DD_STACK_SIZE@{DD\_\-STACK\_\-SIZE}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-STACK\_\-SIZE~128}\label{cuddTable_8c_e8ca3b99f4554eea34c6bcc686b33450}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Table.c}{p.}{cuddTable_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Unique table management functions.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Prime()}{p.}{cuddTable_8c_405445d35a7c41877fe916f6dfa11472} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Alloc\-Node()}{p.}{cuddTable_8c_eab770a8c957379ede9ec8edd1dd696a} \item \doxyref{cudd\-Init\-Table()}{p.}{cuddTable_8c_8ac01776912fdc96fcba56519270e5e4} \item \doxyref{cudd\-Free\-Table()}{p.}{cuddTable_8c_1c1bf08350088e17ef443273e2c8de6b} \item \doxyref{cudd\-Garbage\-Collect()}{p.}{cuddTable_8c_67e9deab5db86e16734a413ad199719c} \item \doxyref{cudd\-Garbage\-Collect\-Zdd()}{p.}{cuddTable_8c_808241aa4fb021fe8f4515b45e17787d} \item \doxyref{cudd\-Zdd\-Get\-Node()}{p.}{cuddTable_8c_f607cebd30fbd27bb9bd0fa125a1e1a8} \item \doxyref{cudd\-Zdd\-Get\-Node\-IVO()}{p.}{cuddTable_8c_f19757ac3885d62886ce2a63ba409ce3} \item \doxyref{cudd\-Unique\-Inter()}{p.}{cuddTable_8c_767e31fbbfdbddc623396dde86249497} \item \doxyref{cudd\-Unique\-Inter\-Zdd()}{p.}{cuddTable_8c_82d51c70097e5d4acddd5c8c4aef6d73} \item \doxyref{cudd\-Unique\-Const()}{p.}{cuddTable_8c_4e44fedc71d81a76167dc441ca10cff6} \item \doxyref{cudd\-Insert\-Subtables()}{p.}{cuddTable_8c_8f0377f8cc5d75cdd86514e46039efdf} \item \doxyref{cudd\-Destroy\-Subtables()}{p.}{cuddTable_8c_c164deef3725e54db581378d0dafcdfb} \item \doxyref{cudd\-Resize\-Table\-Zdd()}{p.}{cuddTable_8c_f9fabe670c27f42152573dbf713ec2ee} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dd\-Rehash()}{p.}{cuddTable_8c_bfd887783dd50144d9dfee33b052a262} \item \doxyref{dd\-Rehash\-Zdd()}{p.}{cuddTable_8c_ecec043d5045c4941bca86b7f64f80cb} \item \doxyref{dd\-Resize\-Table()}{p.}{cuddTable_8c_a3cc29f9531752d6e32f7b849d9d9554} \item \doxyref{cudd\-Find\-Parent()}{p.}{cuddTable_8c_29fedfcc42d320c454add752cb76507c} \item \doxyref{cudd\-Ordered\-Insert()}{p.}{cuddTable_8c_16a52d91ee5bd9860a0dd30a024b5a83} \item \doxyref{cudd\-Ordered\-Thread()}{p.}{cuddTable_8c_05d70369f3c75429e0cc52845198e6c8} \item \doxyref{cudd\-Rotate\-Left()}{p.}{cuddTable_8c_3f30b4927e3eae3fb104d19b4c0602d9} \item \doxyref{cudd\-Rotate\-Right()}{p.}{cuddTable_8c_35f93898fd55be50af912ccc905de786} \item \doxyref{cudd\-Do\-Rebalance()}{p.}{cuddTable_8c_85e78dea128ce6144ecdeb4da7c9fbb3} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 64 of file cudd\-Table.c.
+
+Referenced by cudd\-Ordered\-Insert().
+
+\subsection{Function Documentation}
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Patch\-Tree ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Mtr\-Node} $\ast$treenode))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_3b588c17341160224c241e6335f6feb1}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Do\-Rebalance ARGS ((\bf{Dd\-Node} $\ast$$\ast$$\ast$stack, int stack\-N))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_d8f8b3bec9905d7a0ebc060e479f4ee7}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Rotate\-Right ARGS ((\bf{Dd\-Node} $\ast$$\ast$node\-P))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_050721fa81032339d98583e0b810f1bc}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Ordered\-Thread ARGS ((\bf{Dd\-Node} $\ast$root, \bf{Dd\-Node} $\ast$list))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_032f62588722eb43b1d464273745d11a}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Ordered\-Insert ARGS ((\bf{Dd\-Node} $\ast$$\ast$root, \bf{Dd\-Node} $\ast$node))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_3bd8e9d9397c9264f21950b174584557}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE void dd\-Fix\-Limits ARGS ((\bf{Dd\-Manager} $\ast$unique))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_ab3eae887732392f256eb08b967258e4}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Find\-Parent ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_065c02a90fbab3e926eadc4a26500fef}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Resize\-Table ARGS ((\bf{Dd\-Manager} $\ast$unique, int index))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_97ba005868073a2d491a928a865c9ad6}
+
+
+\index{cuddTable.c@{cudd\-Table.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Rehash\-Zdd ARGS ((\bf{Dd\-Manager} $\ast$unique, int i))\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_ffa1f479834401364f422c3c380dc46c}
+
+
+Automatic\-Start \index{cuddTable.c@{cudd\-Table.c}!Cudd_Prime@{Cudd\_\-Prime}}
+\index{Cudd_Prime@{Cudd\_\-Prime}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Prime (unsigned int {\em p})}\label{cuddTable_8c_405445d35a7c41877fe916f6dfa11472}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the next prime $>$= p.]
+
+Description []
+
+Side\-Effects [None] 
+
+Definition at line 155 of file cudd\-Table.c.\index{cuddTable.c@{cudd\-Table.c}!cuddAllocNode@{cuddAllocNode}}
+\index{cuddAllocNode@{cuddAllocNode}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Alloc\-Node (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddTable_8c_eab770a8c957379ede9ec8edd1dd696a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Fast storage allocation for Dd\-Nodes in the table.]
+
+Description [Fast storage allocation for Dd\-Nodes in the table. The first 4 bytes of a chunk contain a pointer to the next block; the rest contains DD\_\-MEM\_\-CHUNK spaces for Dd\-Nodes. Returns a pointer to a new node if successful; NULL is memory is full.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Dynamic\-Alloc\-Node] 
+
+Definition at line 202 of file cudd\-Table.c.
+
+References ALLOC, Dd\-Manager::allocated, assert, CUDD\_\-MEMORY\_\-OUT, cudd\-Garbage\-Collect(), DD\_\-MEM\_\-CHUNK, Dd\-Manager::memory\-List, Dd\-Manager::memused, Dd\-Node::next, and Dd\-Manager::next\-Free.
+
+Referenced by cudd\-Unique\-Const(), cudd\-Unique\-Inter(), and cudd\-Unique\-Inter\-Zdd().\index{cuddTable.c@{cudd\-Table.c}!cuddDestroySubtables@{cuddDestroySubtables}}
+\index{cuddDestroySubtables@{cuddDestroySubtables}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Destroy\-Subtables (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em n})}\label{cuddTable_8c_c164deef3725e54db581378d0dafcdfb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Destroys the n most recently created subtables in a unique table.]
+
+Description [Destroys the n most recently created subtables in a unique table. n should be positive. The subtables should not contain any live nodes, except the (isolated) projection function. The projection functions are freed. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Insert\-Subtables] 
+
+Definition at line 1623 of file cudd\-Table.c.
+
+References assert, Cudd\_\-Recursive\-Deref(), cudd\-Find\-Parent(), cudd\-Garbage\-Collect(), DD\_\-MAXREF, Dd\-Subtable::dead, Dd\-Manager::dead, FREE, Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Subtable::max\-Keys, Dd\-Manager::memused, Dd\-Subtable::nodelist, Dd\-Manager::perm, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Manager::size, Dd\-Manager::slots, Dd\-Subtable::slots, Dd\-Manager::subtables, and Dd\-Manager::vars.\index{cuddTable.c@{cudd\-Table.c}!cuddDoRebalance@{cuddDoRebalance}}
+\index{cuddDoRebalance@{cuddDoRebalance}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Do\-Rebalance (\bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em stack}, int {\em stack\-N})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_85e78dea128ce6144ecdeb4da7c9fbb3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Rebalances a red/black tree.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2658 of file cudd\-Table.c.
+
+References cudd\-Rotate\-Left(), cudd\-Rotate\-Right(), DD\_\-BLACK, DD\_\-COLOR, DD\_\-IS\_\-BLACK, DD\_\-IS\_\-RED, DD\_\-LEFT, DD\_\-RED, and DD\_\-RIGHT.
+
+Referenced by cudd\-Ordered\-Insert().\index{cuddTable.c@{cudd\-Table.c}!cuddFindParent@{cuddFindParent}}
+\index{cuddFindParent@{cuddFindParent}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Find\-Parent (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em node})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_29fedfcc42d320c454add752cb76507c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Searches the subtables above node for a parent.]
+
+Description [Searches the subtables above node for a parent. Returns 1 as soon as one parent is found. Returns 0 is the search is fruitless.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2408 of file cudd\-Table.c.
+
+References Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, Dd\-Node::index, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Subtable::slots, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Destroy\-Subtables().\index{cuddTable.c@{cudd\-Table.c}!cuddFreeTable@{cuddFreeTable}}
+\index{cuddFreeTable@{cuddFreeTable}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Free\-Table (\bf{Dd\-Manager} $\ast$ {\em unique})}\label{cuddTable_8c_1c1bf08350088e17ef443273e2c8de6b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the resources associated to a unique table.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Init\-Table] 
+
+Definition at line 505 of file cudd\-Table.c.
+
+References CUDD\_\-POST\_\-GC\_\-HOOK, CUDD\_\-POST\_\-REORDERING\_\-HOOK, CUDD\_\-PRE\_\-GC\_\-HOOK, CUDD\_\-PRE\_\-REORDERING\_\-HOOK, Cudd\_\-Remove\-Hook(), cudd\-Zdd\-Free\-Univ(), FREE, Dd\-Manager::memory\-List, Mtr\_\-Free\-Tree(), and Dd\-Manager::univ.
+
+Referenced by Cudd\_\-Quit().\index{cuddTable.c@{cudd\-Table.c}!cuddGarbageCollect@{cuddGarbageCollect}}
+\index{cuddGarbageCollect@{cuddGarbageCollect}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Garbage\-Collect (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em clear\-Cache})}\label{cuddTable_8c_67e9deab5db86e16734a413ad199719c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs garbage collection on a unique table.]
+
+Description [Performs garbage collection on a unique table. If clear\-Cache is 0, the cache is not cleared. This should only be specified if the cache has been cleared right before calling cudd\-Garbage\-Collect. (As in the case of dynamic reordering.) Returns the total number of deleted nodes.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Garbage\-Collect\-Zdd] 
+
+Definition at line 578 of file cudd\-Table.c.
+
+References Dd\-Manager::allocated, Dd\-Manager::cache, Dd\-Manager::cachedeletions, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, Dd\-Cache::data, DD\_\-GC\_\-PERCENT\_\-HI, DD\_\-GC\_\-PERCENT\_\-LO, DD\_\-NON\_\-CONSTANT, Dd\-Manager::dead, Dd\-Cache::f, Dd\-Cache::g, Dd\-Manager::garbage\-Collections, Dd\-Manager::gc\-Percent, Dd\-Cache::h, Dd\-Manager::keys, Dd\-Manager::loose\-Up\-To, Dd\-Manager::min\-Dead, Dd\-Hook::next, Dd\-Manager::pre\-GCHook, Dd\-Manager::reclaimed, Dd\-Manager::slots, and util\_\-cpu\_\-time().
+
+Referenced by cudd\-Alloc\-Node(), cudd\-Bdd\-Align\-To\-Zdd(), cudd\-Destroy\-Subtables(), cudd\-Unique\-Const(), cudd\-Unique\-Inter(), dd\-Rehash(), and dd\-Reorder\-Preprocess().\index{cuddTable.c@{cudd\-Table.c}!cuddGarbageCollectZdd@{cuddGarbageCollectZdd}}
+\index{cuddGarbageCollectZdd@{cuddGarbageCollectZdd}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Garbage\-Collect\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em clear\-Cache})}\label{cuddTable_8c_808241aa4fb021fe8f4515b45e17787d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs garbage collection on a ZDD unique table.]
+
+Description [Performs garbage collection on a ZDD unique table. If clear\-Cache is 0, the cache is not cleared. This should only be specified if the cache has been cleared right before calling cudd\-Garbage\-Collect\-Zdd. (As in the case of dynamic reordering.) Returns the total number of deleted nodes.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Garbage\-Collect] 
+
+Definition at line 803 of file cudd\-Table.c.
+
+References Dd\-Manager::allocated, Dd\-Manager::cache, Dd\-Manager::cachedeletions, Dd\-Manager::cache\-Slots, Cudd\_\-Regular, Dd\-Cache::data, DD\_\-GC\_\-PERCENT\_\-HI, DD\_\-GC\_\-PERCENT\_\-LO, DD\_\-NON\_\-CONSTANT, Dd\-Manager::dead\-Z, Dd\-Cache::f, Dd\-Cache::g, Dd\-Manager::garbage\-Collections, Dd\-Manager::gc\-Percent, Dd\-Cache::h, Dd\-Manager::keys\-Z, Dd\-Manager::loose\-Up\-To, Dd\-Manager::min\-Dead, Dd\-Manager::reclaimed, Dd\-Manager::slots, and util\_\-cpu\_\-time().
+
+Referenced by cudd\-Unique\-Inter\-Zdd(), cudd\-Zdd\-Align\-To\-Bdd(), dd\-Rehash\-Zdd(), and zdd\-Reorder\-Preprocess().\index{cuddTable.c@{cudd\-Table.c}!cuddInitTable@{cuddInitTable}}
+\index{cuddInitTable@{cuddInitTable}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Manager}$\ast$ cudd\-Init\-Table (unsigned int {\em num\-Vars}, unsigned int {\em num\-Vars\-Z}, unsigned int {\em num\-Slots})}\label{cuddTable_8c_8ac01776912fdc96fcba56519270e5e4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates and initializes the unique table.]
+
+Description [Creates and initializes the unique table. Returns a pointer to the table if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Init cudd\-Free\-Table] 
+
+Definition at line 274 of file cudd\-Table.c.
+
+References ALLOC, Dd\-Manager::allocated, Dd\-Manager::arcviolation, Dd\-Manager::auto\-Dyn, Dd\-Manager::auto\-Dyn\-Z, Dd\-Manager::auto\-Method, Dd\-Manager::auto\-Method\-Z, Dd\-Manager::constants, Dd\-Manager::count\-Dead, CUDD\_\-GROUP\_\-CHECK7, CUDD\_\-MEMORY\_\-OUT, CUDD\_\-NO\_\-ERROR, CUDD\_\-REORDER\_\-SIFT, Cudd\_\-Set\-Loose\-Up\-To(), CUDD\_\-UNIQUE\_\-SLOTS, cudd\-Compute\-Floor\-Log2(), DD\_\-DEFAULT\_\-RECOMB, DD\_\-DEFAULT\_\-RESIZE, DD\_\-EPSILON, DD\_\-FIRST\_\-REORDER, DD\_\-GC\_\-PERCENT\_\-HI, DD\_\-MAX\_\-REORDER\_\-GROWTH, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, DD\_\-SIFT\_\-MAX\_\-SWAPS, DD\_\-SIFT\_\-MAX\_\-VAR, dd\-Max, Dd\-Subtable::dead, Dd\-Manager::dead, Dd\-Manager::dead\-Z, Dd\-Manager::epsilon, Dd\-Manager::error\-Code, Dd\-Manager::garbage\-Collections, Dd\-Manager::gc\-Enabled, Dd\-Manager::gc\-Percent, Dd\-Manager::GCTime, Dd\-Manager::groupcheck, Dd\-Manager::invperm, Dd\-Manager::invperm\-Z, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::keys\-Z, Dd\-Manager::linear, Dd\-Manager::linear\-Size, Dd\-Manager::local\-Caches, Dd\-Manager::max\-Growth, Dd\-Subtable::max\-Keys, Dd\-Manager::max\-Size, Dd\-Manager::max\-Size\-Z, Dd\-Manager::memory\-List, Dd\-Manager::memused, Dd\-Manager::min\-Dead, Dd\-Manager::next\-Dyn, Dd\-Manager::next\-Free, Dd\-Subtable::nodelist, Dd\-Manager::number\-Xovers, Dd\-Manager::perm, Dd\-Manager::perm\-Z, Dd\-Manager::population\-Size, Dd\-Manager::post\-GCHook, Dd\-Manager::post\-Reordering\-Hook, Dd\-Manager::pre\-GCHook, Dd\-Manager::pre\-Reordering\-Hook, Dd\-Manager::realign, Dd\-Manager::realign\-Z, Dd\-Manager::reclaimed, Dd\-Manager::recomb, Dd\-Manager::reordered, Dd\-Manager::reorderings, Dd\-Manager::reord\-Time, Dd\-Subtable::shift, Dd\-Manager::sift\-Max\-Swap, Dd\-Manager::sift\-Max\-Var, Dd\-Manager::size, Dd\-Manager::size\-Z, Dd\-Subtable::slots, Dd\-Manager::slots, Dd\-Manager::stack, Dd\-Manager::subtables, Dd\-Manager::subtable\-Z, Dd\-Manager::symmviolation, Dd\-Manager::tree, Dd\-Manager::tree\-Z, and Dd\-Manager::univ.
+
+Referenced by Cudd\_\-Init().\index{cuddTable.c@{cudd\-Table.c}!cuddInsertSubtables@{cuddInsertSubtables}}
+\index{cuddInsertSubtables@{cuddInsertSubtables}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Insert\-Subtables (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em n}, int {\em level})}\label{cuddTable_8c_8f0377f8cc5d75cdd86514e46039efdf}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts n new subtables in a unique table at level.]
+
+Description [Inserts n new subtables in a unique table at level. The number n should be positive, and level should be an existing level. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Destroy\-Subtables] 
+
+Definition at line 1389 of file cudd\-Table.c.
+
+References ALLOC, assert, Dd\-Manager::auto\-Dyn, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-UNIQUE\_\-SLOTS, cudd\-Compute\-Floor\-Log2(), cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-DEFAULT\_\-RESIZE, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, dd\-Fix\-Limits(), dd\-Max, Dd\-Subtable::dead, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Manager::max\-Size, Dd\-Manager::max\-Size\-Z, Dd\-Manager::memused, Dd\-Subtable::nodelist, Dd\-Manager::one, one, Dd\-Manager::perm, Dd\-Subtable::shift, Dd\-Manager::size, size, Dd\-Manager::slots, Dd\-Subtable::slots, Dd\-Manager::stack, Dd\-Manager::subtables, Dd\-Manager::vars, and zero.
+
+Referenced by Cudd\_\-add\-New\-Var\-At\-Level(), and Cudd\_\-bdd\-New\-Var\-At\-Level().\index{cuddTable.c@{cudd\-Table.c}!cuddOrderedInsert@{cuddOrderedInsert}}
+\index{cuddOrderedInsert@{cuddOrderedInsert}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Ordered\-Insert (\bf{Dd\-Node} $\ast$$\ast$ {\em root}, \bf{Dd\-Node} $\ast$ {\em node})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_16a52d91ee5bd9860a0dd30a024b5a83}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Inserts a \doxyref{Dd\-Node}{p.}{structDdNode} in a red/black search tree.]
+
+Description [Inserts a \doxyref{Dd\-Node}{p.}{structDdNode} in a red/black search tree. Nodes from the same \char`\"{}page\char`\"{} (defined by DD\_\-PAGE\_\-MASK) are linked in a LIFO list.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Ordered\-Thread] 
+
+Definition at line 2489 of file cudd\-Table.c.
+
+References cudd\-Do\-Rebalance(), DD\_\-COLOR, DD\_\-INSERT\_\-COMPARE, DD\_\-LEFT, DD\_\-NEXT, DD\_\-RED, DD\_\-RIGHT, DD\_\-STACK\_\-SIZE, and scan.\index{cuddTable.c@{cudd\-Table.c}!cuddOrderedThread@{cuddOrderedThread}}
+\index{cuddOrderedThread@{cuddOrderedThread}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Ordered\-Thread (\bf{Dd\-Node} $\ast$ {\em root}, \bf{Dd\-Node} $\ast$ {\em list})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_05d70369f3c75429e0cc52845198e6c8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Threads all the nodes of a search tree into a linear list.]
+
+Description [Threads all the nodes of a search tree into a linear list. For each node of the search tree, the \char`\"{}left\char`\"{} child, if non-null, has a lower address than its parent, and the \char`\"{}right\char`\"{} child, if non-null, has a higher address than its parent. The list is sorted in order of increasing addresses. The search tree is destroyed as a result of this operation. The last element of the linear list is made to point to the address passed in list. Each node if the search tree is a linearly-linked list of nodes from the same memory page (as defined in DD\_\-PAGE\_\-MASK). When a node is added to the linear list, all the elements of the linked list are added.]
+
+Side\-Effects [The search tree is destroyed as a result of this operation.]
+
+See\-Also [cudd\-Ordered\-Insert] 
+
+Definition at line 2538 of file cudd\-Table.c.
+
+References DD\_\-LEFT, DD\_\-NEXT, and DD\_\-RIGHT.\index{cuddTable.c@{cudd\-Table.c}!cuddResizeTableZdd@{cuddResizeTableZdd}}
+\index{cuddResizeTableZdd@{cuddResizeTableZdd}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Resize\-Table\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em index})}\label{cuddTable_8c_f9fabe670c27f42152573dbf713ec2ee}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Increases the number of ZDD subtables in a unique table so that it meets or exceeds index.]
+
+Description [Increases the number of ZDD subtables in a unique table so that it meets or exceeds index. When new ZDD variables are created, it is possible to preserve the functions unchanged, or it is possible to preserve the covers unchanged, but not both. cudd\-Resize\-Table\-Zdd preserves the covers. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [dd\-Resize\-Table] 
+
+Definition at line 1747 of file cudd\-Table.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, CUDD\_\-UNIQUE\_\-SLOTS, cudd\-Compute\-Floor\-Log2(), cudd\-Zdd\-Free\-Univ(), cudd\-Zdd\-Init\-Univ(), DD\_\-DEFAULT\_\-RESIZE, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, dd\-Fix\-Limits(), dd\-Max, Dd\-Subtable::dead, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm\-Z, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Manager::max\-Size, Dd\-Manager::max\-Size\-Z, Dd\-Manager::memused, Dd\-Subtable::nodelist, one, Dd\-Manager::perm\-Z, Dd\-Subtable::shift, Dd\-Manager::size\-Z, Dd\-Manager::slots, Dd\-Subtable::slots, Dd\-Manager::stack, Dd\-Manager::subtable\-Z, and zero.
+
+Referenced by Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars(), and cudd\-Unique\-Inter\-Zdd().\index{cuddTable.c@{cudd\-Table.c}!cuddRotateLeft@{cuddRotateLeft}}
+\index{cuddRotateLeft@{cuddRotateLeft}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE void cudd\-Rotate\-Left (\bf{Dd\-Node} $\ast$$\ast$ {\em node\-P})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_3f30b4927e3eae3fb104d19b4c0602d9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the left rotation for red/black trees.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Rotate\-Right] 
+
+Definition at line 2607 of file cudd\-Table.c.
+
+References DD\_\-LEFT, and DD\_\-RIGHT.
+
+Referenced by cudd\-Do\-Rebalance().\index{cuddTable.c@{cudd\-Table.c}!cuddRotateRight@{cuddRotateRight}}
+\index{cuddRotateRight@{cuddRotateRight}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE void cudd\-Rotate\-Right (\bf{Dd\-Node} $\ast$$\ast$ {\em node\-P})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_35f93898fd55be50af912ccc905de786}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the right rotation for red/black trees.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Rotate\-Left] 
+
+Definition at line 2633 of file cudd\-Table.c.
+
+References DD\_\-LEFT, and DD\_\-RIGHT.
+
+Referenced by cudd\-Do\-Rebalance().\index{cuddTable.c@{cudd\-Table.c}!cuddUniqueConst@{cuddUniqueConst}}
+\index{cuddUniqueConst@{cuddUniqueConst}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Unique\-Const (\bf{Dd\-Manager} $\ast$ {\em unique}, CUDD\_\-VALUE\_\-TYPE {\em value})}\label{cuddTable_8c_4e44fedc71d81a76167dc441ca10cff6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the unique table for the existence of a constant node.]
+
+Description [Checks the unique table for the existence of a constant node. If it does not exist, it creates a new one. Does not modify the reference count of whatever is returned. A newly created internal node comes back with a reference count 0. Returns a pointer to the new node.]
+
+Side\-Effects [None] 
+
+Definition at line 1301 of file cudd\-Table.c.
+
+References hack::bits, Dd\-Manager::constants, CUDD\_\-MAXINDEX, cudd\-Adjust, cudd\-Alloc\-Node(), cudd\-Garbage\-Collect(), cudd\-Reclaim(), dd\-Abs, dd\-Equal\-Val, dd\-Hash, dd\-Rehash(), Dd\-Subtable::dead, Dd\-Manager::dead, Dd\-Manager::epsilon, Dd\-Manager::gc\-Enabled, Dd\-Node::index, Dd\-Manager::keys, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Manager::min\-Dead, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Node::type, Dd\-Node::value, and hack::value.
+
+Referenced by add\-MMRecur(), add\-Triangle\-Recur(), add\-Walsh\-Int(), Cudd\_\-add\-Bdd\-Interval(), Cudd\_\-add\-Bdd\-Ith\-Bit(), Cudd\_\-add\-Bdd\-Strict\-Threshold(), Cudd\_\-add\-Bdd\-Threshold(), Cudd\_\-add\-Const(), Cudd\_\-add\-Divide(), Cudd\_\-add\-Exist\-Abstract(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ith\-Bit(), Cudd\_\-add\-Minus(), Cudd\_\-add\-Plus(), Cudd\_\-add\-Read(), Cudd\_\-add\-Residue(), Cudd\_\-add\-Times(), Cudd\_\-Init(), cudd\-Add\-Negate\-Recur(), cudd\-Add\-Round\-Off\-Recur(), and cudd\-Add\-Scalar\-Inverse\-Recur().\index{cuddTable.c@{cudd\-Table.c}!cuddUniqueInter@{cuddUniqueInter}}
+\index{cuddUniqueInter@{cuddUniqueInter}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Unique\-Inter (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em index}, \bf{Dd\-Node} $\ast$ {\em T}, \bf{Dd\-Node} $\ast$ {\em E})}\label{cuddTable_8c_767e31fbbfdbddc623396dde86249497}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the unique table for the existence of an internal node.]
+
+Description [Checks the unique table for the existence of an internal node. If it does not exist, it creates a new one. Does not modify the reference count of whatever is returned. A newly created internal node comes back with a reference count 0. For a newly created node, increments the reference counts of what T and E point to. Returns a pointer to the new node if successful; NULL if memory is exhausted or if reordering took place.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Unique\-Inter\-Zdd] 
+
+Definition at line 1056 of file cudd\-Table.c.
+
+References assert, Cudd\_\-Check\-Keys(), Cudd\_\-Debug\-Check(), Cudd\_\-Reduce\-Heap(), Cudd\_\-Regular, cudd\-Alloc\-Node(), cudd\-E, cudd\-Garbage\-Collect(), cudd\-I, cudd\-Reclaim(), cudd\-Ref, cudd\-T, dd\-Hash, dd\-Rehash(), dd\-Resize\-Table(), Dd\-Subtable::dead, Dd\-Node::index, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::perm, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Manager::size, and Dd\-Manager::subtables.
+
+Referenced by add\-Bdd\-Do\-Interval(), add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Pattern(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), add\-Do\-Ith\-Bit(), add\-Triangle\-Recur(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ith\-Var(), Cudd\_\-add\-New\-Var(), Cudd\_\-add\-New\-Var\-At\-Level(), Cudd\_\-add\-Read(), Cudd\_\-add\-Residue(), Cudd\_\-bdd\-Is\-Var\-Essential(), Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-bdd\-New\-Var(), Cudd\_\-bdd\-Read(), Cudd\_\-Classify\-Support(), Cudd\_\-Init(), Cudd\_\-Priority\-Select(), Cudd\_\-Support(), Cudd\_\-Vector\-Support(), cudd\-Add\-Apply\-Recur(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Compose\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Add\-Negate\-Recur(), cudd\-Add\-Or\-Abstract\-Recur(), cudd\-Add\-Permute\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Round\-Off\-Recur(), cudd\-Add\-Scalar\-Inverse\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Cofactor\-Recur(), cudd\-Insert\-Subtables(), cudd\-Split\-Set\-Recur(), cudd\-Zdd\-Isop(), dd\-Bdd\-To\-Add\-Recur(), dd\-Find\-Essential\-Recur(), dd\-Resize\-Table(), RAbuild\-Subset(), select\-Minterms\-From\-Universe(), UAbuild\-Subset(), and zdd\-Port\-To\-Bdd\-Step().\index{cuddTable.c@{cudd\-Table.c}!cuddUniqueInterZdd@{cuddUniqueInterZdd}}
+\index{cuddUniqueInterZdd@{cuddUniqueInterZdd}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Unique\-Inter\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em index}, \bf{Dd\-Node} $\ast$ {\em T}, \bf{Dd\-Node} $\ast$ {\em E})}\label{cuddTable_8c_82d51c70097e5d4acddd5c8c4aef6d73}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the unique table for the existence of an internal ZDD node.]
+
+Description [Checks the unique table for the existence of an internal ZDD node. If it does not exist, it creates a new one. Does not modify the reference count of whatever is returned. A newly created internal node comes back with a reference count 0. For a newly created node, increments the reference counts of what T and E point to. Returns a pointer to the new node if successful; NULL if memory is exhausted or if reordering took place.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Unique\-Inter] 
+
+Definition at line 1183 of file cudd\-Table.c.
+
+References assert, Cudd\_\-Check\-Keys(), Cudd\_\-Debug\-Check(), Cudd\_\-Regular, Cudd\_\-zdd\-Reduce\-Heap(), cudd\-Alloc\-Node(), cudd\-E, cudd\-Garbage\-Collect\-Zdd(), cudd\-IZ, cudd\-Reclaim\-Zdd(), cudd\-Ref, cudd\-Resize\-Table\-Zdd(), cudd\-T, dd\-Hash, dd\-Rehash\-Zdd(), Dd\-Subtable::dead, Dd\-Node::index, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::perm\-Z, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Manager::size\-Z, and Dd\-Manager::subtable\-Z.
+
+Referenced by Cudd\_\-zdd\-Ith\-Var(), cudd\-Zdd\-Change(), cudd\-Zdd\-Get\-Node(), cudd\-Zdd\-Get\-Node\-IVO(), cudd\-Zdd\-Init\-Univ(), cudd\-Zdd\-Subset0(), and cudd\-Zdd\-Subset1().\index{cuddTable.c@{cudd\-Table.c}!cuddZddGetNode@{cuddZddGetNode}}
+\index{cuddZddGetNode@{cuddZddGetNode}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Get\-Node (\bf{Dd\-Manager} $\ast$ {\em zdd}, int {\em id}, \bf{Dd\-Node} $\ast$ {\em T}, \bf{Dd\-Node} $\ast$ {\em E})}\label{cuddTable_8c_f607cebd30fbd27bb9bd0fa125a1e1a8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Wrapper for cudd\-Unique\-Inter\-Zdd.]
+
+Description [Wrapper for cudd\-Unique\-Inter\-Zdd, which applies the ZDD reduction rule. Returns a pointer to the result node under normal conditions; NULL if reordering occurred or memory was exhausted.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Unique\-Inter\-Zdd] 
+
+Definition at line 969 of file cudd\-Table.c.
+
+References cudd\-Unique\-Inter\-Zdd(), and DD\_\-ZERO.
+
+Referenced by cudd\-Zdd\-Change\-Aux(), cudd\-Zdd\-Diff(), cudd\-Zdd\-Intersect(), cudd\-Zdd\-Ite(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Union(), cudd\-Zdd\-Weak\-Div\-F(), zdd\_\-subset0\_\-aux(), zdd\_\-subset1\_\-aux(), and zdd\-Port\-From\-Bdd\-Step().\index{cuddTable.c@{cudd\-Table.c}!cuddZddGetNodeIVO@{cuddZddGetNodeIVO}}
+\index{cuddZddGetNodeIVO@{cuddZddGetNodeIVO}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Get\-Node\-IVO (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em index}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$ {\em h})}\label{cuddTable_8c_f19757ac3885d62886ce2a63ba409ce3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Wrapper for cudd\-Unique\-Inter\-Zdd that is independent of variable ordering.]
+
+Description [Wrapper for cudd\-Unique\-Inter\-Zdd that is independent of variable ordering (IVO). This function does not require parameter index to precede the indices of the top nodes of g and h in the variable order. Returns a pointer to the result node under normal conditions; NULL if reordering occurred or memory was exhausted.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Zdd\-Get\-Node cudd\-Zdd\-Isop] 
+
+Definition at line 1002 of file cudd\-Table.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Inter\-Zdd(), cudd\-Zdd\-Product(), cudd\-Zdd\-Union(), DD\_\-ONE, and DD\_\-ZERO.
+
+Referenced by cudd\-Zdd\-Isop().\index{cuddTable.c@{cudd\-Table.c}!ddFixLimits@{ddFixLimits}}
+\index{ddFixLimits@{ddFixLimits}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static DD\_\-INLINE void dd\-Fix\-Limits (\bf{Dd\-Manager} $\ast$ {\em unique})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_289296f33cef84ced5299b7600a9c352}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Adjusts the values of table limits.]
+
+Description [Adjusts the values of table fields controlling the. sizes of subtables and computed table. If the computed table is too small according to the new values, it is resized.]
+
+Side\-Effects [Modifies manager fields. May resize computed table.]
+
+See\-Also [] 
+
+Definition at line 2458 of file cudd\-Table.c.
+
+References Dd\-Manager::cache\-Slots, cudd\-Cache\-Resize(), dd\-Max, dd\-Min, Dd\-Manager::gc\-Percent, Dd\-Manager::max\-Cache, Dd\-Manager::max\-Cache\-Hard, Dd\-Manager::min\-Cache, Dd\-Manager::min\-Dead, and Dd\-Manager::slots.
+
+Referenced by cudd\-Insert\-Subtables(), cudd\-Resize\-Table\-Zdd(), dd\-Rehash(), dd\-Rehash\-Zdd(), and dd\-Resize\-Table().\index{cuddTable.c@{cudd\-Table.c}!ddPatchTree@{ddPatchTree}}
+\index{ddPatchTree@{ddPatchTree}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Patch\-Tree (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Mtr\-Node} $\ast$ {\em treenode})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_532d514c8095a7c969adbdcc26c4ad7b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Fixes a variable tree after the insertion of new subtables.]
+
+Description [Fixes a variable tree after the insertion of new subtables. After such an insertion, the low fields of the tree below the insertion point are inconsistent.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 2736 of file cudd\-Table.c.
+
+References Mtr\-Node::child, Mtr\-Node::index, Mtr\-Node::low, Dd\-Manager::perm, and Mtr\-Node::younger.\index{cuddTable.c@{cudd\-Table.c}!ddRehash@{ddRehash}}
+\index{ddRehash@{ddRehash}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Rehash (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_bfd887783dd50144d9dfee33b052a262}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Rehashes a unique subtable.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [dd\-Rehash\-Zdd] 
+
+Definition at line 1924 of file cudd\-Table.c.
+
+References ALLOC, Dd\-Manager::allocated, hack::bits, Dd\-Manager::constants, CUDD\_\-MAXINDEX, Cudd\_\-Out\-Of\-Mem(), cudd\-E, cudd\-Garbage\-Collect(), cudd\-T, cudd\-V, DD\_\-GC\_\-PERCENT\_\-HI, DD\_\-GC\_\-PERCENT\_\-LO, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, dd\-Fix\-Limits(), dd\-Hash, Dd\-Subtable::dead, FREE, Dd\-Manager::gc\-Percent, Dd\-Subtable::keys, Dd\-Manager::loose\-Up\-To, Dd\-Subtable::max\-Keys, Dd\-Manager::memused, Dd\-Manager::min\-Dead, MMout\-Of\-Memory, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::reclaimed, Dd\-Subtable::shift, Dd\-Manager::size, Dd\-Subtable::slots, Dd\-Manager::slots, Dd\-Manager::subtables, and hack::value.
+
+Referenced by cudd\-Unique\-Const(), and cudd\-Unique\-Inter().\index{cuddTable.c@{cudd\-Table.c}!ddRehashZdd@{ddRehashZdd}}
+\index{ddRehashZdd@{ddRehashZdd}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Rehash\-Zdd (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em i})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_ecec043d5045c4941bca86b7f64f80cb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Rehashes a ZDD unique subtable.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [dd\-Rehash] 
+
+Definition at line 2101 of file cudd\-Table.c.
+
+References ALLOC, Dd\-Manager::allocated, assert, CUDD\_\-MAXINDEX, Cudd\_\-Out\-Of\-Mem(), cudd\-E, cudd\-Garbage\-Collect\-Zdd(), cudd\-T, DD\_\-GC\_\-PERCENT\_\-HI, DD\_\-GC\_\-PERCENT\_\-LO, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, dd\-Fix\-Limits(), dd\-Hash, Dd\-Subtable::dead, FREE, Dd\-Manager::gc\-Percent, Dd\-Subtable::keys, Dd\-Manager::loose\-Up\-To, Dd\-Subtable::max\-Keys, Dd\-Manager::memused, Dd\-Manager::min\-Dead, MMout\-Of\-Memory, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::reclaimed, Dd\-Subtable::shift, Dd\-Manager::size\-Z, Dd\-Subtable::slots, Dd\-Manager::slots, and Dd\-Manager::subtable\-Z.
+
+Referenced by cudd\-Unique\-Inter\-Zdd().\index{cuddTable.c@{cudd\-Table.c}!ddResizeTable@{ddResizeTable}}
+\index{ddResizeTable@{ddResizeTable}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Resize\-Table (\bf{Dd\-Manager} $\ast$ {\em unique}, int {\em index})\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_a3cc29f9531752d6e32f7b849d9d9554}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Increases the number of subtables in a unique table so that it meets or exceeds index.]
+
+Description [Increases the number of subtables in a unique table so that it meets or exceeds index. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Resize\-Table\-Zdd] 
+
+Definition at line 2215 of file cudd\-Table.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-UNIQUE\_\-SLOTS, cudd\-Compute\-Floor\-Log2(), cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-DEFAULT\_\-RESIZE, DD\_\-MAX\_\-SUBTABLE\_\-DENSITY, dd\-Fix\-Limits(), dd\-Max, Dd\-Subtable::dead, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Subtable::max\-Keys, Dd\-Manager::max\-Size, Dd\-Manager::max\-Size\-Z, Dd\-Manager::memused, Dd\-Subtable::nodelist, one, Dd\-Manager::perm, Dd\-Subtable::shift, Dd\-Manager::size, Dd\-Manager::slots, Dd\-Subtable::slots, Dd\-Manager::stack, Dd\-Manager::subtables, Dd\-Manager::vars, and zero.
+
+Referenced by cudd\-Unique\-Inter().
+
+\subsection{Variable Documentation}
+\index{cuddTable.c@{cudd\-Table.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddTable.c@{cudd\-Table.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Table.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddTable_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 93 of file cudd\-Table.c.

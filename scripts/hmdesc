@@ -1,0 +1,281 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Generates a IMPACT-specific .lmdes2 file from a .hmdes2 file
+#   or a .hmdes file (converting it to a .hmdes2 file first).
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script written by John Gyllenhaal, Wen-mei Hwu 2/96
+
+
+# set up environment with default values:
+# 11/07/02 REK If IMPACT_ROOT isn't defined, set it to be the same as
+#              IMPACT_REL_PATH.  This will allow the script to still work if
+#              someone doesn't have IMPACT_ROOT set and allow the script
+#              to work with the new autoconf split source/build directories.
+if [ "x${IMPACT_ROOT}" = "x" ]; then
+    export IMPACT_ROOT = ${IMPACT_REL_PATH};
+fi
+
+# 11/05/02 REK Changing from IMPACT_REL_PATH to IMPACT_ROOT.  IMPACT_REL_PATH
+#              is the source location, IMPACT_ROOT is the build location.
+STRUCTURE="${IMPACT_ROOT}/mdes/structure/structure_IMPACT.ho";
+CONVERT=0;
+CONVERT_FLAGS="";
+CLEAN=1;
+REV=0;
+VERBOSE=0;
+DEFS="";
+CUST_FLAGS="";
+MINIMIZE=0;
+OUTPUT_SPECIFIED=0;
+OUTPUT="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed argument
+if [ $# -ge 1 ]; then
+    INPUT="$1";
+    # INPUT_BASE=`echo $INPUT | awk -F. '{print $1}'`
+    # the above breaks if you have a . in your path.  -KF 9/2006
+    INPUT_BASE=${INPUT%.*}
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-version1)
+	    CONVERT=1;;
+
+	-noclean)
+	    CLEAN=0;;
+
+
+	-O*)
+	    CUST_FLAGS="${CUST_FLAGS} ${OPTION}";;
+
+	-expand)
+	    CUST_FLAGS="${CUST_FLAGS} -expand";;
+
+	-no_tree_opti)
+	    CUST_FLAGS="${CUST_FLAGS} -no_tree_opti";;
+
+	-static_stats)
+	    CUST_FLAGS="${CUST_FLAGS} -static_stats";;
+
+	-print_trees)
+	    CUST_FLAGS="${CUST_FLAGS} -print_trees";;
+
+	-no_limit)
+	    MINIMIZE=1;;
+
+	-bypass_alloc)
+	    CUST_FLAGS="${CUST_FLAGS} -bypass_alloc";;
+	
+	
+
+	-rev)
+	    CUST_FLAGS="${CUST_FLAGS} -hmdes";
+	    REV=1;;
+
+	-verbose)
+	    VERBOSE=1;;
+
+	-verbose1)
+	    CONVERT_FLAGS="${CONVERT_FLAGS} -verbose";;
+
+	-o)
+	    OUTPUT="$1";
+	    OUTPUT_SPECIFIED=1;
+	    shift;;
+	    
+
+	-D*)
+	    DEFS="${DEFS} ${OPTION}";;
+
+	*)
+	    echo "Error: Unknown option '$OPTION'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: hmdesc input_file [options]"';
+    echo '> ';
+    echo '> Generates an IMPACT-specific .lmdes2 file';
+    echo '> '
+    echo '>'
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -On              where n is the opti level (0-4), default 4';
+    echo '>   -version1        expected a version1 hmdes instead of a version2';
+    echo '>   -noclean         prevents clean up of temp files';
+    echo '>   -bypass_alloc    use malloc in customizer';
+    echo '>   -expand          completely expands reservations tables out';
+    echo '>   -no_tree_opti    turn off AND/OR tree opti (tree opti may undo -expand)';
+    echo '>   -static_stats    print out static mdes stats';
+    echo '>   -print_trees     print out mdes and/or trees';
+    echo '>   -no_limit        apply expensive resource minimization techniques';
+    echo '>   -rev             outputs a reverse-translated .lmdes2_rev file';
+    echo '>   -verbose         prints message at every step';
+    echo '>   -verbose1        prints verbose convertion messages';
+    echo '>   -o output_file   overrides the default output file name';
+    echo '>   -Ddef=value      Sets hmdes def to value'
+    exit 0200;
+fi;
+
+# turn off expensive minimization unless specified to do so
+if test $MINIMIZE = 0; then
+    CUST_FLAGS="${CUST_FLAGS} -no_minimization";
+fi
+
+# Calculate output name if not already specified 
+if test $OUTPUT_SPECIFIED = 0; then
+   if test $REV = 1; then
+	OUTPUT="${INPUT_BASE}.lmdes2_rev";
+   else
+	OUTPUT="${INPUT_BASE}.lmdes2";
+   fi
+fi
+
+
+# Calc names of temp output files	
+CONV_OUTPUT="${INPUT_BASE}.hmdes2_conv"
+# 11/29/04 REK Adding process ID to temp file names to prevent conflicts
+#              if multiple hmdescs are running simultaneously.
+HPP_OUTPUT="${INPUT_BASE}.hpp.$$"
+HO_OUTPUT="${INPUT_BASE}.ho.$$"
+
+# Remove all the files that we are about to produce 	
+if test $CONVERT = 1; then
+  rm -f $CONV_OUTPUT
+fi
+rm -f $HPP_OUTPUT
+rm -f $HO_OUTPUT
+rm -f $OUTPUT
+
+
+# Do we need to convert input to hmdes2?
+if test $CONVERT = 1; then
+   if test $VERBOSE = 1; then
+      echo "> Converting version1 hmdes file into a hmdes2 file"
+   fi
+   # Convert hmdes version1 file to hmdes2 file
+   convert_hmdes ${INPUT} ${STRUCTURE} ${CONV_OUTPUT} ${DEFS} ${CONVERT_FLAGS}
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+   # Defs not needed to hmdes2 preprocessing now
+   DEFS="";
+
+   # Set name of file to preprocess
+   HPP_INPUT="${CONV_OUTPUT}";
+else
+   # Set name of file to preprocess
+   HPP_INPUT="${INPUT}";
+fi
+
+# Preprocess hmdes2 file
+if test $VERBOSE = 1; then
+   echo "> Preprocessing the hdes2 file"
+fi
+md_preprocessor ${HPP_INPUT} -o ${HPP_OUTPUT} ${DEFS}
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+# Compile preprocessed file
+if test $VERBOSE = 1; then
+   echo "> Compiling preprocessed hmdes2 file into low-level form"
+fi
+md_compiler ${HPP_OUTPUT} -o ${HO_OUTPUT}
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+# Customize lmdes file (link to IMPACT info) to produce final output
+if test $VERBOSE = 1; then
+   if test $REV = 0; then
+      echo "> Generating IMPACT-specific lmdes2 file";
+   else
+      echo "> Generating and reverse translating IMPACT-specific lmdes2 file";
+   fi
+fi	
+lmdes2_customizer -o ${OUTPUT} ${CUST_FLAGS} ${HO_OUTPUT}
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+
+# Remove temp files unless -noclean specified
+if test $CLEAN = 1; then
+   if test $VERBOSE = 1; then
+      echo "> Removing temporary output files";
+   fi	
+
+   if test $CONVERT = 1; then
+     rm -f $CONV_OUTPUT
+   fi
+   rm -f $HPP_OUTPUT
+   rm -f $HO_OUTPUT
+fi
+
+if test $VERBOSE = 1; then
+   echo "> Done";
+fi
+

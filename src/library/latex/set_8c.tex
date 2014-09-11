@@ -1,0 +1,676 @@
+\section{set.c File Reference}
+\label{set_8c}\index{set.c@{set.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$library/set.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{ABS}(x)~(x$<$0 ? -x:x)
+\item 
+\#define \bf{MAX}(x, y)~((x$>$y)?x:y)
+\item 
+\#define \bf{SIGN}(x)~((x$>$=0)?0:1)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Set\_\-Vector} $\ast$ \bf{New\-VArray} (int size)
+\item 
+static void \bf{Free\-VArray} (int size, \bf{Set\_\-Vector} $\ast$varray)
+\item 
+static void \bf{Enlarge\-VArray} (int size, int $\ast$base, \bf{Set\_\-Vector} $\ast$$\ast$varray)
+\item 
+static \bf{Set\_\-Vector} \bf{New\-Vector} (void)
+\item 
+static void \bf{Free\-Vector} (\bf{Set\_\-Vector} vector)
+\item 
+static \bf{Set} \bf{New\-Set} (void)
+\item 
+\bf{Set} \bf{Set\_\-new} (void)
+\item 
+static void \bf{Free\-Set} (\bf{Set} set)
+\item 
+static int \bf{Read\-Bit} (\bf{Set\_\-Vector} vector, int element)
+\item 
+static int \bf{Set\-Bit} (\bf{Set\_\-Vector} vector, int element)
+\item 
+static int \bf{Clear\-Bit} (\bf{Set\_\-Vector} vector, int element)
+\item 
+int \bf{Set\_\-in} (\bf{Set} set, int element)
+\item 
+int \bf{Set\_\-size} (\bf{Set} set)
+\item 
+int \bf{Set\_\-empty} (\bf{Set} set)
+\item 
+\bf{Set} \bf{Set\_\-add} (\bf{Set} set, int element)
+\item 
+\bf{Set} \bf{Set\_\-delete} (\bf{Set} set, int element)
+\item 
+\bf{Set} \bf{Set\_\-copy} (\bf{Set} set1)
+\item 
+\bf{Set} \bf{Set\_\-union} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-union\_\-acc} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-union\_\-acc\_\-ch} (\bf{Set} set1, \bf{Set} set2, int $\ast$change)
+\item 
+\bf{Set} \bf{Set\_\-intersect} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-intersect\_\-acc} (\bf{Set} set1, \bf{Set} set2)
+\item 
+int \bf{Set\_\-intersect\_\-empty} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-subtract} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-subtract\_\-acc} (\bf{Set} set1, \bf{Set} set2)
+\item 
+int \bf{Set\_\-subtract\_\-empty} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set} \bf{Set\_\-subtract\_\-union} (\bf{Set} set1, \bf{Set} set2, \bf{Set} set3)
+\item 
+\bf{Set} \bf{Set\_\-subtract\_\-union\_\-acc} (\bf{Set} set1, \bf{Set} set2, \bf{Set} set3)
+\item 
+\bf{Set} \bf{Set\_\-dispose} (\bf{Set} set)
+\item 
+\bf{Set} \bf{Set\_\-compress} (\bf{Set} set)
+\item 
+void \bf{Set\_\-print} (FILE $\ast$\bf{F}, char $\ast$\bf{name}, \bf{Set} set)
+\item 
+int \bf{Set\_\-2array} (\bf{Set} set, int $\ast$buf)
+\item 
+int \bf{Set\_\-same} (\bf{Set} set1, \bf{Set} set2)
+\item 
+\bf{Set\-Iterator} $\ast$ \bf{Set\_\-iterator} (\bf{Set} set, int finis)
+\item 
+int \bf{Set\_\-exhausted} (\bf{Set\-Iterator} $\ast$si)
+\item 
+int \bf{Set\_\-next} (\bf{Set\-Iterator} $\ast$si)
+\item 
+void \bf{Set\_\-reset} (\bf{Set\-Iterator} $\ast$si, \bf{Set} set)
+\item 
+\bf{Set\-Iterator} $\ast$ \bf{Set\_\-end\_\-iterator} (\bf{Set\-Iterator} $\ast$si)
+\item 
+void \bf{Set\_\-memory\_\-usage} (long $\ast$pused, long $\ast$presv, long $\ast$pmax)
+\item 
+void \bf{Set\_\-print\_\-memory\_\-usage} (FILE $\ast$fp)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{total} = 0
+\item 
+int \bf{n\_\-varray} = 0
+\item 
+int \bf{n\_\-vector} = 0
+\item 
+int \bf{n\_\-set} = 0
+\item 
+static long \bf{mallocated} = 0
+\item 
+static long \bf{maxmallocated} = 0
+\item 
+\bf{Set} \bf{OUT} = NULL
+\item 
+int \bf{Set\-Id} = 0
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{SET\_\-VArray\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{SET\_\-Vector\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{SET\_\-Set\_\-pool} = NULL
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{SET\_\-Set\-Iterator\_\-pool} = NULL
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{set.c@{set.c}!ABS@{ABS}}
+\index{ABS@{ABS}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ABS(x)~(x$<$0 ? -x:x)}\label{set_8c_996f7be338ccb40d1a2a5abc1ad61759}
+
+
+
+
+Definition at line 90 of file set.c.
+
+Referenced by Clear\-Bit(), Read\-Bit(), Set\_\-add(), Set\_\-delete(), Set\_\-in(), and Set\-Bit().\index{set.c@{set.c}!MAX@{MAX}}
+\index{MAX@{MAX}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX(x, y)~((x$>$y)?x:y)}\label{set_8c_acc3ee1a7f283f8ef65cea31f4436a95}
+
+
+
+
+Definition at line 91 of file set.c.\index{set.c@{set.c}!SIGN@{SIGN}}
+\index{SIGN@{SIGN}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SIGN(x)~((x$>$=0)?0:1)}\label{set_8c_8c5ff70b6b28cd0157c50a22406f92c4}
+
+
+
+
+Definition at line 92 of file set.c.
+
+Referenced by Set\_\-add(), Set\_\-delete(), and Set\_\-in().
+
+\subsection{Function Documentation}
+\index{set.c@{set.c}!ClearBit@{ClearBit}}
+\index{ClearBit@{ClearBit}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Clear\-Bit (\bf{Set\_\-Vector} {\em vector}, int {\em element})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_3f2ece109b9e87d380f3b5adec3adf3e}
+
+
+
+
+Definition at line 321 of file set.c.
+
+References ABS, Set\_\-BIT\_\-SELECT, Set\_\-INDEX, and Set\_\-WORD\_\-SELECT.
+
+Referenced by Set\_\-delete().\index{set.c@{set.c}!EnlargeVArray@{EnlargeVArray}}
+\index{EnlargeVArray@{EnlargeVArray}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Enlarge\-VArray (int {\em size}, int $\ast$ {\em base}, \bf{Set\_\-Vector} $\ast$$\ast$ {\em varray})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_10970ab09f7e46a8719920602e0a9e7e}
+
+
+
+
+Definition at line 177 of file set.c.
+
+References Free\-VArray(), and New\-VArray().
+
+Referenced by Set\_\-add(), Set\_\-compress(), Set\_\-copy(), Set\_\-intersect(), Set\_\-subtract(), Set\_\-subtract\_\-union(), Set\_\-subtract\_\-union\_\-acc(), Set\_\-union(), Set\_\-union\_\-acc(), and Set\_\-union\_\-acc\_\-ch().\index{set.c@{set.c}!FreeSet@{FreeSet}}
+\index{FreeSet@{FreeSet}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Free\-Set (\bf{Set} {\em set})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_427359f9117b6f6704b809ce8cedc4a1}
+
+
+
+
+Definition at line 254 of file set.c.
+
+References Free\-VArray(), Free\-Vector(), \_\-Set::id, L\_\-free(), \_\-Set::max\_\-base, NULL, OUT, Set\_\-add(), Set\_\-in(), SET\_\-Set\_\-pool, and \_\-Set::varray.
+
+Referenced by Set\_\-dispose().\index{set.c@{set.c}!FreeVArray@{FreeVArray}}
+\index{FreeVArray@{FreeVArray}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Free\-VArray (int {\em size}, \bf{Set\_\-Vector} $\ast$ {\em varray})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_d6509ff0308c8759e8dd6a1478fe9376}
+
+
+
+
+Definition at line 159 of file set.c.
+
+References L\_\-free(), mallocated, NULL, SET\_\-VArray\_\-pool, and Set\_\-VARRAY\_\-SIZE.
+
+Referenced by Enlarge\-VArray(), and Free\-Set().\index{set.c@{set.c}!FreeVector@{FreeVector}}
+\index{FreeVector@{FreeVector}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Free\-Vector (\bf{Set\_\-Vector} {\em vector})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_c7f4da647cb0f0bffbf5f12e98a8fc6d}
+
+
+
+
+Definition at line 220 of file set.c.
+
+References L\_\-free(), NULL, and SET\_\-Vector\_\-pool.
+
+Referenced by Free\-Set(), and Set\_\-intersect\_\-acc().\index{set.c@{set.c}!NewSet@{NewSet}}
+\index{NewSet@{NewSet}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Set} New\-Set (void)\hspace{0.3cm}{\tt  [static]}}\label{set_8c_8812fbeb38e581945e0874f453405c5d}
+
+
+
+
+Definition at line 229 of file set.c.
+
+References \_\-Set::dummy, \_\-Set::id, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), \_\-Set::max\_\-base, New\-VArray(), NULL, SET\_\-Set\_\-pool, Set\_\-VARRAY\_\-SIZE, Set\-Id, and \_\-Set::varray.
+
+Referenced by Set\_\-add(), Set\_\-compress(), Set\_\-copy(), Set\_\-intersect(), Set\_\-new(), Set\_\-subtract(), Set\_\-subtract\_\-union(), Set\_\-union(), Set\_\-union\_\-acc(), and Set\_\-union\_\-acc\_\-ch().\index{set.c@{set.c}!NewVArray@{NewVArray}}
+\index{NewVArray@{NewVArray}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Set\_\-Vector}$\ast$ New\-VArray (int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_6d4508b7b928b37d24901688a7de5eb4}
+
+
+
+
+Definition at line 129 of file set.c.
+
+References I\_\-punt(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), mallocated, maxmallocated, NULL, SET\_\-VArray\_\-pool, and Set\_\-VARRAY\_\-SIZE.
+
+Referenced by Enlarge\-VArray(), and New\-Set().\index{set.c@{set.c}!NewVector@{NewVector}}
+\index{NewVector@{NewVector}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Set\_\-Vector} New\-Vector (void)\hspace{0.3cm}{\tt  [static]}}\label{set_8c_3f3626d5e17c35ace574d401289bbb86}
+
+
+
+
+Definition at line 196 of file set.c.
+
+References L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), NULL, SET\_\-Vector\_\-pool, and Set\_\-VECTOR\_\-SIZE.
+
+Referenced by Set\_\-add(), Set\_\-compress(), Set\_\-copy(), Set\_\-intersect(), Set\_\-subtract(), Set\_\-subtract\_\-union(), Set\_\-subtract\_\-union\_\-acc(), Set\_\-union(), Set\_\-union\_\-acc(), and Set\_\-union\_\-acc\_\-ch().\index{set.c@{set.c}!ReadBit@{ReadBit}}
+\index{ReadBit@{ReadBit}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Read\-Bit (\bf{Set\_\-Vector} {\em vector}, int {\em element})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_ec7672bce278f551f2fcdd82cd0622ec}
+
+
+
+
+Definition at line 292 of file set.c.
+
+References ABS, Set\_\-BIT\_\-SELECT, Set\_\-INDEX, and Set\_\-WORD\_\-SELECT.
+
+Referenced by Set\_\-in().\index{set.c@{set.c}!Set_2array@{Set\_\-2array}}
+\index{Set_2array@{Set\_\-2array}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-2array (\bf{Set} {\em set}, int $\ast$ {\em buf})}\label{set_8c_4a077bf3104d88db50a8d71a64333936}
+
+
+
+
+Definition at line 1621 of file set.c.
+
+References \_\-Set::max\_\-base, NULL, Set\_\-CONSTRUCT\_\-BASE, Set\_\-VECTOR\_\-SIZE, and \_\-Set::varray.
+
+Referenced by Graph\_\-equiv\_\-cd().\index{set.c@{set.c}!Set_add@{Set\_\-add}}
+\index{Set_add@{Set\_\-add}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-add (\bf{Set} {\em set}, int {\em element})}\label{set_8c_e46584b68d26463394477e6040dc0b4f}
+
+
+
+
+Definition at line 452 of file set.c.
+
+References ABS, Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, Set\_\-BASE, Set\_\-print(), Set\-Bit(), SIGN, and \_\-Set::varray.
+
+Referenced by add\_\-df\_\-node\_\-dest\_\-reg(), add\_\-df\_\-node\_\-src\_\-reg(), Add\-Extension\-Fields(), dominator(), Free\-Set(), Graph\_\-control\_\-dependence(), Graph\_\-dominator(), Graph\_\-post\_\-dominator(), post\_\-dominator(), reaching\_\-definition(), and ud\_\-chain().\index{set.c@{set.c}!Set_compress@{Set\_\-compress}}
+\index{Set_compress@{Set\_\-compress}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-compress (\bf{Set} {\em set})}\label{set_8c_fa52a5c9d51797279aecfda448c778ab}
+
+
+
+
+Definition at line 1504 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), and \_\-Set::varray.\index{set.c@{set.c}!Set_copy@{Set\_\-copy}}
+\index{Set_copy@{Set\_\-copy}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-copy (\bf{Set} {\em set1})}\label{set_8c_fd9347f41fba0349da2fb73dedc3e8b2}
+
+
+
+
+Definition at line 520 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, and \_\-Set::varray.\index{set.c@{set.c}!Set_delete@{Set\_\-delete}}
+\index{Set_delete@{Set\_\-delete}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-delete (\bf{Set} {\em set}, int {\em element})}\label{set_8c_7b01b25cd140fd5447d96f8a81d8c83f}
+
+
+
+
+Definition at line 487 of file set.c.
+
+References ABS, Clear\-Bit(), \_\-Set::max\_\-base, Set\_\-BASE, Set\_\-print(), and SIGN.\index{set.c@{set.c}!Set_dispose@{Set\_\-dispose}}
+\index{Set_dispose@{Set\_\-dispose}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-dispose (\bf{Set} {\em set})}\label{set_8c_664c2639d7b63476b7c4bf6fa691c4c4}
+
+
+
+
+Definition at line 1496 of file set.c.
+
+References Free\-Set(), and NULL.
+
+Referenced by Add\-Extension\-Fields(), dominator(), Free\-Extension\-Fields(), Graph\_\-dominator(), Graph\_\-free\_\-graph\_\-equiv\_\-cd(), Graph\_\-free\_\-graph\_\-node(), Graph\_\-post\_\-dominator(), live\_\-variable(), post\_\-dominator(), reaching\_\-definition(), reset\_\-nodes(), Set\_\-intersect\_\-acc(), and ud\_\-chain().\index{set.c@{set.c}!Set_empty@{Set\_\-empty}}
+\index{Set_empty@{Set\_\-empty}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-empty (\bf{Set} {\em set})}\label{set_8c_0b8d0a366fd0af723d55ad17f844c90d}
+
+
+
+
+Definition at line 425 of file set.c.
+
+References \_\-Set::max\_\-base, Set\_\-VECTOR\_\-SIZE, and \_\-Set::varray.
+
+Referenced by Set\_\-same(), and Set\_\-subtract\_\-empty().\index{set.c@{set.c}!Set_end_iterator@{Set\_\-end\_\-iterator}}
+\index{Set_end_iterator@{Set\_\-end\_\-iterator}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set\-Iterator}$\ast$ Set\_\-end\_\-iterator (\bf{Set\-Iterator} $\ast$ {\em si})}\label{set_8c_bf35c6edfe607eb753491656258013f4}
+
+
+
+
+Definition at line 1904 of file set.c.
+
+References L\_\-free(), NULL, and SET\_\-Set\-Iterator\_\-pool.\index{set.c@{set.c}!Set_exhausted@{Set\_\-exhausted}}
+\index{Set_exhausted@{Set\_\-exhausted}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-exhausted (\bf{Set\-Iterator} $\ast$ {\em si})}\label{set_8c_16ec1ddec124e852fa5ef7a5239924f2}
+
+
+
+
+Definition at line 1820 of file set.c.
+
+References \_\-Set\-Iterator::current\_\-varray, and \_\-Set\-Iterator::set.\index{set.c@{set.c}!Set_in@{Set\_\-in}}
+\index{Set_in@{Set\_\-in}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-in (\bf{Set} {\em set}, int {\em element})}\label{set_8c_7c88057fd5460af2887bfed6aa27df9a}
+
+
+
+
+Definition at line 336 of file set.c.
+
+References ABS, \_\-Set::max\_\-base, Read\-Bit(), Set\_\-BASE, SIGN, and \_\-Set::varray.
+
+Referenced by Free\-Set(), Graph\_\-control\_\-dependence(), Graph\_\-count\_\-paths\_\-visit(), Graph\_\-da\-Vinci\_\-visit(), Graph\_\-imm\_\-dominator(), Graph\_\-imm\_\-post\_\-dominator(), print\_\-set(), reaching\_\-definition(), and Select\-Traces().\index{set.c@{set.c}!Set_intersect@{Set\_\-intersect}}
+\index{Set_intersect@{Set\_\-intersect}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-intersect (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_572b2c36002765b1a4767f6f4ea1f855}
+
+
+
+
+Definition at line 901 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, Set\_\-print(), and \_\-Set::varray.
+
+Referenced by Add\-Extension\-Fields(), dominator(), post\_\-dominator(), and ud\_\-chain().\index{set.c@{set.c}!Set_intersect_acc@{Set\_\-intersect\_\-acc}}
+\index{Set_intersect_acc@{Set\_\-intersect\_\-acc}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-intersect\_\-acc (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_2bfa394ba01af0edbb2c1e276043b4b2}
+
+
+
+
+Definition at line 974 of file set.c.
+
+References Free\-Vector(), \_\-Set::max\_\-base, NULL, Set\_\-dispose(), Set\_\-print(), and \_\-Set::varray.
+
+Referenced by Graph\_\-dominator(), and Graph\_\-post\_\-dominator().\index{set.c@{set.c}!Set_intersect_empty@{Set\_\-intersect\_\-empty}}
+\index{Set_intersect_empty@{Set\_\-intersect\_\-empty}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-intersect\_\-empty (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_416bf3572e2b7533fe551254d969379f}
+
+
+
+
+Definition at line 1050 of file set.c.
+
+References \_\-Set::max\_\-base, and \_\-Set::varray.\index{set.c@{set.c}!Set_iterator@{Set\_\-iterator}}
+\index{Set_iterator@{Set\_\-iterator}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set\-Iterator}$\ast$ Set\_\-iterator (\bf{Set} {\em set}, int {\em finis})}\label{set_8c_49b6b2407db8730bcc43f48e10b60130}
+
+
+
+
+Definition at line 1796 of file set.c.
+
+References \_\-Set\-Iterator::current\_\-base, \_\-Set\-Iterator::current\_\-bit, \_\-Set\-Iterator::current\_\-varray, \_\-Set\-Iterator::finis, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), NULL, \_\-Set\-Iterator::set, Set\_\-next(), and SET\_\-Set\-Iterator\_\-pool.\index{set.c@{set.c}!Set_memory_usage@{Set\_\-memory\_\-usage}}
+\index{Set_memory_usage@{Set\_\-memory\_\-usage}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Set\_\-memory\_\-usage (long $\ast$ {\em pused}, long $\ast$ {\em presv}, long $\ast$ {\em pmax})}\label{set_8c_f08a75fa13869226e70109181551825b}
+
+
+
+
+Definition at line 1911 of file set.c.
+
+References \_\-L\_\-Alloc\_\-Pool::allocated, \_\-L\_\-Alloc\_\-Pool::free, mallocated, maxmallocated, SET\_\-Set\_\-pool, SET\_\-VArray\_\-pool, and SET\_\-Vector\_\-pool.
+
+Referenced by Set\_\-print\_\-memory\_\-usage().\index{set.c@{set.c}!Set_new@{Set\_\-new}}
+\index{Set_new@{Set\_\-new}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-new (void)}\label{set_8c_e41d4e9316cf48def43503b5b653a343}
+
+
+
+
+Definition at line 248 of file set.c.
+
+References New\-Set().\index{set.c@{set.c}!Set_next@{Set\_\-next}}
+\index{Set_next@{Set\_\-next}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-next (\bf{Set\-Iterator} $\ast$ {\em si})}\label{set_8c_8927f07a262987755e10ac33bd385cec}
+
+
+
+
+Definition at line 1829 of file set.c.
+
+References \_\-Set\-Iterator::current\_\-base, \_\-Set\-Iterator::current\_\-bit, \_\-Set\-Iterator::current\_\-varray, \_\-Set\-Iterator::finis, \_\-Set::max\_\-base, \_\-Set\-Iterator::nxt, \_\-Set\-Iterator::set, Set\_\-CONSTRUCT\_\-BASE, Set\_\-VECTOR\_\-SIZE, and \_\-Set::varray.
+
+Referenced by Set\_\-iterator(), and Set\_\-reset().\index{set.c@{set.c}!Set_print@{Set\_\-print}}
+\index{Set_print@{Set\_\-print}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Set\_\-print (FILE $\ast$ {\em F}, char $\ast$ {\em name}, \bf{Set} {\em set})}\label{set_8c_817e6a8e257b5d168a6e7689a0a2a5d1}
+
+
+
+
+Definition at line 1560 of file set.c.
+
+References \_\-Set::max\_\-base, NULL, Set\_\-CONSTRUCT\_\-BASE, Set\_\-VECTOR\_\-SIZE, and \_\-Set::varray.
+
+Referenced by Set\_\-add(), Set\_\-delete(), Set\_\-intersect(), Set\_\-intersect\_\-acc(), Set\_\-same(), Set\_\-subtract(), Set\_\-subtract\_\-acc(), Set\_\-union(), Set\_\-union\_\-acc(), and Set\_\-union\_\-acc\_\-ch().\index{set.c@{set.c}!Set_print_memory_usage@{Set\_\-print\_\-memory\_\-usage}}
+\index{Set_print_memory_usage@{Set\_\-print\_\-memory\_\-usage}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Set\_\-print\_\-memory\_\-usage (FILE $\ast$ {\em fp})}\label{set_8c_3d68b91746006f716d89e06c1dbbecd1}
+
+
+
+
+Definition at line 1952 of file set.c.
+
+References Set\_\-memory\_\-usage().\index{set.c@{set.c}!Set_reset@{Set\_\-reset}}
+\index{Set_reset@{Set\_\-reset}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Set\_\-reset (\bf{Set\-Iterator} $\ast$ {\em si}, \bf{Set} {\em set})}\label{set_8c_ae1fabcddf34263afd4a30dd1690f023}
+
+
+
+
+Definition at line 1890 of file set.c.
+
+References \_\-Set\-Iterator::current\_\-base, \_\-Set\-Iterator::current\_\-bit, \_\-Set\-Iterator::current\_\-varray, I\_\-punt(), \_\-Set\-Iterator::set, and Set\_\-next().\index{set.c@{set.c}!Set_same@{Set\_\-same}}
+\index{Set_same@{Set\_\-same}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-same (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_6fb47bcc6f7b9856c0951827c1adc781}
+
+
+
+
+Definition at line 1677 of file set.c.
+
+References Set\_\-empty(), and Set\_\-print().
+
+Referenced by Add\-Extension\-Fields(), dominator(), Graph\_\-dominator(), Graph\_\-equiv\_\-cd(), Graph\_\-post\_\-dominator(), and post\_\-dominator().\index{set.c@{set.c}!Set_size@{Set\_\-size}}
+\index{Set_size@{Set\_\-size}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-size (\bf{Set} {\em set})}\label{set_8c_0d0f96bfb3d7dd514abc07b743915da4}
+
+
+
+
+Definition at line 359 of file set.c.
+
+References \_\-Set::max\_\-base, and \_\-Set::varray.
+
+Referenced by Graph\_\-equiv\_\-cd(), live\_\-variable(), reaching\_\-definition(), and ud\_\-chain().\index{set.c@{set.c}!Set_subtract@{Set\_\-subtract}}
+\index{Set_subtract@{Set\_\-subtract}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-subtract (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_548b19bfc59588bf272418c9b97125f3}
+
+
+
+
+Definition at line 1095 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, Set\_\-print(), Set\_\-union(), and \_\-Set::varray.
+
+Referenced by live\_\-variable(), reaching\_\-definition(), Set\_\-subtract\_\-union(), and ud\_\-chain().\index{set.c@{set.c}!Set_subtract_acc@{Set\_\-subtract\_\-acc}}
+\index{Set_subtract_acc@{Set\_\-subtract\_\-acc}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-subtract\_\-acc (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_926d10b8196c713ea955333bb369ccd5}
+
+
+
+
+Definition at line 1180 of file set.c.
+
+References \_\-Set::max\_\-base, NULL, Set\_\-print(), and \_\-Set::varray.
+
+Referenced by Set\_\-subtract\_\-union\_\-acc().\index{set.c@{set.c}!Set_subtract_empty@{Set\_\-subtract\_\-empty}}
+\index{Set_subtract_empty@{Set\_\-subtract\_\-empty}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Set\_\-subtract\_\-empty (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_f4fb5c3c9de989a86acef3782fe6ae78}
+
+
+
+
+Definition at line 1242 of file set.c.
+
+References \_\-Set::max\_\-base, NULL, Set\_\-empty(), and \_\-Set::varray.\index{set.c@{set.c}!Set_subtract_union@{Set\_\-subtract\_\-union}}
+\index{Set_subtract_union@{Set\_\-subtract\_\-union}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-subtract\_\-union (\bf{Set} {\em set1}, \bf{Set} {\em set2}, \bf{Set} {\em set3})}\label{set_8c_a547fe1617822e005799edfabb9deefe}
+
+
+
+
+Definition at line 1300 of file set.c.
+
+References Enlarge\-VArray(), MAX, \_\-Set::max\_\-base, New\-Set(), New\-Vector(), Set\_\-subtract(), Set\_\-union(), Set\_\-VARRAY\_\-SIZE, and \_\-Set::varray.\index{set.c@{set.c}!Set_subtract_union_acc@{Set\_\-subtract\_\-union\_\-acc}}
+\index{Set_subtract_union_acc@{Set\_\-subtract\_\-union\_\-acc}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-subtract\_\-union\_\-acc (\bf{Set} {\em set1}, \bf{Set} {\em set2}, \bf{Set} {\em set3})}\label{set_8c_8f0f0798fd22b37b5e96f902ee78f66d}
+
+
+
+
+Definition at line 1410 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Vector(), Set\_\-subtract\_\-acc(), Set\_\-union(), Set\_\-union\_\-acc(), and \_\-Set::varray.\index{set.c@{set.c}!Set_union@{Set\_\-union}}
+\index{Set_union@{Set\_\-union}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-union (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_51dfad4c188ddf421eafb4571a1f0e12}
+
+
+
+
+Definition at line 575 of file set.c.
+
+References Enlarge\-VArray(), MAX, \_\-Set::max\_\-base, New\-Set(), New\-Vector(), Set\_\-print(), Set\_\-VARRAY\_\-SIZE, and \_\-Set::varray.
+
+Referenced by Add\-Extension\-Fields(), dominator(), Graph\_\-dominator(), Graph\_\-equiv\_\-cd(), Graph\_\-post\_\-dominator(), live\_\-variable(), post\_\-dominator(), reaching\_\-definition(), Set\_\-subtract(), Set\_\-subtract\_\-union(), Set\_\-subtract\_\-union\_\-acc(), and ud\_\-chain().\index{set.c@{set.c}!Set_union_acc@{Set\_\-union\_\-acc}}
+\index{Set_union_acc@{Set\_\-union\_\-acc}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-union\_\-acc (\bf{Set} {\em set1}, \bf{Set} {\em set2})}\label{set_8c_9fa6e14a788fb67c75d8e66e2808ea25}
+
+
+
+
+Definition at line 701 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, Set\_\-print(), and \_\-Set::varray.
+
+Referenced by Set\_\-subtract\_\-union\_\-acc().\index{set.c@{set.c}!Set_union_acc_ch@{Set\_\-union\_\-acc\_\-ch}}
+\index{Set_union_acc_ch@{Set\_\-union\_\-acc\_\-ch}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} Set\_\-union\_\-acc\_\-ch (\bf{Set} {\em set1}, \bf{Set} {\em set2}, int $\ast$ {\em change})}\label{set_8c_630ce90c9d12b610a191efc27527861a}
+
+
+
+
+Definition at line 801 of file set.c.
+
+References Enlarge\-VArray(), \_\-Set::max\_\-base, New\-Set(), New\-Vector(), NULL, Set\_\-print(), and \_\-Set::varray.\index{set.c@{set.c}!SetBit@{SetBit}}
+\index{SetBit@{SetBit}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Set\-Bit (\bf{Set\_\-Vector} {\em vector}, int {\em element})\hspace{0.3cm}{\tt  [static]}}\label{set_8c_b92fcc2d593ddf816639a8aa3d8c9a60}
+
+
+
+
+Definition at line 307 of file set.c.
+
+References ABS, Set\_\-BIT\_\-SELECT, Set\_\-INDEX, and Set\_\-WORD\_\-SELECT.
+
+Referenced by Set\_\-add().
+
+\subsection{Variable Documentation}
+\index{set.c@{set.c}!mallocated@{mallocated}}
+\index{mallocated@{mallocated}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{mallocated} = 0\hspace{0.3cm}{\tt  [static]}}\label{set_8c_0ba4ea918288f9605c0ae638c6410370}
+
+
+
+
+Definition at line 114 of file set.c.
+
+Referenced by Free\-VArray(), New\-VArray(), and Set\_\-memory\_\-usage().\index{set.c@{set.c}!maxmallocated@{maxmallocated}}
+\index{maxmallocated@{maxmallocated}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}long \bf{maxmallocated} = 0\hspace{0.3cm}{\tt  [static]}}\label{set_8c_d62b8152b70775f2ca19bd9f6b64d498}
+
+
+
+
+Definition at line 115 of file set.c.
+
+Referenced by New\-VArray(), and Set\_\-memory\_\-usage().\index{set.c@{set.c}!n_set@{n\_\-set}}
+\index{n_set@{n\_\-set}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-set} = 0}\label{set_8c_4e63f522c9b8d8140d0fba066d33226a}
+
+
+
+
+Definition at line 112 of file set.c.\index{set.c@{set.c}!n_varray@{n\_\-varray}}
+\index{n_varray@{n\_\-varray}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-varray} = 0}\label{set_8c_fedecbfc0ffcd07c40c9a5128fae88ed}
+
+
+
+
+Definition at line 110 of file set.c.\index{set.c@{set.c}!n_vector@{n\_\-vector}}
+\index{n_vector@{n\_\-vector}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-vector} = 0}\label{set_8c_69fbf9f3893d93d739d4af8dea195721}
+
+
+
+
+Definition at line 111 of file set.c.\index{set.c@{set.c}!OUT@{OUT}}
+\index{OUT@{OUT}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Set} \bf{OUT} = NULL}\label{set_8c_b46ca70cb56d2043b94e054e7998b42a}
+
+
+
+
+Definition at line 117 of file set.c.
+
+Referenced by Free\-Set().\index{set.c@{set.c}!SET_Set_pool@{SET\_\-Set\_\-pool}}
+\index{SET_Set_pool@{SET\_\-Set\_\-pool}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{SET\_\-Set\_\-pool} = NULL}\label{set_8c_e308ef399bba1238a939641d3300e729}
+
+
+
+
+Definition at line 123 of file set.c.
+
+Referenced by Free\-Set(), New\-Set(), and Set\_\-memory\_\-usage().\index{set.c@{set.c}!SET_SetIterator_pool@{SET\_\-SetIterator\_\-pool}}
+\index{SET_SetIterator_pool@{SET\_\-SetIterator\_\-pool}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{SET\_\-Set\-Iterator\_\-pool} = NULL}\label{set_8c_28c730b960bfb9bdb74bc3b20723dbad}
+
+
+
+
+Definition at line 125 of file set.c.
+
+Referenced by Set\_\-end\_\-iterator(), and Set\_\-iterator().\index{set.c@{set.c}!SET_VArray_pool@{SET\_\-VArray\_\-pool}}
+\index{SET_VArray_pool@{SET\_\-VArray\_\-pool}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{SET\_\-VArray\_\-pool} = NULL}\label{set_8c_b6ffa6c1aa06fc95f08cff9126697e23}
+
+
+
+
+Definition at line 121 of file set.c.
+
+Referenced by Free\-VArray(), New\-VArray(), and Set\_\-memory\_\-usage().\index{set.c@{set.c}!SET_Vector_pool@{SET\_\-Vector\_\-pool}}
+\index{SET_Vector_pool@{SET\_\-Vector\_\-pool}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{SET\_\-Vector\_\-pool} = NULL}\label{set_8c_a27e3a043902e17aab715c33e7524218}
+
+
+
+
+Definition at line 122 of file set.c.
+
+Referenced by Free\-Vector(), New\-Vector(), and Set\_\-memory\_\-usage().\index{set.c@{set.c}!SetId@{SetId}}
+\index{SetId@{SetId}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Set\-Id} = 0}\label{set_8c_417d8b045679901384705e4ad6db6c53}
+
+
+
+
+Definition at line 119 of file set.c.
+
+Referenced by New\-Set().\index{set.c@{set.c}!total@{total}}
+\index{total@{total}!set.c@{set.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{total} = 0}\label{set_8c_c7af894858cf396a219d632f40afdc8d}
+
+
+
+
+Definition at line 109 of file set.c.

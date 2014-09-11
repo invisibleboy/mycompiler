@@ -1,0 +1,406 @@
+\section{cudd\-Zdd\-Group.c File Reference}
+\label{cuddZddGroup_8c}\index{cuddZddGroup.c@{cuddZddGroup.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int zdd\-Tree\-Sifting\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, \bf{Cudd\_\-Reordering\-Type} method))
+\item 
+static void zdd\-Find\-Node\-Hi\-Lo \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int $\ast$lower, int $\ast$upper))
+\item 
+static int zdd\-Unique\-Compare\-Group \bf{ARGS} ((int $\ast$ptr\-X, int $\ast$ptr\-Y))
+\item 
+static int zdd\-Group\-Sifting \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))
+\item 
+static int zdd\-Group\-Sifting\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))
+\item 
+static int zdd\-Group\-Sifting\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$$\ast$moves))
+\item 
+static int zdd\-Group\-Sifting\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$$\ast$moves))
+\item 
+static int zdd\-Group\-Move \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves))
+\item 
+static int zdd\-Group\-Move\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y))
+\item 
+static int zdd\-Group\-Sifting\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}))
+\item 
+static void zdd\-Merge\-Groups \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int low, int high))
+\item 
+\bf{Mtr\-Node} $\ast$ \bf{Cudd\_\-Make\-Zdd\-Tree\-Node} (\bf{Dd\-Manager} $\ast$dd, unsigned int low, unsigned int \bf{size}, unsigned int type)
+\item 
+int \bf{cudd\-Zdd\-Tree\-Sifting} (\bf{Dd\-Manager} $\ast$table, \bf{Cudd\_\-Reordering\-Type} method)
+\item 
+static int \bf{zdd\-Tree\-Sifting\-Aux} (\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, \bf{Cudd\_\-Reordering\-Type} method)
+\item 
+static int \bf{zdd\-Reorder\-Children} (\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, \bf{Cudd\_\-Reordering\-Type} method)
+\item 
+static void \bf{zdd\-Find\-Node\-Hi\-Lo} (\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int $\ast$lower, int $\ast$upper)
+\item 
+static int \bf{zdd\-Unique\-Compare\-Group} (int $\ast$ptr\-X, int $\ast$ptr\-Y)
+\item 
+static int \bf{zdd\-Group\-Sifting} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{zdd\-Group\-Sifting\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static int \bf{zdd\-Group\-Sifting\-Up} (\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$$\ast$moves)
+\item 
+static int \bf{zdd\-Group\-Sifting\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$$\ast$moves)
+\item 
+static int \bf{zdd\-Group\-Move} (\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves)
+\item 
+static int \bf{zdd\-Group\-Move\-Backward} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+static int \bf{zdd\-Group\-Sifting\-Backward} (\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size})
+\item 
+static void \bf{zdd\-Merge\-Groups} (\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int low, int high)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Group.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int $\ast$ \bf{entry}
+\item 
+int \bf{zdd\-Total\-Number\-Swapping}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Merge\-Groups ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int low, int high))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_0b083ee579ea39856a5e13ace64f9d41}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves, int \bf{size}))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_d202164e7266721419767d7a678c0e3a}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Move\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_fcb44924622e9f21a0202eed729b2ba8}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Move ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y, \bf{Move} $\ast$$\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_6a49e654947e3a1dfa818905818b7532}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$$\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_4d2bf014531df7d2e55116ed67e111ae}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$$\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_6007e22f1ea69b0b5ef8fb696a2b759a}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_a718be7235161a4c275ebc1b41e5a062}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting ARGS ((\bf{Dd\-Manager} $\ast$table, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_a92c9972f291d9fac2fa14caa9e37966}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Unique\-Compare\-Group ARGS ((int $\ast$ptr\-X, int $\ast$ptr\-Y))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_62eb6861d461d4d6e2c12e3768ccc323}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Find\-Node\-Hi\-Lo ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, int $\ast$lower, int $\ast$upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_d87760701fa380983532b40d5fda609f}
+
+
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Reorder\-Children ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Mtr\-Node} $\ast$treenode, \bf{Cudd\_\-Reordering\-Type} method))\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_7da9369682efb5a4874ce3245005d2e0}
+
+
+Automatic\-Start \index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!Cudd_MakeZddTreeNode@{Cudd\_\-MakeZddTreeNode}}
+\index{Cudd_MakeZddTreeNode@{Cudd\_\-MakeZddTreeNode}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mtr\-Node}$\ast$ Cudd\_\-Make\-Zdd\-Tree\-Node (\bf{Dd\-Manager} $\ast$ {\em dd}, unsigned int {\em low}, unsigned int {\em size}, unsigned int {\em type})}\label{cuddZddGroup_8c_cbda7a70adeae8c3620b2a279d59e528}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Creates a new ZDD variable group.]
+
+Description [Creates a new ZDD variable group. The group starts at variable and contains size variables. The parameter low is the index of the first variable. If the variable already exists, its current position in the order is known to the manager. If the variable does not exist yet, the position is assumed to be the same as the index. The group tree is created if it does not exist yet. Returns a pointer to the group if successful; NULL otherwise.]
+
+Side\-Effects [The ZDD variable tree is changed.]
+
+See\-Also [Cudd\_\-Make\-Tree\-Node] 
+
+Definition at line 134 of file cudd\-Zdd\-Group.c.
+
+References dd\-Max, Mtr\-Node::index, Dd\-Manager::invperm\-Z, Mtr\_\-Init\-Group\-Tree(), Mtr\_\-Make\-Group(), MTR\_\-MAXHIGH, Dd\-Manager::perm\-Z, Mtr\-Node::size, Dd\-Manager::size\-Z, and Dd\-Manager::tree\-Z.
+
+Referenced by Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!cuddZddTreeSifting@{cuddZddTreeSifting}}
+\index{cuddZddTreeSifting@{cuddZddTreeSifting}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Tree\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Cudd\_\-Reordering\-Type} {\em method})}\label{cuddZddGroup_8c_502f13629f5546da11d81c81cae8cc1b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tree sifting algorithm for ZDDs.]
+
+Description [Tree sifting algorithm for ZDDs. Assumes that a tree representing a group hierarchy is passed as a parameter. It then reorders each group in postorder fashion by calling zdd\-Tree\-Sifting\-Aux. Assumes that no dead nodes are present. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 203 of file cudd\-Zdd\-Group.c.
+
+References CUDD\_\-GROUP\_\-CHECK5, CUDD\_\-GROUP\_\-CHECK7, CUDD\_\-REORDER\_\-GROUP\_\-SIFT, Dd\-Manager::groupcheck, Mtr\-Node::index, Dd\-Manager::invperm\-Z, Mtr\_\-Init\-Group\-Tree(), Mtr\_\-Print\-Groups(), Dd\-Subtable::next, result, Dd\-Manager::size\-Z, Dd\-Manager::subtable\-Z, Dd\-Manager::tree\-Z, and zdd\-Tree\-Sifting\-Aux().
+
+Referenced by Cudd\_\-zdd\-Reduce\-Heap().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddFindNodeHiLo@{zddFindNodeHiLo}}
+\index{zddFindNodeHiLo@{zddFindNodeHiLo}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Find\-Node\-Hi\-Lo (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Mtr\-Node} $\ast$ {\em treenode}, int $\ast$ {\em lower}, int $\ast$ {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_2a28d2d7b4eaf4908c57ac269ff92616}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the lower and upper bounds of the group represented by treenode.]
+
+Description [Finds the lower and upper bounds of the group represented by treenode. The high and low fields of treenode are indices. From those we need to derive the current positions, and find maximum and minimum.]
+
+Side\-Effects [The bounds are returned as side effects.]
+
+See\-Also [] 
+
+Definition at line 474 of file cudd\-Zdd\-Group.c.
+
+References assert, Mtr\-Node::child, Mtr\-Node::index, Mtr\-Node::low, Dd\-Manager::perm\-Z, Mtr\-Node::size, Dd\-Manager::size\-Z, and Mtr\-Node::younger.
+
+Referenced by zdd\-Reorder\-Children().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupMove@{zddGroupMove}}
+\index{zddGroupMove@{zddGroupMove}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Move (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y}, \bf{Move} $\ast$$\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_f4110304c5b6984353be6b1c73824c08}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Swaps two groups and records the move.]
+
+Description [Swaps two groups and records the move. Returns the number of keys in the DD table in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1025 of file cudd\-Zdd\-Group.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Next\-High(), cudd\-Zdd\-Next\-Low(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Dd\-Manager::keys\-Z, MTR\_\-DEFAULT, Move::next, Dd\-Subtable::next, Move::size, size, Dd\-Manager::subtable\-Z, Move::x, and Move::y.
+
+Referenced by zdd\-Group\-Sifting\-Down(), and zdd\-Group\-Sifting\-Up().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupMoveBackward@{zddGroupMoveBackward}}
+\index{zddGroupMoveBackward@{zddGroupMoveBackward}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Move\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_854849fdf2490b0f6b4929503939c929}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Undoes the swap two groups.]
+
+Description [Undoes the swap two groups. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1131 of file cudd\-Zdd\-Group.c.
+
+References assert, cudd\-Zdd\-Next\-High(), cudd\-Zdd\-Next\-Low(), cudd\-Zdd\-Swap\-In\-Place(), Dd\-Subtable::next, size, and Dd\-Manager::subtable\-Z.\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupSifting@{zddGroupSifting}}
+\index{zddGroupSifting@{zddGroupSifting}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_c8ce38998bf8c1caa305d5d451cf9965}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts from treenode-$>$low to treenode-$>$high.]
+
+Description [Sifts from treenode-$>$low to treenode-$>$high. If croupcheck == CUDD\_\-GROUP\_\-CHECK7, it checks for group creation at the end of the initial sifting. If a group is created, it is then sifted again. After sifting one variable, the group that contains it is dissolved. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 577 of file cudd\-Zdd\-Group.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, entry, Dd\-Manager::error\-Code, Dd\-Subtable::keys, Dd\-Subtable::next, Dd\-Manager::perm\-Z, result, Dd\-Manager::size\-Z, and Dd\-Manager::subtable\-Z.
+
+Referenced by zdd\-Reorder\-Children().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupSiftingAux@{zddGroupSiftingAux}}
+\index{zddGroupSiftingAux@{zddGroupSiftingAux}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_6018de6378686ce715b8baa7a356e217}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts one variable up and down until it has taken all positions. Checks for aggregation.]
+
+Description [Sifts one variable up and down until it has taken all positions. Checks for aggregation. There may be at most two sweeps, even if the group grows. Assumes that x is either an isolated variable, or it is the bottom of a group. All groups may not have been found. The variable being moved is returned to the best position seen during sifting. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 706 of file cudd\-Zdd\-Group.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Zdd\-Next\-High(), Dd\-Manager::keys\-Z, Move::next, Dd\-Subtable::next, result, Dd\-Manager::subtable\-Z, Move::x, Move::y, zdd\-Group\-Sifting\-Backward(), zdd\-Group\-Sifting\-Down(), and zdd\-Group\-Sifting\-Up().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupSiftingBackward@{zddGroupSiftingBackward}}
+\index{zddGroupSiftingBackward@{zddGroupSiftingBackward}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Move} $\ast$ {\em moves}, int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_0ef57840c37548f9ed3ca77748867cb9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Determines the best position for a variables and returns it there.]
+
+Description [Determines the best position for a variables and returns it there. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 1205 of file cudd\-Zdd\-Group.c.
+
+References Move::next, and Move::size.
+
+Referenced by zdd\-Group\-Sifting\-Aux().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupSiftingDown@{zddGroupSiftingDown}}
+\index{zddGroupSiftingDown@{zddGroupSiftingDown}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-High}, \bf{Move} $\ast$$\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_d9956388d0a03ddc7ed38c794d192925}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts down a variable until it reaches position x\-High.]
+
+Description [Sifts down a variable until it reaches position x\-High. Assumes that x is the bottom of a group (or a singleton). Records all the moves. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 936 of file cudd\-Zdd\-Group.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Next\-High(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Dd\-Manager::invperm\-Z, Dd\-Manager::keys\-Z, Dd\-Manager::max\-Growth, MTR\_\-DEFAULT, Move::next, Dd\-Subtable::next, Move::size, size, Dd\-Manager::subtable\-Z, Move::x, Move::y, and zdd\-Group\-Move().
+
+Referenced by zdd\-Group\-Sifting\-Aux().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddGroupSiftingUp@{zddGroupSiftingUp}}
+\index{zddGroupSiftingUp@{zddGroupSiftingUp}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Group\-Sifting\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em y}, int {\em x\-Low}, \bf{Move} $\ast$$\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_da21280ba854194a62b8ca449df921fb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts up a variable until either it reaches position x\-Low or the size of the DD heap increases too much.]
+
+Description [Sifts up a variable until either it reaches position x\-Low or the size of the DD heap increases too much. Assumes that y is the top of a group (or a singleton). Checks y for aggregation to the adjacent variables. Records all the moves that are appended to the list of moves received as input and returned as a side effect. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 855 of file cudd\-Zdd\-Group.c.
+
+References assert, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Zdd\-Next\-Low(), cudd\-Zdd\-Swap\-In\-Place(), Move::flags, Dd\-Manager::invperm\-Z, Dd\-Manager::keys\-Z, Dd\-Manager::max\-Growth, MTR\_\-DEFAULT, Move::next, Dd\-Subtable::next, Move::size, size, Dd\-Manager::subtable\-Z, Move::x, Move::y, and zdd\-Group\-Move().
+
+Referenced by zdd\-Group\-Sifting\-Aux().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddMergeGroups@{zddMergeGroups}}
+\index{zddMergeGroups@{zddMergeGroups}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void zdd\-Merge\-Groups (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Mtr\-Node} $\ast$ {\em treenode}, int {\em low}, int {\em high})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_84c8ed8408b209196dbcf87202c2eab3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Merges groups in the DD table.]
+
+Description [Creates a single group from low to high and adjusts the idex field of the tree node.]
+
+Side\-Effects [None] 
+
+Definition at line 1253 of file cudd\-Zdd\-Group.c.
+
+References Mtr\-Node::index, Dd\-Manager::invperm\-Z, Dd\-Subtable::next, Mtr\-Node::parent, Dd\-Manager::subtable\-Z, and Dd\-Manager::tree\-Z.
+
+Referenced by zdd\-Reorder\-Children().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddReorderChildren@{zddReorderChildren}}
+\index{zddReorderChildren@{zddReorderChildren}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Reorder\-Children (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Mtr\-Node} $\ast$ {\em treenode}, \bf{Cudd\_\-Reordering\-Type} {\em method})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_1f3d598a5f88d36aef76bcd14504596a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reorders the children of a group tree node according to the options.]
+
+Description [Reorders the children of a group tree node according to the options. After reordering puts all the variables in the group and/or its descendents in a single group. This allows hierarchical reordering. If the variables in the group do not exist yet, simply does nothing. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 373 of file cudd\-Zdd\-Group.c.
+
+References CUDD\_\-REORDER\_\-GROUP\_\-SIFT, CUDD\_\-REORDER\_\-LINEAR, CUDD\_\-REORDER\_\-LINEAR\_\-CONVERGE, CUDD\_\-REORDER\_\-RANDOM, CUDD\_\-REORDER\_\-RANDOM\_\-PIVOT, CUDD\_\-REORDER\_\-SIFT, CUDD\_\-REORDER\_\-SIFT\_\-CONVERGE, CUDD\_\-REORDER\_\-SYMM\_\-SIFT, CUDD\_\-REORDER\_\-SYMM\_\-SIFT\_\-CONV, cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Sifting(), cudd\-Zdd\-Swapping(), cudd\-Zdd\-Symm\-Sifting(), cudd\-Zdd\-Symm\-Sifting\-Conv(), Mtr\-Node::flags, Dd\-Manager::keys\-Z, MTR\_\-FIXED, result, zdd\-Find\-Node\-Hi\-Lo(), zdd\-Group\-Sifting(), and zdd\-Merge\-Groups().
+
+Referenced by zdd\-Tree\-Sifting\-Aux().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddTreeSiftingAux@{zddTreeSiftingAux}}
+\index{zddTreeSiftingAux@{zddTreeSiftingAux}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Tree\-Sifting\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Mtr\-Node} $\ast$ {\em treenode}, \bf{Cudd\_\-Reordering\-Type} {\em method})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_108fa78e4e14ee6b99d061e6f1c93892}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Visits the group tree and reorders each group.]
+
+Description [Recursively visits the group tree and reorders each group in postorder fashion. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 289 of file cudd\-Zdd\-Group.c.
+
+References Mtr\-Node::child, CUDD\_\-REORDER\_\-GROUP\_\-SIFT, Mtr\_\-Print\-Groups(), Mtr\-Node::size, Mtr\-Node::younger, and zdd\-Reorder\-Children().
+
+Referenced by cudd\-Zdd\-Tree\-Sifting().\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddUniqueCompareGroup@{zddUniqueCompareGroup}}
+\index{zddUniqueCompareGroup@{zddUniqueCompareGroup}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int zdd\-Unique\-Compare\-Group (int $\ast$ {\em ptr\-X}, int $\ast$ {\em ptr\-Y})\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_1466683cf410bcd175a319bdc22ae6ca}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function used by qsort.]
+
+Description [Comparison function used by qsort to order the variables according to the number of keys in the subtables. Returns the difference in number of keys between the two variables being compared.]
+
+Side\-Effects [None] 
+
+Definition at line 549 of file cudd\-Zdd\-Group.c.
+
+References entry.
+
+\subsection{Variable Documentation}
+\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Group.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Zdd\-Group.c}{p.}{cuddZddGroup_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for ZDD group sifting.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-Make\-Zdd\-Tree\-Node()}{p.}{cuddZddGroup_8c_cbda7a70adeae8c3620b2a279d59e528} \end{itemize}
+Internal procedures included in this file: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Tree\-Sifting()}{p.}{cuddZddGroup_8c_502f13629f5546da11d81c81cae8cc1b} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{zdd\-Tree\-Sifting\-Aux()}{p.}{cuddZddGroup_8c_108fa78e4e14ee6b99d061e6f1c93892} \item zdd\-Count\-Internal\-Mtr\-Nodes() \item \doxyref{zdd\-Reorder\-Children()}{p.}{cuddZddGroup_8c_1f3d598a5f88d36aef76bcd14504596a} \item \doxyref{zdd\-Find\-Node\-Hi\-Lo()}{p.}{cuddZddGroup_8c_2a28d2d7b4eaf4908c57ac269ff92616} \item \doxyref{zdd\-Unique\-Compare\-Group()}{p.}{cuddZddGroup_8c_1466683cf410bcd175a319bdc22ae6ca} \item \doxyref{zdd\-Group\-Sifting()}{p.}{cuddZddGroup_8c_c8ce38998bf8c1caa305d5d451cf9965} \item \doxyref{zdd\-Group\-Sifting\-Aux()}{p.}{cuddZddGroup_8c_6018de6378686ce715b8baa7a356e217} \item \doxyref{zdd\-Group\-Sifting\-Up()}{p.}{cuddZddGroup_8c_da21280ba854194a62b8ca449df921fb} \item \doxyref{zdd\-Group\-Sifting\-Down()}{p.}{cuddZddGroup_8c_d9956388d0a03ddc7ed38c794d192925} \item \doxyref{zdd\-Group\-Move()}{p.}{cuddZddGroup_8c_f4110304c5b6984353be6b1c73824c08} \item \doxyref{zdd\-Group\-Move\-Backward()}{p.}{cuddZddGroup_8c_854849fdf2490b0f6b4929503939c929} \item \doxyref{zdd\-Group\-Sifting\-Backward()}{p.}{cuddZddGroup_8c_0ef57840c37548f9ed3ca77748867cb9} \item \doxyref{zdd\-Merge\-Groups()}{p.}{cuddZddGroup_8c_84c8ed8408b209196dbcf87202c2eab3} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 65 of file cudd\-Zdd\-Group.c.\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!entry@{entry}}
+\index{entry@{entry}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{entry}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddGroup_8c_ef8c63519ad43f7d8c5f40f8807b886e}
+
+
+
+
+Definition at line 68 of file cudd\-Zdd\-Group.c.\index{cuddZddGroup.c@{cudd\-Zdd\-Group.c}!zddTotalNumberSwapping@{zddTotalNumberSwapping}}
+\index{zddTotalNumberSwapping@{zddTotalNumberSwapping}!cuddZddGroup.c@{cudd\-Zdd\-Group.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{zdd\-Total\-Number\-Swapping}}\label{cuddZddGroup_8c_b8b03940fac775015e5f354cc5d3037f}
+
+
+
+
+Definition at line 81 of file cudd\-Zdd\-Reord.c.
+
+Referenced by Cudd\_\-zdd\-Reduce\-Heap(), cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Sifting(), cudd\-Zdd\-Swap\-In\-Place(), cudd\-Zdd\-Symm\-Sifting(), cudd\-Zdd\-Symm\-Sifting\-Conv(), and zdd\-Shuffle().

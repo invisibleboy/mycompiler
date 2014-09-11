@@ -1,0 +1,153 @@
+#!/bin/sh -f
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#        Creates a profile directory, makes a probed executable
+#        for profiling in it, runs the profile with the first argument
+#        to this batchfile,  remerges the profile data into files
+#        in list files, then removes the profile directory
+#
+#        Input files must be mcode
+#
+# Usage: gen_Lprofile_mcode list_file 'profile_exec_arguments' 
+#                           [step, [shell_prefix] ]
+#
+# step may be omitted, but it indicates what step to restart the
+# batch file from
+
+ARCH=`arch`
+
+if [ $# -lt 2 -o $# -gt 4 -o "$ARCH" != "hppa" ]; then
+
+if [ "$ARCH" != "hppa" ]; then
+        echo ' ';
+        echo '==> This should be run on a HP 755 (Alderaan, or Scorpius)';
+        echo ' ';
+fi
+
+	echo "> Usage: gen_Lprofile_mcode list_file 'profile_exec_arguments'";
+	echo ">                           [step_no [shell_prefix] ]";
+	echo ">";
+	echo "> Step_no may be omitted, or use 1 - 5, to start at the";
+	echo "> specified step"
+	echo ">"
+	echo "> shell_prefix commands are executed before the probed program"
+	echo "> is executed.  This can be used for removing files or"
+	echo "> setting environment variables.  Make sure you put semicolons"
+	echo "> after each prefix command."
+	echo "> "
+	echo "> Ie for 072.sc, use"
+	echo "> gen_Lprof... 1 'setenv TERM vt220; setenv LINES 24; setenv COLUMNS 80;'"
+	echo ">"
+	
+	exit 1;
+fi
+if [ $# -eq 2 ]; then
+	echo "> Will profile using '$1'";
+	echo '> Starting from beginning of batch file';
+	LIST_FILE=$1
+	PARGS=$2
+	STEP=1;
+	PREFIX="";
+fi
+if [ $# -eq 3 ]; then
+	echo "> Will profile using '$1'";
+	echo "> Starting from step $2";
+	LIST_FILE=$1
+	PARGS=$2
+	STEP=$3;
+	PREFIX="";
+fi
+if [ $# -eq 4 ]; then
+	echo "> Will profile using '$1'";
+	echo "> Starting from step $2";
+	LIST_FILE=$1
+	PARGS=$2
+	STEP=$3;
+	PREFIX="$4";
+fi
+
+if [ $STEP -le 1 ]; then
+echo "> step 1: Making profile directory and linking files there";
+/bin/sh -c "mkdir profile "
+/bin/sh -c "gen_ln profile < ${LIST_FILE}"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -le 2 ]; then
+echo "> step 2: Generating probed executable for profiling";
+/bin/sh -c "gen_Lprobe_fortran profile profiling prof_exec < ${LIST_FILE}"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+
+if [ $STEP -le 3 ]; then
+echo "> step 3: Generating profile using '$PARGS'";
+/bin/sh -c "Lprofile profile/prof_exec.encoded profile/prof_exec.profile profile/prof_exec.probed '${PREFIX} profile/prof_exec.probed $PARGS'"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -le 4 ]; then
+echo "> step 4: Merging profile info into files";
+/bin/sh -c "gen_Lget . profile/prof_exec.profile profile/prof_exec.index < ${LIST_FILE}"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -le 5 ]; then
+echo "> step 5: Removing profile directory";
+/bin/sh -c "rm -rf profile"
+if test "$?" != 0; then echo "Terminating: non-zero exit code"; exit 1;fi
+fi
+
+if [ $STEP -gt 5 ]; then
+echo "> There is no such step $STEP";
+exit 1;
+fi
+
+echo "> done with gen_Lprofile_mcode"
+exit 0;

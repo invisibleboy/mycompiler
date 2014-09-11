@@ -1,0 +1,401 @@
+\section{md\_\-compiler.c File Reference}
+\label{md__compiler_8c}\index{md_compiler.c@{md\_\-compiler.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}md\_\-compiler.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{print\_\-usage} (char $\ast$fmt,...)
+\item 
+void \bf{read\_\-command\_\-line\_\-parameters} (int argc, char $\ast$$\ast$arg\_\-ptr)
+\item 
+int \bf{main} (int argc, char $\ast$$\ast$argv)
+\item 
+\bf{Fptr} $\ast$ \bf{create\_\-Fptr} (\bf{Mfile} $\ast$mfile)
+\item 
+void \bf{free\_\-Fptr} (\bf{Fptr} $\ast$fptr)
+\item 
+void \bf{Ferror} (\bf{Fptr} $\ast$fptr, char $\ast$fmt,...)
+\item 
+void \bf{v\-Ferror} (\bf{Fptr} $\ast$fptr, char $\ast$fmt, va\_\-list args)
+\item 
+int \bf{Fpeekc} (\bf{Fptr} $\ast$fptr)
+\item 
+int \bf{Fgetc} (\bf{Fptr} $\ast$fptr)
+\item 
+void \bf{Fget\_\-line\_\-directive} (\bf{Fptr} $\ast$fptr)
+\item 
+void \bf{Fadvance\_\-to\_\-next\_\-token} (\bf{Fptr} $\ast$fptr)
+\item 
+int \bf{Fis\_\-token\_\-char} (int ch)
+\item 
+int \bf{Fget\_\-token} (\bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+int \bf{is\_\-md\_\-ident} (char $\ast$ident)
+\item 
+\bf{MD} $\ast$ \bf{build\_\-md} (FILE $\ast$in, char $\ast$md\_\-name)
+\item 
+void \bf{build\_\-field\_\-decl} (\bf{MD} $\ast$md, \bf{MD\_\-Section} $\ast$section, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+int \bf{build\_\-int} (char $\ast$string, int $\ast$value)
+\item 
+int \bf{build\_\-double} (char $\ast$string, double $\ast$value)
+\item 
+void \bf{strip\_\-first\_\-and\_\-last\_\-char} (char $\ast$string)
+\item 
+void \bf{strip\_\-backslashes} (char $\ast$string)
+\item 
+void \bf{build\_\-element} (\bf{MD\_\-Field} $\ast$field, \bf{MD\_\-Element\_\-Req} $\ast$element\_\-req, int element\_\-index, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+void \bf{build\_\-entry} (\bf{MD\_\-Section} $\ast$section, \bf{Fptr} $\ast$fptr, \bf{Mbuf} $\ast$mbuf)
+\item 
+int \bf{check\_\-md\_\-for\_\-ambiguous\_\-links} (FILE $\ast$out, \bf{MD} $\ast$md)
+\item 
+void \bf{L\_\-punt} (char $\ast$fmt,...)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{Mbuf} $\ast$ \bf{input\_\-buf} = \bf{NULL}
+\item 
+char $\ast$ \bf{program\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}
+\item 
+char $\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}
+\item 
+int \bf{using\_\-stdin} = 0
+\item 
+char $\ast$ \bf{output\_\-mode} = \bf{NULL}
+\item 
+char $\ast$ \bf{input\_\-mode} = \bf{NULL}
+\item 
+int \bf{output\_\-page\_\-width} = 80
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{md_compiler.c@{md\_\-compiler.c}!build_double@{build\_\-double}}
+\index{build_double@{build\_\-double}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int build\_\-double (char $\ast$ {\em string}, double $\ast$ {\em value})}\label{md__compiler_8c_0532d81cd75c1447810194f860b849a2}
+
+
+
+
+Definition at line 1198 of file md\_\-compiler.c.
+
+Referenced by build\_\-element().\index{md_compiler.c@{md\_\-compiler.c}!build_element@{build\_\-element}}
+\index{build_element@{build\_\-element}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-element (\bf{MD\_\-Field} $\ast$ {\em field}, \bf{MD\_\-Element\_\-Req} $\ast$ {\em element\_\-req}, int {\em element\_\-index}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8c_de61fda8263e72bad493eade04a924c8}
+
+
+
+
+Definition at line 1281 of file md\_\-compiler.c.
+
+References build\_\-double(), build\_\-int(), copy\_\-Mbuf\_\-buf(), MD\_\-Field::decl, MD\_\-Element\_\-Req::desc, entry, MD\_\-Field::entry, Ferror(), Fis\_\-token\_\-char(), L\_\-punt(), MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-BLOCK, MD\_\-DOUBLE, MD\_\-find\_\-entry, MD\_\-INT, MD\_\-LINK, MD\_\-set\_\-block, MD\_\-set\_\-double, MD\_\-set\_\-int, MD\_\-set\_\-link, MD\_\-set\_\-string, MD\_\-STRING, MD\_\-Section::name, MD\_\-Entry::name, MD\_\-Field\_\-Decl::name, NULL, MD\_\-Entry::section, strip\_\-backslashes(), strip\_\-first\_\-and\_\-last\_\-char(), and MD\_\-Element\_\-Req::type.
+
+Referenced by build\_\-entry().\index{md_compiler.c@{md\_\-compiler.c}!build_entry@{build\_\-entry}}
+\index{build_entry@{build\_\-entry}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-entry (\bf{MD\_\-Section} $\ast$ {\em section}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8c_4a74b90f11f6771e28a937a67442c253}
+
+
+
+
+Definition at line 1472 of file md\_\-compiler.c.
+
+References build\_\-element(), CONCAT\_\-FIELD, copy\_\-Mbuf\_\-buf(), MD\_\-Field::decl, MD\_\-Element\_\-Req::desc, entry, ENTRY\_\-END, ENTRY\_\-START, Ferror(), Fget\_\-token(), FIELD\_\-END, FIELD\_\-START, is\_\-md\_\-ident(), KLEENE\_\-STAR, MD\_\-Element\_\-Req::kleene\_\-starred, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, match\_\-Mbuf(), MD\_\-Field::max\_\-element\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-delete\_\-field(), MD\_\-find\_\-entry, MD\_\-find\_\-field, MD\_\-find\_\-field\_\-decl, MD\_\-new\_\-entry(), MD\_\-new\_\-field(), MD\_\-Section::name, MD\_\-Field\_\-Decl::name, NULL, REPLACE\_\-FIELD, MD\_\-Field\_\-Decl::require, SECTION\_\-END, strip\_\-backslashes(), strip\_\-first\_\-and\_\-last\_\-char(), and TERMINATOR.
+
+Referenced by build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!build_field_decl@{build\_\-field\_\-decl}}
+\index{build_field_decl@{build\_\-field\_\-decl}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void build\_\-field\_\-decl (\bf{MD} $\ast$ {\em md}, \bf{MD\_\-Section} $\ast$ {\em section}, \bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8c_0449f410c0cc6716a3783605146dcaf9}
+
+
+
+
+Definition at line 940 of file md\_\-compiler.c.
+
+References copy\_\-Mbuf\_\-buf(), Ferror(), Fget\_\-token(), FIELD\_\-END, FIELD\_\-START, is\_\-md\_\-ident(), KLEENE\_\-STAR, LINK\_\-END, LINK\_\-START, match\_\-Mbuf(), MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-field\_\-decl, MD\_\-find\_\-section, MD\_\-kleene\_\-star\_\-requirement(), MD\_\-new\_\-field\_\-decl(), MD\_\-OPTIONAL\_\-FIELD, MD\_\-require\_\-block(), MD\_\-require\_\-double(), MD\_\-require\_\-int(), MD\_\-require\_\-multi\_\-target\_\-link(), MD\_\-require\_\-string(), MD\_\-REQUIRED\_\-FIELD, NULL, OR\_\-MARKER, SECTION\_\-START, and TERMINATOR.
+
+Referenced by build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!build_int@{build\_\-int}}
+\index{build_int@{build\_\-int}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int build\_\-int (char $\ast$ {\em string}, int $\ast$ {\em value})}\label{md__compiler_8c_d0b32dcf1d402933ef74da0913f1ae56}
+
+
+
+
+Definition at line 1175 of file md\_\-compiler.c.
+
+Referenced by build\_\-element().\index{md_compiler.c@{md\_\-compiler.c}!build_md@{build\_\-md}}
+\index{build_md@{build\_\-md}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{MD}$\ast$ build\_\-md (FILE $\ast$ {\em in}, char $\ast$ {\em md\_\-name})}\label{md__compiler_8c_90fa8dea05b29f1ac530a80fb360bdf8}
+
+
+
+
+Definition at line 789 of file md\_\-compiler.c.
+
+References build\_\-entry(), build\_\-field\_\-decl(), check\_\-md\_\-for\_\-ambiguous\_\-links(), copy\_\-Mbuf\_\-buf(), create\_\-Fptr(), create\_\-Mbuf(), create\_\-Mfile(), Ferror(), Fget\_\-token(), free\_\-Fptr(), free\_\-Mbuf(), free\_\-Mfile(), is\_\-md\_\-ident(), L\_\-punt(), match\_\-Mbuf(), MD\_\-check\_\-md(), MD\_\-find\_\-section, MD\_\-new\_\-md(), MD\_\-new\_\-section(), MD::name, NULL, SECTION\_\-END, and SECTION\_\-START.
+
+Referenced by main().\index{md_compiler.c@{md\_\-compiler.c}!check_md_for_ambiguous_links@{check\_\-md\_\-for\_\-ambiguous\_\-links}}
+\index{check_md_for_ambiguous_links@{check\_\-md\_\-for\_\-ambiguous\_\-links}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int check\_\-md\_\-for\_\-ambiguous\_\-links (FILE $\ast$ {\em out}, \bf{MD} $\ast$ {\em md})}\label{md__compiler_8c_5dc602835cc716539a36da4c7fe7fa45}
+
+
+
+
+Definition at line 1735 of file md\_\-compiler.c.
+
+References MD\_\-Field::element, entry, MD\_\-Section::field\_\-decl, MD\_\-Field\_\-Decl::kleene\_\-starred\_\-req, MD\_\-Element::l, L\_\-punt(), MD\_\-Element\_\-Req::link, MD\_\-Element\_\-Req::link\_\-array\_\-size, MD\_\-Field::max\_\-element\_\-index, MD\_\-Section::max\_\-field\_\-index, MD\_\-Field\_\-Decl::max\_\-require\_\-index, MD\_\-find\_\-entry, MD\_\-first\_\-entry(), MD\_\-first\_\-section(), MD\_\-LINK, MD\_\-next\_\-entry(), MD\_\-next\_\-section(), MD\_\-Entry::name, MD\_\-Field\_\-Decl::name, MD\_\-Section::name, NULL, MD\_\-Field\_\-Decl::require, MD\_\-Entry::section, MD\_\-Element\_\-Req::type, and MD\_\-Element::value.
+
+Referenced by build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!create_Fptr@{create\_\-Fptr}}
+\index{create_Fptr@{create\_\-Fptr}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Fptr}$\ast$ create\_\-Fptr (\bf{Mfile} $\ast$ {\em mfile})}\label{md__compiler_8c_cd6abca353981f824cbc6b4b39b96326}
+
+
+
+
+Definition at line 359 of file md\_\-compiler.c.
+
+References Fptr::checkpoint, copy\_\-Mptr(), create\_\-Mbuf(), create\_\-Mptr(), L\_\-punt(), Fptr::mptr, NULL, Fptr::source\_\-line, and Fptr::source\_\-name.
+
+Referenced by build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!Fadvance_to_next_token@{Fadvance\_\-to\_\-next\_\-token}}
+\index{Fadvance_to_next_token@{Fadvance\_\-to\_\-next\_\-token}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Fadvance\_\-to\_\-next\_\-token (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8c_de728546c62e9c27434f5e16b9581308}
+
+
+
+
+Definition at line 598 of file md\_\-compiler.c.
+
+References Fptr::checkpoint, Fget\_\-line\_\-directive(), Fgetc(), Fpeekc(), move\_\-Mptr(), Fptr::mptr, Mptr\_\-pos(), and Fptr::source\_\-line.
+
+Referenced by Fget\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!Ferror@{Ferror}}
+\index{Ferror@{Ferror}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Ferror (\bf{Fptr} $\ast$ {\em fptr}, char $\ast$ {\em fmt},  {\em ...})}\label{md__compiler_8c_761c4386743ac261985b813ab1a8040c}
+
+
+
+
+Definition at line 391 of file md\_\-compiler.c.
+
+References v\-Ferror().
+
+Referenced by build\_\-element(), build\_\-entry(), build\_\-field\_\-decl(), build\_\-md(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!Fget_line_directive@{Fget\_\-line\_\-directive}}
+\index{Fget_line_directive@{Fget\_\-line\_\-directive}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Fget\_\-line\_\-directive (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8c_95ddff2b06b579672c573d2ec46808de}
+
+
+
+
+Definition at line 487 of file md\_\-compiler.c.
+
+References addc\_\-to\_\-Mbuf(), Fptr::checkpoint, clear\_\-Mbuf(), Ferror(), Fgetc(), Fpeekc(), move\_\-Mptr(), and Fptr::mptr.
+
+Referenced by Fadvance\_\-to\_\-next\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!Fget_token@{Fget\_\-token}}
+\index{Fget_token@{Fget\_\-token}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fget\_\-token (\bf{Fptr} $\ast$ {\em fptr}, \bf{Mbuf} $\ast$ {\em mbuf})}\label{md__compiler_8c_eb1a56e9e7d7b8a58203813ef35c7452}
+
+
+
+
+Definition at line 656 of file md\_\-compiler.c.
+
+References addc\_\-to\_\-Mbuf(), clear\_\-Mbuf(), Fadvance\_\-to\_\-next\_\-token(), Ferror(), Fgetc(), Fis\_\-token\_\-char(), and Fpeekc().
+
+Referenced by build\_\-entry(), build\_\-field\_\-decl(), and build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!Fgetc@{Fgetc}}
+\index{Fgetc@{Fgetc}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fgetc (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8c_50725b05de9292d7eb2eaa36a6d6fdcb}
+
+
+
+
+Definition at line 478 of file md\_\-compiler.c.
+
+References Mgetc(), and Fptr::mptr.
+
+Referenced by Fadvance\_\-to\_\-next\_\-token(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!Fis_token_char@{Fis\_\-token\_\-char}}
+\index{Fis_token_char@{Fis\_\-token\_\-char}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fis\_\-token\_\-char (int {\em ch})}\label{md__compiler_8c_c297e377519f6ba4e2fd71db9b5b4fbf}
+
+
+
+
+Definition at line 629 of file md\_\-compiler.c.
+
+Referenced by build\_\-element(), and Fget\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!Fpeekc@{Fpeekc}}
+\index{Fpeekc@{Fpeekc}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Fpeekc (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8c_c06c4367d84d0b622fea24b7c6702f47}
+
+
+
+
+Definition at line 469 of file md\_\-compiler.c.
+
+References Mpeekc(), and Fptr::mptr.
+
+Referenced by Fadvance\_\-to\_\-next\_\-token(), Fget\_\-line\_\-directive(), and Fget\_\-token().\index{md_compiler.c@{md\_\-compiler.c}!free_Fptr@{free\_\-Fptr}}
+\index{free_Fptr@{free\_\-Fptr}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void free\_\-Fptr (\bf{Fptr} $\ast$ {\em fptr})}\label{md__compiler_8c_0bb0eba7f807070cda672228ea3008d7}
+
+
+
+
+Definition at line 373 of file md\_\-compiler.c.
+
+References Fptr::checkpoint, free\_\-Mbuf(), free\_\-Mptr(), Fptr::mptr, and Fptr::source\_\-name.
+
+Referenced by build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!is_md_ident@{is\_\-md\_\-ident}}
+\index{is_md_ident@{is\_\-md\_\-ident}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int is\_\-md\_\-ident (char $\ast$ {\em ident})}\label{md__compiler_8c_39ca8b26d2e0c556d2146f76b6c1f51a}
+
+
+
+
+Definition at line 771 of file md\_\-compiler.c.
+
+Referenced by build\_\-entry(), build\_\-field\_\-decl(), and build\_\-md().\index{md_compiler.c@{md\_\-compiler.c}!L_punt@{L\_\-punt}}
+\index{L_punt@{L\_\-punt}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-punt (char $\ast$ {\em fmt},  {\em ...})}\label{md__compiler_8c_c8ccfa451c1bd1740a1b720ba5b4c3a9}
+
+
+
+
+Definition at line 1839 of file md\_\-compiler.c.
+
+Referenced by build\_\-element(), build\_\-md(), check\_\-md\_\-for\_\-ambiguous\_\-links(), create\_\-Fptr(), and main().\index{md_compiler.c@{md\_\-compiler.c}!main@{main}}
+\index{main@{main}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int main (int {\em argc}, char $\ast$$\ast$ {\em argv})}\label{md__compiler_8c_3c04138a5bfe5d72780bb7e82a18e627}
+
+
+
+
+Definition at line 260 of file md\_\-compiler.c.
+
+References build\_\-md(), create\_\-Mbuf(), free\_\-Mbuf(), input\_\-buf, input\_\-file\_\-name, input\_\-mode, L\_\-free\_\-alloc\_\-pool(), L\_\-punt(), Mbuf\_\-pool, MD\_\-delete\_\-md(), MD\_\-print\_\-md(), MD\_\-print\_\-md\_\-declarations(), MD\_\-print\_\-md\_\-template(), MD\_\-read\_\-md(), MD\_\-write\_\-md(), Mfile\_\-pool, Mline\_\-pool, Mptr\_\-pool, NULL, output\_\-file\_\-name, output\_\-mode, read\_\-command\_\-line\_\-parameters(), and using\_\-stdin.\index{md_compiler.c@{md\_\-compiler.c}!print_usage@{print\_\-usage}}
+\index{print_usage@{print\_\-usage}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void print\_\-usage (char $\ast$ {\em fmt},  {\em ...})}\label{md__compiler_8c_62ac7a1cfa066f61a3317977c936b8f2}
+
+
+
+
+Definition at line 89 of file md\_\-compiler.c.
+
+References NULL, and program\_\-name.
+
+Referenced by read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}}
+\index{read_command_line_parameters@{read\_\-command\_\-line\_\-parameters}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void read\_\-command\_\-line\_\-parameters (int {\em argc}, char $\ast$$\ast$ {\em arg\_\-ptr})}\label{md__compiler_8c_b5ad1e75f3e95a8372855846f911efe1}
+
+
+
+
+Definition at line 129 of file md\_\-compiler.c.
+
+References bypass\_\-alloc\_\-routines, input\_\-file\_\-name, input\_\-mode, NULL, output\_\-file\_\-name, output\_\-mode, output\_\-page\_\-width, print\_\-usage(), program\_\-name, and using\_\-stdin.
+
+Referenced by main().\index{md_compiler.c@{md\_\-compiler.c}!strip_backslashes@{strip\_\-backslashes}}
+\index{strip_backslashes@{strip\_\-backslashes}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void strip\_\-backslashes (char $\ast$ {\em string})}\label{md__compiler_8c_6c965136793f17f282274459e488269a}
+
+
+
+
+Definition at line 1247 of file md\_\-compiler.c.
+
+Referenced by build\_\-element(), and build\_\-entry().\index{md_compiler.c@{md\_\-compiler.c}!strip_first_and_last_char@{strip\_\-first\_\-and\_\-last\_\-char}}
+\index{strip_first_and_last_char@{strip\_\-first\_\-and\_\-last\_\-char}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void strip\_\-first\_\-and\_\-last\_\-char (char $\ast$ {\em string})}\label{md__compiler_8c_ba55bcbd6888bc153c67816b6bbf34a5}
+
+
+
+
+Definition at line 1221 of file md\_\-compiler.c.
+
+Referenced by build\_\-element(), and build\_\-entry().\index{md_compiler.c@{md\_\-compiler.c}!vFerror@{vFerror}}
+\index{vFerror@{vFerror}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void v\-Ferror (\bf{Fptr} $\ast$ {\em fptr}, char $\ast$ {\em fmt}, va\_\-list {\em args})}\label{md__compiler_8c_d52c3f1409f7b9a5f521e34fa8c866a3}
+
+
+
+
+Definition at line 400 of file md\_\-compiler.c.
+
+References Mline::buf, Fptr::checkpoint, get\_\-Mbuf\_\-buf(), len\_\-of\_\-Mbuf(), Mline::line\_\-no, Mptr::mfile, Mptr::mline, Mfile::name, NULL, Mptr::pos, print\_\-buf\_\-with\_\-arrow(), Fptr::source\_\-line, and Fptr::source\_\-name.
+
+Referenced by Ferror().
+
+\subsection{Variable Documentation}
+\index{md_compiler.c@{md\_\-compiler.c}!input_buf@{input\_\-buf}}
+\index{input_buf@{input\_\-buf}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Mbuf}$\ast$ \bf{input\_\-buf} = \bf{NULL}}\label{md__compiler_8c_25678326d4f061f5d3e7640b7981d682}
+
+
+
+
+Definition at line 75 of file md\_\-compiler.c.
+
+Referenced by main().\index{md_compiler.c@{md\_\-compiler.c}!input_file_name@{input\_\-file\_\-name}}
+\index{input_file_name@{input\_\-file\_\-name}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{input\_\-file\_\-name} = \bf{NULL}}\label{md__compiler_8c_a91ff4ee3ee60baee9c097d4da3e3d18}
+
+
+
+
+Definition at line 80 of file md\_\-compiler.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!input_mode@{input\_\-mode}}
+\index{input_mode@{input\_\-mode}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{input\_\-mode} = \bf{NULL}}\label{md__compiler_8c_f81839da89e889adb517d1fc96a456f9}
+
+
+
+
+Definition at line 84 of file md\_\-compiler.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!output_file_name@{output\_\-file\_\-name}}
+\index{output_file_name@{output\_\-file\_\-name}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{output\_\-file\_\-name} = \bf{NULL}}\label{md__compiler_8c_cdcd0d11bb729145f180d52a0755cddf}
+
+
+
+
+Definition at line 81 of file md\_\-compiler.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!output_mode@{output\_\-mode}}
+\index{output_mode@{output\_\-mode}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{output\_\-mode} = \bf{NULL}}\label{md__compiler_8c_14a61661c70b91f945e8456ead9fb6c1}
+
+
+
+
+Definition at line 83 of file md\_\-compiler.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!output_page_width@{output\_\-page\_\-width}}
+\index{output_page_width@{output\_\-page\_\-width}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{output\_\-page\_\-width} = 80}\label{md__compiler_8c_bbe586720dc5d6766839fbdc260002c1}
+
+
+
+
+Definition at line 85 of file md\_\-compiler.c.
+
+Referenced by read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!program_name@{program\_\-name}}
+\index{program_name@{program\_\-name}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{program\_\-name} = \bf{NULL}}\label{md__compiler_8c_289c5900d90626d909f0a85d5a0ed61d}
+
+
+
+
+Definition at line 77 of file md\_\-compiler.c.
+
+Referenced by print\_\-usage(), and read\_\-command\_\-line\_\-parameters().\index{md_compiler.c@{md\_\-compiler.c}!using_stdin@{using\_\-stdin}}
+\index{using_stdin@{using\_\-stdin}!md_compiler.c@{md\_\-compiler.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{using\_\-stdin} = 0}\label{md__compiler_8c_bc340a0cfa46e3f25a4d1adab28331c0}
+
+
+
+
+Definition at line 82 of file md\_\-compiler.c.
+
+Referenced by main(), and read\_\-command\_\-line\_\-parameters().

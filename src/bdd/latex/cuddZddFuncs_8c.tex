@@ -1,0 +1,329 @@
+\section{cudd\-Zdd\-Funcs.c File Reference}
+\label{cuddZddFuncs_8c}\index{cuddZddFuncs.c@{cuddZddFuncs.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Product} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Unate\-Product} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Weak\-Div} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Divide} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Weak\-Div\-F} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Divide\-F} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Product} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Unate\-Product} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Weak\-Div} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Weak\-Div\-F} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Divide} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Divide\-F} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g)
+\item 
+int \bf{cudd\-Zdd\-Get\-Cofactors3} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int v, \bf{Dd\-Node} $\ast$$\ast$f1, \bf{Dd\-Node} $\ast$$\ast$f0, \bf{Dd\-Node} $\ast$$\ast$fd)
+\item 
+int \bf{cudd\-Zdd\-Get\-Cofactors2} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int v, \bf{Dd\-Node} $\ast$$\ast$f1, \bf{Dd\-Node} $\ast$$\ast$f0)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Funcs.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddDivide@{Cudd\_\-zddDivide}}
+\index{Cudd_zddDivide@{Cudd\_\-zddDivide}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Divide (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_43e1add8b7cebce529186f3940c095f8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the quotient of two unate covers.]
+
+Description [Computes the quotient of two unate covers represented by ZDDs. Unate covers use one ZDD variable for each BDD variable. Returns a pointer to the resulting ZDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Weak\-Div] 
+
+Definition at line 206 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Divide(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddDivideF@{Cudd\_\-zddDivideF}}
+\index{Cudd_zddDivideF@{Cudd\_\-zddDivideF}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Divide\-F (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_8acdb146297a02315d409b7c050a6d5a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Modified version of Cudd\_\-zdd\-Divide.]
+
+Description [Modified version of Cudd\_\-zdd\-Divide. This function may disappear in future releases.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 264 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Divide\-F(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddProduct@{Cudd\_\-zddProduct}}
+\index{Cudd_zddProduct@{Cudd\_\-zddProduct}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Product (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_419b6b27fabd4f4994c1c5df0c5527cb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the product of two covers represented by ZDDs.]
+
+Description [Computes the product of two covers represented by ZDDs. The result is also a ZDD. Returns a pointer to the result if successful; NULL otherwise. The covers on which Cudd\_\-zdd\-Product operates use two ZDD variables for each function variable (one ZDD variable for each literal of the variable). Those two ZDD variables should be adjacent in the order.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Unate\-Product] 
+
+Definition at line 110 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Product(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddUnateProduct@{Cudd\_\-zddUnateProduct}}
+\index{Cudd_zddUnateProduct@{Cudd\_\-zddUnateProduct}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Unate\-Product (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_4eb4a8cdc966acd5bd4ddabc42c6fb8e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the product of two unate covers.]
+
+Description [Computes the product of two unate covers represented as ZDDs. Unate covers use one ZDD variable for each BDD variable. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Product] 
+
+Definition at line 141 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Unate\-Product(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddWeakDiv@{Cudd\_\-zddWeakDiv}}
+\index{Cudd_zddWeakDiv@{Cudd\_\-zddWeakDiv}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Weak\-Div (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_104e65b094b4cfe361a4344fd7746b11}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Applies weak division to two covers.]
+
+Description [Applies weak division to two ZDDs representing two covers. Returns a pointer to the ZDD representing the result if successful; NULL otherwise. The result of weak division depends on the variable order. The covers on which Cudd\_\-zdd\-Weak\-Div operates use two ZDD variables for each function variable (one ZDD variable for each literal of the variable). Those two ZDD variables should be adjacent in the order.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Divide] 
+
+Definition at line 175 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Weak\-Div(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!Cudd_zddWeakDivF@{Cudd\_\-zddWeakDivF}}
+\index{Cudd_zddWeakDivF@{Cudd\_\-zddWeakDivF}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Weak\-Div\-F (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_e7919ec84ae5121722ca263298f81edb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Modified version of Cudd\_\-zdd\-Weak\-Div.]
+
+Description [Modified version of Cudd\_\-zdd\-Weak\-Div. This function may disappear in future releases.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Weak\-Div] 
+
+Definition at line 235 of file cudd\-Zdd\-Funcs.c.
+
+References cudd\-Zdd\-Weak\-Div\-F(), and Dd\-Manager::reordered.\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddDivide@{cuddZddDivide}}
+\index{cuddZddDivide@{cuddZddDivide}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Divide (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_df85f81e2cabd23947220f77681a6b0f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Divide.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Divide] 
+
+Definition at line 1066 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors2(), cudd\-Zdd\-Intersect(), DD\_\-ONE, DD\_\-ZERO, one, and zero.
+
+Referenced by Cudd\_\-zdd\-Divide().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddDivideF@{cuddZddDivideF}}
+\index{cuddZddDivideF@{cuddZddDivideF}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Divide\-F (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_4ac974deda65b0071f01780d8132efca}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Divide\-F.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Divide\-F] 
+
+Definition at line 1165 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors2(), cudd\-Zdd\-Intersect(), DD\_\-ONE, DD\_\-ZERO, one, and zero.
+
+Referenced by Cudd\_\-zdd\-Divide\-F().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddGetCofactors2@{cuddZddGetCofactors2}}
+\index{cuddZddGetCofactors2@{cuddZddGetCofactors2}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Get\-Cofactors2 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em v}, \bf{Dd\-Node} $\ast$$\ast$ {\em f1}, \bf{Dd\-Node} $\ast$$\ast$ {\em f0})}\label{cuddZddFuncs_8c_0767c8eb1d5d87d76cec9bfa86e996d1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the two-way decomposition of f w.r.t. v.]
+
+Description []
+
+Side\-Effects [The results are returned in f1 and f0.]
+
+See\-Also [cudd\-Zdd\-Get\-Cofactors3] 
+
+Definition at line 1347 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Recursive\-Deref\-Zdd(), cudd\-Zdd\-Subset0(), and cudd\-Zdd\-Subset1().
+
+Referenced by cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), and cudd\-Zdd\-Unate\-Product().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddGetCofactors3@{cuddZddGetCofactors3}}
+\index{cuddZddGetCofactors3@{cuddZddGetCofactors3}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Zdd\-Get\-Cofactors3 (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em v}, \bf{Dd\-Node} $\ast$$\ast$ {\em f1}, \bf{Dd\-Node} $\ast$$\ast$ {\em f0}, \bf{Dd\-Node} $\ast$$\ast$ {\em fd})}\label{cuddZddFuncs_8c_57eb6f354f1b6ed2cdd629162f46db82}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the three-way decomposition of f w.r.t. v.]
+
+Description [Computes the three-way decomposition of function f (represented by a ZDD) wit respect to variable v.]
+
+Side\-Effects [The results are returned in f1, f0, and fd.]
+
+See\-Also [cudd\-Zdd\-Get\-Cofactors2] 
+
+Definition at line 1265 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Zdd\-Subset0(), cudd\-Zdd\-Subset1(), DD\_\-ZERO, Dd\-Manager::perm\-Z, and zero.
+
+Referenced by cudd\-Zdd\-Product(), cudd\-Zdd\-Weak\-Div(), and cudd\-Zdd\-Weak\-Div\-F().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddProduct@{cuddZddProduct}}
+\index{cuddZddProduct@{cuddZddProduct}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Product (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_99b880cf40736e465e1cbf46cb13da40}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Product.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Product] 
+
+Definition at line 297 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Get\-Node(), cudd\-Zdd\-Union(), DD\_\-ONE, DD\_\-ZERO, one, Dd\-Manager::perm\-Z, and zero.
+
+Referenced by Cudd\_\-zdd\-Product(), and cudd\-Zdd\-Get\-Node\-IVO().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddUnateProduct@{cuddZddUnateProduct}}
+\index{cuddZddUnateProduct@{cuddZddUnateProduct}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Unate\-Product (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_fea6d3e9ead2bc24cc71cf61524b38d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Unate\-Product.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Unate\-Product] 
+
+Definition at line 531 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors2(), cudd\-Zdd\-Get\-Node(), cudd\-Zdd\-Union(), DD\_\-ONE, DD\_\-ZERO, one, Dd\-Manager::perm\-Z, and zero.
+
+Referenced by Cudd\_\-zdd\-Unate\-Product().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddWeakDiv@{cuddZddWeakDiv}}
+\index{cuddZddWeakDiv@{cuddZddWeakDiv}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Weak\-Div (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_86e1c6c9f20fb70fdd9579a4c63f448d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Weak\-Div.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Weak\-Div] 
+
+Definition at line 674 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Intersect(), DD\_\-ONE, DD\_\-ZERO, one, and zero.
+
+Referenced by Cudd\_\-zdd\-Weak\-Div().\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!cuddZddWeakDivF@{cuddZddWeakDivF}}
+\index{cuddZddWeakDivF@{cuddZddWeakDivF}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Weak\-Div\-F (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g})}\label{cuddZddFuncs_8c_24e2e6aa2dffe817f50ebed63f048db1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Weak\-Div\-F.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Weak\-Div\-F] 
+
+Definition at line 834 of file cudd\-Zdd\-Funcs.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Get\-Node(), cudd\-Zdd\-Intersect(), DD\_\-ONE, DD\_\-ZERO, dd\-Min, one, Dd\-Manager::perm\-Z, and zero.
+
+Referenced by Cudd\_\-zdd\-Weak\-Div\-F().
+
+\subsection{Variable Documentation}
+\index{cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddZddFuncs.c@{cudd\-Zdd\-Funcs.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Funcs.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddFuncs_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Zdd\-Funcs.c}{p.}{cuddZddFuncs_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to manipulate covers represented as ZDDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-zdd\-Product()}{p.}{cuddZddFuncs_8c_419b6b27fabd4f4994c1c5df0c5527cb}; \item \doxyref{Cudd\_\-zdd\-Unate\-Product()}{p.}{cuddZddFuncs_8c_4eb4a8cdc966acd5bd4ddabc42c6fb8e}; \item \doxyref{Cudd\_\-zdd\-Weak\-Div()}{p.}{cuddZddFuncs_8c_104e65b094b4cfe361a4344fd7746b11}; \item \doxyref{Cudd\_\-zdd\-Weak\-Div\-F()}{p.}{cuddZddFuncs_8c_e7919ec84ae5121722ca263298f81edb}; \item \doxyref{Cudd\_\-zdd\-Divide()}{p.}{cuddZddFuncs_8c_43e1add8b7cebce529186f3940c095f8}; \item \doxyref{Cudd\_\-zdd\-Divide\-F()}{p.}{cuddZddFuncs_8c_8acdb146297a02315d409b7c050a6d5a}; \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Zdd\-Product()}{p.}{cuddZddFuncs_8c_99b880cf40736e465e1cbf46cb13da40}; \item \doxyref{cudd\-Zdd\-Unate\-Product()}{p.}{cuddZddFuncs_8c_fea6d3e9ead2bc24cc71cf61524b38d8}; \item \doxyref{cudd\-Zdd\-Weak\-Div()}{p.}{cuddZddFuncs_8c_86e1c6c9f20fb70fdd9579a4c63f448d}; \item \doxyref{cudd\-Zdd\-Weak\-Div\-F()}{p.}{cuddZddFuncs_8c_24e2e6aa2dffe817f50ebed63f048db1}; \item \doxyref{cudd\-Zdd\-Divide()}{p.}{cuddZddFuncs_8c_df85f81e2cabd23947220f77681a6b0f}; \item \doxyref{cudd\-Zdd\-Divide\-F()}{p.}{cuddZddFuncs_8c_4ac974deda65b0071f01780d8132efca}; \item \doxyref{cudd\-Zdd\-Get\-Cofactors3()}{p.}{cuddZddFuncs_8c_57eb6f354f1b6ed2cdd629162f46db82} \item \doxyref{cudd\-Zdd\-Get\-Cofactors2()}{p.}{cuddZddFuncs_8c_0767c8eb1d5d87d76cec9bfa86e996d1} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\end{itemize}
+]
+
+See\-Also []
+
+Author [In-Ho Moon]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 70 of file cudd\-Zdd\-Funcs.c.

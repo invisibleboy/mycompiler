@@ -1,0 +1,958 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script finds and reads the appropriate "platform_info" module.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by IMPACT Technologies Inc (John Gyllenhaal) 1/99
+#
+
+# Set up environment with default values
+PRINT_OPTION="";
+PRINT_PLATFORM_INFO_DOCUMENTATION=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Must specify at least one option
+if [ $# -le 0 ]; then
+    VALID_ARGS=0;
+fi
+
+# get options 
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Print out the documentation for writing platform_info files
+	--help)
+            PRINT_PLATFORM_INFO_DOCUMENTATION=1;;
+
+	# Allow the contents of a particular variable to be printed
+        -host_platform|-host_compiler|-module_name|-platform_dir|-module_dir|-preprocessor_invocation|-include_path_options|-preprocessed_extension|-compiler_invocation|-compiler_invocation_4layout|-output_file_specifier|-executable_extension|-opti_mode_specifier|-debug_mode_specifier|-ansi_c_mode_specifier|-krc_mode_specifier|-use_krc_mode|-shared_lib_specifier|-static_lib_specifier|-compiler_postoptions|-compiler_version_query|-host_compiler_version|-pcode_prof_lib|-lcode_emul_lib|-make_command|-ln_command|-all)
+	    if [ "$PRINT_OPTION" != "" ]; then
+               echo "> Error: read_compile_info does not expect both '$PRINT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    PRINT_OPTION="$OPTION";;
+	   
+        *)
+            echo "> Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $PRINT_PLATFORM_INFO_DOCUMENTATION -eq 1 ]; then
+cat <<PLATFORM_INFO_DOCUMENTATION_EOF
+# =======================================================================
+# Documentation for 'platform_info' files.
+# Created for IMPACT Version 2.33 by John C. Gyllenhaal
+#
+# The 'platform_info' file is placed in each platform info directory
+# (impact/platform/\${IMPACT_HOST_PLATFORM}_\${IMPACT_HOST_COMPILER})
+# to specify platform-specific compilation information (how to
+# invoke the host preprocessor, host compiler, etc.).  The interface to this
+# file's information is the impact/scripts/read_platform_info script.
+#
+# The read_platform_info script uses the shell's include mechanism
+# ". \${PLATFORM_DIR}/project_info" to read the values of the variables
+# defined in the file.  This mechanism is fragile!  The guidelines
+# outlined in this file should be followed to ensure correct behavior.
+#
+# Use impact/scripts/read_platform_info to ensure expected output.
+# Use test_bench_info, compile_bench, and MFmake scripts to test the
+# validity of the settings.
+#
+# This information is used primarily by test_bench_info, compile_bench,
+# gen_profiled_pcode, gen_profiled_lcode, gen_probed_lcode, install_impact,
+# and MFmake.  These scripts may be examined to see exactly how this 
+# information is being used.
+#
+# At the end of this documentation is a sample platform_info file.
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MUST BE DEFINED BY 'platform_info':
+#
+#   PREPROCESSOR_INVOCATION="IMPACT-compatible preprocessor command"
+#
+#     This command should take as its last argument a C file and write
+#     the preprocessed output to stdout (e.g. command x.c > x.i).  The
+#     ANSI_C_MODE_SPECIFIER or KRC_MODE_SPECIFIER (described below) will be
+#     placed just before the C file, so this command should not
+#     include a 'C mode' option.  In addition, all warnings should be
+#     turned off.
+#
+#     This preprocessing command should include *whatever* compiler and
+#     preprocessor directives are necessary to generate C code that is
+#     EDG and IMPACT compatible.  NOTE: This is more of an art than a
+#     science.  If it works, it is fair game!  It is highly undesirable 
+#     to modify edg_CtoP and/or IMPACT unless absolutely necessary!
+#
+#     The compatibility requirements include:
+#
+#         1) the compiler must be placed in a pure 32-bit mode 
+#            (sizeof(char *) = sizeof(int) = sizeof(long) = 4);
+#        
+#         2) the preprocessed output contain only legal-C that is 
+#            "by the book" (no prototypes in K&R-C code, no embedded function
+#            and structure declarations in expressions, or anything else
+#            that edg_CtoP punts on);
+#
+#         3) the preprocessed output contain only standard-C keywords
+#            (no '__attribute__', '__const', '__inline', 'inline', or
+#            anything else edg_CtoP punts on);
+#
+#         4) the preprocessed output does not contain 'const' since
+#            they will cause prototype mismatches (edg_CtoP punts) and
+#            it is easiest to just remove them; 
+#
+#         5) the varargs and stdargs header files fixed (if necessary) 
+#            to make them legal C (they are usually not) and to make 
+#            va_start() expand to something that uses __builtin_va_start() 
+#            or __builtin_next_arg() and uses the last non-varargs parameter 
+#            as an argument (required by Lemulate's vararg fixup code); and
+# 
+#         6) do all these changes while maintaining compatibility with the 
+#            host compiler (test_bench_info must still work).  
+#
+#     See the existing ports under impact/platform/* for examples of
+#     how these requirements have been met for several different platforms.
+#            
+#     Note: If using gcc, adding '-U__GNUC__' will remove most of the gnu C 
+#     extensions.  However, '-U__GNUC__' will break some things and will
+#     not remove some non-standard C.  If header file patches are necessary,
+#     place the modified headers in the project's include directory
+#     (marked with IMPACT_FIX, etc).
+#
+#     Examples:
+#       
+#       "cc -w -E -D_HPUX_SOURCE"         -> From impact/platform/hp_cc
+# 
+#       "gcc -w -E -Dconst= -D__const= \\  
+#        -D__attribute__(p)= \\   
+#        -U__GNUC__ -DIMPACT_FIX"         -> From impact/platform/x86lin_gcc
+#
+#
+#   INCLUDE_PATH_OPTIONS="extra header file include paths (if required)" 
+#
+#     If header file modifications are necessary, use this to specify
+#     the extra header file include path.  Put any other options that have 
+#     paths in them in this command also.  
+#  
+#     Note: This option's setting is not checked by the IMPACT script
+#     gen_probed_lcode when it checks preprocessing option consistency
+#     (all other preprocessing options are).
+#
+#     Examples:
+#
+#       ""                          -> No header files modified (hp/cc)
+#
+#       "-I\${PLATFORM_DIR}/include" -> Header files were modified (x86lin/gcc)
+#
+#
+#   PREPROCESSED_EXTENSION="preprocesed extension host compiler recognizes"
+#
+#     Examples:
+#
+#       ".i"                         -> What most compilers require
+#
+#       ".i.c"                       -> Some compilers require .c files
+#
+#  
+#   COMPILER_INVOCATION="compiler invocation compatible with preprocessed src"
+#
+#     This is used by test_bench_info to generate an executable from
+#     the preprocessed source and by gen_profiled_pcode and gen_probed_lcode
+#     to generate executables for reverse generated C emulation code.
+#     Should suppress warnings and should put compiler in same mode 
+#     that was used during preprocessing.  Should not include any
+#     of the options specified in the variables described below, including
+#     optimization/debug specifiers, Ansi-C/K&R-C specifiers, and 
+#     static/shared library specifiers.
+#
+#     Examples:
+#
+#       "cc -w -z +DA1.1"            -> From impact/platform/hp_cc
+#
+#       "gcc -w -U__GNUC__"          -> From impact/platform/x86lin_gcc
+# 
+#
+#   OUTPUT_FILE_SPECIFIER="compiler option required to specify output file"
+#
+#     Example:
+#
+#       "-o " # Space required after -o!   -> Most unix compilers
+#
+#
+#   EXECUTABLE_EXTENSION="executable extension (if necessary)"
+#
+#     Examples:
+#
+#       ""                           -> Most Unix operating systems
+#
+#       ".exe"                       -> Required by some operatings systems
+#
+#
+#   OPTI_MODE_SPECIFIER="option to turn on optimizations"
+#
+#     Example:
+#
+#       "-O"                         -> Most unix compilers
+#
+#
+#   DEBUG_MODE_SPECIFIER="option to make executable debugable"
+#
+#     Example:
+#
+#       "-g"                         -> Most unix compilers
+#
+#
+#   ANSI_C_MODE_SPECIFIER="option to put compiler in Ansi-C mode"
+#
+#     Examples:
+#
+#       "-Aa"                        -> HPUX's cc
+#
+#       ""                           -> gcc defaults to Ansi-C
+#
+#
+#   KRC_MODE_SPECIFIER="option to put compiler in K&R-C mode"
+#
+#     Examples:
+#
+#       "-Ac"                        -> HPUX's cc
+#
+#       "-traditional"               -> gcc 
+#
+#   USE_KRC_MODE="option to use the EDG K&R-C mode for K&R-C mode benchmarks"
+#
+#   If this is set to 0, the EDG C front end will never use K&R-C mode,
+#   even when it is specified to do so in the benchmark configuration.
+#   Otherwise, it must be set to 1.
+#
+#   
+#   SHARED_LIB_SPECIFIER="option to tell linker to use shared libraries"
+#
+#     Example:
+#
+#       ""                           -> Default for most Unix compilers
+#    
+#
+#   STATIC_LIB_SPECIFIER="option to tell linker to use static libraries"
+#
+#     Examples:
+#
+#       "-Wl,-a,archive"             -> HPUX's cc
+#
+#       "-static"                    -> gcc 
+#
+#
+#   COMPILER_POSTOPTIONS="compatibility options that need to go at the end"
+#
+#     Examples:
+#
+#       ""                                 -> Not needed for most platforms
+#
+#       "-liberty" # For atexit() support  -> For SunOS
+#    
+#
+#   COMPILER_VERSION_QUERY="command that will return compiler version"
+#
+#     Examples:
+#
+#       "gcc --version"                    -> gcc
+#
+#       "\${PLATFORM_DIR}/print_cc_version" -> complex, use script for HP/cc
+#
+#
+#   PCODE_PROF_LIB="path to support library used by gen_profiled_pcode"
+#
+#    Example:
+#
+#      "\${PLATFORM_DIR}/impact_pprof_lib.o" -> All platforms currently
+#
+#
+#  LCODE_EMUL_LIB="path to support library used by Lemulate/gen_probed_lcode"
+#
+#    Example:
+#
+#      "\${PLATFORM_DIR}/impact_lemul_lib.o" -> All platforms currently
+#
+#
+#  MAKE_COMMAND="name of 'make', used by install_impact and MFmake"
+#
+#    Examples:
+#
+#      "make"                      -> Installed gnu's make as 'make'
+#
+#      "gnumake"                   -> Installed gnu's make as 'gnumake'
+#
+#  LN_COMMAND="name of 'ln', used by various scripts to make symbolic links"
+#
+#    Examples:
+#
+#      "ln -s"                     -> For UNIX systems
+#
+#      "ln"                        -> For OS that doesn't support symbolic links
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MAY OPTIONALLY BE DEFINED BY 'platform_info':
+#
+#   There are currently no optionally defined variables.
+#
+#
+# --------------------
+# SHELL VARIABLES DEFINED BY 'read_platform_info' THAT MAY BE USED:
+#
+#   PLATFORM_DIR="platform info location (e.g., 'impact/platform/x86lin_gcc')"
+#   HOST_PLATFORM="host platform for profiling/emulation (e.g., 'x86lin')"
+#   HOST_COMPILER="host compiler for libraries/header files (e.g., 'gcc')"
+#
+# If desired, you may use these variables to set the platform_info file
+# variables.  
+#
+#
+# --------------------
+# GENERAL NOTES:
+#
+# The use of environment/shell variables not defined by read_platform_info, or
+# the calling of another script/executable, is discouraged due to
+# portability and compatibility considerations.
+#
+#
+# --------------------
+# EXAMPLE X86 LINUX/GCC 'platform_info' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.33  #
+ #                                                             July 12, 1999 #
+###############################################################################
+# Run 'read_platform_info --help | more' for documentation.
+#
+# Platform info module for: x86lin gcc
+#
+# (Testing history omitted.)
+# 
+# Revision history for this file:
+#   5/99  Created by IMPACT Technologies, Inc (John C. Gyllenhaal)
+
+# Use preprocessor to get rid of gcc-specific stuff (which EDG and IMPACT
+# doesn't like)
+PREPROCESSOR_INVOCATION="gcc -w -E -Dconst= -D__const= -D__attribute__(p)= -U__GNUC__ -DIMPACT_FIX"
+INCLUDE_PATH_OPTIONS="-I\${PLATFORM_DIR}/include"
+PREPROCESSED_EXTENSION=".i"
+
+COMPILER_INVOCATION="gcc -w -U__GNUC__"
+OUTPUT_FILE_SPECIFIER="-o " # Space required after -o!
+EXECUTABLE_EXTENSION="";    # No extra extension required
+OPTI_MODE_SPECIFIER="-O"
+DEBUG_MODE_SPECIFIER="-g"
+ANSI_C_MODE_SPECIFIER=""
+KRC_MODE_SPECIFIER="-traditional"
+USE_KRC_MODE=0
+SHARED_LIB_SPECIFIER=""
+STATIC_LIB_SPECIFIER="-static"
+COMPILER_POSTOPTIONS=""
+COMPILER_VERSION_QUERY="gcc --version"
+
+PCODE_PROF_LIB="\${PLATFORM_DIR}/impact_pprof_lib.o"
+LCODE_EMUL_LIB="\${PLATFORM_DIR}/impact_lemul_lib.o"
+
+MAKE_COMMAND="make"
+LN_COMMAND="ln -s"
+
+PLATFORM_INFO_DOCUMENTATION_EOF
+exit 1;
+fi
+
+# TRIMARAN_HOST_PLATFORM or IMPACT_HOST_PLATFORM must be specified!
+HOST_PLATFORM="";
+if [ "$TRIMARAN_HOST_PLATFORM" != "" ]; then
+   HOST_PLATFORM="$TRIMARAN_HOST_PLATFORM";
+elif [ "$IMPACT_HOST_PLATFORM" != "" ]; then
+   HOST_PLATFORM="$IMPACT_HOST_PLATFORM";
+else
+   echo "Error: TRIMARAN_HOST_PLATFORM or IMPACT_HOST_PLATFORM must be"
+   echo "       specified in your environment!"
+   VALID_ARGS=0;
+   HOST_PLATFORM="??";
+fi
+
+
+# TRIMARAN_HOST_COMPILER or IMPACT_HOST_COMPILER must be specified!
+HOST_COMPILER="";
+if [ "$TRIMARAN_HOST_COMPILER" != "" ]; then
+   HOST_COMPILER="$TRIMARAN_HOST_COMPILER";
+elif [ "$IMPACT_HOST_COMPILER" != "" ]; then
+   HOST_COMPILER="$IMPACT_HOST_COMPILER";
+else
+   echo "Error: TRIMARAN_HOST_COMPILER or IMPACT_HOST_COMPILER must be"
+   echo "       specified in your environment!"
+   VALID_ARGS=0;
+   HOST_COMPILER="??";
+fi
+
+# Get the subdirectory we expect the platform_info file to be in
+MODULE_DIR="${HOST_PLATFORM}_${HOST_COMPILER}";
+
+# Get the platform_info file name we are looking for
+MODULE_NAME="platform_info";
+
+# If not already in error state, look for platform info file
+if [ $VALID_ARGS -eq 1 -a "$PRINT_OPTION" != "" ]; then
+    
+   # Find path to a valid INFO_FILE_NAME
+   # Set Trimaran's default platform path if TRIMARAN_REL_PATH defined
+   if [ "${TRIMARAN_REL_PATH}" != "" ] ; then
+      TRIMARAN_DEFAULT_PLATFORM_PATH="${TRIMARAN_REL_PATH}/platform/${MODULE_DIR}";
+   else
+      TRIMARAN_DEFAULT_PLATFORM_PATH="";
+   fi
+
+   # Set IMPACT's default platform path if IMPACT_REL_PATH defined
+   if [ "${IMPACT_REL_PATH}" != "" ] ; then
+      IMPACT_DEFAULT_PLATFORM_PATH="${IMPACT_REL_PATH}/platform/${MODULE_DIR}";
+   else
+      IMPACT_DEFAULT_PLATFORM_PATH="";
+   fi
+
+   # Set users full platform path if USER_PLATFORM_PATH defined
+   if [ "${USER_PLATFORM_PATH}" != "" ] ; then
+      FULL_USER_PLATFORM_PATH="${USER_PLATFORM_PATH}/${MODULE_DIR}";
+   else
+      FULL_USER_PLATFORM_PATH="";
+   fi
+
+   # Note: /bin/sh ignores undefined paths, so we get the desired behavior
+   PLATFORM_FOUND=0;
+   for PLATFORM_PATH in $FULL_USER_PLATFORM_PATH \
+		        $TRIMARAN_DEFAULT_PLATFORM_PATH \
+                        $IMPACT_DEFAULT_PLATFORM_PATH
+   do
+       if [ $PLATFORM_FOUND -eq 0 ]; then
+          if [ -f ${PLATFORM_PATH}/${MODULE_NAME} ] ; then
+	     PLATFORM_FOUND=1;
+	     PLATFORM_DIR="${PLATFORM_PATH}";
+             MODULE_PATH="${PLATFORM_PATH}/${MODULE_NAME}"
+          fi
+       fi
+   done
+
+   if [ $PLATFORM_FOUND -eq 0 ]; then
+      echo " ";
+      echo "> Error: read_platform_info unable to find '${MODULE_DIR}/${MODULE_NAME}'!"
+      VALID_ARGS=0;
+   fi
+fi
+
+if [ $VALID_ARGS -eq 0 -o "$PRINT_OPTION" = "" ]; then
+    echo ' ';
+    echo "> Usage: read_platform_info [options]";
+    echo '> ';
+    echo '> Reads platform information for use by IMPACT and Trimaran';
+    echo '> ';
+    echo '> Print options (exactly one of the the following must be specified):';
+
+    echo '>   -all                     print all the info read';
+    echo '>   -host_platform           prints the contents of "HOST_PLATFORM" (env-based)';
+    echo '>   -host_compiler           prints the contents of "HOST_COMPILER" (env-based)';
+    echo '>   -module_name             prints the name of the platform_info file';
+    echo '>   -platform_dir            prints directory platform_info file located in';
+    echo '>   -preprocessor_invocation prints the contents of "PREPROCESSOR_INVOCATION"';
+    echo '>   -include_path_options    prints the contents of "INCLUDE_PATH_OPTIONS"';
+    echo '>   -preprocessed_extension  prints the contents of "PREPROCESSED_EXTENSION"';
+    echo '>   -compiler_invocation     prints the contents of "COMPILER_INVOCATION"';
+    echo '>   -compiler_invocation_4layout     prints the contents of "COMPILER_INVOCATION_4LAYOUT"';
+    echo '>   -output_file_specifier   prints the contents of "OUTPUT_FILE_SPECIFIER"';
+    echo '>   -executable_extension    prints the contents of "EXECUTABLE_EXTENSION"';
+    echo '>   -opti_mode_specifier     prints the contents of "OPTI_MODE_SPECIFIER"';
+    echo '>   -debug_mode_specifier    prints the contents of "DEBUG_MODE_SPECIFIER"';
+    echo '>   -ansi_c_mode_specifier   prints the contents of "ANSI_C_MODE_SPECIFIER"';
+    echo '>   -krc_mode_specifier      prints the contents of "KRC_MODE_SPECIFIER"';
+    echo '>   -use_krc_mode            prints the contents of "USE_KRC_MODE"';
+    echo '>   -shared_lib_specifier    prints the contents of "SHARED_LIB_SPECIFIER"';
+    echo '>   -static_lib_specifier    prints the contents of "STATIC_LIB_SPECIFIER"';
+    echo '>   -compiler_postoptions    prints the contents of "COMPILER_POSTOPTIONS"';
+    echo '>   -compiler_version_query  prints the contents of "COMPILER_VERSION_QUERY"';
+    echo '>   -host_compiler_version   prints output of query "COMPILER_VERSION_QUERY"';
+    echo '>   -pcode_prof_lib          prints the contents of "PCODE_PROF_LIB"';
+    echo '>   -lcode_emul_lib          prints the contents of "LCODE_EMUL_LIB"';
+    echo '>   -make_command            prints the contents of "MAKE_COMMAND"';
+    echo '>   -ln_command              prints the contents of "LN_COMMAND"';
+    echo '>   --help                   prints documentation for platform_info files';
+    echo "> ";
+    echo "> Searches for platform_info file ($MODULE_DIR/$MODULE_NAME) in the following "
+    echo "> environment-variable-specified directories, in the order specified below:";
+    echo "> ";
+    echo ">  Environment Variable Used                     Current Value";
+    echo "> ----------------------------  ----------------------------------------------"
+    if [ "${USER_PLATFORM_PATH}" != "" ]; then
+       echo "> USER_PLATFORM_PATH            ${USER_PLATFORM_PATH}";
+    else
+       echo "> USER_PLATFORM_PATH            (undefined)";
+    fi
+
+    if [ "${TRIMARAN_REL_PATH}" != "" ]; then
+       echo "> TRIMARAN_REL_PATH/platform    ${TRIMARAN_REL_PATH}/platform";
+    else
+       echo "> TRIMARAN_REL_PATH/platform    (undefined)";
+    fi
+
+    if [ "${IMPACT_REL_PATH}" != "" ]; then
+       echo "> IMPACT_REL_PATH/platform      ${IMPACT_REL_PATH}/platform";
+    else
+       echo "> IMPACT_REL_PATH/platform      (undefined)";
+    fi
+    echo " "
+    exit 1;
+fi
+
+
+# Make sure module exists
+if [ ! -f ${MODULE_PATH} ]; then
+    echo "> Error: Unable to find platform info module '${MODULE_NAME}' in"
+    echo ">        '${PLATFORM_DIR}'"
+    exit 1;
+fi
+
+# PLATFORM_DIR, HOST_COMPILER, and HOST_COMPILER set above 
+# as promised for use by the platform info file.
+export PLATFORM_DIR
+export HOST_COMPILER
+export HOST_COMPILER
+# For compatibility with previous versions of platform info modules
+BASE_DIR="$PLATFORM_DIR"
+export BASE_DIR
+
+# The following variables are the only variables that should be
+# defined in the benchmark compile info file.  Set to "(invalid)" to
+# allow detection of undefined variables.
+
+PREPROCESSOR_INVOCATION="(invalid)";
+INCLUDE_PATH_OPTIONS="(invalid)";
+PREPROCESSED_EXTENSION="(invalid)";
+COMPILER_INVOCATION="(invalid)";
+OUTPUT_FILE_SPECIFIER="(invalid)";
+EXECUTABLE_EXTENSION="(invalid)";
+OPTI_MODE_SPECIFIER="(invalid)";
+DEBUG_MODE_SPECIFIER="(invalid)";
+ANSI_C_MODE_SPECIFIER="(invalid)";
+KRC_MODE_SPECIFIER="(invalid)";
+USE_KRC_MODE="(invalid)";
+SHARED_LIB_SPECIFIER="(invalid)";
+STATIC_LIB_SPECIFIER="(invalid)";
+COMPILER_POSTOPTIONS="(invalid)";
+COMPILER_VERSION_QUERY="(invalid)";
+
+PCODE_PROF_LIB="(invalid)";
+LCODE_EMUL_LIB="(invalid)";
+
+MAKE_COMMAND="(invalid)";
+LN_COMMAND="(invalid)";
+
+
+# Do a test execution of the module to make sure valid before doing
+# the "real" execution below as part of this script (using . $MODULE_PATH).  
+# The goal is to avoid criptic error messages about read_compile_info having
+# mismatched quotes, etc., when it really is the info module's problem.
+# Shell out and run script (which should do nothing) and look for error message
+SH_ERROR="`(/bin/sh $MODULE_PATH) 2>&1`"
+ERROR_CODE="$?";
+if test "$ERROR_CODE" != 0; then
+   echo " "
+   echo "> Error: read_platform_info received error executing module (via /bin/sh):"
+   echo ">        $MODULE_PATH"
+   echo "> "
+   echo "> Error message returned by /bin/sh (return value $ERROR_CODE):"
+   echo " ";
+   echo "$SH_ERROR";
+   echo " ";
+   echo "> Exiting read_platform_info.  Invalid compilation info module.";
+   exit 1;
+fi
+
+
+# Execute the platform info module as if it was part of this script.
+# This module does not need to be executable.  Must trust the module
+# not to do anything that makes this script break (somewhat tested above).
+. ${MODULE_PATH}
+
+# Make sure every variable was defined in the platform info module
+INFO_MISSING=0;
+
+if [ "$PREPROCESSOR_INVOCATION" = "(invalid)" ]; then
+  echo "> Error: PREPROCESSOR_INVOCATION not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$INCLUDE_PATH_OPTIONS" = "(invalid)" ]; then
+  echo "> Error: INCLUDE_PATH_OPTIONS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$COMPILER_INVOCATION" = "(invalid)" ]; then
+  echo "> Error: COMPILER_INVOCATION not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$ANSI_C_MODE_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: ANSI_C_MODE_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$KRC_MODE_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: KRC_MODE_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$USE_KRC_MODE" = "(invalid)" ]; then
+  echo "> Error: USE_KRC_MODE not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$SHARED_LIB_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: SHARED_LIB_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$STATIC_LIB_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: STATIC_LIB_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$COMPILER_POSTOPTIONS" = "(invalid)" ]; then
+  echo "> Error: COMPILER_POSTOPTIONS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$COMPILER_VERSION_QUERY" = "(invalid)" ]; then
+  echo "> Error: COMPILER_VERSION_QUERY not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$PREPROCESSED_EXTENSION" = "(invalid)" ]; then
+  echo "> Error: PREPROCESSED_EXTENSION not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$OUTPUT_FILE_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: OUTPUT_FILE_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$EXECUTABLE_EXTENSION" = "(invalid)" ]; then
+  echo "> Error: EXECUTABLE_EXTENSION not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$OPTI_MODE_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: OPTI_MODE_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$DEBUG_MODE_SPECIFIER" = "(invalid)" ]; then
+  echo "> Error: DEBUG_MODE_SPECIFIER not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$PCODE_PROF_LIB" = "(invalid)" ]; then
+  echo "> Error: PCODE_PROF_LIB not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$LCODE_EMUL_LIB" = "(invalid)" ]; then
+  echo "> Error: LCODE_EMUL_LIB not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$MAKE_COMMAND" = "(invalid)" ]; then
+  echo "> Error: MAKE_COMMAND not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$LN_COMMAND" = "(invalid)" ]; then
+  echo "> Error: LN_COMMAND not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ $INFO_MISSING  -eq 1 ]; then
+  echo "> Error: The above variables were not defined by ${MODULE_NAME} in"
+  echo ">        ${PLATFORM_DIR}"
+  echo ">        These variables must be defined in this platform info module!"
+  exit 1;
+fi
+
+# Make sure checkable variables have reasonable values
+INFO_INVALID=0;
+
+if [ "$PCODE_PROF_LIB" = "" ]; then
+  echo "> Error: PCODE_PROF_LIB may not be set to ''!"
+  INFO_INVALID=1;
+# Warn only if specifically testing for this info! -JCG 6/99 
+elif [ "$PRINT_OPTION" = "-pcode_prof_lib" -a ! -f $PCODE_PROF_LIB ]; then
+  echo "> Error: PCODE_PROF_LIB set to non-existent file:"
+  echo "         '$PCODE_PROF_LIB'"
+  INFO_INVALID=1;
+fi
+
+if [ "$LCODE_EMUL_LIB" = "" ]; then
+  echo "> Error: LCODE_EMUL_LIB may not be set to ''!"
+  INFO_INVALID=1;
+# Warn only if specifically testing for this info! -JCG 6/99 
+elif [ "$PRINT_OPTION" = "-lcode_emul_lib" -a ! -f $LCODE_EMUL_LIB ]; then
+  echo "> Error: LCODE_EMUL_LIB set to non-existent file:"
+  echo "         '$LCODE_EMUL_LIB'"
+  INFO_INVALID=1;
+fi
+
+if [ "$PREPROCESSOR_INVOCATION" = "" ]; then
+  echo "> Error: PREPROCESSOR_INVOCATION may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$PREPROCESSED_EXTENSION" = "" ]; then
+  echo "> Error: PREPROCESSED_EXTENSION may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$COMPILER_INVOCATION" = "" ]; then
+  echo "> Error: COMPILER_INVOCATION may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$OUTPUT_FILE_SPECIFIER" = "" ]; then
+  echo "> Error: OUTPUT_FILE_SPECIFIER may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$COMPILER_VERSION_QUERY" = "" ]; then
+  echo "> Error: COMPILER_VERSION_QUERY may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$MAKE_COMMAND" = "" ]; then
+  echo "> Error: MAKE_COMMAND may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ "$LN_COMMAND" = "" ]; then
+  echo "> Error: LN_COMMAND may not be set to ''!"
+  INFO_INVALID=1;
+fi
+
+if [ $INFO_INVALID -eq 1 ]; then
+  echo "> Error: The above variables were not set properly by ${MODULE_NAME} in"
+  echo ">        ${PLATFORM_DIR}"
+  echo ">        These variables must be properly set in ${MODULE_NAME}!"
+  exit 1;
+fi
+
+
+# Print out the appropriate output based on PRINT_OPTION's value
+case "$PRINT_OPTION" in
+  ""|-all)
+    # Print the settings read, formatted and with labels
+    echo "          Host Platform: '$HOST_PLATFORM'"
+    echo "          Host Compiler: '$HOST_COMPILER'"
+    echo "            Module Name: '$MODULE_NAME'"
+    echo "      Platform Info Dir: '$PLATFORM_DIR'"
+    echo "  "
+    echo "         Pcode Prof Lib: '$PCODE_PROF_LIB'"
+    echo "         Lcode Emul Lib: '$LCODE_EMUL_LIB'"
+    echo "  "
+    echo "Preprocessor Invocation: '$PREPROCESSOR_INVOCATION'"
+    echo "   Include Path Options: '$INCLUDE_PATH_OPTIONS'"
+    echo " Preprocessed Extension: '$PREPROCESSED_EXTENSION'"
+    echo "    Compiler Invocation: '$COMPILER_INVOCATION'"
+    echo "  Output File Specifier: '$OUTPUT_FILE_SPECIFIER'"
+    echo "   Executable Extension: '$EXECUTABLE_EXTENSION'"
+    echo "    Opti Mode Specifier: '$OPTI_MODE_SPECIFIER'"
+    echo "   Debug Mode Specifier: '$DEBUG_MODE_SPECIFIER'"
+    echo "  Ansi C Mode Specifier: '$ANSI_C_MODE_SPECIFIER'"
+    echo "   K&R C Mode Specifier: '$KRC_MODE_SPECIFIER'"
+    echo "         Use K&R C Mode: '$USE_KRC_MODE'"
+    echo "   Shared Lib Specifier: '$SHARED_LIB_SPECIFIER'"
+    echo "   Static Lib Specifier: '$STATIC_LIB_SPECIFIER'"
+    echo "   Compiler Postoptions: '$COMPILER_POSTOPTIONS'"
+    echo " Compiler Version Query: '$COMPILER_VERSION_QUERY'"
+    echo "           Make Command: '$MAKE_COMMAND'"
+    echo "           Ln   Command: '$LN_COMMAND'"
+    exit 0;;
+
+  # Print out each individual setting, with no labels
+  -host_platform)
+    echo "$HOST_PLATFORM"
+    exit 0;;
+
+  -host_compiler)
+    echo "$HOST_COMPILER"
+    exit 0;;
+
+  -platform_dir|-module_dir)
+    echo "$PLATFORM_DIR"
+    exit 0;;
+
+  -module_name)
+    echo "$MODULE_NAME"
+    exit 0;;
+
+  -preprocessor_invocation)
+    echo "$PREPROCESSOR_INVOCATION"
+    exit 0;;
+
+  -include_path_options)
+    echo "$INCLUDE_PATH_OPTIONS"
+    exit 0;;
+
+  -preprocessed_extension)
+    echo "$PREPROCESSED_EXTENSION"
+    exit 0;;
+
+  -compiler_invocation)
+    echo "$COMPILER_INVOCATION"
+    exit 0;;
+
+  -compiler_invocation_4layout)
+    echo "$COMPILER_INVOCATION_4LAYOUT"
+    exit 0;;
+
+  -output_file_specifier)
+    echo "$OUTPUT_FILE_SPECIFIER"
+    exit 0;;
+
+  -executable_extension)
+    echo "$EXECUTABLE_EXTENSION"
+    exit 0;;
+
+  -opti_mode_specifier)
+    echo "$OPTI_MODE_SPECIFIER"
+    exit 0;;
+
+  -debug_mode_specifier)
+    echo "$DEBUG_MODE_SPECIFIER"
+    exit 0;;
+
+  -ansi_c_mode_specifier)
+    echo "$ANSI_C_MODE_SPECIFIER"
+    exit 0;;
+
+  -krc_mode_specifier)
+    echo "$KRC_MODE_SPECIFIER"
+    exit 0;;
+
+  -use_krc_mode)
+    echo "$USE_KRC_MODE"
+    exit 0;;
+
+  -shared_lib_specifier)
+    echo "$SHARED_LIB_SPECIFIER"
+    exit 0;;
+
+  -static_lib_specifier)
+    echo "$STATIC_LIB_SPECIFIER"
+    exit 0;;
+
+  -compiler_postoptions)
+    echo "$COMPILER_POSTOPTIONS"
+    exit 0;;
+
+  -compiler_version_query)
+    echo "$COMPILER_VERSION_QUERY"
+    exit 0;;
+
+  -host_compiler_version)
+    # Execute query to get host compiler version
+    RAW_VERSION=`/bin/sh -c "$COMPILER_VERSION_QUERY" 2>&1`;
+    if test "$?" != 0; then 
+       echo "$RAW_VERSION"
+       echo "> Error generating compiler version executing the following:"
+       echo ">   $COMPILER_VERSION_QUERY"
+       exit 1;
+    fi
+    # Compress all the whitespace out of RAW_VERSION
+    HOST_VERSION=""
+    for SUB_WORD in $RAW_VERSION
+    do
+       if [ "$HOST_VERSION" = "" ]; then
+          HOST_VERSION="$SUB_WORD";
+       else
+          HOST_VERSION="${HOST_VERSION} ${SUB_WORD}";
+       fi
+    done
+    echo "$HOST_VERSION"
+    exit 0;;
+
+  -pcode_prof_lib)
+    echo "$PCODE_PROF_LIB"
+    exit 0;;
+
+  -lcode_emul_lib)
+    echo "$LCODE_EMUL_LIB"
+    exit 0;;
+
+  -make_command)
+    echo "$MAKE_COMMAND"
+    exit 0;;
+
+  -ln_command)
+    echo "$LN_COMMAND"
+    exit 0;;
+
+  *)
+     echo "> Error: Unexpected error.  '$PRINT_OPTION' option unhandled";
+     exit 1;;
+esac

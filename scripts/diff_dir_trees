@@ -1,0 +1,165 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       Compares two directory trees and lists the files added, deleted,
+#       and modified.  Will recursively call itself for subdirectories
+#       that exist in both trees.
+#
+#       Written to help figure out what has changed between IMPACT versions.  
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 4/12/99
+#
+
+if [ $# -ne 2 ]; then
+   echo "> Usage: diff_dir_trees dir1 dir2 [options]"
+   echo ">   Compares two directory trees and lists the files added, deleted,"
+   echo ">   and modified.  Will recursively call itself for subdirectories"
+   echo ">   that exist in both trees."
+   echo ">"
+   exit 1;
+fi
+
+DIR1="$1";
+DIR2="$2";
+
+# Make sure directories exist
+if [ ! -d $DIR1 ]; then
+   echo "> Error, the path specified for dir1 not a directory:";
+   echo ">   $DIR1";
+   exit 1;
+fi
+
+if [ ! -d $DIR2 ]; then
+   echo "> Error, the path specified for dir2 not a directory:";
+   echo ">   $DIR2";
+   exit 1;
+fi
+
+echo "Comparing '${DIR1}' and '${DIR2}'"
+
+RECURSE_LIST="";
+
+# Get the files in DIR1
+DIR1_FILES=`cd ${DIR1}; ls`;
+
+# Go through all the files in DIR1 and detect files/dirs added and modified
+for FILE in $DIR1_FILES
+do
+   # Handle symbolic links 
+   if [ -h ${DIR1}/${FILE} ]; then
+      # See if files linked to different
+      if [ -h ${DIR2}/${FILE} ]; then
+         cmp -s ${DIR1}/${FILE} ${DIR2}/${FILE}
+         if [ "$?" != 0 ]; then
+            echo "Modified link '${DIR1}/${FILE}'"
+         fi
+      else
+         echo "Added link '${DIR1}/${FILE}'"
+      fi
+   # Handle normal files 
+   elif [ -f ${DIR1}/${FILE} ]; then
+      # See if files different
+      if [ -f ${DIR2}/${FILE} ]; then
+         cmp -s ${DIR1}/${FILE} ${DIR2}/${FILE}
+         if [ "$?" != 0 ]; then
+            echo "diff ${DIR1}/${FILE} ${DIR2}/${FILE}"
+            echo "############"
+            diff ${DIR1}/${FILE} ${DIR2}/${FILE} | wc
+            diff ${DIR1}/${FILE} ${DIR2}/${FILE} | head -20
+            echo "############"
+         fi
+      else
+         echo "Added file '${DIR1}/${FILE}'"
+      fi
+   # Handle directories
+   elif [ -d ${DIR1}/${FILE} ]; then
+      # Add to recurse list if present in both 
+      if [ -d ${DIR2}/${FILE} ]; then
+         RECURSE_LIST="${RECURSE_LIST} $FILE"
+      else
+         echo "Added directory '${DIR1}/${FILE}'"
+      fi
+   fi 
+done;
+
+# Get the files in DIR2
+DIR2_FILES=`cd ${DIR2}; ls`;
+
+# Go through all the files in DIR2 and detect files/dirs deleted
+for FILE in $DIR2_FILES
+do
+   # Handle links files 
+   if [ -h ${DIR2}/${FILE} ]; then
+      # See if deleted link
+      if [ ! -h ${DIR1}/${FILE} ]; then
+         echo "Deleted link '${DIR2}/${FILE}'"
+      fi
+   # Handle normal files 
+   elif [ -f ${DIR2}/${FILE} ]; then
+      # See if deleted file
+      if [ ! -f ${DIR1}/${FILE} ]; then
+         echo "Deleted file '${DIR2}/${FILE}'"
+      fi
+   # Handle directories
+   elif [ -d ${DIR2}/${FILE} ]; then
+      # See if deleted directory
+      if [ ! -d ${DIR1}/${FILE} ]; then
+         echo "Deleted directory '${DIR2}/${FILE}'"
+      fi
+   fi 
+done;
+
+# Recursively check common subdirectories
+for SUBDIR in $RECURSE_LIST
+do
+    diff_dir_trees ${DIR1}/${SUBDIR} ${DIR2}/${SUBDIR}
+done

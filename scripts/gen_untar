@@ -1,0 +1,123 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	unzip and untar files 
+#
+#	Usage: gen_untar "benchname" "ext" ["directory"]
+#	
+#	Rewritten by Daniel Lavery, Wen-mei Hwu
+#
+#       Tweaked for clearer/quieter operation -JCG 8/98
+#
+#       Changed expected name from bench_ext.tar.gz to bench.ext.tgz -JCG 6/99
+
+# Assume info file will be in every tar generated.
+INFO_FILE="host_layout_info.md";
+
+if [ $# -gt 2 ]; then
+        DIR="$3";
+        echo "> gen_untar changing directories to '${DIR}'";
+        cd ${DIR};
+fi;
+
+if [ $# -gt 1 ]; then
+        BENCHMARK="$1";
+        EXT="$2";
+        ZIPNAME="${BENCHMARK}.${EXT}.tgz"
+
+        # For backward compatibility, if file with new name format doesn't 
+        # exist, but old name format does, use old name format -JCG 6/99
+        if [ ! -f $ZIPNAME ]; then
+           if [ -f ${BENCHMARK}_${EXT}.tar.gz ]; then
+              ZIPNAME="${BENCHMARK}_${EXT}.tar.gz"
+           fi
+        fi
+
+        echo "> Restoring .${EXT} files and $INFO_FILE from ${ZIPNAME}"
+else
+        echo "Usage: gen_untar benchname ext [directory]";
+        echo "  Extract files from benchname.ext.tgz in 'directory' ('.' if none specified).";
+        echo "  The benchname.ext.tgz file is not destroyed.";
+        exit 1;
+fi;
+
+# Make sure zip file exists
+if [ ! -f $ZIPNAME ]; then
+   echo "> Error: $ZIPNAME file does not exist!"
+   exit 1;
+fi
+
+# Use read_platform_info instead of host_arch
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then 
+  echo "Unable to determine platform using read_platform_info."
+  echo "Error message returned:"
+  echo "$HOST_PLATFORM"
+  exit 1;
+fi
+
+case $HOST_PLATFORM in
+    hp*|x86lin)
+        # HP/Linux version of tar always returns proper exit status
+        nice gunzip -c ${ZIPNAME} | tar xf -;
+        ERROR=$?;;
+
+    *)
+        # Default case, hope it works
+        nice gunzip -c ${ZIPNAME} | tar xf -;
+        ERROR=$?;;
+esac
+
+if [ $ERROR -ne 0 ]; then
+    echo "> gunzip or tar failed on input file: ${ZIPNAME}";
+    echo "> error_code= ${ERROR}";
+    exit 1;
+fi;
+
+echo "> Done";

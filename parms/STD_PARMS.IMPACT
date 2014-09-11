@@ -1,0 +1,488 @@
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+# IMPACT baseline parameters for compiling SPEC INT92/95 benchmarks
+# using the IMPACT internal version and the compile_bench script. 
+# Using these parameters and the compile_bench script will 
+# generate good, high-performance ILP optimized code.
+#
+# How these baseline parameters were set:
+#
+# 1) Mid-level function inlining over the entire program.  Gives good ILP 
+#    performance but hopefully does not create huge functions.
+#    More inlining can help performance but can make the rest of the
+#    compilation memory, disk, and CPU intensive.
+#
+# 2) Fairly aggressive low-level memory disambiguation.  Should work with 
+#    most benchmarks and should give reasonably good performance.  However, 
+#    these settings will not work with 099.go (label_and_reg_access_indep 
+#    should be set to no).  Note that truly conservative settings will give 
+#    truly awful performance.  (Our second-generation source-level analysis 
+#    should remove this ugly hack for good, giving great performance without
+#    'unsafe' flags.  This technology will be available in IMPACT 3.0.
+#
+# 3) Fairly aggressive ILP optimization settings.  Should give good 
+#    overall benchmark performance but Lsuperscalar and Limpact may use 
+#    significant amount of memory, disk, and CPU cycles.   Combining these 
+#    aggressive settings with predication for 099.go and 134.perl may causes
+#    your workstation to run out of memory.  Turning off optimizations
+#    that cause significant code duplication is recommended.
+#
+# 4) Assumes superblock code will be generated.  Essentially this means
+#    the two Lsuperscalar optimizations that create predicates are turned
+#    off (see do_branch_combining and pred_exec_support parameters in
+#    Lsuperscalar).  They should be turned on if Lblock has been run 
+#    (i.e., if using predicated code).
+#
+# 5) Fairly aggressive predicated dataflow analysis settings.  
+#    Should give good aggressive and accurate results before scheduling 
+#    (scheduling causes path explosion that makes the results more
+#    conservative unless a lot more memory is allowed to be used).   
+#    Reducing df_max_pred_paths will make dataflow analysis take
+#    less memory and be quicker, but the results will be more conservative.
+#    Increasing df_max_pred_paths will make dataflow analysis more aggressive,
+#    but potentially significantly more memory and time will be required.
+#
+# 6) Targets IMPACT's Lcode instruction set for the experiments.  That
+#    is, assumes Lcode run's on the processor and the Limpact codegenerator
+#    is run to generate code for the experimental processor.  
+#
+# The aggressive and predication settings will be overridden in the 
+# compile_bench script (run compile_bench for the various options).
+#
+# IMPORTANT NOTE: Based on past experience, we strongly recommend making 
+# your own copy of the compile_bench script (or creating your own script) 
+# and overriding the parameters in the script instead of modifying the 
+# settings in this file or the *_DEFAULT parm files for each parameter 
+# section.  
+# 
+# Making your own copy of STD_PARMS (or STD_PARMS.compile_bench, which
+# should be basically the same) which is also a viable option 
+# (and supported by the compile_bench script).
+#    
+# These macros may be set to other values from the command line.
+# See the parameter file tutorial for details.
+#
+# Most of the parameter macro definitions cannot be removed because
+# legacy scripts expect them to be present (a previous version of 
+# the parameter file library required macros to be used in order to
+# change parameters).  
+
+$rel_parms$ = $IMPACT_REL_PATH$/parms;
+
+# Target IMPACT's Lcode instruction set and a uniform eight issue, 
+# one branch per cycle EPIC processor that supports general percolation
+# (and which allows predicated execution, if desired).
+$arch$ = HPL_PD;
+$model$ = V1.0;
+$swarch$ = default;
+$lmdes$ = $IMPACT_ROOT$/mdes/Limpact/EPIC_8G_1BL.lmdes2
+
+# Added for memory object profiling
+$profiling_type$ = profiling;   # "custom" during custom profiling,
+				# otherwise "profiling
+$custom_profiling$ = no;        # use "yes" during custom profiling,
+				# otherwise "no"
+
+$num_int_caller_reg$ = 32;
+$num_int_callee_reg$ = 32;
+$num_flt_caller_reg$ = 32;
+$num_flt_callee_reg$ = 32;
+$num_dbl_caller_reg$ = 16;
+$num_dbl_callee_reg$ = 16;
+$num_prd_caller_reg$ = 0;
+$num_prd_callee_reg$ = 128;
+$layout_database_name$ = ./host_layout_info.md;
+
+# This parameter section was named 'architecture' until 5/26/98 -JCG
+(Larchitecture
+    arch = $arch$; 
+    model = $model$;
+    swarch = $swarch$;
+    lmdes = $lmdes$
+
+    num_int_caller_reg = $num_int_caller_reg$;
+    num_int_callee_reg = $num_int_callee_reg$;
+    num_flt_caller_reg = $num_flt_caller_reg$;
+    num_flt_callee_reg = $num_flt_callee_reg$;
+    num_dbl_caller_reg = $num_dbl_caller_reg$;
+    num_dbl_callee_reg = $num_dbl_callee_reg$;
+    num_prd_caller_reg = $num_prd_caller_reg$;
+    num_prd_callee_reg = $num_prd_callee_reg$;
+    layout_database_name = $layout_database_name$;
+end) 
+
+# I/O stuff. input/output may be overridden by -i and -o on the command line
+# This parameter section was named 'file' until 5/26/98 -JCG
+
+(Lfile $rel_parms$/LFILE_DEFAULTS
+    input_file_name = stdin;
+    output_file_name = stdout;
+    filelist_file_name = ;
+    intrinsic_support_enabled = no;
+end)
+
+# This parameter section was named 'global' until 5/26/98 -JCG
+(Lglobal $rel_parms$/LGLOBAL_DEFAULTS 
+    # The following two memory disambiguation flags are 'unsafe' but 
+    # work for most benchmarks.  The one known exception is 099.go which
+    # must have label_and_reg_access_indep set to no.
+    # Another exception is 124.m88ksim, which requires diff_data_types_indep
+    # set to no.
+    # Both changed to "no" 19991027 - JWS
+    label_and_reg_access_indep = no;  # Aggressive, moderately unsafe flag
+    diff_data_types_indep = no;       # Aggressive, moderately unsafe flag
+
+    non_excepting_ops=yes;
+
+    output_binary_format=no;   # Use binary2ascii to convert
+
+    # Between 40 and 60 seems to be a good balance between aggressiveness
+    # of the dataflow analysis and the memory required.  Set to 0 to
+    # get quicker and significantly more conservative dataflow results.
+    df_max_pred_paths = 60;
+
+    verbose_check=no;
+    region_hash_table_management=no;
+
+    dump_parms = no;
+    parm_dump_file_name = STD_PARMS_DUMP;
+
+    use_appendix_for_sync_arcs=no;
+    use_appendix_for_attr=no;
+    oper_code_attr_list=label;
+    oper_default_to_appendix=yes;
+
+   # Sets threshold (in minutes) for each function.  If an module (e.g. Lblock)
+   # cpu time usage for a function exceeds this threshold, prints out
+   # a message to stderr (e.g., main: 0.41 minutes in Lblock)
+   # Set to -1 to suppress all cpu time messages 
+   # Note: This currently is enabled for HPUX and SunOS only -JCG 6/99
+   cpu_time_print_threshold = 5.0;
+
+   # Use sync-arcs now -ITI/BCC 9/99
+   use_sync_arcs = yes;
+end)
+
+(Ldependence $rel_parms$/LDEPENDENCE_DEFAULTS
+end)
+
+(Lschedule $rel_parms$/LSCHEDULE_DEFAULTS
+end)
+
+(Lopti $rel_parms$/LOPTI_DEFAULTS
+    do_post_inc_conv=no;  # Must be off for Lsuperscalar
+end)
+
+(Lblock $rel_parms$/LBLOCK_DEFAULTS
+end)
+
+(Lsuperscalar $rel_parms$/LSUPERSCALAR_DEFAULTS
+    # Setting the following parameters to 'yes' yields the best performance.
+    # However, they can cause a huge amount of code duplication and thus
+    # significantly increase compile time and memory requirements.
+    do_str_red = yes;
+    do_multiway_branch_opti = yes;
+    do_op_migration = yes;
+    allow_backedge_exp = yes;
+    allow_expansion_of_loops = yes;
+
+    # maximum number of times can ever unroll this loop, reduce
+    # this number to reduce code growth (and performance)
+    max_unroll_allowed = 32;
+
+    # allow the optimizer to unroll small loops a few extra times
+    allow_extra_unrolling_for_small_loops = yes;
+
+    # The following two parameters should only be set to yes if 
+    # the code has gone through Lblock.
+    do_branch_combining=no;  # Creates new predicate registers, if yes
+    pred_exec_support=no;    # Creates new predicate registers, if yes
+end)
+
+(Limpact $rel_parms$/LIMPACT_DEFAULTS
+end)
+
+(Lmarkpipe $rel_parms$/LMARKPIPE_DEFAULTS
+       markpipe_min_ii = 0;
+       markpipe_max_ii = 24;
+       markpipe_max_stages = 100;
+end)
+
+(Lsoftpipe $rel_parms$/LSOFTPIPE_DEFAULTS
+       budget_ratio = 5.0;
+       softpipe_min_ii = 0;              # Min ii disabled when 0
+       softpipe_max_ii = 32;
+       softpipe_max_stages = 100;
+       softpipe_max_tries = 20;
+end)
+
+(SM $rel_parms$/SM_DEFAULTS
+    # Prepass and postpass scheduling turned on/off in Limpact parms
+
+    # If debug_use_sched_cb_bounds is set to yes, SM_schedule_fn (which
+    # is used by Limpact to schedule) will only schedule those cbs with
+    # ids between the upper and lower bound.
+    # I.e., set both upper and lower bound to 10 to schedule only cb 10.
+    debug_use_sched_cb_bounds = no;
+    debug_lower_sched_cb_bound = 0;
+    debug_upper_sched_cb_bound = 100000000;
+
+    # Causes SM to print the dependence graph for each SM_Cb created.
+    # For Limpact, this will cause the dependence graph to be printed
+    # for each cb scheduled (once for prepass and once for postpass)
+    print_dependence_graph = no;
+end)
+
+$do_flatten$ = yes;
+$ignore_hash_profile_weight$ = no;
+$ignore_hash_br_seq_weight$ = no;
+$generate_abs_instructions$ = yes;
+$generate_label_attrs$ = yes;
+
+# Generate sync-arcs now -ITI/BCC 9/99
+$generate_sync_arcs$ = yes;
+
+$verbose_yes$ = no;
+
+(PtoL $rel_parms$/PTOL_DEFAULTS
+    do_flatten = $do_flatten$;
+    ignore_hash_profile_weight = $ignore_hash_profile_weight$;
+    ignore_hash_br_seq_weight = $ignore_hash_br_seq_weight$;
+    generate_abs_instructions = $generate_abs_instructions$;
+    generate_sync_arcs = $generate_sync_arcs$;
+    generate_label_attrs = $generate_label_attrs$;
+    verbose_yes = $verbose_yes$;
+    debug_sync_arcs = no;
+    retain_sync_nums = no;
+    mark_glob_objids = $custom_profiling$;
+    globalize_lvars = $custom_profiling$;
+end)
+
+(Psplit $rel_parms$/PSPLIT_DEFAULTS
+    sp_dir = .;
+end)
+
+(Pinline $rel_parms$/PINLINE_DEFAULTS
+    print_inline_stats = yes;
+
+   # Limits the overall code expansion (over the entire program) due to
+   # inlining.  A 1.2 ratio limits the overall code growth to
+   # approximately 20%, but a single function may expand significantly more
+   # due to aggressive inlining.
+    max_expansion_ratio = 1.2;
+
+   # Prevents inlining from causing a function to become bigger than
+   # max_function_size (estimated) operations.  Function size can
+   # significantly effect memory usage, compilation speed, and the
+   # optimization opportunities available.
+    max_function_size = 1000;  # Fairly aggressive (benchmark dependent)
+    il_dir = .;
+
+   # Append the data section onto the first output file instead of creating
+   # a separate data.pci file.
+   use_new_regroup_algorithm = yes;
+end)
+
+(Pcode $rel_parms$/PCODE_DEFAULTS
+end)
+
+(Pflatten $rel_parms$/PFLATTEN_DEFAULTS
+end)
+
+(PtoC $rel_parms$/PTOC_DEFAULTS
+end)
+
+(Pprobe $rel_parms$/PPROBE_DEFAULTS
+end)
+
+(Pannotate $rel_parms$/PANNOTATE_DEFAULTS
+end)
+
+(Ploop $rel_parms$/PLOOP_DEFAULTS
+end)
+
+(Mcode $rel_parms$/MCODE_DEFAULTS
+end)
+
+(Lhpl_pd $rel_parms$/LHPL_PD_DEFAULTS
+end)
+
+# This parameter section was named 'Regalloc' until 5/26/98 -JCG
+(Lregalloc $rel_parms$/LREGALLOC_DEFAULTS
+end)
+
+
+(Mopti $rel_parms$/MOPTI_DEFAULTS
+end)
+
+
+(Lcode $rel_parms$/LCODE_DEFAULTS
+end)
+
+(Lsuperblock $rel_parms$/LSUPERBLOCK_DEFAULTS
+end)
+
+(Ltrace $rel_parms$/LTRACE_DEFAULTS
+end)
+
+(Lsafe $rel_parms$/LSAFE_DEFAULTS
+end)
+
+
+# performance sections
+(Lprobe $rel_parms$/LPROBE_DEFAULTS
+end)
+
+(Lencode $rel_parms$/LENCODE_DEFAULTS
+    encode_for = $profiling_type$;
+    do_mem_addrs = $custom_profiling$;
+end)
+
+(Lprofile_utilities $rel_parms$/LPROF_UTIL_DEFAULTS
+    insert_mem_addr_profile = $custom_profiling$;
+end)
+
+(Lguide $rel_parms$/LPROF_UTIL_DEFAULTS
+end)
+
+(Lsim $rel_parms$/LSIM_DEFAULTS
+end)
+
+# HCH: 3/12/2001 - parms for memory object access tracing
+(Lobjsumm $rel_parms$/LOBJSUMM_DEFAULTS
+end)
+
+(Linterpret $rel_parms$/LINTERPRET_DEFAULTS
+end)
+
+(Lhotspot $rel_parms$/LHOTSPOT_DEFAULTS
+end)
+
+$use$ = sched2
+$help$ =
+$cb$ =
+$op$ =
+$pg$ =
+(Lpretty $rel_parms$/LPRETTY_DEFAULTS
+    cb=w0;
+end)
+
+# Lhppa is not in release 2.3*
+(Lhppa $rel_parms$/LHPPA_DEFAULTS
+    constant_preloading = yes;
+    max_preload_const_per_loop = 16; 
+    sign_extend_in_phase3 = yes;
+    parallelize_label_loads = yes;
+    emulate_lcode_ops = yes;
+    emulate_lcode_functionality=yes;
+    do_mopti_in_phase1 = no;     # Not currently supported
+    do_peephole_in_phase1 = no;  # Not currently supported
+end)
+
+(Lmix $rel_parms$/LMIX_DEFAULTS
+end)
+
+(Lannotate $rel_parms$/LANNOTATE_DEFAULTS
+end)
+
+(Lanalysis $rel_parms$/LANALYSIS_DEFAULTS
+end)
+
+(Lcmp_sched $rel_parms$/LCMP_SCHEDS_DEFAULTS
+end)
+
+(Lprofile $rel_parms$/LPROFILE_DEFAULTS
+    profile_mem_addrs = $custom_profiling$;
+end)
+
+(Lvalue_profile $rel_parms$/LVALUE_PROFILE_DEFAULTS
+end)
+
+(Ldiff_trace $rel_parms$/LDIFF_TRACE_DEFAULTS
+end)
+
+(Linline $rel_parms$/LINLINE_DEFAULTS
+end)
+
+(Lemulate $rel_parms$/LEMULATE_DEFAULTS
+    trace_control_flow = $custom_profiling$;
+    trace_empty_cbs = $custom_profiling$;
+    trace_mem_addrs = $custom_profiling$;
+    trace_jump_rg_src1 = $custom_profiling$;
+    trace_pred_jump_fall_thru = $custom_profiling$;
+end)
+
+(Lpred_opti $rel_parms$/LPRED_OPTI_DEFAULTS
+end)
+
+(Lvirt $rel_parms$/LVIRT_DEFAULTS
+end)
+
+(Lvgraph
+    phase = 1;  # bitmask: 0x1 = gen data file only
+                #          0x2 = run daVinci
+    show_jsrs = 1;
+    relative_weights = 1;
+end)
+
+(Lschedobj
+  program_tolerance = 0.1;
+  file_processing_model=extension;
+  # ignore_conjoined = all, none, zeroweight 
+  ignore_conjoined=none;
+end) 
+
+(Pipa $rel_parms$/PIPA_DEFAULTS
+end)
+
+(Pomega $rel_parms$/POMEGA_DEFAULTS
+end)
+
+# End of parameter settings

@@ -1,0 +1,182 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lsuperscalar default parameters.
+#
+# These defaults are used for superblock/hyperblock ILP optimizations
+#
+# Created by Scott Mahlke, 11-11-93
+#
+# Revisions:
+#
+
+$do_post_inc_conv$ = no;
+$issue_rate$ = 8;
+
+(Lsuperscalar declaration
+    do_sb_formation = yes;
+    do_only_sb_formation = no;
+    prevent_superblock_functions = ;
+    verbose_prevent_superblock = no;
+    prevent_ILP_opti_functions = ;
+    verbose_prevent_ILP_opti = no;
+
+    do_jump_opti = yes;			  # controls the indented optis below 
+        do_super_dead_block = yes;
+        do_super_branches_to_next_block = yes;
+        do_super_branches_to_same_target = yes;
+        do_super_branches_to_uncond_branch = yes;
+        do_super_merge = yes;
+        do_super_combine_labels = yes;
+        do_super_branch_target_exp = yes;
+        do_super_branch_swap = yes;
+        do_super_branch_pred = yes;
+
+    do_classic_opti = yes;		  # controls the indented optis below 
+        do_super_const_prop = yes;
+        do_super_rev_copy_prop = yes;
+        do_super_copy_prop = yes;
+        do_super_mem_copy_prop = yes;
+        do_super_common_sub = yes;
+        do_super_red_load = yes;
+        do_super_red_store = yes;
+        do_super_local_str_red = yes;
+        do_super_const_comb = yes;
+        do_super_const_fold = yes;
+        do_super_br_fold = yes;
+        do_super_dead_code = yes;
+        do_super_code_motion = yes;
+        do_super_op_fold = yes;
+        do_super_op_cancel = yes;
+        do_super_local_op_mig = yes;
+        do_super_remove_sign_ext = yes;
+        do_super_reduce_logic = yes;
+
+    do_str_red = yes;
+
+    do_multiway_branch_opti = yes;
+
+    do_loop_classic_opti = yes;		  # controls the indented optis below
+        do_super_loop_inv_code_rem = yes;
+        do_super_loop_global_var_mig = yes;
+        do_super_loop_op_fold = yes;
+        do_super_loop_dead_code = yes;
+        do_super_loop_ind_var_elim = yes;
+        do_super_loop_ind_var_elim2 = yes;
+        do_super_loop_ind_reinit = yes;
+        do_super_loop_post_inc_conv = yes;
+
+    mark_softpipe_loops = no;             # mark loops to be targeted for
+                                          # modulo scheduling
+    do_loop_unroll = yes;
+        max_unroll_allowed = 32;
+        fixed_length_unroll = no;         # appears to be VERY broken MCM/ITI
+        unroll_only_marked_loops = no;
+        allow_extra_unrolling_for_small_loops = yes;
+        max_unroll_op_count = 256;
+
+	# unrolling for softpipe loops
+
+        unroll_with_remainder_loop = no;  # make a second copy of unrolled loop
+                                          #  and remove the copies of the loop
+                                          #  back branch from original loop. 
+                                          #  only non-predicated code for now
+        unroll_pipelined_loops = no;      # allow unrolling for loops that
+                                          #  will be software pipelined
+
+    do_acc_exp = yes;
+        do_float_acc_exp = yes;           # only works if do_acc_exp on
+        push_comp_code_out_of_softpipe_loops = yes;
+                                          # move compensation code from 
+                                          # accumulator expansion into a 
+                                          # separate cb for loops marked 
+                                          # for software pipelining
+
+    do_peel_opt = yes;			  # optimize peeled loops
+
+    do_op_migration = yes;
+
+    store_migration_mode = 2;             # 1 = FULL_PRED
+                                          # 2 = NO_PRED
+                                          # 3 = NO_COND
+
+    do_critical_path_red = yes;
+    do_rename_disjvreg = yes;
+
+    do_post_inc_conv = $do_post_inc_conv$;
+    # controls code expansion, unrolling
+    issue_rate = $issue_rate$;
+    # height_count_crossover: (DIA, JWS Aug 98)
+    # issue_rate > height_count_crossover --> optimize for height
+    # issue_rate <= height_count_crossover --> optimize for op count
+    height_count_crossover = 2;
+
+    allow_backedge_exp = yes;
+    allow_expansion_of_loops = yes;
+    max_number_of_predicates = 64;
+
+    # PREDICATION-BASED OPTIS
+
+    pred_exec_support = no;
+    do_pred_promotion = yes;
+    do_branch_combining = no;
+
+    # DEBUG OPTIONS
+
+    debug_dump_intermediates=no;
+    debug_str_red = no;
+    debug_multiway_branch_opti = no;
+    debug_loop_classic_opti = no;
+    debug_loop_unroll = no;
+    debug_acc_exp = no;
+    debug_peel_opt = no;
+    debug_op_migration = no;
+    debug_critical_path_red = no;
+
+end)
+

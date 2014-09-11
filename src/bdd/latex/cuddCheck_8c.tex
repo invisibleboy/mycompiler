@@ -1,0 +1,162 @@
+\section{cudd\-Check.c File Reference}
+\label{cuddCheck_8c}\index{cuddCheck.c@{cuddCheck.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void debug\-Find\-Parent \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node))
+\item 
+int \bf{Cudd\_\-Debug\-Check} (\bf{Dd\-Manager} $\ast$table)
+\item 
+int \bf{Cudd\_\-Check\-Keys} (\bf{Dd\-Manager} $\ast$table)
+\item 
+int \bf{cudd\-Heap\-Profile} (\bf{Dd\-Manager} $\ast$dd)
+\item 
+void \bf{cudd\-Print\-Node} (\bf{Dd\-Node} $\ast$f)
+\item 
+static void \bf{debug\-Find\-Parent} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Check.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddCheck.c@{cudd\-Check.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void debug\-Find\-Parent ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$node))\hspace{0.3cm}{\tt  [static]}}\label{cuddCheck_8c_fdb985c1bb0261312d628d53f398e6e0}
+
+
+Automatic\-Start \index{cuddCheck.c@{cudd\-Check.c}!Cudd_CheckKeys@{Cudd\_\-CheckKeys}}
+\index{Cudd_CheckKeys@{Cudd\_\-CheckKeys}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Check\-Keys (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddCheck_8c_081e08d440a7ca8b7406e79b25dfaef5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks for several conditions that should not occur.]
+
+Description [Checks for the following conditions: \begin{itemize}
+\item Wrong sizes of subtables. \item Wrong number of keys found in unique subtable. \item Wrong number of dead found in unique subtable. \item Wrong number of keys found in the constant table \item Wrong number of dead found in the constant table \item Wrong number of total slots found \item Wrong number of maximum keys found \item Wrong number of total dead found \end{itemize}
+Reports the average length of non-empty lists. Returns the number of subtables for which the number of keys is wrong.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Debug\-Check] 
+
+Definition at line 408 of file cudd\-Check.c.
+
+References Dd\-Subtable::dead, Dd\-Subtable::keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Manager::size, size, Dd\-Subtable::slots, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Remap\-Under\-Approx(), cudd\-Subset\-Heavy\-Branch(), cudd\-Under\-Approx(), cudd\-Unique\-Inter(), and cudd\-Unique\-Inter\-Zdd().\index{cuddCheck.c@{cudd\-Check.c}!Cudd_DebugCheck@{Cudd\_\-DebugCheck}}
+\index{Cudd_DebugCheck@{Cudd\_\-DebugCheck}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Debug\-Check (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddCheck_8c_e4784371f26794a254bcc6a2ad875b5e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks for inconsistencies in the DD heap.]
+
+Description [Checks for inconsistencies in the DD heap: \begin{itemize}
+\item node has illegal index \item live node has dead children \item node has illegal Then or Else pointers \item BDD/ADD node has identical children \item ZDD node has zero then child \item wrong number of total nodes \item wrong number of dead nodes \item ref count error at node \end{itemize}
+Returns 0 if no inconsistencies are found; DD\_\-OUT\_\-OF\_\-MEM if there is not enough memory; 1 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Check\-Keys] 
+
+Definition at line 113 of file cudd\-Check.c.
+
+References CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-Print\-Node(), cudd\-T, Dd\-Node::index, Dd\-Manager::invperm, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Manager::perm, Dd\-Node::ref, Dd\-Manager::size, Dd\-Subtable::slots, st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, st\_\-ptrcmp(), st\_\-ptrhash(), and Dd\-Manager::subtables.
+
+Referenced by cudd\-Linear\-And\-Sifting(), cudd\-Remap\-Under\-Approx(), cudd\-Subset\-Heavy\-Branch(), cudd\-Under\-Approx(), cudd\-Unique\-Inter(), and cudd\-Unique\-Inter\-Zdd().\index{cuddCheck.c@{cudd\-Check.c}!cuddHeapProfile@{cuddHeapProfile}}
+\index{cuddHeapProfile@{cuddHeapProfile}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Heap\-Profile (\bf{Dd\-Manager} $\ast$ {\em dd})}\label{cuddCheck_8c_e551cd823e27a403ae9ab354b68f6b6d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints information about the heap.]
+
+Description [Prints to stdout the number of live nodes for each level of the DD heap that contains at least one live node. It also prints a summary containing: \begin{itemize}
+\item total number of tables; \item number of tables with live nodes; \item table with the largest number of live nodes; \item number of nodes in that table. \end{itemize}
+If more than one table contains the maximum number of live nodes, only the one of lowest index is reported. Returns 1 in case of success and 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 594 of file cudd\-Check.c.
+
+References CUDD\_\-MAXINDEX, largest(), Dd\-Manager::size, and Dd\-Manager::subtables.\index{cuddCheck.c@{cudd\-Check.c}!cuddPrintNode@{cuddPrintNode}}
+\index{cuddPrintNode@{cuddPrintNode}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Print\-Node (\bf{Dd\-Node} $\ast$ {\em f})}\label{cuddCheck_8c_8369bd7ef41912d8b082b1e3c3cbf955}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints out information on a node.]
+
+Description [Prints out information on a node.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 663 of file cudd\-Check.c.
+
+References Cudd\_\-Regular, cudd\-E, cudd\-T, and Dd\-Node::index.
+
+Referenced by Cudd\_\-Debug\-Check().\index{cuddCheck.c@{cudd\-Check.c}!debugFindParent@{debugFindParent}}
+\index{debugFindParent@{debugFindParent}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void debug\-Find\-Parent (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em node})\hspace{0.3cm}{\tt  [static]}}\label{cuddCheck_8c_db43ad2845dab8bca9cddc7c4d5dc9d5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Searches the subtables above node for its parents.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 693 of file cudd\-Check.c.
+
+References Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-T, Dd\-Node::index, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Subtable::slots, and Dd\-Manager::subtables.
+
+\subsection{Variable Documentation}
+\index{cuddCheck.c@{cudd\-Check.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddCheck.c@{cudd\-Check.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Check.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddCheck_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Check.c}{p.}{cuddCheck_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to check consistency of data structures.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Debug\-Check()}{p.}{cuddCheck_8c_e4784371f26794a254bcc6a2ad875b5e} \item \doxyref{Cudd\_\-Check\-Keys()}{p.}{cuddCheck_8c_081e08d440a7ca8b7406e79b25dfaef5} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Heap\-Profile()}{p.}{cuddCheck_8c_e551cd823e27a403ae9ab354b68f6b6d} \item \doxyref{cudd\-Print\-Node()}{p.}{cuddCheck_8c_8369bd7ef41912d8b082b1e3c3cbf955} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{debug\-Find\-Parent()}{p.}{cuddCheck_8c_db43ad2845dab8bca9cddc7c4d5dc9d5} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 62 of file cudd\-Check.c.

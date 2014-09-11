@@ -1,0 +1,503 @@
+\section{graph.h File Reference}
+\label{graph_8h}\index{graph.h@{graph.h}}
+{\tt \#include $<$config.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Node}
+\item 
+struct \bf{\_\-Arc}
+\item 
+struct \bf{\_\-FGraph}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MAX\_\-GRAPH\_\-SIZE}~(8$\ast$1024)
+\item 
+\#define \bf{RESERVED\_\-STATUS\_\-BITS}~0x40000000
+\item 
+\#define \bf{is\-Nil}(n)~(n==0)
+\item 
+\#define \bf{node\-Id}(n)~n $\rightarrow$ id
+\item 
+\#define \bf{node\-Type}(n)~n $\rightarrow$ type
+\item 
+\#define \bf{node\-Status}(n)~n $\rightarrow$ status
+\item 
+\#define \bf{node\-Weight}(n)~n $\rightarrow$ weight
+\item 
+\#define \bf{source\-Arcs}(n)~n $\rightarrow$ source
+\item 
+\#define \bf{destination\-Arcs}(n)~n $\rightarrow$ destination
+\item 
+\#define \bf{next\-Node}(n)~n $\rightarrow$ next
+\item 
+\#define \bf{node\-Ext}(n)~n $\rightarrow$ extension
+\item 
+\#define \bf{arc\-Type}(a)~a $\rightarrow$ type
+\item 
+\#define \bf{arc\-Weight}(a)~a $\rightarrow$ weight
+\item 
+\#define \bf{source\-Node}(a)~a $\rightarrow$ source
+\item 
+\#define \bf{destination\-Node}(a)~a $\rightarrow$ destination
+\item 
+\#define \bf{next\-Arc}(a)~a $\rightarrow$ next
+\item 
+\#define \bf{arc\-Ext}(a)~a $\rightarrow$ extension
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef void $\ast$ \bf{\_\-Node\-Extension}
+\item 
+typedef \bf{\_\-Node} $\ast$ \bf{Node}
+\item 
+typedef void $\ast$ \bf{\_\-Arc\-Extension}
+\item 
+typedef \bf{\_\-Arc} $\ast$ \bf{Arc}
+\item 
+typedef void $\ast$ \bf{\_\-Graph\-Extension}
+\item 
+typedef \bf{\_\-FGraph} $\ast$ \bf{FGraph}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Node} \bf{New\-Node} (void)
+\item 
+\bf{Node} \bf{Free\-Node} (\bf{Node} $\ast$\bf{node})
+\item 
+\bf{Arc} \bf{New\-Arc} (void)
+\item 
+\bf{Arc} \bf{Free\-Arc} (\bf{Arc} $\ast$arc)
+\item 
+void \bf{Connect\-Nodes} (\bf{Node} src\_\-node, \bf{Node} dest\_\-node, int relation)
+\item 
+void \bf{Disconnect\-Nodes} (\bf{Node} src\_\-node, \bf{Node} dest\_\-node, int relation)
+\item 
+\bf{Arc} \bf{Find\-Src\-Arc} (\bf{Node} src\_\-node, \bf{Node} dest\_\-node, int type)
+\item 
+\bf{Arc} \bf{Find\-Dest\-Arc} (\bf{Node} src\_\-node, \bf{Node} dest\_\-node, int type)
+\item 
+void \bf{Remove\-Nodes} (\bf{Node} $\ast$\bf{node})
+\item 
+int \bf{Mark\-Nodes\-Zero} (\bf{Node} \bf{node})
+\item 
+int \bf{Mark\-Nodes} (\bf{Node} \bf{node}, int mask, int mark)
+\item 
+int \bf{Visit\-Nodes} (\bf{Node} \bf{node}, int mark, int($\ast$fn)(\bf{Node}))
+\item 
+int \bf{Visit\-All\-Nodes} (\bf{Node} \bf{node}, int($\ast$fn)(\bf{Node}))
+\item 
+int \bf{Is\-Cyclic} (\bf{Node} \bf{node})
+\item 
+\bf{FGraph} \bf{New\-Graph} (void)
+\item 
+\bf{FGraph} \bf{Free\-Graph} (\bf{FGraph} $\ast$\bf{graph})
+\item 
+void \bf{Add\-Node} (\bf{FGraph} \bf{graph}, \bf{Node} \bf{node})
+\item 
+\bf{Node} \bf{Find\-Node} (\bf{FGraph} \bf{graph}, int node\_\-id)
+\item 
+\bf{Node} \bf{Delete\-Node} (\bf{FGraph} \bf{graph}, int node\_\-id)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{graph.h@{graph.h}!arcExt@{arcExt}}
+\index{arcExt@{arcExt}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define arc\-Ext(a)~a $\rightarrow$ extension}\label{graph_8h_5d529b97aee5b642fcc987865050906e}
+
+
+
+
+Definition at line 172 of file graph.h.
+
+Referenced by Decode\-Arc(), New\-Arc(), and Write\-Graph().\index{graph.h@{graph.h}!arcType@{arcType}}
+\index{arcType@{arcType}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define arc\-Type(a)~a $\rightarrow$ type}\label{graph_8h_751ba2ef8956235b114b9c37c1981713}
+
+
+
+
+Definition at line 167 of file graph.h.
+
+Referenced by Connect\-Nodes(), Disconnect\-Nodes(), Find\-Dest\-Arc(), Find\-Src\-Arc(), New\-Arc(), Place\-Traces(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), and Write\-Graph().\index{graph.h@{graph.h}!arcWeight@{arcWeight}}
+\index{arcWeight@{arcWeight}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define arc\-Weight(a)~a $\rightarrow$ weight}\label{graph_8h_acfdde93c647be773c1ec1236aa5109f}
+
+
+
+
+Definition at line 168 of file graph.h.
+
+Referenced by best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Decode\-Arc(), New\-Arc(), Place\-Traces(), predecessor\_\-arc\_\-weight(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), successor\_\-arc\_\-weight(), and Write\-Graph().\index{graph.h@{graph.h}!destinationArcs@{destinationArcs}}
+\index{destinationArcs@{destinationArcs}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define destination\-Arcs(n)~n $\rightarrow$ destination}\label{graph_8h_4258b74706ce46711b1d389f561270a3}
+
+
+
+
+Definition at line 164 of file graph.h.
+
+Referenced by best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Clear\-Status\-Bits(), Connect\-Nodes(), Disconnect\-Nodes(), Find\-Dest\-Arc(), Find\-Non\-Zero(), live\_\-variable(), Mark\-Status\-Bits(), New\-Node(), Place\-Traces(), post\_\-dominator(), Remove\-Nodes(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), and Write\-Graph().\index{graph.h@{graph.h}!destinationNode@{destinationNode}}
+\index{destinationNode@{destinationNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define destination\-Node(a)~a $\rightarrow$ destination}\label{graph_8h_f9f5eb9bb55a39f2f0268350da93776b}
+
+
+
+
+Definition at line 170 of file graph.h.
+
+Referenced by best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Clear\-Status\-Bits(), Connect\-Nodes(), Disconnect\-Nodes(), Find\-Dest\-Arc(), Find\-Non\-Zero(), Find\-Src\-Arc(), live\_\-variable(), Mark\-Status\-Bits(), New\-Arc(), Place\-Traces(), post\_\-dominator(), predecessor\_\-arc\_\-weight(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), successor\_\-arc\_\-weight(), and Write\-Graph().\index{graph.h@{graph.h}!isNil@{isNil}}
+\index{isNil@{isNil}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define is\-Nil(n)~(n==0)}\label{graph_8h_8e0d0eeec985380fe0260b8ca0878596}
+
+
+
+
+Definition at line 158 of file graph.h.
+
+Referenced by Clear\-Status\-Bits(), Connect\-Nodes(), Disconnect\-Nodes(), Find\-Non\-Zero(), Mark\-Status\-Bits(), New\-Arc(), New\-Graph(), New\-Node(), and Remove\-Nodes().\index{graph.h@{graph.h}!MAX_GRAPH_SIZE@{MAX\_\-GRAPH\_\-SIZE}}
+\index{MAX_GRAPH_SIZE@{MAX\_\-GRAPH\_\-SIZE}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-GRAPH\_\-SIZE~(8$\ast$1024)}\label{graph_8h_89a5c95f5b7b59e8afb5651868beee1f}
+
+
+
+
+Definition at line 100 of file graph.h.
+
+Referenced by \_\-Add\_\-2\_\-nd\_\-buf(), Place\-Traces(), Select\-By\-Sort\-Arc(), and Select\-Traces().\index{graph.h@{graph.h}!nextArc@{nextArc}}
+\index{nextArc@{nextArc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define next\-Arc(a)~a $\rightarrow$ next}\label{graph_8h_6aae5c137b652676cb6c0c7d5da295ca}
+
+
+
+
+Definition at line 171 of file graph.h.
+
+Referenced by Add\-Extension\-Fields(), best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Clear\-Status\-Bits(), Connect\-Nodes(), Disconnect\-Nodes(), dominator(), Find\-Dest\-Arc(), Find\-Non\-Zero(), Find\-Src\-Arc(), Free\-Arc(), live\_\-variable(), Mark\-Status\-Bits(), New\-Arc(), Place\-Traces(), post\_\-dominator(), reaching\_\-definition(), Remove\-Nodes(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), ud\_\-chain(), and Write\-Graph().\index{graph.h@{graph.h}!nextNode@{nextNode}}
+\index{nextNode@{nextNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define next\-Node(n)~n $\rightarrow$ next}\label{graph_8h_7324185d51de44cbd746d4f79a9b4bd1}
+
+
+
+
+Definition at line 165 of file graph.h.
+
+Referenced by Add\-Extension\-Fields(), Add\-Node(), Delete\-Node(), dominator(), end\_\-df\_\-graph(), Find\-Node(), Free\-Node(), live\_\-variable(), New\-Node(), Place\-Traces(), post\_\-dominator(), print\_\-df\_\-graph(), reaching\_\-definition(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), ud\_\-chain(), and Write\-Graph().\index{graph.h@{graph.h}!nodeExt@{nodeExt}}
+\index{nodeExt@{nodeExt}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define node\-Ext(n)~n $\rightarrow$ extension}\label{graph_8h_e2dddc8637850a5caa0aafcd9842b8f8}
+
+
+
+
+Definition at line 166 of file graph.h.
+
+Referenced by add\_\-df\_\-node(), Add\-Extension\-Fields(), Decode\-Node(), end\_\-df\_\-graph(), New\-Node(), predecessor\_\-arc\_\-weight(), predecessor\_\-node\_\-weight(), Select\-Traces(), successor\_\-arc\_\-weight(), successor\_\-node\_\-weight(), ud\_\-chain(), and Write\-Graph().\index{graph.h@{graph.h}!nodeId@{nodeId}}
+\index{nodeId@{nodeId}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define node\-Id(n)~n $\rightarrow$ id}\label{graph_8h_4ffa8aacdcb6e8166f1f4f98de202696}
+
+
+
+
+Definition at line 159 of file graph.h.
+
+Referenced by add\_\-df\_\-node(), connect\_\-df\_\-node(), Decode\-Arc(), Decode\-Node(), Decode\-Root(), dominator(), Find\-Node(), live\_\-variable(), New\-Node(), Place\-Traces(), post\_\-dominator(), print\_\-df\_\-graph(), reaching\_\-definition(), ud\_\-chain(), and Write\-Graph().\index{graph.h@{graph.h}!nodeStatus@{nodeStatus}}
+\index{nodeStatus@{nodeStatus}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define node\-Status(n)~n $\rightarrow$ status}\label{graph_8h_d27e0155cc7bd0b777ea506ed0244964}
+
+
+
+
+Definition at line 161 of file graph.h.
+
+Referenced by best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), Clear\-Status\-Bits(), Decode\-Node(), Find\-Non\-Zero(), Mark\-Nodes(), Mark\-Nodes\-Zero(), Mark\-Status\-Bits(), New\-Node(), Place\-Traces(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), Visit\-Nodes(), and Write\-Graph().\index{graph.h@{graph.h}!nodeType@{nodeType}}
+\index{nodeType@{nodeType}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define node\-Type(n)~n $\rightarrow$ type}\label{graph_8h_f5c380b52c89325a1c66125e6a65d1f9}
+
+
+
+
+Definition at line 160 of file graph.h.
+
+Referenced by Decode\-Node(), New\-Node(), Place\-Traces(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), and Write\-Graph().\index{graph.h@{graph.h}!nodeWeight@{nodeWeight}}
+\index{nodeWeight@{nodeWeight}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define node\-Weight(n)~n $\rightarrow$ weight}\label{graph_8h_dea45314c0812b5187bcbb24f41acb54}
+
+
+
+
+Definition at line 162 of file graph.h.
+
+Referenced by best\_\-predecessor\_\-1(), best\_\-predecessor\_\-3(), best\_\-successor\_\-1(), best\_\-successor\_\-3(), Decode\-Node(), New\-Node(), Place\-Traces(), predecessor\_\-node\_\-weight(), Report\-Selection\-Result(), Select\-Traces(), successor\_\-node\_\-weight(), and Write\-Graph().\index{graph.h@{graph.h}!RESERVED_STATUS_BITS@{RESERVED\_\-STATUS\_\-BITS}}
+\index{RESERVED_STATUS_BITS@{RESERVED\_\-STATUS\_\-BITS}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define RESERVED\_\-STATUS\_\-BITS~0x40000000}\label{graph_8h_52d71b7a951e634e03321799f1b1ac1f}
+
+
+
+
+Definition at line 109 of file graph.h.
+
+Referenced by Clear\-Status\-Bits(), Mark\-Nodes(), and Mark\-Status\-Bits().\index{graph.h@{graph.h}!sourceArcs@{sourceArcs}}
+\index{sourceArcs@{sourceArcs}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define source\-Arcs(n)~n $\rightarrow$ source}\label{graph_8h_b8fa3b774a56f8cd04b2ce36a70e67a8}
+
+
+
+
+Definition at line 163 of file graph.h.
+
+Referenced by Add\-Extension\-Fields(), best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), Connect\-Nodes(), Disconnect\-Nodes(), dominator(), Find\-Src\-Arc(), New\-Node(), Place\-Traces(), reaching\_\-definition(), Remove\-Nodes(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), and ud\_\-chain().\index{graph.h@{graph.h}!sourceNode@{sourceNode}}
+\index{sourceNode@{sourceNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define source\-Node(a)~a $\rightarrow$ source}\label{graph_8h_022bcb1545a82f10a89a0c2d94d3ab9d}
+
+
+
+
+Definition at line 169 of file graph.h.
+
+Referenced by Add\-Extension\-Fields(), best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), Connect\-Nodes(), Disconnect\-Nodes(), dominator(), Find\-Dest\-Arc(), Find\-Src\-Arc(), New\-Arc(), predecessor\_\-arc\_\-weight(), reaching\_\-definition(), Report\-Selection\-Result(), Select\-By\-Sort\-Arc(), Select\-Traces(), successor\_\-arc\_\-weight(), ud\_\-chain(), and Write\-Graph().
+
+\subsection{Typedef Documentation}
+\index{graph.h@{graph.h}!_ArcExtension@{\_\-ArcExtension}}
+\index{_ArcExtension@{\_\-ArcExtension}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef void$\ast$ \bf{\_\-Arc\-Extension}}\label{graph_8h_9c536221c921577d1991f8ffb4c5d605}
+
+
+
+
+Definition at line 126 of file graph.h.\index{graph.h@{graph.h}!_GraphExtension@{\_\-GraphExtension}}
+\index{_GraphExtension@{\_\-GraphExtension}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef void$\ast$ \bf{\_\-Graph\-Extension}}\label{graph_8h_9056b624154916c180d6f85ccbb3b58f}
+
+
+
+
+Definition at line 139 of file graph.h.\index{graph.h@{graph.h}!_NodeExtension@{\_\-NodeExtension}}
+\index{_NodeExtension@{\_\-NodeExtension}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef void$\ast$ \bf{\_\-Node\-Extension}}\label{graph_8h_d4a6deb3c3717127534dcc80157c71e3}
+
+
+
+
+Definition at line 111 of file graph.h.\index{graph.h@{graph.h}!Arc@{Arc}}
+\index{Arc@{Arc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Arc} $\ast$ \bf{Arc}}\label{graph_8h_ec2d676b53100217c650fbacb5ea52d3}
+
+
+\index{graph.h@{graph.h}!FGraph@{FGraph}}
+\index{FGraph@{FGraph}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-FGraph} $\ast$ \bf{FGraph}}\label{graph_8h_a8515812f0e60bbc0d06c043aeef9e37}
+
+
+\index{graph.h@{graph.h}!Node@{Node}}
+\index{Node@{Node}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Node} $\ast$ \bf{Node}}\label{graph_8h_3fa1a642c425746ab683ac8fc76f932b}
+
+
+
+
+\subsection{Function Documentation}
+\index{graph.h@{graph.h}!AddNode@{AddNode}}
+\index{AddNode@{AddNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Add\-Node (\bf{FGraph} {\em graph}, \bf{Node} {\em node})}\label{graph_8h_5add6db4eaffa6e50b1464368ef24e51}
+
+
+
+
+Definition at line 602 of file graph.c.
+
+References graph, next\-Node, node, and \_\-FGraph::nodes.
+
+Referenced by add\_\-df\_\-node(), connect\_\-df\_\-node(), Decode\-Arc(), Decode\-Node(), Decode\-Root(), and Place\-Traces().\index{graph.h@{graph.h}!ConnectNodes@{ConnectNodes}}
+\index{ConnectNodes@{ConnectNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Connect\-Nodes (\bf{Node} {\em src\_\-node}, \bf{Node} {\em dest\_\-node}, int {\em relation})}\label{graph_8h_7b0a701a76a25a53f704d4ec5e6b67d6}
+
+
+
+
+Definition at line 169 of file graph.c.
+
+References arc\-Type, destination\-Arcs, destination\-Node, is\-Nil, New\-Arc(), next\-Arc, node\_\-count, Punt(), source\-Arcs, and source\-Node.
+
+Referenced by connect\_\-df\_\-node(), Decode\-Arc(), and Place\-Traces().\index{graph.h@{graph.h}!DeleteNode@{DeleteNode}}
+\index{DeleteNode@{DeleteNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node} Delete\-Node (\bf{FGraph} {\em graph}, int {\em node\_\-id})}\label{graph_8h_23212ce3539da4ba88a53d45bb21e247}
+
+
+
+
+Definition at line 633 of file graph.c.
+
+References Find\-Node(), graph, next\-Node, and \_\-FGraph::nodes.\index{graph.h@{graph.h}!DisconnectNodes@{DisconnectNodes}}
+\index{DisconnectNodes@{DisconnectNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Disconnect\-Nodes (\bf{Node} {\em src\_\-node}, \bf{Node} {\em dest\_\-node}, int {\em relation})}\label{graph_8h_8e3bfa7c3094fd36c7a0d67c2cf7eb8b}
+
+
+
+
+Definition at line 213 of file graph.c.
+
+References arc\-Type, destination\-Arcs, destination\-Node, Free\-Arc(), is\-Nil, next\-Arc, source\-Arcs, and source\-Node.\index{graph.h@{graph.h}!FindDestArc@{FindDestArc}}
+\index{FindDestArc@{FindDestArc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc} Find\-Dest\-Arc (\bf{Node} {\em src\_\-node}, \bf{Node} {\em dest\_\-node}, int {\em type})}\label{graph_8h_32c17ee45b4d7a7a8f5030dbb3dbbfea}
+
+
+
+
+Definition at line 296 of file graph.c.
+
+References arc\-Type, destination\-Arcs, destination\-Node, next\-Arc, and source\-Node.
+
+Referenced by Decode\-Arc(), Place\-Traces(), and Select\-Traces().\index{graph.h@{graph.h}!FindNode@{FindNode}}
+\index{FindNode@{FindNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node} Find\-Node (\bf{FGraph} {\em graph}, int {\em node\_\-id})}\label{graph_8h_21ec3ddb78f3282ba7454ea7a44426f0}
+
+
+
+
+Definition at line 623 of file graph.c.
+
+References graph, next\-Node, node\-Id, and \_\-FGraph::nodes.
+
+Referenced by add\_\-df\_\-node(), connect\_\-df\_\-node(), Decode\-Arc(), Decode\-Node(), Decode\-Root(), Delete\-Node(), and Place\-Traces().\index{graph.h@{graph.h}!FindSrcArc@{FindSrcArc}}
+\index{FindSrcArc@{FindSrcArc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc} Find\-Src\-Arc (\bf{Node} {\em src\_\-node}, \bf{Node} {\em dest\_\-node}, int {\em type})}\label{graph_8h_936ce714faf05a0e434203bfa785b5ec}
+
+
+
+
+Definition at line 278 of file graph.c.
+
+References arc\-Type, destination\-Node, next\-Arc, source\-Arcs, and source\-Node.
+
+Referenced by Decode\-Arc(), Place\-Traces(), and Select\-Traces().\index{graph.h@{graph.h}!FreeArc@{FreeArc}}
+\index{FreeArc@{FreeArc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc} Free\-Arc (\bf{Arc} $\ast$ {\em arc})}\label{graph_8h_3459b0aafa62f3a05b5fbdfd7cc6fdf4}
+
+
+
+
+Definition at line 150 of file graph.c.
+
+References d\_\-arc\_\-list, and next\-Arc.
+
+Referenced by Disconnect\-Nodes(), and Remove\-Nodes().\index{graph.h@{graph.h}!FreeGraph@{FreeGraph}}
+\index{FreeGraph@{FreeGraph}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{FGraph} Free\-Graph (\bf{FGraph} $\ast$ {\em graph})}\label{graph_8h_21f7025d01cd1f76fa141deb52814f74}
+
+
+
+
+Definition at line 581 of file graph.c.
+
+References d\_\-graph\_\-list, graph, nodes, and Remove\-Nodes().
+
+Referenced by define\_\-df\_\-graph(), and Place\-Traces().\index{graph.h@{graph.h}!FreeNode@{FreeNode}}
+\index{FreeNode@{FreeNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node} Free\-Node (\bf{Node} $\ast$ {\em node})}\label{graph_8h_26179fc2f0d21aa44b2e5a57265a52c5}
+
+
+
+
+Definition at line 111 of file graph.c.
+
+References d\_\-node\_\-list, next\-Node, and node.
+
+Referenced by Remove\-Nodes().\index{graph.h@{graph.h}!IsCyclic@{IsCyclic}}
+\index{IsCyclic@{IsCyclic}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Is\-Cyclic (\bf{Node} {\em node})}\label{graph_8h_756ebc836e841a3d41ccd454c890b331}
+
+
+
+
+Definition at line 551 of file graph.c.
+
+References Find\-Non\-Zero(), Mark\-Nodes\-Zero(), and node.\index{graph.h@{graph.h}!MarkNodes@{MarkNodes}}
+\index{MarkNodes@{MarkNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mark\-Nodes (\bf{Node} {\em node}, int {\em mask}, int {\em mark})}\label{graph_8h_8fb02f1b857bea9d9bf0cc9f163d9bb3}
+
+
+
+
+Definition at line 387 of file graph.c.
+
+References \_\-Add\_\-2\_\-nd\_\-buf(), nd\_\-buf, nd\_\-buf\_\-size, node, node\-Status, Punt(), RESERVED\_\-STATUS\_\-BITS, and Visit\-All\-Nodes().\index{graph.h@{graph.h}!MarkNodesZero@{MarkNodesZero}}
+\index{MarkNodesZero@{MarkNodesZero}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Mark\-Nodes\-Zero (\bf{Node} {\em node})}\label{graph_8h_ddaa36b43cfefe9f2f46d221162e2118}
+
+
+
+
+Definition at line 366 of file graph.c.
+
+References \_\-Add\_\-2\_\-nd\_\-buf(), nd\_\-buf, nd\_\-buf\_\-size, node, node\-Status, and Visit\-All\-Nodes().
+
+Referenced by Is\-Cyclic().\index{graph.h@{graph.h}!NewArc@{NewArc}}
+\index{NewArc@{NewArc}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc} New\-Arc (void)}\label{graph_8h_9ec8b541a689c1c76d2b64fde7489e2f}
+
+
+
+
+Definition at line 125 of file graph.c.
+
+References arc\-Ext, arc\-Type, arc\-Weight, d\_\-arc\_\-list, destination\-Node, is\-Nil, next\-Arc, Punt(), and source\-Node.
+
+Referenced by Connect\-Nodes().\index{graph.h@{graph.h}!NewGraph@{NewGraph}}
+\index{NewGraph@{NewGraph}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{FGraph} New\-Graph (void)}\label{graph_8h_1beb6b65e030388214bb0d0e35ea4d79}
+
+
+
+
+Definition at line 561 of file graph.c.
+
+References d\_\-graph\_\-list, \_\-FGraph::extension, is\-Nil, \_\-FGraph::next, \_\-FGraph::nodes, Punt(), and \_\-FGraph::root.
+
+Referenced by define\_\-df\_\-graph(), Place\-Traces(), and Read\-Graph().\index{graph.h@{graph.h}!NewNode@{NewNode}}
+\index{NewNode@{NewNode}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node} New\-Node (void)}\label{graph_8h_4317fcef2f2213d9d6e173c66b8c0f18}
+
+
+
+
+Definition at line 84 of file graph.c.
+
+References d\_\-node\_\-list, destination\-Arcs, is\-Nil, new\_\-node(), next\-Node, node\-Ext, node\-Id, node\-Status, node\-Type, node\-Weight, Punt(), and source\-Arcs.
+
+Referenced by add\_\-df\_\-node(), connect\_\-df\_\-node(), Decode\-Arc(), Decode\-Node(), Decode\-Root(), Get\-Node(), and Place\-Traces().\index{graph.h@{graph.h}!RemoveNodes@{RemoveNodes}}
+\index{RemoveNodes@{RemoveNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Remove\-Nodes (\bf{Node} $\ast$ {\em node})}\label{graph_8h_d5015d73326f17e507235e0d42a998bf}
+
+
+
+
+Definition at line 328 of file graph.c.
+
+References \_\-Add\_\-2\_\-nd\_\-buf(), destination\-Arcs, Free\-Arc(), Free\-Node(), is\-Nil, nd\_\-buf, nd\_\-buf\_\-size, next\-Arc, node, source\-Arcs, and Visit\-All\-Nodes().
+
+Referenced by Free\-Graph().\index{graph.h@{graph.h}!VisitAllNodes@{VisitAllNodes}}
+\index{VisitAllNodes@{VisitAllNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Visit\-All\-Nodes (\bf{Node} {\em node}, int($\ast$)(\bf{Node}) {\em fn})}\label{graph_8h_2f317ea84f8bf39187eb9de4ae939a17}
+
+
+
+
+Definition at line 498 of file graph.c.
+
+References Clear\-Status\-Bits(), Mark\-Status\-Bits(), and node.
+
+Referenced by Mark\-Nodes(), Mark\-Nodes\-Zero(), Remove\-Nodes(), and Visit\-Nodes().\index{graph.h@{graph.h}!VisitNodes@{VisitNodes}}
+\index{VisitNodes@{VisitNodes}!graph.h@{graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Visit\-Nodes (\bf{Node} {\em node}, int {\em mark}, int($\ast$)(\bf{Node}) {\em fn})}\label{graph_8h_74de981dd26a9ce7580d9ef76a4aff04}
+
+
+
+
+Definition at line 419 of file graph.c.
+
+References \_\-Add\_\-2\_\-nd\_\-buf(), nd\_\-buf, nd\_\-buf\_\-size, node, node\-Status, and Visit\-All\-Nodes().

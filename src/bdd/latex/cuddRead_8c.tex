@@ -1,0 +1,91 @@
+\section{cudd\-Read.c File Reference}
+\label{cuddRead_8c}\index{cuddRead.c@{cuddRead.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{Cudd\_\-add\-Read} (FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, \bf{Dd\-Node} $\ast$$\ast$$\ast$xn, \bf{Dd\-Node} $\ast$$\ast$$\ast$yn\_\-, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy)
+\item 
+int \bf{Cudd\_\-bdd\-Read} (FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$E, \bf{Dd\-Node} $\ast$$\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$$\ast$y, int $\ast$nx, int $\ast$ny, int $\ast$m, int $\ast$n, int bx, int sx, int by, int sy)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Read.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddRead.c@{cudd\-Read.c}!Cudd_addRead@{Cudd\_\-addRead}}
+\index{Cudd_addRead@{Cudd\_\-addRead}!cuddRead.c@{cudd\-Read.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-add\-Read (FILE $\ast$ {\em fp}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em E}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em y}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em xn}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em yn\_\-}, int $\ast$ {\em nx}, int $\ast$ {\em ny}, int $\ast$ {\em m}, int $\ast$ {\em n}, int {\em bx}, int {\em sx}, int {\em by}, int {\em sy})}\label{cuddRead_8c_60fa1f494a6075b537e13b655c564e76}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads in a sparse matrix.]
+
+Description [Reads in a sparse matrix specified in a simple format. The first line of the input contains the numbers of rows and columns. The remaining lines contain the elements of the matrix, one per line. Given a background value (specified by the background field of the manager), only the values different from it are explicitly listed. Each foreground element is described by two integers, i.e., the row and column number, and a real number, i.e., the value.
+
+Cudd\_\-add\-Read produces an ADD that depends on two sets of variables: x and y. The x variables (x$\backslash$[0$\backslash$] ... x$\backslash$[nx-1$\backslash$]) encode the row index and the y variables (y$\backslash$[0$\backslash$] ... y$\backslash$[ny-1$\backslash$]) encode the column index. x$\backslash$[0$\backslash$] and y$\backslash$[0$\backslash$] are the most significant bits in the indices. The variables may already exist or may be created by the function. The index of x$\backslash$[i$\backslash$] is bx+i$\ast$sx, and the index of y$\backslash$[i$\backslash$] is by+i$\ast$sy.
+
+On input, nx and ny hold the numbers of row and column variables already in existence. On output, they hold the numbers of row and column variables actually used by the matrix. When Cudd\_\-add\-Read creates the variable arrays, the index of x$\backslash$[i$\backslash$] is bx+i$\ast$sx, and the index of y$\backslash$[i$\backslash$] is by+i$\ast$sy. When some variables already exist Cudd\_\-add\-Read expects the indices of the existing x variables to be bx+i$\ast$sx, and the indices of the existing y variables to be by+i$\ast$sy.
+
+m and n are set to the numbers of rows and columns of the matrix. Their values on input are immaterial. The ADD for the sparse matrix is returned in E, and its reference count is $>$ 0. Cudd\_\-add\-Read returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [nx and ny are set to the numbers of row and column variables. m and n are set to the numbers of rows and columns. x and y are possibly extended to represent the array of row and column variables. Similarly for xn and yn\_\-, which hold on return from Cudd\_\-add\-Read the complements of the row and column variables.]
+
+See\-Also [Cudd\_\-add\-Harwell Cudd\_\-bdd\-Read] 
+
+Definition at line 117 of file cudd\-Read.c.
+
+References Dd\-Manager::background, Cudd\_\-add\-Apply(), Cudd\_\-add\-Ite(), Cudd\_\-add\-Times(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref(), CUDD\_\-VALUE\_\-TYPE, cudd\-Ref, cudd\-Unique\-Const(), cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::error\-Code, one, REALLOC, Dd\-Manager::reordered, and zero.\index{cuddRead.c@{cudd\-Read.c}!Cudd_bddRead@{Cudd\_\-bddRead}}
+\index{Cudd_bddRead@{Cudd\_\-bddRead}!cuddRead.c@{cudd\-Read.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-bdd\-Read (FILE $\ast$ {\em fp}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em E}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$$\ast$ {\em y}, int $\ast$ {\em nx}, int $\ast$ {\em ny}, int $\ast$ {\em m}, int $\ast$ {\em n}, int {\em bx}, int {\em sx}, int {\em by}, int {\em sy})}\label{cuddRead_8c_a3a5e49e217519cb4d29545aa0bbbb4d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads in a graph (without labels) given as a list of arcs.]
+
+Description [Reads in a graph (without labels) given as an adjacency matrix. The first line of the input contains the numbers of rows and columns of the adjacency matrix. The remaining lines contain the arcs of the graph, one per line. Each arc is described by two integers, i.e., the row and column number, or the indices of the two endpoints. Cudd\_\-bdd\-Read produces a BDD that depends on two sets of variables: x and y. The x variables (x$\backslash$[0$\backslash$] ... x$\backslash$[nx-1$\backslash$]) encode the row index and the y variables (y$\backslash$[0$\backslash$] ... y$\backslash$[ny-1$\backslash$]) encode the column index. x$\backslash$[0$\backslash$] and y$\backslash$[0$\backslash$] are the most significant bits in the indices. The variables may already exist or may be created by the function. The index of x$\backslash$[i$\backslash$] is bx+i$\ast$sx, and the index of y$\backslash$[i$\backslash$] is by+i$\ast$sy.
+
+On input, nx and ny hold the numbers of row and column variables already in existence. On output, they hold the numbers of row and column variables actually used by the matrix. When Cudd\_\-bdd\-Read creates the variable arrays, the index of x$\backslash$[i$\backslash$] is bx+i$\ast$sx, and the index of y$\backslash$[i$\backslash$] is by+i$\ast$sy. When some variables already exist, Cudd\_\-bdd\-Read expects the indices of the existing x variables to be bx+i$\ast$sx, and the indices of the existing y variables to be by+i$\ast$sy.
+
+m and n are set to the numbers of rows and columns of the matrix. Their values on input are immaterial. The BDD for the graph is returned in E, and its reference count is $>$ 0. Cudd\_\-bdd\-Read returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [nx and ny are set to the numbers of row and column variables. m and n are set to the numbers of rows and columns. x and y are possibly extended to represent the array of row and column variables.]
+
+See\-Also [Cudd\_\-add\-Harwell Cudd\_\-add\-Read] 
+
+Definition at line 340 of file cudd\-Read.c.
+
+References Cudd\_\-bdd\-And(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Manager::error\-Code, one, REALLOC, Dd\-Manager::reordered, and zero.
+
+\subsection{Variable Documentation}
+\index{cuddRead.c@{cudd\-Read.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddRead.c@{cudd\-Read.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Read.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddRead_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Read.c}{p.}{cuddRead_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to read in a matrix]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-add\-Read()}{p.}{cuddRead_8c_60fa1f494a6075b537e13b655c564e76} \item \doxyref{Cudd\_\-bdd\-Read()}{p.}{cuddRead_8c_a3a5e49e217519cb4d29545aa0bbbb4d} \end{itemize}
+]
+
+See\-Also [cudd\_\-add\-Harwell.c]
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 52 of file cudd\-Read.c.

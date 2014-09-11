@@ -1,0 +1,152 @@
+\section{heap.c File Reference}
+\label{heap_8c}\index{heap.c@{heap.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/heap.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{Heap\_\-Node\-Swap}(a, b)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{Heapify\-Max} (\bf{Heap} $\ast$root)
+\item 
+static void \bf{Heapify\-Min} (\bf{Heap} $\ast$root)
+\item 
+\bf{Heap} $\ast$ \bf{Heap\_\-Create} (int dir)
+\item 
+\bf{Heap} $\ast$ \bf{Heap\_\-Dispose} (\bf{Heap} $\ast$root, void($\ast$element\_\-dispose)(void $\ast$))
+\item 
+void \bf{Heap\_\-Insert} (\bf{Heap} $\ast$root, void $\ast$element, double weight)
+\item 
+void $\ast$ \bf{Heap\_\-Top} (\bf{Heap} $\ast$root)
+\item 
+double $\ast$ \bf{Heap\_\-Top\-Weight} (\bf{Heap} $\ast$root)
+\item 
+void $\ast$ \bf{Heap\_\-Extract\-Top} (\bf{Heap} $\ast$root)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{heap\-Node\-Pool} = NULL
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{heap.c@{heap.c}!Heap_NodeSwap@{Heap\_\-NodeSwap}}
+\index{Heap_NodeSwap@{Heap\_\-NodeSwap}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Heap\_\-Node\-Swap(a, b)}\label{heap_8c_a29c2de17062a14a403652431a2ccb2b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}{  HeapNode node; \
+                                   node.weight = (a)->weight; \
+                                   node.element = (a)->element; \
+                                   (a)->weight = (b)->weight; \
+                                   (a)->element = (b)->element; \
+                                   (b)->weight = node.weight; \
+                                   (b)->element = node.element; \
+                                }
+\end{verbatim}\end{Code}
+
+
+Definition at line 87 of file heap.c.
+
+Referenced by Heap\_\-Insert(), Heapify\-Max(), and Heapify\-Min().
+
+\subsection{Function Documentation}
+\index{heap.c@{heap.c}!Heap_Create@{Heap\_\-Create}}
+\index{Heap_Create@{Heap\_\-Create}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Heap}$\ast$ Heap\_\-Create (int {\em dir})}\label{heap_8c_c4197167c9fa086c4654078a33edcfeb}
+
+
+
+
+Definition at line 163 of file heap.c.
+
+References Heap::dir, Heap::heap, heap\-Node\-Pool, L\_\-create\_\-alloc\_\-pool(), NULL, and Heap::size.\index{heap.c@{heap.c}!Heap_Dispose@{Heap\_\-Dispose}}
+\index{Heap_Dispose@{Heap\_\-Dispose}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Heap}$\ast$ Heap\_\-Dispose (\bf{Heap} $\ast$ {\em root}, void($\ast$)(void $\ast$) {\em element\_\-dispose})}\label{heap_8c_7b2694670d65b76abe0b706a2d94814f}
+
+
+
+
+Definition at line 184 of file heap.c.
+
+References Heap::heap, heap\-Node\-Pool, L\_\-free(), h\_\-node::left, node, NULL, and h\_\-node::right.\index{heap.c@{heap.c}!Heap_ExtractTop@{Heap\_\-ExtractTop}}
+\index{Heap_ExtractTop@{Heap\_\-ExtractTop}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Heap\_\-Extract\-Top (\bf{Heap} $\ast$ {\em root})}\label{heap_8c_6a7a4ed0f9b50b8e892c27589f6e92e5}
+
+
+
+
+Definition at line 318 of file heap.c.
+
+References Heap::dir, h\_\-node::element, Heap::heap, HEAP\_\-MAX, Heapify\-Max(), Heapify\-Min(), heap\-Node\-Pool, L\_\-free(), h\_\-node::left, NULL, h\_\-node::p, h\_\-node::right, Heap::size, and h\_\-node::weight.\index{heap.c@{heap.c}!Heap_Insert@{Heap\_\-Insert}}
+\index{Heap_Insert@{Heap\_\-Insert}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Heap\_\-Insert (\bf{Heap} $\ast$ {\em root}, void $\ast$ {\em element}, double {\em weight})}\label{heap_8c_c86e67aa3d315dce4c37dd848b3ad7b7}
+
+
+
+
+Definition at line 228 of file heap.c.
+
+References Heap::dir, h\_\-node::element, Heap::heap, HEAP\_\-MAX, Heap\_\-Node\-Swap, heap\-Node\-Pool, L\_\-alloc(), h\_\-node::left, NULL, h\_\-node::p, h\_\-node::right, Heap::size, and h\_\-node::weight.\index{heap.c@{heap.c}!Heap_Top@{Heap\_\-Top}}
+\index{Heap_Top@{Heap\_\-Top}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ Heap\_\-Top (\bf{Heap} $\ast$ {\em root})}\label{heap_8c_3860aafa490cda2ad1d98d6212f972d0}
+
+
+
+
+Definition at line 294 of file heap.c.
+
+References h\_\-node::element, Heap::heap, NULL, and Heap::size.\index{heap.c@{heap.c}!Heap_TopWeight@{Heap\_\-TopWeight}}
+\index{Heap_TopWeight@{Heap\_\-TopWeight}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ Heap\_\-Top\-Weight (\bf{Heap} $\ast$ {\em root})}\label{heap_8c_bc2333b91d4483d3298757beb0814004}
+
+
+
+
+Definition at line 306 of file heap.c.
+
+References Heap::heap, NULL, Heap::size, and h\_\-node::weight.\index{heap.c@{heap.c}!HeapifyMax@{HeapifyMax}}
+\index{HeapifyMax@{HeapifyMax}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Heapify\-Max (\bf{Heap} $\ast$ {\em root})\hspace{0.3cm}{\tt  [static]}}\label{heap_8c_20467067290398d14ade670ecd105ada}
+
+
+
+
+Definition at line 99 of file heap.c.
+
+References Heap::heap, Heap\_\-Node\-Swap, h\_\-node::left, NULL, h\_\-node::right, and h\_\-node::weight.
+
+Referenced by Heap\_\-Extract\-Top().\index{heap.c@{heap.c}!HeapifyMin@{HeapifyMin}}
+\index{HeapifyMin@{HeapifyMin}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Heapify\-Min (\bf{Heap} $\ast$ {\em root})\hspace{0.3cm}{\tt  [static]}}\label{heap_8c_10fe7126679559cf46f31aa1b992547b}
+
+
+
+
+Definition at line 129 of file heap.c.
+
+References Heap::heap, Heap\_\-Node\-Swap, h\_\-node::left, NULL, h\_\-node::right, and h\_\-node::weight.
+
+Referenced by Heap\_\-Extract\-Top().
+
+\subsection{Variable Documentation}
+\index{heap.c@{heap.c}!heapNodePool@{heapNodePool}}
+\index{heapNodePool@{heapNodePool}!heap.c@{heap.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{heap\-Node\-Pool} = NULL\hspace{0.3cm}{\tt  [static]}}\label{heap_8c_c8616043742d3cf292051e4a8d12c800}
+
+
+
+
+Definition at line 67 of file heap.c.
+
+Referenced by Heap\_\-Create(), Heap\_\-Dispose(), Heap\_\-Extract\-Top(), and Heap\_\-Insert().

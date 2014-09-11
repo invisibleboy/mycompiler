@@ -1,0 +1,271 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script copies the specified benchmark's source into '.'.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 10/20/98
+#
+
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+SILENT=0;
+DEST_DIR=".";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    BENCHMARK="$1";
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Silently ignore project specifier to simplify other scripts
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: copy_bench_src expects a name after -project"
+               exit 1;
+            fi
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: copy_bench_src expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Allow an destination directory to be specified
+        -dest)
+            if [ $# -eq 0 ]; then
+               echo "Error: copy_bench_src expects a name after -dest"
+               exit 1;
+            fi
+            DEST_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $DEST_DIR ]; then
+               echo "Error: Invalid directory specified with -dest option:"
+               echo "       '${DEST_DIR}'"
+               exit 1;
+            fi
+            shift;;
+
+        # Turn off messages while working
+        -silent)
+            SILENT=1;;
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo '> Usage: copy_bench_src benchmark [options]';
+    echo '> ';
+    echo "> Copies the specified benchmark's source into '.'"
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -bench_dir "dir"  read info in "dir" (defaut: find_bench_dir script used)';
+    echo '>   -dest  "dir"      copy source into "dir" instead of "."';
+    echo '>   -silent           works silently (default prints each file copied)'
+    exit 0200;
+fi;
+
+
+############################################################################
+#       Find the benchmark info
+############################################################################
+
+  # Find the benchmark dir if not user specified
+  if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+    if test "$?" != 0; then
+      echo " "
+      echo "Error: copy_bench_src could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+    fi
+  fi
+
+
+############################################################################
+#       Make sure source code present in $BENCH_DIR/src
+############################################################################
+
+  # Make sure the src sub-directory exists
+  if [ ! -d ${BENCH_DIR}/src ]; then
+    echo "Error: copy_bench_src expects 'src' subdirectory in benchmark info directory:"
+    echo "       '${BENCH_DIR}'"
+    exit 1;
+  fi
+
+  # Get path to sub-directory
+  SRC_DIR="${BENCH_DIR}/src"
+
+
+  # Get list of files in directory, including dot files (excluding . and ..)
+  FILE_LIST="`cd ${SRC_DIR}; ls -A`"
+
+  # Scan list to verify that there are no subdirectories
+  SUBDIR_FOUND=0;
+  for FILE in $FILE_LIST
+  do
+    # Want source flattened into a single directory, so do not allow
+    # subdirectories in SRC_DIR (tolerate CVS directories)
+    if [ "$FILE" != "CVS" -a -d ${SRC_DIR}/$FILE ]; then
+      echo " "
+      echo "> Error: Unexpected subdirectory '$FILE' in $BENCHMARK source dir:"
+      echo ">        $SRC_DIR"
+      echo ">"
+      echo ">        All benchmark source must be flattened into just one directory!"
+      SUBDIR_FOUND=1;
+    fi
+  done
+
+  # Make sure *.c will find at least one file in SRC_DIR.  Pipe stderr
+  # to /dev/null so that we cleanly get "" if no .c files exist
+
+  COPY_SOURCES=`read_compile_info ${BENCHMARK} -bench_dir ${BENCH_DIR} -copysources`;
+  if [ "$?" != 0 ]; then echo "Unexpected Exit (read_compile_info -copysources)!: non-zero exit code"; exit 1;fi
+
+  if [ "$COPY_SOURCES" = "" ]; then
+    C_FILE_LIST="`cd ${SRC_DIR}; ls *.c 2>/dev/null`"
+    if [ "$C_FILE_LIST" = "" ]; then
+      echo " "
+      echo "> Error: Expects *.c to return at least one file for $BENCHMARK in:"
+      echo ">        $SRC_DIR"
+      echo ">"
+      echo "> Contents of this benchmark source directory:"
+      cd ${SRC_DIR}; 
+      ls -FA;
+      echo " "
+      echo "> copy_bench_src exiting due to above error(s)"
+      exit 1;
+    fi
+  else
+    C_FILE_LIST=$COPY_SOURCES;
+  fi
+
+  # If found subdirectory (and .c file), exit now
+  if [ $SUBDIR_FOUND -eq 1 ]; then
+    echo "> Contents of this benchmark source directory:"
+    cd ${SRC_DIR}
+    ls -FA;
+    echo " "
+    echo "> copy_bench_src exiting due to above error(s)"
+    exit 1;
+  fi
+
+############################################################################
+#       Copy source code into $DEST_DIR
+############################################################################
+  if [ $SILENT -eq 0 ]; then
+    echo "> Copying source for $BENCHMARK into '$DEST_DIR' from:"
+    echo ">   $SRC_DIR"
+    echo "> ";  
+  fi
+
+  for FILE in $FILE_LIST
+  do
+    case $FILE in
+      # Don't copy CVS directories and common backup files
+      CVS|*~|*.bak|\#*)
+        if [ $SILENT -eq 0 ]; then
+          echo "> Omitting '$FILE'"
+        fi;;
+ 
+      # Copy everything else
+      *)
+        if [ $SILENT -eq 0 ]; then
+          echo "> Copying $FILE into $DEST_DIR"
+        fi
+        cp -f ${SRC_DIR}/${FILE} $DEST_DIR
+        if test "$?" != 0; then 
+          echo "Exiting: cp returned non-zero exit code";
+          exit 1;
+        fi;;
+    esac
+  done
+
+  if [ $SILENT -eq 0 ]; then
+    echo "> "
+    echo "> Done, copy_bench_src succeeded for $BENCHMARK"
+  fi

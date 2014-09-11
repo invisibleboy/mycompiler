@@ -1,0 +1,547 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+                                                                                
+
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+#
+# proc_Lint <file>
+#
+# Matthew merten
+# IMPACT - University of Illinois at Urbana-Champaign
+# 02 Feb 02
+#
+#
+
+
+
+#[FINAL] PROGRAM SIM TIME :                           5.6890 seconds
+#[FINAL] PROGRAM EXEC INST:                           398167
+#[FINAL] PROGRAM SIM SPEED:                            69989
+#[FINAL] CODECACHE: percent                           0.0000
+#[FINAL] PROGRAM: executed cycles                                       380954
+#[FINAL] ICACHE: Total L1 Miss (% of L1)                 153  ( 0.00)
+#[FINAL] DCACHE: Total L1 Miss (% of L1)               11160  ( 0.35)
+#[FINAL] BTB: TOTAL MISSED PREDICTIONS                  2857  ( 0.04)
+
+# ------------------------------------------------------------------------------
+#  INITITIALIZATION
+# ------------------------------------------------------------------------------
+
+@sortorder = (1, 2, 4, 3, 0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ,19, 20); 
+
+$cnt = 0;
+$fields[$cnt]{hash}   = "user";
+$fields[$cnt]{name}   = "user";
+$fields[$cnt]{format} = "%-8s";
+$cnt++;
+# Don't "clip" any strings other than the benchmark
+$fields[$cnt]{hash}   = "benchmark";
+$fields[$cnt]{name}   = "BMK";
+$fields[$cnt]{format} = "%7.7s";
+$cnt++;
+$fields[$cnt]{hash}   = "lcode_type";
+$fields[$cnt]{name}   = "lcode_type";
+$fields[$cnt]{format} = "%14s";
+$cnt++;
+$fields[$cnt]{hash}   = "configuration";
+$fields[$cnt]{name}   = "config";
+$fields[$cnt]{format} = "%10s";
+$cnt++;
+$fields[$cnt]{hash}   = "input_name";
+$fields[$cnt]{name}   = "input";
+$fields[$cnt]{format} = "%7s";
+$cnt++;
+$fields[$cnt]{hash}   = "date";
+$fields[$cnt]{name}   = "date";
+$fields[$cnt]{format} = "%25s";
+$cnt++;
+$fields[$cnt]{hash}   = "sim_seconds";
+$fields[$cnt]{name}   = "sec";
+$fields[$cnt]{format} = "%6s";
+$cnt++;
+$fields[$cnt]{hash}   = "exec_insts_K";
+$fields[$cnt]{name}   = "execinst";
+$fields[$cnt]{format} = "%10s";
+$cnt++;
+$fields[$cnt]{hash}   = "sim_speed";
+$fields[$cnt]{name}   = "speed";
+$fields[$cnt]{format} = "%6s";
+$cnt++;
+$fields[$cnt]{hash}   = "cc_frac";
+$fields[$cnt]{name}   =  "cc/";
+$fields[$cnt]{format} = "%6s";
+$cnt++;
+$fields[$cnt]{hash}   = "hotspots";
+$fields[$cnt]{name}   = "hsd";
+$fields[$cnt]{format} = "%4s";
+$cnt++;
+$fields[$cnt]{hash}   = "rmhotspots";
+$fields[$cnt]{name}   = "rmhs";
+$fields[$cnt]{format} = "%4s";
+$cnt++;
+$fields[$cnt]{hash}   = "exec_cycles_K";
+$fields[$cnt]{name}   = "execcyc";
+$fields[$cnt]{format} = "%10s";
+$cnt++;
+$fields[$cnt]{hash}   = "l1i_misses_K";
+$fields[$cnt]{name}   = "l1im";
+$fields[$cnt]{format} = "%8s";
+$cnt++;
+$fields[$cnt]{hash}   = "l1i_frac_miss";
+$fields[$cnt]{name}   = "l1i/";
+$fields[$cnt]{format} = "%5s";
+$cnt++;
+$fields[$cnt]{hash}   = "l1d_misses_K";
+$fields[$cnt]{name}   = "l1dm";
+$fields[$cnt]{format} = "%8s";
+$cnt++;
+$fields[$cnt]{hash}   = "l1d_frac_miss";
+$fields[$cnt]{name}   = "l1d/";
+$fields[$cnt]{format} = "%5s";
+$cnt++;
+$fields[$cnt]{hash}   = "btb_misses_K";
+$fields[$cnt]{name}   = "btbm";
+$fields[$cnt]{format} = "%8s";
+$cnt++;
+$fields[$cnt]{hash}   = "btb_frac_miss";
+$fields[$cnt]{name}   = "btb/";
+$fields[$cnt]{format} = "%5s";
+$cnt++;
+
+$db_lines = 0;
+
+
+# ------------------------------------------------------------------------------
+#  SUBROUTINES
+# ------------------------------------------------------------------------------
+
+sub add_to_db
+  {
+    $sortindex = 0;
+    $sortfield = $sortorder[$sortindex];
+
+    for ($i=0; $i < $db_lines; )
+      {
+	#print "[$entry{$fields[$sortfield]{hash}}] <> [$DB[$i]{$fields[$sortfield]{hash}}]\n";
+	if ($entry{$fields[$sortfield]{hash}} lt $DB[$i]{$fields[$sortfield]{hash}}) 
+	  {
+	    $insertbefore = $i;
+	    last;
+	  }
+	if ($entry{$fields[$sortfield]{hash}} eq $DB[$i]{$fields[$sortfield]{hash}})
+	  {
+	    # Move on to next sort field 
+	    if ($sortfield >= $cnt)
+	      {
+		# Identical lines
+		printf "Duplicate data, ignoring\n";
+		return;
+	      }
+	    $sortindex++;
+	    $sortfield = $sortorder[$sortindex];
+	    #print "sf $sortfield\n";
+	  }
+	else
+	  {
+	    $i++;
+	    $insertbefore = $i;
+	    $sortindex = 0;
+	    $sortfield = $sortorder[$sortindex];
+	    #print "i $i\n";
+	  }
+      }
+
+    # shift entries
+    #print "$db_lines : $insertbefore \n";
+    for ($i=$db_lines; $i>$insertbefore; $i--)
+      {
+	for ($j=0; $j < $cnt; $j++)
+	  {
+	    $DB[$i]{$fields[$j]{hash}} = $DB[$i-1]{$fields[$j]{hash}};
+	  }
+      }
+
+    # Add entry
+    for ($j=0; $j < $cnt; $j++)
+      {
+	$DB[$insertbefore]{$fields[$j]{hash}} = $entry{$fields[$j]{hash}};
+      }
+    $db_lines++;
+
+    #dump_db(STDOUT);
+  }
+
+sub get_input {
+    local ($handle) = @_;
+
+    for ($j=0; $j < $cnt; $j++)
+      {
+	$entry{$fields[$j]{hash}} = -1;
+      }
+
+    $entry{user} = $user;
+    $entry{benchmark} = sprintf $fields[1]{format}, $benchmark;
+    if ($entry{benchmark} =~ /^\s+(.+)/)
+      {
+	# Strip off leading spaces
+	$entry{benchmark} = $1;
+      }
+    $entry{lcode_type} = $lcode_type;
+    $entry{configuration} = $configuration;
+    $entry{input_name} = $input_name;
+
+    while (<$handle>) { 
+      if (/\[FINAL\]\sPROGRAM\sSIM\sTIME\s:\s+(\d+)\.\d+\sseconds/){
+	$entry{sim_seconds} = $1;
+      }
+      if (/\[FINAL\]\sPROGRAM\sEXEC\sINST:\s+(\d+)/){
+	$entry{exec_insts_K} = sprintf "%0.1f",($1/1000);
+      }
+      if (/\[FINAL\]\sPROGRAM\sSIM\sSPEED:\s+(\d+)/){
+	$entry{sim_speed} = $1;
+      }
+      if (/\[FINAL\]\sCODECACHE:\spercent\s+(\d+\.\d+)/){
+	$entry{cc_frac} = sprintf "%0.3f",($1/100);
+      }
+      if (/\[FINAL\]\sCODECACHE:\snumber\sof\shotspots\s+(\d+)/){
+	$entry{hotspots} = $1;
+      }
+      if (/\[FINAL\]\sCODECACHE:\snumber\sof\sremapped\shotspots\s+(\d+)/){
+	$entry{rmhotspots} = $1;
+      }
+      if (/\[FINAL\]\sPROGRAM:\sexecuted\scycles\s+(\d+)/){
+	$entry{exec_cycles_K} = sprintf "%0.1f",($1/1000);
+      }
+      if (/\[FINAL\]\sICACHE:\sTotal\sL1\sMiss\s\(\%\sof\sL1\)\s+(\d+)\s+\(\s+(\d+\.\d+)/){
+	$entry{l1i_misses_K} = sprintf "%0.1f",($1/1000);
+	$entry{l1i_frac_miss} = sprintf "%0.2f",($2);
+      }
+      if (/\[FINAL\]\sDCACHE:\sTotal\sL1\sMiss\s\(\%\sof\sL1\)\s+(\d+)\s+\(\s+(\d+\.\d+)/){
+	$entry{l1d_misses_K} = sprintf "%0.1f",($1/1000);
+	$entry{l1d_frac_miss} = sprintf "%0.2f",($2);
+      }
+      if (/\[FINAL\]\sBTB:\sTOTAL\sMISSED\sPREDICTIONS\s+(\d+)\s+\(\s+(\d+\.\d+)/){
+	$entry{btb_misses_K} = sprintf "%0.1f",($1/1000);
+	$entry{btb_frac_miss} = sprintf "%0.2f",($2);
+      }
+      if (/\[FINAL\]\sCURRENT\sTIME:\s+([\w+ :]+)/){
+	$entry{date} = $1;
+      }
+    }
+
+#    @keys = sort {
+#	$cycle_count{$b} <=> $cycle_count{$a}
+#    } keys %cycle_count;
+}
+
+sub dump_db_header
+  {
+    local ($handle) = @_;
+    local ($j);
+
+    for ($j=0; $j < $cnt; $j++)
+      {
+	printf $handle "$fields[$j]{format}|", $fields[$j]{name};
+      }
+  }
+
+sub dump_db_line
+  {
+    local ($handle) = shift;
+    local ($line) = shift;
+    local ($j);
+    
+    for ($j=0; $j < $cnt; $j++)
+      {
+	printf $handle "$fields[$j]{format}|", $DB[$line]{$fields[$j]{hash}};
+      }
+  }
+
+sub dump_db
+  {
+    local ($handle) = @_;
+    local ($line);
+
+    dump_db_header($handle);
+    printf $handle "\n";
+
+    for ($line=0; $line < $db_lines; $line++)
+      {
+	dump_db_line($handle, $line);
+	printf $handle "\n";	
+      }
+  }
+
+sub read_db_line 
+  {
+    local ($linedata) = shift;
+    local (@linearray);
+    local ($j);
+
+    @linearray = split(/\s*\|\s*/,$linedata);
+
+    for ($j=0; $j < $cnt; $j++)
+      {
+	$entry{$fields[$j]{hash}} = $linearray[$j];
+      }
+
+    if ($linearray[1] eq $fields[1]{name} && $linearray[2] eq $fields[2]{name})
+      {
+	# Skip over headers
+	# printf("Skipping header\n");
+	return;
+      }
+
+    add_to_db();
+  }
+
+
+# The following handles cross network file locks
+#-----------------------------------------------
+
+require "Fcntl.pm";
+%lock_types = ( 'W', &Fcntl::F_WRLCK,  # Write lock
+		'R', &Fcntl::F_RDLCK,  # Read lock
+		'U', &Fcntl::F_UNLCK); # Unlock 
+
+sub db_lock
+  {
+    local (*FILE, $type, $lockname) = @_;
+    local ($lock) = pack('sslls', $lock_types{$type}, 0, 0, 0, 0);
+
+    # Status 
+    if ($type eq 'W') 
+      {
+	print "Requesting Database lock\n";
+      }
+    elsif ($type eq 'U')
+      {
+	print "Releasing Database lock\n";
+      }
+    
+    # There are two parts to doubly verify the lock
+    #  since some machines seem to ignore them
+
+    # PART 1  - Use Fcntl
+    die ("Fcntl_lock '$type': $!\n")
+      if fcntl(*FILE, &Fcntl::F_SETLKW, $lock) == -1;
+
+    # PART 2 - procmail lockfile program
+    if ($type eq 'W') 
+      {
+	system ("lockfile -2 ${lockname}2");
+	print "Lock Acquired\n";
+      }
+    elsif ($type eq 'U')
+      {
+	unlink "${lockname}2";
+	print "Lock Released\n";
+      }
+  }
+
+# ------------------------------------------------------------------------------
+#  PROGRAM STARTS HERE
+# ------------------------------------------------------------------------------
+
+$use_db = 0;
+$dbfile = "stdout";
+
+
+# READ IN ARGS
+#-----------------------------------
+while ($arg = shift @ARGV) 
+  {
+    if ("$arg" eq "-db")
+      {
+	printf "Will update DB\n";
+	$use_db = 1;
+	$dbfile = $ENV{LINT_DATABASE};
+      }
+    elsif (!($arg =~ /^-/))
+      {
+	last;
+      }
+    else
+      {
+	die "Usage: $0 [-db] <file>\n";
+      }
+  }
+
+$farg = $arg;
+
+
+# READ IN LINTERPRET REMAP FILES
+# ----------------------------------
+while( $farg )
+  {
+    $in = $farg;
+    $farg = shift;
+    
+    if ($in eq 'stdin') 
+      {
+	$input = STDIN;
+      }
+    else 
+      {
+	open (INFILE, $in) || die "Can't open input file: $in.";
+	$input = INFILE
+      }
+
+    $benchmark = "";
+    $lcode_type = "";
+    $configuration = "";
+    $input_name = "";
+    
+    $_ = $in;
+    
+    if (/^(\d*.\w*).(\w*).(\w*).(\w*).iremap$/) 
+      {
+	$benchmark = $1;
+	$lcode_type = $2;
+	$configuration = $3;
+	$input_name = $4;
+	#    printf $output "$in  $benchmark  $lcode_type  $configuration  $input_name\n";
+      }
+    elsif (/^(\d*.\w*).(\w*).(\w*).iremap$/) 
+      {
+	$benchmark = $1;
+	$lcode_type = $2;
+	$configuration = "";
+	$input_name = $3;
+	#    printf $output "$in  $benchmark  $lcode_type  $configuration  $input_name\n";
+      }
+    elsif (/^(\w*).(\w*).(\w*).(\w*).iremap$/) 
+      {
+	$benchmark = $1;
+	$lcode_type = $2;
+	$configuration = $3;
+	$input_name = $4;
+	#    printf $output "$in  $benchmark  $lcode_type  $configuration  $input_name\n";
+      }
+    elsif (/^(\w*).(\w*).(\w*).(\w*).iremap$/) 
+      {
+	$benchmark = $1;
+	$lcode_type = $2;
+	$configuration = $3;
+	$input_name = $4;
+	#    printf $output "$in  $benchmark  $lcode_type  $configuration  $input_name\n";
+      }
+    else 
+      {
+	printf $output "Name parse error.\n";
+      }
+
+    chop($user = `whoami`);
+    #Get date from file instead of calling date
+    #chop($date = `date`);
+    
+    get_input($input);
+    add_to_db();
+        
+    close ($input);
+  }
+
+
+
+# READ IN DATABASE FILE
+#-----------------------------------
+if ($use_db)
+  {
+    # Acquire lock
+    $db_lock_file = "${dbfile}.lock";
+    open (LOCKFILE, ">$db_lock_file") || die "cannot open Database lock\n";
+    db_lock(LOCKFILE, 'W', $db_lock_file);
+    #sleep 5;
+
+    if (!(open (INFILE, "<$dbfile")))
+      {
+	open (INFILE, ">$dbfile") || die "Can't create dbfile: $dbfile\n";
+	close(INFILE);
+	open (INFILE, "<$dbfile") || die "Can't open new dbfile: $dbfile\n";
+      }
+
+    while (<INFILE>)
+      {
+	read_db_line($_);
+      }
+    close (INFILE);
+  }
+
+
+# WRITE OUT NEW DATABASE
+#---------------------------------
+
+if ($dbfile eq "stdout")
+  {
+    $output = STDOUT;
+  }
+else
+  {
+    open (OUTFILE, ">$dbfile") || die "Can't open dbfile: $dbfile\n";
+    $output = OUTFILE;
+  }
+
+dump_db($output);
+close ($output);
+
+if ($use_db)
+  {
+    # Release lock
+    db_lock(LOCKFILE, 'U', $db_lock_file);
+    close(LOCKFILE);
+  }
+
+
+exit(0);

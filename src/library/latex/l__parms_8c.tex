@@ -1,0 +1,785 @@
+\section{l\_\-parms.c File Reference}
+\label{l__parms_8c}\index{l_parms.c@{l\_\-parms.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdarg.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$ctype.h$>$}\par
+{\tt \#include $<$math.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include \char`\"{}l\_\-parms.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{TNULL}~0
+\item 
+\#define \bf{TPLUS}~1
+\item 
+\#define \bf{TMINUS}~2
+\item 
+\#define \bf{TSTAR}~3
+\item 
+\#define \bf{TSLASH}~4
+\item 
+\#define \bf{TLPARN}~5
+\item 
+\#define \bf{TRPARN}~6
+\item 
+\#define \bf{TNUM}~7
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Parm\_\-Table\_\-List} $\ast$ \bf{L\_\-create\_\-parm\_\-table\_\-list} (void)
+\item 
+void \bf{L\_\-free\_\-parm\_\-table\_\-list} (\bf{Parm\_\-Table\_\-List} $\ast$\bf{list})
+\item 
+\bf{Parm\_\-Table\_\-Node} $\ast$ \bf{L\_\-get\_\-parm\_\-table\_\-entry} (\bf{Parm\_\-Table\_\-List} $\ast$\bf{list}, char $\ast$\bf{name})
+\item 
+void \bf{L\_\-add\_\-to\_\-parm\_\-table\_\-list} (\bf{Parm\_\-Table\_\-List} $\ast$\bf{list}, \bf{Parm\_\-Parse\_\-Info} $\ast$ppi, char $\ast$section\_\-name1, char $\ast$section\_\-name2)
+\item 
+int \bf{L\_\-pmatch} (char $\ast$s1, char $\ast$s2)
+\item 
+\bf{Parm\_\-Macro\_\-List} $\ast$ \bf{L\_\-create\_\-parm\_\-macro\_\-list} (void)
+\item 
+void \bf{I\_\-punt} (char $\ast$msg,...)
+\item 
+static int \bf{L\_\-get\_\-next\_\-parm} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+void \bf{L\_\-define\_\-parm\_\-macro} (\bf{Parm\_\-Macro\_\-List} $\ast$\bf{list}, char $\ast$\bf{name}, char $\ast$value, int from)
+\item 
+void \bf{L\_\-read\_\-parm\_\-sections} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi, \bf{Parm\_\-Section\_\-Info} $\ast$psi)
+\item 
+int \bf{L\_\-parm\_\-calc\_\-complete\_\-expr} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+int \bf{L\_\-parm\_\-calc\_\-expr} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+int \bf{L\_\-parm\_\-calc\_\-factor} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+int \bf{L\_\-parm\_\-calc\_\-term} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+int \bf{L\_\-peek\_\-next\_\-token} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+int \bf{L\_\-get\_\-next\_\-token} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi)
+\item 
+void \bf{L\_\-add\_\-parm\_\-already\_\-defined} (\bf{Parm\_\-Table\_\-Node} $\ast$old\_\-parm\_\-node, char $\ast$new\_\-value, char $\ast$new\_\-file\_\-name, int new\_\-parm\_\-line\_\-no, char $\ast$section\_\-name1, char $\ast$section\_\-name2)
+\item 
+char $\ast$ \bf{L\_\-get\_\-std\_\-parm\_\-name} (char $\ast$$\ast$argv, char $\ast$$\ast$envp, char $\ast$env\_\-var\_\-name, char $\ast$default\_\-std\_\-parms)
+\item 
+\bf{Parm\_\-Macro\_\-List} $\ast$ \bf{L\_\-create\_\-external\_\-macro\_\-list} (char $\ast$$\ast$argv, char $\ast$$\ast$envp)
+\item 
+\bf{Parm\_\-Macro\_\-List} $\ast$ \bf{L\_\-create\_\-external\_\-macro\_\-list\_\-new} (char $\ast$$\ast$argv, char $\ast$$\ast$envp, int $\ast$lastarg)
+\item 
+void \bf{L\_\-warn\_\-about\_\-unused\_\-macros} (FILE $\ast$out, \bf{Parm\_\-Macro\_\-List} $\ast$external\_\-list)
+\item 
+void \bf{L\_\-show\_\-parms\_\-warnings} (void)
+\item 
+void \bf{L\_\-free\_\-parm\_\-macro\_\-list} (\bf{Parm\_\-Macro\_\-List} $\ast$\bf{list})
+\item 
+int \bf{look\_\-for\_\-forced\_\-param} (char $\ast$\bf{name}, \bf{Parm\_\-Macro\_\-List} $\ast$\bf{list})
+\item 
+char $\ast$ \bf{L\_\-add\_\-forced\_\-parms} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi, \bf{Parm\_\-Table\_\-List} $\ast$\bf{list})
+\item 
+char $\ast$ \bf{L\_\-get\_\-parm\_\-macro\_\-value} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi, char $\ast$\bf{name})
+\item 
+void \bf{L\_\-expand\_\-parm\_\-macros} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi, char $\ast$line, char $\ast$buf, int max)
+\item 
+void \bf{L\_\-set\_\-parm\_\-s} (char $\ast$$\ast$parm, char $\ast$new\_\-string)
+\item 
+void \bf{L\_\-add\_\-parm\_\-not\_\-used} (\bf{Parm\_\-Table\_\-List} $\ast$parm\_\-list, char $\ast$section\_\-name1, char $\ast$section\_\-name2)
+\item 
+void \bf{L\_\-add\_\-parm\_\-not\_\-defined} (char $\ast$\bf{name}, char $\ast$section\_\-name1, char $\ast$section\_\-name2)
+\item 
+void \bf{L\_\-read\_\-parm\_\-i} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi\_\-in, char $\ast$\bf{name}, int $\ast$ptr)
+\item 
+void \bf{L\_\-read\_\-parm\_\-b} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi\_\-in, char $\ast$\bf{name}, int $\ast$ptr)
+\item 
+void \bf{L\_\-read\_\-parm\_\-s} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi\_\-in, char $\ast$\bf{name}, char $\ast$$\ast$ptr)
+\item 
+void \bf{L\_\-read\_\-parm\_\-f} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi\_\-in, char $\ast$\bf{name}, float $\ast$ptr)
+\item 
+void \bf{L\_\-read\_\-parm\_\-lf} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi\_\-in, char $\ast$\bf{name}, double $\ast$ptr)
+\item 
+void \bf{L\_\-read\_\-parm\_\-section\_\-defaults} (\bf{Parm\_\-Parse\_\-Info} $\ast$ppi, \bf{Parm\_\-Section\_\-Info} $\ast$psi, char $\ast$defaults\_\-file\_\-name)
+\item 
+void \bf{\_\-L\_\-load\_\-parameters} (char $\ast$parm\_\-file\_\-name, \bf{Parm\_\-Macro\_\-List} $\ast$command\_\-line\_\-macro\_\-list, char $\ast$section\_\-name1, char $\ast$section\_\-name2, void($\ast$read\_\-func)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi))
+\item 
+void \bf{L\_\-load\_\-parameters} (char $\ast$parm\_\-file\_\-name, \bf{Parm\_\-Macro\_\-List} $\ast$command\_\-line\_\-macro\_\-list, char $\ast$section, void($\ast$read\_\-func)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi))
+\item 
+void \bf{L\_\-load\_\-parameters\_\-aliased} (char $\ast$parm\_\-file\_\-name, \bf{Parm\_\-Macro\_\-List} $\ast$command\_\-line\_\-macro\_\-list, char $\ast$new\_\-section\_\-name, char $\ast$old\_\-section\_\-name, void($\ast$read\_\-func)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi))
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{L\_\-punt\_\-on\_\-unknown\_\-parm} = 0
+\item 
+\bf{Parm\_\-Warn\_\-List} $\ast$ \bf{warn\_\-list}
+\item 
+char $\ast$ \bf{current\_\-section\_\-name1}
+\item 
+char $\ast$ \bf{current\_\-section\_\-name2}
+\item 
+int \bf{section\_\-name1\_\-used} = 0
+\item 
+int \bf{section\_\-name2\_\-used} = 0
+\item 
+\bf{Parm\_\-Table\_\-List} $\ast$ \bf{parameter\_\-list}
+\item 
+\bf{Parm\_\-Table\_\-Node} $\ast$ \bf{start\_\-node\_\-of\_\-input}
+\item 
+static int \bf{first\_\-time} = 1
+\item 
+char $\ast$ \bf{L\_\-parm\_\-dump\_\-file\_\-name} = (char $\ast$) \char`\"{}stderr\char`\"{}
+\item 
+char $\ast$ \bf{L\_\-parm\_\-warn\_\-file\_\-name} = (char $\ast$) \char`\"{}stderr\char`\"{}
+\item 
+int \bf{L\_\-warn\_\-old\_\-parm\_\-section\_\-name\_\-used} = WARNINGS\_\-OFF
+\item 
+int \bf{L\_\-warn\_\-parm\_\-not\_\-used} = WARNINGS\_\-ON
+\item 
+int \bf{L\_\-warn\_\-parm\_\-not\_\-defined} = WARNINGS\_\-ON
+\item 
+int \bf{L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined} = WARNINGS\_\-OFF
+\item 
+int \bf{L\_\-warn\_\-parm\_\-defined\_\-twice} = WARNINGS\_\-ON
+\item 
+int \bf{L\_\-dump\_\-parms} = WARNINGS\_\-OFF
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_parms.c@{l\_\-parms.c}!TLPARN@{TLPARN}}
+\index{TLPARN@{TLPARN}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TLPARN~5}\label{l__parms_8c_c6e8753cb9d6d985c511eabd864875dc}
+
+
+
+
+Definition at line 1939 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-factor(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TMINUS@{TMINUS}}
+\index{TMINUS@{TMINUS}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TMINUS~2}\label{l__parms_8c_40a9113c885ef2de24d8242ee97238d8}
+
+
+
+
+Definition at line 1936 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-expr(), L\_\-parm\_\-calc\_\-factor(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TNULL@{TNULL}}
+\index{TNULL@{TNULL}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TNULL~0}\label{l__parms_8c_9c0558ad765472aac57bb0954a80ae97}
+
+
+
+
+Definition at line 1934 of file l\_\-parms.c.
+
+Referenced by L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TNUM@{TNUM}}
+\index{TNUM@{TNUM}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TNUM~7}\label{l__parms_8c_d00501132f47c93fefe8907a7023e0f0}
+
+
+
+
+Definition at line 1941 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-factor(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TPLUS@{TPLUS}}
+\index{TPLUS@{TPLUS}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TPLUS~1}\label{l__parms_8c_9108d631d79d040b0634d924ecddf65f}
+
+
+
+
+Definition at line 1935 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-expr(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TRPARN@{TRPARN}}
+\index{TRPARN@{TRPARN}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TRPARN~6}\label{l__parms_8c_2132051c32c4d62671b5760afb92bdc6}
+
+
+
+
+Definition at line 1940 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-factor(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TSLASH@{TSLASH}}
+\index{TSLASH@{TSLASH}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TSLASH~4}\label{l__parms_8c_90cc25bfce659c3fea0b263002d9c325}
+
+
+
+
+Definition at line 1938 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-term(), and L\_\-peek\_\-next\_\-token().\index{l_parms.c@{l\_\-parms.c}!TSTAR@{TSTAR}}
+\index{TSTAR@{TSTAR}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define TSTAR~3}\label{l__parms_8c_76b814f2784fb1774481f493a4e55595}
+
+
+
+
+Definition at line 1937 of file l\_\-parms.c.
+
+Referenced by L\_\-parm\_\-calc\_\-term(), and L\_\-peek\_\-next\_\-token().
+
+\subsection{Function Documentation}
+\index{l_parms.c@{l\_\-parms.c}!_L_load_parameters@{\_\-L\_\-load\_\-parameters}}
+\index{_L_load_parameters@{\_\-L\_\-load\_\-parameters}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void \_\-L\_\-load\_\-parameters (char $\ast$ {\em parm\_\-file\_\-name}, \bf{Parm\_\-Macro\_\-List} $\ast$ {\em command\_\-line\_\-macro\_\-list}, char $\ast$ {\em section\_\-name1}, char $\ast$ {\em section\_\-name2}, void($\ast$)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi) {\em read\_\-func})}\label{l__parms_8c_ed7d1db7730c25bb4f8eda913ba2fc9b}
+
+
+
+
+Definition at line 2433 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, parm\_\-parse\_\-info\_\-st::file, parm\_\-warn\_\-list::head, I\_\-punt(), parm\_\-parse\_\-info\_\-st::internal\_\-level, parm\_\-parse\_\-info\_\-st::internal\_\-list, L\_\-add\_\-forced\_\-parms(), L\_\-add\_\-parm\_\-not\_\-used(), L\_\-create\_\-parm\_\-macro\_\-list(), L\_\-create\_\-parm\_\-table\_\-list(), L\_\-free\_\-parm\_\-macro\_\-list(), L\_\-free\_\-parm\_\-table\_\-list(), L\_\-read\_\-parm\_\-sections(), L\_\-show\_\-parms\_\-warnings(), L\_\-warn\_\-old\_\-parm\_\-section\_\-name\_\-used, parm\_\-parse\_\-info\_\-st::line\_\-no, parm\_\-parse\_\-info\_\-st::name, parm\_\-section\_\-info::name1, parm\_\-section\_\-info::name2, NULL, parameter\_\-list, parm\_\-parse\_\-info\_\-st::parm\_\-list, parm\_\-section\_\-info::parm\_\-list, parm\_\-section\_\-info::read\_\-func, section\_\-name1\_\-used, section\_\-name2\_\-used, start\_\-node\_\-of\_\-input, and warn\_\-list.
+
+Referenced by L\_\-load\_\-parameters(), and L\_\-load\_\-parameters\_\-aliased().\index{l_parms.c@{l\_\-parms.c}!I_punt@{I\_\-punt}}
+\index{I_punt@{I\_\-punt}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void I\_\-punt (char $\ast$ {\em msg},  {\em ...})}\label{l__parms_8c_5ec5a66d831525f9fc1286cff963e964}
+
+
+
+
+Definition at line 70 of file i\_\-error.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), addc\_\-to\_\-Mbuf(), Allocate\-Data(), Block\-Sparse\-Array\-Clear(), Block\-Sparse\-Array\-Set(), CHAR\_\-ARRAY\_\-add\_\-symbol(), CHAR\_\-ARRAY\_\-find\_\-symbol(), CHAR\_\-ARRAY\_\-find\_\-symbol\_\-data(), CHAR\_\-ARRAY\_\-new\_\-symbol\_\-table(), CHAR\_\-ARRAY\_\-resize\_\-symbol\_\-table(), clear\_\-Mbuf(), copy\_\-Mbuf\_\-buf(), delete\_\-Func\_\-Name\_\-List(), Get\-Or\-Add\-Block(), Graph\_\-bfs\_\-accept\_\-node(), Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-create\_\-graph\_\-node\_\-given\_\-id(), Graph\_\-rev\_\-topological\_\-sort(), Graph\_\-size(), Hash\-LTable\_\-find(), Hash\-LTable\_\-remove(), Hash\-Table\_\-find(), Hash\-Table\_\-remove(), I\_\-BDD\_\-minterms(), I\_\-BDD\_\-minterms\_\-aux(), I\_\-BDD\_\-new\_\-mutex\_\-domain(), I\_\-close\_\-output\_\-file(), I\_\-open\_\-output\_\-file(), INT\_\-add\_\-symbol(), INT\_\-ARRAY\_\-add\_\-symbol(), INT\_\-ARRAY\_\-find\_\-symbol(), INT\_\-ARRAY\_\-find\_\-symbol\_\-data(), INT\_\-ARRAY\_\-new\_\-symbol\_\-table(), INT\_\-ARRAY\_\-resize\_\-symbol\_\-table(), INT\_\-new\_\-symbol\_\-table(), INT\_\-resize\_\-symbol\_\-table(), is\_\-in\_\-Func\_\-Name\_\-List(), L\_\-add\_\-forced\_\-parms(), L\_\-add\_\-histograms(), L\_\-add\_\-parm\_\-already\_\-defined(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-add\_\-parm\_\-not\_\-used(), L\_\-add\_\-to\_\-parm\_\-table\_\-list(), L\_\-clear\_\-histogram(), L\_\-copy\_\-histogram(), L\_\-create\_\-external\_\-macro\_\-list\_\-new(), L\_\-create\_\-histogram(), L\_\-create\_\-parm\_\-macro\_\-list(), L\_\-create\_\-parm\_\-table\_\-list(), L\_\-define\_\-parm\_\-macro(), L\_\-expand\_\-parm\_\-macros(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-parm\_\-calc\_\-complete\_\-expr(), L\_\-parm\_\-calc\_\-factor(), L\_\-peek\_\-next\_\-token(), L\_\-print\_\-histogram(), L\_\-print\_\-histogram\_\-grouped\_\-percentages(), L\_\-print\_\-histogram\_\-individual\_\-percentages(), L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-lf(), L\_\-read\_\-parm\_\-section\_\-defaults(), L\_\-read\_\-parm\_\-sections(), L\_\-realloc\_\-histogram\_\-data(), L\_\-scale\_\-histogram\_\-entries(), L\_\-set\_\-parm\_\-s(), L\_\-show\_\-parms\_\-warnings(), L\_\-update\_\-histogram(), L\_\-warn\_\-about\_\-unused\_\-macros(), L\_\-write\_\-attr\_\-to\_\-file(), List\_\-change\_\-current\_\-l(), List\_\-copy\_\-current\_\-ptr(), List\_\-current\_\-l(), List\_\-delete\_\-current\_\-l(), List\_\-first\_\-l(), List\_\-free\_\-all\_\-ptrs(), List\_\-get\_\-next\_\-l(), List\_\-insert\_\-next\_\-l(), List\_\-insert\_\-prev\_\-l(), List\_\-last\_\-l(), List\_\-new\_\-list(), List\_\-next\_\-l(), List\_\-prev\_\-l(), List\_\-register\_\-new\_\-ptr(), List\_\-remove(), List\_\-start\_\-l(), look\_\-for\_\-forced\_\-param(), Mbackupc(), new\_\-Func\_\-Name\_\-List(), New\-Block\-Sparse\-Array(), New\-VArray(), Set\_\-reset(), STRING\_\-add\_\-symbol(), STRING\_\-new\_\-symbol\_\-table(), and STRING\_\-resize\_\-symbol\_\-table().\index{l_parms.c@{l\_\-parms.c}!L_add_forced_parms@{L\_\-add\_\-forced\_\-parms}}
+\index{L_add_forced_parms@{L\_\-add\_\-forced\_\-parms}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ L\_\-add\_\-forced\_\-parms (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, \bf{Parm\_\-Table\_\-List} $\ast$ {\em list})}\label{l__parms_8c_0cff626f34e757eb416f847b3dff5c9f}
+
+
+
+
+Definition at line 980 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, parm\_\-macro\_\-list::head, I\_\-punt(), L\_\-get\_\-parm\_\-table\_\-entry(), node, NULL, PARM\_\-FORCE\_\-PARM, and parm\_\-table\_\-node::value.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_add_parm_already_defined@{L\_\-add\_\-parm\_\-already\_\-defined}}
+\index{L_add_parm_already_defined@{L\_\-add\_\-parm\_\-already\_\-defined}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-parm\_\-already\_\-defined (\bf{Parm\_\-Table\_\-Node} $\ast$ {\em old\_\-parm\_\-node}, char $\ast$ {\em new\_\-value}, char $\ast$ {\em new\_\-file\_\-name}, int {\em new\_\-parm\_\-line\_\-no}, char $\ast$ {\em section\_\-name1}, char $\ast$ {\em section\_\-name2})}\label{l__parms_8c_4b6a82da614d3b3ea4e54dfd0d19a542}
+
+
+
+
+Definition at line 1335 of file l\_\-parms.c.
+
+References parm\_\-warn\_\-list::head, I\_\-punt(), MULT\_\-PARM\_\-DEF, parm\_\-warn\_\-node::next, node, NULL, parm\_\-table\_\-node::parm\_\-file\_\-name, parm\_\-table\_\-node::parm\_\-line\_\-no, parm\_\-table\_\-node::user\_\-name, parm\_\-table\_\-node::value, and warn\_\-list.\index{l_parms.c@{l\_\-parms.c}!L_add_parm_not_defined@{L\_\-add\_\-parm\_\-not\_\-defined}}
+\index{L_add_parm_not_defined@{L\_\-add\_\-parm\_\-not\_\-defined}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-parm\_\-not\_\-defined (char $\ast$ {\em name}, char $\ast$ {\em section\_\-name1}, char $\ast$ {\em section\_\-name2})}\label{l__parms_8c_85b066cb30b7b9673e83af5767eb0acd}
+
+
+
+
+Definition at line 1489 of file l\_\-parms.c.
+
+References parm\_\-warn\_\-list::head, I\_\-punt(), parm\_\-warn\_\-node::next, NO\_\-PARM\_\-DEF, node, NULL, and warn\_\-list.
+
+Referenced by L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), and L\_\-read\_\-parm\_\-s().\index{l_parms.c@{l\_\-parms.c}!L_add_parm_not_used@{L\_\-add\_\-parm\_\-not\_\-used}}
+\index{L_add_parm_not_used@{L\_\-add\_\-parm\_\-not\_\-used}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-parm\_\-not\_\-used (\bf{Parm\_\-Table\_\-List} $\ast$ {\em parm\_\-list}, char $\ast$ {\em section\_\-name1}, char $\ast$ {\em section\_\-name2})}\label{l__parms_8c_e48a84c9930f422e28906cecb4240390}
+
+
+
+
+Definition at line 1408 of file l\_\-parms.c.
+
+References parm\_\-table\_\-list::head, parm\_\-warn\_\-list::head, I\_\-punt(), parm\_\-table\_\-node::next, parm\_\-warn\_\-node::next, node, NOT\_\-USED, NULL, parm\_\-table\_\-node::parm\_\-file\_\-name, parm\_\-table\_\-node::parm\_\-line\_\-no, PARM\_\-NOT\_\-USED, PARM\_\-TABLE\_\-HASH\_\-SIZE, parm\_\-table\_\-node::used, parm\_\-table\_\-node::user\_\-name, and warn\_\-list.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_add_to_parm_table_list@{L\_\-add\_\-to\_\-parm\_\-table\_\-list}}
+\index{L_add_to_parm_table_list@{L\_\-add\_\-to\_\-parm\_\-table\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-to\_\-parm\_\-table\_\-list (\bf{Parm\_\-Table\_\-List} $\ast$ {\em list}, \bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, char $\ast$ {\em section\_\-name1}, char $\ast$ {\em section\_\-name2})}\label{l__parms_8c_68767fcc02492c969cdc624ed22854fe}
+
+
+
+
+Definition at line 275 of file l\_\-parms.c.
+
+References parm\_\-table\_\-list::head, I\_\-punt(), parm\_\-parse\_\-info\_\-st::name, name, parm\_\-table\_\-node::next, node, NULL, parm\_\-parse\_\-info\_\-st::parm\_\-buf, PARM\_\-TABLE\_\-HASH\_\-SIZE, and parm\_\-parse\_\-info\_\-st::setting.
+
+Referenced by L\_\-read\_\-parm\_\-sections(), and look\_\-for\_\-forced\_\-param().\index{l_parms.c@{l\_\-parms.c}!L_create_external_macro_list@{L\_\-create\_\-external\_\-macro\_\-list}}
+\index{L_create_external_macro_list@{L\_\-create\_\-external\_\-macro\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Macro\_\-List}$\ast$ L\_\-create\_\-external\_\-macro\_\-list (char $\ast$$\ast$ {\em argv}, char $\ast$$\ast$ {\em envp})}\label{l__parms_8c_d9f32fd872ba5e0db56034e0206c9b3c}
+
+
+
+
+Definition at line 494 of file l\_\-parms.c.
+
+References L\_\-create\_\-external\_\-macro\_\-list\_\-new().\index{l_parms.c@{l\_\-parms.c}!L_create_external_macro_list_new@{L\_\-create\_\-external\_\-macro\_\-list\_\-new}}
+\index{L_create_external_macro_list_new@{L\_\-create\_\-external\_\-macro\_\-list\_\-new}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Macro\_\-List}$\ast$ L\_\-create\_\-external\_\-macro\_\-list\_\-new (char $\ast$$\ast$ {\em argv}, char $\ast$$\ast$ {\em envp}, int $\ast$ {\em lastarg})}\label{l__parms_8c_70d45efecd0f0c73d94d1b51865be730}
+
+
+
+
+Definition at line 501 of file l\_\-parms.c.
+
+References I\_\-punt(), L\_\-create\_\-parm\_\-macro\_\-list(), L\_\-define\_\-parm\_\-macro(), NULL, PARM\_\-COMMAND\_\-LINE, PARM\_\-ENVIRONMENT, and PARM\_\-FORCE\_\-PARM.
+
+Referenced by L\_\-create\_\-external\_\-macro\_\-list().\index{l_parms.c@{l\_\-parms.c}!L_create_parm_macro_list@{L\_\-create\_\-parm\_\-macro\_\-list}}
+\index{L_create_parm_macro_list@{L\_\-create\_\-parm\_\-macro\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Macro\_\-List} $\ast$ L\_\-create\_\-parm\_\-macro\_\-list (void)}\label{l__parms_8c_c192c48345f8281ee12dbeabb46b8185}
+
+
+
+
+Definition at line 903 of file l\_\-parms.c.
+
+References parm\_\-macro\_\-list::head, I\_\-punt(), and NULL.
+
+Referenced by \_\-L\_\-load\_\-parameters(), L\_\-create\_\-external\_\-macro\_\-list\_\-new(), and L\_\-read\_\-parm\_\-section\_\-defaults().\index{l_parms.c@{l\_\-parms.c}!L_create_parm_table_list@{L\_\-create\_\-parm\_\-table\_\-list}}
+\index{L_create_parm_table_list@{L\_\-create\_\-parm\_\-table\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Table\_\-List} $\ast$ L\_\-create\_\-parm\_\-table\_\-list (void)}\label{l__parms_8c_aa30776a4ea3af977de79575a3d39027}
+
+
+
+
+Definition at line 181 of file l\_\-parms.c.
+
+References parm\_\-table\_\-list::head, I\_\-punt(), NULL, and PARM\_\-TABLE\_\-HASH\_\-SIZE.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_define_parm_macro@{L\_\-define\_\-parm\_\-macro}}
+\index{L_define_parm_macro@{L\_\-define\_\-parm\_\-macro}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-define\_\-parm\_\-macro (\bf{Parm\_\-Macro\_\-List} $\ast$ {\em list}, char $\ast$ {\em name}, char $\ast$ {\em value}, int {\em from})}\label{l__parms_8c_161297346e7b7187fe6b8ba6cf0ad8c9}
+
+
+
+
+Definition at line 1066 of file l\_\-parms.c.
+
+References parm\_\-macro\_\-list::head, I\_\-punt(), node, and NULL.
+
+Referenced by L\_\-create\_\-external\_\-macro\_\-list\_\-new(), and L\_\-get\_\-next\_\-parm().\index{l_parms.c@{l\_\-parms.c}!L_expand_parm_macros@{L\_\-expand\_\-parm\_\-macros}}
+\index{L_expand_parm_macros@{L\_\-expand\_\-parm\_\-macros}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-expand\_\-parm\_\-macros (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, char $\ast$ {\em line}, char $\ast$ {\em buf}, int {\em max})}\label{l__parms_8c_a8daa04b51e71adb5f4707982295e612}
+
+
+
+
+Definition at line 1168 of file l\_\-parms.c.
+
+References I\_\-punt(), L\_\-get\_\-parm\_\-macro\_\-value(), NULL, and parm\_\-parse\_\-info\_\-st::parm\_\-buf.
+
+Referenced by L\_\-get\_\-next\_\-parm().\index{l_parms.c@{l\_\-parms.c}!L_free_parm_macro_list@{L\_\-free\_\-parm\_\-macro\_\-list}}
+\index{L_free_parm_macro_list@{L\_\-free\_\-parm\_\-macro\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-free\_\-parm\_\-macro\_\-list (\bf{Parm\_\-Macro\_\-List} $\ast$ {\em list})}\label{l__parms_8c_d4b06aa55eb13d77d7d2884ae752aef8}
+
+
+
+
+Definition at line 916 of file l\_\-parms.c.
+
+References parm\_\-macro\_\-list::head, node, and NULL.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and L\_\-read\_\-parm\_\-section\_\-defaults().\index{l_parms.c@{l\_\-parms.c}!L_free_parm_table_list@{L\_\-free\_\-parm\_\-table\_\-list}}
+\index{L_free_parm_table_list@{L\_\-free\_\-parm\_\-table\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-free\_\-parm\_\-table\_\-list (\bf{Parm\_\-Table\_\-List} $\ast$ {\em list})}\label{l__parms_8c_eff2896ccf418f5e001f57d42e928740}
+
+
+
+
+Definition at line 197 of file l\_\-parms.c.
+
+References parm\_\-table\_\-list::head, node, NULL, and PARM\_\-TABLE\_\-HASH\_\-SIZE.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_get_next_parm@{L\_\-get\_\-next\_\-parm}}
+\index{L_get_next_parm@{L\_\-get\_\-next\_\-parm}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-get\_\-next\_\-parm (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})\hspace{0.3cm}{\tt  [static]}}\label{l__parms_8c_c08a9d9f28e265fdc4c89644b5dd64c7}
+
+
+
+
+Definition at line 1816 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::file, parm\_\-parse\_\-info\_\-st::internal\_\-level, parm\_\-parse\_\-info\_\-st::internal\_\-list, L\_\-define\_\-parm\_\-macro(), L\_\-expand\_\-parm\_\-macros(), parm\_\-parse\_\-info\_\-st::line\_\-buf, parm\_\-parse\_\-info\_\-st::line\_\-no, NULL, parm\_\-parse\_\-info\_\-st::parm\_\-buf, PARM\_\-BUF\_\-MAX, PARM\_\-INTERNAL, PARM\_\-LINE\_\-MAX, and parm\_\-parse\_\-info\_\-st::setting.
+
+Referenced by L\_\-read\_\-parm\_\-sections().\index{l_parms.c@{l\_\-parms.c}!L_get_next_token@{L\_\-get\_\-next\_\-token}}
+\index{L_get_next_token@{L\_\-get\_\-next\_\-token}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-get\_\-next\_\-token (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_a72a0feb27cdbf381044fe530f4b537f}
+
+
+
+
+Definition at line 2060 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::calc\_\-ptr, and L\_\-peek\_\-next\_\-token().
+
+Referenced by L\_\-parm\_\-calc\_\-expr(), L\_\-parm\_\-calc\_\-factor(), and L\_\-parm\_\-calc\_\-term().\index{l_parms.c@{l\_\-parms.c}!L_get_parm_macro_value@{L\_\-get\_\-parm\_\-macro\_\-value}}
+\index{L_get_parm_macro_value@{L\_\-get\_\-parm\_\-macro\_\-value}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ L\_\-get\_\-parm\_\-macro\_\-value (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, char $\ast$ {\em name})}\label{l__parms_8c_75a69937f386bd87ddd760e0437f601e}
+
+
+
+
+Definition at line 1020 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, parm\_\-macro\_\-list::head, parm\_\-parse\_\-info\_\-st::internal\_\-level, parm\_\-parse\_\-info\_\-st::internal\_\-list, node, and NULL.
+
+Referenced by L\_\-expand\_\-parm\_\-macros().\index{l_parms.c@{l\_\-parms.c}!L_get_parm_table_entry@{L\_\-get\_\-parm\_\-table\_\-entry}}
+\index{L_get_parm_table_entry@{L\_\-get\_\-parm\_\-table\_\-entry}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Table\_\-Node} $\ast$ L\_\-get\_\-parm\_\-table\_\-entry (\bf{Parm\_\-Table\_\-List} $\ast$ {\em list}, char $\ast$ {\em name})}\label{l__parms_8c_aaa6fc5fe57512c37755e5316453c0fa}
+
+
+
+
+Definition at line 222 of file l\_\-parms.c.
+
+References parm\_\-table\_\-list::head, I\_\-punt(), node, NULL, PARM\_\-TABLE\_\-HASH\_\-SIZE, and USED.
+
+Referenced by L\_\-add\_\-forced\_\-parms(), L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), and L\_\-read\_\-parm\_\-s().\index{l_parms.c@{l\_\-parms.c}!L_get_std_parm_name@{L\_\-get\_\-std\_\-parm\_\-name}}
+\index{L_get_std_parm_name@{L\_\-get\_\-std\_\-parm\_\-name}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ L\_\-get\_\-std\_\-parm\_\-name (char $\ast$$\ast$ {\em argv}, char $\ast$$\ast$ {\em envp}, char $\ast$ {\em env\_\-var\_\-name}, char $\ast$ {\em default\_\-std\_\-parms})}\label{l__parms_8c_388daec74010abed75e1a0530d065c97}
+
+
+
+
+Definition at line 423 of file l\_\-parms.c.
+
+References NULL.\index{l_parms.c@{l\_\-parms.c}!L_load_parameters@{L\_\-load\_\-parameters}}
+\index{L_load_parameters@{L\_\-load\_\-parameters}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-load\_\-parameters (char $\ast$ {\em parm\_\-file\_\-name}, \bf{Parm\_\-Macro\_\-List} $\ast$ {\em command\_\-line\_\-macro\_\-list}, char $\ast$ {\em section}, void($\ast$)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi) {\em read\_\-func})}\label{l__parms_8c_80475b4cf1dc53921096f8756a16b542}
+
+
+
+
+Definition at line 2587 of file l\_\-parms.c.
+
+References \_\-L\_\-load\_\-parameters(), and NULL.\index{l_parms.c@{l\_\-parms.c}!L_load_parameters_aliased@{L\_\-load\_\-parameters\_\-aliased}}
+\index{L_load_parameters_aliased@{L\_\-load\_\-parameters\_\-aliased}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-load\_\-parameters\_\-aliased (char $\ast$ {\em parm\_\-file\_\-name}, \bf{Parm\_\-Macro\_\-List} $\ast$ {\em command\_\-line\_\-macro\_\-list}, char $\ast$ {\em new\_\-section\_\-name}, char $\ast$ {\em old\_\-section\_\-name}, void($\ast$)(\bf{Parm\_\-Parse\_\-Info} $\ast$ppi) {\em read\_\-func})}\label{l__parms_8c_bcb88cfb83d54c9c10936af2ca0c6155}
+
+
+
+
+Definition at line 2599 of file l\_\-parms.c.
+
+References \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_parm_calc_complete_expr@{L\_\-parm\_\-calc\_\-complete\_\-expr}}
+\index{L_parm_calc_complete_expr@{L\_\-parm\_\-calc\_\-complete\_\-expr}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-parm\_\-calc\_\-complete\_\-expr (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_62df370fac8e8f6cd66971ce843bab9c}
+
+
+
+
+Definition at line 1947 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::calc\_\-ptr, I\_\-punt(), L\_\-parm\_\-calc\_\-expr(), parm\_\-parse\_\-info\_\-st::line\_\-no, and parm\_\-parse\_\-info\_\-st::name.
+
+Referenced by L\_\-read\_\-parm\_\-i().\index{l_parms.c@{l\_\-parms.c}!L_parm_calc_expr@{L\_\-parm\_\-calc\_\-expr}}
+\index{L_parm_calc_expr@{L\_\-parm\_\-calc\_\-expr}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-parm\_\-calc\_\-expr (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_649df4f104c79430336518dfcb1ae25b}
+
+
+
+
+Definition at line 1966 of file l\_\-parms.c.
+
+References L\_\-get\_\-next\_\-token(), L\_\-parm\_\-calc\_\-term(), L\_\-peek\_\-next\_\-token(), TMINUS, parm\_\-parse\_\-info\_\-st::token, and TPLUS.
+
+Referenced by L\_\-parm\_\-calc\_\-complete\_\-expr(), and L\_\-parm\_\-calc\_\-factor().\index{l_parms.c@{l\_\-parms.c}!L_parm_calc_factor@{L\_\-parm\_\-calc\_\-factor}}
+\index{L_parm_calc_factor@{L\_\-parm\_\-calc\_\-factor}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-parm\_\-calc\_\-factor (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_25b2cc41359c9986b0621e8e529b252a}
+
+
+
+
+Definition at line 2018 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::calc\_\-ptr, I\_\-punt(), L\_\-get\_\-next\_\-token(), L\_\-parm\_\-calc\_\-expr(), parm\_\-parse\_\-info\_\-st::line\_\-no, parm\_\-parse\_\-info\_\-st::name, TLPARN, TMINUS, TNUM, parm\_\-parse\_\-info\_\-st::token, TRPARN, and parm\_\-parse\_\-info\_\-st::value.
+
+Referenced by L\_\-parm\_\-calc\_\-term().\index{l_parms.c@{l\_\-parms.c}!L_parm_calc_term@{L\_\-parm\_\-calc\_\-term}}
+\index{L_parm_calc_term@{L\_\-parm\_\-calc\_\-term}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-parm\_\-calc\_\-term (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_ecd188d9e927027fdad268e4732f483c}
+
+
+
+
+Definition at line 1992 of file l\_\-parms.c.
+
+References L\_\-get\_\-next\_\-token(), L\_\-parm\_\-calc\_\-factor(), L\_\-peek\_\-next\_\-token(), parm\_\-parse\_\-info\_\-st::token, TSLASH, and TSTAR.
+
+Referenced by L\_\-parm\_\-calc\_\-expr().\index{l_parms.c@{l\_\-parms.c}!L_peek_next_token@{L\_\-peek\_\-next\_\-token}}
+\index{L_peek_next_token@{L\_\-peek\_\-next\_\-token}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-peek\_\-next\_\-token (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi})}\label{l__parms_8c_62b8261e0d0f3321051b7dccf11ef24f}
+
+
+
+
+Definition at line 2069 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::calc\_\-ptr, I\_\-punt(), parm\_\-parse\_\-info\_\-st::line\_\-no, parm\_\-parse\_\-info\_\-st::name, TLPARN, TMINUS, TNULL, TNUM, parm\_\-parse\_\-info\_\-st::token, TPLUS, TRPARN, TSLASH, TSTAR, and parm\_\-parse\_\-info\_\-st::value.
+
+Referenced by L\_\-get\_\-next\_\-token(), L\_\-parm\_\-calc\_\-expr(), and L\_\-parm\_\-calc\_\-term().\index{l_parms.c@{l\_\-parms.c}!L_pmatch@{L\_\-pmatch}}
+\index{L_pmatch@{L\_\-pmatch}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-pmatch (char $\ast$ {\em s1}, char $\ast$ {\em s2})}\label{l__parms_8c_4765bf6935180114326aeea11d1c65ae}
+
+
+
+
+Definition at line 1316 of file l\_\-parms.c.
+
+Referenced by L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-section\_\-defaults(), and L\_\-read\_\-parm\_\-sections().\index{l_parms.c@{l\_\-parms.c}!L_read_parm_b@{L\_\-read\_\-parm\_\-b}}
+\index{L_read_parm_b@{L\_\-read\_\-parm\_\-b}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-b (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi\_\-in}, char $\ast$ {\em name}, int $\ast$ {\em ptr})}\label{l__parms_8c_5f83d604b2e536e100ebc2576bed22d3}
+
+
+
+
+Definition at line 1600 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, I\_\-punt(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-pmatch(), L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined, look\_\-for\_\-forced\_\-param(), node, NULL, and parm\_\-parse\_\-info\_\-st::parm\_\-list.\index{l_parms.c@{l\_\-parms.c}!L_read_parm_f@{L\_\-read\_\-parm\_\-f}}
+\index{L_read_parm_f@{L\_\-read\_\-parm\_\-f}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-f (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi\_\-in}, char $\ast$ {\em name}, float $\ast$ {\em ptr})}\label{l__parms_8c_69d2c69fef1a9100a445b1bac6dbce60}
+
+
+
+
+Definition at line 1705 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, I\_\-punt(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined, look\_\-for\_\-forced\_\-param(), node, NULL, and parm\_\-parse\_\-info\_\-st::parm\_\-list.\index{l_parms.c@{l\_\-parms.c}!L_read_parm_i@{L\_\-read\_\-parm\_\-i}}
+\index{L_read_parm_i@{L\_\-read\_\-parm\_\-i}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-i (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi\_\-in}, char $\ast$ {\em name}, int $\ast$ {\em ptr})}\label{l__parms_8c_ff1906fe6912099e08d84bb82778b69c}
+
+
+
+
+Definition at line 1545 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::calc\_\-ptr, parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-parm\_\-calc\_\-complete\_\-expr(), L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined, parm\_\-parse\_\-info\_\-st::line\_\-no, look\_\-for\_\-forced\_\-param(), parm\_\-parse\_\-info\_\-st::name, node, NULL, parm\_\-parse\_\-info\_\-st::parm\_\-list, and parm\_\-parse\_\-info\_\-st::setting.\index{l_parms.c@{l\_\-parms.c}!L_read_parm_lf@{L\_\-read\_\-parm\_\-lf}}
+\index{L_read_parm_lf@{L\_\-read\_\-parm\_\-lf}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-lf (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi\_\-in}, char $\ast$ {\em name}, double $\ast$ {\em ptr})}\label{l__parms_8c_a4e8c282fc28f81f6ece6a572d0b9b12}
+
+
+
+
+Definition at line 1759 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, I\_\-punt(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined, look\_\-for\_\-forced\_\-param(), node, NULL, and parm\_\-parse\_\-info\_\-st::parm\_\-list.\index{l_parms.c@{l\_\-parms.c}!L_read_parm_s@{L\_\-read\_\-parm\_\-s}}
+\index{L_read_parm_s@{L\_\-read\_\-parm\_\-s}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-s (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi\_\-in}, char $\ast$ {\em name}, char $\ast$$\ast$ {\em ptr})}\label{l__parms_8c_17491a48ac859e9eed6815fc3ff723d9}
+
+
+
+
+Definition at line 1660 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::command\_\-line\_\-list, current\_\-section\_\-name1, current\_\-section\_\-name2, L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-get\_\-parm\_\-table\_\-entry(), L\_\-set\_\-parm\_\-s(), L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined, look\_\-for\_\-forced\_\-param(), node, NULL, and parm\_\-parse\_\-info\_\-st::parm\_\-list.\index{l_parms.c@{l\_\-parms.c}!L_read_parm_section_defaults@{L\_\-read\_\-parm\_\-section\_\-defaults}}
+\index{L_read_parm_section_defaults@{L\_\-read\_\-parm\_\-section\_\-defaults}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-section\_\-defaults (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, \bf{Parm\_\-Section\_\-Info} $\ast$ {\em psi}, char $\ast$ {\em defaults\_\-file\_\-name})}\label{l__parms_8c_b374997ea213e0a415182ce94e5a3cf8}
+
+
+
+
+Definition at line 2122 of file l\_\-parms.c.
+
+References parm\_\-parse\_\-info\_\-st::file, I\_\-punt(), parm\_\-parse\_\-info\_\-st::internal\_\-level, parm\_\-parse\_\-info\_\-st::internal\_\-list, L\_\-create\_\-parm\_\-macro\_\-list(), L\_\-free\_\-parm\_\-macro\_\-list(), L\_\-pmatch(), L\_\-read\_\-parm\_\-sections(), parm\_\-parse\_\-info\_\-st::line\_\-no, parm\_\-parse\_\-info\_\-st::name, name, parm\_\-section\_\-info::name1, parm\_\-section\_\-info::name2, NULL, PARM\_\-LEVEL\_\-MAX, and PARM\_\-LINE\_\-MAX.
+
+Referenced by L\_\-read\_\-parm\_\-sections().\index{l_parms.c@{l\_\-parms.c}!L_read_parm_sections@{L\_\-read\_\-parm\_\-sections}}
+\index{L_read_parm_sections@{L\_\-read\_\-parm\_\-sections}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-read\_\-parm\_\-sections (\bf{Parm\_\-Parse\_\-Info} $\ast$ {\em ppi}, \bf{Parm\_\-Section\_\-Info} $\ast$ {\em psi})}\label{l__parms_8c_13f4fc5e49389c952f6c36b2b36d0765}
+
+
+
+
+Definition at line 2206 of file l\_\-parms.c.
+
+References parm\_\-section\_\-info::found, I\_\-punt(), parm\_\-parse\_\-info\_\-st::internal\_\-level, L\_\-add\_\-to\_\-parm\_\-table\_\-list(), L\_\-get\_\-next\_\-parm(), L\_\-pmatch(), L\_\-read\_\-parm\_\-section\_\-defaults(), parm\_\-section\_\-info::name1, parm\_\-section\_\-info::name2, NULL, parm\_\-section\_\-info::parm\_\-list, section\_\-name1\_\-used, and section\_\-name2\_\-used.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and L\_\-read\_\-parm\_\-section\_\-defaults().\index{l_parms.c@{l\_\-parms.c}!L_set_parm_s@{L\_\-set\_\-parm\_\-s}}
+\index{L_set_parm_s@{L\_\-set\_\-parm\_\-s}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-set\_\-parm\_\-s (char $\ast$$\ast$ {\em parm}, char $\ast$ {\em new\_\-string})}\label{l__parms_8c_d2ff90330481ecb555f26f90a1d3c152}
+
+
+
+
+Definition at line 1292 of file l\_\-parms.c.
+
+References I\_\-punt(), and NULL.
+
+Referenced by L\_\-read\_\-parm\_\-s().\index{l_parms.c@{l\_\-parms.c}!L_show_parms_warnings@{L\_\-show\_\-parms\_\-warnings}}
+\index{L_show_parms_warnings@{L\_\-show\_\-parms\_\-warnings}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-show\_\-parms\_\-warnings (void)}\label{l__parms_8c_f725b05a5b630bdea7d8b719c8f50f61}
+
+
+
+
+Definition at line 710 of file l\_\-parms.c.
+
+References current\_\-section\_\-name1, current\_\-section\_\-name2, first\_\-time, parm\_\-warn\_\-list::head, I\_\-punt(), L\_\-dump\_\-parms, L\_\-parm\_\-dump\_\-file\_\-name, L\_\-parm\_\-warn\_\-file\_\-name, L\_\-warn\_\-parm\_\-defined\_\-twice, L\_\-warn\_\-parm\_\-not\_\-defined, L\_\-warn\_\-parm\_\-not\_\-used, MULT\_\-PARM\_\-DEF, parm\_\-table\_\-node::next\_\-input, NO\_\-PARM\_\-DEF, node, NULL, PARM\_\-NOT\_\-USED, start\_\-node\_\-of\_\-input, parm\_\-table\_\-node::used, USED, parm\_\-table\_\-node::user\_\-name, parm\_\-table\_\-node::value, and warn\_\-list.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_warn_about_unused_macros@{L\_\-warn\_\-about\_\-unused\_\-macros}}
+\index{L_warn_about_unused_macros@{L\_\-warn\_\-about\_\-unused\_\-macros}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-warn\_\-about\_\-unused\_\-macros (FILE $\ast$ {\em out}, \bf{Parm\_\-Macro\_\-List} $\ast$ {\em external\_\-list})}\label{l__parms_8c_da9f209c373bf33ecc8affd7d376b2d3}
+
+
+
+
+Definition at line 667 of file l\_\-parms.c.
+
+References parm\_\-macro\_\-list::head, I\_\-punt(), node, NULL, PARM\_\-COMMAND\_\-LINE, and PARM\_\-FORCE\_\-PARM.\index{l_parms.c@{l\_\-parms.c}!look_for_forced_param@{look\_\-for\_\-forced\_\-param}}
+\index{look_for_forced_param@{look\_\-for\_\-forced\_\-param}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int look\_\-for\_\-forced\_\-param (char $\ast$ {\em name}, \bf{Parm\_\-Macro\_\-List} $\ast$ {\em list})}\label{l__parms_8c_4e81593e5d5157a86ef115b9b6049e64}
+
+
+
+
+Definition at line 931 of file l\_\-parms.c.
+
+References current\_\-section\_\-name1, current\_\-section\_\-name2, parm\_\-macro\_\-list::head, I\_\-punt(), L\_\-add\_\-to\_\-parm\_\-table\_\-list(), parm\_\-parse\_\-info\_\-st::line\_\-no, parm\_\-parse\_\-info\_\-st::name, node, NULL, parameter\_\-list, parm\_\-parse\_\-info\_\-st::parm\_\-buf, PARM\_\-FORCE\_\-PARM, and parm\_\-parse\_\-info\_\-st::setting.
+
+Referenced by L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), and L\_\-read\_\-parm\_\-s().
+
+\subsection{Variable Documentation}
+\index{l_parms.c@{l\_\-parms.c}!current_section_name1@{current\_\-section\_\-name1}}
+\index{current_section_name1@{current\_\-section\_\-name1}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{current\_\-section\_\-name1}}\label{l__parms_8c_64158f38584b29f5a0cfcecd40f8ac89}
+
+
+
+
+Definition at line 128 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), L\_\-read\_\-parm\_\-s(), L\_\-show\_\-parms\_\-warnings(), and look\_\-for\_\-forced\_\-param().\index{l_parms.c@{l\_\-parms.c}!current_section_name2@{current\_\-section\_\-name2}}
+\index{current_section_name2@{current\_\-section\_\-name2}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{current\_\-section\_\-name2}}\label{l__parms_8c_f4165fc0be67b713ba10168fa0fb8698}
+
+
+
+
+Definition at line 129 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), L\_\-read\_\-parm\_\-s(), L\_\-show\_\-parms\_\-warnings(), and look\_\-for\_\-forced\_\-param().\index{l_parms.c@{l\_\-parms.c}!first_time@{first\_\-time}}
+\index{first_time@{first\_\-time}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{first\_\-time} = 1\hspace{0.3cm}{\tt  [static]}}\label{l__parms_8c_2251ba55279aef307357d4b82d7cffb7}
+
+
+
+
+Definition at line 142 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_dump_parms@{L\_\-dump\_\-parms}}
+\index{L_dump_parms@{L\_\-dump\_\-parms}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-dump\_\-parms} = WARNINGS\_\-OFF}\label{l__parms_8c_d8b6ae8bcbc9ccc867100dfd96f6957c}
+
+
+
+
+Definition at line 152 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_parm_dump_file_name@{L\_\-parm\_\-dump\_\-file\_\-name}}
+\index{L_parm_dump_file_name@{L\_\-parm\_\-dump\_\-file\_\-name}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{L\_\-parm\_\-dump\_\-file\_\-name} = (char $\ast$) \char`\"{}stderr\char`\"{}}\label{l__parms_8c_3b83d33abb46fadfb813372c0b9a667f}
+
+
+
+
+Definition at line 145 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_parm_warn_file_name@{L\_\-parm\_\-warn\_\-file\_\-name}}
+\index{L_parm_warn_file_name@{L\_\-parm\_\-warn\_\-file\_\-name}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ \bf{L\_\-parm\_\-warn\_\-file\_\-name} = (char $\ast$) \char`\"{}stderr\char`\"{}}\label{l__parms_8c_a52c8258549d23615859be45e5f2a38c}
+
+
+
+
+Definition at line 146 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_punt_on_unknown_parm@{L\_\-punt\_\-on\_\-unknown\_\-parm}}
+\index{L_punt_on_unknown_parm@{L\_\-punt\_\-on\_\-unknown\_\-parm}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-punt\_\-on\_\-unknown\_\-parm} = 0}\label{l__parms_8c_38db30290d33f5904a0c1859d7ae7d21}
+
+
+
+
+Definition at line 120 of file l\_\-parms.c.\index{l_parms.c@{l\_\-parms.c}!L_warn_dev_parm_not_defined@{L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined}}
+\index{L_warn_dev_parm_not_defined@{L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-warn\_\-dev\_\-parm\_\-not\_\-defined} = WARNINGS\_\-OFF}\label{l__parms_8c_e4e406bd7aa9be4a24b2a33ea728e4db}
+
+
+
+
+Definition at line 150 of file l\_\-parms.c.
+
+Referenced by L\_\-read\_\-parm\_\-b(), L\_\-read\_\-parm\_\-f(), L\_\-read\_\-parm\_\-i(), L\_\-read\_\-parm\_\-lf(), and L\_\-read\_\-parm\_\-s().\index{l_parms.c@{l\_\-parms.c}!L_warn_old_parm_section_name_used@{L\_\-warn\_\-old\_\-parm\_\-section\_\-name\_\-used}}
+\index{L_warn_old_parm_section_name_used@{L\_\-warn\_\-old\_\-parm\_\-section\_\-name\_\-used}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-warn\_\-old\_\-parm\_\-section\_\-name\_\-used} = WARNINGS\_\-OFF}\label{l__parms_8c_a6c1f01f3f17239261b3d73364478201}
+
+
+
+
+Definition at line 147 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters().\index{l_parms.c@{l\_\-parms.c}!L_warn_parm_defined_twice@{L\_\-warn\_\-parm\_\-defined\_\-twice}}
+\index{L_warn_parm_defined_twice@{L\_\-warn\_\-parm\_\-defined\_\-twice}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-warn\_\-parm\_\-defined\_\-twice} = WARNINGS\_\-ON}\label{l__parms_8c_ecc63b1ae2816e4e5b67830cefcc725b}
+
+
+
+
+Definition at line 151 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_warn_parm_not_defined@{L\_\-warn\_\-parm\_\-not\_\-defined}}
+\index{L_warn_parm_not_defined@{L\_\-warn\_\-parm\_\-not\_\-defined}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-warn\_\-parm\_\-not\_\-defined} = WARNINGS\_\-ON}\label{l__parms_8c_3e945935cb7d3ea887b8309a40b01ea8}
+
+
+
+
+Definition at line 149 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!L_warn_parm_not_used@{L\_\-warn\_\-parm\_\-not\_\-used}}
+\index{L_warn_parm_not_used@{L\_\-warn\_\-parm\_\-not\_\-used}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{L\_\-warn\_\-parm\_\-not\_\-used} = WARNINGS\_\-ON}\label{l__parms_8c_6e2370b0d062442e4748c92dbfe6260b}
+
+
+
+
+Definition at line 148 of file l\_\-parms.c.
+
+Referenced by L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!parameter_list@{parameter\_\-list}}
+\index{parameter_list@{parameter\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Table\_\-List}$\ast$ \bf{parameter\_\-list}}\label{l__parms_8c_bea3a267ff4c64fa5666dc5d59c6384a}
+
+
+
+
+Definition at line 134 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and look\_\-for\_\-forced\_\-param().\index{l_parms.c@{l\_\-parms.c}!section_name1_used@{section\_\-name1\_\-used}}
+\index{section_name1_used@{section\_\-name1\_\-used}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{section\_\-name1\_\-used} = 0}\label{l__parms_8c_b3618a90780bdfe2c9d4bb6609c3c654}
+
+
+
+
+Definition at line 131 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and L\_\-read\_\-parm\_\-sections().\index{l_parms.c@{l\_\-parms.c}!section_name2_used@{section\_\-name2\_\-used}}
+\index{section_name2_used@{section\_\-name2\_\-used}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{section\_\-name2\_\-used} = 0}\label{l__parms_8c_eb7d3d952cc4201c1cdee122eee1958c}
+
+
+
+
+Definition at line 132 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and L\_\-read\_\-parm\_\-sections().\index{l_parms.c@{l\_\-parms.c}!start_node_of_input@{start\_\-node\_\-of\_\-input}}
+\index{start_node_of_input@{start\_\-node\_\-of\_\-input}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Table\_\-Node}$\ast$ \bf{start\_\-node\_\-of\_\-input}}\label{l__parms_8c_40b9004e8ee8e4c9b4cd1f20945241b4}
+
+
+
+
+Definition at line 139 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), and L\_\-show\_\-parms\_\-warnings().\index{l_parms.c@{l\_\-parms.c}!warn_list@{warn\_\-list}}
+\index{warn_list@{warn\_\-list}!l_parms.c@{l\_\-parms.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Parm\_\-Warn\_\-List}$\ast$ \bf{warn\_\-list}}\label{l__parms_8c_95c32800b7e93bd491ac6054521d1519}
+
+
+
+
+Definition at line 127 of file l\_\-parms.c.
+
+Referenced by \_\-L\_\-load\_\-parameters(), L\_\-add\_\-parm\_\-already\_\-defined(), L\_\-add\_\-parm\_\-not\_\-defined(), L\_\-add\_\-parm\_\-not\_\-used(), and L\_\-show\_\-parms\_\-warnings().

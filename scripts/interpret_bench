@@ -1,0 +1,936 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       Interprets a benchmark with the benchmark's evaluation inputs
+#
+#       Run this script with no arguments for usage information.
+#
+#       Author: Matthew C. Merten, Wen-mei Hwu
+#
+#       Changed to 'interpret_bench' and enhanced to be consistent with 
+#       compile_bench (e.g, defaults to STD_PARMS.compile_bench, sets up
+#       projects the same way, etc.) by John Gyllenhaal 6/99
+#       
+
+# Get environment variable values before we start setting variables
+ENV_BASELINE_PARMS_FILE="$BASELINE_PARMS_FILE";
+ENV_PROJECT_DIR="$PROJECT_DIR";
+ENV_BENCH_DIR="$BENCH_DIR";
+ENV_STD_PARMS_FILE="$STD_PARMS_FILE";
+
+BASELINE_PARMS_FILE="${IMPACT_REL_PATH}/parms/STD_PARMS.compile_bench";
+LINTERPRET_EXEC="Linterpret"
+BATCH_NAME="interpret_bench"
+RESULT_FILE="result.out"
+STDERR_FILE="stderr.out"
+EXCEP_FILE="exceptions"
+READ_PATHS="";
+BEGIN_SETX="";
+END_SETX="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="undefined";
+FIND_BENCH_DIR=1;
+PROJECT_NAME="$DEFAULT_PROJECT"; # Default project unless -project used
+LINTERPRET_ARGS="";
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+SETUP_PROJECT_PARMS=1;
+UNZIP_LCODE=0;
+PROBE_LCODE=1;
+CLEAN=1;
+ECHO=0;
+ALTERNATE_CONFIGURATION=0;
+CONFIGURATION="";
+CONFIGURATION_EXT="";
+CONFIGURATION_OPTIONS="";
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 2 ]; then
+   BENCHMARK="$1";
+   EXT="$2";
+   BASENAME="${BENCHMARK}";
+   if [ "$EXT" = "" ]; then
+      echo "> Error: 'ext' may not be ''!";
+      exit 1;
+   fi
+   BASEEXTNAME="${BASENAME}.${EXT}_i";
+   ZIPNAME="${BASENAME}.${EXT}.tgz";
+   EXT_DESC="/${EXT}";
+
+   LINTERPRET_BENCH_ARGS="$*";
+   TIME_STAMP=`date`;
+   START_DATE=`date +"%T %D"`;
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo "> Begin '${BATCH_NAME} ${LINTERPRET_BENCH_ARGS}'";
+   echo "> Started on $TIME_STAMP"
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo " "
+
+   # skip the 2 set arguments
+   shift 2;
+else
+   VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+  # get the next option specified
+  OPTION="$1"
+  shift
+
+  # For backward compatibility, convert -path to -bench_dir, 
+  # and fix my common mistakes :) -JCG 6/99 
+  case $OPTION in
+
+    -path)
+      echo "> Interpreting '$OPTION' as '-bench_dir', for backward compatibility"
+      OPTION="-bench_dir";;
+
+    -untar|-zip|-zipped)
+      echo "> Interpreting '$OPTION' as '-unzip'"
+      OPTION="-unzip";;
+  esac
+
+  case $OPTION in
+    # Allow different projects to be used
+    -project)
+      if [ $# -eq 0 ]; then
+        echo "Error: $BATCH_NAME expects a name after -project"
+        exit 1;
+      fi
+      PROJECT_NAME="$1";
+      READ_PATHS="$READ_PATHS -project $PROJECT_NAME"
+      shift;;
+
+    # Allow an benchmark dir be specified
+    -bench_dir)
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects a name after -bench_dir"
+        exit 1;
+      fi
+      BENCH_DIR="$1";
+      # Make sure specified path exists
+      if [ ! -d $BENCH_DIR ]; then
+        echo "Error: Invalid directory specified with -bench_dir option:"
+        echo "       '${BENCH_DIR}'"
+        exit 1;
+      fi
+      # Explicitly specify bench dir
+      READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+      FIND_BENCH_DIR=0;
+      shift;;
+
+    -setx)
+      echo '> Will show key commands exactly via "set -x"';
+      BEGIN_SETX="set -x";
+      END_SETX="set +x";;
+
+
+    # Support multiple input specifying options
+    -input|-prefix)
+      if [ "$INPUT_OPTION" != "" ]; then
+        echo "Error: ${BATCH_NAME} does not expect both '$INPUT_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      INPUT_OPTION="$OPTION"
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects a argument after $OPTION"
+        exit 1;
+      fi
+      INPUT_ARG="$1";
+      shift;;
+
+    -linterpret )
+      LINTERPRET_EXEC="$1";
+      shift;
+      echo "> Using ${LINTERPRET_EXEC} binary instead of Linterpret";;
+
+    -p)
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects an argument after $OPTION"
+        exit 1;
+      fi
+      NEW_PARMS="$1";
+      shift;
+
+      # Make sure parameter file valid in current directory
+      if [ ! -f ${NEW_PARMS} ]; then
+        echo "Error: Parameter file specified with '-p' not found:";
+        echo "       '${NEW_PARMS}'"
+        exit 1;
+      fi
+
+      # Make absolute path, if not already
+      case $NEW_PARMS in
+          # If start with ~ or /, path already absolute
+          ~*|/*)
+            FIXED_PATH=0;;
+
+          # Otherwise, prepend current directory to make absolute path
+          *)
+             CUR_DIR=`pwd | sed s/.tmp_mnt//`;
+             if test "$?" != 0; then
+                echo "Error: Non-zero exit code returned by pwd while"
+               echo "       patching up '-p $NEW_PARMS' option";
+                exit 1;
+             fi
+             OLD_PARMS="${NEW_PARMS}";
+             NEW_PARMS="${CUR_DIR}/${NEW_PARMS}";
+
+             # Make sure new fixed up path valid
+             if [ ! -f ${NEW_PARMS} ]; then
+                echo "Unexpected error while converting specified parameter file (via -p):";
+                echo "    '$OLD_PARMS'";
+                echo "into absolute path to parameter file:";
+                echo "    '$NEW_PARMS'";
+                echo "The fixup up path is not valid!";
+                echo "Fix this script or use an absolute path!";
+                exit 1;
+             fi
+             echo "> Interpreting '-p $OLD_PARMS' as:";
+             echo ">   '-p $NEW_PARMS'";
+             FIXED_PATH=1;;
+      esac
+      echo "> Will use as the baseline parms for interpretation:";
+      echo ">  '${NEW_PARMS}'"
+      BASELINE_PARMS_FILE="${NEW_PARMS}";;
+
+    -F*|-P*)
+      echo "> Passing ${OPTION} to Linterpret"
+      LINTERPRET_ARGS="${LINTERPRET_ARGS} ${OPTION}";;
+
+    -bench)
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects an argument after $OPTION"
+        exit 1;
+        fi
+        BENCHMARK="$1";
+        PROBE_FLAGS="${PROBE_FLAGS} -bench ${BENCHMARK}";
+        echo "> Using settings for '${BENCHMARK}'";
+        shift;;
+
+    -setup)
+      SETUP="$1";
+      shift;
+      USE_USER_SETUP=1;
+      echo "> Setup text set to '${SETUP}'";;
+	
+    -cprefix)
+      CPREFIX="$1";
+      shift;
+      USE_USER_CPREFIX=1;
+      echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+    -args)
+      ARGS="$1";
+      DESCRIPTION="(user specified)";
+      shift;
+      USE_USER_ARGS=1;
+      echo "> Args set to '${ARGS}'";;
+	
+    -check)
+      CHECK="$1";
+      shift;
+      DOCHECK=1;
+      USE_USER_CHECK=1;
+      echo "> Check text set to '${CHECK}'";;
+
+    -cleanup)
+      CLEANUP="$1";
+      shift;
+      USE_USER_CLEANUP=1;
+      echo "> Cleanup text set to '${CLEANUP}'";;
+
+    -noclean)
+      echo "> Will not clean up temp files"
+      PROBE_FLAGS="${PROBE_FLAGS} -noclean";
+      CLEAN=0;;
+
+    -unzip)
+      echo "> Will use files in $ZIPNAME";
+      UNZIP_LCODE=1;;
+
+    -echo)
+      echo "> Will echo the exec command";
+      ECHO=1;;
+
+    -baseline)
+      echo "> Will run baseline machine configuration";
+      ALTERNATE_CONFIGURATION=1;
+      CONFIGURATION="${CONFIGURATION} baseline";;
+
+    -remap)
+      echo "> Will run remap machine configuration";
+      ALTERNATE_CONFIGURATION=1;
+      CONFIGURATION="${CONFIGURATION} remap";;
+
+    -resched)
+      echo "> Will run resched machine configuration";
+      ALTERNATE_CONFIGURATION=1;
+      CONFIGURATION="${CONFIGURATION} resched";;
+
+    -all)
+      echo "> Will run baseline & remap & resched machine configurations";
+      ALTERNATE_CONFIGURATION=1;
+      CONFIGURATION="baseline remap resched";;
+
+    -inls)
+      echo "> Will run inline configuration";
+      ALTERNATE_CONFIGURATION=1;
+      CONFIGURATION="${CONFIGURATION} inls";;
+
+    # Silently ignore empty arguments (compile_bench generates them)
+    "")
+      IGNORED_ARG=1;;
+
+    *)
+      echo "Error: Unknown option '$OPTION'"
+      VALID_ARGS=0;;
+  esac
+done
+
+# Make sure have files we need based on settings, if not already in error state
+if [ $VALID_ARGS -eq 1 ]; then
+      if [ $UNZIP_LCODE -eq 1 ]; then
+         if [ ! -f $ZIPNAME ]; then
+            echo " "
+            echo "> Error: '$ZIPNAME' not found (-unzip option)" 
+            exit 1;
+         fi
+      else
+         FILE_LIST="`ls *.${EXT} 2>/dev/null`"
+         if [ "$FILE_LIST" = "" ]; then
+           echo " ";
+           echo "> Error: Expect at least one .${EXT} file in '.'!"
+           if [ -f $ZIPNAME ]; then
+              echo ">        To use files in '$ZIPNAME', use -unzip option!"
+              exit 1;
+           fi
+         fi
+      fi
+fi
+
+# Make sure parameter file specified exists
+if [ $VALID_ARGS -eq 1 -a ! -f ${BASELINE_PARMS_FILE} ]; then
+    echo " "
+    echo "ERROR: The following baseline parameter file could not be found:"
+    echo "  ${BASELINE_PARMS_FILE}"
+    echo " "
+    echo "  One solution is to the '-p parms_file' option to pick a different file."
+    echo " "
+    VALID_ENV=0;
+fi
+
+if [ $VALID_ARGS -eq 0 ]; then
+   echo "> Usage: ${BATCH_NAME} \"benchmark\" \"ext\" [options]";
+   echo '> ';
+   echo '> Performs full system interpretation on the benchmark.ext files in "." '
+   echo '> using IMPACT'\''s Lcode processor and system interpreter (Linterpret).'
+   echo '> ';
+   echo '> Interpret configuration determined by the project parameters and (unless'
+   echo '> "-p baseline_parms" is specified) impact/parms/STD_PARMS.compile_bench.';
+   echo '> ';
+   echo '> Zero or more of the following options may be specified';
+   echo '> ';
+   echo '> General Options (parameter overrides, bench_info settings, etc):';
+   echo '>   -bench "name"      uses settings for "name" (default: for "benchmark")';
+   echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+   echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+   echo '>   -input "name(s)"   run with "name(s)" (default: project'\''s train inputs)';
+   echo '>   -prefix "prefix"   run with "prefix*" (default: project'\''s train inputs)';
+   echo '>   -p baseline_parms  use baseline_parms (default: STD_PARMS.compile_bench)'
+   echo '>   -unzip             use files in benchmark.ext.tgz (default: *.ext)'
+   echo '>   -noclean           prevents clean up of temp files';
+   echo '>   -linterpret "exec" use Linterpret executable named "exec" (default: Linterpret)';
+   echo '>   -Fparm=value       sets Linterpret parm to value';
+   echo '>   -Pmacro=value      sets Linterpret parm macro value';
+   echo '>   -setx              show key commands exactly via "set -x"';
+   echo '> ';
+   echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+   echo '>   -setup   "text"    runs "text" to setup profile run';
+   echo '>   -cprefix "text"    prefixes "text" to profile_exec_command';
+   echo '>   -args    "text"    sets profile execution arguments to "text"';
+   echo '>   -check   "text"    runs "text" to check output';
+   echo '>   -cleanup "text"    runs "text" to cleanup after profile run';
+
+   exit 0200;
+fi
+
+#
+#       Find the benchmark info
+#
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+   echo " ";
+   echo "> Finding the info for ${BENCHMARK} using find_bench_dir";
+   BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+   fi
+   # Explicitly specify bench dir
+   READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+fi
+
+# Make sure STD_PARMS_FILE set!
+if [ "${STD_PARMS_FILE}" = "" ]; then
+   echo " "
+   echo "> Exiting: Environment variable 'STD_PARMS_FILE' must be defined by user!"
+   echo ">          See README.install for instructions on setting this variable."
+   exit 1;
+fi
+
+# Make sure project name set!
+if [ "${PROJECT_NAME}" = "" ]; then
+   echo " "
+   echo "> Exiting: Environment variable 'DEFAULT_PROJECT' must be defined by user!"
+   echo ">          See README.install for instructions on setting this variable."
+   exit 1;
+fi
+
+# Get project dir so we can export below
+PROJECT_DIR=`find_project_dir ${PROJECT_NAME}`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not find '${PROJECT_NAME}' using find_project_dir!"
+   echo "> Error message returned by find_project_dir:"
+   echo "$PROJECT_DIR";
+   exit 1;
+fi
+
+# Read project_info to determine if override parameters needed to
+# get benchmark to compile properly 
+PROJECT_PARMS_FILE="`read_project_info $BENCHMARK $READ_PATHS -parm_override_file`";
+if test "$?" != 0; then
+  echo "> Error: read_project_info ${BENCHMARK} -parm_override_file returned:"
+  echo "${PROJECT_PARMS_FILE}"
+  echo "> Exiting: unexpected error in compile_bench ";
+  exit 1;
+fi    
+
+#
+#  If the project has already been specified (by compile_bench), 
+#  make sure consistent with passed project settings.
+#
+if [ "$ENV_BASELINE_PARMS_FILE" != "" -o "$ENV_PROJECT_DIR" != "" -o \
+     "$ENV_BENCH_DIR" != "" ]; then
+
+   # If one set, make sure all the variables are set
+   if [ "$ENV_BASELINE_PARMS_FILE" = "" -o "$ENV_PROJECT_DIR" = "" -o \
+       "$ENV_BENCH_DIR" = "" -o "$ENV_STD_PARMS_FILE" = "" ]; then
+      echo "> Error: Project environment partially set up (invalid)!"
+      echo ">   BASELINE_PARMS_FILE: '$ENV_BASELINE_PARMS_FILE'"
+      echo ">           PROJECT_DIR: '$ENV_PROJECT_DIR'"
+      echo ">             BENCH_DIR: '$ENV_BENCH_DIR'"
+      echo ">        STD_PARMS_FILE: '$ENV_STD_PARMS_FILE'"
+      exit 1;
+   fi
+
+   # Make sure BASELINE_PARMS_FILE, PROJECT_DIR, BENCH_DIR, and 
+   # STD_PARMS_FILE are what we expect
+   ENV_VALID=1;
+
+   if [ "$ENV_BASELINE_PARMS_FILE" != "$BASELINE_PARMS_FILE" ]; then
+      echo "> Error: Project setting mismatch for BASELINE_PARMS_FILE!"
+      echo ">   Expected: '$BASELINE_PARMS_FILE'"
+      echo ">        Env: '$ENV_BASELINE_PARMS_FILE'"
+      echo " "
+      ENV_VALID=0;
+   fi
+
+   if [ "$ENV_PROJECT_DIR" != "$PROJECT_DIR" ]; then
+      echo "> Error: Project setting mismatch for PROJECT_DIR!"
+      echo ">   Expected: '$PROJECT_DIR'"
+      echo ">        Env: '$ENV_PROJECT_DIR'"
+      echo " "
+      ENV_VALID=0;
+   fi
+
+   if [ "$ENV_BENCH_DIR" != "$BENCH_DIR" ]; then
+      echo "> Error: Project setting mismatch for BENCH_DIR!"
+      echo ">   Expected: '$BENCH_DIR'"
+      echo ">        Env: '$ENV_BENCH_DIR'"
+      echo " "
+      ENV_VALID=0;
+   fi
+
+   if [ "$ENV_STD_PARMS_FILE" != "$PROJECT_PARMS_FILE" ]; then
+      echo "> Error: Project setting mismatch for STD_PARMS_FILE!"
+      echo ">   Expected: '$PROJECT_PARMS_FILE'"
+      echo ">        Env: '$ENV_STD_PARMS_FILE'"
+      echo " "
+      ENV_VALID=0;
+   fi
+
+   if [ $ENV_VALID -eq 0 ]; then
+      echo "> Exiting due to above project setting mismatches"
+      exit 1;
+   fi
+fi
+
+echo " ";
+echo "> Will use the execution info for ${BENCHMARK} in:"
+echo ">   $BENCH_DIR"
+
+# Get and verify benchmark inputs
+INPUT_ERROR_CODE=0;
+
+# Handle -prefix
+if [ "$INPUT_OPTION" = "-prefix" ]; then
+   echo "> Using prefix '$INPUT_ARG' to find inputs for interpretation"
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+   INPUT_ERROR_CODE="$?";
+
+# Handle -input
+elif [ "$INPUT_OPTION" = "-input" ]; then
+   echo "> Verifying specified input list for interpretation"
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+   INPUT_ERROR_CODE="$?";
+
+# Handle default cause, using train_inputs
+elif [ "$INPUT_OPTION" = "" ]; then
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+   INPUT_ERROR_CODE="$?";
+fi
+
+if test "$INPUT_ERROR_CODE" != 0; then
+   echo " "
+   echo "> Exiting ${BATCH_NAME}, find_bench_inputs returned this error message:"
+   echo "$INPUT_LIST";
+   exit 1;
+fi
+
+echo " "
+echo "> The following input(s) will be used for interpretation:"
+echo ">   $INPUT_LIST"
+
+############################################################################
+#       Override user's STD_PARMS_FILE setting
+############################################################################
+
+
+# The bench info infrastructure requires that BASELINE_PARMS_FILE be
+# exported for use by the compile_parms file in each benchmark directory
+# (which in turn is used by the PROJECT_PARMS_FILE).  This is how
+# the user's parameters (if specified with -p), or the default 
+# compile benchmark parameters, are reached.
+echo " ";
+echo "> Exporting BASELINE_PARMS_FILE for use by ${BENCHMARK}/compile_parms:";
+echo ">   $BASELINE_PARMS_FILE";
+$BEGIN_SETX
+export BASELINE_PARMS_FILE;
+$END_SETX
+
+# The project info infrastructure requires that PROJECT_DIR and BENCH_DIR 
+# be exported for use by the PROJECT_PARMS_FILE.  This allows the
+# project to find and override the compile_parms in each benchmark 
+# directory.  
+echo ">"
+echo "> Exporting BENCH_DIR for use by ${PROJECT_NAME}/project_parms";
+echo ">   $BENCH_DIR";
+echo ">"
+echo "> Exporting PROJECT_DIR for use by ${PROJECT_NAME}/project_parms_${BENCHMARK}:";
+echo ">   $PROJECT_DIR";
+$BEGIN_SETX
+export PROJECT_DIR
+export BENCH_DIR
+$END_SETX
+
+# All the IMPACT modules will use STD_PARMS_FILE to determine the 
+# parameter file.  Set this to the PROJECT_PARMS_FILE and export.
+echo ">"
+echo "> Exporting STD_PARMS_FILE for use by IMPACT modules:"
+echo ">   $PROJECT_PARMS_FILE";
+$BEGIN_SETX
+STD_PARMS_FILE="$PROJECT_PARMS_FILE";
+export STD_PARMS_FILE;
+$END_SETX
+
+############################################################################
+#       Make temporary directory
+############################################################################
+TEMP_DIR="impactint_${EXT}"
+echo " "
+echo "> All temporary files will be placed in '$TEMP_DIR'"
+
+# Place all temp files in ${TEMP_DIR}
+rm -rf $TEMP_DIR
+mkdir $TEMP_DIR
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+# Do everything from now on in the temporary directory
+cd $TEMP_DIR
+
+############################################################################
+#       Do interpretation for each input specified
+############################################################################
+
+# Get .${EXT} files and host_layout_info.md into temp dir
+    
+echo " ";
+echo "> %%%%%%%%%%";
+echo "> Collecting Lcode files"
+
+# If have tar file, just link in and unzip
+if [ $UNZIP_LCODE -eq 1 ]; then
+
+   ${LN_COMMAND} ../$ZIPNAME .
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+   echo " "
+   gen_untar $BASENAME $EXT
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    
+   # Remove zip file unless -noclean specified
+   if [ $CLEAN -eq 1 ]; then
+      rm -f $ZIPNAME
+   fi
+
+# Otherwise, link in each file
+else
+   for FILE in $FILE_LIST
+   do
+      ${LN_COMMAND} ../${FILE} .
+      if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+   done
+fi
+
+echo "> Looking for ../INLS_${EXT}";
+if [ -a "../INLS_${EXT}" ]; then
+    ${LN_COMMAND} ../INLS_${EXT} .
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    echo "> INLS_${EXT} found and linked. "
+fi
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+#echo ${CONFIGURATION}
+
+if [ $ALTERNATE_CONFIGURATION -eq 0 ]; then
+  CONFIGURATION="default";
+fi
+
+# Interpret each input specified
+for INPUT_NAME in $INPUT_LIST
+do
+
+  for CONFIGURATION_NAME in $CONFIGURATION
+  do
+
+  CONFIGURATION_EXT="";
+  CONFIGURATION_OPTIONS="";
+
+  if [ "$CONFIGURATION_NAME" = "baseline" ]; then
+    CONFIGURATION_EXT=".${CONFIGURATION_NAME}";
+    CONFIGURATION_OPTIONS=" -Fdo_remapping=no -Fschedule_traces=no ";
+    TRACE_DIR="TR_baseline";
+  fi
+  if [ "$CONFIGURATION_NAME" = "remap" ]; then
+    CONFIGURATION_EXT=".${CONFIGURATION_NAME}"
+    CONFIGURATION_OPTIONS=" -Fdo_remapping=yes -Fschedule_traces=no ";
+    TRACE_DIR="TR_remap";
+  fi
+  if [ "$CONFIGURATION_NAME" = "resched" ]; then
+    CONFIGURATION_EXT=".${CONFIGURATION_NAME}"
+    CONFIGURATION_OPTIONS=" -Fdo_remapping=yes -Fschedule_traces=yes ";
+    TRACE_DIR="TR_resched";
+  fi
+  if [ "$CONFIGURATION_NAME" = "inls" ]; then
+    CONFIGURATION_EXT=".${CONFIGURATION_NAME}"
+    CONFIGURATION_OPTIONS=" -Finls_name=../INLS_${EXT}.${INPUT_NAME}";
+    TRACE_DIR="TR_inls";
+  fi
+
+  echo " ";
+  echo "> %%%%%%%%%%";
+  echo "> Generating ${BASEEXTNAME}.${INPUT_NAME}.istat with full system simulator"
+
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.stderr"
+  # Generate STDERR_FILE from input name
+  EXCEPT_FILE="${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.excep"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+
+    DESCRIPTION=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -description`;
+    if test "$?" != 0; then echo "Unexpected Exit (DESCRIPTION)!: non-zero exit code";echo "$DESCRIPTION";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo " "
+  echo ">  Input name: '${INPUT_NAME}'"
+  echo "> Description: '${DESCRIPTION}'"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> "
+
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+    /bin/sh -c "$SETUP"
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  # Changed from csh to sh, added './' to executable path -JCG 8/15/98 
+#  TRACE_COMMAND="($CPREFIX ./${BASEEXTNAME} $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+#  TRACE_COMMAND="./${BASEEXTNAME} $ARGS > $RESULT_FILE 2> $STDERR_FILE"
+  TRACE_COMMAND="./${BASENAME} $ARGS"
+  echo " "
+  echo "> Starting interpretation for ${BASENAME}/${INPUT_NAME}${EXT_DESC} on:"
+  TIME_STAMP=`date`;
+  INPUT_START_DATE=`date +"%T %D"`;
+  echo "> $TIME_STAMP"
+  echo " "
+  echo "> Command that will be interpreted (via /bin/sh) for ${BASENAME}/${INPUT_NAME}${EXT_DESC}:"
+  echo ">   ${TRACE_COMMAND}"
+  echo " "
+
+  # Add INPUT_NAME to base name, so all the output files will be different
+  # from each input.  Need to explicitly specify input files that
+  # should not change with input (i.e., source_file, addr_file, and
+  # perhaps others later).
+  #
+
+CMD="($CPREFIX nice \
+    ${LINTERPRET_EXEC} \
+    -Fstats_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.istat           \
+    -Fdebug_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.idebug          \
+    -Fop_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.iop                \
+    -Fhotspot_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.ihotspot      \
+    -Fremap_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.iremap          \
+    -Fload_hist_file=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.iloadhist \
+    -Fparm_dump_file_name=../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.iparms \
+    -Ffile_processing_model=extension \
+    -Finput_file_extension=${EXT}     \
+    ${LINTERPRET_ARGS} ${CONFIGURATION_OPTIONS} \
+    -- ${TRACE_COMMAND} ) > $RESULT_FILE 2> $STDERR_FILE"
+
+  $BEGIN_SETX
+
+  if [ $ECHO -eq 1 ]; then
+    echo $CMD
+    echo $CMD > ../${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.exec_cmd
+  fi
+
+  eval $CMD
+
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: ${LINTERPRET_EXEC} returned non-zero value!"
+     echo "tail of ${STDERR_FILE}:"
+     tail ${STDERR_FILE}
+     exit 1;
+  fi 
+  $END_SETX
+
+  INPUT_END_DATE=`date +"%T %D"`;
+  echo " "
+  echo "> Ran ${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.istat from $INPUT_START_DATE to $INPUT_END_DATE"
+
+  CHECK_FILE="${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.check";
+  if [ "$CHECK" != "" ]; then
+     TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+  else
+     echo "> Warning: no check specified for ${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}."
+     echo ">          Using 'cat $RESULT_FILE'"
+     TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+     CHECK_WARNINGS=1;
+  fi
+  echo " "
+  echo "> Checking results (via /bin/sh):"
+  echo ">   ${TRUE_CHECK}"
+  echo ">"
+  echo "> RESULT CHECK BEGIN FOR ${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}";
+  # Shell out to do check so expresssions evaulated properly
+  /bin/sh -c "$TRUE_CHECK"
+
+  # Print warning if CHECK_FILE not empty
+  if [ -s $CHECK_FILE ]; then
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     echo "> Warning: check failed for ${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME}.istat"
+     echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+     echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     head -n 30 $CHECK_FILE
+     CHECK_WARNINGS=1;
+     CMESG="(MISMATCH)"
+  else
+     CMESG="(PASSED)"
+  fi
+  echo "> RESULT CHECK END FOR ${BASEEXTNAME}${CONFIGURATION_EXT}.${INPUT_NAME} $CMESG";
+  echo ">"
+
+  if [ -a "exceptions" ]; then
+     mv -f exceptions ../$EXCEPT_FILE
+  fi
+
+  if [ -d $TRACE_DIR ]; then
+     if [ -d ../${TRACE_DIR}.${INPUT_NAME} ]; then
+        mv ../${TRACE_DIR}.${INPUT_NAME} ../${TRACE_DIR}.${INPUT_NAME}_2
+     fi
+     mv -f ${TRACE_DIR} ../${TRACE_DIR}.${INPUT_NAME}
+  fi
+
+  # Clean up unless using -noclean option
+  if [ $CLEAN -eq 1 ]; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Moving $CHECK_FILE to '..' for inspection"
+      mv -f $CHECK_FILE ..
+      echo "> Moving $RESULT_FILE to '..' for inspection"
+      mv -f $RESULT_FILE ..
+      echo "> Moving $STDERR_FILE to '..' for inspection"
+      mv -f $STDERR_FILE ..
+    else
+      echo "> Removing $CHECK_FILE";
+      rm -f $CHECK_FILE;
+      echo "> Removing $RESULT_FILE";
+      rm -f $RESULT_FILE;
+      echo "> Removing $STDERR_FILE";
+      rm -f $STDERR_FILE;
+    fi
+  fi
+    
+  if [ $CLEAN -eq 1 ]; then
+    if [ "$CLEANUP" != "" ]; then
+      echo "> Doing rest of cleanup using (via /bin/sh):"
+      echo ">   $CLEANUP"
+      /bin/sh -c "$CLEANUP";
+    else
+      echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+    fi
+  fi
+done
+
+done
+
+cd ..
+
+# Remove temporary directory unless -noclean specified
+if [ $CLEAN -eq 1 ]; then
+   rm -rf $TEMP_DIR
+fi
+
+############################################################################
+#       Done, whew!
+############################################################################
+WARNINGS_ISSUED=0;
+
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BASENAME${EXT_DESC}"
+   WARNINGS_ISSUED=1;
+fi
+  
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   CHECK_SUMMARY="${BASENAME}${EXT_DESC} may have failed (see above warnings)"
+else
+   CHECK_SUMMARY="${BASENAME}${EXT_DESC} passed for all interpreted inputs"
+fi
+
+END_DATE=`date +"%T %D"`;
+echo " "   
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+echo "> Finished '${BATCH_NAME} ${LINTERPRET_BENCH_ARGS}'"
+echo "> Processed from $START_DATE to $END_DATE";
+echo "> Summary: ${CHECK_SUMMARY}"
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";

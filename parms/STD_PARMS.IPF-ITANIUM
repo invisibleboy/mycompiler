@@ -1,0 +1,522 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# OpenIMPACT Parameter File
+# -----------------------------------------------------------------------------
+# Intel Itanium Processor (TAHOE/ITANIUM)
+# Linux platform (LP64 model)
+
+$rel_parms$ = $IMPACT_REL_PATH$/parms;
+
+$arch$ =      tahoe;
+$model$ =     itanium;
+# swarch is one of: linux, hpux64, hpux32, win64
+$swarch$ =    linux;
+# 20031119 SZU
+# Switch to the following lmdes2 for SZU instead of HAMM.
+$lmdes$ =     $IMPACT_ROOT$/mdes/Ltahoe/mckinley_szu.lmdes2;
+$kapi_file$ = $IMPACT_REL_PATH$/mdes/Ltahoe/mckinley_knobsfile.knb;
+
+# Added for memory object profiling
+$profiling_type$ = profiling;   # "custom" during custom profiling,
+				# otherwise "profiling
+$custom_profiling$ = no;        # use "yes" during custom profiling,
+				# otherwise "no"
+
+# Unused by TAHOE, but required by new Mspec
+
+$num_int_caller_reg$ = 32;
+$num_int_callee_reg$ = 32;
+$num_flt_caller_reg$ = 32;
+$num_flt_callee_reg$ = 32;
+$num_dbl_caller_reg$ = 16;
+$num_dbl_callee_reg$ = 16;
+$num_prd_caller_reg$ = 0;
+$num_prd_callee_reg$ = 128;
+$layout_database_name$ = ./host_layout_info.md;
+
+###############################################################################
+# PCODE
+#
+
+(Pcode $rel_parms$/PCODE_DEFAULTS
+   dump_every_arc=no;
+end)
+
+(Pprobe $rel_parms$/PPROBE_DEFAULTS
+end)
+
+(Pflatten $rel_parms$/PFLATTEN_DEFAULTS
+end)
+
+(PtoC $rel_parms$/PTOC_DEFAULTS
+end)
+
+(Pprobe $rel_parms$/PPROBE_DEFAULTS
+end)
+
+(Psplit $rel_parms$/PSPLIT_DEFAULTS
+   sp_dir = .;
+end)
+
+(Pinline $rel_parms$/PINLINE_DEFAULTS
+   max_expansion_ratio = 1.60;
+   body_size_metric = executed;
+   inline_key_cost = sqrt_callee_size;
+   inline_ebody_floor = 4000;
+   exclude_small_from_ratio_limit = yes;
+   indir_thresh = 0.10;
+   min_arc_ratio = 0.10;
+   # JWS TRY SAVING ORIG FUNC WTS FOR BETTER RESILIENCE TO PROF VAR
+   adjust_func_weight = no;
+
+   prevent_inline_functions = ;
+end)
+
+(Pannotate $rel_parms$/PANNOTATE_DEFAULTS
+end)
+
+(Ploop $rel_parms$/PLOOP_DEFAULTS
+end)
+
+(Pipa $rel_parms$/PIPA_DEFAULTS
+end)
+
+(PtoL $rel_parms$/PTOL_DEFAULTS
+   generate_abs_instructions = yes;
+   generate_sign_extend_operations = yes;
+   generate_hashing_branches = yes;
+
+   generate_sync_arcs = yes;
+   generate_label_attrs = yes;
+   generate_static_branch_attrs = yes;
+
+   insert_intrinsics = no;
+   mark_glob_objids = $custom_profiling$;
+   globalize_lvars = $custom_profiling$;
+end)
+
+###############################################################################
+# LCODE
+#
+
+(Larchitecture
+   arch = $arch$;
+   model = $model$;
+   swarch = $swarch$;
+   lmdes = $lmdes$;
+
+# Unused by TAHOE, but required by new Mspec
+
+   num_int_caller_reg = $num_int_caller_reg$;
+   num_int_callee_reg = $num_int_callee_reg$;
+   num_flt_caller_reg = $num_flt_caller_reg$;
+   num_flt_callee_reg = $num_flt_callee_reg$;
+   num_dbl_caller_reg = $num_dbl_caller_reg$;
+   num_dbl_callee_reg = $num_dbl_callee_reg$;
+   num_prd_caller_reg = $num_prd_caller_reg$;
+   num_prd_callee_reg = $num_prd_callee_reg$;
+   layout_database_name = $layout_database_name$;
+end) 
+
+(Lfile $rel_parms$/LFILE_DEFAULTS
+   input_file_name = stdin;
+   output_file_name = stdout;
+   filelist_file_name = ;
+   intrinsic_support_enabled = no;
+end)
+
+(Lglobal $rel_parms$/LGLOBAL_DEFAULTS 
+   non_excepting_ops=yes;
+
+   use_appendix_for_attr=yes;
+   oper_code_attr_list=label isl wgt PD stage iter unrolled_iter I_opcode ret stack tr;
+   oper_appendix_attr_list=COMPREUSE vpp;
+   oper_default_to_appendix=no;
+
+   # Sets threshold (in minutes) for each function.  If an module's
+   # cpu time usage for a function exceeds this threshold, prints out
+   # a message to stderr (e.g., main: 0.41 minutes in Lopti)
+   # Set to -1 to suppress all cpu time messages 
+
+   cpu_time_print_threshold = 5.0;
+
+   use_sync_arcs = yes;
+   df_max_pred_paths = 256;
+   df_use_max_graph_builder = 256;
+   ia64_extensions = yes;
+
+   generate_spec_checks = no;
+end)
+
+(Lcode $rel_parms$/LCODE_DEFAULTS
+end)
+
+
+###############################################################################
+# INSTRUCTION SCHEDULING
+#
+
+(Lmarkpipe $rel_parms$/LMARKPIPE_DEFAULTS
+   markpipe_min_ii = 0;
+   markpipe_max_ii = 128;
+   markpipe_max_stages = 100;
+end)
+
+(Lsoftpipe $rel_parms$/LSOFTPIPE_DEFAULTS
+   budget_ratio = 5.0;
+   softpipe_min_ii = 0;              # Min ii disabled when 0
+   softpipe_max_ii = 128;
+   softpipe_max_stages = 100;
+   softpipe_max_tries = 20;
+end)
+
+(SM $rel_parms$/SM_DEFAULTS
+   # 20031023 SZU
+   # New parameter to indicate template bundling and compaction for IPF
+   # Set to yes and set use_hamm to no to use SZU instead of HAMM
+   do_template_bundling = yes;
+   do_bundle_compaction = yes;
+
+   # Prepass and postpass scheduling turned on/off in Limpact parms
+
+   # If debug_use_sched_cb_bounds is set to yes, SM_schedule_fn (which
+   # is used by Limpact to schedule) will only schedule those cbs with
+   # ids between the upper and lower bound.
+   # I.e., set both upper and lower bound to 10 to schedule only cb 10.
+   debug_use_sched_cb_bounds = no;
+   debug_lower_sched_cb_bound = 0;
+   debug_upper_sched_cb_bound = 100000000;
+
+   # Causes SM to print the dependence graph for each SM_Cb created.
+   # For Limpact, this will cause the dependence graph to be printed
+   # for each cb scheduled (once for prepass and once for postpass)
+   print_dependence_graph = no;
+
+   # 20031119 SZU
+   # Set use_hamm = no and do_template_bundling and do_bundle_compaction
+   # to yes to switch from HAMM to SZU template bundling scheduling.
+   use_hamm = no;
+   kapi_knobs_file = $kapi_file$;
+   compaction_scheme = 3;
+   # hamm_stgREWALK_COALESCE = 3
+   # hamm_stgREWALK_SIMPLE = 2
+   # hamm_stgSIMPLE = 1
+   # hamm_stgNO_COMPACT = 0
+   verify_reg_conflicts = no;
+   output_dep_distance = 1;
+   perform_rename_with_copy = no;    	# broken in 164.gzip f_7
+   perform_relocate_cond_opti = no;  	# broken in 175.vpr f_254
+
+   # print recovery code debug info
+   rc_print_debug_info = no;
+
+   sched_slack_loads_for_miss = no;
+
+   pushdown_pass = yes;
+end)
+
+(Lsafe $rel_parms$/LSAFE_DEFAULTS
+end)
+
+###############################################################################
+# OPTIMIZATION
+#
+
+(Lopti $rel_parms$/LOPTI_DEFAULTS
+   store_migration_mode = 1;         	# 1 = predicated store motion
+   do_post_inc_conv=no;              	# must be off for Lsuperscalar
+   do_split_unification=yes;
+   do_merge_unification=no;
+end)
+
+(Lssaopti $rel_parms$/LSSAOPTI_DEFAULTS
+
+end)
+
+(Lblock $rel_parms$/LBLOCK_DEFAULTS
+   block_formation_type=hyperblock;
+   predicate_formation_type=prp;
+
+   # HYPERBLOCK -------------------------------------------------
+
+   issue_width = 6;			# allow no more than
+					# issue_width * dep_ht ops
+   min_cb_weight = 10.0;
+
+   path_max_op_growth = 1.5;            # relative to primary path
+   path_max_dep_growth = 1.5;	      	# relative to average path
+
+   path_min_exec_ratio = 0.00075;
+   path_min_main_exec_ratio = 0.001;
+   path_min_priority_ratio = 0.20;
+
+   path_main_rel_exec_ratio = 0.20;  	# only has effect when main
+			      		# path exec ratio > 0.50
+
+   block_min_weight_ratio = 0.05;
+   block_min_path_ratio = 0.015;
+
+   # HAZARDS ----------------------------------------------------
+
+   unsafe_jsr_hazard_method = exclude_heuristic;
+   safe_jsr_hazard_method = exclude_heuristic;
+   pointer_st_hazard_method = exclude_heuristic;
+
+   unsafe_jsr_priority_penalty = 0.005;
+   safe_jsr_priority_penalty = 0.01;
+   pointer_st_priority_penalty = 1.0;
+
+   # PEELING ----------------------------------------------------
+
+   peel_enable = yes;
+   peel_heuristic = 1;
+					# heu.
+   peel_max_ops = 48;			# 0,1
+   peel_infinity_iter = 4;		# 0,1
+   peel_min_overall_coverage = 0.30;	# 0,1
+   peel_min_peelable_coverage = 0.85;	# 0
+   peel_inc_peelable_coverage = 0.10;	# 0
+   peel_min_util = 0.80;		# 1
+
+   # SUPERBLOCK -------------------------------------------------
+
+   minimum_superblock_weight=50.0;
+   maximum_code_growth=1.2;
+   min_branch_ratio=0.80;
+   trace_min_cb_ratio=0.80;
+
+   # DEBUG ------------------------------------------------------
+
+   verbose_level = 0;
+
+   split_critical = no;
+   combine_exits = no;
+end)
+
+(Lsuperscalar $rel_parms$/LSUPERSCALAR_DEFAULTS
+   store_migration_mode = 1;       # 1 = predicated store motion
+
+   do_str_red = yes;
+   do_multiway_branch_opti = yes;
+   do_op_migration = yes;
+   allow_backedge_exp = yes;
+   allow_expansion_of_loops = yes;
+
+   max_unroll_allowed = 8;         # 2
+   max_unroll_op_count = 32;       # 64
+   unroll_pipelined_loops = no;
+
+   allow_extra_unrolling_for_small_loops = no;
+
+   pred_exec_support=yes;
+
+   do_branch_combining=yes;
+   do_rename_disjvreg = yes;
+   do_pred_promotion = no;
+end)
+
+###############################################################################
+# MACHINE CODE GENERATION
+#
+
+(Mcode $rel_parms$/MCODE_DEFAULTS
+   do_machine_opt = yes;
+   do_recovery_code = no;
+
+   debug_messages = no;
+end)
+
+(Mopti $rel_parms$/MOPTI_DEFAULTS_IA64
+end)
+
+(Lregalloc $rel_parms$/LREGALLOC_DEFAULTS
+   macro_allocation = yes;
+   same_cycle_anti_dep_interference=no;
+end)
+
+(Ltahoe $rel_parms$/LTAHOE_DEFAULTS
+   force_recovery_execution = no;
+   generate_unwind_directives = no;
+
+   insert_branch_hints = no;
+   min_fe_cycles_for_prefetch_brp = 14;
+   aggressive_hints = yes;
+   dont_expand_for_hints = yes;
+
+   dynamic_hint_upper_prob = 0.97;
+   dynamic_hint_lower_prob = 0.03;
+   use_many_hint_on_call = no;
+   use_many_hint_on_return = no;
+
+   do_postreg_const_fold=yes;
+   clobber_unats = yes;
+   print_live_registers = no;
+end)
+
+###############################################################################
+# PERFORMANCE
+#
+
+(Lprobe $rel_parms$/LPROBE_DEFAULTS
+end)
+
+(Lencode $rel_parms$/LENCODE_DEFAULTS
+   encode_for = $profiling_type$;
+   do_mem_addrs = $custom_profiling$;
+end)
+
+(Lprofile_utilities $rel_parms$/LPROF_UTIL_DEFAULTS
+   insert_mem_addr_profile = $custom_profiling$;
+   # JWS TRY SAVING ORIG FUNC WTS FOR BETTER RESILIENCE TO PROF VAR
+   merge_zero_weight = yes;
+end)
+
+(Lguide $rel_parms$/LPROF_UTIL_DEFAULTS
+end)
+
+(Lsim $rel_parms$/LSIM_DEFAULTS
+end)
+
+(Linterpret $rel_parms$/LINTERPRET_DEFAULTS
+end)
+
+$use$ = sias
+$help$ =
+$cb$ =
+$op$ =
+$pg$ =
+(Lpretty $rel_parms$/LPRETTY_DEFAULTS
+   cb=w0;
+   use_style = sias;
+end)
+
+(Lmix $rel_parms$/LMIX_DEFAULTS
+end)
+
+(Lannotate $rel_parms$/LANNOTATE_DEFAULTS
+end)
+
+(Lanalysis $rel_parms$/LANALYSIS_DEFAULTS
+end)
+
+(Lcmp_sched $rel_parms$/LCMP_SCHEDS_DEFAULTS
+end)
+
+(Lprofile $rel_parms$/LPROFILE_DEFAULTS
+   profile_mem_addrs = $custom_profiling$;
+end)
+
+(Lvalue_profile $rel_parms$/LVALUE_PROFILE_DEFAULTS
+end)
+
+(Ldiff_trace $rel_parms$/LDIFF_TRACE_DEFAULTS
+end)
+
+(Linline $rel_parms$/LINLINE_DEFAULTS
+end)
+
+(Lemulate $rel_parms$/LEMULATE_DEFAULTS
+   trace_control_flow = $custom_profiling$;
+   trace_empty_cbs = $custom_profiling$;
+   trace_mem_addrs = $custom_profiling$;
+   trace_jump_rg_src1 = $custom_profiling$;
+   trace_pred_jump_fall_thru = $custom_profiling$;
+end)
+
+(Lpred_opti $rel_parms$/LPRED_OPTI_DEFAULTS
+end)
+
+(Lvirt $rel_parms$/LVIRT_DEFAULTS
+end)
+
+(dhasy_opti
+   opti_lmdes=$lmdes$;
+   do_classic_application=yes;
+   do_linear_search=no;
+   do_renaming_with_copy=yes;
+   do_expression_reformulation=no;
+   prof_info=real;
+   verbose_optimization=yes;
+   print_cb_histogram=no;
+   print_top_cb_stats=yes;
+   print_total_stats=yes;
+   suppress_lcode_output=no;
+   write_phd_stats=no;
+   phd_stats_file="blah";
+   always_undo_opti=no;
+   max_opti_passes=10;
+   min_cb_opti_weight=1;
+   cb_lower_bound=-100000;
+   cb_upper_bound=100000;
+   oper_lower_bound=-100000;
+   oper_upper_boung=100000;
+end)
+
+###############################################################################
+# UTILS
+#
+
+(Ldot
+end)
+
+(Lvgraph 
+   phase = 1;  # bitmask: 0x1 = gen data file only
+               #          0x2 = run daVinci
+   show_jsrs = 1;
+   relative_weights = 1;
+end) 
+
+(Lstatic_estimate
+   filelist=filelist;
+   cmp_stats_file=stats;
+   base_directory=.;
+end)
+
+# End of parameter settings
+

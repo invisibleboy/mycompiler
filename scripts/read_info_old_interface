@@ -1,0 +1,292 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       Provides a easy way to get print_training_info, print_trace_info_new,
+#       to use most of the new benchmark compile_info and exec_info modules.
+#       
+#       IMPORTANT NOTE: THIS SCRIPT MUST NOT PRINT *ANYTHING* EXCEPT
+#       REQUESTED INFO (IF AVAILABLE).  MOST NORMAL ERROR MESSAGES CANNOT
+#       BE USED IN THIS SCRIPT DUE TO ITS INTENDED USAGE!
+#       RETURN VALUE=0 on success, 1 on failure!
+#       
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 10/27/98
+#
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+INPUT_OPTION="";
+INPUT_NAME="";
+READ_PATHS="";
+
+# Default to exec_desc.result, to show expected form of file name.
+# It is not safe to use RESULT_FILE except in CHECK command.
+RESULT_FILE="exec_desc.result"   
+STDERR_FILE="exec_desc.stderr"   
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 2 ]; then
+
+  # The first argument is the INFO_TYPE argument
+  INFO_TYPE="$1";
+
+  # The second argument must be the benchmark name
+  BENCHMARK="$2";
+
+  # skip the 2 set argument
+  shift 2;
+
+  # Get result_file for CHECK
+  if [ "$INFO_TYPE" = "CHECK" ]; then
+    if [ $# -eq 0 ]; then
+      echo "Error: read_info_old_interface expects result_file for CHECK"
+      exit 1;
+    fi
+    RESULT_FILE="$1";
+    shift;
+  fi
+
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Allow the first input in the train_inputs/eval_inputs list to be used
+        -first_train|-first_eval)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: read_info_old_interface does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION";;
+        
+
+        # Allow different benchmark inputs to be used
+	-input)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: read_info_old_interface does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_info_old_interface expects a name after -input"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION";
+	    INPUT_NAME="$1";
+            shift;;
+
+        # Allow an benchmark dir be specified
+	-bench_dir|-path)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_info_old_interface expects a name after -bench_dir"
+               exit 1;
+            fi
+	    BENCH_DIR="$1";
+            # Make sure specified path exists 
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+	    fi
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_info_old_interface expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="${READ_PATHS} -project $1"
+            shift;;
+
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+  echo ' ';
+  echo '> Usage: read_info_old_interface INFO_TYPE benchmark [options]';
+  echo '> ';
+  echo '> Provided a easy way to get print_training_info, print_trace_info_new,'
+  echo '> etc. to use the new benchmark compile_info and exec_info modules. '
+  echo '> '
+  echo '> If info found, prints info like print_training_info would and returns 0';
+  echo '> if info not found (or error), silently exits returning 1';
+  echo '> ';
+  echo '> Usage (one of the following):';
+  echo '>  read_info_old_interface SETUP "benchmark" [options]';
+  echo '>  read_info_old_interface PREFIX "benchmark" [options]';
+  echo '>  read_info_old_interface ARGS "benchmark" [options]';
+  echo '>  read_info_old_interface SKIP "benchmark" [options]';
+  echo '>  read_info_old_interface CHECK "benchmark" "result_file" [options]';
+  echo '>  read_info_old_interface CLEANUP "benchmark" [options]';
+  echo '>  read_info_old_interface LIBS "benchmark" [options]';
+  echo '>  read_info_old_interface LIBDIRS "benchmark" [options]';
+  echo '> ';
+  echo '> General options (zero or more of the the following may be specified):';
+  echo ">   -first_train       use first input in project_info's TRAIN_INPUTS";
+  echo ">   -first_eval        use first input in project_info's EVAL_INPUTS";
+  echo '>   -input "name"      input to read (default -first_train option above)';
+  echo ">   -project 'project' project info to use (default: \$DEFAULT_PROJECT used)";
+  echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+  exit 1;
+fi
+
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+    # Print no error message if fails, just returns 1
+    BENCH_DIR="`(find_bench_dir $BENCHMARK) 2>&1`"
+    if test "$?" != 0; then exit 1; fi
+fi
+# Explicitly specify bench dir
+READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+
+
+# Find the input name (if not specified with -input name)
+# Get only the first name in the INPUT_LIST since old scripts don't 
+# expect multiple inputs through this interface
+if [ "$INPUT_OPTION" = "" -o "$INPUT_OPTION" = "-first_train" ]; then
+    INPUT_LIST="`(find_bench_inputs $BENCHMARK $READ_PATHS -train_inputs) 2>&1`";
+    if test "$?" != 0; then exit 1; fi
+
+    INPUT_NAME="`echo $INPUT_LIST | awk '{print $1}'`";
+
+elif [ "$INPUT_OPTION" = "-first_eval" ]; then
+    INPUT_LIST="`(find_bench_inputs $BENCHMARK $READ_PATHS -eval_inputs) 2>&1`";
+    if test "$?" != 0; then exit 1; fi
+
+    INPUT_NAME="`echo $INPUT_LIST | awk '{print $1}'`";
+fi
+
+MODULE_NAME="exec_info_${INPUT_NAME}"
+MODULE_PATH="${BENCH_DIR}/${MODULE_NAME}"
+
+# Make sure module exists
+if [ ! -f $MODULE_PATH ]; then
+    # Print no error message if fails, just returns 1
+    if test "$?" != 0; then exit 1; fi
+fi
+
+# Make sure compile info exists
+if [ ! -f "${BENCH_DIR}/compile_info" ]; then
+    # Print no error message if fails, just returns 1
+    if test "$?" != 0; then exit 1; fi
+fi
+
+# In order to prevent compile_bench and other scripts from getting confused 
+# by partial or incorrect specification of the new information, make sure we
+# can read both compile_info and the exec_info file before answering
+# any queries.  Return 1 silently if either quiry fails.
+
+TEST1="`(/bin/sh read_exec_info $BENCHMARK -args -input $INPUT_NAME \
+        $READ_PATHS) 2>&1`"
+if test "$?" != 0; then exit 1; fi
+
+TEST2="`(/bin/sh read_compile_info $BENCHMARK -linking_postoptions \
+        $READ_PATHS) 2>&1`"
+if test "$?" != 0; then exit 1; fi
+
+# Map INFO_TYPE to the command to use to read it
+INFO_COMMAND="";
+case $INFO_TYPE in
+  SETUP)
+    INFO_COMMAND="read_exec_info $BENCHMARK -setup -input $INPUT_NAME";;
+
+  PREFIX)
+    INFO_COMMAND="read_exec_info $BENCHMARK -prefix -input $INPUT_NAME";;
+
+  ARGS)
+    INFO_COMMAND="read_exec_info $BENCHMARK -args -input $INPUT_NAME";;
+
+  SKIP)
+    INFO_COMMAND="read_exec_info $BENCHMARK -skip -input $INPUT_NAME";;
+
+  CHECK)
+    INFO_COMMAND="read_exec_info $BENCHMARK -check $RESULT_FILE $STDERR_FILE -input $INPUT_NAME";;
+
+  CLEANUP)
+    INFO_COMMAND="read_exec_info $BENCHMARK -cleanup -input $INPUT_NAME";;
+
+  LIBS)
+    INFO_COMMAND="read_compile_info $BENCHMARK -linking_postoptions";;
+
+  LIBDIRS)  # This is NOT a great match, but such is life
+    INFO_COMMAND="read_compile_info $BENCHMARK -linking_preoptions";;
+ 
+  *)
+    echo "Error: Unknown INFO_TYPE '${INFO_TYPE}'"
+    exit 1;
+esac
+
+# Execute the command, capturing ALL output
+
+INFO_OUTPUT="`(/bin/sh $INFO_COMMAND $READ_PATHS) 2>&1`"
+# If any type of error, silently exit with return value 1
+if test "$?" != 0; then exit 1; fi
+
+# If got here, print info
+echo "$INFO_OUTPUT";
+exit 0;

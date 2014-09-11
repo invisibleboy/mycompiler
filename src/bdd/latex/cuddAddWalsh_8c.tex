@@ -1,0 +1,105 @@
+\section{cudd\-Add\-Walsh.c File Reference}
+\label{cuddAddWalsh_8c}\index{cuddAddWalsh.c@{cuddAddWalsh.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$add\-Walsh\-Int \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Walsh} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Residue} (\bf{Dd\-Manager} $\ast$dd, int n, int m, int options, int top)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Walsh\-Int} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Add\-Walsh.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddAddWalsh.c@{cudd\-Add\-Walsh.c}!addWalshInt@{addWalshInt}}
+\index{addWalshInt@{addWalshInt}!cuddAddWalsh.c@{cudd\-Add\-Walsh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Walsh\-Int (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$ {\em y}, int {\em n})\hspace{0.3cm}{\tt  [static]}}\label{cuddAddWalsh_8c_d7748643895c2d09dbccef9a08346934}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-add\-Walsh.]
+
+Description [Generates a Walsh matrix in ADD form. Returns a pointer to the matrixi if successful; NULL otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 269 of file cudd\-Add\-Walsh.c.
+
+References Cudd\_\-add\-Ite(), Cudd\_\-Recursive\-Deref(), CUDD\_\-VALUE\_\-TYPE, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), DD\_\-ONE, and one.
+
+Referenced by Cudd\_\-add\-Walsh().\index{cuddAddWalsh.c@{cudd\-Add\-Walsh.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddAddWalsh.c@{cudd\-Add\-Walsh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Walsh\-Int ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$$\ast$x, \bf{Dd\-Node} $\ast$$\ast$y, int n))\hspace{0.3cm}{\tt  [static]}}\label{cuddAddWalsh_8c_3488dfc516571ac6692ecd9485cb0969}
+
+
+Automatic\-Start \index{cuddAddWalsh.c@{cudd\-Add\-Walsh.c}!Cudd_addResidue@{Cudd\_\-addResidue}}
+\index{Cudd_addResidue@{Cudd\_\-addResidue}!cuddAddWalsh.c@{cudd\-Add\-Walsh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Residue (\bf{Dd\-Manager} $\ast$ {\em dd}, int {\em n}, int {\em m}, int {\em options}, int {\em top})}\label{cuddAddWalsh_8c_5097993847962311dbbf670a6a3ca3a5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds an ADD for the residue modulo m of an n-bit number.]
+
+Description [Builds an ADD for the residue modulo m of an n-bit number. The modulus must be at least 2, and the number of bits at least 1. Parameter options specifies whether the MSB should be on top or the LSB; and whther the number whose residue is computed is in two's complement notation or not. The macro CUDD\_\-RESIDUE\_\-DEFAULT specifies LSB on top and unsigned number. The macro CUDD\_\-RESIDUE\_\-MSB specifies MSB on top, and the macro CUDD\_\-RESIDUE\_\-TC specifies two's complement residue. To request MSB on top and two's complement residue simultaneously, one can OR the two macros: CUDD\_\-RESIDUE\_\-MSB $|$ CUDD\_\-RESIDUE\_\-TC. Cudd\_\-add\-Residue returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 132 of file cudd\-Add\-Walsh.c.
+
+References ALLOC, Cudd\_\-add\-Ite(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Recursive\-Deref(), CUDD\_\-RESIDUE\_\-MSB, CUDD\_\-RESIDUE\_\-TC, CUDD\_\-VALUE\_\-TYPE, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::error\-Code, and FREE.\index{cuddAddWalsh.c@{cudd\-Add\-Walsh.c}!Cudd_addWalsh@{Cudd\_\-addWalsh}}
+\index{Cudd_addWalsh@{Cudd\_\-addWalsh}!cuddAddWalsh.c@{cudd\-Add\-Walsh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Walsh (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$$\ast$ {\em x}, \bf{Dd\-Node} $\ast$$\ast$ {\em y}, int {\em n})}\label{cuddAddWalsh_8c_16a821a60a42494e3e12d91956a754c2}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Generates a Walsh matrix in ADD form.]
+
+Description [Generates a Walsh matrix in ADD form. Returns a pointer to the matrixi if successful; NULL otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 91 of file cudd\-Add\-Walsh.c.
+
+References add\-Walsh\-Int(), and Dd\-Manager::reordered.
+
+\subsection{Variable Documentation}
+\index{cuddAddWalsh.c@{cudd\-Add\-Walsh.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddAddWalsh.c@{cudd\-Add\-Walsh.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Add\-Walsh.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddAddWalsh_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Add\-Walsh.c}{p.}{cuddAddWalsh_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions that generate Walsh matrices and residue functions in ADD form.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-add\-Walsh()}{p.}{cuddAddWalsh_8c_16a821a60a42494e3e12d91956a754c2} \item \doxyref{Cudd\_\-add\-Residue()}{p.}{cuddAddWalsh_8c_5097993847962311dbbf670a6a3ca3a5} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{add\-Walsh\-Int()}{p.}{cuddAddWalsh_8c_d7748643895c2d09dbccef9a08346934} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 55 of file cudd\-Add\-Walsh.c.

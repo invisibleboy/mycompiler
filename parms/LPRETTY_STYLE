@@ -1,0 +1,338 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lpretty style parameters.
+#
+# Created by Andrew Hsieh, Feb. 1995
+#
+#
+# Format of this page..
+#   * a parameter string get leading/trailing space removed before return
+#   * Everything after '#' is ignore, until the end of line
+#   * '\' is used to escape character.  It can't be used to escape LF to
+#     form a continued line.  The only cases, so far, are : 
+#	    space, '\' itself, and '#'
+#   * no macro expansion so far...
+#   * nothing more....
+
+### --- old-style
+  style = plate0 old old-style old_style 
+    fn0 =  (function %n %w %F %A)
+    cb0 = \  (cb %i %w %F [%l] %A)
+    op0 = \    (op %i %o %F %P [%d] [%s] %A)
+    fl0 = (flow %c %d %w)
+    da0 = 
+
+    fn  = f-     
+
+    cb  = 
+    op  = s.del() d.del()
+#    op  = a-				# turn off Op.attr
+    fl  = x.fl_end_delimiter(no)        # default: x.fl_end_delimiter(yes)
+                                          # always 'no' if no special reason
+    da  = 
+    pg  =  
+
+### --- for sias: scheduling
+  style = sias
+    fn0 =  (Function: %n* %w0)
+    cb0 = \ cb %i %.1w&%l~
+    op0 = %4i%o
+    fl0 = \  -> %d~%.1w
+    da0 =
+
+    fn  = x.bar(bottom)
+
+    cb  = x.bar(top right)
+#   cb  = x.title( 'CB' '' )
+
+    op  = s.del() d.del() s.null(()) d.null(())
+    op = o.sub('ld*' 'L')
+    op = o.sub('st*' 'S')
+    op = o.sub('br*' 'B')
+    op = o.sub('jump' 'J')
+    op = o.sub('cmp*' 'P')
+    op = o.sub('check' 'K')
+    op = o.sub('*' ' ')
+    op  = x.bar(title)
+#   op  = x.hortitle('SLOT')
+#   op  = x.title('T')
+    op  = x.op_time_format0('%2t')
+    op  = x.empty_slot( - )
+
+    pg  = slot_num(99)
+
+### --- for rick
+  style = plate1 rick
+    fn0 =  (function: %n %.2w %F %A)
+    cb0 = \ (cb %3i %.2w %F [ %l   ]%A)
+    op0 = \    op%4i  | %o %F~%P~%d   ~%s %A
+    fl0 = (flow %10c~%d~%.2w)
+    da0 = 
+
+    fn  = f-      # just turn off, non-sense since Func.flags is undefined
+    fn  = a-	  # turn on if you like Func.attribute
+
+    cb  = a-	  # turn on if you like Cb.attribute
+
+    op  = a- p-	  # turn on if you like
+    op  = d.operand(hp) s.ope(hp) s.ope(swap) s.null(-) d.null(-)
+    op  = d.subs(*@* **)
+    op  = s.subs(*@* **)
+
+    fl  =
+
+    da  = 
+    pg  =  
+
+
+## --- for Dan
+  style = plate2 dan1
+    fn0 = %n*~%F~%7.1w0~%3<n_cb>~%3<n_oper>&
+    cb0 = %4i~%F~%7.1w0~%6<n_oper>~%l&
+    op0 = %3i~%o ~%d1~%s3~%a3
+    fl0 = \ %10c %3d %7.1w
+    da0 =
+
+    fn  = x.title('func.' 'flags' 'fnWt' '\#CB' '\#OP' ) 
+    fn  = x.bar(title)
+    cb  = x.title('cb\#' 'flags' 'cbWt' '\#OP'  'flow' ) 
+    cb  = x.bar(title)
+    op  = s.oper(simple) d.oper(simple) s.null(-) d.null (-)
+#    op  = d.oper(swap)			# if want src/dest swapped
+    op  = d.subst(*@* **) s.subst(*@* **)
+    op  = x.title('op\#' 'opc' 'src' 'dest' 'attr') 
+    op  = x.bar(title)
+    op  = o.subs(define   defn)
+    op  = o.subs(prologue prlg)
+    op  = o.subs(epilogue eplg)
+
+    da  =
+    pg  =
+
+
+## --- for Dave
+  style = plate3 dave1
+    fn0 = %n*~%3.1w0|~                  # 3 columns     # smart Tab everywhere
+    cb0 = %i~%4.1w0~%l|~                # 4 columns       # and '|'
+    op0 = %2i~%o~%F~%P1~%d1~%s2~%a2     # 7 columns
+    fl0 = |%3c %2d %4.1w                # 2 column
+    da0 =
+
+    fn  = x.title('func.' 'fnWt' '' )          
+    fn  = x.bar(title)
+    cb  = x.title('cb\#' 'cbWt' 'flow' '')
+    cb  = x.bar(title)
+    op  = s.oper(simple) d.oper(simple) s.null(-) d.null (-)
+    op  = d.subst(*@* **) s.subst(*@* **)
+    op  = x.title('op\#' 'opc' 'flg' '' 'src' 'dest' 'attr')
+    op  = x.bar(title)
+    fl  = c.subst(2147483647 X)            # substitute lengthy operand
+    fl  = x.fl_end_delimiter(no)
+    da  =
+#    pg  = debug(parms)                     # Lpretty count number of columns
+
+
+### --- for roger
+  style = plate4 roger
+    fn0 =  (function: %n %.2w %F %A)
+    cb0 = \ (cb %3i %.2w %F [ %l   ]%A)
+    op0 = \    op%4i  | %o %F~%P~%d   ~%s %A
+    fl0 = (flow %10c~%d~%.2w)
+    da0 = 
+
+    fn  = f-      # just turn off, non-sense since Func.flags is undefined
+    fn  = a-	  # turn on if you like Func.attribute
+
+    cb  = a-	  # turn on if you like Cb.attribute
+
+    op  = a- p-	  # turn on if you like
+    op  = d.operand(hp) s.ope(hp) s.null(-) d.null(-)
+    op  = d.subs(*@* **)
+    op  = s.subs(*@* **)
+
+    fl  =
+
+    da  = 
+    pg  =  
+
+
+### --- for andrew : scheduling
+  style = sched0 andrew
+    fn0 =  (Function: %n* %w0)
+    cb0 = \ cb %i %.1w&%l~
+    op0 = %4i.%o
+    fl0 = \  -> %d~%.1w
+    da0 =
+
+    fn  = x.bar(bottom)
+
+    cb  = x.bar(top right)
+
+    op  = s.del() d.del() s.null(()) d.null(())
+    op  = x.bar(title)
+    op  = x.op_time_format0('%2t')
+    op  = x.empty_slot( - )
+
+    pg  = slot_num(99)
+
+### --- for roger: scheduling
+  style = sched1 roger
+    fn0 = (Function: %n* %w0 <%a>)
+    cb0 = \cb %i %.1w&%l~
+    op0 = %4i%o
+    fl0 = \-> %d~%.1w
+    da0 =
+
+    #fn  =
+    fn  = x.bar(bottom)
+
+    #cb  = x.bar(bottom right1)
+    cb  = x.bar(top right right1)
+    #cb  = x.title( 'CB' '')
+
+    op  = s.del() d.del() s.null(()) d.null(())
+    op = o.sub('ld*' 'L')
+    op = o.sub('st*' 'S')
+    op = o.sub('b*' 'B')
+    op = o.sub('mul_f' 'M')
+    op = o.sub('add_f' 'A')
+    op = o.sub('ju*' 'J')
+    op = o.sub('*' ' ')
+    op  = x.bar(title)
+    #op  = x.bar(left title)
+    #op  = x.hortitle('SLOT')
+    #op  = x.title('T')
+    op  = x.op_time_format0('%3t|')
+
+    op  = x.empty_slot( - )
+
+    pg  = slot_num(99)
+
+
+### --- for scott: scheduling
+  style = sched2 scott 
+    fn0 =  (Function: %n* %w0)
+    cb0 = \ cb %i %.1w&%l~
+    op0 = %4i%o
+    fl0 = \  -> %d~%.1w
+    da0 =
+
+    fn  = x.bar(bottom)
+
+    cb  = x.bar(top right)
+#    cb  = x.title( 'CB' '' )
+
+    op  = s.del() d.del() s.null(()) d.null(())
+    op = o.sub('ld*' 'L')
+    op = o.sub('st*' 'S')
+    op = o.sub('b*' 'B')
+    op = o.sub('ju*' 'J')
+    op = o.sub('*' ' ')
+    op  = x.bar(title)
+#    op  = x.hortitle('SLOT')
+#    op  = x.title('T')
+    op  = x.op_time_format0('%2t')
+    op  = x.empty_slot( - )
+
+    pg  = slot_num(99)
+
+
+## --- for Dan: scheduling
+  style = sched3 dan2
+    fn0 =  (function: %n* %7.1w0 %F %A)
+    cb0 = \ (cb %2i %7.1w0 %F %A)~   
+    op0 = %4i~%o
+    fl0 =  (flow %3c %2d %4.1w)
+    da0 =
+
+    fn  = f- a-
+
+    cb  = f- a-
+    cb  = x.bar(bottom title right1)
+    cb  = x.title( 'CB' )  
+
+    op  = x.bar(left title)
+    op  = x.title('T' )
+    op  = x.empty_slot( - )
+    op  = x.op_time_format0('%3t')
+    op  = o.subs(define   defn)
+    op  = o.subs(prologue prlg)
+    op  = o.subs(epilogue eplg)
+
+    fl  = x.fl_end_delimiter(no)
+
+    da  =
+
+    pg  = slot_num(99)
+
+
+## --- for Dave: scheduling
+  style = sched4 dave2
+    fn0 =  (function: %n* %3.1w0 %F %A)
+    cb0 = \ (cb %2i %5.1w0 %F [%l] %A)~   
+    op0 = %4i~%o %F
+    fl0 =  (flow %3c %2d %4.1w)
+    da0 =
+
+    fn  = 
+
+    cb  = x.bar(bottom title right1)
+    cb  = x.title( 'CB'  'FLOW' ''  )  
+
+    op  = s.del() d.del() s.null(()) d.null(()) 
+    op  = x.bar(left title)
+    op  = x.title('TIME')
+    op  = x.empty_slot( - )
+
+    fl  = c.subst(2147483647 X)
+    fl  = x.fl_end_delimiter(no)
+
+    da  =
+
+    pg  = slot_num(99)

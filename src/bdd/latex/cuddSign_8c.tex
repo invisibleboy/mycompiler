@@ -1,0 +1,100 @@
+\section{cudd\-Sign.c File Reference}
+\label{cuddSign_8c}\index{cuddSign.c@{cuddSign.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static double $\ast$dd\-Cof\-Minterm\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table))
+\item 
+double $\ast$ \bf{Cudd\_\-Cof\-Minterm} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node)
+\item 
+static double $\ast$ \bf{dd\-Cof\-Minterm\-Aux} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Sign.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int \bf{size}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddSign.c@{cudd\-Sign.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSign.c@{cudd\-Sign.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double$\ast$ dd\-Cof\-Minterm\-Aux ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddSign_8c_169beb59ec497e36494f3f854e9d7064}
+
+
+Automatic\-Start \index{cuddSign.c@{cudd\-Sign.c}!Cudd_CofMinterm@{Cudd\_\-CofMinterm}}
+\index{Cudd_CofMinterm@{Cudd\_\-CofMinterm}!cuddSign.c@{cudd\-Sign.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double$\ast$ Cudd\_\-Cof\-Minterm (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node})}\label{cuddSign_8c_86d22c9f437512fb0cc44107174f3bab}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes the fraction of minterms in the on-set of all the positive cofactors of a BDD or ADD.]
+
+Description [Computes the fraction of minterms in the on-set of all the positive cofactors of DD. Returns the pointer to an array of doubles if successful; NULL otherwise. The array hs as many positions as there are BDD variables in the manager plus one. The last position of the array contains the fraction of the minterms in the ON-set of the function represented by the BDD or ADD. The other positions of the array hold the variable signatures.]
+
+Side\-Effects [None] 
+
+Definition at line 103 of file cudd\-Sign.c.
+
+References ALLOC, Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Regular, cudd\-I, cudd\-St\-Countfree(), dd\-Cof\-Minterm\-Aux(), Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, st\_\-table::num\_\-bins, result, Dd\-Manager::size, size, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), util\_\-cpu\_\-time(), and util\_\-print\_\-time().\index{cuddSign.c@{cudd\-Sign.c}!ddCofMintermAux@{ddCofMintermAux}}
+\index{ddCofMintermAux@{ddCofMintermAux}!cuddSign.c@{cudd\-Sign.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double$\ast$ dd\-Cof\-Minterm\-Aux (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddSign_8c_a3ea3c02facfcb4ec0f7d6a3bb62f44c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursive Step for Cudd\_\-Cof\-Minterm function.]
+
+Description [Traverses the DD node and computes the fraction of minterms in the on-set of all positive cofactors simultaneously. It allocates an array with two more entries than there are variables below the one labeling the node. One extra entry (the first in the array) is for the variable labeling the node. The other entry (the last one in the array) holds the fraction of minterms of the function rooted at node. Each other entry holds the value for one cofactor. The array is put in a symbol table, to avoid repeated computation, and its address is returned by the procedure, for use by the caller. Returns a pointer to the array of cofactor measures.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 200 of file cudd\-Sign.c.
+
+References ALLOC, Cudd\_\-Is\-Constant, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-E, cudd\-I, cudd\-Is\-Constant, cudd\-T, DD\_\-ONE, DD\_\-ZERO, Dd\-Manager::error\-Code, Dd\-Node::index, size, and st\_\-lookup().
+
+Referenced by Cudd\_\-Cof\-Minterm().
+
+\subsection{Variable Documentation}
+\index{cuddSign.c@{cudd\-Sign.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSign.c@{cudd\-Sign.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Sign.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSign_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Sign.c}{p.}{cuddSign_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Computation of signatures]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Cof\-Minterm()}{p.}{cuddSign_8c_86d22c9f437512fb0cc44107174f3bab}; \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dd\-Cof\-Minterm\-Aux()}{p.}{cuddSign_8c_a3ea3c02facfcb4ec0f7d6a3bb62f44c} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 55 of file cudd\-Sign.c.\index{cuddSign.c@{cudd\-Sign.c}!size@{size}}
+\index{size@{size}!cuddSign.c@{cudd\-Sign.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{size}\hspace{0.3cm}{\tt  [static]}}\label{cuddSign_8c_439227feff9d7f55384e8780cfc2eb82}
+
+
+
+
+Definition at line 58 of file cudd\-Sign.c.
+
+Referenced by build\_\-dd(), Cudd\_\-Apa\-Print\-Density(), Cudd\_\-bdd\-Ith\-Var(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-Check\-Keys(), Cudd\_\-Check\-Zero\-Ref(), Cudd\_\-Classify\-Support(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Decreasing(), Cudd\_\-Read\-Used\-Slots(), Cudd\_\-Split\-Set(), Cudd\_\-Support(), Cudd\_\-Support\-Size(), Cudd\_\-Vector\-Support(), Cudd\_\-Vector\-Support\-Size(), Cudd\_\-zdd\-Print\-Minterm(), cudd\-Annealing(), cudd\-Exact(), cudd\-Insert\-Subtables(), cudd\-Linear\-And\-Sifting(), cudd\-Set\-Interact(), cudd\-Sifting(), cudd\-Subset\-Heavy\-Branch(), cudd\-Swapping(), cudd\-Symm\-Sifting(), cudd\-Symm\-Sifting\-Conv(), cudd\-Test\-Interact(), cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Linear\-Up(), cudd\-Zdd\-Sifting(), cudd\-Zdd\-Sifting\-Down(), cudd\-Zdd\-Sifting\-Up(), cudd\-Zdd\-Symm\-Sifting\_\-down(), cudd\-Zdd\-Symm\-Sifting\_\-up(), cudd\-Zdd\-Undo\-Moves(), dd\-Cof\-Minterm\-Aux(), dd\-Exchange(), dd\-Find\-Node\-Hi\-Lo(), dd\-Group\-Move(), dd\-Group\-Move\-Backward(), dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), dd\-Jumping\-Down(), dd\-Jumping\-Up(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Permute\-Window3(), dd\-Permute\-Window4(), dd\-Sifting\-Down(), dd\-Sifting\-Up(), dd\-Sift\-Up(), dd\-Swap\-Any(), dd\-Symm\-Group\-Move(), dd\-Symm\-Group\-Move\-Backward(), dd\-Symm\-Sifting\-Down(), dd\-Symm\-Sifting\-Up(), dd\-Undo\-Moves(), dd\-Window2(), dd\-Window3(), dd\-Window4(), dd\-Window\-Conv2(), dd\-Window\-Conv3(), dd\-Window\-Conv4(), Mtr\_\-Read\-Groups(), restore\-Order(), select\-Minterms\-From\-Universe(), sift\_\-up(), update\-Entry(), zdd\_\-group\_\-move(), zdd\_\-group\_\-move\_\-backward(), zdd\-Group\-Move(), zdd\-Group\-Move\-Backward(), zdd\-Group\-Sifting\-Down(), zdd\-Group\-Sifting\-Up(), zdd\-Sift\-Up(), and zdd\-Swap\-Any().

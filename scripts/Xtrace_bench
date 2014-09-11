@@ -1,0 +1,155 @@
+#!/bin/sh -f
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+
+#	Generates an x86 trace for a benchmark using the standard input.
+#
+#  	usage: Xtrace_bench "benchmark" ["dir" ["Lsim_args"]]
+#
+#       Required arguments:
+#	benchmark is the benchmark name;
+#
+#       Optional arguments:
+#
+#       dir the directory the files are in, defaults '.'
+#	Lsim_args are args that are passed to Lsim.
+#
+
+
+ARCH=`arch`
+BATCH_NAME="Xtrace_bench"
+
+RESULT_FILE="result.out"
+
+if [ $# -eq 1 -a "$ARCH" = "x86" ]; then
+	BENCHMARK="$1";
+	DIR=".";
+	SIM_ARGS="";
+
+elif [ $# -eq 2 -a "$ARCH" = "x86" ]; then
+	BENCHMARK="$1";
+	DIR="$2";
+	SIM_ARGS="";
+
+elif [ $# -eq 3 -a "$ARCH" = "x86" ]; then
+	BENCHMARK="$1";
+	DIR="$2";
+	SIM_ARGS="$3";
+else
+
+if [ "$ARCH" != "x86" ]; then
+   echo ' ';
+   echo '==> This should be run on an x86 '; 
+   echo ' ';
+fi
+	echo '> Usage: Xtrace_bench "benchmark" ["dir" ["Lsim_args"]]';
+	echo '> ';
+	echo '> "benchmark" is benchmark name (ie wc, 008.espresso)';
+        echo '> "dir" is file directory, defaults to "."';
+	echo '> "Lsim_args are additional (-P and -F) arguments to pass to Lsim'
+	echo ">            (Put quote around Lsim_args ie '-Fbla=2 -Fhuh=3') "
+
+	exit 0200;
+fi
+
+INFO_SCRIPT="${IMPACT_REL_PATH}/scripts/print_trace_info_new"
+
+#
+# Get benchmark arguments, prefix, and check commands
+#
+SETUP=`${INFO_SCRIPT} SETUP ${BENCHMARK}`
+PREFIX=`${INFO_SCRIPT} PREFIX ${BENCHMARK}`
+ARGS=`${INFO_SCRIPT} ARGS ${BENCHMARK}`
+CHECK=`${INFO_SCRIPT} CHECK ${BENCHMARK} ${RESULT_FILE}`
+CLEANUP=`${INFO_SCRIPT} CLEANUP ${BENCHMARK}`
+SKIP=`${INFO_SCRIPT} SKIP ${BENCHMARK}`
+
+# Make sure worked (test only last command since all same batch file)
+# Need to test SKIP because it may not know how much to skip
+if test "$?" != 0; then echo "ERROR in ${INFO_SCRIPT}:\n$SKIP"; exit 1;fi
+
+#MAKE SURE DIRECTORY EXISTS
+if [ ! -d $DIR ] ; then
+	echo "> $BATCH_NAME, directory doesn't exits: $DIR";
+	exit 0220;
+fi
+
+# Print out exactly what we are doing
+# Using csh echo allows printing out \rm and \cp properly, otherwise
+# get inproper output (treated as newlines, etc)
+# But should really use /bin/rm and /bin/cp instead of \cp anyways
+/bin/csh -c "echo \"\
+> Simulating ${BENCHMARK} in directory '${DIR}'\n\
+>\n\
+>    Setup: '${SETUP}'\n\
+>   Prefix: '${PREFIX}'\n\
+> Sim Args: '${ARGS} >& result.out'\n\
+>     Skip: '${SKIP}'\n\
+>    Check: '${CHECK}'\n\
+>  Cleanup: '${CLEANUP}'\n\n\"  ";
+
+nice -10 /bin/sh -c "cd ${DIR}; ${SETUP} \
+	 Lsim \
+	-p ${IMPACT_REL_PATH}/parms/STD_PARMS \
+	-Pbase=./${BENCHMARK} \
+	-Puse_file_mode=no \
+	'-Pexec_args=${ARGS}' \
+	'-Pcommand_prefix=${PREFIX}' \
+	-Presult_file=result.out \
+	-Fmax_sample_count=1 \
+	-Fproduce_x86_trace=yes \
+	-Psample=200000 \
+	-Pskip=${SKIP} \
+	-Pstats_ext=status \
+	-Pprint_sample_stats=yes ${SIM_ARGS}; \
+        echo '>\n> RESULT CHECK BEGIN FOR ${BENCHMARK}'; \
+        ${CHECK}; \
+        echo '> RESULT CHECK END FOR ${BENCHMARK}\n>'; \
+        rm -f result.out; ${CLEANUP}\
+	echo '> Done (${BATCH_NAME} for ${BENCHMARK})';"

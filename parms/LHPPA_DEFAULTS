@@ -1,0 +1,299 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lhppa default parameters.
+#
+# Created by Rick Hank, 11-11-93
+#
+# Revisions:
+#	05-02-96 Some clean up and major comments....
+
+# Begin macros needed by lcode prober -JCG
+$predicated_lcode$ = no;
+$support_probing$ = no;
+$insert_probes$ = no;
+$mark_phase1$ = no;
+$constant_preloading$ = no;
+$sign_extend_in_phase3$ = no;
+$parallelize_label_loads$ = no;
+$emulate_lcode_ops$ = no;
+# End macros needed by lcode prober
+
+# THE END OF THIS FILE CONTAINS PARAMETER RECOMMENDATIONS FOR
+# EMULATION AND CODE PERFORMANCE
+
+(Lhppa 
+
+    #
+    # HP-UX Version:  Assembler directives are slightly different
+    #		      for HP-UX 10.x.
+    #    
+    hpux_version = 10;	  # Valid versions are 9 or 10   
+
+    #
+    # PHASE 1:
+    #
+    # The following parameters affect code generator behavior
+    # before or during phase1.
+    #
+
+       # Perform constant preloading prior to phase1, will preload
+       # up to "max_preload_const_per_loop" constants out of loop
+       # bodies.
+       constant_preloading = $constant_preloading$;
+       max_preload_const_per_loop = 6;
+
+       # Since PA-RISC loads are unsigned, the code generator must
+       # insert an explicit sign extension operation after the load.
+       # This increases the dependence height by one and is undesirable
+       # during experiments.  Turning on "sign_extend_in_phase3" will
+       # delay insertion of the sign extension operations until 
+       # assembly code emission.  Thus they do not affect the schedule.
+       # NOTE:  Make sure that this parameter is consistently set when
+       #        phases 1 and 3 are run in order to get correct code.
+       sign_extend_in_phase3 = $sign_extend_in_phase3$;
+
+       # Several PA-RISC equivalents of certain Lcode operations, such
+       # as lsl r1 <- r2 << r3, require several serial operations.
+       # Turning on "emulate_lcode_ops" will delay transformation of
+       # these operations into their PA-RISC equivalents until phase2.
+       # Again this is done to improve the quality of the schedule 
+       # when performing experiments.
+       emulate_lcode_ops = $emulate_lcode_ops$;
+
+       # Loading of labels tends to produce serial code due to the
+       # implicit use of register gr1.  Setting this parameter to yes
+       # will delay the serialization of the code until after phase 1
+       # so that the scheduling performed for virtual machine experiments
+       # will not be penalized. 
+       #  NOTE:  As with sign_extend_in_phase3, this must be set
+       #         properly through all phases or incorrect code will result
+       parallelize_label_loads = $parallelize_label_loads$;
+
+       # The PA-RISC ISA contains FABS and FSQRT operations, which may
+       # be used in place of the C library calls for performance reasons.
+       # Setting these to "yes" will enable this capability.
+       inline_fabs = no;
+       inline_sqrt = no;
+
+       # As defined in Roger's M.S. thesis, machine specific optimizations
+       # are typically done in phase2.  However, it is advantageous to
+       # perform some of these optimizations during phase1 so that virtual
+       # machine experiments may benefit from them.
+       do_mopti_in_phase1 = no;
+       do_peephole_in_phase1 = no;
+
+       # For PlayDoh emulation:
+
+       # Schedule non-software pipelined control block operations
+       # by creating ISL attributes (same I value as operation number in block).
+       do_filter_HP_swp_code = no;
+
+       # Even though the code is scheduled, emulate as sequential non-schedule
+       # code, so don't use VLIW mode.
+       use_sequential_emulation = no;
+
+       # Used so that emulated operations do not unneccessarily reload operands
+       do_efficient_playdoh_emulation=yes;
+
+       # Emulate particular operations completely (mul,div,rem).
+       emulate_lcode_functionality=yes;
+
+    #
+    # PHASE 2:
+    #
+    # The following parameters affect code generator behavior 
+    # during phase2
+
+    #
+    # The following parameters control which peephole optimizations
+    # are invoked when the (Mcode parm do_peephole_opt = yes.
+    #
+       #
+       #  Height reduction trasformation that finds lsl's by a
+       #  value of 1,2,or 3 followed whose target used by an
+       #  add operation and combines the operations into the
+       #  PA-RISC SHxADD (x=1,2,3) operation.
+       generate_shxadd = no;
+
+       #
+       #  Height reducing transformation that finds lsl's that
+       #  are shifting a load/store  address by the data size and 
+       #  combines the operation with the load/store.
+       #    lsl  r1 <-  r2 << 2
+       #    ld_i r3 <-  r1 + r4  ->  LDWX,S r3 <- r2,r4
+       generate_ld_st_shift = no;
+
+       #
+       #  Rather than peforming masking to branch on the contents
+       #  of a particular bit, generate BB (branch on bit operations)
+       #  to eliminate the need for masking an check the bit directly
+       generate_bb = no;
+
+       #
+       #  Replace calls the multiply millicode subroutines with
+       #  unsigned multiply performed by the FPU.
+       generate_xmpyu = no;
+
+       #
+       #  Generate FMPYADD/FMPYSUB operations that perform independent
+       #  FP multiplys and additions in the same cycle.  The operations
+       #  have five register operands, hence the name "five_ops".
+       generate_five_ops = no;
+
+       #
+       #  Generate ADDB (add and branch) operations which can combine
+       #  the increment of the loop induction variable and the backedge
+       #  branch into one operation.
+       generate_addb = no;
+
+       #  
+       #  Generate ANDCM operations where applicable
+       generate_andcm = no;
+
+       #  Perform certain optimizations on and operations
+       optimize_and = no;
+
+       #  Try to remove the sign extensions from load operations
+       #  if the target of the load is used in such a way that 
+       #  it is irrelelvant whether the value loaded is signed or
+       #  unsigned.  Helps to reduce the critical path length.
+       remove_ld_sign_extensions = no;
+
+       #  Floating point load/store operations have only a 5-bit
+       #  offset on PA-7100 implementations.  The option reduces
+       #  the number of operations required to access FP spill code
+       #  within a cb.
+       optimize_fp_spill_code = no;
+
+       #  Uses gr3 as a base pointer to the stack frame to reduce
+       #  the size of the offsets required to access spill code.
+       #  This is usefull when a function has an extremely large
+       #  stack frame due to a large local variable space.
+       optimize_swap_access = no;
+    
+       # emit the number of times each of the above transformations
+       # was performed.
+       print_peephole_results = no;
+      
+       # Integrate the prologue with the fall through block
+       # for more scheduling freedom.
+       integrate_prologue = no;
+
+       #
+       #  Branch elimination after postpass scheduling
+       #
+       branch_optimizations = no;
+
+    #
+    # PHASE 3
+    # 
+    # The following parameters affect code generator behavior 
+    # during phase3
+    #
+
+    #
+    # Emit the issue time information in the output assembly code.
+    print_issue_time = no;
+
+    #
+    # Speculation and Probing Support - The settings for these flags
+    # are determined by the gen_probed/profiled_hppa scripts.
+    #
+    insert_probes = $insert_probes$;
+    support_probing = $support_probing$;
+    mark_phase1 = $mark_phase1$
+    predicated_lcode = $predicated_lcode$;
+
+end)
+
+#
+# EMULATION
+#
+# The following are the parameters of concern for PA-RISC based
+# virtual machine experiments.
+#
+#  ( If a parameter is not listed, the default is assumed )
+#
+# 
+# sign_extend_in_phase3 = yes;
+# emulate_lcode_ops = yes;
+# parallelize_label_loads = yes;
+#
+# NOTE: THESE PARAMETERS MUST BE SET TO THE SAME VALUE FOR
+#       PHASE1 AND PHASES2&3.  SINCE THEY ARE RUN SEPARATELY
+#       THERE IS THE POTENTIAL TO SCREW THIS UP.  DON'T!
+# 
+
+#
+# PERFORMANCE
+#
+# The following are the parameters of concern for PA-RISC 
+# output code performance
+#
+# ( If a parameter is not listed, the default is assumed )
+#
+# constant_preloading = yes;
+# inline_fabs = yes;
+# inline_sqrt = yes;
+#
+# ( Assuming do_peephole_opt=yes in "(Mcode" )
+#
+# generate_shxadd = yes;
+# generate_ld_st_shift = yes;
+# generate_bb = yes;
+# generate_xmpyu = yes;
+# generate_five_ops = yes;
+# generate_addb = yes;
+# generate_andcm = yes;
+# optimize_and = yes;
+# remove_ld_sign_extensions = yes;
+# optimize_fp_spill_code = yes;
+# integrate_prologue = yes;
+# branch_optimizations = yes;
+#

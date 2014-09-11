@@ -1,0 +1,106 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#	Hyperblock formation
+#
+#	Usage: gen_Lblock "dir" "arch" "model" ["extra args"] < "list"
+#
+#	Scott A. Mahlke, Wen-mei Hwu
+
+if [ $# -eq 3 ]; then
+        PREFIX="$1";
+        ARCH="$2";
+        MODEL="$3";
+        EXTRA_ARGS="";
+
+elif [ $# -eq 4 ]; then
+        PREFIX="$1";
+        ARCH="$2";
+        MODEL="$3";
+        EXTRA_ARGS="$4";
+
+else
+        echo '> Usage gen_Lblock "directory" "arch" "model" ["extra_args"] < "list"';
+	echo '>';
+        echo '> "directory" is location of input files';
+        echo '> "arch" is target processor architecture (ie HPPA)';
+        echo '> "model" is target processor model (ie PA-7100)';
+        echo '> "extra_args" are optional additional -P and -F arguments to pass';
+        echo ">              Lblock (Put quote around args, ie '-Fparm1=2 -Fparm2=3')";
+        echo '> "list" is list of Lcode files to process';
+        exit 0200;
+fi;
+
+echo "> Prefixing files with ${PREFIX}/";
+echo "> Compiling for : arch = ${ARCH} / model = ${MODEL}";
+echo "> Extra Lblock arguments : ${EXTRA_ARGS}";
+
+
+while read FILE;
+do
+	echo "> processing $PREFIX/$FILE"
+	FILEOUT=`echo $FILE | \
+	awk -F. '{if ($(NF) == "p") NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+	Lblock \
+		-Farch=${ARCH} \
+		-Fmodel=${MODEL} \
+		${EXTRA_ARGS} \
+		-i ${PREFIX}/${FILE} \
+		-o ${PREFIX}/${FILEOUT}.H
+
+	ERROR=$?;
+	if [ $ERROR -ne 0 ]; then
+	    echo "> Lblock failed on input file: ${FILE}";
+	    echo "> error_code= ${ERROR}";
+	    exit $ERROR;
+	fi;
+done;
+
+echo "> done";
+

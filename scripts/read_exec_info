@@ -1,0 +1,777 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script finds and reads the appropriate execution info module
+#       for the specified benchmark.  
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 10/98
+#       Migrated to version 2.00 by John C. Gyllenhaal 2/99
+#       Enhanced for version 2.30 by John C. Gyllenhaal 6/99
+
+# Set up environment with default values
+INPUT_NAME=""
+FIND_BENCH_DIR=1;
+PRINT_OPTION="";
+PROJECT_NAME="$DEFAULT_PROJECT";
+READ_PATHS="";
+PRINT_EXEC_INFO_DOCUMENTATION=0;
+
+# Default to exec_desc.result, to show expected form of file name.
+# It is not safe to use RESULT_FILE except in CHECK command.
+RESULT_FILE="exec_desc.result"   
+STDERR_FILE="exec_desc.stderr"   
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    # The first argument must be the benchmark name
+    BENCH_NAME="$1";
+
+    # Allow --help to be first argument
+    if [ "$BENCH_NAME" = "--help" ]; then
+       PRINT_EXEC_INFO_DOCUMENTATION=1;
+    fi
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: find_bench_inputs expects a name after -project"
+               exit 1;
+            fi
+	    PROJECT_NAME="$1"
+	    READ_PATHS="${READ_PATHS} -project $PROJECT_NAME"
+            shift;;
+
+        # Allow different benchmark inputs to be used
+	-input)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_exec_info expects a name after -input"
+               exit 1;
+            fi
+	    INPUT_NAME="$1";
+            shift;;
+
+        # Allow an benchmark dir be specified
+	-bench_dir|-path)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_exec_info expects a name after -bench_dir"
+               exit 1;
+            fi
+	    BENCH_DIR="$1";
+            # Make sure specified path exists 
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+	    fi
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Print out the documentation for writing exec_info files
+	--help)
+            PRINT_EXEC_INFO_DOCUMENTATION=1;;
+
+	# Allow the contents of a particular variable to be printed
+        -setup|-prefix|-args|-check|-cleanup|-skip|-description|-all|-numeval|-eval_list)
+	    if [ "$PRINT_OPTION" != "" ]; then
+               echo "Error: read_exec_info does not expect both '$PRINT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    PRINT_OPTION="$OPTION"
+	    if [ "$OPTION" = "-check" ]; then
+	       if [ $# -lt 2 ]; then
+                  echo "Error: read_exec_info expects two names after -check"
+                  echo "Error: expected result_file stderr_file"
+                  exit 1;
+               fi
+               RESULT_FILE="$1";
+               shift;
+               STDERR_FILE="$1";
+               shift;
+           fi;;
+	   
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $PRINT_EXEC_INFO_DOCUMENTATION -eq 1 ]; then
+cat <<EXEC_INFO_DOCUMENTATION_EOF
+
+# Documentation for 'exec_info_(input_name)' files.
+# Created for IMPACT Version 2.00 by John C. Gyllenhaal
+# Revised for IMPACT Version 2.30 by John C. Gyllenhaal
+#
+# A 'exec_info_(input_name)' file is created for each benchmark input
+# and is placed in each benchmark info directory to describe how to
+# run the benchmark for that particular input.  The interface to this
+# file's information is the impact/scripts/read_exec_info shell
+# script.
+#
+# The read_exec_info script uses the shell's include mechanism
+# ". \${BENCH_DIR}/exec_info_(input_name)" to read the values of the
+# variables defined in the file.  This mechanism is fragile!  The
+# guidelines outlined in this file should be followed to ensure
+# correct behavior.
+#
+# Use impact/scripts/read_exec_info to ensure expected output.
+# Use impact/scripts/test_bench_info to test the validity of the settings.
+#
+# This information is used primarily by test_bench_info, gen_CtoP,
+# gen_profiled_pcode, and gen_probed_lcode.  These scripts may
+# be examined to see exactly how this information is being used.
+#
+# At the end of this documentation is a sample exec_info_input1 file.
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MUST BE DEFINED BY 'exec_info_(input_name)':
+#
+#   SETUP="sh commands to link benchmark input files into current directory";
+#
+#   Examples: 
+#
+#     ""                                           -> No files are needed
+#
+#     "ln -sf \${BENCH_DIR}/input1/short.in ."     -> One file needed
+#
+#     "ln -sf \${BENCH_DIR}/input1/dcrand.big .; \\ 
+#      ln -sf \${BENCH_DIR}/input1/ctl.in ."       -> Two files needed
+#
+#     Note: For portability, use \${BENCH_DIR} to locate input files.
+#           Typically, input files are placed in 'input1', 'input2', etc.
+#           corresponding to exec_info_input1, exec_info_input2, etc.
+#
+#     Note: The commands will be executed using "/bin/sh". Commands specific 
+#           to "/bin/csh" like "setenv" and ">& file" are not supported!  
+#           Use "set", "export", and "> file 2>&1" if necessary.
+#
+#
+#   PREFIX="sh command(s) to place immediately before executable name";
+#
+#   Examples: 
+#
+#     ""                -> Nothing special is needed (typical)
+#
+#     "set TERM vt220;" -> Set shell variable before executaion
+#
+#
+#   ARGS="benchmark arguments"   
+#
+#   Examples: 
+#
+#     ""                -> No arguments required
+#
+#     "-c < ctl.in"     -> Requires one argument and input redirection
+#
+#     Note: The execution scripts will append '> \$RESULT_FILE 2> \$STDERR_FILE' to 
+#           ARGS specified.
+#
+#     Note: All required input files should be linked into '.' to 
+#           prevent absolute paths from being written to output (which
+#           makes checking results difficult).
+#
+#
+#   CHECK="sh commands to produce output if and only if execution is incorrect"
+#
+#   Examples: 
+#
+#     "diff \${RESULT_FILE} \${BENCH_DIR}/output1/train.out" 
+#        -> checks stdout and stderr against reference output
+#
+#     "spiff -a1e-7 loada2.out \${BENCH_DIR}/output1/loada2.out" 
+#        -> checks output file using spiff to mask out rounding differences
+#
+#     "cat \${RESULT_FILE}; diff out.s \${BENCH_DIR}/output1/out.s" 
+#        -> checks for no stdout/stderr messages and output file contents
+#  
+#     Note: Some sort of check is expected.  If set to "", IMPACT scripts will
+#           default to 'cat \${RESULT_FILE}'.
+#
+#     Note: CHECK should produce no output on correct execution.
+#           
+#     Note: For portability, use \${BENCH_DIR} to locate reference files.
+#           Typically, reference files are placed in 'output1', 'output2', etc.
+#           corresponding to exec_info_input1, exec_info_input2, etc.
+#
+#
+#   CLEANUP="sh commands to remove output files and SETUP links"
+#
+#   Examples: 
+#      
+#     "rm -f dcrand.big ctl.in" -> remove files linked in
+#      
+#     "rm -f insn-recog.i out.s" -> remove output file and linked input file 
+#      
+#     "" -> no input files required and no output files written
+#      
+#     Note: IMPACT scripts will remove \${RESULT_FILE} if CHECK doesn't
+#           return any output, otherwise it will be saved for examination.
+#
+#     Note: Use specific file names, not wildcards, when deleting files!
+#      
+#      
+#   SKIP="WHO_KNOWS | 0-1000000000"
+#
+#     SKIP is used by the simulator to determine how many instructions to
+#     skip between the 200,000 operation samples in order to reduce simulation
+#     time while maintain accurracy.  A setting of "WHO_KNOWS" is a place
+#     holder which should be used if the number to use is unknown (Lsim_bench
+#     will punt telling the user to calculate the skip amount).
+#
+#     The rule of thumb IMPACT uses is to set SKIP is that simulations are
+#     *usually* accurate if at least 50 samples (10,000,000 operations) and 
+#     at least 1% of the operations are simulated.  Note, by accurate
+#     I mean less than 1% relative error in total estimated cycles, 
+#     branch prediction hit rate, and dcache hit rate.
+#
+#     To use the following formula, you need to know the number of dynamic
+#     operations executed while processing this input on .O_im files.
+#
+#     If dynamic_operations <=    10,000,000, set SKIP = 0        (100% sim)
+#     If dynamic_operations >= 1,000,000,000, set SKIP = 19800000 (1% sim)  
+#     Otherwise, set SKIP = ((dynamic_operations - 10,000,000) / 50)
+#
+#     The easiest way to get dynamic_operations for the input and benchmarks
+#     is to use the .O_im_p.stat file.  For example, to generate this file
+#     for 026.compress and input1, run:
+#
+#       compile_bench 026.compress -c2O_im -input input1'.
+#
+#     In 026.compress.O_im_p.stat, there should be something like the 
+#     following line:
+#
+#       (superscalar_issue_count 46978658.000000)
+#
+#     This indicates dynamic_operations = approximately 47,000,000 for input1,
+#     and SKIP should be set to (47,000,000 - 10,000,000)/50 = 740000.
+#
+#     NOTE: It is important for you to test this assumption for other stats 
+#           that you are interested, with new benchmarks, or with new inputs!
+#           For example, IMPACT has found that at least 30% of 022.li and 
+#           130.li needs to be simulated in order to get less then 1% error 
+#           in the stats we care about. Fortunately, we also found shorter 
+#           inputs gave representative results, so we typically simulate 30% 
+#           of a shorter input for these benchmarks.  For many of our papers 
+#           and thesis results, we simulated everything (which took weeks!) 
+#           to remove doubt about sampling effects from the results.
+#
+#     NOTE: The simulator uses 32-bit counters extensively and cannot simulate
+#           more than 4 billion operations (not counting skipped operations).
+#           So even if you want to simulate everything, if you input has 
+#           12 billion dynamic operations, you must use sampling so than less
+#           than 33% of the benchmark is simulated.
+#
+#   Examples:
+#
+#            "0" -> Simulate everything
+#
+#       "740000" -> Simulate 21%, from 026.compress example above 
+#
+#     "19800000" -> Simulate 1% (the minumum, for long-running inputs only)
+#  
+#
+# --------------------
+# SHELL VARIABLES THAT MAY OPTIONALLY BE DEFINED BY 'exec_info_(input_name)':
+#
+#   DESCRIPTION="short (< 60 characters) description of the input"
+#   
+#   Examples:  
+#
+#     ".../benchspec/026.compress/input.ref" -> location in SPECint92 release
+#
+#     "6 queens problem (based on 9 queens problem)" -> what the input does
+#
+#     NOTE: If DESCRIPTION is not defined, it defaults to '(unavailable)'
+#
+# --------------------
+# SHELL VARIABLES DEFINED BY 'read_exec_info' THAT MAY BE USED:
+#
+#   BENCH_NAME="name of the benchmark (e.g., 'wc')"
+#   BENCH_DIR="location of this module (e.g., '.../impact/benchmarks/wc')"
+#   HOST_PLATFORM="host platform for profiling/emulation (e.g., 'x86lin')"
+#   HOST_COMPILER="host compiler for libraries/header files (e.g., 'gcc')" 
+#   LN_COMMAND="command to use for creating file links (e.g. ln -s)" 
+#
+# If desired, you may set these variables based on the variables defined
+# and exported by read_exec_info. For example (from 124.m88ksim):
+#
+#   # Choose big endian or little endian mode, etc. based on platform
+#   case \$HOST_PLATFORM in
+#     hp*|sun*)
+#       SETUP="ln -sf ${BASE_DIR}/input1_bendian/dcrand.big .; \\ 
+#              ln -sf ${BASE_DIR}/input1_bendian/ctl.in .";
+#       CLEANUP="rm -f dcrand.big ctl.in";;
+#     x86*|alpha*)
+#       SETUP="ln -sf ${BASE_DIR}/input1_lendian/dcrand.lit .; \\ 
+#              ln -sf ${BASE_DIR}/input1_lendian/ctl.in .";
+#       CLEANUP="rm -f dcrand.lit ctl.in";;
+#     *)
+#       echo "Error: Unknown HOST_PLATFORM '\$HOST_PLATFORM'"
+#       echo "       Unable to use determine if should use big or little"
+#       echo "       endian input, etc. for 124.m88ksim"
+#       exit 1;;
+#   esac
+#
+#
+# --------------------
+# GENERAL NOTES:
+#
+# The use of environment/shell variables not defined by read_exec_info, or
+# the calling of another script/executable, is discouraged due to
+# portability and compatibility considerations. 
+#
+# The recommended naming convention is to name the inputs 'input1', 
+# 'input2', etc. and if an alias is desired, such as 'micro99_train1', to
+# link it to one of the 'inputx' files.  This convention allows 
+# '-prefix input' to select each unique input exactly once while allowing
+# whatever other naming convention or aliases desired by the user.
+#
+# Here is the basic template for the usage of the exec_info variables:
+#
+#   cd (target_dir)      # Some scripts use temporary directory
+#   ...                  # May build/copy/link in executable, etc. into dir
+#   /bin/sh -c "$SETUP"
+#   # Execute the benchmark with the provided prefix and args
+#   /bin/sh -c "($PREFIX ./(executable_name) $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+#   CHECK_FILE=(execution_description).check
+#   echo "> RESULT CHECK BEGIN FOR (benchmark)";
+#   /bin/sh -c "($CHECK) > $CHECK_FILE 2>&1"
+#   # Flag failure if $CHECK_FILE not empty and print out first 30 lines!
+#   if [ -s $CHECK_FILE ]; then
+#       (Print check error header, flag error, etc.)
+#       head -n 30 $CHECK_FILE
+#   fi
+#   echo "> RESULT CHECK END FOR (benchmark)";
+#   rm -f $CHECK_FILE    # Some scripts save if $CHECK_FILE is not empty
+#   rm -f $RESULT_FILE   # Some scripts save if $CHECK_FILE is not empty
+#   rm -f $STDERR_FILE   # Some scripts save if $CHECK_FILE is not empty
+#   /bin/sh -c "$CLEANUP"
+#
+#
+# --------------------
+# EXAMPLE 'exec_info_input1' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.30  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  June 14, 1999 #
+###############################################################################
+#  Run 'read_exec_info --help | more' for documentation.
+#
+#  Source of this file's information:
+#     SPEC (http://www.spec.org/)
+#
+#  Revision history for this file:
+#     6/99  Ported to Version 2.30 by John C. Gyllenhaal
+###############################################################################
+
+DECRIPTION=".../CINT95/099.go/data/train/input/2stone9.in";
+SETUP="ln -sf ${BASE_DIR}/input1/2stone9.in .";
+PREFIX="";
+ARGS="50 9 2stone9.in"
+CHECK="diff ${RESULT_FILE} ${BASE_DIR}/output1/2stone9.out | head -100"
+CLEANUP="rm -f 2stone9.in";
+
+# Around   313,000,000 instructions in .O, simulate approx. 10,000,000
+SKIP="6060000";
+
+EXEC_INFO_DOCUMENTATION_EOF
+exit 1;
+fi
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo "> Usage: read_exec_info benchmark [options]";
+    echo '> ';
+    echo '> Reads a benchmark execution info module and prints extracted info.';
+    echo '> ';
+    echo '> General options (zero or more of the the following may be specified):';
+    echo '>   -bench_dir "dir"    read info in "dir" (default: find_bench_dir used)';
+    echo '>   -project "project"  project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name"       input to read (default: first of project'\''s TRAIN_INPUTS)';
+    echo '> ';
+    echo '> Print options (zero or one of the the following may be specified):';
+    echo '>   -all                print all the info read (default)';
+    echo '>   -setup              prints contents of "SETUP" for the selected input';
+    echo '>   -prefix             prints contents of "PREFIX" for the selected input';
+    echo '>   -args               prints contents of "ARGS" for the selected input';
+    echo '>   -check "name"       prints contents of "CHECK" ("RESULT_FILE" set to "name")';
+    echo '>   -cleanup            prints contents of "CLEANUP" for the selected input';
+    echo '>   -skip               prints contents of "SKIP" for the selected input';
+    echo '>   -description        prints contents of "DESCRIPTION" for the selected input';
+    echo '>   -numeval            prints the number of inputs to eval';
+    echo '>   -eval_list          prints the inputs to eval';
+    echo '>   --help              prints documentation for exec_info files';
+    
+    exit 1;
+fi
+
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCH_NAME}`
+    if test "$?" != 0; then
+        echo " "
+        echo "Exiting: Could not find '${BENCH_NAME}' using find_bench_dir!"
+        echo "Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+       exit 1;
+    fi
+fi
+
+# Explicitly specify bench dir
+READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+INPUT_LIST_TEMP="`(read_project_info $BENCH_NAME $READ_PATHS -eval_inputs) 2>&1`"
+NUMEVAL="`echo $INPUT_LIST_TEMP | wc -w`";
+EVAL_LIST="`echo $INPUT_LIST_TEMP`";
+
+# Find the input name (if not specified with -input name)
+# By default, use the first name in the TRAIN_INPUTS
+if [ "$INPUT_NAME" = "" ]; then
+    INPUT_LIST="`(read_project_info $BENCH_NAME $READ_PATHS -train_inputs) 2>&1`"
+    if test "$?" != 0; then
+        echo " "
+        echo "Exiting: read_exec_info detected an error getting the train_inputs list"
+        echo "         via read_project_info!"
+        echo "Error message returned by read_project_info:"
+        echo "$INPUT_LIST";
+       exit 1;
+    fi
+    INPUT_NAME="`echo $INPUT_LIST | awk '{print $1}'`";
+fi
+
+
+MODULE_NAME="exec_info_${INPUT_NAME}"
+MODULE_PATH="${BENCH_DIR}/${MODULE_NAME}"
+
+# Make sure module exists
+if [ ! -f ${MODULE_PATH} ]; then
+    
+    # Make sure not a poorly named directory
+    if [ -d ${MODULE_PATH} ]; then
+        echo "Error: '${MODULE_NAME}' is a directory in"
+        echo "       '${BENCH_DIR}'"
+        echo "       Subdirectories must not begin with 'exec_info_'!";
+
+    # Otherwise, print out normal error message
+    else
+        echo "Error: Unable to find bench info module '${MODULE_NAME}' in"
+        echo "       '${BENCH_DIR}'"
+    fi
+    exit 1;
+fi
+
+# Get host platform and compiler for module's use
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read ln command name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+
+# INPUT_NAME, BENCH_NAME, BENCH_DIR, RESULT_FILE, STDERR_FILE HOST_PLATFORM, 
+# and HOST_COMPILER set above as promised for use by the benchmark 
+# execution info module.
+
+# The following variables are the only variables that should be
+# defined in the benchmark execution info file.  Set to "(invalid)" to
+# allow detection of undefined variables.
+
+SETUP="(invalid)"
+PREFIX="(invalid)"
+ARGS="(invalid)"
+CHECK="(invalid)"
+CLEANUP="(invalid)"
+SKIP="(invalid)"
+DESCRIPTION="(invalid)"
+
+# Do a test execution of the module to make sure valid before doing
+# the "real" execution below as part of this script (using . $MODULE_PATH).  
+# The goal is to avoid criptic error messages about read_exec_info having
+# mismatched quotes, etc., when it really is the info module's problem.
+#
+# This test needs INPUT_NAME, BENCH_NAME, BENCH_DIR, RESULT_FILE, STDERR_FILE
+# HOST_PLATFORM, and HOST_COMPILER exported (since not using . $MODULE_PATH)
+export INPUT_NAME
+export BENCH_NAME
+export BENCH_DIR
+export RESULT_FILE
+export STDERR_FILE
+export HOST_PLATFORM
+export HOST_COMPILER
+# For compatibility with previous versions of bench info modules
+BASE_DIR="$BENCH_DIR"
+export BASE_DIR
+
+# Shell out and run script (which should do nothing) and look for error message
+# or random output (which will cause strange errors)
+SH_ERROR="`(/bin/sh $MODULE_PATH) 2>&1`"
+ERROR_CODE="$?";
+if test "$ERROR_CODE" != 0 -o "$SH_ERROR" != "" ; then
+   echo " "
+   echo "> Error: read_exec_info received error executing module (via /bin/sh):"
+   echo ">        $MODULE_PATH"
+   echo "> "
+   if test "$ERROR_CODE" != 0 ; then
+      echo "> Error message returned by /bin/sh (return value $ERROR_CODE):"
+   else
+      echo "> Message returned by /bin/sh (returned 0 but any output indicates error):"
+   fi
+   echo " ";
+   echo "$SH_ERROR";
+   echo " ";
+   echo "> Exiting read_exec_info.  Invalid execution info module.";
+   exit 1;
+fi
+
+# Execute the module as if it was part of this script.
+# This module does not need to be executable.  Must trust the module
+# not to do anything that makes this script break (somewhat tested above).
+. $MODULE_PATH
+
+# Make sure every variable was defined in the bench execution info module
+INFO_MISSING=0;
+
+if [ "$SETUP" = "(invalid)" ]; then
+  echo "> Error: SETUP not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$PREFIX" = "(invalid)" ]; then
+  echo "> Error: PREFIX not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$ARGS" = "(invalid)" ]; then
+  echo "> Error: ARGS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$CHECK" = "(invalid)" ]; then
+  echo "> Error: CHECK not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$CLEANUP" = "(invalid)" ]; then
+  echo "> Error: CLEANUP not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$SKIP" = "(invalid)" ]; then
+  echo "> Error: SKIP not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$DESCRIPTION" = "(invalid)" ]; then
+  # Make defining this variable optional for now
+  DESCRIPTION="(unavailable)";
+  # echo "> Error: DESCRIPTION not defined in ${MODULE_NAME}"
+  # INFO_MISSING=1;
+fi
+
+if [ $INFO_MISSING  -eq 1 ]; then
+  echo "> Error: The above variables were not defined by ${MODULE_NAME} in"
+  echo ">        ${BENCH_DIR}"
+  echo ">        These variables must be defined in this bench execution info module!"
+  exit 1;
+fi
+
+# Make sure SKIP set to something valid (0-1000000000, or WHO_KNOWS)
+SKIP_INVALID=1;
+if [ "$SKIP" = "" ]; then
+   SKIP_INVALID=1;
+elif [ "$SKIP" = "WHO_KNOWS" ]; then
+   SKIP_INVALID=0;
+elif [ $SKIP -ge 0 -a $SKIP -le 1000000000 ]; then
+   SKIP_INVALID=0;
+else
+   SKIP_INVALID=1;
+fi
+
+# Stop here if skip invalid
+if [ $SKIP_INVALID -eq 1 ]; then
+   echo "> Error: SKIP ($SKIP) must be set to [0-1000000000] or WHO_KNOWS!"
+   exit 1;
+fi
+
+
+
+# Print out the appropriate output based on PRINT_OPTION's value
+case "$PRINT_OPTION" in
+  ""|-all)
+    # Get default train and eval lists if printing everything
+    PROJECT_DIR=`find_project_dir $PROJECT_NAME`
+    if test "$?" != 0; then
+        echo " "
+        echo "Exiting: Could not find project dir using find_project_dir!"
+        echo "Error message returned by find_project_dir:"
+        echo "$PROJECT_DIR";
+        exit 1;
+    fi
+   
+    TRAIN_INPUTS="`(read_project_info $BENCH_NAME $READ_PATHS -train_inputs) 2>&1`"
+    if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: read_exec_info detected an error getting the train_inputs list"
+        echo ">          via read_project_info!"
+        echo "> Error message returned by read_project_info:"
+        echo "$TRAIN_INPUTS";
+       exit 1;
+    fi
+    EVAL_INPUTS="`(read_project_info $BENCH_NAME $READ_PATHS -eval_inputs) 2>&1`"
+    if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: read_exec_info detected an error getting the eval_inputs list"
+        echo ">          via read_project_info!"
+        echo "> Error message returned by read_project_info:"
+        echo "$EVAL_INPUTS";
+       exit 1;
+    fi
+
+    # Print the settings read, formatted and with labels
+    echo " "
+    echo "  Input Name: '$INPUT_NAME'"
+    echo "  Bench Name: '$BENCH_NAME'"
+    echo "Project Name: '$PROJECT_NAME'"
+    echo "   Bench Dir: '$BENCH_DIR'"
+    echo " Project Dir: '$PROJECT_DIR'"
+    echo "Train Inputs: ($TRAIN_INPUTS)"
+    echo " Eval Inputs: ($EVAL_INPUTS)"
+    echo " "
+    echo " Description: '$DESCRIPTION'"
+    echo "       Setup: '$SETUP'"
+    echo "      Prefix: '$PREFIX'"
+    echo "        Args: '$ARGS'"
+    echo "       Check: '$CHECK'"
+    echo "     Cleanup: '$CLEANUP'"
+    echo "        Skip: '$SKIP'"
+    exit 0;;
+
+  # Print out each individual setting, with no labels
+  -setup)
+    echo "$SETUP"
+    exit 0;;
+
+  -prefix)
+    echo "$PREFIX"
+    exit 0;;
+
+  -args)
+    echo "$ARGS"
+    exit 0;;
+
+  -check)
+    echo "$CHECK"
+    exit 0;;
+
+  -cleanup)
+    echo "$CLEANUP"
+    exit 0;;
+
+  -skip)
+    echo "$SKIP"
+    exit 0;;
+
+  -numeval)
+    echo "$NUMEVAL"
+    exit 0;;
+
+  -eval_list)
+    echo "$EVAL_LIST"
+    exit 0;;
+
+  -description)
+    echo "$DESCRIPTION"
+    exit 0;;
+   
+  *)
+     echo "> Error: Unexpected error.  '$PRINT_OPTION' option unhandled";
+     exit 1;;
+esac
+

@@ -1,0 +1,503 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       Simulates a benchmark with the benchmark's evaluation inputs
+#
+#       Run this script with no arguments for usage information.
+#
+#       Author: John Gyllenhaal, Teresa Johnson, Wen-mei Hwu
+#
+#       Enhanced to use new bench_info framework by John Gyllenhaal 1/99
+#
+#       Changed to 'sim_bench' and enhanced to be consistent with 
+#       compile_bench (e.g, defaults to STD_PARMS.compile_bench, sets up
+#       projects the same way, etc.) by John Gyllenhaal 6/99
+#       Modified for use by StarCore by Chris Shannon 8/01
+#       
+
+SIM_EXEC="sc100-sim"
+BATCH_NAME="sc140_sim_bench"
+RESULT_FILE="result.out"
+STDERR_FILE="stderr.out"
+READ_PATHS="";
+BEGIN_SETX="";
+END_SETX="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="undefined";
+FIND_BENCH_DIR=1;
+SIM_ARGS="";
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+CLEAN=1;
+EXEC_FILE="";
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments
+if [ $# -ge 2 ]; then
+   BENCHMARK="$1";
+   EXEC_FILE="$2";
+   BASENAME="${BENCHMARK}";
+   if [ $EXEC_FILE = "" ]; then
+      echo "> Error: Executable not specified";
+      exit 1;
+   fi
+
+   SIM_BENCH_ARGS="$*";
+   TIME_STAMP=`date`;
+   START_DATE=`date +"%T %D"`;
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo "> Begin '${BATCH_NAME} ${SIM_BENCH_ARGS}'";
+   echo "> Started on $TIME_STAMP"
+   echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+   echo " "
+
+   # skip the 2 set arguments
+   shift 2;
+else
+   VALID_ARGS=0;
+fi
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+  # get the next option specified
+  OPTION="$1"
+  shift
+
+  case $OPTION in
+    # Allow an benchmark dir be specified
+    -bench_dir)
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects a name after -bench_dir"
+        exit 1;
+      fi
+      BENCH_DIR="$1";
+      # Make sure specified path exists
+      if [ ! -d $BENCH_DIR ]; then
+        echo "Error: Invalid directory specified with -bench_dir option:"
+        echo "       '${BENCH_DIR}'"
+        exit 1;
+      fi
+      # Explicitly specify bench dir
+      READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+      FIND_BENCH_DIR=0;
+      shift;;
+
+    -setx)
+      echo '> Will show key commands exactly via "set -x"';
+      BEGIN_SETX="set -x";
+      END_SETX="set +x";;
+
+
+    # Support multiple input specifying options
+    -input|-prefix)
+      if [ "$INPUT_OPTION" != "" ]; then
+        echo "Error: ${BATCH_NAME} does not expect both '$INPUT_OPTION' and '$OPTION'"
+        exit 1;
+      fi
+      INPUT_OPTION="$OPTION"
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects a argument after $OPTION"
+        exit 1;
+      fi
+      INPUT_ARG="$1";
+      shift;;
+
+    -F*|-P*)
+      echo "> Passing ${OPTION} to sc100-sim"
+      SIM_ARGS="${SIM_ARGS} ${OPTION}";;
+
+    -bench)
+      if [ $# -eq 0 ]; then
+        echo "Error: ${BATCH_NAME} expects an argument after $OPTION"
+        exit 1;
+        fi
+        BENCHMARK="$1";
+        echo "> Using settings for '${BENCHMARK}'";
+        shift;;
+
+    -setup)
+      SETUP="$1";
+      shift;
+      USE_USER_SETUP=1;
+      echo "> Setup text set to '${SETUP}'";;
+	
+    -cprefix)
+      CPREFIX="$1";
+      shift;
+      USE_USER_CPREFIX=1;
+      echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+    -args)
+      ARGS="$1";
+      DESCRIPTION="(user specified)";
+      shift;
+      USE_USER_ARGS=1;
+      echo "> Args set to '${ARGS}'";;
+	
+    -check)
+      CHECK="$1";
+      shift;
+      DOCHECK=1;
+      USE_USER_CHECK=1;
+      echo "> Check text set to '${CHECK}'";;
+
+    -cleanup)
+      CLEANUP="$1";
+      shift;
+      USE_USER_CLEANUP=1;
+      echo "> Cleanup text set to '${CLEANUP}'";;
+
+    -noclean)
+      echo "> Will not clean up temp files"
+      CLEAN=0;;
+
+    # Silently ignore empty arguments (compile_bench generates them)
+    "")
+      IGNORED_ARG=1;;
+
+    *)
+      echo "Error: Unknown option '$OPTION'"
+      VALID_ARGS=0;;
+  esac
+done
+
+# Make sure have files we need based on settings, if not already in error state
+if [ $VALID_ARGS -eq 1 ]; then
+
+  # Make sure binary file exists
+  if [ ! -f ${EXEC_FILE} ]; then
+     echo " "
+     echo "> Error: '${EXEC_FILE}' not found" 
+     exit 1;
+  fi
+fi
+
+if [ $VALID_ARGS -eq 0 ]; then
+   echo '> Usage: ${BATCH_NAME} "benchmark" "executable" [options]';
+   echo '> ';
+   echo '> Performs full system simulation on executable file in "." ';
+   echo '> using StarCore'\''s FastSim.';
+   echo '> ';
+   echo '> Zero or more of the following options may be specified';
+   echo '> ';
+   echo '> General Options:';
+   echo '>   -bench "name"      uses settings for "name" (default: for "benchmark")';
+   echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+   echo '>   -input "name(s)"   run with "name(s) (default: project'\''s eval inputs)';
+   echo '>   -noclean           prevents clean up of temp files';
+   echo '>   -Fparm=value       sets sc100-sim parm to value';
+   echo '>   -Pmacro=value      sets sc100-sim parm macro value';
+   echo '>   -setx              show key commands exactly via "set -x"';
+   echo '> ';
+   echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+   echo '>   -setup   "text"    runs "text" to setup profile run';
+   echo '>   -cprefix "text"    prefixes "text" to profile_exec_command';
+   echo '>   -args    "text"    sets profile execution arguments to "text"';
+   echo '>   -check   "text"    runs "text" to check output';
+   echo '>   -cleanup "text"    runs "text" to cleanup after profile run';
+
+   exit 0200;
+fi
+
+#
+#       Find the benchmark info
+#
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+   echo " ";
+   echo "> Finding the info for ${BENCHMARK} using find_bench_dir";
+   BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+   fi
+   # Explicitly specify bench dir
+   READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+fi
+
+echo " ";
+echo "> Will use the execution info for ${BENCHMARK} in:"
+echo ">   $BENCH_DIR"
+
+# Get and verify benchmark inputs
+INPUT_ERROR_CODE=0;
+
+# Handle -input
+if [ "$INPUT_OPTION" = "-input" ]; then
+   echo "> Verifying specified input list for simulation"
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+   INPUT_ERROR_CODE="$?";
+
+# Handle default cause, using eval_inputs
+elif [ "$INPUT_OPTION" = "" ]; then
+   INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+   INPUT_ERROR_CODE="$?";
+fi
+
+if test "$INPUT_ERROR_CODE" != 0; then
+   echo " "
+   echo "> Exiting ${BATCH_NAME}, find_bench_inputs returned this error message:"
+   echo "$INPUT_LIST";
+   exit 1;
+fi
+
+echo " "
+echo "> The following input(s) will be used for simulation:"
+echo ">   $INPUT_LIST"
+
+############################################################################
+#       Do simulation for each input specified
+############################################################################
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+# Simulate each input specified
+for INPUT_NAME in $INPUT_LIST
+do
+  echo " ";
+  echo "> %%%%%%%%%%";
+  echo "> Generating ${EXEC_FILE}.${INPUT_NAME}.sim with full system simulator"
+
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${EXEC_FILE}.${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${EXEC_FILE}.${INPUT_NAME}.stderr"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+
+    DESCRIPTION=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -description`;
+    if test "$?" != 0; then echo "Unexpected Exit (DESCRIPTION)!: non-zero exit code";echo "$DESCRIPTION";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo " "
+  echo ">  Input name: '${INPUT_NAME}'"
+  echo "> Description: '${DESCRIPTION}'"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> "
+
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+    /bin/sh -c "$SETUP"
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  # Changed from csh to sh, added './' to executable path -JCG 8/15/98 
+  TRACE_COMMAND="($CPREFIX sc100-sim -quiet -exec ./${EXEC_FILE} $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+  echo " "
+  echo "> Starting simulation for ${BASENAME}/${INPUT_NAME} on:"
+  TIME_STAMP=`date`;
+  INPUT_START_DATE=`date +"%T %D"`;
+  echo "> $TIME_STAMP"
+  echo " "
+  echo "> Command that will be simulated (via /bin/sh) for ${BASENAME}/${INPUT_NAME}:"
+  echo ">   ${TRACE_COMMAND}"
+  echo " "
+
+  # Add INPUT_NAME to base name, so all the output files will be different
+  # from each input.  Need to explicitly specify input files that
+  # should not change with input (i.e., source_file, addr_file, and
+  # perhaps others later).
+  #
+  # Although not typically used, properly set EXEC_FILE based parameters 
+  # exec_name, addr_file, parm_dump_file_name, annot_name, trace_file, 
+  # histogram_file, distr_file_name properly in case they are required by 
+  # the user's parameters
+
+  $BEGIN_SETX
+  /bin/sh -c "${TRACE_COMMAND}";
+  if test "$?" != 0; then
+     echo " "
+     echo "> Exiting: ${SIM_EXEC} returned non-zero value!"
+     exit 1;
+  fi 
+  $END_SETX
+  INPUT_END_DATE=`date +"%T %D"`;
+  echo " "
+  echo "> Ran ${EXEC_FILE}.${INPUT_NAME} from $INPUT_START_DATE to $INPUT_END_DATE"
+
+  CHECK_FILE="${EXEC_FILE}.${INPUT_NAME}.check";
+  if [ "$CHECK" != "" ]; then
+     TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+  else
+     echo "> Warning: no check specified for ${EXEC_FILE}.${INPUT_NAME}.sim."
+     echo ">          Using 'cat $RESULT_FILE'"
+     TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+     CHECK_WARNINGS=1;
+  fi
+  echo " "
+  echo "> Checking results (via /bin/sh):"
+  echo ">   ${TRUE_CHECK}"
+  echo ">"
+  echo "> RESULT CHECK BEGIN FOR ${EXEC_FILE}.${INPUT_NAME}.sim";
+  # Shell out to do check so expresssions evaulated properly
+  /bin/sh -c "$TRUE_CHECK"
+
+  # Print warning if CHECK_FILE not empty
+  if [ -s $CHECK_FILE ]; then
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     echo "> Warning: check failed for ${EXEC_FILE}.${INPUT_NAME}.sim"
+     echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+     echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+     echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     head -n 30 $CHECK_FILE
+     CHECK_WARNINGS=1;
+     CMESG="(MISMATCH)"
+  else
+     CMESG="(PASSED)"
+  fi
+  echo "> RESULT CHECK END FOR ${EXEC_FILE}.${INPUT_NAME}.sim $CMESG";
+  echo ">"
+
+  # Clean up unless using -noclean option
+  if [ $CLEAN -eq 1 ]; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Keeping $CHECK_FILE for inspection"
+      echo "> Keeping $RESULT_FILE for inspection"
+      echo "> Keeping $STDERR_FILE for inspection"
+    else
+      echo "> Removing $CHECK_FILE";
+      rm -f $CHECK_FILE;
+      echo "> Removing $RESULT_FILE";
+      rm -f $RESULT_FILE;
+      echo "> Removing $STDERR_FILE";
+      rm -f $STDERR_FILE;
+    fi
+  fi
+
+  if [ "$CLEANUP" != "" ]; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Skipping cleanup";
+    else
+      echo "> Doing rest of cleanup using (via /bin/sh):"
+      echo ">   $CLEANUP"
+      /bin/sh -c "$CLEANUP";
+    fi
+  else
+    echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+  fi
+done
+
+############################################################################
+#       Done, whew!
+############################################################################
+WARNINGS_ISSUED=0;
+
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BASENAME${EXT_DESC}"
+   WARNINGS_ISSUED=1;
+fi
+  
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   CHECK_SUMMARY="${BASENAME}${EXT_DESC} may have failed (see above warnings)"
+else
+   CHECK_SUMMARY="${BASENAME}${EXT_DESC} passed for all simulated inputs"
+fi
+
+END_DATE=`date +"%T %D"`;
+echo " "   
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+echo "> Finished '${BATCH_NAME} ${SIM_BENCH_ARGS}'"
+echo "> Processed from $START_DATE to $END_DATE";
+echo "> Summary: ${CHECK_SUMMARY}"
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";

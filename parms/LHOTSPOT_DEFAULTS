@@ -1,0 +1,85 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Linterpret default parameters.
+#
+# Created by Erik Nystrom, 11-1-2000
+#
+# Revisions:
+#
+
+(Lhotspot
+  profile_BBB = yes;            # Always assumed, but still use it
+  profile_ideal_HMT = yes;
+
+#  For ideal hot spot only
+#  prof_branch_sample_size = 10000;
+
+  # Hardcoded for efficiency
+  #  BBB_addr_mask = 0x100007FC;
+  #  BBB_assoc = 2;
+  BBB_max_prof_ctr = 511;
+  BBB_candidate_threshold = 16; # Candidates repeats n times within refresh
+  BBB_refresh_interval = 8192;  # Candidates must be seen within n branches
+  BBB_clear_interval = 65536;   # Will completely flush BPB after n branches
+  BBB_gcctr_size = 8192;        # Global Cand. Ctr - Min branches til hotspot
+#  BBB_gcctr_size = 4095;       # Global Cand. Ctr - Min branches til hotspot
+  BBB_candidate_increment = 2;  # Value to inc candidate ctr. on non-candidate br.
+
+  HMT_ctr_size = 4095;          # Monitor counter - Min branches til BPB enable
+  HMT_ctr_increment = 1;        # Value to inc monitor counter
+
+  debug_remap = 0;
+  turn_on_debug_remap = -1;
+  debug_code_cache = 0;
+  align_remap = yes;
+  enable_backtrack = no;
+  promotion_CC = yes;
+  TGU_loop_unrolling = yes;
+end)
+

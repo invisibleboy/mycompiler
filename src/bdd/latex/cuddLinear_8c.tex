@@ -1,0 +1,450 @@
+\section{cudd\-Linear.c File Reference}
+\label{cuddLinear_8c}\index{cuddLinear.c@{cuddLinear.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CUDD\_\-SWAP\_\-MOVE}~0
+\item 
+\#define \bf{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}~1
+\item 
+\#define \bf{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}~2
+\item 
+\#define \bf{BPL}~32
+\item 
+\#define \bf{LOGBPL}~5
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int dd\-Linear\-Unique\-Compare \bf{ARGS} ((int $\ast$ptr\-X, int $\ast$ptr\-Y))
+\item 
+static int dd\-Linear\-And\-Sifting\-Aux \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))
+\item 
+static \bf{Move} $\ast$dd\-Linear\-And\-Sifting\-Up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves))
+\item 
+static \bf{Move} $\ast$dd\-Linear\-And\-Sifting\-Down \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves))
+\item 
+static int dd\-Linear\-And\-Sifting\-Backward \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))
+\item 
+static \bf{Move} $\ast$dd\-Undo\-Moves \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves))
+\item 
+static int cudd\-Linear\-In\-Place \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int y))
+\item 
+static void dd\-Update\-Interaction\-Matrix \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int xindex, int yindex))
+\item 
+static int cudd\-Init\-Linear \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table))
+\item 
+int \bf{Cudd\_\-Print\-Linear} (\bf{Dd\-Manager} $\ast$table)
+\item 
+int \bf{Cudd\_\-Read\-Linear} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+int \bf{cudd\-Linear\-And\-Sifting} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{dd\-Linear\-Unique\-Compare} (int $\ast$ptr\-X, int $\ast$ptr\-Y)
+\item 
+static int \bf{dd\-Linear\-And\-Sifting\-Aux} (\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Linear\-And\-Sifting\-Up} (\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Linear\-And\-Sifting\-Down} (\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves)
+\item 
+static int \bf{dd\-Linear\-And\-Sifting\-Backward} (\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves)
+\item 
+static \bf{Move} $\ast$ \bf{dd\-Undo\-Moves} (\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves)
+\item 
+static int \bf{cudd\-Linear\-In\-Place} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\item 
+static void \bf{dd\-Update\-Interaction\-Matrix} (\bf{Dd\-Manager} $\ast$table, int xindex, int yindex)
+\item 
+static int \bf{cudd\-Init\-Linear} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static int \bf{cudd\-Resize\-Linear} (\bf{Dd\-Manager} $\ast$table)
+\item 
+static void \bf{cudd\-Xor\-Linear} (\bf{Dd\-Manager} $\ast$table, int x, int y)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Linear.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int $\ast$ \bf{entry}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddLinear.c@{cudd\-Linear.c}!BPL@{BPL}}
+\index{BPL@{BPL}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define BPL~32}\label{cuddLinear_8c_43a59b49336ac8ad13af90916f2ff4a0}
+
+
+
+
+Definition at line 53 of file cudd\-Linear.c.\index{cuddLinear.c@{cudd\-Linear.c}!CUDD_INVERSE_TRANSFORM_MOVE@{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}}
+\index{CUDD_INVERSE_TRANSFORM_MOVE@{CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE~2}\label{cuddLinear_8c_ba489a328bfc7cfdcc189ef5b756c6fe}
+
+
+
+
+Definition at line 48 of file cudd\-Linear.c.
+
+Referenced by cudd\-Zdd\-Undo\-Moves(), and dd\-Undo\-Moves().\index{cuddLinear.c@{cudd\-Linear.c}!CUDD_LINEAR_TRANSFORM_MOVE@{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}}
+\index{CUDD_LINEAR_TRANSFORM_MOVE@{CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE~1}\label{cuddLinear_8c_3641f0f0d659d0f7838928dc28685423}
+
+
+
+
+Definition at line 47 of file cudd\-Linear.c.
+
+Referenced by cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), cudd\-Zdd\-Undo\-Moves(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), and dd\-Undo\-Moves().\index{cuddLinear.c@{cudd\-Linear.c}!CUDD_SWAP_MOVE@{CUDD\_\-SWAP\_\-MOVE}}
+\index{CUDD_SWAP_MOVE@{CUDD\_\-SWAP\_\-MOVE}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CUDD\_\-SWAP\_\-MOVE~0}\label{cuddLinear_8c_d9998d613072978041d3b01acdfd40d0}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Linear.c}{p.}{cuddLinear_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for DD reduction by linear transformations.]
+
+Description [ Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Linear\-And\-Sifting()}{p.}{cuddLinear_8c_6280eb698415f13868d44ada26f93d64} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{dd\-Linear\-Unique\-Compare()}{p.}{cuddLinear_8c_c787b2aceb06c004845999fe86fe3285} \item \doxyref{dd\-Linear\-And\-Sifting\-Aux()}{p.}{cuddLinear_8c_1f514c1463246aeb60158800e5a681ed} \item \doxyref{dd\-Linear\-And\-Sifting\-Up()}{p.}{cuddLinear_8c_1d399dbfff5b059a945ae79097b0e0e6} \item \doxyref{dd\-Linear\-And\-Sifting\-Down()}{p.}{cuddLinear_8c_f943c1ecbe8b6bbb73e5ce2b545f1f0a} \item \doxyref{dd\-Linear\-And\-Sifting\-Backward()}{p.}{cuddLinear_8c_0b2cb59bcdfde630663bf6607162c887} \item \doxyref{dd\-Undo\-Moves()}{p.}{cuddLinear_8c_ad1b6be5619b838d2218e4d8b09c0e2c} \item \doxyref{dd\-Update\-Interaction\-Matrix()}{p.}{cuddLinear_8c_8c87b7873999cff74bb9660a8098605b} \item \doxyref{cudd\-Linear\-In\-Place()}{p.}{cuddLinear_8c_eae87ec58c998c58355cf420f27ba5ec} \item \doxyref{cudd\-Init\-Linear()}{p.}{cuddLinear_8c_390d1cfa6d80ab3d0cc94de32282bd2a} \item \doxyref{cudd\-Resize\-Linear()}{p.}{cuddLinear_8c_7d9e2973bda943a465390a93d947c75b} \item \doxyref{cudd\-Xor\-Linear()}{p.}{cuddLinear_8c_28e48cf4a38f1088d1844bc675658ee1} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 46 of file cudd\-Linear.c.
+
+Referenced by cudd\-Zdd\-Linear\-Down(), cudd\-Zdd\-Linear\-Up(), cudd\-Zdd\-Undo\-Moves(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), and dd\-Undo\-Moves().\index{cuddLinear.c@{cudd\-Linear.c}!LOGBPL@{LOGBPL}}
+\index{LOGBPL@{LOGBPL}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LOGBPL~5}\label{cuddLinear_8c_cae1cfa779e6e7550496f3889b5cbb25}
+
+
+
+
+Definition at line 54 of file cudd\-Linear.c.
+
+\subsection{Function Documentation}
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Init\-Linear ARGS ((\bf{Dd\-Manager} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_74f6051ee67cad0e758a07a52ffb91ae}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Update\-Interaction\-Matrix ARGS ((\bf{Dd\-Manager} $\ast$table, int xindex, int yindex))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_373e9647c73f72caaea53d98ed1b2562}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Linear\-In\-Place ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int y))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_c3ef0974ffd05f66152932059cd74f50}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Undo\-Moves ARGS ((\bf{Dd\-Manager} $\ast$table, \bf{Move} $\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_417b7d70b86ae62f6ffc883ea928dedb}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-And\-Sifting\-Backward ARGS ((\bf{Dd\-Manager} $\ast$table, int \bf{size}, \bf{Move} $\ast$moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_158f0f85c91f78a8f891a0fece910e02}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Linear\-And\-Sifting\-Down ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-High, \bf{Move} $\ast$prev\-Moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_33fe712dd8153e69fc9da96f6a38de85}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Linear\-And\-Sifting\-Up ARGS ((\bf{Dd\-Manager} $\ast$table, int y, int x\-Low, \bf{Move} $\ast$prev\-Moves))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_a25dc06075af415a52222f40430f3c8d}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-And\-Sifting\-Aux ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\-Low, int x\-High))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_5b06d9ab9d887d592e3564be7ed03acb}
+
+
+\index{cuddLinear.c@{cudd\-Linear.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-Unique\-Compare ARGS ((int $\ast$ptr\-X, int $\ast$ptr\-Y))\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_61bcb37f949c0a83b020e0d123a054af}
+
+
+Automatic\-Start \index{cuddLinear.c@{cudd\-Linear.c}!Cudd_PrintLinear@{Cudd\_\-PrintLinear}}
+\index{Cudd_PrintLinear@{Cudd\_\-PrintLinear}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Print\-Linear (\bf{Dd\-Manager} $\ast$ {\em table})}\label{cuddLinear_8c_fbb45adfdbde035d439271377f68a098}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the linear transform matrix.]
+
+Description [Prints the linear transform matrix. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 128 of file cudd\-Linear.c.
+
+References BPL, Dd\-Manager::linear, Dd\-Manager::linear\-Size, and LOGBPL.
+
+Referenced by cudd\-Linear\-And\-Sifting().\index{cuddLinear.c@{cudd\-Linear.c}!Cudd_ReadLinear@{Cudd\_\-ReadLinear}}
+\index{Cudd_ReadLinear@{Cudd\_\-ReadLinear}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Read\-Linear (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})}\label{cuddLinear_8c_474cd847607bf4afaaff49e849626585}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Reads an entry of the linear transform matrix.]
+
+Description [Reads an entry of the linear transform matrix.]
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 166 of file cudd\-Linear.c.
+
+References assert, BPL, Dd\-Manager::linear, Dd\-Manager::linear\-Size, LOGBPL, result, and Dd\-Manager::size.\index{cuddLinear.c@{cudd\-Linear.c}!cuddInitLinear@{cuddInitLinear}}
+\index{cuddInitLinear@{cuddInitLinear}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Init\-Linear (\bf{Dd\-Manager} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_390d1cfa6d80ab3d0cc94de32282bd2a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Initializes the linear transform matrix.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 1198 of file cudd\-Linear.c.
+
+References ALLOC, BPL, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, Dd\-Manager::linear, Dd\-Manager::linear\-Size, LOGBPL, Dd\-Manager::memused, and Dd\-Manager::size.
+
+Referenced by cudd\-Linear\-And\-Sifting().\index{cuddLinear.c@{cudd\-Linear.c}!cuddLinearAndSifting@{cuddLinearAndSifting}}
+\index{cuddLinearAndSifting@{cuddLinearAndSifting}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Linear\-And\-Sifting (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddLinear_8c_6280eb698415f13868d44ada26f93d64}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [BDD reduction based on combination of sifting and linear transformations.]
+
+Description [BDD reduction based on combination of sifting and linear transformations. Assumes that no dead nodes are present. \begin{enumerate}
+\item Order all the variables according to the number of entries in each unique table. \item Sift the variable up and down, remembering each time the total size of the DD heap. At each position, linear transformation of the two adjacent variables is tried and is accepted if it reduces the size of the DD. \item Select the best permutation. \item Repeat 3 and 4 for all variables. \end{enumerate}
+Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 215 of file cudd\-Linear.c.
+
+References ALLOC, Cudd\_\-Debug\-Check(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Print\-Linear(), cudd\-Init\-Linear(), cudd\-Resize\-Linear(), dd\-Linear\-And\-Sifting\-Aux(), dd\-Linear\-Unique\-Compare(), dd\-Min, entry, Dd\-Manager::error\-Code, FREE, Dd\-Manager::isolated, Dd\-Manager::keys, Dd\-Subtable::keys, Dd\-Manager::linear, Dd\-Manager::linear\-Size, Dd\-Manager::perm, qsort(), result, Dd\-Manager::sift\-Max\-Var, Dd\-Manager::size, size, and Dd\-Manager::subtables.
+
+Referenced by dd\-Reorder\-Children().\index{cuddLinear.c@{cudd\-Linear.c}!cuddLinearInPlace@{cuddLinearInPlace}}
+\index{cuddLinearInPlace@{cuddLinearInPlace}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Linear\-In\-Place (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_eae87ec58c998c58355cf420f27ba5ec}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Linearly combines two adjacent variables.]
+
+Description [Linearly combines two adjacent variables. Specifically, replaces the top variable with the exclusive nor of the two variables. It assumes that no dead nodes are present on entry to this procedure. The procedure then guarantees that no dead nodes will be present when it terminates. cudd\-Linear\-In\-Place assumes that x $<$ y. Returns the number of keys in the table if successful; 0 otherwise.]
+
+Side\-Effects [The two subtables corrresponding to variables x and y are modified. The global counters of the unique table are also affected.]
+
+See\-Also [cudd\-Swap\-In\-Place] 
+
+Definition at line 824 of file cudd\-Linear.c.
+
+References assert, Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-E, cudd\-Next\-High(), cudd\-Sat\-Dec, cudd\-Sat\-Inc, cudd\-T, cudd\-Test\-Interact(), dd\-Hash, Dd\-Subtable::dead, Dd\-Node::index, Dd\-Manager::invperm, Dd\-Subtable::keys, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Subtable::shift, Dd\-Subtable::slots, Dd\-Manager::subtables, and Dd\-Manager::vars.
+
+Referenced by dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), and dd\-Undo\-Moves().\index{cuddLinear.c@{cudd\-Linear.c}!cuddResizeLinear@{cuddResizeLinear}}
+\index{cuddResizeLinear@{cuddResizeLinear}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int cudd\-Resize\-Linear (\bf{Dd\-Manager} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_7d9e2973bda943a465390a93d947c75b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resizes the linear transform matrix.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 1242 of file cudd\-Linear.c.
+
+References ALLOC, BPL, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Manager::linear, Dd\-Manager::linear\-Size, LOGBPL, Dd\-Manager::memused, and Dd\-Manager::size.
+
+Referenced by cudd\-Linear\-And\-Sifting().\index{cuddLinear.c@{cudd\-Linear.c}!cuddXorLinear@{cuddXorLinear}}
+\index{cuddXorLinear@{cuddXorLinear}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void cudd\-Xor\-Linear (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em y})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_28e48cf4a38f1088d1844bc675658ee1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [XORs two rows of the linear transform matrix.]
+
+Description [XORs two rows of the linear transform matrix and replaces the first row with the result.]
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 1305 of file cudd\-Linear.c.
+
+References Dd\-Manager::linear, LOGBPL, and Dd\-Manager::size.\index{cuddLinear.c@{cudd\-Linear.c}!ddLinearAndSiftingAux@{ddLinearAndSiftingAux}}
+\index{ddLinearAndSiftingAux@{ddLinearAndSiftingAux}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-And\-Sifting\-Aux (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-Low}, int {\em x\-High})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_1f514c1463246aeb60158800e5a681ed}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries.]
+
+Description [Given x\-Low $<$= x $<$= x\-High moves x up and down between the boundaries. At each step a linear transformation is tried, and, if it decreases the size of the DD, it is accepted. Finds the best position and does the required changes. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 365 of file cudd\-Linear.c.
+
+References assert, CUDD\_\-OUT\_\-OF\_\-MEM, cudd\-Dealloc\-Node, dd\-Linear\-And\-Sifting\-Backward(), dd\-Linear\-And\-Sifting\-Down(), dd\-Linear\-And\-Sifting\-Up(), dd\-Undo\-Moves(), Dd\-Manager::isolated, Dd\-Manager::keys, Move::next, result, Move::x, and Move::y.
+
+Referenced by cudd\-Linear\-And\-Sifting().\index{cuddLinear.c@{cudd\-Linear.c}!ddLinearAndSiftingBackward@{ddLinearAndSiftingBackward}}
+\index{ddLinearAndSiftingBackward@{ddLinearAndSiftingBackward}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-And\-Sifting\-Backward (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em size}, \bf{Move} $\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_0b2cb59bcdfde630663bf6607162c887}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the DD heap to the order giving the minimum size.]
+
+Description [Given a set of moves, returns the DD heap to the position giving the minimum size. In case of ties, returns to the closest position giving the minimum size. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 707 of file cudd\-Linear.c.
+
+References Move::next, and Move::size.
+
+Referenced by dd\-Linear\-And\-Sifting\-Aux().\index{cuddLinear.c@{cudd\-Linear.c}!ddLinearAndSiftingDown@{ddLinearAndSiftingDown}}
+\index{ddLinearAndSiftingDown@{ddLinearAndSiftingDown}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Linear\-And\-Sifting\-Down (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\-High}, \bf{Move} $\ast$ {\em prev\-Moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_f943c1ecbe8b6bbb73e5ce2b545f1f0a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable down and applies linear transformations.]
+
+Description [Sifts a variable down and applies linear transformations. Moves x down until either it reaches the bound (x\-High) or the size of the DD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 594 of file cudd\-Linear.c.
+
+References CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-OUT\_\-OF\_\-MEM, CUDD\_\-SWAP\_\-MOVE, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Linear\-In\-Place(), cudd\-Next\-High(), cudd\-Swap\-In\-Place(), cudd\-Test\-Interact(), dd\-Update\-Interaction\-Matrix(), Move::flags, Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, Move::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Linear\-And\-Sifting\-Aux().\index{cuddLinear.c@{cudd\-Linear.c}!ddLinearAndSiftingUp@{ddLinearAndSiftingUp}}
+\index{ddLinearAndSiftingUp@{ddLinearAndSiftingUp}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Linear\-And\-Sifting\-Up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em y}, int {\em x\-Low}, \bf{Move} $\ast$ {\em prev\-Moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_1d399dbfff5b059a945ae79097b0e0e6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sifts a variable up and applies linear transformations.]
+
+Description [Sifts a variable up and applies linear transformations. Moves y up until either it reaches the bound (x\-Low) or the size of the DD heap increases too much. Returns the set of moves in case of success; NULL if memory is full.]
+
+Side\-Effects [None] 
+
+Definition at line 471 of file cudd\-Linear.c.
+
+References CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-OUT\_\-OF\_\-MEM, CUDD\_\-SWAP\_\-MOVE, cudd\-Dealloc\-Node, cudd\-Dynamic\-Alloc\-Node(), cudd\-Linear\-In\-Place(), cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), cudd\-Test\-Interact(), dd\-Update\-Interaction\-Matrix(), Move::flags, Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Subtable::keys, Dd\-Manager::keys, Dd\-Manager::max\-Growth, Move::next, Dd\-Node::ref, Move::size, size, Dd\-Manager::subtables, Dd\-Manager::vars, Move::x, and Move::y.
+
+Referenced by dd\-Linear\-And\-Sifting\-Aux().\index{cuddLinear.c@{cudd\-Linear.c}!ddLinearUniqueCompare@{ddLinearUniqueCompare}}
+\index{ddLinearUniqueCompare@{ddLinearUniqueCompare}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int dd\-Linear\-Unique\-Compare (int $\ast$ {\em ptr\-X}, int $\ast$ {\em ptr\-Y})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_c787b2aceb06c004845999fe86fe3285}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function used by qsort.]
+
+Description [Comparison function used by qsort to order the variables according to the number of keys in the subtables. Returns the difference in number of keys between the two variables being compared.]
+
+Side\-Effects [None] 
+
+Definition at line 337 of file cudd\-Linear.c.
+
+References entry.
+
+Referenced by cudd\-Linear\-And\-Sifting().\index{cuddLinear.c@{cudd\-Linear.c}!ddUndoMoves@{ddUndoMoves}}
+\index{ddUndoMoves@{ddUndoMoves}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Move}$\ast$ dd\-Undo\-Moves (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Move} $\ast$ {\em moves})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_ad1b6be5619b838d2218e4d8b09c0e2c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Given a set of moves, returns the DD heap to the order in effect before the moves.]
+
+Description [Given a set of moves, returns the DD heap to the order in effect before the moves. Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 753 of file cudd\-Linear.c.
+
+References CUDD\_\-INVERSE\_\-TRANSFORM\_\-MOVE, CUDD\_\-LINEAR\_\-TRANSFORM\_\-MOVE, CUDD\_\-SWAP\_\-MOVE, cudd\-Dynamic\-Alloc\-Node(), cudd\-Linear\-In\-Place(), cudd\-Swap\-In\-Place(), Move::flags, Move::next, size, Move::x, and Move::y.
+
+Referenced by dd\-Linear\-And\-Sifting\-Aux().\index{cuddLinear.c@{cudd\-Linear.c}!ddUpdateInteractionMatrix@{ddUpdateInteractionMatrix}}
+\index{ddUpdateInteractionMatrix@{ddUpdateInteractionMatrix}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void dd\-Update\-Interaction\-Matrix (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em xindex}, int {\em yindex})\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_8c87b7873999cff74bb9660a8098605b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Updates the interaction matrix.]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 1158 of file cudd\-Linear.c.
+
+References cudd\-Set\-Interact(), cudd\-Test\-Interact(), and Dd\-Manager::size.
+
+Referenced by dd\-Linear\-And\-Sifting\-Down(), and dd\-Linear\-And\-Sifting\-Up().
+
+\subsection{Variable Documentation}
+\index{cuddLinear.c@{cudd\-Linear.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Linear.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 70 of file cudd\-Linear.c.\index{cuddLinear.c@{cudd\-Linear.c}!entry@{entry}}
+\index{entry@{entry}!cuddLinear.c@{cudd\-Linear.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{entry}\hspace{0.3cm}{\tt  [static]}}\label{cuddLinear_8c_ef8c63519ad43f7d8c5f40f8807b886e}
+
+
+
+
+Definition at line 73 of file cudd\-Linear.c.

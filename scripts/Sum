@@ -1,0 +1,130 @@
+#!/bin/sh
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+# *===========================================================================
+# *      File :          sum.pl
+# *      Description :   Sum columns
+# *      Author :        Kevin Crozier, Wen-mei Hwu
+# *       Modified from the original sum.c written by Pohua Chang, Wen-mei Hwu
+# *
+# *==========================================================================
+
+sub get_input {
+    local ($handle) = @_;
+    $order = 0;
+    while (<$handle>) { 
+	if (/\(\sCONTROL\s/){
+	    $order++;
+	}
+	if (/\(\s([a-z]\w+)\s(\d+\.\d+)/) {
+	    if ($order == 1) {
+		$orderarray[$nextnum++] = $1;
+	    }
+	    $stats{$1} += $2;
+	}
+    }
+}
+
+sub print_output {
+    local ($handle) = @_;
+    foreach $elem (@orderarray) {
+	printf $handle "(%s %f)\n", $elem, $stats{$elem};
+    }
+
+    $br_hit = $stats{'br_t_t'} + $stats{'br_n_n'} + $stats{'jump_t_t'} + 
+	      $stats{'jsr_t_t'} + $stats{'rts_t_t'};
+    $br_miss = $stats{'br_t_n'} + $stats{'br_n_t'} + $stats{'jump_n_t'} + 
+	       $stats{'jump_rg_t_t'} + $stats{'jump_rg_n_t'} +
+               $stats{'jsr_n_t'} + $stats{'rts_n_t'};
+    printf $handle "(br_ok %f)\n", $br_hit;
+    printf $handle "(br_repair %f)\n", $br_miss;
+    printf $handle "(cycle_count_0br %f %f)\n", $stats{'best_cycle_count'}, 
+                                        $stats{'worst_cycle_count'};
+    printf $handle "(cycle_count_1br %f %f)\n", $stats{'best_cycle_count'} + 
+	                     $br_miss, $stats{'worst_cycle_count'} + $br_miss;
+    printf $handle "(cycle_count_2br %f %f)\n",
+        $stats{'best_cycle_count'} + $br_miss + $br_miss, 
+        $stats{'worst_cycle_count'} + $br_miss + $br_miss;
+    printf $handle "(cycle_count_3br %f %f)\n",
+        $stats{'best_cycle_count'} + $br_miss + $br_miss + $br_miss, 
+        $stats{'worst_cycle_count'} + $br_miss + $br_miss + $br_miss;
+}
+
+# main -- if you will 
+
+$input = STDIN;
+$output = STDOUT;
+
+while (@ARGV) {
+    $_ = shift @ARGV;
+    if (/-i/) {
+	$in = shift;
+	open (INFILE, $in) || die "Can't open input file.";
+        $input = INFILE;
+    }
+
+    elsif (/-o/) {
+	$out = shift;
+	open (OUTFILE, ('>'.$out)) || die "Can't open output file.";
+        $output = OUTFILE;
+    }
+}
+
+&get_input($input);
+&print_output($output);
+
+close ($input);
+close ($output);
+

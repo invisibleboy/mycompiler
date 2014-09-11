@@ -1,0 +1,181 @@
+\section{r\_\-regbank.c File Reference}
+\label{r__regbank_8c}\index{r_regbank.c@{r\_\-regbank.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}r\_\-regalloc.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{Lsched\_\-loads\_\-per\_\-cycle} (void)
+\item 
+void \bf{R\_\-define\_\-physical\_\-bank\_\-with\_\-rot} (int rclass, int type, int num\_\-reg, int reg\_\-size, int overlap, int $\ast$reg\_\-array, \bf{Set} $\ast$used, int num\_\-rot\_\-reg, int first\_\-rot\_\-reg, int num\_\-rot\_\-reg\_\-alloc)
+\item 
+static void \bf{R\_\-invalid\_\-bank\_\-overlap} (\bf{R\_\-Physical\_\-Bank} $\ast$bank, int type)
+\item 
+void \bf{R\_\-define\_\-physical\_\-bank} (int rclass, int type, int num\_\-reg, int reg\_\-size, int overlap, int $\ast$reg\_\-array, \bf{Set} $\ast$used)
+\item 
+void \bf{R\_\-analyze\_\-bank\_\-overlap} (void)
+\item 
+void \bf{R\_\-reset\_\-register\_\-stacks} (void)
+\item 
+int \bf{R\_\-find\_\-free\_\-register\_\-in\_\-bank} (\bf{R\_\-Physical\_\-Bank} $\ast$reg\_\-bank, \bf{Set} reserved\_\-resource, \bf{R\_\-Reg} $\ast$vreg)
+\item 
+int \bf{R\_\-find\_\-free\_\-register} (\bf{R\_\-Reg} $\ast$vreg, \bf{Set} reserved\_\-resource, int final)
+\item 
+int \bf{R\_\-find\_\-rotating\_\-register} (\bf{R\_\-Reg} $\ast$vreg, \bf{Set} reserved\_\-resource, int final)
+\item 
+int \bf{R\_\-smallest\_\-overlapping\_\-bank} (int type, int rclass)
+\item 
+void \bf{R\_\-print\_\-bank\_\-configuration} (void)
+\item 
+void \bf{R\_\-virtual\_\-to\_\-machine\_\-conversion} (void)
+\item 
+int \bf{R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple} (int ctype)
+\item 
+int \bf{R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc} (int ctype)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{r_regbank.c@{r\_\-regbank.c}!Lsched_loads_per_cycle@{Lsched\_\-loads\_\-per\_\-cycle}}
+\index{Lsched_loads_per_cycle@{Lsched\_\-loads\_\-per\_\-cycle}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lsched\_\-loads\_\-per\_\-cycle (void)}\label{r__regbank_8c_8dc9c8930405b68ae031fc5d17082581}
+
+
+\index{r_regbank.c@{r\_\-regbank.c}!R_analyze_bank_overlap@{R\_\-analyze\_\-bank\_\-overlap}}
+\index{R_analyze_bank_overlap@{R\_\-analyze\_\-bank\_\-overlap}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-analyze\_\-bank\_\-overlap (void)}\label{r__regbank_8c_be0fcd246b90863ed5c894f143caf432}
+
+
+
+
+Definition at line 239 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::alloc\_\-reg, R\_\-Physical\_\-Bank::avail\_\-reg, R\_\-Physical\_\-Bank::base\_\-index, Clear\_\-Stack(), R\_\-Physical\_\-Bank::defined, NULL, R\_\-Physical\_\-Bank::overlap, R\_\-Physical\_\-Bank::overlap\_\-cnt, R\_\-bank, R\_\-BTR, R\_\-DOUBLE, R\_\-FLOAT, R\_\-global\_\-overlap, R\_\-INT, R\_\-invalid\_\-bank\_\-overlap(), R\_\-MAX, R\_\-MAX\_\-BANK, R\_\-max\_\-overlap\_\-size, R\_\-NUM\_\-TYPES, R\_\-OVERLAP\_\-INT, R\_\-OVERLAP\_\-PREDICATE, R\_\-POINTER, R\_\-PREDICATE, R\_\-QUAD, R\_\-TYPE\_\-INC, R\_\-Physical\_\-Bank::rclass, R\_\-Physical\_\-Bank::reg\_\-size, stack, and R\_\-Physical\_\-Bank::type.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regbank.c@{r\_\-regbank.c}!R_define_physical_bank@{R\_\-define\_\-physical\_\-bank}}
+\index{R_define_physical_bank@{R\_\-define\_\-physical\_\-bank}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-define\_\-physical\_\-bank (int {\em rclass}, int {\em type}, int {\em num\_\-reg}, int {\em reg\_\-size}, int {\em overlap}, int $\ast$ {\em reg\_\-array}, \bf{Set} $\ast$ {\em used})}\label{r__regbank_8c_0261576ceab18c14c78be7e5a8bea4aa}
+
+
+
+
+Definition at line 219 of file r\_\-regbank.c.
+
+References R\_\-define\_\-physical\_\-bank\_\-with\_\-rot().\index{r_regbank.c@{r\_\-regbank.c}!R_define_physical_bank_with_rot@{R\_\-define\_\-physical\_\-bank\_\-with\_\-rot}}
+\index{R_define_physical_bank_with_rot@{R\_\-define\_\-physical\_\-bank\_\-with\_\-rot}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-define\_\-physical\_\-bank\_\-with\_\-rot (int {\em rclass}, int {\em type}, int {\em num\_\-reg}, int {\em reg\_\-size}, int {\em overlap}, int $\ast$ {\em reg\_\-array}, \bf{Set} $\ast$ {\em used}, int {\em num\_\-rot\_\-reg}, int {\em first\_\-rot\_\-reg}, int {\em num\_\-rot\_\-reg\_\-alloc})}\label{r__regbank_8c_69e80ed4a57eb32d370ff3ae5ab42ceb}
+
+
+
+
+Definition at line 95 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::alloc\_\-reg, R\_\-Physical\_\-Bank::avail\_\-reg, R\_\-Physical\_\-Bank::base\_\-index, CALLOC, R\_\-Physical\_\-Bank::defined, R\_\-Physical\_\-Bank::mask, R\_\-Physical\_\-Bank::max, NULL, R\_\-Physical\_\-Bank::num\_\-reg, R\_\-Physical\_\-Bank::num\_\-rot\_\-reg, R\_\-Physical\_\-Bank::num\_\-rot\_\-reg\_\-alloc, R\_\-Physical\_\-Bank::overlap, R\_\-bank, R\_\-BTR, R\_\-CALLEE, R\_\-CALLER, R\_\-DOUBLE, R\_\-FLOAT, R\_\-INT, R\_\-MACRO\_\-CALLEE, R\_\-MACRO\_\-CALLER, R\_\-map, R\_\-MAX\_\-BANK, R\_\-OVERLAP\_\-BTR, R\_\-OVERLAP\_\-DOUBLE, R\_\-OVERLAP\_\-FLOAT, R\_\-OVERLAP\_\-INT, R\_\-OVERLAP\_\-POINTER, R\_\-OVERLAP\_\-PREDICATE, R\_\-OVERLAP\_\-QUAD, R\_\-POINTER, R\_\-PREDICATE, R\_\-QUAD, R\_\-Physical\_\-Bank::rclass, R\_\-Physical\_\-Bank::reg\_\-size, R\_\-Physical\_\-Bank::res\_\-inc, R\_\-Physical\_\-Bank::rot\_\-reg\_\-ofs, R\_\-Physical\_\-Bank::type, and R\_\-Physical\_\-Bank::used\_\-reg.
+
+Referenced by R\_\-define\_\-physical\_\-bank().\index{r_regbank.c@{r\_\-regbank.c}!R_find_free_register@{R\_\-find\_\-free\_\-register}}
+\index{R_find_free_register@{R\_\-find\_\-free\_\-register}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-find\_\-free\_\-register (\bf{R\_\-Reg} $\ast$ {\em vreg}, \bf{Set} {\em reserved\_\-resource}, int {\em final})}\label{r__regbank_8c_280ac2e7a5d7fea0e22f8293451a51dc}
+
+
+
+
+Definition at line 889 of file r\_\-regbank.c.
+
+References BANK\_\-NAME(), R\_\-Reg::callee\_\-benefit, R\_\-Reg::caller\_\-benefit, R\_\-Physical\_\-Bank::defined, R\_\-Reg::flags, R\_\-Reg::index, NULL, R\_\-bank, R\_\-CALLEE, R\_\-CALLER, R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-Macro\_\-Allocation, R\_\-MACRO\_\-CALLEE, R\_\-MACRO\_\-CALLER, R\_\-PREFER\_\-SPILL, R\_\-Region, R\_\-REGION\_\-CONSTRAINED, R\_\-Reg::rclass, R\_\-Physical\_\-Bank::reg\_\-size, R\_\-Physical\_\-Bank::res\_\-inc, Set\_\-in(), and R\_\-Reg::type.
+
+Referenced by R\_\-allocate\_\-unconstrained\_\-virtual\_\-registers(), R\_\-allocate\_\-virtual\_\-registers(), R\_\-isplit\_\-spilled\_\-live\_\-range(), and R\_\-spill\_\-all\_\-virtual\_\-registers().\index{r_regbank.c@{r\_\-regbank.c}!R_find_free_register_in_bank@{R\_\-find\_\-free\_\-register\_\-in\_\-bank}}
+\index{R_find_free_register_in_bank@{R\_\-find\_\-free\_\-register\_\-in\_\-bank}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-find\_\-free\_\-register\_\-in\_\-bank (\bf{R\_\-Physical\_\-Bank} $\ast$ {\em reg\_\-bank}, \bf{Set} {\em reserved\_\-resource}, \bf{R\_\-Reg} $\ast$ {\em vreg})}\label{r__regbank_8c_62906af2907a84336bb2f9fcf3afd920}
+
+
+
+
+Definition at line 482 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::alloc\_\-init, R\_\-Physical\_\-Bank::alloc\_\-reg, R\_\-Physical\_\-Bank::avail\_\-reg, BANK\_\-NAME(), R\_\-Physical\_\-Bank::base\_\-index, CLASS\_\-NAME(), Delete\_\-Stack(), init, M\_\-arch, M\_\-X86, R\_\-Physical\_\-Bank::mask, R\_\-Reg::nth\_\-rot\_\-reg, NULL, R\_\-Physical\_\-Bank::num\_\-rot\_\-reg, R\_\-Physical\_\-Bank::overlap\_\-cnt, Pop(), Push\_\-Bot(), R\_\-bank, R\_\-FLOAT, R\_\-get\_\-rot\_\-regs(), R\_\-NUM\_\-TYPES, R\_\-Round\_\-Robin\_\-Allocation, R\_\-TYPE\_\-INC, R\_\-Physical\_\-Bank::rclass, R\_\-Physical\_\-Bank::reg\_\-size, R\_\-Physical\_\-Bank::res\_\-inc, R\_\-Physical\_\-Bank::rot\_\-reg\_\-ofs, R\_\-Reg::rotating, Set\_\-in(), Stack\_\-Elmt\_\-Data(), Stack\_\-Find(), Stack\_\-Find\_\-Next(), Stack\_\-Print(), Stack\_\-Ptr\_\-Reset(), Stack\_\-Top(), R\_\-Physical\_\-Bank::type, and R\_\-Reg::type.
+
+Referenced by R\_\-find\_\-free\_\-register(), and R\_\-find\_\-rotating\_\-register().\index{r_regbank.c@{r\_\-regbank.c}!R_find_rotating_register@{R\_\-find\_\-rotating\_\-register}}
+\index{R_find_rotating_register@{R\_\-find\_\-rotating\_\-register}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-find\_\-rotating\_\-register (\bf{R\_\-Reg} $\ast$ {\em vreg}, \bf{Set} {\em reserved\_\-resource}, int {\em final})}\label{r__regbank_8c_497dc42cb3f4e6ac1dd09f9755ee2a2f}
+
+
+
+
+Definition at line 1010 of file r\_\-regbank.c.
+
+References BANK\_\-NAME(), R\_\-Reg::callee\_\-benefit, R\_\-Reg::caller\_\-benefit, R\_\-Physical\_\-Bank::defined, R\_\-Reg::index, O\_\-locate\_\-rot\_\-reg\_\-bank(), R\_\-bank, R\_\-CALLEE, R\_\-CALLER, R\_\-find\_\-free\_\-register\_\-in\_\-bank(), R\_\-Reg::rclass, and R\_\-Reg::type.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers().\index{r_regbank.c@{r\_\-regbank.c}!R_get_rot_reg_alloc_multiple@{R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple}}
+\index{R_get_rot_reg_alloc_multiple@{R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-get\_\-rot\_\-reg\_\-alloc\_\-multiple (int {\em ctype})}\label{r__regbank_8c_9b9641eecc75dfc8834ee8b71dd338cf}
+
+
+
+
+Definition at line 1304 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::num\_\-rot\_\-reg, R\_\-Physical\_\-Bank::num\_\-rot\_\-reg\_\-alloc, R\_\-bank, R\_\-CALLEE, R\_\-CALLER, and R\_\-Ltype\_\-to\_\-Rtype().\index{r_regbank.c@{r\_\-regbank.c}!R_get_rot_reg_max_alloc@{R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc}}
+\index{R_get_rot_reg_max_alloc@{R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-get\_\-rot\_\-reg\_\-max\_\-alloc (int {\em ctype})}\label{r__regbank_8c_122cfa02ca5dbebbc80d1939c454155e}
+
+
+
+
+Definition at line 1323 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::num\_\-rot\_\-reg, R\_\-bank, R\_\-CALLEE, R\_\-CALLER, and R\_\-Ltype\_\-to\_\-Rtype().
+
+Referenced by R\_\-get\_\-rot\_\-regs().\index{r_regbank.c@{r\_\-regbank.c}!R_invalid_bank_overlap@{R\_\-invalid\_\-bank\_\-overlap}}
+\index{R_invalid_bank_overlap@{R\_\-invalid\_\-bank\_\-overlap}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void R\_\-invalid\_\-bank\_\-overlap (\bf{R\_\-Physical\_\-Bank} $\ast$ {\em bank}, int {\em type})\hspace{0.3cm}{\tt  [static]}}\label{r__regbank_8c_d3d6af32f7146d72713411dff75451fa}
+
+
+
+
+Definition at line 207 of file r\_\-regbank.c.
+
+References BANK\_\-NAME(), CLASS\_\-NAME(), R\_\-Physical\_\-Bank::rclass, and R\_\-Physical\_\-Bank::type.
+
+Referenced by R\_\-analyze\_\-bank\_\-overlap().\index{r_regbank.c@{r\_\-regbank.c}!R_print_bank_configuration@{R\_\-print\_\-bank\_\-configuration}}
+\index{R_print_bank_configuration@{R\_\-print\_\-bank\_\-configuration}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-print\_\-bank\_\-configuration (void)}\label{r__regbank_8c_9818f92db8b727292ec990c7547adef6}
+
+
+
+
+Definition at line 1101 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::alloc\_\-reg, R\_\-Physical\_\-Bank::avail\_\-reg, BANK\_\-NAME(), R\_\-Physical\_\-Bank::base\_\-index, CLASS\_\-NAME(), R\_\-Physical\_\-Bank::defined, NULL, R\_\-Physical\_\-Bank::num\_\-reg, R\_\-Physical\_\-Bank::num\_\-rot\_\-reg, R\_\-Physical\_\-Bank::overlap, R\_\-Physical\_\-Bank::overlap\_\-cnt, R\_\-bank, R\_\-BTR, R\_\-DOUBLE, R\_\-FLOAT, R\_\-INT, R\_\-MACRO\_\-CALLEE, R\_\-MACRO\_\-CALLER, R\_\-map, R\_\-MAX\_\-BANK, R\_\-OVERLAP\_\-BTR, R\_\-OVERLAP\_\-DOUBLE, R\_\-OVERLAP\_\-FLOAT, R\_\-OVERLAP\_\-INT, R\_\-OVERLAP\_\-POINTER, R\_\-OVERLAP\_\-PREDICATE, R\_\-OVERLAP\_\-QUAD, R\_\-POINTER, R\_\-PREDICATE, R\_\-QUAD, R\_\-TYPE\_\-INC, R\_\-Physical\_\-Bank::rclass, R\_\-Physical\_\-Bank::reg\_\-size, Stack\_\-Print(), and R\_\-Physical\_\-Bank::type.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_regbank.c@{r\_\-regbank.c}!R_reset_register_stacks@{R\_\-reset\_\-register\_\-stacks}}
+\index{R_reset_register_stacks@{R\_\-reset\_\-register\_\-stacks}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-reset\_\-register\_\-stacks (void)}\label{r__regbank_8c_ae2564b03360930948686a839eef4411}
+
+
+
+
+Definition at line 434 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::alloc\_\-reg, R\_\-Physical\_\-Bank::avail\_\-reg, R\_\-Physical\_\-Bank::base\_\-index, Clear\_\-Stack(), R\_\-Physical\_\-Bank::defined, R\_\-Physical\_\-Bank::num\_\-reg, Push\_\-Bot(), R\_\-bank, R\_\-MAX\_\-BANK, R\_\-Physical\_\-Bank::reg\_\-size, and stack.
+
+Referenced by R\_\-allocate\_\-virtual\_\-registers().\index{r_regbank.c@{r\_\-regbank.c}!R_smallest_overlapping_bank@{R\_\-smallest\_\-overlapping\_\-bank}}
+\index{R_smallest_overlapping_bank@{R\_\-smallest\_\-overlapping\_\-bank}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-smallest\_\-overlapping\_\-bank (int {\em type}, int {\em rclass})}\label{r__regbank_8c_d2992e99e47a9f04a944495a1d6c3853}
+
+
+
+
+Definition at line 1072 of file r\_\-regbank.c.
+
+References R\_\-Physical\_\-Bank::overlap, R\_\-bank, R\_\-BTR, R\_\-DOUBLE, R\_\-FLOAT, R\_\-INT, R\_\-OVERLAP\_\-BTR, R\_\-OVERLAP\_\-DOUBLE, R\_\-OVERLAP\_\-FLOAT, R\_\-OVERLAP\_\-INT, R\_\-OVERLAP\_\-PREDICATE, R\_\-OVERLAP\_\-QUAD, R\_\-PREDICATE, and R\_\-QUAD.\index{r_regbank.c@{r\_\-regbank.c}!R_virtual_to_machine_conversion@{R\_\-virtual\_\-to\_\-machine\_\-conversion}}
+\index{R_virtual_to_machine_conversion@{R\_\-virtual\_\-to\_\-machine\_\-conversion}!r_regbank.c@{r\_\-regbank.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-virtual\_\-to\_\-machine\_\-conversion (void)}\label{r__regbank_8c_efdb477fe2fdbfe172b1e38da10b2279}
+
+
+
+
+Definition at line 1200 of file r\_\-regbank.c.
+
+References BANK\_\-NAME(), R\_\-Reg::base\_\-index, R\_\-Physical\_\-Bank::base\_\-index, CLASS\_\-NAME(), R\_\-Physical\_\-Bank::defined, R\_\-Reg::flags, R\_\-Reg::index, R\_\-Reg::next\-Reg, NULL, R\_\-Reg::phys\_\-reg, R\_\-Reg::pvreg, R\_\-bank, R\_\-get\_\-rot\_\-regs(), R\_\-map, R\_\-PREALLOCATED\_\-FLYBY, R\_\-Print\_\-Allocation, R\_\-REGION\_\-CONSTRAINED, R\_\-SPILLED, R\_\-vreg, R\_\-Reg::rclass, R\_\-Reg::rotating, Set\_\-add(), R\_\-Reg::spill\_\-loc, R\_\-Reg::type, and R\_\-Physical\_\-Bank::used\_\-reg.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().

@@ -1,0 +1,886 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Profiles lcode using the portable emulator.
+#
+#   Run this script with no arguments for usage information.
+#
+#   Script rewritten by John Gyllenhaal, Wen-mei Hwu 12/94
+#   Enhanced to use new bench_info framework by John Gyllenhaal 1/99
+#   Enhanced to be portable (and renamed) by IMPACT Technologies Inc (JCG) 1/99
+# 08/22/02 REK Adding temporary debugging output
+
+# set up environment with default values:
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+EXT="";
+EXT_DESC="";
+STAT_DESC="_p";
+CHECK_DESC="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="user_specified";
+PROBE_FLAGS="-stdin";	# Turn off stdin list warning -JCG 6/99
+SHOW=0;
+CLEAN=1;
+TEST_ONLY=0;
+VERBOSE=0;
+BENCHMARK="NONE";
+CPREFIX="";
+ARGS="";
+CHECK="";
+CLEANUP="";
+DOCHECK=1;  # Check even "NONE" benchmark
+LOCAL=0;
+FILE_LIST="";
+DO_STATS=0;
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+PROFILING_TYPE="profiling";
+
+TASK_BROKER=0;
+TASK_BROKER_SLAVE=0;
+
+LPROFILE_PARMS="";
+DO_BUF=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    DIR="$1";
+
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: gen_profiled_lcode expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="$READ_PATHS -project $1"
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_profiled_lcode expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            # Explicitly specify bench dir
+            READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: gen_profiled_lcode does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_profiled_lcode expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            shift;;
+
+        -train|-eval)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: gen_profiled_lcode does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION";;
+
+	-loop_iters)
+#           Suppress message, gen_probed_lcode will print out message
+#	    echo "> Will generate loop iteration info"
+	    PROBE_FLAGS="${PROBE_FLAGS} -loop_iters";;
+	
+	-flush_trace)
+#           Suppress message, gen_probed_lcode will print out message
+#	    echo "> Trace buffer will be flushed after every oper (slow, for debug only).";
+	    PROBE_FLAGS="${PROBE_FLAGS} -flush_trace";;
+
+	-test_only)
+	    echo "> Will only test to see if lcode executes properly";
+	    PROBE_FLAGS="${PROBE_FLAGS} -noprobes";
+	    TEST_ONLY=1;;
+
+        -bench)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_profiled_lcode expects an argument after $OPTION"
+               exit 1;
+            fi
+            BENCHMARK="$1";
+            echo "> Using settings for '${BENCHMARK}'";
+            shift;;
+
+	-setup)
+	    SETUP="$1";
+	    shift;
+	    USE_USER_SETUP=1;
+	    echo "> Setup text set to '${SETUP}'";;
+	
+	-cprefix)
+	    CPREFIX="$1";
+	    shift;
+	    USE_USER_CPREFIX=1;
+	    echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+	-args)
+	    ARGS="$1";
+            DESCRIPTION="(user specified)";
+	    shift;
+	    USE_USER_ARGS=1;
+	    echo "> Args set to '${ARGS}'";;
+	
+	-check)
+	    CHECK="$1";
+	    shift;
+	    DOCHECK=1;
+	    USE_USER_CHECK=1;
+	    echo "> Check text set to '${CHECK}'";;
+
+	-cleanup)
+	    CLEANUP="$1";
+	    shift;
+	    USE_USER_CLEANUP=1;
+	    echo "> Cleanup text set to '${CLEANUP}'";;
+
+        # Silently ignore empty arguments (compile_bench generates them)
+	"")
+	    IGNORED_ARG=1;;  
+
+        -show)
+	    echo "> Show commands mode on (commands prefixed with +)"
+	    SHOW=1;;
+
+	-noclean)
+	    echo "> Will not clean up temp files"
+            PROBE_FLAGS="${PROBE_FLAGS} -noclean";
+	    CLEAN=0;;
+
+	-verbose)
+	    echo "> Verbose mode on"
+	    VERBOSE=1;;
+
+	-verbose_probe)
+#           Suppress message, gen_probed_lcode will print out message
+#	    echo "> Verbose probing mode on"
+            PROBE_FLAGS="${PROBE_FLAGS} -verbose";;
+
+        -stat|-stats) 
+            echo "> Will generate .stat file for each input using Lstatic";
+            DO_STATS=1;;
+
+        -ext)
+            EXT="$1";
+	    EXT_DESC="/${EXT}";
+	    STAT_DESC=".${EXT}_p";
+	    CHECK_DESC=".${EXT}_p";
+            shift;
+            echo "> Will use files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+	-buf)
+	    DO_BUF=1;
+	    echo "> Will do loop buffer encoding and profiling"
+	    PROBE_FLAGS="${PROBE_FLAGS} -buf -loop_iters"
+	    LPROFILE_PARMS="${LPROFILE_PARMS} -Fdo_buf_info=yes -Fbuf_file_name=buf.out";;
+
+	-task_broker)
+	    TASK_BROKER=1;	
+		;;
+
+	-task_broker_slave)
+	    TASK_BROKER_SLAVE=1;
+		;;
+
+        -krc|-ansi|-static_libs|-static|-shared_libs|-shared|-optimize|-debug|-c++)
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+        -ver|-nover)
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+	-lib_dir)
+	    NEW_LIB_DIR="$1";
+	    shift;
+#           Suppress message, gen_probed_lcode will print out message
+#	    echo "> Add ${NEW_LIB_DIR} to library directories";
+            PROBE_FLAGS="${PROBE_FLAGS} -lib_dir ${NEW_LIB_DIR}";;
+
+        -L*)
+#           Suppress message, gen_probed_lcode will print out message
+#           echo "> Adding '${OPTION}' to the link command";
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+
+	-add_lib)
+	    NEW_LIB="$1";
+	    shift;
+#           Suppress message, gen_probed_lcode will print out message
+#	    echo "> Add ${NEW_LIB} to libraries";
+            PROBE_FLAGS="${PROBE_FLAGS} -add_lib ${NEW_LIB}";;
+
+        -l*)
+#           Suppress message, gen_probed_lcode will print out message 
+#           echo "> Adding '${OPTION}' to the link command";
+            PROBE_FLAGS="${PROBE_FLAGS} ${OPTION}";;
+
+	-norc)
+            echo "> Mark binary for general speculation (IPF only)";
+            PROBE_FLAGS="${PROBE_FLAGS} -norc";;
+
+        -custom)
+	    echo "> Using custom profiling mode";
+	    PROFILING_TYPE="custom";;
+
+	*)
+	    echo "Error: Unknown option '${OPTION}'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+if [ $DO_BUF -eq 1 ]; then
+   rm -f BUF_INFO${STAT_DESC}
+fi
+
+# Don't check if already in error state
+if [ $VALID_ARGS -eq 1 ]; then
+   # Make sure -stats is used only with scheduled im files
+   if [ $DO_STATS -eq 1 -a "$EXT" != "" ]; then
+      case $EXT in      
+          # Must have im file
+          *im*)
+             VALID_ARGS=1;;
+          
+          # Punt otherwise
+          *)
+             echo " "
+             echo "Error: Expect *im* ext with -stats option, not '${EXT}'";
+             echo " "
+             exit 1;
+      esac
+   fi
+fi
+
+# Don't bother with finding benchmark info if already in an error state
+if [ $VALID_ARGS -eq 1  ]; then
+    #
+    #       Find the benchmark info
+    #
+    # Find the benchmark dir if not user specified
+    if [ $FIND_BENCH_DIR -eq 1 ]; then
+      BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+      if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+        exit 1;
+      fi
+    fi
+    echo " ";
+    echo "> Will use the execution info for ${BENCHMARK} in:"
+    echo ">   $BENCH_DIR"
+
+    # Get and verify benchmark inputs
+    INPUT_ERROR_CODE=0;
+
+    # Handle -prefix
+    if [ "$INPUT_OPTION" = "-prefix" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -input
+    elif [ "$INPUT_OPTION" = "-input" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -train
+    elif [ "$INPUT_OPTION" = "-train" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -ref
+    elif [ "$INPUT_OPTION" = "-eval" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle default cause, using eval_inputs
+    elif [ "$INPUT_OPTION" = "" ]; then
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -eval_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+    fi
+
+    if test "$INPUT_ERROR_CODE" != 0; then
+      echo " "
+      echo "> Exiting gen_profiled_lcode, find_bench_inputs returned this error message:"
+      echo "$INPUT_LIST";
+      exit 1;
+    fi
+
+    echo " "
+    echo "> The following input(s) will be used for Lcode profiling:"
+    echo ">   $INPUT_LIST"
+fi
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: gen_profiled_lcode dir [options] < list";
+    echo '> ';
+    echo '> Profiles lcode using the settings specified in the options';
+    echo '> ';
+    echo '> Zero or more of the following options may be specified';
+    echo '> ';
+    echo '> General Options (source ext, prof mode, bench_info settings, etc):';
+    echo '>   -test_only         only tests if lcode works properly (no profiling)';
+    echo ">   -ext 'ext'         uses files in dir with .ext, instead of file list";
+    echo '>   -stats             generates .stat files (Lstatic, for *im* files only!)';
+    echo ">   -bench 'name'      uses settings for 'name' instead of simple defaults";
+    echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+    echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name(s)"   run with "name(s)" instead of project'\''s EVAL_INPUTS';
+    echo '>   -prefix "prefix"   run with "prefix*" instead of project'\''s EVAL_INPUTS';
+    echo '>   -train             run with read_exec_info default training inputs';
+    echo '>   -eval              run with read_exec_info default eval inputs';
+    echo '>   -verbose           prints message at every step';
+    echo '>   -verbose_probe     turns on verbose during probing';
+    echo '>   -show              shows script commands (uses set -x)';
+    echo '>   -noclean           prevents clean up of temp files';
+    echo '>   -loop_iters        generates loop iteration info';
+    echo '>   -flush_trace       flushes trace buffer at every op (slow, for debug only)';
+    echo '>   -ver               prints info attribute contents of input Lcode';
+    echo '>   -nover             suppress version checking on input Lcode info attributes';
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -ansi              use Ansi-C compatible compilation mode';
+    echo '>   -krc               use K&R C compatible compilation mode';
+    echo '>   -static            use static libraries (default if STATIC_REQUIRED/NONE)';
+    echo '>   -shared            use shared libraries (default if SHARED_REQUIRED)';
+    echo '>   -optimize          generate optimized emulation executable';
+    echo '>   -debug             generate debugable emulation executable';
+    echo ">   -lib_dir 'dir'     also search 'dir' for libs";
+    echo ">   -Ldir              also search 'dir' for libs (cc-like version of -lib_dir)";
+    echo ">   -add_lib 'lib'     also link in 'lib'";
+    echo ">   -llibrary          also link in 'library' (cc-like version of -add_lib)";
+    echo '>   -f2c               links in f2c libs (Dont use! Compile in f2c lib source.)';
+
+    echo '> ';
+    echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+    echo "> "
+    echo ">   -setup 'text'      Runs 'text' to setup profile run";
+    echo ">   -cprefix 'text'    Prefixes 'text' to profile_exec_command";
+    echo ">   -args 'text'       Sets profile execution arguments to 'text'";
+    echo ">   -check 'text'      Runs 'text' to check output";
+    echo ">   -cleanup 'text'    Runs 'text' to cleanup after profile run";
+    echo ">"
+
+
+    exit 0200;
+fi;
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+if [ $TASK_BROKER_SLAVE -eq 1 ]; then
+   TASK_BROKER=0
+fi;
+
+if [ $TASK_BROKER -eq 1 ]; then
+   export DIR;
+   export ARGUMENTS;
+   tsub -b -s ProfileHPPA -o ${DIR}/tbprhp.out -e ${DIR}/tbprhp.out /dev/null;
+   exit 0;
+fi;
+
+# Turn on debugging if -show used
+if test $SHOW = 1; then
+  set -x
+fi
+	
+# Make sure directory specified exists
+if [ ! -d ${DIR} ]; then
+        echo "> ERROR: Directory '${DIR}' doesn't exist"
+        exit 0200;
+fi
+
+cd ${DIR}
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+
+    # Put extension in temp directory name
+    TEMP_DIR="impactprof_${EXT}";
+else
+    echo ""
+    echo "> Reading file names to process from stdin"
+    echo "> *** If script stops here, probably missing '-ext ext' or '< list'! ***"
+    while read FILE;
+    do
+	FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+    echo "> File names sucessfully read from stdin"
+
+    # Use generic temp directory name
+    TEMP_DIR="impactprof";
+fi
+
+# Make temp profile directory
+if test $VERBOSE = 1; then
+   echo "> **************************************************************";
+   echo "> Creating '${TEMP_DIR}' for use as temp diretory"
+   echo "> **************************************************************";
+   echo ">"
+fi
+rm -rf ${TEMP_DIR}
+mkdir ${TEMP_DIR}
+
+if test $VERBOSE = 1; then
+   echo "> **************************************************************";
+   echo "> Linking files into '${TEMP_DIR}'"
+   echo "> **************************************************************";
+   echo ">"
+fi
+
+# read files from list, and put in list in ${TEMP_DIR}
+for FILE in $FILE_LIST
+do
+    # Make sure file exists
+    if [ ! -f ${FILE} ]; then
+         echo "> ERROR: '${FILE}' does not exist in '${DIR}'";
+	 exit 0200;
+    fi
+
+    # Make link to file in ${TEMP_DIR}
+    cd ${TEMP_DIR}; ${LN_COMMAND} ../${FILE} .; cd ..
+
+    # Add file name to source list
+    echo ${FILE} >> ${TEMP_DIR}/srclist;
+
+    # If doing stats, create list we need
+    if [ $DO_STATS -eq 1 ]; then
+      echo ${FILE}_p >> ${TEMP_DIR}/statlist;
+    fi
+done
+
+
+# Generated probed executable for profiling
+if test $VERBOSE = 1; then
+  if test $TEST_ONLY = 0; then
+    echo "> **************************************************************";
+    echo "> Generating probed executable for profiling";
+    echo "> **************************************************************";
+    echo ">"
+  else
+    echo "> **************************************************************";
+    echo "> Generating probed executable for testing";
+    echo "> **************************************************************";
+    echo ">"
+  fi
+fi 
+
+# gen_probed_lcode needs host_layout_info.md in ${TEMP_DIR}
+# This command sequence must work for either symbolic or hard links
+cd ${TEMP_DIR}
+${LN_COMMAND} ../host_layout_info.md .
+cd ..
+
+gen_probed_lcode ${TEMP_DIR} ${PROFILING_TYPE} ${BENCHMARK} $READ_PATHS $PROBE_FLAGS < ${TEMP_DIR}/srclist
+if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+# Remove profile file list
+rm -f ${TEMP_DIR}/prof_file_list
+
+# Keep track if multiple inputs
+FIRST_INPUT="";
+MULTIPLE_INPUTS=0;
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+# Determine if there are multiple inputs and what the first input is
+for INPUT_NAME in $INPUT_LIST
+do
+  if [ "${FIRST_INPUT}" = "" ]; then
+     FIRST_INPUT="$INPUT_NAME";
+  else
+     MULTIPLE_INPUTS=1;
+  fi
+done
+
+# Do all the testing/running in current directory (not ${TEMP_DIR})
+# This allows -args, -check, etc. to reference files in the current directory
+for INPUT_NAME in $INPUT_LIST
+do
+  # Generate the profile
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+  fi
+  echo "> "
+  if test $TEST_ONLY = 0; then
+    echo "> Profiling ${BENCHMARK} in directory '${DIR}'";
+  else
+    echo "> Testing ${BENCHMARK} in directory '${DIR}'";
+  fi
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.stderr"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+
+    DESCRIPTION=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -description`;
+    if test "$?" != 0; then echo "Unexpected Exit (DESCRIPTION)!: non-zero exit code";echo "$DESCRIPTION";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+    DOCHECK=1;
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo "> "
+  echo ">  Input name: '${INPUT_NAME}'"
+  echo "> Description: '${DESCRIPTION}'"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> Link PreOpt: '${LINK_PREOPTIONS}'"
+  echo ">Link PostOpt: '${LINK_POSTOPTIONS}'"
+  echo ">    Lib_dirs: '${LIB_DIR}'"
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+  fi
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+    /bin/sh -c "$SETUP"
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  # Changed from csh to sh, added '${TEMP_DIR}/' to executable path -JCG 8/15/98 
+  TRACE_COMMAND="($CPREFIX ${TEMP_DIR}/${BENCHMARK}.probed $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+
+  TIME_STAMP=`date +"%a %h %d %T"`;
+  START_DATE=`date +"%T %D"`;
+  if test $TEST_ONLY = 0; then
+    echo " "
+    echo "> Starting profile run on $TIME_STAMP for ${BENCHMARK}/${INPUT_NAME}${EXT_DESC}"
+    echo "> Command that will be profiled (via /bin/sh):"
+    echo ">   ${TRACE_COMMAND}"
+
+    # REK 
+    echo "nice -10 Lprofile ${TEMP_DIR}/${BENCHMARK}.encoded ${TEMP_DIR}/${BENCHMARK}_${INPUT_NAME}.profile ${TEMP_DIR}/${BENCHMARK}.probed "${TRACE_COMMAND}" ${LPROFILE_PARMS}"
+
+    # Run the profiler, niced
+    nice -10 Lprofile ${TEMP_DIR}/${BENCHMARK}.encoded ${TEMP_DIR}/${BENCHMARK}_${INPUT_NAME}.profile ${TEMP_DIR}/${BENCHMARK}.probed "${TRACE_COMMAND}" ${LPROFILE_PARMS}
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    echo "${TEMP_DIR}/${BENCHMARK}_${INPUT_NAME}.profile" >> ${TEMP_DIR}/prof_file_list;
+  else
+    echo " "
+    echo "> Starting test run for ${BENCHMARK}/${INPUT_NAME}:"
+    echo "> Command that will be tested (via /bin/sh) for ${BENCHMARK}/${INPUT_NAME}:"
+    echo ">   ${TRACE_COMMAND}"    # Changed from csh to sh -JCG 8/15/98
+    /bin/sh -c "${TRACE_COMMAND}"
+  fi
+  END_DATE=`date +"%T %D"`;
+  echo ">"
+  echo "> Emulated ${BENCHMARK}/${INPUT_NAME}${EXT_DESC} from $START_DATE to $END_DATE";
+
+  if [ -s obj.out ]; then mv obj.out obj.$EXT.$INPUT_NAME.out; fi;
+  if [ -s malloc.out ]; then mv malloc.out malloc.$EXT.$INPUT_NAME.out; fi;
+
+  # Check the results, if check specified
+  if test $DOCHECK = 1; then
+    CHECK_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.check";
+    if [ "$CHECK" != "" ]; then
+      TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+    else
+      echo "> Warning: no check specified for $BENCHMARK/$INPUT_NAME.  Using 'cat $RESULT_FILE'"
+      TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+      CHECK_WARNINGS=1;
+    fi
+    echo " "
+    echo "> Checking results (via /bin/sh):"
+    echo ">   ${TRUE_CHECK}"
+    echo ">"
+    echo "> RESULT CHECK BEGIN FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC}";
+    # Shell out to do check so expresssions evaulated properly
+    /bin/sh -c "$TRUE_CHECK"
+
+    # Print warning if CHECK_FILE not empty
+    if [ -s $CHECK_FILE ]; then
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      echo "> Warning: check failed for ${BENCHMARK}/${INPUT_NAME}"
+      echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+      echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      head -n 30 $CHECK_FILE
+      CHECK_WARNINGS=1;
+      CMESG="(MISMATCH)"
+    else
+      CMESG="(PASSED)"
+    fi
+    echo "> RESULT CHECK END FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC} $CMESG";
+    echo ">"
+  fi
+
+  # Clean up unless using -noclean option
+  if test $CLEAN = 1; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Leaving $CHECK_FILE around for inspection"
+      echo "> Leaving $RESULT_FILE around for inspection"
+      echo "> Leaving $STDERR_FILE around for inspection"
+    else
+      echo "> Removing $CHECK_FILE";
+      rm -f $CHECK_FILE;
+      echo "> Removing $RESULT_FILE";
+      rm -f $RESULT_FILE;
+      echo "> Removing $STDERR_FILE";
+      rm -f $STDERR_FILE;
+    fi
+
+    if [ "$CLEANUP" != "" ]; then
+      echo "> Doing rest of cleanup using (via /bin/sh):"
+      echo ">   $CLEANUP"
+      /bin/sh -c "$CLEANUP";
+    else
+      echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+    fi
+  fi
+
+  ################
+  # Generate .stat files if specified and have multiple inputs
+  if [ $DO_STATS -eq 1 -a $MULTIPLE_INPUTS -eq 1 ]; then
+     echo " "
+     echo "> Preparing to generate ${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.stat"
+     # Do everything in the temp directory
+     cd $TEMP_DIR;
+
+     # Merge in this input's profile data
+     gen_Lget . ${BENCHMARK}_${INPUT_NAME}.profile \
+        ${BENCHMARK}_${INPUT_NAME}.index -Lcode < srclist
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     rm -f IMPACT_001 IMPACT_001.sum 
+     rm -f ../${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.stat
+
+     echo " "
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.stat"
+     
+     gen_Lstatic . IMPACT Lcode < statlist;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     mv IMPACT_001.sum ../${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.stat;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.sumview"
+     Sumview > ../${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.sumview;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.fnstat"
+     mv IMPACT_001 ../${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.fnstat;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+     cd ..
+  fi
+done   
+
+if test $TEST_ONLY = 0; then
+
+  if test $MULTIPLE_INPUTS = 1; then
+     # Combine profile(s) into one file
+     echo " "
+     echo "> Combining multiple profiling runs"
+
+#     echo "gen_profile_merge_lcode ${TEMP_DIR}/${BENCHMARK}_*.profile > ${TEMP_DIR}/${BENCHMARK}.profile"
+
+     gen_profile_merge_lcode ${TEMP_DIR}/${BENCHMARK}_*.profile > ${TEMP_DIR}/${BENCHMARK}.profile
+
+     echo "> done"
+
+     # Use special input name "average"
+     STAT_INPUT="average"
+
+  else
+     # Move single input to expected file name
+     mv -f ${TEMP_DIR}/${BENCHMARK}_${FIRST_INPUT}.profile ${TEMP_DIR}/${BENCHMARK}.profile
+ 
+     # Set stat input to true input name
+     STAT_INPUT="${FIRST_INPUT}"
+  fi
+
+  # Merge profile into files
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+    echo "> Merging profile info into files ";
+    echo "> **************************************************************";
+  fi
+
+  echo " "
+  echo "gen_Lget . ${TEMP_DIR}/${BENCHMARK}.profile ${TEMP_DIR}/${BENCHMARK}.index -Lcode < ${TEMP_DIR}/srclist"
+  gen_Lget . ${TEMP_DIR}/${BENCHMARK}.profile ${TEMP_DIR}/${BENCHMARK}.index -Lcode < ${TEMP_DIR}/srclist
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+  ################
+  # Generate .stat files if specified for final profile info
+  # If not multiple inputs, for now until get Lcode merging...
+  if [ $DO_STATS -eq 1 -a $MULTIPLE_INPUTS -eq 0 ]; then
+     echo " "
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.stat"
+     rm -f IMPACT_001 IMPACT_001.sum 
+     rm -f ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.stat
+     
+     gen_Lstatic . IMPACT Lcode < ${TEMP_DIR}/statlist;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     mv IMPACT_001.sum ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.stat
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.sumview"
+     Sumview > ${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.sumview;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+     echo "> Generating ${BENCHMARK}${STAT_DESC}.${STAT_INPUT}.fnstat"
+     mv IMPACT_001 ${BENCHMARK}${STAT_DESC}.${INPUT_NAME}.fnstat;
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+  fi
+fi
+
+if [ $DO_BUF -eq 1 ]; then
+    mv ${TEMP_DIR}/BUF_INFO ./BUF_INFO${STAT_DESC}
+fi
+
+# Clean up unless using -noclean option
+if test $CLEAN = 1; then
+   if test $VERBOSE = 1; then
+     echo "> **************************************************************";
+     echo "> Removing '${TEMP_DIR}' temp directory and cleaning up"
+     echo "> **************************************************************";
+     echo ">"
+   fi
+   rm -rf ${TEMP_DIR}
+fi
+
+echo " ";
+WARNINGS_ISSUED=0;
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BENCHMARK"
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   echo "> Done, gen_profiled_lcode may have failed (see above warnings) for $BENCHMARK"
+else
+   echo "> Done, gen_profiled_lcode succeeded for $BENCHMARK"
+fi

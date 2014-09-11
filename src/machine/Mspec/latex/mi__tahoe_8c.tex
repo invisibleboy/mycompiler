@@ -1,0 +1,903 @@
+\section{mi\_\-tahoe.c File Reference}
+\label{mi__tahoe_8c}\index{mi_tahoe.c@{mi\_\-tahoe.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}m\_\-spec.h\char`\"{}}\par
+{\tt \#include \char`\"{}m\_\-tahoe.h\char`\"{}}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$library/i\_\-list.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-LONG}~\bf{M\_\-tahoe\_\-size\_\-long}
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-POINTER}~\bf{M\_\-tahoe\_\-size\_\-pointer}
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-LLONG}~64
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-TAHOE\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-LONG}~\bf{M\_\-tahoe\_\-align\_\-long}
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-POINTER}~\bf{M\_\-tahoe\_\-align\_\-pointer}
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-LLONG}~64
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-TAHOE\_\-ALIGN\_\-MAX}~64
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+int \bf{M\_\-tahoe\_\-type\_\-size} (int mtype)
+\item 
+int \bf{M\_\-tahoe\_\-type\_\-align} (int mtype)
+\item 
+void \bf{M\_\-tahoe\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-tahoe\_\-bit\_\-llong} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-tahoe\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-tahoe\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-tahoe\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-tahoe\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-tahoe\_\-char} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-short} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-int} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-llong} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-long} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-tahoe\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-tahoe\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-tahoe\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-tahoe\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-tahoe\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-tahoe\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-tahoe\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-tahoe\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-tahoe\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-tahoe\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-tahoe\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-tahoe\_\-layout\_\-order} (void)
+\item 
+void \bf{M\_\-tahoe\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-tahoe\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-tahoe\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-tahoe\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-tahoe\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-tahoe\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-tahoe\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-tahoe\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-tahoe\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-tahoe\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-tahoe\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-tahoe\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+void \bf{M\_\-set\_\-model\_\-tahoe} (char $\ast$model\_\-name)
+\item 
+void \bf{M\_\-set\_\-swarch\_\-tahoe} (char $\ast$model\_\-name)
+\item 
+static int \bf{M\_\-align\_\-offset} (int offset, int align\_\-bit)
+\item 
+int \bf{M\_\-tahoe\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-tahoe\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-tahoe\_\-layout\_\-retvar} (\bf{M\_\-Param} param, int purpose)
+\item 
+int \bf{M\_\-tahoe\_\-fnvar\_\-to\_\-lvar} (\bf{\_\-M\_\-Type} type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro, int local\_\-space)
+\item 
+int \bf{M\_\-tahoe\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{M\_\-tahoe\_\-size\_\-long} = 64
+\item 
+int \bf{M\_\-tahoe\_\-size\_\-pointer} = 64
+\item 
+int \bf{M\_\-tahoe\_\-align\_\-long} = 64
+\item 
+int \bf{M\_\-tahoe\_\-align\_\-pointer} = 64
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_BIT@{M\_\-TAHOE\_\-ALIGN\_\-BIT}}
+\index{M_TAHOE_ALIGN_BIT@{M\_\-TAHOE\_\-ALIGN\_\-BIT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-BIT~1}\label{mi__tahoe_8c_86b143aa16566c337da91e8230bdeeab}
+
+
+
+
+Definition at line 98 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-bit\_\-char(), M\_\-tahoe\_\-bit\_\-int(), M\_\-tahoe\_\-bit\_\-llong(), M\_\-tahoe\_\-bit\_\-long(), M\_\-tahoe\_\-bit\_\-short(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_CHAR@{M\_\-TAHOE\_\-ALIGN\_\-CHAR}}
+\index{M_TAHOE_ALIGN_CHAR@{M\_\-TAHOE\_\-ALIGN\_\-CHAR}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-CHAR~8}\label{mi__tahoe_8c_2c612a6fac9fa9f6a933b0494dbe92a4}
+
+
+
+
+Definition at line 99 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-char(), M\_\-tahoe\_\-struct\_\-align(), M\_\-tahoe\_\-struct\_\-size(), M\_\-tahoe\_\-type\_\-align(), M\_\-tahoe\_\-union\_\-align(), and M\_\-tahoe\_\-union\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_DOUBLE@{M\_\-TAHOE\_\-ALIGN\_\-DOUBLE}}
+\index{M_TAHOE_ALIGN_DOUBLE@{M\_\-TAHOE\_\-ALIGN\_\-DOUBLE}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-DOUBLE~64}\label{mi__tahoe_8c_42c5aa197806b27fcee176ff90a1619d}
+
+
+
+
+Definition at line 106 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-double(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_FLOAT@{M\_\-TAHOE\_\-ALIGN\_\-FLOAT}}
+\index{M_TAHOE_ALIGN_FLOAT@{M\_\-TAHOE\_\-ALIGN\_\-FLOAT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-FLOAT~32}\label{mi__tahoe_8c_7d6816efb80675b1b093f88960b5615f}
+
+
+
+
+Definition at line 105 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-float(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_INT@{M\_\-TAHOE\_\-ALIGN\_\-INT}}
+\index{M_TAHOE_ALIGN_INT@{M\_\-TAHOE\_\-ALIGN\_\-INT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-INT~32}\label{mi__tahoe_8c_2bb88298bfb2f5f9b375f9b55ca7dcc3}
+
+
+
+
+Definition at line 101 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-int(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_LLONG@{M\_\-TAHOE\_\-ALIGN\_\-LLONG}}
+\index{M_TAHOE_ALIGN_LLONG@{M\_\-TAHOE\_\-ALIGN\_\-LLONG}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-LLONG~64}\label{mi__tahoe_8c_f9585261012854946ba2ec1be2866232}
+
+
+
+
+Definition at line 104 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-llong(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_LONG@{M\_\-TAHOE\_\-ALIGN\_\-LONG}}
+\index{M_TAHOE_ALIGN_LONG@{M\_\-TAHOE\_\-ALIGN\_\-LONG}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-LONG~\bf{M\_\-tahoe\_\-align\_\-long}}\label{mi__tahoe_8c_f75b47b56ff485d885b32f6ca34fa819}
+
+
+
+
+Definition at line 102 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-long(), M\_\-tahoe\_\-struct\_\-size(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_MAX@{M\_\-TAHOE\_\-ALIGN\_\-MAX}}
+\index{M_TAHOE_ALIGN_MAX@{M\_\-TAHOE\_\-ALIGN\_\-MAX}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-MAX~64}\label{mi__tahoe_8c_93db4b55d596475c8d4f5ebbc0e302e6}
+
+
+
+
+Definition at line 107 of file mi\_\-tahoe.c.\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_POINTER@{M\_\-TAHOE\_\-ALIGN\_\-POINTER}}
+\index{M_TAHOE_ALIGN_POINTER@{M\_\-TAHOE\_\-ALIGN\_\-POINTER}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-POINTER~\bf{M\_\-tahoe\_\-align\_\-pointer}}\label{mi__tahoe_8c_6f152d7d9ef37ac5954c2df3b62a4184}
+
+
+
+
+Definition at line 103 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-pointer(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_SHORT@{M\_\-TAHOE\_\-ALIGN\_\-SHORT}}
+\index{M_TAHOE_ALIGN_SHORT@{M\_\-TAHOE\_\-ALIGN\_\-SHORT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-SHORT~16}\label{mi__tahoe_8c_84f7aeb2760e5a9a6a41836d31c5f784}
+
+
+
+
+Definition at line 100 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-short(), M\_\-tahoe\_\-struct\_\-size(), and M\_\-tahoe\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_ALIGN_VOID@{M\_\-TAHOE\_\-ALIGN\_\-VOID}}
+\index{M_TAHOE_ALIGN_VOID@{M\_\-TAHOE\_\-ALIGN\_\-VOID}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-ALIGN\_\-VOID~-1}\label{mi__tahoe_8c_bbdbdd29401ab04d9f0a492aefc626e2}
+
+
+
+
+Definition at line 97 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-type\_\-align(), and M\_\-tahoe\_\-void().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_BIT@{M\_\-TAHOE\_\-SIZE\_\-BIT}}
+\index{M_TAHOE_SIZE_BIT@{M\_\-TAHOE\_\-SIZE\_\-BIT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-BIT~1}\label{mi__tahoe_8c_62a9f76898421ddfaa94307c7dc46dde}
+
+
+
+
+Definition at line 86 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-bit\_\-char(), M\_\-tahoe\_\-bit\_\-int(), M\_\-tahoe\_\-bit\_\-llong(), M\_\-tahoe\_\-bit\_\-long(), M\_\-tahoe\_\-bit\_\-short(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_CHAR@{M\_\-TAHOE\_\-SIZE\_\-CHAR}}
+\index{M_TAHOE_SIZE_CHAR@{M\_\-TAHOE\_\-SIZE\_\-CHAR}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-CHAR~8}\label{mi__tahoe_8c_23b09183c832886dc4e924fbf35f72d9}
+
+
+
+
+Definition at line 87 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-char(), M\_\-tahoe\_\-struct\_\-layout(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_DOUBLE@{M\_\-TAHOE\_\-SIZE\_\-DOUBLE}}
+\index{M_TAHOE_SIZE_DOUBLE@{M\_\-TAHOE\_\-SIZE\_\-DOUBLE}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-DOUBLE~64}\label{mi__tahoe_8c_dce92779f70f18269292effc6fc175dd}
+
+
+
+
+Definition at line 94 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-double(), M\_\-tahoe\_\-fnvar\_\-layout(), M\_\-tahoe\_\-layout\_\-fnvar(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_FLOAT@{M\_\-TAHOE\_\-SIZE\_\-FLOAT}}
+\index{M_TAHOE_SIZE_FLOAT@{M\_\-TAHOE\_\-SIZE\_\-FLOAT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-FLOAT~32}\label{mi__tahoe_8c_680b38b38d7116ce57b274c55d61303c}
+
+
+
+
+Definition at line 93 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-float(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_INT@{M\_\-TAHOE\_\-SIZE\_\-INT}}
+\index{M_TAHOE_SIZE_INT@{M\_\-TAHOE\_\-SIZE\_\-INT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-INT~32}\label{mi__tahoe_8c_7d2ad5ff6632ff48be6e85f87d0cbc7a}
+
+
+
+
+Definition at line 89 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-int(), M\_\-tahoe\_\-no\_\-short\_\-int(), M\_\-tahoe\_\-struct\_\-layout(), M\_\-tahoe\_\-struct\_\-size(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_LLONG@{M\_\-TAHOE\_\-SIZE\_\-LLONG}}
+\index{M_TAHOE_SIZE_LLONG@{M\_\-TAHOE\_\-SIZE\_\-LLONG}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-LLONG~64}\label{mi__tahoe_8c_ffa318c51db26d3b28a68e0f70df4bbd}
+
+
+
+
+Definition at line 92 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-fnvar\_\-layout(), M\_\-tahoe\_\-layout\_\-fnvar(), M\_\-tahoe\_\-layout\_\-retvar(), M\_\-tahoe\_\-llong(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_LONG@{M\_\-TAHOE\_\-SIZE\_\-LONG}}
+\index{M_TAHOE_SIZE_LONG@{M\_\-TAHOE\_\-SIZE\_\-LONG}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-LONG~\bf{M\_\-tahoe\_\-size\_\-long}}\label{mi__tahoe_8c_b73eaefb0529ab2ab88b2a0ff59627ab}
+
+
+
+
+Definition at line 90 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-eval\_\-type(), M\_\-tahoe\_\-long(), M\_\-tahoe\_\-struct\_\-layout(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_MAX@{M\_\-TAHOE\_\-SIZE\_\-MAX}}
+\index{M_TAHOE_SIZE_MAX@{M\_\-TAHOE\_\-SIZE\_\-MAX}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-MAX~64}\label{mi__tahoe_8c_34f9aca61d9507af47c474676c3a7ff7}
+
+
+
+
+Definition at line 95 of file mi\_\-tahoe.c.\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_POINTER@{M\_\-TAHOE\_\-SIZE\_\-POINTER}}
+\index{M_TAHOE_SIZE_POINTER@{M\_\-TAHOE\_\-SIZE\_\-POINTER}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-POINTER~\bf{M\_\-tahoe\_\-size\_\-pointer}}\label{mi__tahoe_8c_0e7cf21704aaa6e43f3cd82265e30e1a}
+
+
+
+
+Definition at line 91 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-eval\_\-type(), M\_\-tahoe\_\-pointer(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_SHORT@{M\_\-TAHOE\_\-SIZE\_\-SHORT}}
+\index{M_TAHOE_SIZE_SHORT@{M\_\-TAHOE\_\-SIZE\_\-SHORT}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-SHORT~16}\label{mi__tahoe_8c_d81bfc821416ff2bd7ff65a9b36ec82a}
+
+
+
+
+Definition at line 88 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-no\_\-short\_\-int(), M\_\-tahoe\_\-short(), M\_\-tahoe\_\-struct\_\-layout(), and M\_\-tahoe\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_TAHOE_SIZE_VOID@{M\_\-TAHOE\_\-SIZE\_\-VOID}}
+\index{M_TAHOE_SIZE_VOID@{M\_\-TAHOE\_\-SIZE\_\-VOID}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-TAHOE\_\-SIZE\_\-VOID~0}\label{mi__tahoe_8c_395a839784475e53da85ad9cd94e0390}
+
+
+
+
+Definition at line 85 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-tahoe\_\-type\_\-size(), and M\_\-tahoe\_\-void().
+
+\subsection{Function Documentation}
+\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_align_offset@{M\_\-align\_\-offset}}
+\index{M_align_offset@{M\_\-align\_\-offset}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-align\_\-offset (int {\em offset}, int {\em align\_\-bit})\hspace{0.3cm}{\tt  [static]}}\label{mi__tahoe_8c_ad6bf5b83fe0b3c9e4cda1c22a10ed61}
+
+
+
+
+Definition at line 1215 of file mi\_\-tahoe.c.
+
+References I\_\-punt().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_set_model_tahoe@{M\_\-set\_\-model\_\-tahoe}}
+\index{M_set_model_tahoe@{M\_\-set\_\-model\_\-tahoe}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-set\_\-model\_\-tahoe (char $\ast$ {\em model\_\-name})}\label{mi__tahoe_8c_b89c7354a24ed1af09c5050eaa5faaf7}
+
+
+
+
+Definition at line 1130 of file mi\_\-tahoe.c.
+
+References M\_\-assert(), M\_\-IPF\_\-CHIVANO, M\_\-IPF\_\-DEERFIELD, M\_\-IPF\_\-ITANIUM, M\_\-IPF\_\-MADISON, M\_\-IPF\_\-MCKINLEY, M\_\-IPF\_\-MENDOCITO, M\_\-model, and M\_\-use\_\-layout\_\-database.
+
+Referenced by M\_\-set\_\-machine().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_set_swarch_tahoe@{M\_\-set\_\-swarch\_\-tahoe}}
+\index{M_set_swarch_tahoe@{M\_\-set\_\-swarch\_\-tahoe}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-set\_\-swarch\_\-tahoe (char $\ast$ {\em model\_\-name})}\label{mi__tahoe_8c_61dc2747abad23fb15b2b4dfcc342b6d}
+
+
+
+
+Definition at line 1168 of file mi\_\-tahoe.c.
+
+References M\_\-assert(), M\_\-IPF\_\-HPUX\_\-ILP32, M\_\-IPF\_\-HPUX\_\-LP64, M\_\-IPF\_\-LIN\_\-LP64, M\_\-IPF\_\-WIN\_\-P64, M\_\-swarch, M\_\-tahoe\_\-align\_\-long, M\_\-tahoe\_\-align\_\-pointer, M\_\-tahoe\_\-size\_\-long, and M\_\-tahoe\_\-size\_\-pointer.
+
+Referenced by M\_\-set\_\-machine().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_array_align@{M\_\-tahoe\_\-array\_\-align}}
+\index{M_tahoe_array_align@{M\_\-tahoe\_\-array\_\-align}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{mi__tahoe_8c_c90662ba62bbe78bb455d3bb4b08802e}
+
+
+
+
+Definition at line 554 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_array_layout@{M\_\-tahoe\_\-array\_\-layout}}
+\index{M_tahoe_array_layout@{M\_\-tahoe\_\-array\_\-layout}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{mi__tahoe_8c_3d76a0fdf56be863526be8b3a8fe5967}
+
+
+
+
+Definition at line 546 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-array\_\-layout().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_array_size@{M\_\-tahoe\_\-array\_\-size}}
+\index{M_tahoe_array_size@{M\_\-tahoe\_\-array\_\-size}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{mi__tahoe_8c_3eee62ce39ed239f6ece3b07c8ffcf34}
+
+
+
+
+Definition at line 561 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_bit_char@{M\_\-tahoe\_\-bit\_\-char}}
+\index{M_tahoe_bit_char@{M\_\-tahoe\_\-bit\_\-char}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{mi__tahoe_8c_2933c805e70790bd174a1d77ecda16b2}
+
+
+
+
+Definition at line 249 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_bit_int@{M\_\-tahoe\_\-bit\_\-int}}
+\index{M_tahoe_bit_int@{M\_\-tahoe\_\-bit\_\-int}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{mi__tahoe_8c_0628ab5edcaae873895eb3622bab42ac}
+
+
+
+
+Definition at line 224 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_bit_llong@{M\_\-tahoe\_\-bit\_\-llong}}
+\index{M_tahoe_bit_llong@{M\_\-tahoe\_\-bit\_\-llong}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-bit\_\-llong (\bf{M\_\-Type} {\em type}, int {\em n})}\label{mi__tahoe_8c_eea59b82c8e601d5428ad72549791743}
+
+
+
+
+Definition at line 200 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LLONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-llong().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_bit_long@{M\_\-tahoe\_\-bit\_\-long}}
+\index{M_tahoe_bit_long@{M\_\-tahoe\_\-bit\_\-long}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{mi__tahoe_8c_69b7fbdb4a30e5f0e03d027edf26d711}
+
+
+
+
+Definition at line 212 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_bit_short@{M\_\-tahoe\_\-bit\_\-short}}
+\index{M_tahoe_bit_short@{M\_\-tahoe\_\-bit\_\-short}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{mi__tahoe_8c_29a13507ca727d0d1b9f9f0c964140fe}
+
+
+
+
+Definition at line 236 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_call_type@{M\_\-tahoe\_\-call\_\-type}}
+\index{M_tahoe_call_type@{M\_\-tahoe\_\-call\_\-type}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{mi__tahoe_8c_562c80bd43de27fd0c1765eb10972403}
+
+
+
+
+Definition at line 464 of file mi\_\-tahoe.c.
+
+References M\_\-tahoe\_\-double(), M\_\-tahoe\_\-llong(), M\_\-tahoe\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_call_type2@{M\_\-tahoe\_\-call\_\-type2}}
+\index{M_tahoe_call_type2@{M\_\-tahoe\_\-call\_\-type2}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{mi__tahoe_8c_6ec662cacd0816f49a4e3895db514ae3}
+
+
+
+
+Definition at line 498 of file mi\_\-tahoe.c.
+
+References M\_\-tahoe\_\-char(), M\_\-tahoe\_\-double(), M\_\-tahoe\_\-float(), M\_\-tahoe\_\-int(), M\_\-tahoe\_\-llong(), M\_\-tahoe\_\-long(), M\_\-tahoe\_\-pointer(), M\_\-tahoe\_\-short(), M\_\-tahoe\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_cb_label_name@{M\_\-tahoe\_\-cb\_\-label\_\-name}}
+\index{M_tahoe_cb_label_name@{M\_\-tahoe\_\-cb\_\-label\_\-name}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{mi__tahoe_8c_560c43663569b5e87f35ac39699c53c7}
+
+
+
+
+Definition at line 1015 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_char@{M\_\-tahoe\_\-char}}
+\index{M_tahoe_char@{M\_\-tahoe\_\-char}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-char (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_5697c3ce4a7a5a7560d40675f73427c2}
+
+
+
+
+Definition at line 261 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-CHAR, M\_\-TAHOE\_\-SIZE\_\-CHAR, M\_\-TYPE\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-char(), M\_\-tahoe\_\-call\_\-type2(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_double@{M\_\-tahoe\_\-double}}
+\index{M_tahoe_double@{M\_\-tahoe\_\-double}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_1fc682be85697c234eb6afb9fda2b2e1}
+
+
+
+
+Definition at line 321 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-DOUBLE, M\_\-TAHOE\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double(), M\_\-tahoe\_\-call\_\-type(), M\_\-tahoe\_\-call\_\-type2(), M\_\-tahoe\_\-eval\_\-type(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_eval_type@{M\_\-tahoe\_\-eval\_\-type}}
+\index{M_tahoe_eval_type@{M\_\-tahoe\_\-eval\_\-type}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{mi__tahoe_8c_a7478431ced7155d3fc52a21a3f8e811}
+
+
+
+
+Definition at line 343 of file mi\_\-tahoe.c.
+
+References I\_\-punt(), M\_\-tahoe\_\-double(), M\_\-tahoe\_\-float(), M\_\-tahoe\_\-int(), M\_\-tahoe\_\-llong(), M\_\-TAHOE\_\-SIZE\_\-LONG, M\_\-TAHOE\_\-SIZE\_\-POINTER, M\_\-tahoe\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_eval_type2@{M\_\-tahoe\_\-eval\_\-type2}}
+\index{M_tahoe_eval_type2@{M\_\-tahoe\_\-eval\_\-type2}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{mi__tahoe_8c_2f106a7d6fd7ae02a53d7383812ac777}
+
+
+
+
+Definition at line 419 of file mi\_\-tahoe.c.
+
+References M\_\-tahoe\_\-char(), M\_\-tahoe\_\-double(), M\_\-tahoe\_\-float(), M\_\-tahoe\_\-int(), M\_\-tahoe\_\-llong(), M\_\-tahoe\_\-long(), M\_\-tahoe\_\-pointer(), M\_\-tahoe\_\-short(), M\_\-tahoe\_\-void(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_float@{M\_\-tahoe\_\-float}}
+\index{M_tahoe_float@{M\_\-tahoe\_\-float}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_9ef6b573f0c7641723ecce3ff69f0c27}
+
+
+
+
+Definition at line 311 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-FLOAT, M\_\-TAHOE\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float(), M\_\-tahoe\_\-call\_\-type2(), M\_\-tahoe\_\-eval\_\-type(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_fn_label_name@{M\_\-tahoe\_\-fn\_\-label\_\-name}}
+\index{M_tahoe_fn_label_name@{M\_\-tahoe\_\-fn\_\-label\_\-name}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-tahoe\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{mi__tahoe_8c_01d1fd9ed229f1ab0d78531f1cf54613}
+
+
+
+
+Definition at line 1103 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_fn_name_from_label@{M\_\-tahoe\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_tahoe_fn_name_from_label@{M\_\-tahoe\_\-fn\_\-name\_\-from\_\-label}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-tahoe\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{mi__tahoe_8c_b6ece8a15107246baaedc05def0addc8}
+
+
+
+
+Definition at line 1119 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_fnvar_layout@{M\_\-tahoe\_\-fnvar\_\-layout}}
+\index{M_tahoe_fnvar_layout@{M\_\-tahoe\_\-fnvar\_\-layout}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{mi__tahoe_8c_aee428d5fa060639ff8dc30d577b7d28}
+
+
+
+
+Definition at line 1464 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, \_\-struct\_\-M\_\-Type::flags, I\_\-warn(), M\_\-align\_\-offset(), M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-TAHOE\_\-FLT\_\-BASE, M\_\-TAHOE\_\-IN\_\-INT\_\-BASE, M\_\-TAHOE\_\-MAX\_\-FNVAR\_\-FLT\_\-REG, M\_\-TAHOE\_\-MAX\_\-FNVAR\_\-INT\_\-REG, M\_\-TAHOE\_\-OUT\_\-INT\_\-BASE, M\_\-TAHOE\_\-SIZE\_\-DOUBLE, M\_\-TAHOE\_\-SIZE\_\-LLONG, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYFL\_\-HFA, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, SCRATCH\_\-SPACE\_\-SIZE, \_\-struct\_\-M\_\-Type::size, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-fnvar\_\-layout().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_fnvar_to_lvar@{M\_\-tahoe\_\-fnvar\_\-to\_\-lvar}}
+\index{M_tahoe_fnvar_to_lvar@{M\_\-tahoe\_\-fnvar\_\-to\_\-lvar}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-fnvar\_\-to\_\-lvar (\bf{\_\-M\_\-Type} {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro}, int {\em local\_\-space})}\label{mi__tahoe_8c_674bc7806a976981d30794d202023162}
+
+
+
+
+Definition at line 1748 of file mi\_\-tahoe.c.
+
+References ADDR\_\-ALIGN, \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, \_\-struct\_\-M\_\-Type::size, and \_\-struct\_\-M\_\-Type::type.\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_int@{M\_\-tahoe\_\-int}}
+\index{M_tahoe_int@{M\_\-tahoe\_\-int}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-int (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_7dd8e5b7aba56b59a277b8fee6d6089c}
+
+
+
+
+Definition at line 281 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-INT, M\_\-TAHOE\_\-SIZE\_\-INT, M\_\-TYPE\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-int(), M\_\-tahoe\_\-call\_\-type2(), M\_\-tahoe\_\-eval\_\-type(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_is_cb_label@{M\_\-tahoe\_\-is\_\-cb\_\-label}}
+\index{M_tahoe_is_cb_label@{M\_\-tahoe\_\-is\_\-cb\_\-label}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{mi__tahoe_8c_65db155eb6457075e24b5580b6bb6ba7}
+
+
+
+
+Definition at line 1023 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_is_jumptbl_label@{M\_\-tahoe\_\-is\_\-jumptbl\_\-label}}
+\index{M_tahoe_is_jumptbl_label@{M\_\-tahoe\_\-is\_\-jumptbl\_\-label}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{mi__tahoe_8c_aa2b60fe38beb740f7ef8217418198ca}
+
+
+
+
+Definition at line 1040 of file mi\_\-tahoe.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_jumptbl_label_name@{M\_\-tahoe\_\-jumptbl\_\-label\_\-name}}
+\index{M_tahoe_jumptbl_label_name@{M\_\-tahoe\_\-jumptbl\_\-label\_\-name}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{mi__tahoe_8c_bb22237234a735ceb38d71af32be67c7}
+
+
+
+
+Definition at line 1031 of file mi\_\-tahoe.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_layout_fnvar@{M\_\-tahoe\_\-layout\_\-fnvar}}
+\index{M_tahoe_layout_fnvar@{M\_\-tahoe\_\-layout\_\-fnvar}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{mi__tahoe_8c_e6dafb74338048f86d32cb046583abd1}
+
+
+
+
+Definition at line 1243 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, \_\-struct\_\-M\_\-Type::flags, I\_\-warn(), List\_\-next(), List\_\-start(), M\_\-align\_\-offset(), M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-RET\_\-FNVAR, M\_\-TAHOE\_\-FLT\_\-BASE, M\_\-TAHOE\_\-IN\_\-INT\_\-BASE, M\_\-TAHOE\_\-MAX\_\-FNVAR\_\-FLT\_\-REG, M\_\-TAHOE\_\-MAX\_\-FNVAR\_\-INT\_\-REG, M\_\-TAHOE\_\-OUT\_\-INT\_\-BASE, M\_\-TAHOE\_\-RET\_\-INT\_\-BASE, M\_\-TAHOE\_\-SIZE\_\-DOUBLE, M\_\-TAHOE\_\-SIZE\_\-LLONG, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYFL\_\-HFA, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, SCRATCH\_\-SPACE\_\-SIZE, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Param::su\_\-ereg, \_\-struct\_\-M\_\-Param::su\_\-sreg, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-fnvar().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_layout_order@{M\_\-tahoe\_\-layout\_\-order}}
+\index{M_tahoe_layout_order@{M\_\-tahoe\_\-layout\_\-order}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-layout\_\-order (void)}\label{mi__tahoe_8c_0fd8e321e9349bd76e6174982b5a4817}
+
+
+
+
+Definition at line 643 of file mi\_\-tahoe.c.
+
+References M\_\-assert(), M\_\-BIG\_\-ENDIAN, M\_\-IPF\_\-HPUX\_\-ILP32, M\_\-IPF\_\-HPUX\_\-LP64, M\_\-IPF\_\-LIN\_\-LP64, M\_\-IPF\_\-WIN\_\-P64, M\_\-LITTLE\_\-ENDIAN, and M\_\-swarch.
+
+Referenced by M\_\-layout\_\-order(), M\_\-tahoe\_\-struct\_\-layout(), and M\_\-tahoe\_\-struct\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_layout_retvar@{M\_\-tahoe\_\-layout\_\-retvar}}
+\index{M_tahoe_layout_retvar@{M\_\-tahoe\_\-layout\_\-retvar}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-layout\_\-retvar (\bf{M\_\-Param} {\em param}, int {\em purpose})}\label{mi__tahoe_8c_966af636704e0a28c519bce1e12aaeae}
+
+
+
+
+Definition at line 1675 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::flags, I\_\-warn(), M\_\-assert(), M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-TAHOE\_\-RET\_\-INT\_\-BASE, M\_\-tahoe\_\-return\_\-register(), M\_\-TAHOE\_\-SIZE\_\-LLONG, M\_\-THRU\_\-REGISTER, M\_\-TYFL\_\-HFA, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Param::su\_\-ereg, \_\-struct\_\-M\_\-Param::su\_\-sreg, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-retvar().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_llong@{M\_\-tahoe\_\-llong}}
+\index{M_tahoe_llong@{M\_\-tahoe\_\-llong}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-llong (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_8aabb6b608632e9da867309ea377ed47}
+
+
+
+
+Definition at line 291 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-LLONG, M\_\-TAHOE\_\-SIZE\_\-LLONG, M\_\-TYPE\_\-LLONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-llong(), M\_\-tahoe\_\-call\_\-type(), M\_\-tahoe\_\-call\_\-type2(), M\_\-tahoe\_\-eval\_\-type(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_long@{M\_\-tahoe\_\-long}}
+\index{M_tahoe_long@{M\_\-tahoe\_\-long}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-long (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_9c39825c0aa53b5debe3f2351ba74e15}
+
+
+
+
+Definition at line 301 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-LONG, M\_\-TAHOE\_\-SIZE\_\-LONG, M\_\-TYPE\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-long(), M\_\-tahoe\_\-call\_\-type2(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_lvar_layout@{M\_\-tahoe\_\-lvar\_\-layout}}
+\index{M_tahoe_lvar_layout@{M\_\-tahoe\_\-lvar\_\-layout}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{mi__tahoe_8c_83c5ea1a62433d6e2994b47ce9678e3f}
+
+
+
+
+Definition at line 1807 of file mi\_\-tahoe.c.
+
+References ADDR\_\-ALIGN, \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-INT, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_no_short_int@{M\_\-tahoe\_\-no\_\-short\_\-int}}
+\index{M_tahoe_no_short_int@{M\_\-tahoe\_\-no\_\-short\_\-int}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-no\_\-short\_\-int (void)}\label{mi__tahoe_8c_bae6101c8131e2457900459863c3a0be}
+
+
+
+
+Definition at line 1007 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-SIZE\_\-INT, and M\_\-TAHOE\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_pointer@{M\_\-tahoe\_\-pointer}}
+\index{M_tahoe_pointer@{M\_\-tahoe\_\-pointer}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-pointer (\bf{M\_\-Type} {\em type})}\label{mi__tahoe_8c_431c118d6346f0cda63defbdf30c303d}
+
+
+
+
+Definition at line 331 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-POINTER, M\_\-TAHOE\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer(), M\_\-tahoe\_\-call\_\-type2(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_return_register@{M\_\-tahoe\_\-return\_\-register}}
+\index{M_tahoe_return_register@{M\_\-tahoe\_\-return\_\-register}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{mi__tahoe_8c_90c637e6c9975a5a0d566cd3b8033dbd}
+
+
+
+
+Definition at line 1081 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-RET\_\-FLT\_\-BASE, M\_\-TAHOE\_\-RET\_\-INT\_\-BASE, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-return\_\-register(), and M\_\-tahoe\_\-layout\_\-retvar().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_short@{M\_\-tahoe\_\-short}}
+\index{M_tahoe_short@{M\_\-tahoe\_\-short}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-short (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{mi__tahoe_8c_956cdcd052d1c400b571918e4d4755c7}
+
+
+
+
+Definition at line 271 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-SHORT, M\_\-TAHOE\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-short(), M\_\-tahoe\_\-call\_\-type2(), and M\_\-tahoe\_\-eval\_\-type2().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_struct_align@{M\_\-tahoe\_\-struct\_\-align}}
+\index{M_tahoe_struct_align@{M\_\-tahoe\_\-struct\_\-align}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{mi__tahoe_8c_4b3f100f176c0f4c0eb97d284f988ffd}
+
+
+
+
+Definition at line 893 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_struct_layout@{M\_\-tahoe\_\-struct\_\-layout}}
+\index{M_tahoe_struct_layout@{M\_\-tahoe\_\-struct\_\-layout}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{mi__tahoe_8c_2f5c57da620826d5ee7f5ebe89c52968}
+
+
+
+
+Definition at line 678 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-BIG\_\-ENDIAN, M\_\-LITTLE\_\-ENDIAN, M\_\-tahoe\_\-layout\_\-order(), M\_\-TAHOE\_\-SIZE\_\-CHAR, M\_\-TAHOE\_\-SIZE\_\-INT, M\_\-TAHOE\_\-SIZE\_\-LONG, M\_\-TAHOE\_\-SIZE\_\-SHORT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_struct_size@{M\_\-tahoe\_\-struct\_\-size}}
+\index{M_tahoe_struct_size@{M\_\-tahoe\_\-struct\_\-size}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{mi__tahoe_8c_adfbbd15234f02f71059c754902b91cb}
+
+
+
+
+Definition at line 913 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-BIG\_\-ENDIAN, M\_\-LITTLE\_\-ENDIAN, M\_\-TAHOE\_\-ALIGN\_\-CHAR, M\_\-TAHOE\_\-ALIGN\_\-LONG, M\_\-TAHOE\_\-ALIGN\_\-SHORT, M\_\-tahoe\_\-layout\_\-order(), M\_\-TAHOE\_\-SIZE\_\-INT, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-struct\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_structure_pointer@{M\_\-tahoe\_\-structure\_\-pointer}}
+\index{M_tahoe_structure_pointer@{M\_\-tahoe\_\-structure\_\-pointer}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-structure\_\-pointer (int {\em purpose})}\label{mi__tahoe_8c_91ba5045032bb2398a6e709689f97b14}
+
+
+
+
+Definition at line 1073 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-RET\_\-INT\_\-BASE.
+
+Referenced by M\_\-structure\_\-pointer().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_type_align@{M\_\-tahoe\_\-type\_\-align}}
+\index{M_tahoe_type_align@{M\_\-tahoe\_\-type\_\-align}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-type\_\-align (int {\em mtype})}\label{mi__tahoe_8c_fd9875093aee6434bea63d135da74db9}
+
+
+
+
+Definition at line 148 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-ALIGN\_\-BIT, M\_\-TAHOE\_\-ALIGN\_\-CHAR, M\_\-TAHOE\_\-ALIGN\_\-DOUBLE, M\_\-TAHOE\_\-ALIGN\_\-FLOAT, M\_\-TAHOE\_\-ALIGN\_\-INT, M\_\-TAHOE\_\-ALIGN\_\-LLONG, M\_\-TAHOE\_\-ALIGN\_\-LONG, M\_\-TAHOE\_\-ALIGN\_\-POINTER, M\_\-TAHOE\_\-ALIGN\_\-SHORT, M\_\-TAHOE\_\-ALIGN\_\-VOID, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, and M\_\-TYPE\_\-VOID.
+
+Referenced by M\_\-type\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_type_size@{M\_\-tahoe\_\-type\_\-size}}
+\index{M_tahoe_type_size@{M\_\-tahoe\_\-type\_\-size}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-type\_\-size (int {\em mtype})}\label{mi__tahoe_8c_bfa07e005fe8c5bae9b7f368ba970f78}
+
+
+
+
+Definition at line 111 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-SIZE\_\-BIT, M\_\-TAHOE\_\-SIZE\_\-CHAR, M\_\-TAHOE\_\-SIZE\_\-DOUBLE, M\_\-TAHOE\_\-SIZE\_\-FLOAT, M\_\-TAHOE\_\-SIZE\_\-INT, M\_\-TAHOE\_\-SIZE\_\-LLONG, M\_\-TAHOE\_\-SIZE\_\-LONG, M\_\-TAHOE\_\-SIZE\_\-POINTER, M\_\-TAHOE\_\-SIZE\_\-SHORT, M\_\-TAHOE\_\-SIZE\_\-VOID, M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, and M\_\-TYPE\_\-VOID.
+
+Referenced by M\_\-type\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_union_align@{M\_\-tahoe\_\-union\_\-align}}
+\index{M_tahoe_union_align@{M\_\-tahoe\_\-union\_\-align}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{mi__tahoe_8c_c0c978cc4f5ad66c56c1c889a93ba8af}
+
+
+
+
+Definition at line 589 of file mi\_\-tahoe.c.
+
+References M\_\-TAHOE\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_union_layout@{M\_\-tahoe\_\-union\_\-layout}}
+\index{M_tahoe_union_layout@{M\_\-tahoe\_\-union\_\-layout}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{mi__tahoe_8c_f222120dd33a020d9109be846e2fe686}
+
+
+
+
+Definition at line 576 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-union\_\-layout().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_union_size@{M\_\-tahoe\_\-union\_\-size}}
+\index{M_tahoe_union_size@{M\_\-tahoe\_\-union\_\-size}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-tahoe\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{mi__tahoe_8c_12cc409b38378a099466730bf3e3679b}
+
+
+
+
+Definition at line 610 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_void@{M\_\-tahoe\_\-void}}
+\index{M_tahoe_void@{M\_\-tahoe\_\-void}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-tahoe\_\-void (\bf{M\_\-Type} {\em type})}\label{mi__tahoe_8c_d615fccd186804ec8b7fa8bdce96a550}
+
+
+
+
+Definition at line 190 of file mi\_\-tahoe.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TAHOE\_\-ALIGN\_\-VOID, M\_\-TAHOE\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-tahoe\_\-call\_\-type(), M\_\-tahoe\_\-call\_\-type2(), M\_\-tahoe\_\-eval\_\-type(), M\_\-tahoe\_\-eval\_\-type2(), and M\_\-void().
+
+\subsection{Variable Documentation}
+\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_align_long@{M\_\-tahoe\_\-align\_\-long}}
+\index{M_tahoe_align_long@{M\_\-tahoe\_\-align\_\-long}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-tahoe\_\-align\_\-long} = 64}\label{mi__tahoe_8c_5696ac06dd2f0a1a64528469a44e5e67}
+
+
+
+
+Definition at line 82 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-set\_\-swarch\_\-tahoe().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_align_pointer@{M\_\-tahoe\_\-align\_\-pointer}}
+\index{M_tahoe_align_pointer@{M\_\-tahoe\_\-align\_\-pointer}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-tahoe\_\-align\_\-pointer} = 64}\label{mi__tahoe_8c_33c21a40cd7467ea8bb49965b655456d}
+
+
+
+
+Definition at line 83 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-set\_\-swarch\_\-tahoe().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_size_long@{M\_\-tahoe\_\-size\_\-long}}
+\index{M_tahoe_size_long@{M\_\-tahoe\_\-size\_\-long}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-tahoe\_\-size\_\-long} = 64}\label{mi__tahoe_8c_54027c199505594190d4eb40419d1a4a}
+
+
+
+
+Definition at line 80 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-set\_\-swarch\_\-tahoe().\index{mi_tahoe.c@{mi\_\-tahoe.c}!M_tahoe_size_pointer@{M\_\-tahoe\_\-size\_\-pointer}}
+\index{M_tahoe_size_pointer@{M\_\-tahoe\_\-size\_\-pointer}!mi_tahoe.c@{mi\_\-tahoe.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{M\_\-tahoe\_\-size\_\-pointer} = 64}\label{mi__tahoe_8c_453bb38f993c0b878ea083f779843bd0}
+
+
+
+
+Definition at line 81 of file mi\_\-tahoe.c.
+
+Referenced by M\_\-set\_\-swarch\_\-tahoe().

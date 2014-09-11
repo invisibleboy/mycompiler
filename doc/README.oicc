@@ -1,0 +1,1038 @@
+1. Getting started
+
+1.1 Set environment variables - the quick way
+ Source the init-impact script.  If you are running from the build
+directory, this is found in <builddir>/init-impact.  If you have
+installed OpenIMPACT using 'make install', init-impact is found in
+<prefix>/bin/init-impact.  By default, <prefix> is /usr/local.
+
+ init-impact should work with either sh or csh derived shells.  Use
+one of the following commands to set up your environment.
+
+sh shell, running from build directory
+sh$ . <builddir>/init-impact
+
+sh shell, running from install directory
+sh$ . <prefix>/bin/init-impact
+
+csh shell, running from build directory
+csh% source <builddir>/init-impact
+
+csh shell, running rom install directory
+csh% source <prefix>/bin/init-impact
+
+1.2 Set environment variables - details
+ OpenIMPACT requires the following environment variables.  They are
+set automatically when the compiler is built and can be set at any
+time using 'init-impact'.  This section is primarily for reference.
+
+1.2.1 IMPACT_REL_PATH
+ This is the path to the the directory containing the data files
+shipped with OpenIMPACT (mdes, platform, etc).  
+
+ When building the compiler or running from the build tree, this
+should be set to the source directory.  For example, if you unpacked
+the OpenIMPACT tarball into your home directory, you would set
+IMPACT_REL_PATH to ~/openimpact-<version>.
+
+ After installation, IMPACT_REL_PATH should be set to the installation
+prefix.  If you did not specify the --prefix option to configure, this
+will be /usr/local.
+
+1.2.2 IMPACT_ROOT
+ This is the path to the build tree.  It is used mainly to locate data
+files generated from others in IMPACT_REL_PATH.
+
+ When building the compiler or running from the build tree, this
+should be set to the build directory.  For example, if you built the
+compiler in a directory 'build' in your home directory, you would set
+IMPACT_ROOT to ~/build.
+
+ After installation, IMPACT_ROOT should be set to the installation
+prefix.  If you did not specify the --prefix option to configure, this
+will be /usr/local.
+
+1.2.3 DEFAULT_PROJECT
+ For historical reasons, OpenIMPACT requires DEFAULT_PROJECT to be set
+to 'full'.
+
+1.2.4 IMPACT_BUILD_TYPE
+ This indicates the target for the code.  For typical use on
+Linux/Itanium, this should be set to 'ia64lin'.
+
+1.2.5 IMPACT_HOST_PLATFORM
+ This indicates the platform on which the compiler is run.  For
+typical use on Linux/Itanium, this should be set to 'ia64lin'.
+
+1.2.6 IMPACT_HOST_COMPILER
+ This indicates the name of a standard ANSI C compiler to use for
+preprocessing.  For Linux/Itanium, this should be set to 'gcc'.
+
+1.2.7 STD_PARMS_FILE
+ This is the standard set of parameters for the OpenIMPACT modules.
+The parameter files are found under $IMPACT_REL_PATH/parms.  For
+Linux/Itanium, this should be set to
+$IMPACT_REL_PATH/parms/STD_PARMS.IPF-MCKINLEY.
+
+1.2.8 PATH
+ In addition to the bin directory, OpenIMPACT needs to have its
+scripts and driver directories in the path.  bin is found in
+IMPACT_ROOT.  driver and scripts are found in IMPACT_REL_PATH.
+
+2. Using the compiler
+ The driver for OpenIMPACT is named 'oicc'.  After sourcing
+init-impact (section 1.1), oicc will be in your path.
+
+2.1 Standard compiler features
+ The driver accepts all standard compiler arguments.
+
+-c             Compile to a .o file; do not link.
+-O0            Turn off optimizations.
+-O, -O1        Optimization level 1.  This is the default.  This turns
+               on most standard optimizations (Lopti, Lblock,
+               Lsuperscalar).
+-O2            Perform pointer analysis and software pipelining in
+               addition to all optimizations performed in level 1.
+-O3            Perform inlining in addition to all optimizations
+               performed in level 2.
+-o             Specify the output file name.
+-D             Define a preprocessor symbol.
+-E             Preprocess only.  The driver runs gcc as the
+               preprocessor and exits.
+-I             Specify a path to search for include files.
+-L             Specify a path to search for libraries.
+-R             Specify a path to search for dynamically linked
+               libraries.
+-l             Specify a library to link into the final binary.
+-v, --verbose  Print the output of each compilation stage to standard
+               output.
+
+2.2 Profiling
+ Profiling is required to take full advantage of many optimizations.
+Profiling with oicc is a three or five step process.
+
+ Most programs can get by with the three step process.  The three step
+process is faster and less error prone than the full five step
+process.
+
+-Run oicc with the option '--pprof-gen'. oicc will generate a probed
+ binary from the C-like intermediate representation (Pcode).  This
+ binary will have a .prof extension (a.out.prof by default).  oicc
+ adds the .prof extension to the name specified with the -o option, so
+ 'oicc --pprof-gen -o foo' will result in a probed binary named
+ foo.prof.
+-Run this binary one or more times on some typical input to collect a
+ profile.
+-Run oicc again, with the option '--pprof-use'.  oicc will read the
+ collected profile and produce the final binary.
+
+ The translation to the assembly-like intermediate representation
+(Lcode) sometimes reveals structures that the Pcode profiler cannot
+currently detect.  This usually manifests as a mismatched loop count
+in the later stages of the compiler.  In this case, you must use the
+five step profiling process.  Note that the five step profiling
+process is currently incompatible with programs that use threads or
+signal handlers.
+
+-Run oicc with the option '--pprof-gen' (or '--profile-stage 1').
+ oicc will generate a probed binary from the C-like intermediate
+ representation (Pcode).
+-Run this binary one or more times on some typical input to collect a
+ profile.
+-Run oicc again, with the options '--pprof-use' and '--lprof-gen' (or
+ '--profile-stage 2)'.  oicc will generate a probed binary from the
+ assembly-like intermediate representation (Lcode).
+-Run this second binary on the same input used in the second step.
+ Note that this binary will run significantly slower than the first.
+-Run oicc again, with the option '--lprof-use' (or 
+ '--profile-stage 3') to produce the final binary.
+
+2.3 Source code visibility
+ When generating a library, OpenIMPACT stores its C-like intermediate
+representation (Pcode) in the library for future use.  This
+representation is very similar to the preprocessed source for the
+library.  If you do not wish to distribute your source code, it is
+necessary to specify the --no-insert-pcode option to oicc.  Note that
+specifying this option may prevent OpenIMPACT from performing some
+optimizations when linking against this library in the future.
+
+2.4 Pointer analysis (aka alias analysis or PIP)
+ Turning on pointer analysis allows the compiler to be more aggressive
+when optimizing expressions using pointers.  Pointer analysis is
+potentially very time consuming, so it is turned off by default.
+Specify '--do-pointer-analysis' (or -O2 or greater) to turn it on.
+
+2.4.1 PIP files for library functions
+ Pointer analysis requires information on each function used by a
+program.  The PIPGen module creates this information for each function
+in the program being compiled and stores it in the 'pip' subdirectory
+of the compilation directory.  Pointer analysis also requires this
+information for functions in system libraries for which source code is
+not necessarily available.
+
+ The most commonly used system functions already have pip files that
+were generated when the compiler was built.  These files are generated
+from the file <source dir>/platform/lib.c.  This file contains stubs
+that emulate the real function's access to its arguments.  If PIPAnal
+exits with an error due to a missing pip file for a system function
+(section 6.2.1), adding a stub for the function to lib.c and
+rebuilding the compiler should resolve the error.  See section 4.2 for
+more information.
+
+2.4.2 PIP files for libraries for which source is available (method 1)
+ If you have the source for a library, the best way to resolve missing
+pip file errors is to compile the library with oicc and link against
+it (see also section 2.7).  oicc will extract its intermediate
+representation from the library and recompile the library functions
+from source.  This will optimize the library functions along with the
+program source, but will also increase compilation time.
+
+2.4.3 PIP files for libraries for which source is available (method 2)
+ If you have the source for a library, but do not wish to take the
+time necessary to optimize the library functions, you can use oicc to
+generate pip files for a library and proceed no further.  To do this,
+compile your library using 'oicc --do-pip-gen-only' as the compiler.
+The pip files will be saved to the pip directory in the compile
+directory.  They can then be copied to the
+<builddir>/platform/ia64lin_gcc/PIP_info directory.  When you compile
+your program, link against a version of the library not compiled with
+oicc (or compiled with the '--no-insert-pcode' option) so that oicc
+does not recompile the library.
+
+2.5 Software pipelining
+ Specify '--pipe' to turn on software pipelining.  Software pipelining
+requires pointer analysis, so specifying '--pipe' automatically turns
+on pointer analysis.
+
+2.6 Inlining
+ Specify '--do-inlining' to turn on inlining.  This performs both
+single file and cross file inlining.
+
+2.7 Quick library compilation
+ If you intend to use a library only to link against a program being
+compiled with oicc, you can specify the option '--insert-pcode-only'
+when compiling that library.  oicc will generate the C-like
+intermediate representation and insert it into a library generated by
+gcc.  When this library is linked using oicc, the intermediate
+representation is extracted and compiled at that time.  Note that the
+compiled code in this library is generated by gcc.  If you link
+against this library using any other compiler you will not see any
+optimizations from oicc.
+
+2.8 Other OpenIMPACT options
+ The following are some useful OpenIMPACT specific options.
+
+-j <jobs>                 Run up to <jobs> jobs in parallel in the
+                          second stage when possible.
+--keep-intermediate-files Keep all temporary files around after
+                          compilation.
+--max-unroll <num>        Unroll loops a maximum of <num> times.  This
+                          defaults to 8 on Linux/Itanium.
+--mitanium, --mmckinley   Select a set of parameters for a first
+                          (itanium) or second (mckinley) generation
+                          Itanium processor.  This defaults to
+                          mckinley.
+--no-control-speculation  Turn off control speculation.  Control
+                          speculation currently requires the general
+                          speculation kernel patch.
+--no-insert-pcode         By default, oicc inserts pcode in the final
+                          output binary just as it does to the object
+                          generated by gcc when the -c option is
+                          specified (see section 4.1.1).  This lets oicc
+                          optimize code linking against libraries
+                          generated by OpenIMPACT.  The Pcode is a
+                          slightly transformed version of the original
+                          source code, so it may be desirable not to
+                          have it inserted in the binary.
+--parmfile <file>         Use <file> as the parameter file instead of
+                          the default STD_PARMS.IPF-MCKINLEY.
+--resume                  Resume compilation from the latest completed
+                          stage.  This assumes that
+                          --keep-intermediate-files was specified on
+                          the previous compiler run.
+--stop-after-assembling   The --stop* options stop oicc after a
+--stop-after-ctop         certain stage.
+--stop-after-converting-to-gp
+--stop-after-generating-host-layout-info
+--stop-after-lblock
+--stop-after-lcode-profiling
+--stop-after-lopti
+--stop-after-lsuperscalar
+--stop-after-ltahoe
+--stop-after-pcode-profiling
+--stop-after-pflatten
+--stop-after-pinline
+--stop-after-pointer-analysis
+--stop-after-psplit
+--stop-after-ptol
+--use-ias                 Write assembly code that can be assembled by
+                          Intel's assembler, ias.  oicc then uses ias
+                          to assemble the code.
+
+2.9 GCC compatibility options
+ The driver accepts many GCC options for compatibility with build
+schemes expecting GCC.  GCC is used as the preprocessor and linker, so
+all GCC options affecting those stages are accepted and passed
+through.  GCC specific options affecting other stages are typically
+accepted and silently ignored.
+
+3. Debugging options
+ oicc does not yet fully support debugging symbols.  It can instruct
+the underlying assembler to insert assembly level debugging symbols,
+but that is the extent of the support for debugging the user program.
+Many of these options are intended more for debugging the compiler
+than the user program.
+
+3.1 Inserting debugging symbols
+ Specify the '-g' option to insert assembly level debugging symbols
+into the output binary.
+
+3.2 Inspecting compiler progress
+ Specify the '--verbose' option to get debugging output from the
+compiler, including each command executed and its results.
+
+3.3 Debugging a compiler module
+ Occasionally a module will exhibit a bug that occurs only when it is
+called from the driver.  In order to debug these, oicc can call your
+preferred debugger instead of executing the command directly.
+
+3.3.1 --prompt-to-debug <regex>
+ If this option is specified, oicc will prompt you to debug any
+command that matches the given regular expression.
+
+3.3.2 --debugger <prog>
+ Specify the debugger to use call when debugging a module.  This
+defaults to gdb.
+
+3.4 Compiler performance
+ oicc has support for collecting performance data on the compiler
+modules to help optimize the compiler itself.
+
+3.4.1 --collect-gprof-info <regex>
+ If the command to be executed matches the given regular expression,
+oicc will collect the gmon.out file after the command is executed.
+This option assumes the module was compiled with gprof support.  The
+gmon.out file is moved to the oicc.gprof directory and renamed to
+indicate the module that generated it.
+
+3.4.2 --analyze-gprof-info
+ This option instructs oicc to run gprof on the gmon.out file as it is
+collected.  This may slow compilation significantly.
+
+3.5 Intermediate files
+ Most oicc modules read a temporary version of the source file,
+perform some processing, then write a new temporary version.  In
+normal operation oicc deletes these temporary files as soon as they
+are no longer needed.
+
+3.5.1 --keep-intermediate-files
+ oicc will not delete any temporary file created during compilation
+
+3.5.2 --clean
+ oicc will delete all temporary files created during the previous
+compilation.  To use this option, perform a normal compilation with
+this option.  oicc will find the temporary files based on the given
+source files and delete only those files it created.
+
+4. Compiler theory of operation
+
+4.1 Compilation phases
+ Compilation with a normal compiler (gcc) is normally broken up into
+two phases.  In the first phase, each source file is processed
+individually and compiled to an object file.  In the second phase, all
+object files are linked together to produce the output binary.
+
+ Some OpenIMPACT modules require knowledge of all source files during
+the compilation phase.  If a project has several source files,
+OpenIMPACT cannot produce an object file from a single source file.
+Therefore, OpenIMPACT's two phases are different than a normal
+compiler.
+
+4.1.1 oicc phase 1
+ In phase 1, oicc does as much as it can with a single file.  This
+amounts to little more than preprocessing the source.
+
+ After going as far as it can in phase 1, oicc calls gcc to compile
+the source file to an object.  The output of OpenIMPACT's first phase
+is then packed into the object.  This allows build schemes based on
+standard compilers to get the object they expect after the first
+phase.
+
+4.1.2 Libraries
+ Many build schemes use the ar command to generate libraries from the
+objects generated in the first phase.  The object files written by
+oicc are compatible with ar, so this poses no problem.  OpenIMPACT's
+output is preserved in the library.
+
+4.1.3 oicc phase 2
+ In the second phase, oicc gets all object files and libraries
+generated in the first phase.  OpenIMPACT can now see all files in the
+project, so it can now produce an output binary.  oicc extracts the
+phase 1 output from the incoming objects and libraries and processes
+it through the rest of the compiler.  Most of the compilation takes
+place here, so phase 2 takes much longer than with a standard
+compiler.
+
+ After OpenIMPACT has generated object files, it rebuilds any
+libraries generated after phase 1.  The GCC generated object inside
+the library is replaced with an OpenIMPACT one.  By default, the
+intermediate representation from OpenIMPACT's first phase is also
+stored in the library for future use.
+
+4.2 Pointer analysis
+ Pointer analysis requires inspecting each function, even ones in
+system libraries.  To work around the lack of source code for library
+functions, the file <builddir>/platform/lib.c defines stand-in
+functions that emulate the function's access to input and output
+variables.  If oicc exits with the error 'library template file for
+<func> not found', the system function <func> is simply unknown.  The
+solution is to add a definition for the needed function to lib.c, the
+rebuild the platform directory by running 'make platform'.
+
+4.2.1 lib.c function definitions
+ The definitions in lib.c are simply stubs that emulate the real
+function's access to input and output variables.  Only access to
+pointers needs to be emulated, so an empty definition suffices for a
+function like 'cos'.
+
+   double cos(double x)
+   {
+   }
+
+ For a function that takes a pointer, it is necessary to access the
+pointer's data in a similar way to the real function.  For something
+like 'strlen', this simply means accessing every character in the
+input string.
+
+   size_t strlen(const char *s)
+   {
+       int i;
+
+       for (i = 0; s[i]; i++);
+   }
+
+ Functions that return pointers need to write the pointer's data, like
+'strcpy'.
+
+   char *strcpy(char *s1, const char *s2)
+   {
+       int i;
+
+       for (i = 0; s1[i] = s2[i]; i++);
+       return s1;
+   }
+
+4.2.2 Function definitions for libraries with available source
+ If you have the source code for a system library, it may be possible
+to get function definitions for that library without first compiling
+the library with OpenIMPACT.  Assuming the library does not use inline
+assembly or other features that OpenIMPACT does not currently support,
+you can compile the library using 'oicc --insert-pcode-only' as your
+compiler command.  The objects and libraries generated by this command
+are the output of gcc with the OpenIMPACT intermediate representation
+packed inside.
+
+4.2.3 Conditionally defining lib.c functions
+ Some functions defined in lib.c may be from optional system
+libraries, such as the jpeg library.  Since definitions in lib.c
+typically rely on prototypes from system headers, it may be necessary
+to conditionally define these functions so that they are not processed
+on a system without the proper headers.  The 'configure' script can
+check for the presence of these extra libraries and define a
+preprocessor symbol to conditionally define the function in lib.c.
+
+ 'configure' uses the AC_CHECK_LIB macro to check for extra libraries.
+By default, this macro adds the newly found library to the $LIBS
+variable, which is then used when linking every program built by the
+resulting makefile.  To prevent these unneeded libraries from being
+linked into the OpenIMPACT binaries, you should use AC_CHECK_LIB in
+the following manner:
+
+AC_CHECK_LIB([jpeg], [jpeg_read_header],
+	     [AC_DEFINE([HAVE_LIBJPEG], 1,
+			[Define to 1 if you have the `jpeg' library (-ljpeg).])
+	      AM_CONDITIONAL([HAVE_LIBJPEG], [true])], 
+	     [AM_CONDITIONAL([HAVE_LIBJPEG], [false])], [])
+
+ The AM_CONDITIONAL macros will define HAVE_LIBJPEG in the context of
+Makefile.am, so that you can conditionally add targets to the list of
+pip files generated by the Makefile.  This will make sure that all pip
+files are listed as the result of a rule iff they can be built.  See
+platform/ia64lin_gcc/PIP_info/Makefile.am to see how these
+conditionals are used.
+
+5. oicc options
+ This is the complete list of oicc options (also viewable by running
+'oicc -h').
+
+Options:
+  Long options can be specified with one dash or two.
+  --analyze-gprof-info        Run gprof on the info collected with the
+                              --collect-gprof-info option as it is collected.
+			      This may slow compilation significantly.
+  --ansi                      Input is ANSI C (default).
+  -C                          Tell the preprocessor not to discard comments.
+                              Implies -E. Passed directly to gcc.
+  -c                          Stop after converting to Pcode. The compiler does
+                              as much as it can when it is called with a subset
+			      of the source files.
+  --clean                     Delete all intermediate files associated with
+                              the source files given on the command line.
+  --collect-gprof-info <cmd>  Collect the gmon.out files created by commands
+                              profiled for gprof.  The files will be moved to
+			      the oicc.gprof directory.  Profiles are only
+			      collected for commands matching the regular
+			      expression <cmd>.
+  -D<define>                  Define symbol <define>.
+  --debugger <prog>           Use <prog> as the debugger. This defaults to gdb.
+  --do-induct                 Run code through Linduct to determine
+                              non-loop-variant load/store pairs.
+  --do-inlining               Perform function inlining.
+  --do-pip-gen-only           Generate the PIP files for the file(s) or library
+                              given on the command line.
+  --do-pointer-analysis       Run pointer analysis on the code.
+  -E                          Stop after the preprocessing stage.
+  -F<parm>                    Set a parameter that will be passed to each
+                              IMPACT module.
+  -g                          Generate assembly level debugging symbols.
+  -H                          Prints the name of each header file used. Passed
+                              directly to gcc.
+  -h, --help                  Print this message.
+  -I<path>                    Add <path> to the list of directories to search
+                              for include files.
+  -i                          See -r.
+  --idirafter <dir>           Add <dir> to the tail end of the -I include
+                              search path.
+  --imacros <file>            Process <file> to get macro definitions.
+                              Passed directly to preprocessor (gcc).
+  --include <file>            Process <file> before the specified input file.
+                              Passed directly to preprocessor (gcc).
+  --insert-pcode-only         Compile source using gcc, but insert OpenIMPACT's
+                              intermediate representation into the objects.
+  --iprefix <prefix>          Prepend <prefix> to the directories specified
+                              in later --iwithprefix options. Passed directly
+			      to preprocessor (gcc).
+  --iwithprefix <dir>         (See also --iprefix).  Add <prefix>/<dir> to the
+                              tail end of the -I list of directories. Passed
+			      directly to preprocessor (gcc).
+  -j<jobs>                    When possible, run up to <jobs> jobs in parallel.
+  --keep-intermediate-files   Keep extra files generated during each stage
+                              of the compilation.
+  --krc                       Input is in K&R C form instead of ANSI C.
+  -L<path>                    Add <path> to the list of directories to search
+                              for libraries.
+  -l<lib>                     Link against <lib>.
+  --lprof-gen                 Generate a profiled binary for profile guided
+                              optimization (Lcode stage).  Lcode profiling
+			      requires that Pcode profiling has already been
+			      done (--lprof-gen is typically specified at the
+			      same time as --pprof-use).
+  --lprof-use                 After running the profiled binary, use the
+                              profile information to guide the optimization
+			      (Lcode stage).
+  -M, -MD, -MM, -MMD          Options for the preprocessor. Implies -E. Passed
+                              directly to gcc.
+  --max-unroll <num>          Unroll loops a maximum of <num> times.
+  --mitanium                  Generate code for a first generation Itanium
+  --mmckinley                 Generate code for a second generation Itanium.
+                              (default).
+  --model <ITANIUM|MCKINLEY>  The same as specifying --mitanium or --mmckinley.
+  --no-control-speculation    Turn off control speculation.
+  --no-insert-pcode           When generating the final object files, do not
+                              pack the Pcode into the object.
+  --nostartfiles              Do not use the standard system startup files when
+                              linking. Passed directly to linker (gcc).
+  --nostdinc                  Do not search the standard system directories for
+                              header files. Passed directly to preprocessor
+			      (gcc).
+  --nostdlib                  Do not use the standard system libraries when
+                              linking. Passed directly to linker (gcc).
+  -O0, -O, -O1, -O2, -O3      Set the optimization level.
+                              -O0     no optimization
+			      -O, -O1 (default) Perform most standard
+			              optizations (Lopti, Lblock, Lsuperscalar)
+			      -O2     O1 + pointer analysis & pipelining
+			      -O3     O2 + inlining
+  -o <file>                   Save the resulting binary in <file>.
+  -P                          Tell the preprocessor not to generate '#line'
+                              commands. Implies -E. Passed directly to gcc.
+  --parmfile <file>           Specify a parameter file to override the default
+                              (STD_PARMS.IPF-MCKINLEY).
+  --pipe                      Turn on software pipelining. This also turns
+                              on pointer analysis.
+  --pprof-gen                 Generate a profiled binary for profile guided
+                              optimization (Pcode stage).
+  --pprof-use                 After running the profiled binary, use the
+                              profile information to guide the optimization
+			      (Pcode stage).  --lprof-gen is typically
+			      specified at the same time.
+  --preprocessor-opti         Pass the optimization flags to the preprocessor
+                              (gcc).  This inlines optimized forms of some
+			      functions, but may rely on unsupported gcc
+			      extensions.
+  --print-file-name=<lib>     Print the full absolute name of library. Passed
+                              directly to gcc.
+  --print-libgcc-file-name    Same as --print-file-name=libgcc.a. Passed
+                              directly to gcc.
+  --print-prog-name=<prog>    Print the full absolute name of a program. Passed
+                              directly to gcc.
+  --profile-stage <num>       Specify which profiling stage to run.
+                              Stage       Effective option
+			      1           --pprof-gen
+			      2           --pprof-use --lprof-gen
+			      3           --lprof-use
+  --prompt-to-debug <regex>   Prompt the user to run the command matching
+                              <regex> in the debugger. See also --debugger.
+  -R<path>                    Add <path> to the list of directories to search
+                              for shared libraries.
+  -r, --relocatable           Link objects into a relocatable object that
+                              can be used as input to ld.
+  --resume                    The compiler will try to resume compilation from
+                              the last completed stage.  For the greatest
+			      benefit, --keep-intermediate-files should have
+			      been specified on the previous run.
+  --rc                        Insert recovery code.
+  --stop-after-assembling     Stop compilation after assembling to object
+                              files.
+  --stop-after-converting-to-gp
+                              Stop compilation after the Lgp_rel stage.
+  --stop-after-ctop, -c       Stop compilation after translating the C source
+                              to Pcode. Note that the object files written at
+			      this point are generated by gcc, and do not have
+			      any IMPACT optimizations.
+  --stop-after-generating-host-layout-info
+                              Stop compilation after generating
+                              the host_layout_info.md file for all source
+			      files.
+  --stop-after-lblock         Stop compilation after the Lblock stage.
+  --stop-after-lcode-profiling
+                              Stop compilation after merging Lcode profile
+                              information back to the source files.
+  --stop-after-lopti          Stop compilation after the Lopti stage.
+  --stop-after-lsuperscalar   Stop compilation after the Lsuperscalar stage.
+  --stop-after-ltahoe, -S     Stop compilation after translating the C source
+                              to assembly code.
+  --stop-after-pcode-profiling
+                              Stop compilation after merging Pcode profile
+                              information back to the source files.
+  --stop-after-pflatten       Stop compilation after the Pflatten stage.
+  --stop-after-pinline        Stop compilation after the Pinline stage.
+  --stop-after-pointer-analysis
+                              Stop compilation after running pointer
+                              analysis.
+  --stop-after-psplit         Stop compilation just after running Psplit (just
+                              before running Pinline).
+  --stop-after-ptol           Stop compilation after translating Pcode to
+                              Lcode.
+  --target <target>           Select the machine description for scheduling.
+  -U<define>                  Undefine preprocessor symbol <define>. Passed
+                              directly to preprocessor (gcc).
+  -u<symbol>                  Undefine linker symbol <symbol>. Passed directly
+                              to linker (gcc).
+  --undef                     Do not define any unstandard macros. Passed
+                              directly to preprocessor (gcc).
+  --use-ias                   Write assembly code that can be assembled using
+                              Intel's assembler. When assembling, uses Intel's
+			      assembler. By default, the GNU format and
+			      assembler are used.
+  -v, --verbose               Print status information during compilation.
+  -Wl,<option>                Pass <option> directly to linker (gcc).  If
+                              <option> contains commas, it is split at the
+			      commas and passed to the linker as multiple
+			      options.
+  -Wp,<option>                Pass <option> directly to preprocessor (gcc).
+                              If <option> contains commas, it is split at the
+			      commas and passed to the preprocessor as
+			      multiple options.
+  --Xlinker <option>          Pass <option> directly to linker (gcc).  Only
+                              one option may be passed with --Xlinker.  If
+			      the option takes an argument, specify --Xlinker
+			      multiple times.
+
+  Pinline options:
+  These options apply only to Pinline
+  --pinline-exclude-small-from-ratio-limit=(yes|no) Ignore small functions when
+                              calculating expansion ratio.
+  --pinline-favor-small-functions=(yes|no)
+  --pinline-force-dependence-analysis=(yes|no)
+  --pinline-inline-function-pointers=(yes|no)
+  --pinline-inline-self-recursion=(yes|no)
+  --pinline-max-expansion-ratio=<value> The maximum allowable ratio of inlined
+                              size to original size.
+  --pinline-max-function-size=<value> Run Pinline with the argument
+                              -Fmaximum_bodysize=<value>.  This is the maximum
+			      allowable size for a function after inlining.
+  --pinline-max-sf-size-limit=<value> Run Pinline with the argument
+                              -Fmax_sf_size_limit=<value>.  This is the largest
+			      allowable stack frame for inlining.
+  --pinline-min-expansion-key=<value> Do not inline a call site whose priority
+                              value is less than this value.
+  --pinline-min-expansion-weight=<value> Run Pinline with the argument
+                              -Fmin_expansion_weight=<value>.  This is the
+			      minimum weight a function must have to be
+			      inlined.
+  --pinline-prevent-cross-file-inlining=(yes|no) Only inline within a file.
+  --pinline-prevent-inline-functions=(yes|no)
+  --pinline-size-only=(yes|no) Pinline will only use function size (and
+                              not profile data) when deciding to inline.
+			      This is turned on automatically if inlining
+			      is done without profiling.
+  --pinline-small-function-thresh=<value> The threshold for a function to be
+                              considered small.
+  --pinline-use-new-regroup-algorithm=(yes|no)
+  --pinline-use-touched-body-size=(yes|no)
+
+  Pcode profiling options:
+  These options only affect Pcode profiling.
+  --pprof-add-lib=<lib>       Add a library to link.
+  --pprof-debug               Generate a binary with debugging information.
+  --pprof-lib-dir=<dir>       Add a directory to search for libraries.
+  --pprof-log-file=<file>     Log messages from PtoC to this file.
+  --pprof-no-annotate-pcode   Specify -Fdo_annotate_pcode=no for Pannotate
+  --pprof-no-annotate-pcode-with-loop-trip-count
+                              Specify
+			      -Fdo_annotate_pcode_with_loop_trip_count=no for
+			      Pannotate.
+  --pprof-no-flatten          Do not flatten the input Pcode.
+  --pprof-no-insert-loop-count-probe PtoC will not insert loop count probes.
+  --pprof-no-insert-probe     PtoC will not insert probes.
+  --pprof-optimize            Generate an optimized profiling binary.
+  --pprof-shared-libs         Use shared libs to build profiling binary.
+  --pprof-static-libs         Use static libs to build profiling binary.
+
+  Pointer Analysis options:
+  --pip-dd-split-compound-expr-stmts=(yes|no)
+  --pip-dump-every-arc=(yes|no)
+  --pip-fast-mode=(yes|no)
+  --pip-force-dependence-analysis=(yes|no)
+  --pip-merge-interprocedural-data=<value>
+                              Set -Fmerge_interprocedural_data=<value> for the
+			      PIP commands.  Defaults to 2.
+  --pip-multi-alias-relation=<value>
+                              Set -Fmulti_alias_relation=<value> for the PIP
+			      commands.  Defaults to 0.
+  --pip-points-to-representation=<value>
+                              Set -Fpoints_to_representation=<value> for the
+			      PIP commands.  Defaults to 1.
+  --pip-allow-function-pointer-casts
+                              Allows function pointers to be cast to other
+			      pointer types.  This will increase the time
+			      required for pointer analysis.
+  --pip-allow-data-pointer-casts
+                              Allows data pointers to be cast to other
+			      pointer types.  This will increase the time
+			      required for pointer analysis.
+
+  Pcode to Lcode transformation options:
+  --ptol-dd-split-compound-expr-stmts=(yes|no)
+  --ptol-debug-sync-arcs=(yes|no)
+  --ptol-debug-yes=(yes|no)
+  --ptol-do-annotate-code=(yes|no)
+  --ptol-do-insert-probe=(yes|no)
+  --ptol-emit-data-type-info=(yes|no)
+  --ptol-fast-mode=(yes|no)
+  --ptol-force-dependence-analysis=(yes|no)
+  --ptol-generate-abs-instructions=(yes|no)
+  --ptol-generate-acc-name-attrs=(yes|no)
+  --ptol-generate-alias-vars=(yes|no)
+  --ptol-generate-bit-field-operations=(yes|no)
+  --ptol-generate-callgraph-only=(yes|no)
+  --ptol-generate-hashing-branches=(yes|no)
+  --ptol-generate-label-attrs=(yes|no)
+  --ptol-generate-static-branch-attrs=(yes|no)
+  --ptol-generate-sync-arcs=(yes|no)
+  --ptol-gen-cast-operand=(yes|no)
+  --ptol-hcode-func-prags=(yes|no)
+  --ptol-hcode-loop-prags=(yes|no)
+  --ptol-hcode-static-prof=(yes|no)
+  --ptol-ignore-hash-br-seq-weight=(yes|no)
+  --ptol-ignore-hash-profile-weight=(yes|no)
+  --ptol-insert-intrinsics=(yes|no)
+  --ptol-intrinsic-support-enabled=(yes|no)
+  --ptol-propagate-sign-size-ctype-info=(yes|no)
+  --ptol-remove-dead-function=(yes|no)
+  --ptol-retain-sync-nums=(yes|no)
+  --ptol-substitute-subroutine-call-for-operation=(yes|no)
+  --ptol-unsafe-type-promotion=(yes|no)
+  --ptol-verbose-yes=(yes|no)
+
+  Classical Lcode optimiztation (Lopti) options:
+  --lopti-allow-jump-expansion-of-pcode-loops=(yes|no)
+                              Allow branch target expansion of loop bodies.
+  --lopti-debug-global-opti=(yes|no)
+                              Print debug info for global optimizations.
+  --lopti-debug-jump-opti=(yes|no)
+                              Print debug info for jump optimizations.
+  --lopti-debug-local-opti=(yes|no)
+                              Print debug info for local optimizations.
+  --lopti-debug-loop-opti=(yes|no)
+                              Print debug info for loop optimizations.
+  --lopti-debug-memflow=(yes|no)
+                              Print debug info for memflow.
+  --lopti-do-classify-branches=(yes|no)
+                              Attach information attribute to all branches.
+  --lopti-do-code-layout=(yes|no)
+                              Do trace selection and code layout.
+  --lopti-do-complex-ind-elim=(yes|no)
+                              Allow complex induction elimination (induction
+			      variables) with different increments to be
+			      eliminated.
+  --lopti-do-dead-loop-rem=(yes|no)
+                              Do dead loop removal.
+  --lopti-do-global-common-sub-elim=(yes|no)
+                              Arithmetic common subexpression elimination.
+  --lopti-do-global-constant-prop=(yes|no)
+                              Do global constant propagation.
+  --lopti-do-global-copy-prop=(yes|no)
+                              Do global copy propagation.
+  --lopti-do-global-dead-code-rem=(yes|no)
+                              Do global dead code removal.
+  --lopti-do-global-dead-if-then-else-rem=(yes|no)
+                              Remove two blocks that do the same operation.
+  --lopti-do-global-elim-boolean-ops=(yes|no)
+                              Remove unnecessary boolean operations.
+  --lopti-do-global-mem-copy-prop=(yes|no)
+                              Do global memory copy propagation.
+  --lopti-do-global-opti=(yes|no)
+                              Set to no to disable all global optizations.
+  --lopti-do-global-red-load-elim=(yes|no)
+                              Do global redundant load elimination.
+  --lopti-do-global-red-store-elim=(yes|no)
+                              Do global redundant store elimination.
+  --lopti-do-jump-block-merge=(yes|no)
+                              Merge blocks that are always sequential.
+  --lopti-do-jump-br-swap=(yes|no)
+                              Swap loop/fall-through branches.
+  --lopti-do-jump-br-target-expansion=(yes|no)
+                              Do branch target expansion
+  --lopti-do-jump-br-to-next-block=(yes|no)
+                              Eliminate branch to next sequential block.
+  --lopti-do-jump-br-to-same-target=(yes|no)
+                              Eliminate branches to the same target.
+  --lopti-do-jump-br-to-uncond-br=(yes|no)
+                              Retarget branch to unconditional branch.
+  --lopti-do-jump-combine-labels=(yes|no)
+                              Remove redundant cb labels.
+  --lopti-do-jump-dead-block-elim=(yes|no)
+                              Eliminate dead (unreachable) blocks.
+  --lopti-do-jump-opti=(yes|no)
+                              Set to no to disable all jump optimizations.
+  --lopti-do-local-branch-fold=(yes|no)
+                              Do local branch folding.
+  --lopti-do-local-code-motion=(yes|no)
+                              Do local code reordering.
+  --lopti-do-local-common-sub-elim=(yes|no)
+                              Do local arithmetic common subexpression
+			      elimination.
+  --lopti-do-local-constant-comb=(yes|no)
+                              Do local constant combining.
+  --lopti-do-local-constant-fold=(yes|no)
+                              Do local constant folding.
+  --lopti-do-local-constant-prop=(yes|no)
+                              Do local constant propagation.
+  --lopti-do-local-copy-prop=(yes|no)
+                              Do local copy propagation.
+  --lopti-do-local-dead-code-rem=(yes|no)
+                              Do local dead code removal.
+  --lopti-do-local-mem-copy-prop=(yes|no)
+                              Do local memory copy propagation.
+  --lopti-do-local-operation-fold=(yes|no)
+                              Do local operation folding.
+  --lopti-do-local-opti=(yes|no)
+                              Set to no to disable all local optimizations.
+  --lopti-do-local-reduce-logic=(yes|no)
+                              Do local logic reduction.
+  --lopti-do-local-red-load-elim=(yes|no)
+                              Do local redundant load elimination.
+  --lopti-do-local-red-store-elim=(yes|no)
+                              Do local redundant store elimination.
+  --lopti-do-local-register-rename=(yes|no)
+                              Do local register renaming.
+  --lopti-do-local-remove-sign-ext=(yes|no)
+                              Remove unnecessary sign extensions.
+  --lopti-do-local-rev-copy-prop=(yes|no)
+                              Do local reverse copy propagation.
+  --lopti-do-local-strength-red=(yes|no)
+                              Do local strength reduction.
+  --lopti-do-local-strength-red-for-signed-div-rem=(yes|no)
+                              Do local strength reduction for a signed divide
+			      and remainder.
+  --lopti-do-local-operation-cancel=(yes|no)
+                              Do local operation cancellation.
+  --lopti-do-local-op-breakdown=(yes|no)
+                              Breakup certain operations that cannot be
+			      handled by the target processor.
+  --lopti-do-local-op-recombine=(yes|no)
+                              Recombine operations that were not optimized
+			      away.
+  --lopti-do-longword-loop-opti=(yes|no)
+                              Convert char or short operand based loop to long
+			      based loop.
+  --lopti-do-loop-br-simp=(yes|no)
+                              Simplify loop back branches.
+  --lopti-do-loop-global-var-mig=(yes|no)
+                              Do loop global variable migration.
+  --lopti-do-loop-ind-var-str-red=(yes|no)
+                              Do loop induction variable strength reduction.
+  --lopti-do-loop-ind-var-reinit=(yes|no)
+                              Do loop induction variable reinitialization.
+  --lopti-do-loop-inv-code-rem=(yes|no)
+                              Do loop invariant code removal.
+  --lopti-do-loop-opti=(yes|no)
+                              Set to no to disable all loop optimizations.
+  --lopti-do-mark-incoming-parms=(yes|no)
+                              Mark incoming parameter address in attribute.
+  --lopti-do-mark-memory-labels=(yes|no)
+                              Mark address labels in attribute.
+  --lopti-do-mark-sync-jsrs=(yes|no)
+                              Mark <Y> flag for jsr.
+  --lopti-do-mark-trivial-safe-ops=(yes|no)
+                              Mark <F> for load/store (simple analysis only).
+  --lopti-do-mark-trivial-sef-jsrs=(yes|no)
+                              Mark <E> for jsr (simple analysis only).
+  --lopti-do-memflow-multistore-load=(yes|no)
+                              Perform multiple store to load optimization.
+  --lopti-do-memflow-opti=(yes|no)
+                              Set to no to disable all memflow optimizations.
+  --lopti-do-post-inc-conv=(yes|no)
+                              Generate pre or post increment loads and stores.
+  --lopti-do-remove-decidable-cond-branches=(yes|no)
+  --lopti-do-split-branches=(yes|no)
+                              Split multi-def branches to aid HB.
+  --lopti-do-split-unification=(yes|no)
+  --lopti-ignore-sync-arcs-for-loop-inv-migration=(yes|no)
+  --lopti-ignore-sync-arcs-for-red-elim=(yes|no)
+  --lopti-memflow-bypass-jsr=<int>
+                              Maximum number of loads for optimization.
+  --lopti-memflow-bypass-load=<int>
+                              Maximum number of stores for optimization.
+  --lopti-memflow-bypass-store=<int>
+                              Maximum number of jsrs for optimization.
+  --lopti-memflow-bypass-total=<int>
+                              Maximum number of memory operations for
+			      optimization.
+  --lopti-only-lvl1-for-zero-weight-fn=(yes|no)
+                              Override optimization level for zero weight
+			      functions.
+  --lopti-opti-level=<int>    Optimization level
+                              0   No optimization
+			      1   Local optimization only
+			      2   Local and global optimization
+			      3   Local, global, and jump optimization
+			      4   Local, global, jump, and loop optimization
+  --lopti-pred-promotion-level=<int>
+                              Predicate promotion level
+			      0   No predicate promotion
+			      1   Heirarchical promotion
+			      2   Full promotion without renaming
+			      3   Full promotion with renaming
+  --lopti-preserve-loop-var=(yes|no)
+                              If yes, do not eliminate the loop variable with
+			      induction variable elimination.
+  --lopti-print-opti-breakdown=(yes|no)
+                              Print more detailed optimizations.
+  --lopti-print-opti-count=(yes|no)
+                              Print counts of applied optimizations.
+  --lopti-store-migration-mode=<int>
+                              1   FULL_PRED
+			      2   NO_PRED
+			      3   NO_COND
+
+  Lcode profiling options:
+  These options only affect Lcode profiling.
+  --lprof-add-lib=<lib>       Add a library to link.
+  --lprof-buf                 Do loop buffer encoding and profiling. If this
+                              option is specified, --lprof-no-loop-iters must
+			      not be.
+  --lprof-debug               Generate a binary with debugging information.
+  --lprof-flush-trace         Flush trace buffer at every op.
+  --lprof-lib-dir=<dir>       Add a directory to search for libaries.
+  --lprof-gen-attr            Lget will create profile attributes.
+  --lprof-gen-sync            Lget will create profiled sync arcs.
+  --lprof-gen-value           Lget will create value profile attributes.
+  --lprof-mem-dep             Lget will merge memory dependence profile
+                              information.
+  --lprof-mem-dep-file=<file> Specify memory dependence profile filename.
+  --lprof-mem-reuse           Lget will create memory reuse profile attributes.
+  --lprof-mem-reuse-file=<file> Specify memory reuse profile filename.
+  --lprof-nozero              Lget will remove zero conflict areas.
+  --lprof-no-loop-iters       Do not generate loop iteration info.  If this
+                              option is specified, --lprof-buf must not be.
+  --lprof-no-probes           Probes will not be inserted.
+  --lprof-no-ver              Lemulate skips version checks on Lcode info
+                              attributes.
+  --lprof-optimize            Generate an optimized profiling binary.
+  --lprof-remove-sync         Lget will remove existing sync arcs.
+  --lprof-reuse               Lget will create reuse profile attributes.
+  --lprof-reuse-file=<file>   Specify reuse profile filename.
+  --lprof-shared-libs         Use shared libs to build profiling binary.
+  --lprof-static-libs         Use static libs to build profiling binary.
+  --lprof-value=<value>       Percentage of value occurance that should be
+                              annotated.
+  --lprof-value-file=<file>   Specify value profile filename.
+
+  Lblock options:
+  --lblock-no-peel            Disable loop peeling in Lblock.
+
+  Lsuperscalar options:
+  --lsuperscalar-faster-opti  Disable some Lsuperscalar optimizations for
+                              faster compile time.
+  --lsuperscalar-remainder-loop-opti
+                              Turn on remainder loop optimization.
+
+  Ltahoe options:
+  --ltahoe-faster-sched
+
+  All long options can be specified with one or two leading dashes.
+
+  For a level of optimization equivalent to ia64_compile_bench with no extra
+  options, use '-O --do-inlining'.
+
+6. oicc error messages
+
+6.1 General oicc errors
+
+6.1.1 KeyError: IMPACT_REL_PATH
+ The IMPACT_REL_PATH environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.1 for details.
+
+6.1.2 KeyError: IMPACT_ROOT
+ The IMPACT_ROOT environment variable is not set.  Source init-impact
+(section 1.1) to set this automatically, or see section 1.2.2 for
+details.
+
+6.1.3 KeyError: DEFAULT_PROJECT
+ The DEFAULT_PROJECT environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.3 for details.
+
+6.1.4 KeyError: IMPACT_BUILD_TYPE
+ The IMPACT_BUILD_TYPE environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.4 for details.
+
+6.1.5 KeyError: IMPACT_HOST_PLATFORM
+ The IMPACT_HOST_PLATFORM environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.5 for details.
+
+6.1.6 KeyError: IMPACT_HOST_COMPILER
+ The IMPACT_HOST_COMPILER environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.6 for details.
+
+6.1.7 KeyError: STD_PARMS_FILE
+ The STD_PARMS_FILE environment variable is not set.  Source
+init-impact (section 1.1) to set this automatically, or see section
+1.2.7 for details.
+
+6.2 Pointer analysis errors
+
+6.2.1 Pcode warning: IP_generate_cg: library template file for <func>
+      not found under .../platform/ia64lin_gcc/PIP_info
+
+ Your program uses a function from a system library that pointer
+analysis does not know.  Add an emulation routine for the function to
+lib.c as indicated in section 4.2.
+

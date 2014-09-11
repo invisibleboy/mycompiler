@@ -1,0 +1,188 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Scheduler default parameters.
+#
+# Created by Roger Bringmann, 11-11-93
+#
+# Revisions:
+#
+
+# Begin macros needed by lcode prober -JCG
+$do_postpass_scheduling$ = yes;
+$do_fill_squashing_branches$ = no;
+$do_fill_nonsquashing_branches$ = no;
+$do_fill_unfilled_branches$ = no;
+
+# End macros needed by lcode prober
+
+# A value of zero causes the number of branches per cycle to be pulled
+# from the mdes file.
+$branches_per_cycle$=0;
+
+(Scheduler 
+    # Valid Models:
+    #   basic_block - no speculation permitted outside basic block 
+    #	    (This supports basic block scheduling with superblock code)
+    #
+    #   restricted - only instructions that will not generate an exception
+    #     that would not have happened anyway can be speculated.
+    #
+    #   general - assumes that mdes has non-excepting form for any potentially
+    #	  excepting instruction that can be speculated.
+    #
+    #   writeback_suppression or wbs - model assumes special hardware to support
+    #     recovery in the event of an exception
+    #
+    #   sentinel - Scott's technique for speculating potentially excepting
+    #	  instructions and allowing recovery
+    #
+    #   mcb - Dave and Williams memory conflict buffer
+    #
+    # KMC - 11/2/98 This parm is no longer used as the scheduling model 
+    # is set with the Lcode parms.
+    #scheduler_model = general
+
+    # Debug flags
+    debug_operation_priority=no;
+    debug_prepass_scheduling=no;
+
+    # Really do postpass code scheduling
+    do_postpass_scheduling = $do_postpass_scheduling$;
+    debug_postpass_scheduling = no;
+
+    # Defines whether the schedular should attempt to fill squashing
+    # branch slots.
+    do_fill_squashing_branches = $do_fill_squashing_branches$;
+    debug_squashing_branches = no;
+
+    # Defines whether the schedular should attempt to fill non-squashing
+    # branch slots.
+    do_fill_nonsquashing_branches = $do_fill_nonsquashing_branches$;
+    debug_nonsquashing_branches = no;
+
+    # Defines whether unfilled branch delay slots should be filled with no-ops.
+    # This assumes that the architecture has a branch delay slot!
+    do_fill_unfilled_branches = $do_fill_unfilled_branches$;
+    debug_unfilled_branches = no;
+
+    # If debug_use_sched_cb_bounds is set to yes, the scheduler will only
+    # schedule those cbs with ids between the upper and lower bound.
+    # I.e., set both upper and lower bound to 10 to schedule only cb 10.
+    debug_use_sched_cb_bounds = no;
+    debug_lower_sched_cb_bound = 0;
+    debug_upper_sched_cb_bound = 100000000;
+
+
+    # This flag specifies the fall thru probability for branches when
+    # not using profile weight.  Do not use this flag if you want to
+    # do the more efficient scheduling using profile weight.  The
+    # flag must have a value > 1 for it to work.  Thus 80 indicates 80
+    # percent fall-thru weight.  Remember that superblocks are created
+    # assuming that the branches are less frequently taken.  If you use
+    # this parameter with small weights, you are going to hurt your
+    # performance drastically
+    static_fall_thru_weight = 0;
+
+    # This parameter is ignored unless the mdes specifies a vliw processor
+    # model.  This flag is used to represent vliw models that must have
+    # vliw instructions of constant length.  Thus the padding of no-ops into
+    # unused issue slots.
+    pad_vliw_slots_with_nops = 0; 
+    # determine if any padding is necessary
+    vliw_has_interlocking = no;
+
+    # This parameter, when turned on, renumbers the slot number in the
+    # scheduled code so that the lowest numbered slots are used.  This
+    # facilitates using the analysis tools on vliw code, which otherwise
+    # uses slots 30-59 for branches.
+    # do_renumber_issue_slots = no;
+
+    print_statistics = no;
+    print_hb_and_spec = no;
+    print_spec_condition = no;
+
+    # Prints statistics for prepass scheduling when parameter is true.  The
+    # output is sent to the file, IMPACT_001_PREPASS.
+    print_prepass_statistics = no;
+
+    # Prints newline before each cycle in the lcode -JCG 
+    print_cycle_delimiter = no;
+
+    # Permits any processor to be treated as infinite issue machine.
+    # Still uses MDES to get instruction latencies.
+    infinite_issue = no;
+
+    branches_per_cycle = $branches_per_cycle$
+    loads_per_cycle = 0;
+    stores_per_cycle = 0;
+
+    # This should always be enabled to get the best schedule using the
+    # speculative yield scheduling heuristic.
+    pad_height = 1;
+
+    # Support for register pressure heuristic.  Do not use until region
+    # stuff is in place.
+    use_register_pressure_heuristic=no;
+    use_fan_out = 1;
+    register_pressure_threshhold = 75;
+
+    do_sentinel_recovery = no; 
+
+    # This parameter can be set to any of the following values:
+    # real (use real profile weights), all_1 (assumes all exits are equally
+    # likely), last_1 (assume that the only exit taken is the last exit),
+    # first_1 (assume that the first exit is the only one taken), and
+    # succ_ret (minimize speculation so the exits are retired in-order, as
+    # quickly as possible).
+    # These settings were used as part of my testing for the speculative
+    # hedge MICRO paper.  This should only get changed when performing
+    # testing on the scheduler.
+    profile_info_to_use = real;
+
+end)

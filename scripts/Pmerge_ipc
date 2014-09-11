@@ -1,0 +1,118 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+perl -x $0 "$@"
+exit $?
+#!/usr/local/bin/perl
+# Pmerge_ipc
+#
+# Merge data from indirect procedure call profiling
+
+$usage = "Fatal Error: Usage: Pmerge_ipc <probed binary> <ipc_file>+\n";
+
+die $usage if ($#ARGV < 0);
+
+($bin = shift) || die $usage;
+die $usage if (! -x $bin);
+
+# Parse function definitions from the probed binary
+
+@nm = `nm --defined-only $bin`;
+
+die "Fatal Error: nm failed\n" if ($?);
+
+foreach $nml (@nm) {
+    ($a,$t,$s) = split ' ', $nml;
+    next if ($t ne "T");
+    $sym{$a} = $s;
+}
+
+while ($fi = shift) {
+    if (!(open Fin, "<$fi")) {
+	printf stderr "Error: could not open $fi\n";
+	next;
+    }
+    print "> Reading $fi\n";
+    $inp_cnt++;
+    $_ = <Fin>;
+
+    ($n_ipc,$n_inp) = split ' ', $_;
+
+    while ($_ = <Fin>) {
+	if (/^(\d+) (\d+)/) {
+	    $idx  = $1;
+	    $HIT[$idx] += $2;
+	} elsif (/0x([0-9a-fA-F]+) (\d+)/) {
+	    $adr = $1;
+	    $hit = $2;
+	    if ($s = $sym{$adr}) {
+		$HITS[$idx]->{$s} += $hit;
+	    }
+	}
+    }
+
+    close Fin;
+}
+
+# Print the output
+
+open Fout, ">profile.ipc";
+
+printf Fout "$n_ipc $inp_cnt\n";
+
+for ($i = 0; $i < $n_ipc; $i++) {
+    $h = $HITS[$i];
+    @k = keys %$h;
+    $kc = $#k + 1;
+    printf Fout "$i $HIT[$i] $kc\n";
+    foreach $s (sort {$h->{$a} <=> $h->{$b}} keys %$h) {
+	printf Fout "  %s %d\n", $s, $h->{$s};
+    }
+}
+
+close Fout;

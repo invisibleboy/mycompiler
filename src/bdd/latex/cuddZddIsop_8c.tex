@@ -1,0 +1,127 @@
+\section{cudd\-Zdd\-Isop.c File Reference}
+\label{cuddZddIsop_8c}\index{cuddZddIsop.c@{cuddZddIsop.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-zdd\-Isop} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U, \bf{Dd\-Node} $\ast$$\ast$zdd\_\-I)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Isop} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Zdd\-Isop} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U, \bf{Dd\-Node} $\ast$$\ast$zdd\_\-I)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Isop} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$L, \bf{Dd\-Node} $\ast$U)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Isop.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddZddIsop.c@{cudd\-Zdd\-Isop.c}!Cudd_bddIsop@{Cudd\_\-bddIsop}}
+\index{Cudd_bddIsop@{Cudd\_\-bddIsop}!cuddZddIsop.c@{cudd\-Zdd\-Isop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Isop (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em L}, \bf{Dd\-Node} $\ast$ {\em U})}\label{cuddZddIsop_8c_17691865ef8b69e1d04ce5651da841e0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes a BDD in the interval between L and U with a simple sum-of-produuct cover.]
+
+Description [Computes a BDD in the interval between L and U with a simple sum-of-produuct cover. This procedure is similar to Cudd\_\-zdd\-Isop, but it does not return the ZDD for the cover. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Isop] 
+
+Definition at line 143 of file cudd\-Zdd\-Isop.c.
+
+References cudd\-Bdd\-Isop(), and Dd\-Manager::reordered.\index{cuddZddIsop.c@{cudd\-Zdd\-Isop.c}!Cudd_zddIsop@{Cudd\_\-zddIsop}}
+\index{Cudd_zddIsop@{Cudd\_\-zddIsop}!cuddZddIsop.c@{cudd\-Zdd\-Isop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-zdd\-Isop (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em L}, \bf{Dd\-Node} $\ast$ {\em U}, \bf{Dd\-Node} $\ast$$\ast$ {\em zdd\_\-I})}\label{cuddZddIsop_8c_2b5124feb3accdd31cfeb287ffff59f7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Computes an ISOP in ZDD form from BDDs.]
+
+Description [Computes an irredundant sum of products (ISOP) in ZDD form from BDDs. The two BDDs L and U represent the lower bound and the upper bound, respectively, of the function. The ISOP uses two ZDD variables for each BDD variable: One for the positive literal, and one for the negative literal. These two variables should be adjacent in the ZDD order. The two ZDD variables corresponding to BDD variable {\tt i} should have indices {\tt 2i} and {\tt 2i+1}. The result of this procedure depends on the variable order. If successful, Cudd\_\-zdd\-Isop returns the BDD for the function chosen from the interval. The ZDD representing the irredundant cover is returned as a side effect in zdd\_\-I. In case of failure, NULL is returned.]
+
+Side\-Effects [zdd\_\-I holds the pointer to the ZDD for the ISOP on successful return.]
+
+See\-Also [Cudd\_\-bdd\-Isop Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars] 
+
+Definition at line 105 of file cudd\-Zdd\-Isop.c.
+
+References Dd\-Manager::auto\-Dyn\-Z, cudd\-Zdd\-Isop(), and Dd\-Manager::reordered.\index{cuddZddIsop.c@{cudd\-Zdd\-Isop.c}!cuddBddIsop@{cuddBddIsop}}
+\index{cuddBddIsop@{cuddBddIsop}!cuddZddIsop.c@{cudd\-Zdd\-Isop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Isop (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em L}, \bf{Dd\-Node} $\ast$ {\em U})}\label{cuddZddIsop_8c_f63228ad50be517bfbdc8ddc6ca48af4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Isop.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Isop] 
+
+Definition at line 512 of file cudd\-Zdd\-Isop.c.
+
+References Cudd\_\-Deref(), Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Ref(), Cudd\_\-Regular, Cudd\_\-T, cudd\-Bdd\-And\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Unique\-Inter(), DD\_\-ONE, dd\-Min, one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-bdd\-Isop(), and cudd\-Zdd\-Isop().\index{cuddZddIsop.c@{cudd\-Zdd\-Isop.c}!cuddZddIsop@{cuddZddIsop}}
+\index{cuddZddIsop@{cuddZddIsop}!cuddZddIsop.c@{cudd\-Zdd\-Isop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Zdd\-Isop (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em L}, \bf{Dd\-Node} $\ast$ {\em U}, \bf{Dd\-Node} $\ast$$\ast$ {\em zdd\_\-I})}\label{cuddZddIsop_8c_da2ddff66ba0fabe1c39ac446f77fd32}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-zdd\-Isop.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-zdd\-Isop] 
+
+Definition at line 176 of file cudd\-Zdd\-Isop.c.
+
+References Cudd\_\-Deref(), Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), Cudd\_\-Recursive\-Deref\-Zdd(), Cudd\_\-Ref(), Cudd\_\-Regular, Cudd\_\-T, cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Isop(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Cache\-Lookup2Zdd(), cudd\-Ref, cudd\-Unique\-Inter(), cudd\-Zdd\-Get\-Node\-IVO(), DD\_\-ONE, DD\_\-ZERO, dd\-Min, exit(), one, Dd\-Manager::perm, and zero.
+
+Referenced by Cudd\_\-zdd\-Isop().
+
+\subsection{Variable Documentation}
+\index{cuddZddIsop.c@{cudd\-Zdd\-Isop.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddZddIsop.c@{cudd\-Zdd\-Isop.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Zdd\-Isop.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddZddIsop_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Zdd\-Isop.c}{p.}{cuddZddIsop_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions to find irredundant SOP covers as ZDDs from BDDs.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-bdd\-Isop()}{p.}{cuddZddIsop_8c_17691865ef8b69e1d04ce5651da841e0}; \item \doxyref{Cudd\_\-zdd\-Isop()}{p.}{cuddZddIsop_8c_2b5124feb3accdd31cfeb287ffff59f7}; \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Isop()}{p.}{cuddZddIsop_8c_f63228ad50be517bfbdc8ddc6ca48af4}; \item \doxyref{cudd\-Zdd\-Isop()}{p.}{cuddZddIsop_8c_da2ddff66ba0fabe1c39ac446f77fd32}; \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\end{itemize}
+]
+
+See\-Also []
+
+Author [In-Ho Moon]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 60 of file cudd\-Zdd\-Isop.c.

@@ -1,0 +1,211 @@
+\section{cudd\-Ref.c File Reference}
+\label{cuddRef_8c}\index{cuddRef.c@{cuddRef.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{Cudd\_\-Ref} (\bf{Dd\-Node} $\ast$n)
+\item 
+void \bf{Cudd\_\-Recursive\-Deref} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n)
+\item 
+void \bf{Cudd\_\-Iter\-Deref\-Bdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n)
+\item 
+void \bf{Cudd\_\-Recursive\-Deref\-Zdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n)
+\item 
+void \bf{Cudd\_\-Deref} (\bf{Dd\-Node} $\ast$node)
+\item 
+int \bf{Cudd\_\-Check\-Zero\-Ref} (\bf{Dd\-Manager} $\ast$manager)
+\item 
+void \bf{cudd\-Reclaim} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n)
+\item 
+void \bf{cudd\-Reclaim\-Zdd} (\bf{Dd\-Manager} $\ast$table, \bf{Dd\-Node} $\ast$n)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Ref.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddRef.c@{cudd\-Ref.c}!Cudd_CheckZeroRef@{Cudd\_\-CheckZeroRef}}
+\index{Cudd_CheckZeroRef@{Cudd\_\-CheckZeroRef}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Check\-Zero\-Ref (\bf{Dd\-Manager} $\ast$ {\em manager})}\label{cuddRef_8c_0d388f1545438a43167bb55d6c432ef0}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the unique table for nodes with non-zero reference counts.]
+
+Description [Checks the unique table for nodes with non-zero reference counts. It is normally called before Cudd\_\-Quit to make sure that there are no memory leaks due to missing Cudd\_\-Recursive\-Deref's. Takes into account that reference counts may saturate and that the basic constants and the projection functions are referenced by the manager. Returns the number of nodes with non-zero reference count. (Except for the cases mentioned above.)]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 332 of file cudd\-Ref.c.
+
+References DD\_\-MAXREF, Dd\-Node::index, Dd\-Node::next, Dd\-Subtable::nodelist, Dd\-Node::ref, Dd\-Manager::size, size, Dd\-Manager::subtables, and Dd\-Manager::vars.\index{cuddRef.c@{cudd\-Ref.c}!Cudd_Deref@{Cudd\_\-Deref}}
+\index{Cudd_Deref@{Cudd\_\-Deref}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Deref (\bf{Dd\-Node} $\ast$ {\em node})}\label{cuddRef_8c_1878b826a0a318e816d419ca5bcea97b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Decreases the reference count of node.]
+
+Description [Decreases the reference count of node. It is primarily used in recursive procedures to decrease the ref count of a result node before returning it. This accomplishes the goal of removing the protection applied by a previous Cudd\_\-Ref.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Recursive\-Deref Cudd\_\-Recursive\-Deref\-Zdd Cudd\_\-Ref] 
+
+Definition at line 304 of file cudd\-Ref.c.
+
+References Cudd\_\-Regular, cudd\-Sat\-Dec, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-add\-Times\-Plus(), cudd\-Bdd\-Isop(), cudd\-Solve\-Eqn\-Recur(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Weak\-Div(), and cudd\-Zdd\-Weak\-Div\-F().\index{cuddRef.c@{cudd\-Ref.c}!Cudd_IterDerefBdd@{Cudd\_\-IterDerefBdd}}
+\index{Cudd_IterDerefBdd@{Cudd\_\-IterDerefBdd}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Iter\-Deref\-Bdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_15905d5750b5f2f948329ce0f67a0fc8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Decreases the reference count of BDD node n.]
+
+Description [Decreases the reference count of node n. If n dies, recursively decreases the reference counts of its children. It is used to dispose of a BDD that is no longer needed. It is more efficient than Cudd\_\-Recursive\-Deref, but it cannot be used on ADDs. The greater efficiency comes from being able to assume that no constant node will ever die as a result of a call to this procedure.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Recursive\-Deref] 
+
+Definition at line 185 of file cudd\-Ref.c.
+
+References assert, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-Sat\-Dec, cudd\-T, Dd\-Subtable::dead, Dd\-Manager::dead, Dd\-Node::index, Dd\-Manager::perm, Dd\-Node::ref, Dd\-Manager::stack, and Dd\-Manager::subtables.
+
+Referenced by Cudd\_\-bdd\-Char\-To\-Vect(), Cudd\_\-bdd\-Constrain\-Decomp(), Cudd\_\-bdd\-Minimize(), Cudd\_\-bdd\-Restrict(), Cudd\_\-bdd\-Squeeze(), Cudd\_\-Subset\-Compress(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Boolean\-Diff\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-Permute\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Vector\-Compose\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), and cudd\-Bdd\-Xor\-Recur().\index{cuddRef.c@{cudd\-Ref.c}!Cudd_RecursiveDeref@{Cudd\_\-RecursiveDeref}}
+\index{Cudd_RecursiveDeref@{Cudd\_\-RecursiveDeref}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Recursive\-Deref (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_0944d022761660bf481167b78759f599}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Decreases the reference count of node n.]
+
+Description [Decreases the reference count of node n. If n dies, recursively decreases the reference counts of its children. It is used to dispose of a DD that is no longer needed.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Deref Cudd\_\-Ref Cudd\_\-Recursive\-Deref\-Zdd] 
+
+Definition at line 120 of file cudd\-Ref.c.
+
+References assert, Dd\-Manager::constants, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-Sat\-Dec, cudd\-T, Dd\-Subtable::dead, Dd\-Manager::dead, Dd\-Node::index, Dd\-Manager::perm, Dd\-Node::ref, Dd\-Manager::stack, and Dd\-Manager::subtables.
+
+Referenced by add\-Bdd\-Do\-Interval(), add\-Bdd\-Do\-Ith\-Bit(), add\-Bdd\-Do\-Pattern(), add\-Bdd\-Do\-Strict\-Threshold(), add\-Bdd\-Do\-Threshold(), add\-Do\-Ith\-Bit(), add\-Triangle\-Recur(), add\-Walsh\-Int(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Conjuncts\-Free(), Cudd\_\-add\-Bdd\-Interval(), Cudd\_\-add\-Bdd\-Ith\-Bit(), Cudd\_\-add\-Bdd\-Strict\-Threshold(), Cudd\_\-add\-Bdd\-Threshold(), Cudd\_\-add\-Compute\-Cube(), Cudd\_\-add\-Exist\-Abstract(), Cudd\_\-add\-Hamming(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ith\-Bit(), Cudd\_\-add\-Non\-Sim\-Compose(), Cudd\_\-add\-Read(), Cudd\_\-add\-Residue(), Cudd\_\-add\-Restrict(), Cudd\_\-add\-Times\-Plus(), Cudd\_\-add\-Xeqy(), Cudd\_\-bdd\-Approx\-Conj\-Decomp(), Cudd\_\-bdd\-Compute\-Cube(), Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-bdd\-Iter\-Conj\-Decomp(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Read(), Cudd\_\-bdd\-Var\-Conj\-Decomp(), Cudd\_\-Classify\-Support(), Cudd\_\-CProjection(), Cudd\_\-Dump\-Blif(), Cudd\_\-Dump\-Da\-Vinci(), Cudd\_\-Dump\-DDcal(), Cudd\_\-Dump\-Dot(), Cudd\_\-Dxygtdxz(), Cudd\_\-Dxygtdyz(), Cudd\_\-Indices\-To\-Cube(), Cudd\_\-Priority\-Select(), Cudd\_\-Support(), Cudd\_\-Vector\-Support(), Cudd\_\-Xeqy(), Cudd\_\-Xgty(), Cudd\_\-zdd\-Dump\-Dot(), cudd\-Add\-Apply\-Recur(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Compose\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Add\-Negate\-Recur(), cudd\-Add\-Non\-Sim\-Compose\-Recur(), cudd\-Add\-Or\-Abstract\-Recur(), cudd\-Add\-Permute\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Round\-Off\-Recur(), cudd\-Add\-Scalar\-Inverse\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Add\-Vector\-Compose\-Recur(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Transfer(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Cofactor\-Recur(), cudd\-CProjection\-Recur(), cudd\-Destroy\-Subtables(), cudd\-Hash\-Table\-Quit(), cudd\-Solve\-Eqn\-Recur(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Verify\-Sol(), cudd\-Zdd\-Isop(), dd\-Bdd\-To\-Add\-Recur(), dd\-Find\-Essential\-Recur(), get\_\-cube(), get\_\-path(), minterms\-From\-Universe(), RAbuild\-Subset(), select\-Minterms\-From\-Universe(), st\-Path\-Table\-Dd\-Free(), UAbuild\-Subset(), zdd\-Port\-To\-Bdd\-Step(), and Zero\-Case().\index{cuddRef.c@{cudd\-Ref.c}!Cudd_RecursiveDerefZdd@{Cudd\_\-RecursiveDerefZdd}}
+\index{Cudd_RecursiveDerefZdd@{Cudd\_\-RecursiveDerefZdd}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Recursive\-Deref\-Zdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_08641a3718655a85000069cc58cdd172}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Decreases the reference count of ZDD node n.]
+
+Description [Decreases the reference count of ZDD node n. If n dies, recursively decreases the reference counts of its children. It is used to dispose of a ZDD that is no longer needed.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Deref Cudd\_\-Ref Cudd\_\-Recursive\-Deref] 
+
+Definition at line 244 of file cudd\-Ref.c.
+
+References assert, cudd\-E, cudd\-Is\-Constant, cudd\-Sat\-Dec, cudd\-T, Dd\-Subtable::dead, Dd\-Manager::dead\-Z, Dd\-Node::index, Dd\-Manager::perm\-Z, Dd\-Node::ref, Dd\-Manager::stack, and Dd\-Manager::subtable\-Z.
+
+Referenced by Cudd\_\-zdd\-Ith\-Var(), cudd\-Zdd\-Change(), cudd\-Zdd\-Change\-Aux(), cudd\-Zdd\-Diff(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Free\-Univ(), cudd\-Zdd\-Get\-Cofactors2(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Get\-Node\-IVO(), cudd\-Zdd\-Init\-Univ(), cudd\-Zdd\-Intersect(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Ite(), cudd\-Zdd\-Product(), cudd\-Zdd\-Subset0(), cudd\-Zdd\-Subset1(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Union(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), zdd\_\-subset0\_\-aux(), zdd\_\-subset1\_\-aux(), and zdd\-Port\-From\-Bdd\-Step().\index{cuddRef.c@{cudd\-Ref.c}!Cudd_Ref@{Cudd\_\-Ref}}
+\index{Cudd_Ref@{Cudd\_\-Ref}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Ref (\bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_3d0d9959640235fc073699c776914fca}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Increases the reference count of a node, if it is not saturated.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Recursive\-Deref Cudd\_\-Deref] 
+
+Definition at line 95 of file cudd\-Ref.c.
+
+References Cudd\_\-Regular, cudd\-Sat\-Inc, and Dd\-Node::ref.
+
+Referenced by Cudd\_\-add\-Times\-Plus(), cudd\-Bdd\-Isop(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Weak\-Div(), and cudd\-Zdd\-Weak\-Div\-F().\index{cuddRef.c@{cudd\-Ref.c}!cuddReclaim@{cuddReclaim}}
+\index{cuddReclaim@{cuddReclaim}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Reclaim (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_cc19dbda07ed77727cd149f7aeb2527b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Brings children of a dead node back.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Reclaim\-Zdd] 
+
+Definition at line 452 of file cudd\-Ref.c.
+
+References assert, Dd\-Manager::constants, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-Sat\-Dec, cudd\-Sat\-Inc, cudd\-T, Dd\-Subtable::dead, Dd\-Manager::dead, Dd\-Node::index, Dd\-Manager::perm, Dd\-Manager::reclaimed, Dd\-Node::ref, Dd\-Manager::stack, and Dd\-Manager::subtables.
+
+Referenced by cudd\-Cache\-Lookup(), cudd\-Cache\-Lookup1(), cudd\-Cache\-Lookup2(), cudd\-Local\-Cache\-Lookup(), cudd\-Unique\-Const(), and cudd\-Unique\-Inter().\index{cuddRef.c@{cudd\-Ref.c}!cuddReclaimZdd@{cuddReclaimZdd}}
+\index{cuddReclaimZdd@{cuddReclaimZdd}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void cudd\-Reclaim\-Zdd (\bf{Dd\-Manager} $\ast$ {\em table}, \bf{Dd\-Node} $\ast$ {\em n})}\label{cuddRef_8c_dc39ed6aca9e7c16f7370bb373ed694b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Brings children of a dead ZDD node back.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Reclaim] 
+
+Definition at line 513 of file cudd\-Ref.c.
+
+References assert, cudd\-E, cudd\-Is\-Constant, cudd\-Sat\-Dec, cudd\-Sat\-Inc, cudd\-T, Dd\-Subtable::dead, Dd\-Manager::dead\-Z, Dd\-Node::index, Dd\-Manager::perm\-Z, Dd\-Manager::reclaimed, Dd\-Node::ref, Dd\-Manager::stack, and Dd\-Manager::subtable\-Z.
+
+Referenced by cudd\-Cache\-Lookup1Zdd(), cudd\-Cache\-Lookup2Zdd(), cudd\-Cache\-Lookup\-Zdd(), and cudd\-Unique\-Inter\-Zdd().
+
+\subsection{Variable Documentation}
+\index{cuddRef.c@{cudd\-Ref.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddRef.c@{cudd\-Ref.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Ref.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddRef_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Ref.c}{p.}{cuddRef_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions that manipulate the reference counts.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Ref()}{p.}{cuddRef_8c_3d0d9959640235fc073699c776914fca} \item \doxyref{Cudd\_\-Recursive\-Deref()}{p.}{cuddRef_8c_0944d022761660bf481167b78759f599} \item \doxyref{Cudd\_\-Iter\-Deref\-Bdd()}{p.}{cuddRef_8c_15905d5750b5f2f948329ce0f67a0fc8} \item \doxyref{Cudd\_\-Recursive\-Deref\-Zdd()}{p.}{cuddRef_8c_08641a3718655a85000069cc58cdd172} \item \doxyref{Cudd\_\-Deref()}{p.}{cuddRef_8c_1878b826a0a318e816d419ca5bcea97b} \item \doxyref{Cudd\_\-Check\-Zero\-Ref()}{p.}{cuddRef_8c_0d388f1545438a43167bb55d6c432ef0} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Reclaim()}{p.}{cuddRef_8c_cc19dbda07ed77727cd149f7aeb2527b} \item \doxyref{cudd\-Reclaim\-Zdd()}{p.}{cuddRef_8c_dc39ed6aca9e7c16f7370bb373ed694b} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 61 of file cudd\-Ref.c.

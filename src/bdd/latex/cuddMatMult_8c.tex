@@ -1,0 +1,152 @@
+\section{cudd\-Mat\-Mult.c File Reference}
+\label{cuddMatMult_8c}\index{cuddMatMult.c@{cuddMatMult.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$add\-MMRecur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, int top\-P, int $\ast$vars))
+\item 
+static \bf{Dd\-Node} $\ast$add\-Triangle\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int $\ast$vars))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Matrix\-Multiply} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$z, int nz)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Times\-Plus} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, \bf{Dd\-Node} $\ast$$\ast$z, int nz)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Triangle} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, \bf{Dd\-Node} $\ast$$\ast$z, int nz)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-MMRecur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, int top\-P, int $\ast$vars)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Triangle\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int $\ast$vars)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Mat\-Mult.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!addMMRecur@{addMMRecur}}
+\index{addMMRecur@{addMMRecur}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-MMRecur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em A}, \bf{Dd\-Node} $\ast$ {\em B}, int {\em top\-P}, int $\ast$ {\em vars})\hspace{0.3cm}{\tt  [static]}}\label{cuddMatMult_8c_17dd84ca54ead697b09345cc3a976105}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Matrix\-Multiply.]
+
+Description [Performs the recursive step of Cudd\_\-add\-Matrix\-Multiply. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 260 of file cudd\-Mat\-Mult.c.
+
+References CUDD\_\-VALUE\_\-TYPE, cudd\-Is\-Constant, cudd\-Unique\-Const(), cudd\-V, DD\_\-ZERO, Dd\-Manager::perm, Dd\-Manager::size, and zero.
+
+Referenced by Cudd\_\-add\-Matrix\-Multiply().\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!addTriangleRecur@{addTriangleRecur}}
+\index{addTriangleRecur@{addTriangleRecur}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Triangle\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, int $\ast$ {\em vars})\hspace{0.3cm}{\tt  [static]}}\label{cuddMatMult_8c_d78dbbeda98121bf98692f8fd3f78765}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-add\-Triangle.]
+
+Description [Performs the recursive step of Cudd\_\-add\-Triangle. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None] 
+
+Definition at line 471 of file cudd\-Mat\-Mult.c.
+
+References Cudd\_\-add\-Minimum(), Cudd\_\-Recursive\-Deref(), CUDD\_\-VALUE\_\-TYPE, cudd\-Add\-Apply\-Recur(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-I, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Const(), cudd\-Unique\-Inter(), cudd\-V, DD\_\-PLUS\_\-INFINITY, dd\-Min, Dd\-Node::index, and Dd\-Manager::invperm.
+
+Referenced by Cudd\_\-add\-Triangle().\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Triangle\-Recur ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, int $\ast$vars))\hspace{0.3cm}{\tt  [static]}}\label{cuddMatMult_8c_f1ff2e84bada5e39f8511f13121f432b}
+
+
+\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-MMRecur ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$A, \bf{Dd\-Node} $\ast$B, int top\-P, int $\ast$vars))\hspace{0.3cm}{\tt  [static]}}\label{cuddMatMult_8c_1931cf74d194c4460418684e598446ff}
+
+
+Automatic\-Start \index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!Cudd_addMatrixMultiply@{Cudd\_\-addMatrixMultiply}}
+\index{Cudd_addMatrixMultiply@{Cudd\_\-addMatrixMultiply}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Matrix\-Multiply (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em A}, \bf{Dd\-Node} $\ast$ {\em B}, \bf{Dd\-Node} $\ast$$\ast$ {\em z}, int {\em nz})}\label{cuddMatMult_8c_2a39a76a87a363ae2a4478b6181a580d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Calculates the product of two matrices represented as ADDs.]
+
+Description [Calculates the product of two matrices, A and B, represented as ADDs. This procedure implements the quasiring multiplication algorithm. A is assumed to depend on varibles x (rows) and z (columns). B is assumed to depend on varibles z (rows) and y (columns). The product of A and B then depends on x (rows) and y (columns). Only the z variables have to be explicitly identified; they are the \char`\"{}summation\char`\"{} variables. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Times\-Plus Cudd\_\-add\-Triangle Cudd\_\-bdd\-And\-Abstract] 
+
+Definition at line 100 of file cudd\-Mat\-Mult.c.
+
+References add\-MMRecur(), ALLOC, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Manager::reordered, and Dd\-Manager::size.\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!Cudd_addTimesPlus@{Cudd\_\-addTimesPlus}}
+\index{Cudd_addTimesPlus@{Cudd\_\-addTimesPlus}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Times\-Plus (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em A}, \bf{Dd\-Node} $\ast$ {\em B}, \bf{Dd\-Node} $\ast$$\ast$ {\em z}, int {\em nz})}\label{cuddMatMult_8c_3ba6a6c9af4740842142de24bb1eb986}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Calculates the product of two matrices represented as ADDs.]
+
+Description [Calculates the product of two matrices, A and B, represented as ADDs, using the CMU matrix by matrix multiplication procedure by Clarke et al.. Matrix A has x's as row variables and z's as column variables, while matrix B has z's as row variables and y's as column variables. Returns the pointer to the result if successful; NULL otherwise. The resulting matrix has x's as row variables and y's as column variables.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Matrix\-Multiply] 
+
+Definition at line 153 of file cudd\-Mat\-Mult.c.
+
+References Cudd\_\-add\-Apply(), Cudd\_\-add\-Exist\-Abstract(), Cudd\_\-add\-Ite(), Cudd\_\-add\-Times(), Cudd\_\-Deref(), Cudd\_\-Recursive\-Deref(), Cudd\_\-Ref(), DD\_\-ONE, and DD\_\-ZERO.\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!Cudd_addTriangle@{Cudd\_\-addTriangle}}
+\index{Cudd_addTriangle@{Cudd\_\-addTriangle}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Triangle (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, \bf{Dd\-Node} $\ast$$\ast$ {\em z}, int {\em nz})}\label{cuddMatMult_8c_98cb80a30ebe274373196765e3dd57a3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the triangulation step for the shortest path computation.]
+
+Description [Implements the semiring multiplication algorithm used in the triangulation step for the shortest path computation. f is assumed to depend on varibles x (rows) and z (columns). g is assumed to depend on varibles z (rows) and y (columns). The product of f and g then depends on x (rows) and y (columns). Only the z variables have to be explicitly identified; they are the \char`\"{}abstraction\char`\"{} variables. Returns a pointer to the result if successful; NULL otherwise. ]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Matrix\-Multiply Cudd\_\-bdd\-And\-Abstract] 
+
+Definition at line 211 of file cudd\-Mat\-Mult.c.
+
+References add\-Triangle\-Recur(), ALLOC, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Manager::reordered, and Dd\-Manager::size.
+
+\subsection{Variable Documentation}
+\index{cuddMatMult.c@{cudd\-Mat\-Mult.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddMatMult.c@{cudd\-Mat\-Mult.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Mat\-Mult.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddMatMult_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Mat\-Mult.c}{p.}{cuddMatMult_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Matrix multiplication functions.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-add\-Matrix\-Multiply()}{p.}{cuddMatMult_8c_2a39a76a87a363ae2a4478b6181a580d} \item \doxyref{Cudd\_\-add\-Times\-Plus()}{p.}{cuddMatMult_8c_3ba6a6c9af4740842142de24bb1eb986} \item \doxyref{Cudd\_\-add\-Triangle()}{p.}{cuddMatMult_8c_98cb80a30ebe274373196765e3dd57a3} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{add\-MMRecur()}{p.}{cuddMatMult_8c_17dd84ca54ead697b09345cc3a976105} \item \doxyref{add\-Triangle\-Recur()}{p.}{cuddMatMult_8c_d78dbbeda98121bf98692f8fd3f78765} \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 56 of file cudd\-Mat\-Mult.c.

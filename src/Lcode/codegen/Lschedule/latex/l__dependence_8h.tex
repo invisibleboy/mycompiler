@@ -1,0 +1,751 @@
+\section{l\_\-dependence.h File Reference}
+\label{l__dependence_8h}\index{l_dependence.h@{l\_\-dependence.h}}
+{\tt \#include $<$config.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Dep\_\-Operand}
+\item 
+struct \bf{L\_\-Dep}
+\item 
+struct \bf{Dep\_\-Info}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{LDEP\_\-MODE\_\-ACYCLIC}~0
+\item 
+\#define \bf{LDEP\_\-MODE\_\-CYCLIC}~1
+\item 
+\#define \bf{LDEP\_\-PREPASS}~1
+\item 
+\#define \bf{LDEP\_\-POSTPASS}~0
+\item 
+\#define \bf{L\_\-DEP\_\-ANY}~-1
+\item 
+\#define \bf{L\_\-DEP\_\-NONE}~0
+\item 
+\#define \bf{L\_\-DEP\_\-REG\_\-FLOW}~1
+\item 
+\#define \bf{L\_\-DEP\_\-REG\_\-ANTI}~2
+\item 
+\#define \bf{L\_\-DEP\_\-REG\_\-OUTPUT}~3
+\item 
+\#define \bf{L\_\-DEP\_\-MEM\_\-FLOW}~4
+\item 
+\#define \bf{L\_\-DEP\_\-MEM\_\-ANTI}~5
+\item 
+\#define \bf{L\_\-DEP\_\-MEM\_\-OUTPUT}~6
+\item 
+\#define \bf{L\_\-DEP\_\-CNT}~7
+\item 
+\#define \bf{L\_\-DEP\_\-SYNC}~8
+\item 
+\#define \bf{L\_\-DEP\_\-VLIW}~9
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-MEM\_\-FLOW\_\-DEP}~0x1
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-MEM\_\-OUTPUT\_\-DEP}~0x2
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-MEM\_\-ANTI\_\-DEP}~0x4
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-ALL\_\-MEMORY\_\-DEP}~0x7
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-REG\_\-FLOW\_\-DEP}~0x10
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-REG\_\-OUTPUT\_\-DEP}~0x20
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-REG\_\-ANTI\_\-DEP}~0x40
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-ALL\_\-REG\_\-DEP}~0x70
+\item 
+\#define \bf{L\_\-DEP\_\-IGNORE\_\-CNT\_\-DEP}~0x100
+\item 
+\#define \bf{DEP\_\-HASH\_\-TABLE\_\-SIZE}~1024
+\item 
+\#define \bf{DEP\_\-HASH\_\-MASK}~(DEP\_\-HASH\_\-TABLE\_\-SIZE - 1)
+\item 
+\#define \bf{DEP\_\-MEM\_\-OPERAND}~0
+\item 
+\#define \bf{DEP\_\-CNT\_\-OPERAND}~1
+\item 
+\#define \bf{DEP\_\-SYNC\_\-OPERAND}~2
+\item 
+\#define \bf{DEP\_\-VLIW\_\-OPERAND}~3
+\item 
+\#define \bf{DEP\_\-CANT\_\-SPECULATE}~-1
+\item 
+\#define \bf{DEP\_\-NON\_\-EXCEPTING}~0
+\item 
+\#define \bf{DEP\_\-ALWAYS\_\-SAFE}~1
+\item 
+\#define \bf{DEP\_\-CTL\_\-DEP\_\-SAFE}~2
+\item 
+\#define \bf{DEP\_\-COMPLEX\_\-SAFE}~3
+\item 
+\#define \bf{DEP\_\-SILENT}~4
+\item 
+\#define \bf{DEP\_\-DELAYS\_\-EXCEPTION}~5
+\item 
+\#define \bf{DEP\_\-SAFE\_\-STORE}~6
+\item 
+\#define \bf{DEP\_\-INFO}(oper)~((\bf{Dep\_\-Info} $\ast$)(oper $\rightarrow$ dep\_\-info))
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{Ldep\_\-mark\_\-safe\_\-invariant} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Ldep\_\-mark\_\-safe} (L\_\-Func $\ast$fn)
+\item 
+void \bf{Ldep\_\-init} (\bf{Parm\_\-Macro\_\-List} $\ast$)
+\item 
+void \bf{L\_\-build\_\-dependence\_\-graph} (L\_\-Cb $\ast$, int, int)
+\item 
+void \bf{L\_\-delete\_\-dependence\_\-graph} (L\_\-Cb $\ast$)
+\item 
+void \bf{L\_\-compute\_\-dependence\_\-level} (L\_\-Cb $\ast$)
+\item 
+void \bf{L\_\-delete\_\-dependence\_\-info} (\bf{Dep\_\-Info} $\ast$)
+\item 
+void \bf{L\_\-add\_\-dep} (int, int, int, int, L\_\-Oper $\ast$, L\_\-Oper $\ast$, int)
+\item 
+void \bf{L\_\-remove\_\-dep\_\-pair} (int, L\_\-Oper $\ast$, L\_\-Oper $\ast$)
+\item 
+\bf{L\_\-Dep} $\ast$ \bf{L\_\-remove\_\-dep} (\bf{L\_\-Dep} $\ast$, int $\ast$, int, L\_\-Oper $\ast$, L\_\-Oper $\ast$)
+\item 
+\bf{L\_\-Dep} $\ast$ \bf{L\_\-find\_\-dep} (\bf{L\_\-Dep} $\ast$, L\_\-Oper $\ast$, L\_\-Oper $\ast$, int)
+\item 
+\bf{Dep\_\-Info} $\ast$ \bf{L\_\-new\_\-dep\_\-info} ()
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+int \bf{Ldep\_\-branch\_\-perc\_\-limit}
+\item 
+int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep}
+\item 
+int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-info}
+\item 
+int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-operand}
+\item 
+int \bf{Ldep\_\-branch\_\-perc\_\-limit}
+\item 
+int \bf{Ldep\_\-except\_\-branch\_\-perc\_\-limit}
+\item 
+int \bf{Ldep\_\-allow\_\-speculative\_\-stores}
+\item 
+int \bf{Ldep\_\-allow\_\-upward\_\-code\_\-perc}
+\item 
+int \bf{Ldep\_\-allow\_\-downward\_\-code\_\-perc}
+\item 
+int \bf{Ldep\_\-remove\_\-always\_\-safe}
+\item 
+int \bf{Ldep\_\-remove\_\-ctl\_\-dep\_\-safe}
+\item 
+int \bf{Ldep\_\-remove\_\-complex\_\-safe}
+\item 
+int \bf{Ldep\_\-hb\_\-keep\_\-branch\_\-order}
+\item 
+int \bf{Ldep\_\-check\_\-profiled\_\-memory\_\-dependences}
+\item 
+int \bf{Ldep\_\-allow\_\-lat\_\-dangles\_\-into\_\-jsrs}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_dependence.h@{l\_\-dependence.h}!DEP_ALWAYS_SAFE@{DEP\_\-ALWAYS\_\-SAFE}}
+\index{DEP_ALWAYS_SAFE@{DEP\_\-ALWAYS\_\-SAFE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-ALWAYS\_\-SAFE~1}\label{l__dependence_8h_09c92343f8bd5f2604389a19fde17cf9}
+
+
+
+
+Definition at line 126 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_CANT_SPECULATE@{DEP\_\-CANT\_\-SPECULATE}}
+\index{DEP_CANT_SPECULATE@{DEP\_\-CANT\_\-SPECULATE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-CANT\_\-SPECULATE~-1}\label{l__dependence_8h_902c066b60539a643ac88ce96d3a4dad}
+
+
+
+
+Definition at line 124 of file l\_\-dependence.h.
+
+Referenced by L\_\-safe\_\-to\_\-move\_\-above\_\-branch().\index{l_dependence.h@{l\_\-dependence.h}!DEP_CNT_OPERAND@{DEP\_\-CNT\_\-OPERAND}}
+\index{DEP_CNT_OPERAND@{DEP\_\-CNT\_\-OPERAND}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-CNT\_\-OPERAND~1}\label{l__dependence_8h_ed4f1e9cee538335bc3a17a0c73241c3}
+
+
+
+
+Definition at line 108 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!DEP_COMPLEX_SAFE@{DEP\_\-COMPLEX\_\-SAFE}}
+\index{DEP_COMPLEX_SAFE@{DEP\_\-COMPLEX\_\-SAFE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-COMPLEX\_\-SAFE~3}\label{l__dependence_8h_e02d4aa9d473f1531a9bf542f96cfdd3}
+
+
+
+
+Definition at line 128 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_CTL_DEP_SAFE@{DEP\_\-CTL\_\-DEP\_\-SAFE}}
+\index{DEP_CTL_DEP_SAFE@{DEP\_\-CTL\_\-DEP\_\-SAFE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-CTL\_\-DEP\_\-SAFE~2}\label{l__dependence_8h_f5c26632fc5f44d1d985a80f495c5324}
+
+
+
+
+Definition at line 127 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_DELAYS_EXCEPTION@{DEP\_\-DELAYS\_\-EXCEPTION}}
+\index{DEP_DELAYS_EXCEPTION@{DEP\_\-DELAYS\_\-EXCEPTION}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-DELAYS\_\-EXCEPTION~5}\label{l__dependence_8h_f54c8a0b866148e1cef586112452ed13}
+
+
+
+
+Definition at line 130 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-can\_\-schedule\_\-op(), and Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_HASH_MASK@{DEP\_\-HASH\_\-MASK}}
+\index{DEP_HASH_MASK@{DEP\_\-HASH\_\-MASK}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-HASH\_\-MASK~(DEP\_\-HASH\_\-TABLE\_\-SIZE - 1)}\label{l__dependence_8h_2b4b2ea3fee3c4efcba5e5d876784f3f}
+
+
+
+
+Definition at line 105 of file l\_\-dependence.h.
+
+Referenced by L\_\-find\_\-dep\_\-operand(), L\_\-insert\_\-dep\_\-operand(), and L\_\-remove\_\-dep\_\-operand().\index{l_dependence.h@{l\_\-dependence.h}!DEP_HASH_TABLE_SIZE@{DEP\_\-HASH\_\-TABLE\_\-SIZE}}
+\index{DEP_HASH_TABLE_SIZE@{DEP\_\-HASH\_\-TABLE\_\-SIZE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-HASH\_\-TABLE\_\-SIZE~1024}\label{l__dependence_8h_d753d4c2f7a70931c90e6b133a09cd40}
+
+
+
+
+Definition at line 104 of file l\_\-dependence.h.
+
+Referenced by L\_\-init\_\-dep\_\-hash\_\-table(), and L\_\-reset\_\-dep\_\-hash\_\-table().\index{l_dependence.h@{l\_\-dependence.h}!DEP_INFO@{DEP\_\-INFO}}
+\index{DEP_INFO@{DEP\_\-INFO}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-INFO(oper)~((\bf{Dep\_\-Info} $\ast$)(oper $\rightarrow$ dep\_\-info))}\label{l__dependence_8h_0fa8d67fefe7bbeb158c334702bdf1a9}
+
+
+
+
+Definition at line 158 of file l\_\-dependence.h.
+
+Referenced by L\_\-add\_\-dep(), L\_\-add\_\-input\_\-dep(), L\_\-add\_\-output\_\-dep(), L\_\-allow\_\-concurrent\_\-issue(), L\_\-build\_\-dependence\_\-graph(), L\_\-compute\_\-control\_\-dependence(), L\_\-compute\_\-cross\_\-iter\_\-memory\_\-dependence(), L\_\-compute\_\-cross\_\-iter\_\-register\_\-dependence(), L\_\-compute\_\-dependence\_\-level(), L\_\-compute\_\-hb\_\-blk\_\-dependence(), L\_\-compute\_\-hb\_\-control\_\-dependence(), L\_\-compute\_\-hb\_\-memory\_\-dependence(), L\_\-compute\_\-hb\_\-register\_\-dependence(), L\_\-compute\_\-hb\_\-synchronization\_\-dependence(), L\_\-compute\_\-memory\_\-dependence(), L\_\-compute\_\-register\_\-dependence(), L\_\-compute\_\-synchronization\_\-dependence(), L\_\-delete\_\-dependence\_\-graph(), L\_\-insert\_\-program\_\-order\_\-dependence(), L\_\-mcb\_\-delete\_\-check(), L\_\-mcb\_\-insert\_\-check(), L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences(), L\_\-print\_\-dependence\_\-graph(), L\_\-remove\_\-dep\_\-pair(), L\_\-resolve\_\-dependence(), Lsched\_\-determine\_\-etimes(), Lsched\_\-determine\_\-ltimes(), Lsched\_\-determine\_\-pad\_\-for\_\-vliw(), wbs\_\-delete\_\-check(), wbs\_\-insert\_\-check(), and wbs\_\-remove\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!DEP_MEM_OPERAND@{DEP\_\-MEM\_\-OPERAND}}
+\index{DEP_MEM_OPERAND@{DEP\_\-MEM\_\-OPERAND}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-MEM\_\-OPERAND~0}\label{l__dependence_8h_a1a43eadd7bb31302abdeb28f606497b}
+
+
+
+
+Definition at line 107 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!DEP_NON_EXCEPTING@{DEP\_\-NON\_\-EXCEPTING}}
+\index{DEP_NON_EXCEPTING@{DEP\_\-NON\_\-EXCEPTING}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-NON\_\-EXCEPTING~0}\label{l__dependence_8h_17bacd910de7ce678a5feb98a92904cb}
+
+
+
+
+Definition at line 125 of file l\_\-dependence.h.
+
+Referenced by L\_\-new\_\-dep\_\-info(), L\_\-safe\_\-to\_\-move\_\-above\_\-branch(), L\_\-update\_\-sched\_\-info(), and Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_SAFE_STORE@{DEP\_\-SAFE\_\-STORE}}
+\index{DEP_SAFE_STORE@{DEP\_\-SAFE\_\-STORE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-SAFE\_\-STORE~6}\label{l__dependence_8h_2f9ca3b96f1a67be58b18f78caea81b1}
+
+
+
+
+Definition at line 131 of file l\_\-dependence.h.
+
+Referenced by L\_\-safe\_\-to\_\-move\_\-above\_\-branch(), and Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_SILENT@{DEP\_\-SILENT}}
+\index{DEP_SILENT@{DEP\_\-SILENT}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-SILENT~4}\label{l__dependence_8h_88c64501bb0da9a0a6ebccdd444ed621}
+
+
+
+
+Definition at line 129 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-can\_\-schedule\_\-op(), and Lsched\_\-func\_\-complete().\index{l_dependence.h@{l\_\-dependence.h}!DEP_SYNC_OPERAND@{DEP\_\-SYNC\_\-OPERAND}}
+\index{DEP_SYNC_OPERAND@{DEP\_\-SYNC\_\-OPERAND}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-SYNC\_\-OPERAND~2}\label{l__dependence_8h_14c0cbe25fab7704fb5d4b491c096dab}
+
+
+
+
+Definition at line 109 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!DEP_VLIW_OPERAND@{DEP\_\-VLIW\_\-OPERAND}}
+\index{DEP_VLIW_OPERAND@{DEP\_\-VLIW\_\-OPERAND}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEP\_\-VLIW\_\-OPERAND~3}\label{l__dependence_8h_3326c6a5979f6eb3961e3d2142cd9b7f}
+
+
+
+
+Definition at line 110 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_ANY@{L\_\-DEP\_\-ANY}}
+\index{L_DEP_ANY@{L\_\-DEP\_\-ANY}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-ANY~-1}\label{l__dependence_8h_3744ed9cb461fa1557d895e4b84fcbbe}
+
+
+
+
+Definition at line 79 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_CNT@{L\_\-DEP\_\-CNT}}
+\index{L_DEP_CNT@{L\_\-DEP\_\-CNT}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-CNT~7}\label{l__dependence_8h_97a696524ddcfcf52e99447d6ab90987}
+
+
+
+
+Definition at line 87 of file l\_\-dependence.h.
+
+Referenced by L\_\-add\_\-check\_\-to\_\-check\_\-dep(), L\_\-compute\_\-control\_\-dependence(), L\_\-compute\_\-hb\_\-control\_\-dependence(), L\_\-is\_\-mem\_\-or\_\-flow\_\-dep(), L\_\-mcb\_\-insert\_\-check(), L\_\-print\_\-dependences(), L\_\-resolve\_\-dependence(), Lsched\_\-determine\_\-etimes(), Lsched\_\-determine\_\-ltimes(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), Lsched\_\-update\_\-ctl\_\-delay\_\-sinfo(), and wbs\_\-insert\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_ALL_MEMORY_DEP@{L\_\-DEP\_\-IGNORE\_\-ALL\_\-MEMORY\_\-DEP}}
+\index{L_DEP_IGNORE_ALL_MEMORY_DEP@{L\_\-DEP\_\-IGNORE\_\-ALL\_\-MEMORY\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-ALL\_\-MEMORY\_\-DEP~0x7}\label{l__dependence_8h_59849a68b770fbb0c4cc1b8a2161a34d}
+
+
+
+
+Definition at line 94 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_ALL_REG_DEP@{L\_\-DEP\_\-IGNORE\_\-ALL\_\-REG\_\-DEP}}
+\index{L_DEP_IGNORE_ALL_REG_DEP@{L\_\-DEP\_\-IGNORE\_\-ALL\_\-REG\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-ALL\_\-REG\_\-DEP~0x70}\label{l__dependence_8h_c320f7b14c2e5027a2778e774364019f}
+
+
+
+
+Definition at line 99 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_CNT_DEP@{L\_\-DEP\_\-IGNORE\_\-CNT\_\-DEP}}
+\index{L_DEP_IGNORE_CNT_DEP@{L\_\-DEP\_\-IGNORE\_\-CNT\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-CNT\_\-DEP~0x100}\label{l__dependence_8h_7e9a61e2d3433205a5eb4b2ef69fc564}
+
+
+
+
+Definition at line 101 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_MEM_ANTI_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-ANTI\_\-DEP}}
+\index{L_DEP_IGNORE_MEM_ANTI_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-ANTI\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-MEM\_\-ANTI\_\-DEP~0x4}\label{l__dependence_8h_75b96298c5074efacde7e6e267dbce98}
+
+
+
+
+Definition at line 93 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_MEM_FLOW_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-FLOW\_\-DEP}}
+\index{L_DEP_IGNORE_MEM_FLOW_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-FLOW\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-MEM\_\-FLOW\_\-DEP~0x1}\label{l__dependence_8h_3523f735698d632a27db5c1feb019db5}
+
+
+
+
+Definition at line 91 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_MEM_OUTPUT_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-OUTPUT\_\-DEP}}
+\index{L_DEP_IGNORE_MEM_OUTPUT_DEP@{L\_\-DEP\_\-IGNORE\_\-MEM\_\-OUTPUT\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-MEM\_\-OUTPUT\_\-DEP~0x2}\label{l__dependence_8h_ab9cb924c968d91b2c8e962d66fd84da}
+
+
+
+
+Definition at line 92 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_REG_ANTI_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-ANTI\_\-DEP}}
+\index{L_DEP_IGNORE_REG_ANTI_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-ANTI\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-REG\_\-ANTI\_\-DEP~0x40}\label{l__dependence_8h_5921c176ef91590c8db893d4a23ca8fb}
+
+
+
+
+Definition at line 98 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_REG_FLOW_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-FLOW\_\-DEP}}
+\index{L_DEP_IGNORE_REG_FLOW_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-FLOW\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-REG\_\-FLOW\_\-DEP~0x10}\label{l__dependence_8h_08a5cbca5ee59c9426575953aac7337e}
+
+
+
+
+Definition at line 96 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_IGNORE_REG_OUTPUT_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-OUTPUT\_\-DEP}}
+\index{L_DEP_IGNORE_REG_OUTPUT_DEP@{L\_\-DEP\_\-IGNORE\_\-REG\_\-OUTPUT\_\-DEP}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-IGNORE\_\-REG\_\-OUTPUT\_\-DEP~0x20}\label{l__dependence_8h_80680af4d1495deeab44876910107d89}
+
+
+
+
+Definition at line 97 of file l\_\-dependence.h.
+
+Referenced by L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_MEM_ANTI@{L\_\-DEP\_\-MEM\_\-ANTI}}
+\index{L_DEP_MEM_ANTI@{L\_\-DEP\_\-MEM\_\-ANTI}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-MEM\_\-ANTI~5}\label{l__dependence_8h_701044c9da61b4177e3b1059458290f7}
+
+
+
+
+Definition at line 85 of file l\_\-dependence.h.
+
+Referenced by L\_\-is\_\-mem\_\-or\_\-flow\_\-dep(), L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_MEM_FLOW@{L\_\-DEP\_\-MEM\_\-FLOW}}
+\index{L_DEP_MEM_FLOW@{L\_\-DEP\_\-MEM\_\-FLOW}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-MEM\_\-FLOW~4}\label{l__dependence_8h_cfdf914f0b4330290fb5e493b28219f7}
+
+
+
+
+Definition at line 84 of file l\_\-dependence.h.
+
+Referenced by L\_\-is\_\-mem\_\-or\_\-flow\_\-dep(), L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences(), L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_MEM_OUTPUT@{L\_\-DEP\_\-MEM\_\-OUTPUT}}
+\index{L_DEP_MEM_OUTPUT@{L\_\-DEP\_\-MEM\_\-OUTPUT}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-MEM\_\-OUTPUT~6}\label{l__dependence_8h_eb463aeba71453ced885e88d79fb70f5}
+
+
+
+
+Definition at line 86 of file l\_\-dependence.h.
+
+Referenced by L\_\-compute\_\-cross\_\-iter\_\-memory\_\-dependence(), L\_\-compute\_\-hb\_\-memory\_\-dependence(), L\_\-compute\_\-memory\_\-dependence(), L\_\-is\_\-mem\_\-or\_\-flow\_\-dep(), L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_NONE@{L\_\-DEP\_\-NONE}}
+\index{L_DEP_NONE@{L\_\-DEP\_\-NONE}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-NONE~0}\label{l__dependence_8h_a86183580d9b521d02223327976d7a40}
+
+
+
+
+Definition at line 80 of file l\_\-dependence.h.\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_REG_ANTI@{L\_\-DEP\_\-REG\_\-ANTI}}
+\index{L_DEP_REG_ANTI@{L\_\-DEP\_\-REG\_\-ANTI}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-REG\_\-ANTI~2}\label{l__dependence_8h_7d009edbac1dc5b067b5f5eedeb0b423}
+
+
+
+
+Definition at line 82 of file l\_\-dependence.h.
+
+Referenced by L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_REG_FLOW@{L\_\-DEP\_\-REG\_\-FLOW}}
+\index{L_DEP_REG_FLOW@{L\_\-DEP\_\-REG\_\-FLOW}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-REG\_\-FLOW~1}\label{l__dependence_8h_7e5a0511f265decccf9c5ec21bdea4b8}
+
+
+
+
+Definition at line 81 of file l\_\-dependence.h.
+
+Referenced by L\_\-allow\_\-concurrent\_\-issue(), L\_\-compute\_\-cross\_\-iter\_\-register\_\-dependence(), L\_\-compute\_\-hb\_\-blk\_\-dependence(), L\_\-compute\_\-hb\_\-register\_\-dependence(), L\_\-compute\_\-register\_\-dependence(), L\_\-insert\_\-program\_\-order\_\-dependence(), L\_\-mcb\_\-insert\_\-check(), L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_REG_OUTPUT@{L\_\-DEP\_\-REG\_\-OUTPUT}}
+\index{L_DEP_REG_OUTPUT@{L\_\-DEP\_\-REG\_\-OUTPUT}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-REG\_\-OUTPUT~3}\label{l__dependence_8h_d0f48f8141b45ad238c6907fdd065592}
+
+
+
+
+Definition at line 83 of file l\_\-dependence.h.
+
+Referenced by L\_\-compute\_\-cross\_\-iter\_\-register\_\-dependence(), L\_\-compute\_\-hb\_\-blk\_\-dependence(), L\_\-compute\_\-register\_\-dependence(), L\_\-print\_\-dependences(), and L\_\-resolve\_\-dependence().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_SYNC@{L\_\-DEP\_\-SYNC}}
+\index{L_DEP_SYNC@{L\_\-DEP\_\-SYNC}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-SYNC~8}\label{l__dependence_8h_8a2cca461224abece7afb57e5ff2befe}
+
+
+
+
+Definition at line 88 of file l\_\-dependence.h.
+
+Referenced by L\_\-compute\_\-hb\_\-synchronization\_\-dependence(), L\_\-compute\_\-mem\_\-copy\_\-dependences(), L\_\-compute\_\-synchronization\_\-dependence(), and L\_\-print\_\-dependences().\index{l_dependence.h@{l\_\-dependence.h}!L_DEP_VLIW@{L\_\-DEP\_\-VLIW}}
+\index{L_DEP_VLIW@{L\_\-DEP\_\-VLIW}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-DEP\_\-VLIW~9}\label{l__dependence_8h_44966ab55c56638a952468d098a9e173}
+
+
+
+
+Definition at line 89 of file l\_\-dependence.h.
+
+Referenced by L\_\-allow\_\-concurrent\_\-issue().\index{l_dependence.h@{l\_\-dependence.h}!LDEP_MODE_ACYCLIC@{LDEP\_\-MODE\_\-ACYCLIC}}
+\index{LDEP_MODE_ACYCLIC@{LDEP\_\-MODE\_\-ACYCLIC}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LDEP\_\-MODE\_\-ACYCLIC~0}\label{l__dependence_8h_ca761b0b451255076f49e439051ff47d}
+
+
+
+
+Definition at line 73 of file l\_\-dependence.h.
+
+Referenced by L\_\-safe\_\-to\_\-move\_\-above\_\-branch(), L\_\-safe\_\-to\_\-move\_\-below\_\-branch(), L\_\-safe\_\-to\_\-move\_\-below\_\-branch\_\-hb(), Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!LDEP_MODE_CYCLIC@{LDEP\_\-MODE\_\-CYCLIC}}
+\index{LDEP_MODE_CYCLIC@{LDEP\_\-MODE\_\-CYCLIC}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LDEP\_\-MODE\_\-CYCLIC~1}\label{l__dependence_8h_e417dbe2c9f367eaf46cf098e476c6c3}
+
+
+
+
+Definition at line 74 of file l\_\-dependence.h.
+
+Referenced by L\_\-build\_\-dependence\_\-graph().\index{l_dependence.h@{l\_\-dependence.h}!LDEP_POSTPASS@{LDEP\_\-POSTPASS}}
+\index{LDEP_POSTPASS@{LDEP\_\-POSTPASS}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LDEP\_\-POSTPASS~0}\label{l__dependence_8h_27474e7ed5ec0830f2bbd60326758c68}
+
+
+
+
+Definition at line 77 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!LDEP_PREPASS@{LDEP\_\-PREPASS}}
+\index{LDEP_PREPASS@{LDEP\_\-PREPASS}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LDEP\_\-PREPASS~1}\label{l__dependence_8h_daf2531836c0a433be76cc3530568278}
+
+
+
+
+Definition at line 76 of file l\_\-dependence.h.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().
+
+\subsection{Function Documentation}
+\index{l_dependence.h@{l\_\-dependence.h}!L_add_dep@{L\_\-add\_\-dep}}
+\index{L_add_dep@{L\_\-add\_\-dep}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-add\_\-dep (int, int, int, int, L\_\-Oper $\ast$, L\_\-Oper $\ast$, int)}\label{l__dependence_8h_1a7647b8ab91e39718b42ca94a936a33}
+
+
+
+
+Definition at line 807 of file l\_\-dependence.c.
+
+References DEP\_\-INFO, L\_\-Dep::distance, L\_\-Dep::from\_\-index, L\_\-Dep::from\_\-oper, L\_\-add\_\-input\_\-dep(), L\_\-add\_\-output\_\-dep(), L\_\-Dep::next\_\-dep, NULL, L\_\-Dep::omega, L\_\-Dep::to\_\-index, L\_\-Dep::to\_\-oper, and L\_\-Dep::type.
+
+Referenced by L\_\-add\_\-check\_\-to\_\-check\_\-dep(), L\_\-mcb\_\-insert\_\-check(), and wbs\_\-insert\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_build_dependence_graph@{L\_\-build\_\-dependence\_\-graph}}
+\index{L_build_dependence_graph@{L\_\-build\_\-dependence\_\-graph}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-build\_\-dependence\_\-graph (L\_\-Cb $\ast$, int, int)}\label{l__dependence_8h_0bbba3ce0e64cc507c81ba677b2b6b03}
+
+
+
+
+Definition at line 4530 of file l\_\-dependence.c.
+
+References DEP\_\-INFO, L\_\-allow\_\-concurrent\_\-issue(), L\_\-compute\_\-control\_\-dependence(), L\_\-compute\_\-cross\_\-iter\_\-memory\_\-dependence(), L\_\-compute\_\-cross\_\-iter\_\-register\_\-dependence(), L\_\-compute\_\-dependence\_\-level(), L\_\-compute\_\-hb\_\-blk\_\-dependence(), L\_\-compute\_\-hb\_\-control\_\-dependence(), L\_\-compute\_\-hb\_\-memory\_\-dependence(), L\_\-compute\_\-hb\_\-register\_\-dependence(), L\_\-compute\_\-hb\_\-synchronization\_\-dependence(), L\_\-compute\_\-mem\_\-copy\_\-dependences(), L\_\-compute\_\-memory\_\-dependence(), L\_\-compute\_\-register\_\-dependence(), L\_\-compute\_\-synchronization\_\-dependence(), L\_\-delete\_\-dependence\_\-info(), L\_\-insert\_\-program\_\-order\_\-dependence(), L\_\-new\_\-dep\_\-info(), L\_\-print\_\-dependence\_\-graph(), L\_\-resolve\_\-dependence(), Ldep\_\-allow\_\-concurrent\_\-issue, Ldep\_\-mode, LDEP\_\-MODE\_\-CYCLIC, Ldep\_\-print\_\-dependence\_\-graph, Ldep\_\-program\_\-order, Ldep\_\-resolve\_\-dependences, and NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!L_compute_dependence_level@{L\_\-compute\_\-dependence\_\-level}}
+\index{L_compute_dependence_level@{L\_\-compute\_\-dependence\_\-level}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-compute\_\-dependence\_\-level (L\_\-Cb $\ast$)}\label{l__dependence_8h_cfe711d4aba7e4c8980897955204029f}
+
+
+
+
+Definition at line 4359 of file l\_\-dependence.c.
+
+References DEP\_\-INFO, L\_\-Dep::distance, L\_\-Dep::from\_\-oper, Dep\_\-Info::input\_\-dep, Dep\_\-Info::level, L\_\-Dep::next\_\-dep, NULL, and L\_\-Dep::omega.
+
+Referenced by L\_\-build\_\-dependence\_\-graph().\index{l_dependence.h@{l\_\-dependence.h}!L_delete_dependence_graph@{L\_\-delete\_\-dependence\_\-graph}}
+\index{L_delete_dependence_graph@{L\_\-delete\_\-dependence\_\-graph}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-delete\_\-dependence\_\-graph (L\_\-Cb $\ast$)}\label{l__dependence_8h_c5adb5f0283fd2a872096d4fe80b8048}
+
+
+
+
+Definition at line 4406 of file l\_\-dependence.c.
+
+References DEP\_\-INFO, L\_\-delete\_\-dependence\_\-info(), and NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!L_delete_dependence_info@{L\_\-delete\_\-dependence\_\-info}}
+\index{L_delete_dependence_info@{L\_\-delete\_\-dependence\_\-info}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-delete\_\-dependence\_\-info (\bf{Dep\_\-Info} $\ast$)}\label{l__dependence_8h_42fab7fffd27cd1352a69e066dda806c}
+
+
+
+
+Definition at line 4389 of file l\_\-dependence.c.
+
+References Dep\_\-Info::input\_\-dep, L\_\-alloc\_\-dep, L\_\-alloc\_\-dep\_\-info, L\_\-free(), L\_\-Dep::next\_\-dep, NULL, and Dep\_\-Info::output\_\-dep.
+
+Referenced by L\_\-build\_\-dependence\_\-graph(), L\_\-delete\_\-dependence\_\-graph(), L\_\-mcb\_\-delete\_\-check(), and wbs\_\-delete\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_find_dep@{L\_\-find\_\-dep}}
+\index{L_find_dep@{L\_\-find\_\-dep}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Dep}$\ast$ L\_\-find\_\-dep (\bf{L\_\-Dep} $\ast$, L\_\-Oper $\ast$, L\_\-Oper $\ast$, int)}\label{l__dependence_8h_d7f6a5b7e3b7e65cbb74b1ef97f2df49}
+
+
+
+
+Definition at line 830 of file l\_\-dependence.c.
+
+References L\_\-Dep::from\_\-oper, L\_\-Dep::next\_\-dep, NULL, L\_\-Dep::to\_\-oper, and L\_\-Dep::type.
+
+Referenced by L\_\-allow\_\-concurrent\_\-issue(), and wbs\_\-insert\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_new_dep_info@{L\_\-new\_\-dep\_\-info}}
+\index{L_new_dep_info@{L\_\-new\_\-dep\_\-info}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dep\_\-Info}$\ast$ L\_\-new\_\-dep\_\-info ()}\label{l__dependence_8h_36f50b716086eefdc8b0f60e72e98f71}
+
+
+
+
+Definition at line 4481 of file l\_\-dependence.c.
+
+References DEP\_\-NON\_\-EXCEPTING, Dep\_\-Info::input\_\-dep, L\_\-alloc(), L\_\-alloc\_\-dep\_\-info, Dep\_\-Info::level, Dep\_\-Info::n\_\-input\_\-dep, Dep\_\-Info::n\_\-output\_\-dep, NULL, Dep\_\-Info::output\_\-dep, and Dep\_\-Info::spec\_\-cond.
+
+Referenced by L\_\-build\_\-dependence\_\-graph(), L\_\-mcb\_\-insert\_\-check(), and wbs\_\-insert\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_remove_dep@{L\_\-remove\_\-dep}}
+\index{L_remove_dep@{L\_\-remove\_\-dep}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Dep}$\ast$ L\_\-remove\_\-dep (\bf{L\_\-Dep} $\ast$, int $\ast$, int, L\_\-Oper $\ast$, L\_\-Oper $\ast$)}\label{l__dependence_8h_762d94e307b6c25aa78fef8b11cea19a}
+
+
+
+
+Definition at line 843 of file l\_\-dependence.c.
+
+References L\_\-Dep::from\_\-oper, L\_\-alloc\_\-dep, L\_\-free(), L\_\-Dep::next\_\-dep, NULL, L\_\-Dep::to\_\-oper, and L\_\-Dep::type.
+
+Referenced by L\_\-mcb\_\-delete\_\-check(), L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences(), L\_\-remove\_\-dep\_\-pair(), L\_\-resolve\_\-dependence(), Lsched\_\-schedule\_\-with\_\-delay\_\-op(), and wbs\_\-delete\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!L_remove_dep_pair@{L\_\-remove\_\-dep\_\-pair}}
+\index{L_remove_dep_pair@{L\_\-remove\_\-dep\_\-pair}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-remove\_\-dep\_\-pair (int, L\_\-Oper $\ast$, L\_\-Oper $\ast$)}\label{l__dependence_8h_56c4fb84c90b08674cad178142a61973}
+
+
+
+
+Definition at line 892 of file l\_\-dependence.c.
+
+References DEP\_\-INFO, Dep\_\-Info::input\_\-dep, L\_\-remove\_\-dep(), Dep\_\-Info::n\_\-input\_\-dep, Dep\_\-Info::n\_\-output\_\-dep, and Dep\_\-Info::output\_\-dep.\index{l_dependence.h@{l\_\-dependence.h}!Ldep_init@{Ldep\_\-init}}
+\index{Ldep_init@{Ldep\_\-init}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Ldep\_\-init (\bf{Parm\_\-Macro\_\-List} $\ast$)}\label{l__dependence_8h_d2a4936e04bc8c14dd34d18d914e9980}
+
+
+
+
+Definition at line 209 of file l\_\-dependence.c.
+
+References L\_\-alloc\_\-dep, L\_\-alloc\_\-dep\_\-info, L\_\-alloc\_\-dep\_\-operand, L\_\-conflicting\_\-operands, L\_\-create\_\-alloc\_\-pool(), L\_\-load\_\-parameters\_\-aliased(), L\_\-read\_\-parm\_\-ldep(), and M\_\-dep\_\-conflicting\_\-operands().
+
+Referenced by Lsched\_\-init().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_mark_safe@{Ldep\_\-mark\_\-safe}}
+\index{Ldep_mark_safe@{Ldep\_\-mark\_\-safe}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Ldep\_\-mark\_\-safe (L\_\-Func $\ast$ {\em fn})}\label{l__dependence_8h_eb5239833bb75d328e2e84dd49f420f0}
+
+
+
+
+Definition at line 514 of file l\_\-dependence.c.
+
+References Ldep\_\-mark\_\-safe\_\-invariant().
+
+Referenced by Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-prepass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_mark_safe_invariant@{Ldep\_\-mark\_\-safe\_\-invariant}}
+\index{Ldep_mark_safe_invariant@{Ldep\_\-mark\_\-safe\_\-invariant}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Ldep\_\-mark\_\-safe\_\-invariant (L\_\-Func $\ast$ {\em fn})}\label{l__dependence_8h_1f244cfa861039836212d125b1a5e399}
+
+
+
+
+Definition at line 356 of file l\_\-dependence.c.
+
+References Ldep\_\-invariant\_\-oper(), Ldep\_\-remove\_\-always\_\-safe, Ldep\_\-remove\_\-complex\_\-safe, Ldep\_\-remove\_\-ctl\_\-dep\_\-safe, loop\_\-set, NULL, and Set\_\-union\_\-acc().
+
+Referenced by Ldep\_\-mark\_\-safe().
+
+\subsection{Variable Documentation}
+\index{l_dependence.h@{l\_\-dependence.h}!Ldep_alloc_target_size_dep@{Ldep\_\-alloc\_\-target\_\-size\_\-dep}}
+\index{Ldep_alloc_target_size_dep@{Ldep\_\-alloc\_\-target\_\-size\_\-dep}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep}}\label{l__dependence_8h_052af7babdd1a01507ab274586f974f5}
+
+
+\index{l_dependence.h@{l\_\-dependence.h}!Ldep_alloc_target_size_dep_info@{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-info}}
+\index{Ldep_alloc_target_size_dep_info@{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-info}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-info}}\label{l__dependence_8h_24855d7f12c68eddde6562e91651ae8d}
+
+
+\index{l_dependence.h@{l\_\-dependence.h}!Ldep_alloc_target_size_dep_operand@{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-operand}}
+\index{Ldep_alloc_target_size_dep_operand@{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-operand}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-alloc\_\-target\_\-size\_\-dep\_\-operand}}\label{l__dependence_8h_b58047a9332cc2a01da6a85464e2c451}
+
+
+\index{l_dependence.h@{l\_\-dependence.h}!Ldep_allow_downward_code_perc@{Ldep\_\-allow\_\-downward\_\-code\_\-perc}}
+\index{Ldep_allow_downward_code_perc@{Ldep\_\-allow\_\-downward\_\-code\_\-perc}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-allow\_\-downward\_\-code\_\-perc}}\label{l__dependence_8h_a37236ab38b4dece3053ea2afdec5481}
+
+
+
+
+Definition at line 99 of file l\_\-dependence.c.
+
+Referenced by L\_\-compute\_\-control\_\-dependence(), L\_\-compute\_\-hb\_\-control\_\-dependence(), L\_\-read\_\-parm\_\-ldep(), Lsched\_\-init(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_allow_lat_dangles_into_jsrs@{Ldep\_\-allow\_\-lat\_\-dangles\_\-into\_\-jsrs}}
+\index{Ldep_allow_lat_dangles_into_jsrs@{Ldep\_\-allow\_\-lat\_\-dangles\_\-into\_\-jsrs}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-allow\_\-lat\_\-dangles\_\-into\_\-jsrs}}\label{l__dependence_8h_d193af86d66f9928071183d9bf7f3115}
+
+
+
+
+Definition at line 112 of file l\_\-dependence.c.
+
+Referenced by L\_\-compute\_\-register\_\-dependence(), and L\_\-read\_\-parm\_\-ldep().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_allow_speculative_stores@{Ldep\_\-allow\_\-speculative\_\-stores}}
+\index{Ldep_allow_speculative_stores@{Ldep\_\-allow\_\-speculative\_\-stores}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-allow\_\-speculative\_\-stores}}\label{l__dependence_8h_a2f37b09c81574ae2501ac22e267a16b}
+
+
+
+
+Definition at line 97 of file l\_\-dependence.c.
+
+Referenced by L\_\-read\_\-parm\_\-ldep(), L\_\-safe\_\-to\_\-move\_\-above\_\-branch(), and L\_\-safe\_\-to\_\-move\_\-above\_\-branch\_\-hb().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_allow_upward_code_perc@{Ldep\_\-allow\_\-upward\_\-code\_\-perc}}
+\index{Ldep_allow_upward_code_perc@{Ldep\_\-allow\_\-upward\_\-code\_\-perc}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-allow\_\-upward\_\-code\_\-perc}}\label{l__dependence_8h_371d331b6fd47a4946b18d1fd777c8b6}
+
+
+
+
+Definition at line 93 of file l\_\-dependence.c.
+
+Referenced by L\_\-read\_\-parm\_\-ldep(), Lsched\_\-init(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_branch_perc_limit@{Ldep\_\-branch\_\-perc\_\-limit}}
+\index{Ldep_branch_perc_limit@{Ldep\_\-branch\_\-perc\_\-limit}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-branch\_\-perc\_\-limit}}\label{l__dependence_8h_e9122f97b994b1b50b3bdf3ec97cf96c}
+
+
+
+
+Definition at line 94 of file l\_\-dependence.c.
+
+Referenced by L\_\-read\_\-parm\_\-ldep().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_branch_perc_limit@{Ldep\_\-branch\_\-perc\_\-limit}}
+\index{Ldep_branch_perc_limit@{Ldep\_\-branch\_\-perc\_\-limit}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-branch\_\-perc\_\-limit}}\label{l__dependence_8h_e9122f97b994b1b50b3bdf3ec97cf96c}
+
+
+
+
+Definition at line 94 of file l\_\-dependence.c.\index{l_dependence.h@{l\_\-dependence.h}!Ldep_check_profiled_memory_dependences@{Ldep\_\-check\_\-profiled\_\-memory\_\-dependences}}
+\index{Ldep_check_profiled_memory_dependences@{Ldep\_\-check\_\-profiled\_\-memory\_\-dependences}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-check\_\-profiled\_\-memory\_\-dependences}}\label{l__dependence_8h_630979af3763c48fc0ead7e44dcc19f6}
+
+
+
+
+Definition at line 110 of file l\_\-dependence.c.
+
+Referenced by L\_\-compute\_\-cross\_\-iter\_\-memory\_\-dependence(), L\_\-compute\_\-hb\_\-memory\_\-dependence(), L\_\-compute\_\-memory\_\-dependence(), and L\_\-read\_\-parm\_\-ldep().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_except_branch_perc_limit@{Ldep\_\-except\_\-branch\_\-perc\_\-limit}}
+\index{Ldep_except_branch_perc_limit@{Ldep\_\-except\_\-branch\_\-perc\_\-limit}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-except\_\-branch\_\-perc\_\-limit}}\label{l__dependence_8h_3cdce7c77b5936041aed79ecfe9e127c}
+
+
+
+
+Definition at line 95 of file l\_\-dependence.c.
+
+Referenced by L\_\-read\_\-parm\_\-ldep(), and wbs\_\-insert\_\-check().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_hb_keep_branch_order@{Ldep\_\-hb\_\-keep\_\-branch\_\-order}}
+\index{Ldep_hb_keep_branch_order@{Ldep\_\-hb\_\-keep\_\-branch\_\-order}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-hb\_\-keep\_\-branch\_\-order}}\label{l__dependence_8h_81b3d1e55c5b2f515229d08e9ccf386d}
+
+
+
+
+Definition at line 107 of file l\_\-dependence.c.
+
+Referenced by L\_\-read\_\-parm\_\-ldep().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_remove_always_safe@{Ldep\_\-remove\_\-always\_\-safe}}
+\index{Ldep_remove_always_safe@{Ldep\_\-remove\_\-always\_\-safe}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-remove\_\-always\_\-safe}}\label{l__dependence_8h_2f68c5b3a4589bab5b453dabe4ae7a4a}
+
+
+
+
+Definition at line 102 of file l\_\-dependence.c.
+
+Referenced by L\_\-is\_\-always\_\-safe(), L\_\-read\_\-parm\_\-ldep(), and Ldep\_\-mark\_\-safe\_\-invariant().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_remove_complex_safe@{Ldep\_\-remove\_\-complex\_\-safe}}
+\index{Ldep_remove_complex_safe@{Ldep\_\-remove\_\-complex\_\-safe}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-remove\_\-complex\_\-safe}}\label{l__dependence_8h_511f90417dd270ddcac1a3d75ca2c12b}
+
+
+
+
+Definition at line 104 of file l\_\-dependence.c.
+
+Referenced by L\_\-is\_\-complex\_\-safe(), L\_\-read\_\-parm\_\-ldep(), and Ldep\_\-mark\_\-safe\_\-invariant().\index{l_dependence.h@{l\_\-dependence.h}!Ldep_remove_ctl_dep_safe@{Ldep\_\-remove\_\-ctl\_\-dep\_\-safe}}
+\index{Ldep_remove_ctl_dep_safe@{Ldep\_\-remove\_\-ctl\_\-dep\_\-safe}!l_dependence.h@{l\_\-dependence.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Ldep\_\-remove\_\-ctl\_\-dep\_\-safe}}\label{l__dependence_8h_4bb5d2f22feac9f535966256c7e42e1e}
+
+
+
+
+Definition at line 103 of file l\_\-dependence.c.
+
+Referenced by L\_\-is\_\-ctl\_\-dep\_\-safe(), L\_\-read\_\-parm\_\-ldep(), and Ldep\_\-mark\_\-safe\_\-invariant().

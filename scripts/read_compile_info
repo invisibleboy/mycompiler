@@ -1,0 +1,756 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script finds and reads the appropriate "compile_info" module
+#       for the specified benchmark.  
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John C. Gyllenhaal, Wen-mei Hwu 10/98
+#       Migrated to version 2.00 by John C. Gyllenhaal 2/99
+#       Enhanced for version 2.30 by John C. Gyllenhaal 6/99
+#
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+PRINT_OPTION="";
+PRINT_COMPILE_INFO_DOCUMENTATION=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    # The first argument must be the benchmark name
+    BENCH_NAME="$1";
+
+    # Allow --help to be first argument
+    if [ "$BENCH_NAME" = "--help" ]; then
+       PRINT_COMPILE_INFO_DOCUMENTATION=1;
+    fi
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Allow an benchmark dir be specified
+	-bench_dir|-path)
+	    if [ $# -eq 0 ]; then
+               echo "> Error: read_compile_info expects a name after -bench_dir"
+               exit 1;
+            fi
+	    BENCH_DIR="$1";
+            # Make sure specified path exists 
+            if [ ! -d $BENCH_DIR ]; then
+               echo "> Error: Invalid directory specified with -bench_dir option:"
+               echo ">        '${BENCH_DIR}'"
+               exit 1;
+	    fi
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Print out the documentation for writing compile_info files
+	--help)
+            PRINT_COMPILE_INFO_DOCUMENTATION=1;;
+
+        # Silently ignore project specifier to simplify other scripts
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: read_compile_info expects a name after -project"
+               exit 1;
+            fi
+            shift;;
+
+	# Allow the contents of a particular variable to be printed
+        -ansi_c_source|-preprocessing_options|-lib_requirements|-linking_preoptions|-linking_postoptions|-default_train|-default_eval|-optimize_emul_exec|-disable_syncarcs|-all|-sources|-copysources|-setup)
+	    if [ "$PRINT_OPTION" != "" ]; then
+               echo "> Error: read_compile_info does not expect both '$PRINT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    PRINT_OPTION="$OPTION";;
+	   
+        *)
+            echo "> Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $PRINT_COMPILE_INFO_DOCUMENTATION -eq 1 ]; then
+cat <<COMPILE_INFO_DOCUMENTATION_EOF
+# =======================================================================
+# Note: Documentation for 'compile_parms' files follows the
+#       documentation for 'compile_info' files.
+# =======================================================================
+# Documentation for 'compile_info' files.
+# Created for IMPACT Version 2.00 by John C. Gyllenhaal
+# Revised for IMPACT Version 2.30 by John C. Gyllenhaal
+#
+# The 'compile_info' file is placed in each benchmark info directory
+# to describe the options to use while preprocessing, compiling, and
+# linking the benchmark.  The interface to this file's information is
+# the impact/scripts/read_compile_info shell script.
+#
+# The read_compile_info script uses the shell's include mechanism
+# ". \${BENCH_DIR}/compile_info" to read the values of the variables
+# defined in the file.  This mechanism is fragile!  The guidelines
+# outlined in this file should be followed to ensure correct behavior.
+#
+# Use impact/scripts/read_compile_info to ensure expected output.
+# Use impact/scripts/test_bench_info to test the validity of the settings.
+#
+# This information is used primarily by test_bench_info, gen_CtoP,
+# gen_profiled_pcode, and gen_probed_lcode.  These scripts may
+# be examined to see exactly how this information is being used.
+#
+# At the end of this documentation is a sample compile_info file.
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MUST BE DEFINED BY 'compile_info':
+#
+#   ANSI_C_SOURCE="1 | 0";
+#
+#   Examples: 
+#
+#     1 -> Ansi-C program
+#     0 -> K&R-C program
+#
+#
+#   PREPROCESSING_OPTIONS="benchmark-specific portability directives"
+#
+#   Examples: 
+#
+#     ""         -> Nothing special is needed (typical)
+#     "-I(path)" -> Requires an extra include path
+#     "-DSPEC"   -> Requires a preprocessor directive to compile
+#
+#     
+#   LIB_REQUIREMENTS="NONE | SHARED_REQUIRED | STATIC_REQUIRED"
+#
+#   Examples: 
+#
+#     NONE -> Benchmark can be linked to either shared or static libraries
+#     SHARED_REQUIRED -> Benchmark cannot be linked to static libraries
+#     STATIC_REQUIRED -> Benchmark cannot be linked to shared libraries
+#
+#     
+#   LINKING_PREOPTIONS="options placed before *.c when generating executable"
+#
+#   Examples: 
+#
+#     ""         -> Nothing special is needed (typical)
+#     "-L(path)" -> Requires an extra library path
+#
+# 
+#   LINKING_POSTOPTIONS="options placed after *.c when generating executable"
+#
+#   Examples: 
+#
+#     ""         -> Nothing special is needed (typical)
+#     "-lm"      -> Requires extra library to be linked in
+#
+#     Note: It is strongly recommended that you compile all available
+#           source together at the same time (i.e., gcc *.c).
+#           Don't use libraries for things you have source for!
+#           (e.g., compile in f2c library source code, don't link it in!)
+#
+#
+#   DEFAULT_TRAIN="default inputs to use for training (pcode profiling)"
+#   DEFAULT_EVAL="default inputs to use for evaluation (simulation, etc)"
+#
+#     The training/evaluation inputs specified will be used unless the
+#     project file or the user overrides them.  Typically, once
+#     default inputs are specified they should not change (unless you
+#     are the only one using the benchmark directory).  Use the
+#     project file to specify different inputs for different projects.
+#     (Run 'read_project_info --help' for more info on specifying project
+#     inputs).
+#
+#   Examples:
+#     "input1"                 -> Default to a single input for train/eval
+#     "input1 input2 input3"   -> Default to three inputs for train/eval
+#
+#
+#
+# --------------------
+# SHELL VARIABLES THAT MAY OPTIONALLY BE DEFINED BY 'compile_info':
+#
+#   OPTIMIZE_EMUL_EXEC="1 | 0"
+#
+#   Specifies whether or not the emulation executable should be optimized
+#   by the host compiler.  If unspecified, defaults to "0" since this
+#   is both the most typical and safest setting. 
+#
+#   Examples: 
+#
+#     0 -> Default to not optimizing the emulation executable (e.g., gcc *.c)
+#     1 -> Default to optimizing the emulation executable (e.g., gcc -O *.c)
+#
+#     Setting OPTIMIZE_EMUL_EXEC to 1 is recommended when optimizing the
+#     emulation executable reduces execution time enough to make up for
+#     the extra optimization time.  This typically only occurs for small 
+#     but long running benchmarks (e.g., 052.alvinn).
+# 
+#     Setting OPTIMIZE_EMUL_EXEC 0 is recommended when test_bench_info 
+#     reveals the host compiler generates bad code (without going through
+#     IMPACT) for the benchmark when optimization is turned on but it works 
+#     when optimization turned off (.e.g., gcc 2.8.1 on HPUX 10.2 doesn't 
+#     compile 134.perl correctly with -O).
+#
+#
+# --------------------
+# SHELL VARIABLES DEFINED BY 'read_compile_info' THAT MAY BE USED:
+#
+#   BENCH_NAME="name of the benchmark (e.g., 'wc')"
+#   BENCH_DIR="location of this module (e.g., '.../impact/benchmarks/wc')"
+#   HOST_PLATFORM="host platform for profiling/emulation (e.g., 'x86lin')"
+#   HOST_COMPILER="host compiler for libraries/header files (e.g., 'gcc')" 
+#   PLATFORM_DIR="host platform directory (e.g., '.../impact/platform/hp_cc')" 
+#
+# If desired, you may set these variables based on the variables defined
+# and exported by read_compile_info. For example (from 124.m88ksim):
+#
+#   # Choose big endian or little endian mode, etc. based on platform
+#   case \$HOST_PLATFORM in
+#     hp*|sun*)
+#       PREPROCESSING_OPTIONS="";;
+#     x86*|alpha*)
+#       PREPROCESSING_OPTIONS="-DLEHOST";;
+#     *)
+#       echo "Error: Unknown HOST_PLATFORM '\$HOST_PLATFORM'"
+#       echo "       Unable to use determine if should use big or little"
+#       echo "       endian mode when compiling 124.m88ksim"
+#       exit 1;;
+#   esac
+#
+#
+# --------------------
+# GENERAL NOTES:
+#
+# The use of environment/shell variables not defined by read_compile_info, or
+# the calling of another script/executable, is discouraged due to
+# portability and compatibility considerations. 
+#
+#
+# --------------------
+# EXAMPLE 'compile_info' FILE: 
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.30  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  June 14, 1999 #
+###############################################################################
+#  Run 'read_compile_info --help | more' for documentation.
+#
+#  Source of this file's information:
+#     SPEC (http://www.spec.org/)
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+# Ansi C
+ANSI_C_SOURCE=1;
+
+# No special settings needed
+PREPROCESSING_OPTIONS="";
+LINKING_PREOPTIONS="";
+LINKING_POSTOPTIONS="";
+LIB_REQUIREMENTS="NONE";
+
+# Train on all of the training inputs
+DEFAULT_TRAIN="input1 input2 input3";
+
+# Evaluate using one of the training inputs (eval inputs take too long)
+DEFAULT_EVAL="input1";
+
+# Optimization takes longer than unoptimized execution
+OPTIMIZE_EMUL_EXEC=0;
+
+# Generation of syncs arcs unavailable for benchmark optimization
+DISABLE_SYNCARCS=0;
+
+# =======================================================================
+# Documentation for 'compile_parms' files.
+# Created for IMPACT Version 2.33 by John C. Gyllenhaal
+#
+# The 'compile_parms' file is placed in each benchmark info directory
+# to describe the parameters that *must* be overridden in order to properly
+# compile the benchmark using the IMPACT compiler.  For most benchmarks,
+# nothing special needs to be placed in this file, but for a few benchmarks, 
+# the memory disambiguation parameters need to be tweaked to make them more 
+# conservative.  Do not place any "optional" overrides in this file!  Use
+# the project parms to do experiment-specific parameter overrides.
+#
+# The 'compile_parms' file will be read using IMPACT's parameter file
+# facility and will be "reached" thru the project parameter files.
+# Run 'read_project_info --help | more' for project_parms documentation.
+#
+# The IMPACT project facility will set the environment variable
+# BASELINE_PARMS_FILE to the "baseline" parameter file.  This is typically
+# set to either STD_PARMS.compile_bench or the user's explicitly specified
+# parameter file. This should be used as the 'default' parameter file for 
+# every section.  See examples below for illustration of 'BASELINE_PARMS_FILE'
+# usage.
+#
+# --------------------
+# EXAMPLE 1: TYPICAL 'compile_parms' FILE:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.33  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  July 12, 1999 #
+###############################################################################
+#  Run 'read_compile_info --help | more' for documentation.
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+# No parameters must be set in order to get valid code for this benchmark.
+# Use the baseline parameter file for all the parameter settings
+(* $BASELINE_PARMS_FILE$
+end)
+
+# --------------------
+# EXAMPLE 2: RARE 'compile_parms' FILE THAT SCALES BACK MEMORY DISAMBIGUATION:
+
+ # IMPACT Public Release (www.crhc.uiuc.edu/IMPACT)            Version 2.33  #
+ # IMPACT Trimaran Release (www.trimaran.org)                  July 12, 1999 #
+###############################################################################
+#  Run 'read_compile_info --help | more' for documentation.
+#
+#  Revision history for this file:
+#     6/99  Created by John C. Gyllenhaal (www.crhc.uiuc.edu/IMPACT)
+###############################################################################
+
+(Lglobal $BASELINE_PARMS_FILE$
+    # The following two memory disambiguation flags are 'unsafe' but
+    # work for most benchmarks, but not 099.go.
+    label_and_reg_access_indep = no;
+    diff_data_types_indep = no;
+end)
+
+# Use the baseline parameter file for all the other parameter settings
+(* $BASELINE_PARMS_FILE$
+end)
+
+COMPILE_INFO_DOCUMENTATION_EOF
+exit 1;
+fi
+
+
+
+if [ $VALID_ARGS -eq 0 ]; then
+    echo ' ';
+    echo "> Usage: read_compile_info benchmark [options]";
+    echo '> ';
+    echo '> Reads a benchmark compile info module and prints extracted info.';
+    echo '> ';
+    echo '> General options (zero or more of the the following may be specified):';
+    echo '>   -bench_dir "dir"       read info in "dir" (default: use find_bench_dir)';
+    echo '> ';
+    echo '> Print options (zero or one of the the following may be specified):';
+    echo '>   -all                    print all the info read (default)';
+    echo '>   -sources                prints the contents of "SOURCES"';
+    echo '>   -copysources            prints the contents of "COPY_SOURCES"';
+    echo '>   -setup                  prints the contents of "COMPILE_SETUP"';
+    echo '>   -ansi_c_source          prints the contents of "ANSI_C_SOURCE"';
+    echo '>   -preprocessing_options  prints the contents of "PREPROCESSING_OPTIONS"';
+    echo '>   -lib_requirements       prints the contents of "LIB_REQUIREMENTS"';
+    echo '>   -linking_preoptions     prints the contents of "LINKING_PREOPTIONS"';
+    echo '>   -linking_postoptions    prints the contents of "LINKING_POSTOPTIONS"';
+    echo '>   -optimize_emul_exec     prints the contents of "OPTIMIZE_EMUL_EXEC"';
+    echo '>   -disable_syncarcs       prints the contents of "DISABLE_SYNCARCS"';
+    echo '>   -default_train          prints the contents of "DEFAULT_TRAIN"';
+    echo '>   -default_eval           prints the contents of "DEFAULT_EVAL"';
+    echo '>   --help                  prints documentation for compile_info files';
+    exit 1;
+fi
+
+# Find the benchmark dir if not user specified
+if [ $FIND_BENCH_DIR -eq 1 ]; then
+    BENCH_DIR=`find_bench_dir ${BENCH_NAME}`
+    if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCH_NAME}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+       exit 1;
+    fi
+fi
+
+# Get host platform and compiler for module's use
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+PLATFORM_DIR=`read_platform_info -platform_dir`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform dir using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$PLATFORM_DIR";
+   exit 1;
+fi
+
+MODULE_NAME="compile_info"
+MODULE_PATH="${BENCH_DIR}/${MODULE_NAME}"
+
+# Make sure module exists
+if [ ! -f ${MODULE_PATH} ]; then
+    echo "> Error: Unable to find bench info module '${MODULE_NAME}' in"
+    echo ">        '${BENCH_DIR}'"
+    exit 1;
+fi
+
+# Make sure compile_parms is present in the directory
+if [ ! -f ${BENCH_DIR}/compile_parms ]; then
+    echo "> Error: Unable to find benchmark-specific parm overrides 'compile_parms' in"
+    echo ">        '${BENCH_DIR}'"
+    exit 1;
+fi
+
+# BENCH_NAME, BENCH_DIR, HOST_PLATFORM, HOST_COMPILER, and PLATFORM_DIR 
+# set above as promised for use by the benchmark's compile info module.
+
+# The following variables are the only variables that should be
+# defined in the benchmark compile info file.  Set to "(invalid)" to
+# allow detection of undefined variables.
+
+SOURCES=""
+COPY_SOURCES=""
+COMPILE_SETUP=""
+ANSI_C_SOURCE="(invalid)"
+PREPROCESSING_OPTIONS="(invalid)"
+LIB_REQUIREMENTS="(invalid)"
+LINKING_PREOPTIONS="(invalid)"
+LINKING_POSTOPTIONS="(invalid)"
+OPTIMIZE_EMUL_EXEC="(invalid)"
+DISABLE_SYNCARCS="(invalid)"
+DEFAULT_TRAIN="(invalid)"
+DEFAULT_EVAL="(invalid)"
+
+# Do a test execution of the module to make sure valid before doing
+# the "real" execution below as part of this script (using . $MODULE_PATH).  
+# The goal is to avoid criptic error messages about read_compile_info having
+# mismatched quotes, etc., when it really is the info module's problem.
+#
+# This test needs BENCH_NAME, BENCH_DIR, HOST_COMPILER, 
+# HOST_PLATFORM, and PLATFORM_DIR exported since not using '. $MODULE_PATH'.
+export BENCH_NAME
+export BENCH_DIR
+export HOST_PLATFORM
+export HOST_COMPILER
+export PLATFORM_DIR
+# For compatibility with previous versions of bench info modules
+BASE_DIR="$BENCH_DIR"
+export BASE_DIR
+
+# Shell out and run script (which should do nothing) and look for error message
+# or random output (which will cause strange errors)
+SH_ERROR="`(/bin/sh $MODULE_PATH) 2>&1`"
+ERROR_CODE="$?";
+if test "$ERROR_CODE" != 0 -o "$SH_ERROR" != "" ; then
+   echo " "
+   echo "> Error: read_compile_info received error executing module (via /bin/sh):"
+   echo ">        $MODULE_PATH"
+   echo "> "
+   if test "$ERROR_CODE" != 0 ; then
+      echo "> Error message returned by /bin/sh (return value $ERROR_CODE):"
+   else
+      echo "> Message returned by /bin/sh (returned 0 but any output indicates error):"
+   fi
+   echo " ";
+   echo "$SH_ERROR";
+   echo " ";
+   echo "> Exiting read_compile_info.  Invalid compilation info module.";
+   exit 1;
+fi
+
+
+# Execute the compile info module as if it was part of this script.
+# This module does not need to be executable.  Must trust the module
+# not to do anything that makes this script break (somewhat tested above).
+. ${MODULE_PATH}
+
+# Make sure every variable was defined in the bench compile info module
+INFO_MISSING=0;
+
+if [ "$SOURCES" = "(invalid)" ]; then
+  echo "> Error: SOURCES not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$COPY_SOURCES" = "(invalid)" ]; then
+  echo "> Error: COPY_SOURCES not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$ANSI_C_SOURCE" = "(invalid)" ]; then
+  echo "> Error: ANSI_C_SOURCE not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$PREPROCESSING_OPTIONS" = "(invalid)" ]; then
+  echo "> Error: PREPROCESSING_OPTIONS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$LIB_REQUIREMENTS" = "(invalid)" ]; then
+  echo "> Error: LIB_REQUIREMENTS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$LINKING_PREOPTIONS" = "(invalid)" ]; then
+  echo "> Error: LINKING_PREOPTIONS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$LINKING_POSTOPTIONS" = "(invalid)" ]; then
+  echo "> Error: LINKING_POSTOPTIONS not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$DEFAULT_TRAIN" = "(invalid)" ]; then
+  echo "> Error: DEFAULT_TRAIN not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$DEFAULT_EVAL" = "(invalid)" ]; then
+  echo "> Error: DEFAULT_EVAL not defined in ${MODULE_NAME}"
+  INFO_MISSING=1;
+fi
+
+if [ "$OPTIMIZE_EMUL_EXEC" = "(invalid)" ]; then
+  # Make defining this variable optional for now
+  OPTIMIZE_EMUL_EXEC="0";
+  # echo "> Error: OPTIMIZE_EMUL_EXEC not defined in ${MODULE_NAME}"
+  # INFO_MISSING=1;
+fi
+
+if [ "$DISABLE_SYNCARCS" = "(invalid)" ]; then
+  # Defining this variable is optional 
+  DISABLE_SYNCARCS="0";
+fi
+
+if [ $INFO_MISSING  -eq 1 ]; then
+  echo "> Error: The above variables were not defined by ${MODULE_NAME} in"
+  echo ">        ${BENCH_DIR}"
+  echo ">        These variables must be defined in this bench compile info module!"
+  exit 1;
+fi
+
+# Make sure binary variables set to 0 or 1 in the bench compile info module
+INFO_INVALID=0;
+
+if [ "$ANSI_C_SOURCE" != "0" -a "$ANSI_C_SOURCE" != "1" ]; then
+  echo "> Error: ANSI_C_SOURCE must be set to 0 or 1, not '$ANSI_C_SOURCE'"
+  INFO_INVALID=1;
+fi
+
+if [ "$OPTIMIZE_EMUL_EXEC" != "0" -a "$OPTIMIZE_EMUL_EXEC" != "1" ]; then
+  echo "> Error: OPTIMIZE_EMUL_EXEC must be set to 0 or 1, not '$OPTIMIZE_EMUL_EXEC'"
+  INFO_INVALID=1;
+fi
+
+if [ "$DISABLE_SYNCARCS" != "0" -a "$DISABLE_SYNCARCS" != "1" ]; then
+  echo "> Error: DISABLE_SYNCARCS must be set to 0 or 1, not '$DISABLE_SYNCARCS'"
+  INFO_INVALID=1;
+fi
+
+# Make sure have expected LIB_REQUIREMENTS
+if [ "$LIB_REQUIREMENTS" != "NONE" -a \
+     "$LIB_REQUIREMENTS" != "STATIC_REQUIRED" -a \
+     "$LIB_REQUIREMENTS" != "SHARED_REQUIRED" ]; then
+  echo "> Error: LIB_REQUIREMENTS must be set to 'NONE', 'SHARED_REQUIRED', or"
+  echo ">        'STATIC_REQUIRED', not '$LIB_REQUIREMENTS'"
+  INFO_INVALID=1;
+fi
+
+# Make sure DEFAULT_TRAIN valid
+INPUTS_SPECIFIED=0;
+for TRAIN_INPUT in $DEFAULT_TRAIN
+do
+  if [ ! -f ${BASE_DIR}/exec_info_${TRAIN_INPUT} ]; then
+    echo "> Error: DEFAULT_TRAIN specifies a non-existent input:"
+    echo ">        '$TRAIN_INPUT'"
+    INFO_INVALID=1;
+  fi    
+  INPUTS_SPECIFIED=1;
+done
+
+if [ "$INPUTS_SPECIFIED" != "1" ]; then
+  echo "> Error: DEFAULT_TRAIN must be specify least one input, not '$DEFAULT_TRAIN'"
+  INFO_INVALID=1;
+fi
+
+# Make sure DEFAULT_EVAL valid
+INPUTS_SPECIFIED=0;
+for EVAL_INPUT in $DEFAULT_EVAL
+do
+  if [ ! -f ${BASE_DIR}/exec_info_${EVAL_INPUT} ]; then
+    echo "> Error: DEFAULT_EVAL specifies a non-existent input:"
+    echo ">        '$EVAL_INPUT'"
+    INFO_INVALID=1;
+  fi    
+  INPUTS_SPECIFIED=1;
+done
+
+if [ "$INPUTS_SPECIFIED" != "1" ]; then
+  echo "> Error: DEFAULT_EVAL must specify at least one input, not '$DEFAULT_EVAL'"
+  INFO_INVALID=1;
+fi
+
+if [ $INFO_INVALID -eq 1 ]; then
+  echo "> Error: The above variables were not set properly by ${MODULE_NAME} in"
+  echo ">        ${BENCH_DIR}"
+  echo ">        These variables must be properly set in this bench compile info module!"
+  exit 1;
+fi
+
+# Print out the appropriate output based on PRINT_OPTION's value
+case "$PRINT_OPTION" in
+  ""|-all)
+    # Print the settings read, formatted and with labels
+    echo "             Bench Name: '$BENCH_NAME'"
+    echo "              Bench Dir: '$BENCH_DIR'"
+    echo "          Host Platform: '$HOST_PLATFORM'"
+    echo "          Host Compiler: '$HOST_COMPILER'"
+    echo "           Platform Dir: '$PLATFORM_DIR'"
+    echo " "
+    echo "          Ansi C Source: '$ANSI_C_SOURCE'"
+    echo " Compile Setup Commands: '$COMPILE_SETUP'"
+    echo "  Preprocessing Options: '$PREPROCESSING_OPTIONS'"
+    echo "   Library Requirements: '$LIB_REQUIREMENTS'"
+    echo "     Linking Preoptions: '$LINKING_PREOPTIONS'"
+    echo "    Linking Postoptions: '$LINKING_POSTOPTIONS'"
+    echo "Optimize Emulation Exec: '$OPTIMIZE_EMUL_EXEC'"
+    echo "       Disable Syncarcs: '$DISABLE_SYNCARCS'"
+    echo "   Default Train Inputs: '$DEFAULT_TRAIN'"
+    echo "    Default Eval Inputs: '$DEFAULT_EVAL'"
+    exit 0;;
+
+  # Print out each individual setting, with no labels
+  -ansi_c_source)
+    echo "$ANSI_C_SOURCE"
+    exit 0;;
+
+  -sources)
+    echo "$SOURCES"
+    exit 0;;
+
+  -copysources)
+    echo "$COPY_SOURCES"
+    exit 0;;
+  
+  -setup)
+    echo $COMPILE_SETUP;
+    exit 0;;
+
+  -preprocessing_options)
+    echo "$PREPROCESSING_OPTIONS"
+    exit 0;;
+
+  -lib_requirements)
+    echo "$LIB_REQUIREMENTS"
+    exit 0;;
+
+  -linking_preoptions)
+    echo "$LINKING_PREOPTIONS"
+    exit 0;;
+
+  -linking_postoptions)
+    echo "$LINKING_POSTOPTIONS"
+    exit 0;;
+
+  -default_train)
+    echo "$DEFAULT_TRAIN"
+    exit 0;;
+
+  -default_eval)
+    echo "$DEFAULT_EVAL"
+    exit 0;;
+
+  -optimize_emul_exec)
+    echo "$OPTIMIZE_EMUL_EXEC"
+    exit 0;;
+
+  -disable_syncarcs)
+    echo "$DISABLE_SYNCARCS"
+    exit 0;;
+
+  *)
+     echo "> Error: Unexpected error.  '$PRINT_OPTION' option unhandled";
+     exit 1;;
+esac
+

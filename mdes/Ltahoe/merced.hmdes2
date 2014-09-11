@@ -1,0 +1,2019 @@
+/*****************************************************************************\
+ *
+ *		      Illinois Open Source License
+ *                     University of Illinois/NCSA
+ *                         Open Source License
+ *
+ * Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+ * All rights reserved.
+ *
+ * Developed by:             
+ *
+ *		IMPACT Research Group
+ *
+ *		University of Illinois at Urbana-Champaign
+ *
+ *              http://www.crhc.uiuc.edu/IMPACT
+ *              http://www.gelato.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal with the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimers.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimers in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the names of the IMPACT Research Group, the University of
+ * Illinois, nor the names of its contributors may be used to endorse
+ * or promote products derived from this Software without specific
+ * prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+ *
+\*****************************************************************************/
+/*****************************************************************************\
+ *
+ *  File:  merced-por.hmdes2
+ *
+ *  Description:  Tahoe machine description file 
+ * 
+ *  Note: For hmdes2 documentation (slightly out-of-date), see:
+ * 
+ *          HMDES Version 2 Specification 
+ *          John C. Gyllenhaal, Wen-mei W. Hwu and B. Ramakrishna Rau
+ *          IMPACT Technical report, IMPACT-96-03, 
+ *          University of Illinois, Urbana IL. 1996.
+ *          http://www.crhc.uiuc.edu/IMPACT/ftp/report/impact-96-03.hmdes2.pdf
+ *
+ *  Note: Although IMPACT's and HPL's (Elcor) machine descriptions share a 
+ *        common host language "MD" (aka as "dabble" at HPL), they are not 
+ *        currently compatible with each other.  This machine description 
+ *        cannot be used with Trimaran's Elcor-based scheduler and Elcor's
+ *        machine descriptions cannot be used with IMPACT-based schedulers.
+ *        
+ *  Creation Date :  August 2000
+ *
+ *  Author:  Ron Barnes, Wen-mei Hwu
+ *
+ *  Revisions:
+ *
+\*****************************************************************************/
+/* Read in the IMPACT's expected structure for this .hmdes2 file */
+$include "${IMPACT_REL_PATH}/mdes/structure/structure_IMPACT.hmdes2"
+
+/* 
+ * Processor resource configuration parameters. (Note these are 1 relative.)
+ */
+
+$def WIDTH              6
+$def NUM_IALUS          2
+$def NUM_FALUS          2
+$def NUM_MEM_UNITS      2
+$def NUM_MM_UNITS       2
+$def NUM_BRANCHES       3
+$def LOAD_HIT_LAT       2
+$def LOAD_MISS_LAT      6
+
+/*
+ * Cycle in which UBR / CBR load source predicate.  Setting to 1 instead
+ * of 0 yields a 0-cycle-delay between pred defines and branches.
+ */
+$def PBDELAY            1
+
+/* 
+ * Processor issue-rule configuration parameters. 
+ */
+$def BRANCHES_AT_END    0  // If 1, places branches at end of each instr packet
+$def NON_TRAPPING_OPS   1  // If 1, allow general speculation
+$def NON_TRAPPING_FP_OPS   0  // If 1, allow general speculation
+
+$if (${BRANCHES_AT_END} == 1)
+{
+    /* Create the minimum number of slots that allow us to force
+     * branches to the end of the operation packet.
+     */
+    $def LAST_SLOT $={ (${WIDTH}-1) + (${NUM_BRANCHES}-1) }
+}
+$else
+{
+    /* Otherwise, just create one slot per decoder */
+    $def LAST_SLOT $={${WIDTH}-1}
+}
+
+/* Section for passing parameters to IMPACT's scheduler and 
+ * lmdes2_customizer 
+ */
+SECTION Parameter
+{
+  /* Used by lmdes2_customizer to assign integer numbers to many of the
+   * strings in this machine description, such as Lop_ADD, Label, REG
+   * EXCEPT, LOAD, etc.
+   */
+  customization_headers
+                (value("${IMPACT_ROOT}/include/Lcode/l_opc.h"
+                       "${IMPACT_ROOT}/include/Lcode/l_code.h"
+                       "${IMPACT_ROOT}/include/machine/m_tahoe.h"
+                       "${IMPACT_ROOT}/include/machine/m_spec.h"
+                       "${IMPACT_ROOT}/include/Lcode/l_flags.h"));
+
+  /* Phased out in version 2.31, but should always be set to "superscalar" 
+   * for backward compatibilty and so lmdes2_customizer does not complain.
+   * It is OK to set this to superscalar when targeting an EPIC processor!
+   */
+  processor_model (value("superscalar"));
+
+}
+
+SECTION Field_Type
+{
+  /* Names the scheduler (thru Mspec) will use to describe the operands */
+  NULL ();                              // No operand allowed
+  btr();                                // Branch registers
+  p ();                                 // Predicate register operand 
+  i ();                                 // Integer register operand 
+  f ();                                 // Float register operand 
+  Label ();                             // Generic label literal
+  Lit ();			        // Generic non-label literal
+  Lit2 ();
+  Lit4 ();
+  Lit6 ();
+  Lit8 ();
+  Lit9 ();
+  Lit14 ();
+  Lit16 ();
+  Lit22 ();
+  Lit25 ();
+  Lit64 ();
+  REG (compatible_with ( p i f btr ));
+  IREG (compatible_with ( i NULL ));
+  PREG (compatible_with ( p NULL ));
+  FREG (compatible_with ( f NULL ));
+  BREG (compatible_with ( btr NULL ));
+
+  /* This is a big hack */
+  IMM   (compatible_with( Lit ));
+  IMM2  (compatible_with( IMM Lit2 ));   
+  IMM4  (compatible_with( IMM2  Lit4 ));
+  IMM6  (compatible_with( IMM4  Lit6 ));
+  IMM8  (compatible_with( IMM6  Lit8 ));
+  IMM9  (compatible_with( IMM8  Lit9 ));
+  IMM14 (compatible_with( IMM8  Lit14 ));
+  IMM16 (compatible_with( IMM14 Lit16 ));
+  IMM22 (compatible_with( IMM16 Lit22 ));
+  IMM25 (compatible_with( IMM22 Lit25 ));
+  IMM64 (compatible_with( IMM25 Lit Lit64 Label ));
+  A     (compatible_with( REG IMM64 NULL )); // Anything allowed 
+}
+
+/* Define all the operation formats supported in the target machine.
+ *
+ * All entrys are in the form:
+ *   P0_D0D1_S0S1S2  
+ *
+ * where:
+ *   P0       is the pred[0] operand specifier 
+ *   D0       is the dest[0] operand specifier 
+ *   D1       is the dest[1] operand specifier 
+ *   S0       is the src[0] operand specifier 
+ *   S1       is the src[1] operand specifier 
+ *   S2       is the src[2] operand specifier 
+ */
+SECTION Operation_Format
+{
+  /* For Lcode */
+  A_AAAA_AAAAAA                 (pred (A) dest (A A A A) src (A A A A A A));
+
+  /* For Tahoe Mcode */
+  OF_IREG                       (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL));
+  OF_IREG_IREG		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_IMM8_IREG		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM8 IREG NULL NULL NULL NULL)); 
+  OF_IMM8			(pred (PREG) dest (IREG NULL NULL NULL) 
+	 			 src (IMM8 NULL NULL NULL NULL NULL)); 
+  OF_IMM22			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM22 NULL NULL NULL NULL NULL)); 
+  OF_IMM64			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM64 NULL NULL NULL NULL NULL)); 
+  OF_IREG_IMM6		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM6 NULL NULL NULL NULL)); 
+    
+  OF_ADD14			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM14 IREG NULL NULL NULL NULL)); 
+  OF_ADD22			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM22 IREG NULL NULL NULL NULL)); 
+  OF_SHLADD			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM2 IREG NULL NULL NULL));
+  OF_DEE_RRII		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG IMM6 IMM4 NULL NULL)); 
+  OF_DEE_RII			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM6 IMM6 NULL NULL NULL)); 
+  OF_DEE_III			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IMM8 IMM6 IMM6 NULL NULL NULL)); 
+
+  OF_ALLOC			(pred (NULL) dest (IREG NULL NULL NULL) 
+				 src (IMM64 IMM64 IMM64 IMM64 NULL NULL)); 
+
+  /* Compare instructions */
+
+  OF_CMP			(pred (PREG) dest (PREG PREG NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));    
+  OF_CMP_IMM			(pred (PREG) dest (PREG PREG NULL NULL) 
+	    			 src (IMM8 IREG NULL NULL NULL NULL));    
+  OF_FCMP			(pred (PREG) dest (PREG PREG NULL NULL) 
+				 src (FREG FREG NULL NULL NULL NULL));
+  OF_TBIT			(pred (PREG) dest (PREG PREG NULL NULL) 
+	 			 src (IREG IMM6 NULL NULL NULL NULL));    
+
+  /* compares which assign result to a register */
+  /* These do not really exist.  They are used for the software pipeliner. */
+  /* They should be removed once it handles predicates.  Ask Bob. */
+  OF_CMP_REGISTER               (pred (NULL) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_CMP_IMM_REGISTER	        (pred (NULL) dest (IREG NULL NULL NULL) 
+				 src (IMM8 IREG NULL NULL NULL NULL));
+  OF_FCMP_REGISTER              (pred (NULL) dest (IREG NULL NULL NULL) 
+				 src (FREG FREG NULL NULL NULL NULL));
+
+  /* Control transfer instructions */
+  /* Normal */
+  OF_BR_JUMP			(pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (IMM25 NULL NULL NULL NULL NULL));
+  OF_BR_JUMP_IND		(pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (BREG NULL NULL NULL NULL NULL));
+  OF_BR_RET		        (pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (BREG NULL NULL NULL NULL NULL));
+  OF_BR_CALL		 	(pred (PREG) dest (BREG NULL NULL NULL) 
+				 src (IMM25 NULL NULL NULL NULL NULL));
+  OF_BR_CALL_IND	 	(pred (PREG) dest (BREG NULL NULL NULL) 
+				 src (BREG IREG NULL NULL NULL NULL));
+  OF_BR_HINT		        (pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (Lit Lit NULL NULL NULL NULL));
+  OF_BR_MODULO			(pred (PREG) dest (IREG IREG NULL NULL) 
+				 src (IMM25 NULL NULL IREG NULL NULL));
+
+  /* cmp branch for counted loops */
+  OF_BR_CMP			(pred (NULL) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM IMM25 NULL NULL NULL));
+
+  /* Moves among different register types */
+
+  OF_TO_BR			(pred (PREG) dest (BREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL));
+  OF_TO_BR_RET			(pred (PREG) dest (BREG NULL NULL NULL) 
+				 src (IREG Lit NULL NULL NULL NULL));
+  OF_FROM_BR			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (BREG NULL NULL NULL NULL NULL));
+
+  OF_TO_PR			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM16 NULL NULL NULL NULL));
+  OF_FROM_PR			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL));
+	
+  OF_FR_TO_GR		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (FREG NULL NULL NULL NULL NULL)); 
+  OF_GR_TO_FR		        (pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL)); 
+
+  /* Floating-point */
+
+  OF_FREG			(pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (FREG NULL NULL NULL NULL NULL)); 
+  OF_FREG_FREG		        (pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (FREG FREG NULL NULL NULL NULL)); 
+  OF_FMUL_ADD		        (pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (FREG FREG FREG NULL NULL NULL)); 
+  OF_FRCPA			(pred (PREG) dest (FREG PREG NULL NULL) 
+				 src (FREG FREG NULL NULL NULL NULL)); 
+  OF_FRSQRTA			(pred (PREG) dest (FREG PREG NULL NULL) 
+				 src (FREG NULL NULL NULL NULL NULL)); 
+
+  /* Format for integer loads */
+
+  OF_LD			        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL));
+  OF_LD_POST_REG		(pred (PREG) dest (IREG IREG NULL NULL)
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_LD_POST_IMM		(pred (PREG) dest (IREG IREG NULL NULL) 
+				 src (IREG IMM9 NULL NULL NULL NULL));
+
+  /* integer fill loads */
+  OF_LD_FILL			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_LD_FILL_POST_REG	        (pred (PREG) dest (IREG IREG NULL NULL) 
+				 src (IREG IREG IREG NULL NULL NULL));
+  OF_LD_FILL_POST_IMM	        (pred (PREG) dest (IREG IREG NULL NULL) 
+				 src (IREG IREG IMM9 NULL NULL NULL));
+
+  /* Check load - ld.c */
+  /* The second source register should be the same as the dest of the ld.a */
+  OF_LD_C			(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+
+  /* Format for float Loads */
+  OF_FLD			(pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (IREG NULL NULL NULL NULL NULL));
+  OF_FLD_POST_REG		(pred (PREG) dest (FREG IREG NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_FLD_POST_IMM		(pred (PREG) dest (FREG IREG NULL NULL) 
+				 src (IREG IMM9 NULL NULL NULL NULL));
+
+  /* Operand format for stores */
+  OF_ST			        (pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_ST_POST_IMM		(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG IMM9 NULL NULL NULL));
+
+  /* integer spill stores */
+  OF_ST_SPILL		        (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG NULL NULL NULL NULL));
+  OF_ST_SPILL_POST_IMM	        (pred (PREG) dest (IREG IREG NULL NULL) 
+				 src (IREG IREG IMM9 NULL NULL NULL));
+
+  /* Format for float stores */
+  OF_FST			(pred (PREG) dest (NULL NULL NULL NULL) 
+				 src (IREG FREG NULL NULL NULL NULL));
+  OF_FST_POST_IMM		(pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG FREG IMM9 NULL NULL NULL));
+
+  OF_IGNORE 			(pred (PREG) dest (A A NULL NULL) 
+				 src (A A A A NULL NULL));
+  OF_CHECK		        (pred (PREG) dest (A NULL NULL NULL) 
+				 src (A A A NULL NULL NULL));
+
+  OF_LFETCH                     (pred (PREG) dest (NULL NULL NULL NULL)
+	                         src (IREG NULL NULL NULL NULL NULL));
+
+  OF_IREG_IMM16	                (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM16 NULL NULL NULL NULL));
+  OF_IREG_IMM16_IREG            (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IMM16 IREG NULL NULL NULL));
+  OF_IREG_IREG_IMM16            (pred (PREG) dest (IREG NULL NULL NULL) 
+				 src (IREG IREG IMM16 NULL NULL NULL));
+  OF_FREG_FREG_FREG             (pred (PREG) dest (FREG NULL NULL NULL) 
+				 src (FREG FREG FREG NULL NULL NULL));
+  
+}
+
+/*
+ *  Declare the processor resources that we wish to model.
+ *
+ *  Note: The resource names (such as decoder1) are *not* keywords.
+ *        Renaming all the resources to r1, r2, r3... r30 (and 
+ *        their references) will yield the exact same schedule.
+ *
+ *  Note: You can use as many or few resources as desired in order
+ *        to model the processor's execution constraints.  Typically,
+ *        we don't model anything that doesn't add execution constraints
+ *        (e.g., pipeline stages in fully-pipelined function units, etc.).
+ *         
+ *
+ *  Note: The 'slot' field is used to associate slot ids with particular
+ *        resource names.  For simplicity, we assign slot id 0, to slot0,
+ *        etc.  Not defining the 'slot' field indicates that this is 
+ *        a non-slot (i.e., normal) resource.
+ *        For example, to associate scheduler slot 3, with resource 
+ *        'my_slot_3':
+ *           my_slot_3 (slot(3));
+ */
+SECTION Resource
+{
+  /* Slots are used to control how operations are scheduled within the
+   * same cycle (instruction packet).  For historical reasons, slots
+   * are numbered starting from 0 (the first slot in the packet).
+   */
+  $for (I in $0..${LAST_SLOT})
+  {
+     slot${I} (slot(${I}));
+  }
+
+  /* Decoders are used to limit the number of operations that can
+   * issue in one cycle.
+   */
+  $for (I in $1..${WIDTH})
+  {
+     decoder${I} ();
+  }
+
+  /* Create the various functional units for this machine
+   * Note: All these units are assumed to be fully pipelined, so
+   *       we only need to model the first stage.
+   */
+  $for (I in $1..${NUM_IALUS})
+  {
+     ialu${I} ();
+  }
+
+  $for (I in $1..${NUM_FALUS})
+  {
+     falu${I} ();
+  }
+
+  $for (I in $1..${NUM_MM_UNITS})
+  {
+     mmalu${I} ();
+  }
+
+  $for (I in $1..${NUM_BRANCHES})
+  {
+     branch${I} ();
+  }
+
+  $for (I in $1..${NUM_MEM_UNITS})
+  {
+     mem${I} ();
+  }
+}
+
+/*
+ * Specify the possible times in the pipeline the resources can be 
+ * used.  Here is the time mapping used in this machine description
+ * for resource usages:
+ * 
+ *   0 -> Fetch stage
+ *   1 -> Decode stage
+ *   2 -> First execution stage
+ *   3 -> Second execution stage and write-back stage for latency 1 ops
+ *   4 -> Third execution stage and write-back stage for latency 2 ops
+ *   etc.
+ */
+SECTION Resource_Usage
+{
+
+  /*
+   * Fetch stage 
+   */    
+  $for (I in $0..${LAST_SLOT})
+  {
+     RU_slot${I}_t0_0 (use(slot${I}) time (0));
+  }
+
+  /*
+   * Decoder stage
+   */
+  $for (I in $1..${WIDTH})
+  {
+     RU_decoder${I}_t1_1 (use(decoder${I}) time (1));
+  }
+
+  /*
+   * First execution stage
+   */
+  $for (I in $1..${NUM_IALUS})
+  {
+     RU_ialu${I}_t2_2 (use(ialu${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_BRANCHES})
+  {
+     RU_branch${I}_t2_2 (use(branch${I}) time (2));
+  }	
+
+  $for (I in $1..${NUM_FALUS})
+  {
+     RU_falu${I}_t2_2 (use(falu${I}) time (2));
+     RU_falu${I}_t2_7 (use(falu${I}) time (2 3 4 5 6 7));
+  }  
+
+  $for (I in $1..${NUM_MEM_UNITS})
+  {
+     RU_mem${I}_t2_2 (use(mem${I}) time (2));
+  }
+
+  $for (I in $1..${NUM_MM_UNITS})
+  {
+     RU_mm${I}_t2_2 (use(mmalu${I}) time (2));
+  }
+
+  /*
+   * Second execution stage and write-back stage for latency 1 ops
+   * etc.
+   */
+  /*
+   * We are assuming fully-pipelined functional units, so later
+   * stages do not need to be modeled.  We are not modeling register
+   * ports, so the write-backs don't need to be modeled.
+   */
+}
+
+/* 
+ * Group together resource usages that should always be used together.
+ */
+SECTION Resource_Unit
+{
+}
+
+/* Create options where any one of the options may be selected.
+ * For example, any one of the declared IALUs may be used.
+ *
+ * Note: Table options are used to create the OR part of AND/OR-trees.
+ */
+SECTION Table_Option
+{
+ /* Use any "normal" slot for non-branch operations. */
+  any_normal_slot_t0_0 
+  (
+     one_of($for (I in $0..(${WIDTH}-1)) {RU_slot${I}_t0_0 })
+  );
+ 
+  /* 
+   * Allow any of the decoders to be used. 
+   * This resource use limits the processor's issue width, not slots.
+   */
+  any_decoder_t1_1 
+  (
+     one_of($for (I in $1..${WIDTH}){RU_decoder${I}_t1_1 })
+  );
+
+  /* If placing branches at end, branches can only use the last normal
+   * slot and the extra slots after the normal slots (if 2 or more branches).
+   */
+  $if (${BRANCHES_AT_END} == 1)
+  {
+     any_branch_slot_t0_0
+     (
+        one_of($for (I in $(${WIDTH}-1)..${LAST_SLOT}){RU_slot${I}_t0_0 })
+     );
+  }
+  /* Otherwise, can place branch in any normal slot, just like non-branch ops*/
+  $else
+  {
+     any_branch_slot_t0_0 
+     (
+         one_of($for (I in $0..(${WIDTH}-1)) {RU_slot${I}_t0_0 })
+     );
+  }
+
+  /*
+   * Put call as the last branch in the cycle.
+   */
+  last_slot_t0_0
+  (
+     one_of(RU_slot${LAST_SLOT}_t0_0)
+  );
+
+  /* 
+   * Allow any of the declared functional units to be used 
+   */
+  any_ialu_t2_2 
+  (
+     one_of($for (I in $1..${NUM_IALUS}) {RU_ialu${I}_t2_2 })
+  );
+
+  any_aalu_t2_2 
+  (
+     one_of($for (I in $1..${NUM_IALUS}){RU_ialu${I}_t2_2 } 
+	    $for (I in $1..${NUM_MEM_UNITS}){RU_mem${I}_t2_2 })
+  );
+
+  any_falu_t2_2 
+  (
+     one_of($for (I in $1..${NUM_FALUS}) {RU_falu${I}_t2_2 })
+  );
+
+  any_falu_t2_7
+  (
+     one_of($for (I in $1..${NUM_FALUS}) {RU_falu${I}_t2_7 })
+  );
+
+  any_mem_t2_2 
+  (
+     one_of($for (I in $1..${NUM_MEM_UNITS}) {RU_mem${I}_t2_2 })
+  );
+ 
+  any_mm_t2_2
+  (
+     one_of($for (I in $1..${NUM_MM_UNITS}) {RU_mm${I}_t2_2 })
+  );
+
+  any_branch_t2_2 
+  (
+     one_of($for (I in $1..${NUM_BRANCHES}) {RU_branch${I}_t2_2 })
+  );
+
+  /* 
+   * Allow the various types of instructions to execute on the
+   *  specified functional units.
+   */
+  Atype_t2_2 
+  (
+     one_of($for (I in $1..${NUM_IALUS}){RU_ialu${I}_t2_2 } 
+	    $for (I in $1..${NUM_MEM_UNITS}){RU_mem${I}_t2_2 })
+  );
+
+  Itype_t2_2 
+  (
+     one_of($for (I in $1..${NUM_IALUS}){RU_ialu${I}_t2_2 })
+  );
+
+  I0type_t2_2 
+  (
+     one_of(RU_ialu1_t2_2 )
+  );
+
+  Mtype_t2_2 
+  (
+     one_of($for (I in $1..${NUM_MEM_UNITS}) {RU_mem${I}_t2_2 } )
+  );
+
+  MMtype_t2_2
+  (
+     one_of($for (I in $1..${NUM_MM_UNITS}) {RU_mm${I}_t2_2 })
+  );
+
+  BRtype_t2_2 
+  (
+     one_of($for (I in $1..${NUM_BRANCHES}) {RU_branch${I}_t2_2 } )
+  );
+
+  LBRtype_t2_2 
+  (
+     one_of(RU_branch${NUM_BRANCHES}_t2_2)
+  );
+
+  Ftype_t2_2 
+  (
+     one_of( $for (I in $1..${NUM_FALUS}) {RU_falu${I}_t2_2 } )
+  );
+
+  F0type_t2_2 
+  (
+     one_of(RU_falu1_t2_2 )
+  );
+
+  Ntype_t2_2 
+  (
+     one_of( $for (I in $1..${NUM_IALUS}){RU_ialu${I}_t2_2 }  
+	     $for (I in $1..${NUM_MEM_UNITS}) {RU_mem${I}_t2_2 } 
+	     $for (I in $1..${NUM_BRANCHES}) {RU_branch${I}_t2_2 } 
+	     $for (I in $1..${NUM_FALUS}) {RU_falu${I}_t2_2 })
+  );
+}
+
+/* Create the AND-OR trees that describes the how the processor resources
+ * are used as the operation executes.  This is the AND part of the
+ * AND/OR-tree representation for reservation tables.
+ *
+ * Any mixture of Table_Option, Resource_Unit, and Resource Usage entries
+ * may be specified in the 'use' field.
+ */
+SECTION Reservation_Table
+{
+  /* For Lcode */ 
+  /* Simplifying assumption, ialu can execute all integer operations */
+  RL_IAlu       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_ialu_t2_2));
+  RL_AAlu       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_aalu_t2_2));
+  RL_IMul       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_7));
+  RL_IDiv       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_7));
+
+  RL_INOP       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_ialu_t2_2));
+
+  /* Simplifying assumption, falu can execute all floating-point operations */
+  RL_FAlu       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_2));
+  RL_FMul       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_2));
+  RL_FDiv       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_falu_t2_7));
+
+  /* Simplifying assumption, mem unit can execute all memory operations */
+  RL_Load       (use(any_normal_slot_t0_0 any_decoder_t1_1 any_mem_t2_2));
+  RL_Store      (use(any_normal_slot_t0_0 any_decoder_t1_1 any_mem_t2_2));
+
+  /* Branches use branch slots (set above based on branch placement rules) 
+   * but otherwise act like normal operations.
+   */
+  RL_Branch     (use(any_branch_slot_t0_0 any_decoder_t1_1 any_branch_t2_2));
+  RL_JSR        (use(any_branch_slot_t0_0 any_decoder_t1_1 any_branch_t2_2));
+
+  /* For Ltahoe */
+  RL_Atype      (use(any_normal_slot_t0_0 any_decoder_t1_1 Atype_t2_2));
+  RL_Itype      (use(any_normal_slot_t0_0 any_decoder_t1_1 Itype_t2_2));
+  RL_Mtype      (use(any_normal_slot_t0_0 any_decoder_t1_1 Mtype_t2_2));
+  RL_BRtype     (use(any_branch_slot_t0_0 any_decoder_t1_1 BRtype_t2_2));
+  RL_LBRtype    (use(last_slot_t0_0       any_decoder_t1_1 LBRtype_t2_2));
+  RL_Ftype      (use(any_normal_slot_t0_0 any_decoder_t1_1 Ftype_t2_2));
+  RL_Ntype      (use(any_normal_slot_t0_0 any_decoder_t1_1 Ntype_t2_2));
+
+  RL_I0type     (use(any_normal_slot_t0_0 any_decoder_t1_1 I0type_t2_2));
+  RL_F0type      (use(any_normal_slot_t0_0 any_decoder_t1_1 F0type_t2_2));
+}
+
+/* Declare all the times that operands (s0, d1, etc) can be read/written to.
+ * These are used to determine register flow dependence latencies.
+ * 
+ * "Sync" operands (ss0, sd0, etc.) are used to determine memory, control, 
+ * and synchronization flow dependence latencies.
+ */
+SECTION Operand_Latency
+{
+  /* Declare all the times source operands can be read.
+   * Time 0 (for latencies) is assumed to be just before the first
+   * execution stage (when most source operands are read).
+   */
+  $for (I in 0 1) 
+  {
+      s${I}       (time(${I}));
+      p${I}       (time(${I}));
+  }
+
+  /* Declare all the times destination operands can be written to.
+   * Given the above assumption, this should be set to the operation latency.
+   * (Since the flow-dependence distance with be (dest_lat - src_lat).
+   */
+  $def LATENCIES {0 1 2 3 4 5 6 7 9 10 11 15 16 18 28 30 38 40 47}
+  $for (I in ${LATENCIES}) 
+  {
+      d${I}       (time(${I}));
+  }
+
+  dLD (time(${LOAD_HIT_LAT}));
+
+  /* Declare all the times sync source operands can be read. */
+  $for (I in 0 1) 
+  {
+      ss${I}      (time(${I}));
+  }
+
+  /* Declare all the times sync dest operands can be written to. */
+  $for (I in 0 1 2) 
+  {
+      sd${I}      (time(${I}));
+  }
+}
+
+/* Declare all the operation latency combinations allowed.
+ * The flow-dependence distance between two operands are determined
+ * with (dest_lat - src_lat).  So if dest_lat = 2, and src_lat = 0,
+ * a flow dependence with a two-cycle latency will be added.
+ */
+SECTION Operation_Latency
+{
+  /* For Lcode */
+
+  /* Simplifying assumption, assume all sources are read at time 0, and
+   * destinations are written at their latency.  Assume all flow dependences
+   * between dependent memory and branch operations are 0 cycles.
+   */    
+  $for (I in ${LATENCIES}) 
+  {
+      Lat${I}     (dest(d${I} d${I} d${I} d${I})
+                   src(s0 s0 s0 s0 s0 s0)
+                   pred(p0)
+                   mem_dest(sd0)
+                   ctrl_dest(sd0)
+                   sync_dest(sd0)
+                   mem_src(ss0)
+                   ctrl_src(ss0)
+                   sync_src(ss0));               
+  }
+
+  LatDP1	(dest(d1 d1 d1 d1)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p${PBDELAY})
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));	
+
+  /* For Tahoe */
+  LatIGNORE     (dest(d0 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatCMP_I     (dest(d1 d1 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatCMP_M     (dest(d1 d1 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatTBIT      (dest(d1 d1 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatBRANCH    (dest(d1 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p1)
+                 mem_dest(sd0)
+                 ctrl_dest(sd1)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss1)
+                 sync_src(ss0));
+
+   LatCALL      (dest(d1 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p1)
+                 mem_dest(sd0)
+                 ctrl_dest(sd1)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss1)
+                 sync_src(ss0));
+
+   LatALU_I     (dest(d1 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatALU_M     (dest(d1 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd0)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+   LatALLOC     (dest(d1 d0 d0 d0)
+                 src(s0 s0 s0 s0 s0 s0)
+                 pred(p0)
+                 mem_dest(sd0)
+                 ctrl_dest(sd0)
+                 sync_dest(sd1)
+                 mem_src(ss0)
+                 ctrl_src(ss0)
+                 sync_src(ss0));
+
+    LatALU_ADDP4 (dest(d1 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatTO_PRED   (dest(d1 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFROM_PRED (dest(d2 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatTO_BR     (dest(d0 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+ 
+    LatTO_BR_RET (dest(d0 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFROM_BR   (dest(d2 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+      
+    /* Post-inc stores have 1 dest */
+    LatSTORE     (dest(d1 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatLOAD      (dest(dLD d0 d0 d0)                  
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatLOAD_C    (dest(d0 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFP_LOAD   (dest(d9 d1 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatCMP_F     (dest(d2 d2 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatI_TO_F    (dest(d9 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatF_TO_I    (dest(d2 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFP_UNIT   (dest(d5 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFMUL_ADD  (dest(d5 d0 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatIMUL_ADD  (dest(d7 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFMISC     (dest(d5 d1 d0 d0)    
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+
+    LatFCONVERT  (dest(d7 d0 d0 d0)
+                  src(s0 s0 s0 s0 s0 s0)
+                  pred(p0)
+                  mem_dest(sd0)
+                  ctrl_dest(sd0)
+                  sync_dest(sd0)
+                  mem_src(ss0)
+                  ctrl_src(ss0)
+                  sync_src(ss0));
+}
+
+/* This section's entries group together an operation format, 
+ * reservation table,and an operation latency entry. 
+ * The requirements for all three entries need to be met in order for 
+ * the operation to be scheduled.
+ *
+ * Since we can model all the resource usage options with a single 
+ * AND/OR-tree-based reservation table and we have only one operation 
+ * format, we need only one scheduling alternative per operation type 
+ * to model resource constraints.
+ *
+ * However, if general speculation is enabled, create silent versions
+ * of operations that can except.
+ */
+SECTION Scheduling_Alternative
+{
+  /* For Lcode */
+  ALT_IAlu     (format(A_AAAA_AAAAAA) resv (RL_IAlu) latency(Lat1));
+  ALT_AAlu     (format(A_AAAA_AAAAAA) resv (RL_AAlu) latency(Lat1));
+  ALT_IMul     (format(A_AAAA_AAAAAA) resv (RL_IMul) latency(Lat18));
+  ALT_IDiv     (format(A_AAAA_AAAAAA) resv (RL_IDiv) latency(Lat47));
+  ALT_INOP     (format(A_AAAA_AAAAAA) resv (RL_IAlu) latency(Lat1));
+  ALT_FAlu     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat5));
+  ALT_FCmp     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat2));
+  ALT_From_F   (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat9));
+  ALT_To_F     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat16));
+  ALT_FMul     (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat5));
+  ALT_FDiv     (format(A_AAAA_AAAAAA) resv (RL_FDiv) latency(Lat40));
+  ALT_Load     (format(A_AAAA_AAAAAA) resv (RL_Load) latency(LatLOAD));
+  ALT_FLoad    (format(A_AAAA_AAAAAA) resv (RL_Load) latency(Lat9));
+  ALT_Store    (format(A_AAAA_AAAAAA) resv (RL_Store) latency(Lat1));
+  ALT_Branch   (format(A_AAAA_AAAAAA) resv (RL_Branch) latency(LatDP1));
+  ALT_JSR      (format(A_AAAA_AAAAAA) resv (RL_JSR) latency(Lat1));
+
+  /* Create silent versions of operations if non-trapping operations
+   * are specified as being supported.
+   */
+  $if(${NON_TRAPPING_OPS} == 1) 
+  {
+  $if(${NON_TRAPPING_FP_OPS} == 1) 
+  {
+    ALT_IDiv_S (format(A_AAAA_AAAAAA) resv (RL_IDiv) latency(Lat47) flags(SILENT));
+    ALT_FAlu_S (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat5) flags(SILENT));
+    ALT_FMul_S (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat5) flags(SILENT));
+    ALT_FCmp_S (format(A_AAAA_AAAAAA) resv (RL_FAlu) latency(Lat2) flags(SILENT));
+    ALT_FDiv_S (format(A_AAAA_AAAAAA) resv (RL_FDiv) latency(Lat40) flags(SILENT));
+  }
+    ALT_Load_S (format(A_AAAA_AAAAAA) resv (RL_Load) latency(LatLOAD) flags(SILENT));
+    ALT_FLoad_S (format(A_AAAA_AAAAAA) resv (RL_Load) latency(Lat9) flags(SILENT));
+  }
+
+  ALT_IGNORE (format (OF_IGNORE) resv (RL_Ntype) latency(LatIGNORE));
+  ALT_ALLOC  (format (OF_ALLOC)  resv (RL_Mtype) latency(LatALLOC));
+  ALT_BRANCH (format (OF_BR_JUMP) resv (RL_BRtype) latency(LatBRANCH));
+  ALT_BRANCH_IND (format (OF_BR_JUMP_IND) resv (RL_BRtype) latency(LatBRANCH));
+  ALT_BRANCH_RET (format (OF_BR_RET) resv (RL_BRtype) latency (LatBRANCH));
+  ALT_CALL (format (OF_BR_CALL) resv (RL_LBRtype) latency (LatBRANCH));
+  ALT_CALL_IND (format (OF_BR_CALL_IND) resv (RL_LBRtype) latency (LatBRANCH));
+  ALT_BR_HINT (format (OF_BR_HINT) resv (RL_LBRtype) latency (LatBRANCH));
+  ALT_BR_MODULO (format (OF_BR_MODULO) resv (RL_LBRtype) latency(LatBRANCH));
+  ALT_BR_CMP (format (OF_BR_CMP) resv (RL_LBRtype) latency(LatBRANCH));
+
+  /* This make the assumption that LatALU_I and LatALU_M are the same */
+  ALT_ADD_REG (format (OF_IREG_IREG) resv (RL_Atype) latency (LatALU_I));
+  ALT_ADD_IMM14 (format (OF_ADD14) resv (RL_Atype) latency (LatALU_I));
+  ALT_ADD_IMM22 (format (OF_ADD22) resv (RL_Atype) latency (LatALU_I));
+  
+  ALT_ADDP_REG (format(OF_IREG_IREG) resv (RL_Atype) latency (LatALU_ADDP4));
+  ALT_ADDP_IMM14 (format (OF_ADD14) resv (RL_Atype) latency(LatALU_ADDP4));
+  ALT_ADDP_IMM22 (format (OF_ADD22) resv (RL_Atype) latency(LatALU_ADDP4));
+  
+  ALT_LOGIC_REG (format (OF_IREG_IREG) resv (RL_Atype) latency (LatALU_I)); 
+  ALT_LOGIC_IMM (format (OF_IMM8_IREG) resv (RL_Atype) latency (LatALU_I));
+
+  ALT_SHIFT_REG (format (OF_IREG_IREG) resv (RL_Itype) latency (LatALU_I));
+  ALT_SHIFT_IMM (format (OF_IREG_IMM6) resv (RL_Itype) latency (LatALU_I));
+
+  ALT_SHLADD (format (OF_SHLADD) resv (RL_Atype) latency (LatALU_I));
+
+  ALT_SHLADDP4 (format (OF_SHLADD) resv (RL_Atype) latency (LatALU_ADDP4));
+
+  ALT_CMP_REG (format (OF_CMP) resv (RL_Atype) latency (LatCMP_I));
+  ALT_CMP_IMM (format (OF_CMP_IMM) resv (RL_Atype) latency (LatCMP_I));
+
+  ALT_FCMP (format (OF_FCMP) resv (RL_Ftype) latency (LatCMP_F));
+  
+  ALT_CMP_REGISTER (format(OF_CMP_REGISTER) resv (RL_Atype) latency (LatCMP_I));
+  ALT_CMP_IMM_REGISTER (format(OF_CMP_IMM_REGISTER) resv (RL_Atype) latency (LatCMP_I));
+  ALT_FCMP_REGISTER (format(OF_FCMP_REGISTER) resv (RL_Ftype) latency (LatCMP_F));
+  
+  ALT_TBIT (format (OF_TBIT) resv (RL_Itype) latency (LatTBIT));
+  ALT_DEE_RRII (format (OF_DEE_RRII) resv (RL_Itype) latency (LatALU_I));
+  ALT_DEE_RII (format (OF_DEE_RII) resv (RL_Itype) latency (LatALU_I));
+  ALT_DEE_III (format (OF_DEE_III) resv (RL_Itype) latency (LatALU_I));
+  ALT_DEE_IREG (format (OF_IREG) resv (RL_Itype) latency (LatALU_I));
+
+  ALT_MOV_REG (format (OF_IREG) resv (RL_Atype) latency (LatALU_I));
+  ALT_MOV_IMM22 (format (OF_IMM22) resv (RL_Atype) latency (LatALU_I));
+  ALT_MOV_IMM64 (format (OF_IMM64) resv (RL_Atype) latency (LatALU_I));
+
+  ALT_MOVE_TO_AR_I_REG (format (OF_IREG) resv (RL_Itype) latency (LatALU_I));
+  ALT_MOVE_TO_AR_I_IMM (format (OF_IMM8) resv (RL_Itype) latency (LatALU_I));
+
+  ALT_MOVE_FROM_AR_I_REG (format (OF_IREG) resv (RL_Itype) latency (LatALU_I));
+  ALT_MOVE_FROM_AR_I_IMM (format (OF_IMM8) resv (RL_Itype) latency (LatALU_I));
+
+  ALT_MOVE_TO_AR_M_REG (format (OF_IREG) resv (RL_Mtype) latency (LatALU_M));
+  ALT_MOVE_TO_AR_M_IMM (format (OF_IMM8) resv (RL_Mtype) latency (LatALU_M));
+
+  ALT_MOVE_FROM_AR_M_REG (format (OF_IREG) resv (RL_Mtype) latency (LatALU_M));
+  ALT_MOVE_FROM_AR_M_IMM (format (OF_IMM8) resv (RL_Mtype) latency (LatALU_M));
+
+  ALT_MOVEF (format (OF_FREG) resv (RL_Ftype) latency (LatFP_UNIT));
+   
+  ALT_MOVE_TO_BR (format (OF_TO_BR) resv (RL_Itype) latency (LatTO_BR));
+  ALT_MOVE_TO_BR_RET (format (OF_TO_BR_RET) resv (RL_Itype) latency (LatTO_BR_RET));
+  ALT_MOVE_FROM_BR (format (OF_FROM_BR) resv (RL_Itype) latency (LatFROM_BR));
+
+  ALT_MOVE_TO_PR (format (OF_TO_PR) resv (RL_Itype) latency (LatTO_PRED));
+  ALT_MOVE_FROM_PR (format (OF_FROM_PR) resv (RL_Itype) latency (LatFROM_PRED));
+
+  ALT_LOAD_I (format (OF_LD) resv (RL_Mtype) latency (LatLOAD));
+  ALT_LOAD_I_POST_REG (format (OF_LD_POST_REG) resv (RL_Mtype) latency (LatLOAD));
+  ALT_LOAD_I_POST_IMM (format (OF_LD_POST_IMM) resv (RL_Mtype) latency (LatLOAD));
+
+  ALT_LOAD_I_FILL (format (OF_LD_FILL) resv (RL_Mtype) latency (LatLOAD));
+  ALT_LOAD_I_FILL_POST_REG (format (OF_LD_FILL_POST_REG) resv (RL_Mtype) latency (LatLOAD));
+  ALT_LOAD_I_FILL_POST_IMM (format (OF_LD_FILL_POST_IMM) resv (RL_Mtype) latency (LatLOAD));
+ 
+  ALT_LOAD_C (format (OF_LD_C) resv (RL_Mtype) latency (LatLOAD_C));
+
+  ALT_LOAD_F (format (OF_FLD) resv (RL_Mtype) latency (LatFP_LOAD));
+
+  ALT_LOAD_F_POST_REG (format (OF_FLD_POST_REG) resv (RL_Mtype) latency (LatFP_LOAD));
+  ALT_LOAD_F_POST_IMM (format (OF_FLD_POST_IMM) resv (RL_Mtype) latency (LatFP_LOAD));
+
+  ALT_STORE_I (format (OF_ST) resv (RL_Mtype) latency (LatSTORE));
+  
+  ALT_STORE_I_POST (format (OF_ST_POST_IMM) resv (RL_Mtype) latency (LatSTORE));
+  ALT_STORE_I_SPILL (format (OF_ST_SPILL) resv (RL_Mtype) latency (LatSTORE));
+  ALT_STORE_I_SPILL_POST (format (OF_ST_SPILL_POST_IMM) resv (RL_Mtype) latency (LatSTORE));
+
+  ALT_STORE_F (format (OF_FST) resv (RL_Mtype) latency (LatSTORE));
+
+  ALT_STORE_F_POST (format (OF_FST_POST_IMM) resv (RL_Mtype) latency (LatSTORE));
+
+  ALT_I_TO_F (format (OF_GR_TO_FR) resv (RL_Mtype) latency (LatI_TO_F));
+ 
+  ALT_F_TO_I (format (OF_FR_TO_GR) resv (RL_Mtype) latency (LatF_TO_I));
+
+  ALT_CONVERTFX (format (OF_FREG) resv (RL_Ftype) latency (LatFCONVERT));
+  ALT_CONVERTXF (format (OF_FREG) resv (RL_Ftype) latency (LatFMISC));
+
+  ALT_FALU (format (OF_FREG_FREG) resv (RL_Ftype) latency (LatFP_UNIT));
+
+  ALT_FMUL (format (OF_FMUL_ADD) resv (RL_Ftype) latency (LatFMUL_ADD));
+
+  ALT_FRCPA (format (OF_FRCPA) resv (RL_Ftype) latency (LatFMISC));
+
+  ALT_FRSQRTA (format (OF_FRSQRTA) resv (RL_Ftype) latency (LatFMISC));
+
+  ALT_XMPY (format (OF_FREG_FREG) resv (RL_Ftype) latency (LatIMUL_ADD));
+
+  ALT_XMA (format (OF_FMUL_ADD) resv (RL_Ftype) latency (LatIMUL_ADD));
+
+  ALT_CHECK (format (OF_CHECK) resv (RL_Itype) latency (LatALU_I));
+
+  ALT_LFETCH (format (OF_LFETCH) resv (RL_Mtype) latency (LatALU_I));
+
+  ALT_PSAD       (format (OF_IREG_IREG)  resv (RL_Itype) latency (Lat2));
+
+  ALT_PSHIFT_IMM (format (OF_IREG_IMM16) resv (RL_Atype) latency (Lat2));
+
+  ALT_PSHIFTADD  (format (OF_IREG_IMM16_IREG) resv (RL_Atype) latency (Lat2));
+
+  ALT_PADD       (format (OF_IREG_IREG)  resv (RL_Atype) latency (Lat2));
+
+  ALT_PMPY       (format (OF_IREG_IREG)  resv (RL_I0type) latency (Lat2));
+
+  ALT_PMPYSHIFT  (format (OF_IREG_IREG_IMM16) resv (RL_I0type) latency (Lat2));
+
+  ALT_MUX        (format (OF_IREG_IMM16) resv (RL_Atype) latency (Lat2));
+
+
+  ALT_FPMA   (format (OF_FREG_FREG_FREG) resv (RL_Ftype) latency (LatFMISC));
+
+  ALT_FPMPY     (format (OF_FREG_FREG) resv (RL_Ftype)  latency (LatFMISC));
+
+  ALT_FPCVT     (format (OF_FREG)      resv (RL_Ftype)  latency (LatFCONVERT));
+ 
+  ALT_FPCMP     (format (OF_FREG_FREG) resv (RL_F0type) latency (LatFMISC));
+
+  ALT_FPMERGE   (format (OF_FREG_FREG) resv (RL_F0type) latency (LatFMISC));
+
+  ALT_FPMERGESE (format (OF_FREG_FREG) resv (RL_F0type) latency (LatFCONVERT));
+
+  ALT_FPRCPA    (format (OF_FRCPA)     resv (RL_F0type) latency (LatFMISC));
+
+  ALT_FPRSQRTA  (format (OF_FRSQRTA)   resv (RL_F0type) latency (LatFMISC));
+
+
+$if(${NON_TRAPPING_OPS} == 1) 
+  {
+    ALT_LOAD_I_S (format (OF_LD) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));
+    ALT_LOAD_I_POST_REG_S (format (OF_LD_POST_REG) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));
+    ALT_LOAD_I_POST_IMM_S (format (OF_LD_POST_IMM) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));
+
+    ALT_LOAD_I_FILL_S (format (OF_LD_FILL) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));
+    ALT_LOAD_I_FILL_POST_REG_S (format (OF_LD_FILL_POST_REG) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));
+    ALT_LOAD_I_FILL_POST_IMM_S (format (OF_LD_FILL_POST_IMM) resv (RL_Mtype) latency (LatLOAD) flags (SILENT));	
+
+    ALT_LOAD_F_S (format (OF_FLD) resv (RL_Mtype) latency (LatFP_LOAD) flags (SILENT));
+
+    ALT_LOAD_F_POST_REG_S (format (OF_FLD_POST_REG) resv (RL_Mtype) latency (LatFP_LOAD) flags (SILENT));
+    ALT_LOAD_F_POST_IMM_S (format (OF_FLD_POST_IMM) resv (RL_Mtype) latency (LatFP_LOAD) flags (SILENT));
+
+    ALT_STORE_I_SPILL_S (format (OF_ST_SPILL) resv (RL_Mtype) latency (LatSTORE) flags (SILENT));
+    ALT_STORE_I_SPILL_POST_S (format (OF_ST_SPILL_POST_IMM) resv (RL_Mtype) latency (LatSTORE) flags (SILENT));
+    ALT_CONVERTFX_S (format (OF_FREG) resv (RL_Ftype) latency (LatFCONVERT) flags (SILENT));
+    ALT_CONVERTXF_S (format (OF_FREG) resv (RL_Ftype) latency (LatFMISC) flags (SILENT));
+    ALT_FALU_S (format (OF_FREG_FREG) resv (RL_Ftype) latency (LatFP_UNIT) flags (SILENT)); 
+    ALT_FMUL_S (format (OF_FMUL_ADD) resv (RL_Ftype) latency (LatFMUL_ADD) flags (SILENT));
+    ALT_XMPY_S (format (OF_FREG_FREG) resv (RL_Ftype) latency (LatIMUL_ADD) flags (SILENT));
+    ALT_XMA_S (format (OF_FMUL_ADD) resv (RL_Ftype) latency (LatIMUL_ADD) flags (SILENT));
+    ALT_FRCPA_S (format (OF_FRCPA) resv (RL_Ftype) latency (LatFMISC) flags (SILENT));
+    ALT_FRSQRTA_S (format (OF_FRSQRTA) resv (RL_Ftype) latency (LatFMISC) flags (SILENT));
+  } 
+}
+
+/* This section entries groups together all the scheduling alternatives
+ * for each operation type.  In this simplified machine description, it
+ * is used only to add silent (non-trapping) versions of operations.
+ */
+SECTION Operation
+{
+  /* For Lcode */
+ 
+  OP_IAlu       (alt(ALT_IAlu));    
+  OP_AAlu       (alt(ALT_AAlu));    
+  OP_IMul       (alt(ALT_IMul));     
+  OP_IDiv       (alt(ALT_IDiv));     
+  OP_INOP       (alt(ALT_INOP));     
+  OP_FAlu       (alt(ALT_FAlu));
+  OP_To_F       (alt(ALT_To_F));
+  OP_From_F     (alt(ALT_From_F));
+  OP_FCmp       (alt(ALT_FCmp));     
+  OP_FMul       (alt(ALT_FMul));    
+  OP_FDiv       (alt(ALT_FDiv));     
+  OP_Load       (alt(ALT_Load));
+  OP_FLoad      (alt(ALT_FLoad));    
+  OP_Store      (alt(ALT_Store));   
+  OP_Branch     (alt(ALT_Branch));   
+  OP_JSR        (alt(ALT_JSR));     
+
+  /* Add silent versions to above (excepting) alternative lists,
+   *  if non-trapping operations are specified as being supported.
+   */
+  $if(${NON_TRAPPING_OPS} == 1) 
+  {
+  $if(${NON_TRAPPING_FP_OPS} == 1) 
+  {
+    OP_IDiv     (alt||(ALT_IDiv_S));     
+    OP_FMul     (alt||(ALT_FMul_S));    
+    OP_FAlu     (alt||(ALT_FAlu_S));
+    OP_FCmp     (alt||(ALT_FCmp_S));     
+    OP_FDiv     (alt||(ALT_FDiv_S));     
+  }
+    OP_Load     (alt||(ALT_Load_S));
+    OP_FLoad    (alt||(ALT_FLoad_S));    
+  }
+
+  /* For Tahoe */
+  OP_IGNORE     (alt(ALT_IGNORE));
+  OP_ALLOC      (alt(ALT_ALLOC));  
+  OP_BRANCH     (alt(ALT_BRANCH));
+  OP_BRANCH_IND (alt(ALT_BRANCH_IND)); 
+  OP_BRANCH_RET (alt(ALT_BRANCH_RET));
+  OP_CALL       (alt(ALT_CALL));
+  OP_CALL_IND   (alt(ALT_CALL_IND)); 
+  OP_BR_HINT    (alt(ALT_BR_HINT));
+  OP_BR_MODULO  (alt(ALT_BR_MODULO));
+  OP_BR_CMP     (alt(ALT_BR_CMP));
+
+  /* This make the assumption that LatALU_I and LatALU_M are the same */
+  OP_ADD        (alt(ALT_ADD_REG));
+  OP_ADD        (alt||(ALT_ADD_IMM14)); 
+  OP_ADD        (alt||(ALT_ADD_IMM22)); 
+  
+  OP_ADDP4       (alt(ALT_ADDP_REG)); 
+  OP_ADDP4       (alt||(ALT_ADDP_IMM14)); 
+  OP_ADDP4       (alt||(ALT_ADDP_IMM22)); 
+  
+  OP_LOGIC      (alt(ALT_LOGIC_REG)); 
+  OP_LOGIC      (alt||(ALT_LOGIC_IMM));
+
+  OP_SHIFT      (alt(ALT_SHIFT_REG)); 
+  OP_SHIFT      (alt||(ALT_SHIFT_IMM)); 
+
+  OP_SHLADD     (alt(ALT_SHLADD)); 
+
+  OP_SHLADDP4   (alt(ALT_SHLADDP4)); 
+
+  OP_COMPARE_I        (alt(ALT_CMP_REG)); 
+  OP_COMPARE_I        (alt||(ALT_CMP_IMM)); 
+
+  OP_COMPARE_F        (alt(ALT_FCMP)); 
+  
+  OP_COMPARE_I_REGISTER      (alt(ALT_CMP_REGISTER)); 
+  OP_COMPARE_I_REGISTER      (alt||(ALT_CMP_IMM_REGISTER)); 
+  OP_COMPARE_F_REGISTER      (alt(ALT_FCMP_REGISTER)); 
+  
+  OP_TBIT       (alt(ALT_TBIT));
+   
+  OP_DEE        (alt(ALT_DEE_RRII)); 
+  OP_DEE        (alt||(ALT_DEE_RII)); 
+  OP_DEE        (alt||(ALT_DEE_III)); 
+  OP_DEE        (alt||(ALT_DEE_IREG)); 
+
+  OP_MOVE        (alt(ALT_MOV_REG)); 
+  OP_MOVE        (alt||(ALT_MOV_IMM22)); 
+  OP_MOVE        (alt||(ALT_MOV_IMM64)); 
+
+  OP_MOVE_TO_AR_I      (alt(ALT_MOVE_TO_AR_I_REG)); 
+  OP_MOVE_TO_AR_I      (alt||(ALT_MOVE_TO_AR_I_IMM)); 
+
+  OP_MOVE_FROM_AR_I       (alt(ALT_MOVE_FROM_AR_I_REG)); 
+  OP_MOVE_FROM_AR_I       (alt||(ALT_MOVE_FROM_AR_I_IMM)); 
+
+  OP_MOVE_TO_AR_M         (alt(ALT_MOVE_TO_AR_M_REG)); 
+  OP_MOVE_TO_AR_M         (alt||(ALT_MOVE_TO_AR_M_IMM)); 
+
+  OP_MOVE_FROM_AR_M       (alt(ALT_MOVE_FROM_AR_M_REG)); 
+  OP_MOVE_FROM_AR_M       (alt||(ALT_MOVE_FROM_AR_M_IMM)); 
+
+  OP_MOVEF    (alt(ALT_MOVEF)); 
+   
+  OP_MOVE_TO_BR          (alt(ALT_MOVE_TO_BR)); 
+  OP_MOVE_TO_BR          (alt||(ALT_MOVE_TO_BR_RET)); 
+  OP_MOVE_FROM_BR        (alt(ALT_MOVE_FROM_BR)); 
+
+  OP_MOVE_TO_PR          (alt(ALT_MOVE_TO_PR)); 
+  OP_MOVE_FROM_PR        (alt(ALT_MOVE_FROM_PR)); 
+
+  OP_LOAD_I              (alt(ALT_LOAD_I)); 
+  OP_LOAD_I              (alt||(ALT_LOAD_I_POST_REG)); 
+  OP_LOAD_I              (alt||(ALT_LOAD_I_POST_IMM)); 
+
+  OP_LOAD_I_FILL         (alt(ALT_LOAD_I_FILL)); 
+  OP_LOAD_I_FILL         (alt||(ALT_LOAD_I_FILL_POST_REG)); 
+  OP_LOAD_I_FILL         (alt||(ALT_LOAD_I_FILL_POST_IMM));
+  OP_LOAD_C              (alt(ALT_LOAD_C));
+
+  OP_LOAD_F              (alt(ALT_LOAD_F)); 
+  OP_LOAD_F              (alt||(ALT_LOAD_F_POST_REG)); 
+  OP_LOAD_F              (alt||(ALT_LOAD_F_POST_IMM)); 
+
+  OP_STORE_I             (alt(ALT_STORE_I)); 
+  OP_STORE_I             (alt||(ALT_STORE_I_POST)); 
+
+  OP_STORE_I_SPILL       (alt(ALT_STORE_I_SPILL));
+  OP_STORE_I_SPILL       (alt||(ALT_STORE_I_SPILL_POST)); 
+
+  OP_STORE_F             (alt(ALT_STORE_F)); 
+  OP_STORE_F             (alt||(ALT_STORE_F_POST)); 
+
+  OP_I_TO_F              (alt(ALT_I_TO_F)); 
+ 
+  OP_F_TO_I              (alt(ALT_F_TO_I)); 
+
+  OP_CONVERTFX           (alt(ALT_CONVERTFX));
+  OP_CONVERTXF           (alt(ALT_CONVERTXF)); 
+
+  OP_FALU                (alt(ALT_FALU));
+
+  OP_FMUL                (alt(ALT_FMUL)); 
+
+  OP_FRCPA               (alt(ALT_FRCPA)); 
+
+  OP_FRSQRTA             (alt(ALT_FRSQRTA)); 
+
+  OP_XMPY                (alt(ALT_XMPY)); 
+
+  OP_XMA                 (alt(ALT_XMA)); 
+
+  OP_CHECK               (alt(ALT_CHECK)); 
+
+  OP_LFETCH              (alt(ALT_LFETCH));
+
+  OP_PSAD                (alt(ALT_PSAD));       
+
+  OP_PSHIFT              (alt(ALT_PSHIFT_IMM)); 
+  OP_PSHIFT              (alt||(ALT_PADD)); 
+
+  OP_PSHIFTADD           (alt(ALT_PSHIFTADD));  
+
+  OP_PADD                (alt(ALT_PADD));      
+
+  OP_PMPY                (alt(ALT_PMPY));       
+
+  OP_PMPYSHIFT           (alt(ALT_PMPYSHIFT));  
+
+  OP_MUX                 (alt(ALT_MUX));       
+
+
+  OP_FPMA                (alt(ALT_FPMA));   
+
+  OP_FPMPY               (alt(ALT_FPMPY)); 
+
+  OP_FPCVT               (alt(ALT_FPCVT));  
+ 
+  OP_FPCMP               (alt(ALT_FPCMP));  
+
+  OP_FPMERGE             (alt(ALT_FPMERGE));  
+
+  OP_FPMERGESE           (alt(ALT_FPMERGESE)); 
+
+  OP_FPRCPA              (alt(ALT_FPRCPA));    
+
+  OP_FPRSQRTA            (alt(ALT_FPRSQRTA)); 
+
+
+$if(${NON_TRAPPING_OPS} == 1) 
+  {	
+    OP_LOAD_I                (alt||(ALT_LOAD_I_S)); 
+    OP_LOAD_I                (alt||(ALT_LOAD_I_POST_REG_S)); 
+    OP_LOAD_I                (alt||(ALT_LOAD_I_POST_IMM_S)); 
+
+    OP_LOAD_I_FILL           (alt||(ALT_LOAD_I_FILL_S)); 
+    OP_LOAD_I_FILL           (alt||(ALT_LOAD_I_FILL_POST_REG_S)); 
+    OP_LOAD_I_FILL           (alt||(ALT_LOAD_I_FILL_POST_IMM_S));
+
+    OP_LOAD_F                (alt||(ALT_LOAD_F_S)); 
+    OP_LOAD_F                (alt||(ALT_LOAD_F_POST_REG_S)); 
+    OP_LOAD_F                (alt||(ALT_LOAD_F_POST_IMM_S)); 
+
+    OP_STORE_I_SPILL         (alt||(ALT_STORE_I_SPILL_S));
+    OP_STORE_I_SPILL         (alt||(ALT_STORE_I_SPILL_POST_S));
+
+    OP_CONVERTFX             (alt||(ALT_CONVERTFX_S));
+    OP_CONVERTXF             (alt||(ALT_CONVERTXF_S));
+    OP_FALU                  (alt||(ALT_FALU_S));
+    OP_FMUL                  (alt||(ALT_FMUL_S));
+    OP_FRCPA                 (alt||(ALT_FRCPA_S));
+    OP_FRSQRTA               (alt||(ALT_FRSQRTA_S));
+    OP_XMPY                  (alt||(ALT_XMPY_S));
+    OP_XMA                   (alt||(ALT_XMA_S));
+  } 
+}
+
+/* This section maps Lcode operations to scheduling alternatives (thru
+ * Operation entries).  It also describes to the scheduler and register
+ * allocator some properties of the operation (which they use instead
+ * of Lcode library calls).  It is very important to get these flags correct,
+ * otherwise the operation will be treated incorrectly and illegal
+ * schedules might result (i.e., must mark loads, stores, branches, etc.
+ * properly).
+ */
+SECTION IMPACT_Operation
+{
+  /* Compiler directives, the IGNORE flag tells the scheduler to ignore
+   * them (not schedule them, draw dependences to them, etc.) and put them 
+   * at the top of the cb after scheduling.  Just use OP_INOP since 
+   * something is needed.)
+   */
+  $for (OPC in Lop_DEFINE Lop_ALLOC Lop_PROLOGUE Lop_SIM_DIR Lop_BOUNDARY)
+  {
+      ${OPC}      (op(OP_INOP) flags (IGNORE));
+  }
+
+  /* EPILOGUE is a special compiler directive that must go just before
+   * the RTS (i.e, cannot move to top), so mark as SYNC operation
+   * (nothing will be able to move past it).
+   */
+  Lop_EPILOGUE  (op(OP_INOP) flags(SYNC));
+
+  /* INTRINSIC is a special opcode representing add-on instructions
+   * that can be emulated with C function calls.
+   */
+  Lop_INTRINSIC  (op(OP_INOP));
+
+  /* Don't expect any no-ops, however better define */
+  Lop_NO_OP     (op(OP_INOP));
+
+  /* General check */
+  Lop_CHECK     (op(OP_INOP) flags (CHK));
+
+  /* Prefetch */
+  Lop_PREF_LD   (op(OP_INOP));
+	
+  /* Jump subroutine opcodes, must be marked with JSR flag! */
+  $for (OPC in Lop_JSR Lop_JSR_FS)
+  {
+      ${OPC}      (op(OP_JSR) flags (JSR));
+  }
+
+  /* Return to subroutines opcodes, must be marked with RTS flag! */
+  $for (OPC in Lop_RTS Lop_RTS_FS)
+  {
+      ${OPC}      (op(OP_JSR) flags (RTS));
+  }
+
+  /* Unconditinal jump opcodes, must be marked with JMP flag! */
+  $for (OPC in Lop_JUMP Lop_JUMP_FS Lop_JUMP_RG Lop_JUMP_RG_FS)
+  {
+      ${OPC}      (op(OP_Branch) flags (JMP));
+  }
+
+  /* Conditional jump opcodes, must be marked with CBR flag!
+   * Assume branch unit can compare any type of operand.
+   */
+  $for (OPC in Lop_BR Lop_BR_F Lop_BEQ Lop_BEQ_FS Lop_BNE Lop_BNE_FS
+               Lop_BGT Lop_BGT_FS Lop_BGE Lop_BGE_FS
+               Lop_BLT Lop_BLT_FS Lop_BLE Lop_BLE_FS
+               Lop_BGT_U Lop_BGT_U_FS Lop_BGE_U Lop_BGE_U_FS
+               Lop_BLT_U Lop_BLT_U_FS Lop_BLE_U Lop_BLE_U_FS
+               Lop_BEQ_F Lop_BEQ_F_FS Lop_BNE_F Lop_BNE_F_FS
+               Lop_BGT_F Lop_BGT_F_FS Lop_BGE_F Lop_BGE_F_FS
+               Lop_BLT_F Lop_BLT_F_FS Lop_BLE_F Lop_BLE_F_FS
+               Lop_BEQ_F2 Lop_BEQ_F2_FS Lop_BNE_F2 Lop_BNE_F2_FS
+               Lop_BGT_F2 Lop_BGT_F2_FS Lop_BGE_F2 Lop_BGE_F2_FS
+               Lop_BLT_F2 Lop_BLT_F2_FS Lop_BLE_F2 Lop_BLE_F2_FS)
+  {
+      ${OPC}      (op(OP_Branch) flags (CBR));
+  }
+
+  /* Integer Ialu operations, no flags needed */
+  $for (OPC in Lop_MOV Lop_ABS Lop_OR Lop_AND 
+               Lop_XOR Lop_NOR Lop_NAND Lop_NXOR      
+               Lop_OR_NOT Lop_AND_NOT Lop_OR_COMPL Lop_AND_COMPL 
+               Lop_LSL Lop_LSR Lop_ASR Lop_ADD
+               Lop_L_MAC Lop_L_MSU Lop_ADD_SAT Lop_ADD_SAT_U
+               Lop_SUB_SAT Lop_SUB_SAT_U
+               Lop_SAT Lop_SAT_U
+               Lop_ADD_U Lop_SUB Lop_SUB_U Lop_RCMP Lop_EQ
+               Lop_NE Lop_GT Lop_GT_U Lop_GE Lop_GE_U 
+               Lop_LT Lop_LT_U Lop_LE Lop_LE_U Lop_EXTRACT_C
+	       Lop_EXTRACT_C2 Lop_EXTRACT Lop_EXTRACT_U Lop_DEPOSIT
+	       Lop_SXT_C Lop_SXT_C2 Lop_SXT_I Lop_ZXT_C
+	       Lop_ZXT_C2 Lop_ZXT_I)
+  {
+      ${OPC}      (op(OP_AAlu));
+  }
+
+  /* Integer multiple operations, no flags needed.
+   * Simplified, treat multiply_add ops, etc same as multiply.
+   */
+  $for (OPC in Lop_MUL Lop_MUL_U Lop_MUL_ADD Lop_MUL_ADD_U Lop_MUL_SAT Lop_MUL_SAT_U
+               Lop_MUL_SUB Lop_MUL_SUB_U Lop_MUL_SUB_REV Lop_MUL_SUB_REV_U)
+  {
+      ${OPC}      (op(OP_IMul));
+  }
+
+  /* Integer divide operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_DIV Lop_DIV_U Lop_REM Lop_REM_U)
+  {
+      ${OPC}      (op(OP_IDiv) flags (EXCEPT));
+  }
+
+  /* Floating-point moves, cannot except */
+  Lop_MOV_F     (op(OP_FAlu));
+  Lop_MOV_F2    (op(OP_FAlu));
+
+  /* Floating-point alu operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_RCMP_F Lop_ABS_F Lop_ABS_F2 Lop_ADD_F Lop_ADD_F2
+               Lop_SUB_F Lop_SUB_F2 Lop_EQ_F Lop_EQ_F2
+               Lop_NE_F Lop_NE_F2 Lop_GT_F Lop_GT_F2
+               Lop_GE_F Lop_GE_F2 Lop_LT_F Lop_LT_F2
+               Lop_LE_F Lop_LE_F2 Lop_F_F2 Lop_F2_F)
+  {
+      ${OPC}      (op(OP_FAlu) flags (EXCEPT));
+  }
+
+  $for (OPC in Lop_I_F Lop_I_F2)
+  {
+      ${OPC}      (op(OP_To_F));
+  } 
+
+  $for (OPC in Lop_F_I Lop_F2_I)
+  {
+      ${OPC}      (op(OP_From_F));
+  }
+
+  /* Floating-point multiple operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   * Simplified, treat multiply_add ops, etc same as multiply.
+   */
+  $for (OPC in Lop_MUL_F Lop_MUL_F2 Lop_MUL_ADD_F Lop_MUL_ADD_F2
+               Lop_MUL_SUB_F Lop_MUL_SUB_REV_F 
+               Lop_MUL_SUB_F2 Lop_MUL_SUB_REV_F2)
+  {
+      ${OPC}      (op(OP_FMul) flags (EXCEPT));
+  }
+
+  /* Floating-point divide operations.  EXCEPT flag must be specified.
+   * Will not speculate above branch unless one of the scheduling
+   * alternatives is a SILENT version.
+   * Simplified, treat sqrt ops, etc same as divide.
+   */
+  $for (OPC in Lop_DIV_F Lop_DIV_F2 Lop_SQRT_F Lop_SQRT_F2)
+  {
+      ${OPC}      (op(OP_FDiv) flags (EXCEPT));
+  }
+
+  /* Loop over the possible data types for memory operations */
+  $for (TYPE in C C2 I Q)
+  {
+    /* Load memory opcodes, must be marked with EXCEPT LOAD flag! 
+     * Will not speculate above branch unless one of the scheduling
+     * alternatives is a SILENT version.
+     * Pre and post increment loads (LD_PRE, LD_POST) are not currently 
+     * supported (as of IMPACT release 2.32).
+     */
+     Lop_LD_${TYPE} (op(OP_Load) flags (EXCEPT LOAD));
+
+
+    /* Store memory opcodes, must be marked with EXCEPT STORE flag! 
+     * Pre and post increment stores (ST_PRE, ST_POST) are not currently 
+     * supported (as of IMPACT release 2.32).
+     */
+     Lop_ST_${TYPE} (op(OP_Store) flags (EXCEPT STORE));
+  }
+
+  $for (TYPE in F F2)
+  {
+     Lop_LD_${TYPE} (op(OP_FLoad) flags (EXCEPT LOAD));
+
+     Lop_ST_${TYPE} (op(OP_Store) flags (EXCEPT STORE));
+  }
+
+  /* Unsigned character/short loads (there are no unsigned stores) */
+  Lop_LD_UC       (op(OP_Load) flags (EXCEPT LOAD));
+  Lop_LD_UC2      (op(OP_Load) flags (EXCEPT LOAD));
+  Lop_LD_UI       (op(OP_Load) flags (EXCEPT LOAD));
+
+  /* Predicate load/store operations */
+  Lop_PRED_LD     (op(OP_Load) flags(EXCEPT LOAD));
+  Lop_PRED_ST     (op(OP_Store) flags(EXCEPT STORE));
+
+  /* Load/store block of 32 predicate registers (used by register allocator) */
+  Lop_PRED_LD_BLK (op(OP_Load) flags(EXCEPT LOAD));
+  Lop_PRED_ST_BLK (op(OP_Store) flags(EXCEPT STORE));
+
+  /* PRED_CLEAR and PRED_SET clears/sets a single predicate, primarily for 
+   * the convenence of the compiler writer. They need to be folded into
+   * later predicate definitions (via optimizations) and the rest converted 
+   * into operations that set/clear multiple predicates (perhaps up to 32) 
+   * in a single operation.  Since these pred clear/set optimizations are
+   * not currently supported (as of IMPACT release 2.32), make an aggressive 
+   * assumption that they are free and ignore their cost by treating them 
+   * as compiler directives.  (The alternative, to treat them as regular 
+   * operations is way too conservative, since many of them can be folded 
+   * in with later predicate definitions (thus eliminated) and the rest
+   * can be converted into at least predicate definitions (which allow
+   * setting two predicates per operation).
+   */
+  Lop_PRED_CLEAR(op(OP_AAlu) flags(IGNORE));
+  Lop_PRED_SET  (op(OP_AAlu) flags(IGNORE));
+
+  /* Predicate definition opcodes using integer comparisons.
+   * No flags needed. 
+   */
+  $for (OPC in Lop_CMP Lop_PRED_EQ Lop_PRED_NE Lop_PRED_GT Lop_PRED_GT_U 
+               Lop_PRED_GE Lop_PRED_GE_U Lop_PRED_LT Lop_PRED_LT_U
+               Lop_PRED_LE Lop_PRED_LE_U)
+  {
+      ${OPC}      (op(OP_AAlu));
+  }
+
+  /* Predicate definition opcodes using floating-point comparisons.
+   * EXCEPT flag must be specified. Will not speculate above branch
+   * unless one of the scheduling alternatives is a SILENT version.
+   */
+  $for (OPC in Lop_CMP_F Lop_PRED_EQ_F2 Lop_PRED_NE_F2 Lop_PRED_GT_F2 Lop_PRED_GE_F2
+               Lop_PRED_LT_F2 Lop_PRED_LE_F2 Lop_PRED_EQ_F Lop_PRED_NE_F
+               Lop_PRED_GT_F Lop_PRED_GE_F Lop_PRED_LT_F Lop_PRED_LE_F)
+  {
+      ${OPC}      (op(OP_FCmp) flags (EXCEPT));
+  }
+
+  /* TAHOE OPERATIONS */
+  TAHOEop_NON_INSTR  (op(OP_IGNORE) flags (IGNORE)); 
+  TAHOEop_NOP_I      (op(OP_IGNORE));
+  TAHOEop_NOP_B      (op(OP_IGNORE));          
+  TAHOEop_NOP_M      (op(OP_IGNORE));          
+  TAHOEop_NOP_F      (op(OP_IGNORE));    
+  TAHOEop_NOP_X      (op(OP_IGNORE));    
+  TAHOEop_BREAK_I    (op(OP_IGNORE));
+  TAHOEop_BREAK_B    (op(OP_IGNORE));          
+  TAHOEop_BREAK_M    (op(OP_IGNORE));          
+  TAHOEop_BREAK_F    (op(OP_IGNORE));    
+  TAHOEop_BREAK_X    (op(OP_IGNORE));    
+
+  TAHOEop_ALLOC      (op(OP_ALLOC) flags (SYNC));
+
+  /* TAHOE branch instructions */
+  TAHOEop_BR_CALL    (op(OP_CALL OP_CALL_IND) flags (JSR NI));
+  TAHOEop_BR_RET     (op(OP_BRANCH_RET) flags (RTS NI));
+  TAHOEop_BR_COND    (op(OP_BRANCH OP_BRANCH_IND) flags (CBR NI));
+  TAHOEop_BRP        (op(OP_BR_HINT));
+  TAHOEop_BR_CTOP    (op(OP_BR_MODULO) flags (CBR NI));
+  TAHOEop_BR_CEXIT   (op(OP_BR_MODULO) flags (CBR NI));
+  TAHOEop_BR_WTOP    (op(OP_BR_MODULO) flags (CBR NI));
+  TAHOEop_BR_WEXIT   (op(OP_BR_MODULO) flags (CBR NI));
+  TAHOEop_BR_CLOOP   (op(OP_BR_CMP) flags (CBR NI));
+
+  $for (OPC in TAHOEop_CHK_S TAHOEop_CHK_S_F TAHOEop_CHK_S_I TAHOEop_CHK_S_M TAHOEop_CHK_A)
+  {
+      ${OPC}         (op(OP_CHECK) flags (CHK));
+  }
+
+  /* Shift and sign extension ops */
+   TAHOEop_SHL       (op(OP_SHIFT));
+   TAHOEop_SHLADD    (op(OP_SHLADD));
+   TAHOEop_SHLADDP4  (op(OP_SHLADDP4));
+   TAHOEop_SHR       (op(OP_SHIFT));
+   TAHOEop_SHR_U     (op(OP_SHIFT));
+
+   $for (OPC in TAHOEop_DEP TAHOEop_DEP_Z TAHOEop_EXTR TAHOEop_EXTR_U TAHOEop_SXT1 TAHOEop_SXT2 TAHOEop_SXT4 TAHOEop_ZXT1 TAHOEop_ZXT2 TAHOEop_ZXT4)
+   {
+      ${OPC}         (op(OP_DEE));
+   }
+
+   /* Tahoe move instructions */
+   TAHOEop_MOVI       (op(OP_MOVE));      
+   TAHOEop_MOVL       (op(OP_MOVE));          
+   TAHOEop_MOV_GR     (op(OP_MOVE));          
+   TAHOEop_MOV_TOBR   (op(OP_MOVE_TO_BR) flags (EXCEPT));
+/*   TAHOEop_MOV_TO_BR_RET (op(OP_MOVE_TO_BR_RET) flags (EXCEPT)); */
+   TAHOEop_MOV_FRBR   (op(OP_MOVE_FROM_BR));      
+   TAHOEop_MOV_TOPR   (op(OP_MOVE_TO_PR) flags (EXCEPT));
+   TAHOEop_MOV_FRPR   (op(OP_MOVE_FROM_PR));       
+   TAHOEop_MOV_TOAR_I (op(OP_MOVE_TO_AR_I) flags (EXCEPT));
+   TAHOEop_MOV_FRAR_I (op(OP_MOVE_FROM_AR_I));   
+   TAHOEop_MOV_TOAR_M (op(OP_MOVE_TO_AR_M) flags (EXCEPT));
+   TAHOEop_MOV_FRAR_M (op(OP_MOVE_FROM_AR_M));      
+   TAHOEop_MOV_FR     (op(OP_MOVEF));       
+
+   /* arithmetic instructions */
+   $for (OPC in TAHOEop_ADD TAHOEop_ADDS TAHOEop_ADDL)
+   {
+     ${OPC}          (op(OP_ADD));
+   }
+   
+   TAHOEop_ADDP4     (op(OP_ADDP4));
+
+   $for (OPC in TAHOEop_SUB TAHOEop_AND TAHOEop_ANDCM TAHOEop_OR TAHOEop_XOR)
+   {
+     ${OPC}          (op(OP_LOGIC));
+   }
+  
+   $for (OPC in TAHOEop_LD1 TAHOEop_LD2 TAHOEop_LD4 TAHOEop_LD8)
+   {
+     ${OPC}          (op(OP_LOAD_I) flags (LOAD EXCEPT));
+   }
+ 
+   TAHOEop_LD8_FILL  (op(OP_LOAD_I_FILL) flags (LOAD EXCEPT));
+   
+/*   $for (OPC in TAHOEop_LD1_POST TAHOEop_LD2_POST TAHOEop_LD4_POST TAHOEop_LD8_POST TAHOEop_LD1_POST_A TAHOEop_LD2_POST_A TAHOEop_LD4_POST_A TAHOEop_LD8_POST_A TAHOEop_LD1_POST_S TAHOEop_LD2_POST_S TAHOEop_LD4_POST_S TAHOEop_LD8_POST_S TAHOEop_LD1_POST_SA TAHOEop_LD2_POST_SA TAHOEop_LD4_POST_SA TAHOEop_LD8_POST_SA)
+   {
+      ${OPC}          (op(OP_LOAD_I_POST) flags (LOAD EXCEPT));
+   }
+
+   TAHOEop_LD8_FILL_POST (op(OP_LOAD_I_FILL_POST) flags (LOAD EXCEPT));
+*/
+
+   $for (OPC in TAHOEop_LD1_C TAHOEop_LD2_C TAHOEop_LD4_C TAHOEop_LD8_C)
+   { 
+      ${OPC}          (op(OP_LOAD_C) flags (LOAD EXCEPT));
+   }
+
+   $for (OPC in TAHOEop_ST1 TAHOEop_ST2 TAHOEop_ST4 TAHOEop_ST8)
+   {
+      ${OPC}          (op(OP_STORE_I) flags (STORE EXCEPT));
+   }
+
+   TAHOEop_ST8_SPILL  (op(OP_STORE_I_SPILL) flags (STORE EXCEPT));
+
+/*   $for (OPC in TAHOEop_ST1_POST TAHOEop_ST2_POST TAHOEop_ST4_POST TAHOEop_ST8_POST TAHOEop_ST1_POST_O TAHOEop_ST2_POST_O TAHOEop_ST4_POST_O TAHOEop_ST8_POST_O)
+   {
+      ${OPC}          (op(OP_STORE_I_POST) flags (STORE EXCEPT));
+   }
+
+   TAHOEop_ST8_SPILL_POST (op(OP_STORE_I_SPILL_POST) flags (STORE EXCEPT));
+*/
+
+   $for (OPC in TAHOEop_LDFS TAHOEop_LDFD TAHOEop_LDF_FILL TAHOEop_LDFS_C TAHOEop_LDFD_C)
+   {
+      ${OPC}          (op(OP_LOAD_F) flags (LOAD EXCEPT));
+   }
+
+/*   $for (OPC in TAHOEop_LDF_S_POST TAHOEop_LDF_D_POST TAHOEop_LDF_FILL_POST TAHOEop_LDF_S_POST_S TAHOEop_LDF_D_POST_S TAHOEop_LDF_S_POST_A TAHOEop_LDF_D_POST_A TAHOEop_LDF_S_POST_SA TAHOEop_LDF_D_POST_SA )
+   {
+      ${OPC}          (op(OP_LOAD_F_POST) flags (LOAD EXCEPT));
+   }
+*/
+ 
+   $for (OPC in TAHOEop_STFS TAHOEop_STFD TAHOEop_STF_SPILL)
+   {
+      ${OPC}          (op(OP_STORE_F) flags (STORE EXCEPT));
+   }
+
+/*   $for (OPC in TAHOEop_STF_S_POST TAHOEop_STF_D_POST TAHOEop_STF_SPILL_POST)
+   {
+      ${OPC}          (op(OP_STORE_F_POST) flags (STORE EXCEPT)); 
+   }
+*/
+ 
+   $for (OPC in TAHOEop_LFETCH TAHOEop_LFETCH_FAULT)
+   {
+      ${OPC}          (op(OP_LFETCH));
+   }
+
+   TAHOEop_CMP        (op(OP_COMPARE_I));
+
+   TAHOEop_FCMP       (op(OP_COMPARE_F));
+
+/*   $for (OPC in TAHOEop_RCMP_EQ TAHOEop_RCMP_NE TAHOEop_RCMP_LT TAHOEop_RCMP_LE TAHOEop_RCMP_GT TAHOEop_RCMP_GE TAHOEop_RCMP_LTU TAHOEop_RCMP_LEU TAHOEop_RCMP_GTU TAHOEop_RCMP_GEU TAHOEop_RCMP4_EQ TAHOEop_RCMP4_NE TAHOEop_RCMP4_LT TAHOEop_RCMP4_LE TAHOEop_RCMP4_GT TAHOEop_RCMP4_GE TAHOEop_RCMP4_LTU TAHOEop_RCMP4_LEU TAHOEop_RCMP4_GTU TAHOEop_RCMP4_GEU TAHOEop_RFCMP_EQ TAHOEop_RFCMP_NE TAHOEop_RFCMP_GT TAHOEop_RFCMP_GE TAHOEop_RFCMP_LT TAHOEop_RFCMP_LE)
+   {
+      ${OPC}         (op(OP_COMPARE_I_REGISTER));
+   }
+*/
+
+   TAHOEop_TBIT      (op(OP_TBIT));
+   
+   $for (OPC in TAHOEop_GETF_S TAHOEop_GETF_D TAHOEop_GETF_SIG TAHOEop_GETF_EXP)
+   {
+      ${OPC}         (op(OP_F_TO_I));
+   }
+   
+   $for (OPC in TAHOEop_SETF_S TAHOEop_SETF_D TAHOEop_SETF_SIG TAHOEop_SETF_EXP)
+   {
+      ${OPC}         (op(OP_I_TO_F));
+   }
+
+/*   $for (OPC in TAHOEop_XMPY_L TAHOEop_XMPY_LU TAHOEop_XMPY_H TAHOEop_XMPY_HU)
+   {
+      ${OPC}         (op(OP_XMPY) flags (EXCEPT));
+   }
+*/
+
+   $for (OPC in TAHOEop_XMA_L TAHOEop_XMA_H TAHOEop_XMA_HU)
+   {
+      ${OPC}         (op(OP_XMA) flags (EXCEPT));
+   }
+
+   $for (OPC in TAHOEop_FADD TAHOEop_FADD_S TAHOEop_FADD_D TAHOEop_FMIN TAHOEop_FMAX TAHOEop_FAMIN TAHOEop_FAMAX TAHOEop_FABS TAHOEop_FMERGE_NS TAHOEop_FMERGE_S TAHOEop_FMERGE_SE)
+   {
+      ${OPC}         (op(OP_FALU) flags (EXCEPT));
+   }
+
+   $for (OPC in TAHOEop_FCVT_FX TAHOEop_FCVT_FXU)
+   {
+      ${OPC}         (op(OP_CONVERTFX) flags (EXCEPT));
+   }
+
+   TAHOEop_FCVT_XF   (op(OP_CONVERTXF) flags (EXCEPT));
+
+   $for (OPC in TAHOEop_FNMA TAHOEop_FNMA_S TAHOEop_FNMA_D TAHOEop_FMA TAHOEop_FMA_S TAHOEop_FMA_D TAHOEop_FMS TAHOEop_FMS_S TAHOEop_FMS_D)
+   {
+      ${OPC}         (op(OP_FMUL) flags (EXCEPT));
+   }
+
+   TAHOEop_FRCPA     (op(OP_FRCPA) flags (EXCEPT));
+   TAHOEop_FRSQRTA   (op(OP_FRSQRTA) flags (EXCEPT));
+
+   $for (OPC in TAHOEop_PACK2_SSS  TAHOEop_PACK2_USS TAHOEop_PACK4_SSS
+                TAHOEop_PAVG1 TAHOEop_PAVG1_RAZ 
+                TAHOEop_PAVG2 TAHOEop_PAVG2_RAZ
+                TAHOEop_PAVGSUB1 TAHOEop_PAVGSUB2
+                TAHOEop_PADD1     TAHOEop_PADD1_SSS 
+                TAHOEop_PADD1_UUS TAHOEop_PADD1_UUU
+                TAHOEop_PADD2     TAHOEop_PADD2_SSS 
+                TAHOEop_PADD2_UUS TAHOEop_PADD2_UUU
+                TAHOEop_PADD4 
+                TAHOEop_PSUB1     TAHOEop_PSUB1_SSS 
+                TAHOEop_PSUB1_UUS TAHOEop_PSUB1_UUU
+                TAHOEop_PSUB2     TAHOEop_PSUB2_SSS 
+                TAHOEop_PSUB2_UUS TAHOEop_PSUB2_UUU
+                TAHOEop_PSUB4
+                TAHOEop_PCMP1_EQ TAHOEop_PCMP1_GT 
+                TAHOEop_PCMP2_EQ TAHOEop_PCMP2_GT
+                TAHOEop_PCMP_EQ TAHOEop_PCMP_GT)
+   {
+      ${OPC}         (op(OP_PADD));
+   }
+
+   $for (OPC in TAHOEop_PSHL2 TAHOEop_PSHL4 TAHOEop_PSHR2  TAHOEop_PSHR2_U
+                TAHOEop_PSHR4 TAHOEop_PSHR4_U)
+   {
+      ${OPC}         (op(OP_PSHIFT));
+   }
+
+   $for (OPC in TAHOEop_PSHLADD2 TAHOEop_PSHRADD2)
+   {
+      ${OPC}         (op(OP_PSHIFTADD));
+   }
+
+   $for (OPC in TAHOEop_PMPY2_R  TAHOEop_PMPY2_L)
+   {
+      ${OPC}         (op(OP_PMPY));
+   }
+
+   $for (OPC in TAHOEop_PMPYSHR2 TAHOEop_PMPYSHR2_U)
+   {
+      ${OPC}         (op(OP_PMPYSHIFT));
+   }
+
+   $for (OPC in TAHOEop_PMAX1_U TAHOEop_PMAX2 
+                TAHOEop_PMIN1_U TAHOEop_PMIN2 TAHOEop_PSAD1)
+   {
+      ${OPC}         (op(OP_PSAD));
+   }
+
+   $for (OPC in TAHOEop_MUX1 TAHOEop_MUX2)
+   {
+      ${OPC}         (op(OP_MUX));
+   }
+
+   $for (OPC in TAHOEop_FPACK 
+                TAHOEop_FPAMAX TAHOEop_FPAMIN TAHOEop_FPMAX TAHOEop_FPMIN
+/*                TAHOEop_FPNEG TAHOEop_FPNEGABS */
+                TAHOEop_FPMERGE_NS TAHOEop_FPMERGE_S)
+   {
+      ${OPC}         (op(OP_FPMERGE));
+   }
+
+   TAHOEop_FPCMP     (op(OP_FPCMP));
+
+   $for (OPC in TAHOEop_FPCVT_FX TAHOEop_FPCVT_FXU)
+   {
+      ${OPC}         (op(OP_FPCVT));
+   }
+
+   $for (OPC in TAHOEop_FPMA TAHOEop_FPNMA TAHOEop_FPMS)
+   {
+      ${OPC}         (op(OP_FPMA));
+   }
+
+/*   $for (OPC in TAHOEop_FPMPY TAHOEop_FPNMPY)
+   {
+      ${OPC}         (op(OP_FPMPY));
+   }
+*/
+
+   TAHOEop_FPRCPA      (op(OP_FPRCPA) );
+   TAHOEop_FPRSQRTA    (op(OP_FPRSQRTA) );
+   TAHOEop_FPMERGE     (op(OP_FPMERGESE) );
+}

@@ -1,0 +1,193 @@
+#!/bin/sh
+# Portability.  Perl is located in different places on different systems.
+# Search the user's path in sh, and then invoke perl on the remainder of
+# the file.
+perl -x $0 "$@"
+exit $?
+#!/usr/bin/perl
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#       This script will take IA-64 assembly or Lcode files as inputs and
+#       output the CB's sorted by execution weight (frequency * instructions).
+#
+#       Script created by Chris Shannon (03/12/01)
+#
+
+use Class::Struct;
+
+struct Cb_Data => {
+  func => '$',
+  cb_num => '$',
+  cb_freq => '$',
+  cb_weight => '$',
+};
+
+$cb_count = 0;
+@cb_array;
+$lcode = 0;
+
+sub process_input_asm {
+  local ($handle, $in_file) = @_;
+
+  local $i = -1;
+  my @freq;
+  my @cb;
+  my @op;
+
+  while (<$handle>) {
+
+    if (/^\/\/\sFreq\s+(\d+\.\d+)/) {
+      $i++;
+      $freq[$i] = $1;
+      $op[$i] = 0;
+    }
+    elsif (/^\.\S+_(\d+):/) {
+      $cb[$i] = $1;
+    }
+    elsif (/(\S+\?)(\d+):/) {
+      $cb[$i] = $2;
+    }
+    elsif (/^\s\{\s\.\S+x/) {
+      $op[$i] = $op[$i] + 2;
+    }
+    elsif (/^\s\{\s\.\S+/) {
+      $op[$i] = $op[$i] + 3;
+    }
+  }
+
+  for $j (0 .. $i) {
+    my $entry = Cb_Data->new();
+
+    $entry->func($in_file);
+    $entry->cb_num($cb[$j]);
+    $entry->cb_freq($freq[$j]);
+    $entry->cb_weight($op[$j] * $freq[$j]);
+    $cb_array[$cb_count] = $entry;
+    $cb_count++;
+  }
+}
+
+sub process_input_lcode {
+  local ($handle, $in_file) = @_;
+
+  local $i = -1;
+  my @freq;
+  my @cb;
+  my @op;
+
+  while (<$handle>) {
+
+    if (/^\s\s\(cb\s(\d+)\s(\d+\.\d+)/) {
+      $i++;
+      $cb[$i] = $1;
+      $freq[$i] = $2;
+      $op[$i] = 0;
+    }
+    elsif (/^\s\s\s\s\(op\s\d+/) {
+      $op[$i]++;
+    }
+  }
+
+  for $j (0 .. $i) {
+    my $entry = Cb_Data->new();
+
+    $entry->func($in_file);
+    $entry->cb_num($cb[$j]);
+    $entry->cb_freq($freq[$j]);
+    $entry->cb_weight($op[$j] * $freq[$j]);
+    $cb_array[$cb_count] = $entry;
+    $cb_count++;
+  }
+}
+
+sub my_sort {
+  $a->cb_weight <=> $b->cb_weight;
+}
+
+###########################################################
+# MAIN ####################################################
+###########################################################
+
+$farg = shift || die "Usage: cb_freq <ext>\n";
+
+if ($farg eq "s" || $farg =~ /\S+_s$/) {
+  printf "Treating inputs as IA-64 assembly files\n";
+  $lcode = 0;
+}
+else {
+  printf "Treating inputs as Lcode files\n";
+  $lcode = 1;
+}
+
+$in_ext = $farg;
+
+while (<*.$in_ext>) {
+  if (/data\./) {
+    next;
+  }
+
+  open (INFILE, $_) || die "Can't open input file: $_.";
+  $input = INFILE;
+  if ($lcode == 0) {
+    process_input_asm ($input,$_);
+  }
+  else {
+    process_input_lcode ($input,$_);
+  }
+  close ($input);
+}
+
+@sorted_cbs = sort my_sort @cb_array;
+
+for $j (0 .. $cb_count-1) {
+  printf ("%12s  %5i   %f\n", $sorted_cbs[$j]->func,
+          $sorted_cbs[$j]->cb_num, $sorted_cbs[$j]->cb_weight);
+}
+
+__END__

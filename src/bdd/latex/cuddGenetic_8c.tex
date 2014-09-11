@@ -1,0 +1,468 @@
+\section{cudd\-Genetic.c File Reference}
+\label{cuddGenetic_8c}\index{cuddGenetic.c@{cuddGenetic.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{STOREDD}(i, j)~\bf{storedd}[(i)$\ast$(\bf{numvars}+1)+(j)]
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static int make\_\-random \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int lower))
+\item 
+static int sift\_\-up \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low))
+\item 
+static int build\_\-dd \bf{ARGS} ((\bf{Dd\-Manager} $\ast$table, int num, int lower, int upper))
+\item 
+static int largest \bf{ARGS} (())
+\item 
+static int rand\_\-int \bf{ARGS} ((int a))
+\item 
+static int array\_\-hash \bf{ARGS} ((char $\ast$array, int modulus))
+\item 
+static int array\_\-compare \bf{ARGS} ((const char $\ast$array1, const char $\ast$array2))
+\item 
+static int PMX \bf{ARGS} ((int maxvar))
+\item 
+static int roulette \bf{ARGS} ((int $\ast$p1, int $\ast$p2))
+\item 
+int \bf{cudd\-Ga} (\bf{Dd\-Manager} $\ast$table, int lower, int upper)
+\item 
+static int \bf{make\_\-random} (\bf{Dd\-Manager} $\ast$table, int lower)
+\item 
+static int \bf{sift\_\-up} (\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low)
+\item 
+static int \bf{build\_\-dd} (\bf{Dd\-Manager} $\ast$table, int num, int lower, int upper)
+\item 
+static int \bf{largest} ()
+\item 
+static int \bf{rand\_\-int} (int a)
+\item 
+static int \bf{array\_\-hash} (char $\ast$array, int modulus)
+\item 
+static int \bf{array\_\-compare} (const char $\ast$array1, const char $\ast$array2)
+\item 
+static int \bf{find\_\-best} ()
+\item 
+static double \bf{find\_\-average\_\-fitness} ()
+\item 
+static int \bf{PMX} (int maxvar)
+\item 
+static int \bf{roulette} (int $\ast$p1, int $\ast$p2)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Genetic.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int \bf{popsize}
+\item 
+static int \bf{numvars}
+\item 
+static int $\ast$ \bf{storedd}
+\item 
+static \bf{st\_\-table} $\ast$ \bf{computed}
+\item 
+static int $\ast$ \bf{repeat}
+\item 
+static int \bf{large}
+\item 
+static int \bf{result}
+\item 
+static int \bf{cross}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddGenetic.c@{cudd\-Genetic.c}!STOREDD@{STOREDD}}
+\index{STOREDD@{STOREDD}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define STOREDD(i, j)~\bf{storedd}[(i)$\ast$(\bf{numvars}+1)+(j)]}\label{cuddGenetic_8c_d90b4208ba9aa22e8f37b1ce723cdcf5}
+
+
+
+
+Definition at line 107 of file cudd\-Genetic.c.
+
+Referenced by build\_\-dd(), cudd\-Ga(), find\_\-average\_\-fitness(), find\_\-best(), largest(), make\_\-random(), PMX(), and roulette().
+
+\subsection{Function Documentation}
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int roulette ARGS ((int $\ast$p1, int $\ast$p2))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_d93ebe09ae78915317dd7a7cf129fb59}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int PMX ARGS ((int maxvar))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_e7fb03f289e77f609eb02a4fb6ab2bb1}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int array\_\-compare ARGS ((const char $\ast$array1, const char $\ast$array2))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_2ea46a12dbe354fdb0a0cd94bdaf728c}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int array\_\-hash ARGS ((char $\ast$array, int modulus))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_3e7a4ca85dab41b96b1aa4ff4051c6eb}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int rand\_\-int ARGS ((int a))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_2d28ed316e0a5f0073ceaae06c86171c}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int largest ARGS (())\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_560048135b7fa01ad79ec03aacee8233}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int build\_\-dd ARGS ((\bf{Dd\-Manager} $\ast$table, int num, int lower, int upper))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_08523079b7f65b6e4efd8549499a0cf7}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int sift\_\-up ARGS ((\bf{Dd\-Manager} $\ast$table, int x, int x\_\-low))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_4d03f8fadbe20912e07bc306ff15542f}
+
+
+\index{cuddGenetic.c@{cudd\-Genetic.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int make\_\-random ARGS ((\bf{Dd\-Manager} $\ast$table, int lower))\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_9dbe419efd59ecbdb64e4db9cde1d2d9}
+
+
+Automatic\-Start \index{cuddGenetic.c@{cudd\-Genetic.c}!array_compare@{array\_\-compare}}
+\index{array_compare@{array\_\-compare}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int array\_\-compare (const char $\ast$ {\em array1}, const char $\ast$ {\em array2})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_7bf1f52c1a099b9c9ff70e091fc2a11b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Comparison function for the computed table.]
+
+Description [Comparison function for the computed table. Returns 0 if the two arrays are equal; 1 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 668 of file cudd\-Genetic.c.
+
+References numvars.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!array_hash@{array\_\-hash}}
+\index{array_hash@{array\_\-hash}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int array\_\-hash (char $\ast$ {\em array}, int {\em modulus})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_a7a592597b33e6068838b791218590dc}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Hash function for the computed table.]
+
+Description [Hash function for the computed table. Returns the bucket number.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 636 of file cudd\-Genetic.c.
+
+References numvars.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!build_dd@{build\_\-dd}}
+\index{build_dd@{build\_\-dd}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int build\_\-dd (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em num}, int {\em lower}, int {\em upper})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_12a6eae497f8107110071950a94efb50}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds a DD from a given order.]
+
+Description [Builds a DD from a given order. This procedure also sifts the final order and inserts into the array the size in nodes of the result. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 514 of file cudd\-Genetic.c.
+
+References computed, cudd\-Sifting(), Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Manager::keys, numvars, Dd\-Manager::perm, result, sift\_\-up(), size, st\_\-lookup(), and STOREDD.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!cuddGa@{cuddGa}}
+\index{cuddGa@{cuddGa}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int cudd\-Ga (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower}, int {\em upper})}\label{cuddGenetic_8c_30cf6e35aee984f79054c81d8d994e51}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Genetic algorithm for DD reordering.]
+
+Description [Genetic algorithm for DD reordering. The two children of a crossover will be stored in storedd[popsize] and storedd[popsize+1] --- the last two slots in the storedd array. (This will make comparisons and replacement easy.) Returns 1 in case of success; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 156 of file cudd\-Genetic.c.
+
+References ALLOC, array\_\-compare(), array\_\-hash(), build\_\-dd(), computed, cross, CUDD\_\-MEMORY\_\-OUT, cudd\-Sifting(), Dd\-Manager::error\-Code, find\_\-average\_\-fitness(), find\_\-best(), FREE, Dd\-Manager::invperm, Dd\-Manager::isolated, Dd\-Manager::keys, large, largest(), make\_\-random(), Dd\-Manager::number\-Xovers, numvars, PMX(), popsize, Dd\-Manager::population\-Size, repeat, result, Dd\-Manager::size, st\_\-delete(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, STOREDD, and storedd.
+
+Referenced by dd\-Reorder\-Children().\index{cuddGenetic.c@{cudd\-Genetic.c}!find_average_fitness@{find\_\-average\_\-fitness}}
+\index{find_average_fitness@{find\_\-average\_\-fitness}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double find\_\-average\_\-fitness ()\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_99d17cb83674cfcc2cd9a3ce52b013d6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the average fitness of the population.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 726 of file cudd\-Genetic.c.
+
+References numvars, popsize, and STOREDD.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!find_best@{find\_\-best}}
+\index{find_best@{find\_\-best}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int find\_\-best ()\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_ceecf9b9f4f3581eb7275bdc522bd337}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the index of the fittest individual.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 698 of file cudd\-Genetic.c.
+
+References numvars, popsize, and STOREDD.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!largest@{largest}}
+\index{largest@{largest}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int largest ()\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_06e6bca52cd20c8a1190c30da3d8a7d6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the largest DD in the population.]
+
+Description [Finds the largest DD in the population. If an order is repeated, it avoids choosing the copy that is in the computed table (it has repeat[i] $>$ 1).]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 585 of file cudd\-Genetic.c.
+
+References numvars, popsize, repeat, and STOREDD.
+
+Referenced by cudd\-Ga(), and cudd\-Heap\-Profile().\index{cuddGenetic.c@{cudd\-Genetic.c}!make_random@{make\_\-random}}
+\index{make_random@{make\_\-random}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int make\_\-random (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em lower})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_b9aad1b09fd466fd971fba854332d7d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Generates the random sequences for the initial population.]
+
+Description [Generates the random sequences for the initial population. The sequences are permutations of the indices between lower and upper in the current order.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 410 of file cudd\-Genetic.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, numvars, popsize, rand\_\-int(), and STOREDD.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!PMX@{PMX}}
+\index{PMX@{PMX}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int PMX (int {\em maxvar})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_6e6108316d27c8e3b393f65362e5e37b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the crossover between two parents.]
+
+Description [Performs the crossover between two randomly chosen parents, and creates two children, x1 and x2. Uses the Partially Matched Crossover operator.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 756 of file cudd\-Genetic.c.
+
+References ALLOC, FREE, numvars, popsize, rand\_\-int(), roulette(), and STOREDD.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!rand_int@{rand\_\-int}}
+\index{rand_int@{rand\_\-int}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int rand\_\-int (int {\em a})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_08c36691817205004514f669bfa72afe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Generates a random number between 0 and the integer a.]
+
+Description []
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 615 of file cudd\-Genetic.c.
+
+References Cudd\_\-Random().
+
+Referenced by make\_\-random(), and PMX().\index{cuddGenetic.c@{cudd\-Genetic.c}!roulette@{roulette}}
+\index{roulette@{roulette}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int roulette (int $\ast$ {\em p1}, int $\ast$ {\em p2})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_0ee54fe3ba94db4fcf887b2fea02d461}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Selects two parents with the roulette wheel method.]
+
+Description [Selects two distinct parents with the roulette wheel method.]
+
+Side\-Effects [The indices of the selected parents are returned as side effects.]
+
+See\-Also [] 
+
+Definition at line 876 of file cudd\-Genetic.c.
+
+References ALLOC, Cudd\_\-Random(), FREE, numvars, popsize, and STOREDD.
+
+Referenced by PMX().\index{cuddGenetic.c@{cudd\-Genetic.c}!sift_up@{sift\_\-up}}
+\index{sift_up@{sift\_\-up}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int sift\_\-up (\bf{Dd\-Manager} $\ast$ {\em table}, int {\em x}, int {\em x\_\-low})\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_508f0e60fe27d7e75f9def6a7c41bf39}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Moves one variable up.]
+
+Description [Takes a variable from position x and sifts it up to position x\_\-low; x\_\-low should be less than x. Returns 1 if successful; 0 otherwise]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 478 of file cudd\-Genetic.c.
+
+References cudd\-Next\-Low(), cudd\-Swap\-In\-Place(), and size.
+
+Referenced by build\_\-dd().
+
+\subsection{Variable Documentation}
+\index{cuddGenetic.c@{cudd\-Genetic.c}!computed@{computed}}
+\index{computed@{computed}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{st\_\-table}$\ast$ \bf{computed}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_40cfa3fddea607393205b428c33f032a}
+
+
+
+
+Definition at line 93 of file cudd\-Genetic.c.
+
+Referenced by build\_\-dd(), and cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!cross@{cross}}
+\index{cross@{cross}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{cross}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_73050ff1210fb3cff7be47e75d647f03}
+
+
+
+
+Definition at line 98 of file cudd\-Genetic.c.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Genetic.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Genetic.c}{p.}{cuddGenetic_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Genetic algorithm for variable reordering.]
+
+Description [Internal procedures included in this file: \begin{itemize}
+\item \doxyref{cudd\-Ga()}{p.}{cuddGenetic_8c_30cf6e35aee984f79054c81d8d994e51} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{make\_\-random()}{p.}{cuddGenetic_8c_b9aad1b09fd466fd971fba854332d7d8} \item \doxyref{sift\_\-up()}{p.}{cuddGenetic_8c_508f0e60fe27d7e75f9def6a7c41bf39} \item \doxyref{build\_\-dd()}{p.}{cuddGenetic_8c_12a6eae497f8107110071950a94efb50} \item \doxyref{largest()}{p.}{cuddGenetic_8c_06e6bca52cd20c8a1190c30da3d8a7d6} \item \doxyref{rand\_\-int()}{p.}{cuddGenetic_8c_08c36691817205004514f669bfa72afe} \item \doxyref{array\_\-hash()}{p.}{cuddGenetic_8c_a7a592597b33e6068838b791218590dc} \item \doxyref{array\_\-compare()}{p.}{cuddGenetic_8c_7bf1f52c1a099b9c9ff70e091fc2a11b} \item \doxyref{find\_\-best()}{p.}{cuddGenetic_8c_ceecf9b9f4f3581eb7275bdc522bd337} \item \doxyref{find\_\-average\_\-fitness()}{p.}{cuddGenetic_8c_99d17cb83674cfcc2cd9a3ce52b013d6} \item \doxyref{PMX()}{p.}{cuddGenetic_8c_6e6108316d27c8e3b393f65362e5e37b} \item \doxyref{roulette()}{p.}{cuddGenetic_8c_0ee54fe3ba94db4fcf887b2fea02d461} \end{itemize}
+
+
+The genetic algorithm implemented here is as follows. We start with the current DD order. We sift this order and use this as the reference DD. We only keep 1 DD around for the entire process and simply rearrange the order of this DD, storing the various orders and their corresponding DD sizes. We generate more random orders to build an initial population. This initial population is 3 times the number of variables, with a maximum of 120. Each random order is built (from the reference DD) and its size stored. Each random order is also sifted to keep the DD sizes fairly small. Then a crossover is performed between two orders (picked randomly) and the two resulting DDs are built and sifted. For each new order, if its size is smaller than any DD in the population, it is inserted into the population and the DD with the largest number of nodes is thrown out. The crossover process happens up to 50 times, and at this point the DD in the population with the smallest size is chosen as the result. This DD must then be built from the reference DD.]
+
+See\-Also []
+
+Author [Curt Musfeldt, Alan Shuler, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 79 of file cudd\-Genetic.c.\index{cuddGenetic.c@{cudd\-Genetic.c}!large@{large}}
+\index{large@{large}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{large}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_134b3b75fc389f1772e03372004cfeff}
+
+
+
+
+Definition at line 95 of file cudd\-Genetic.c.
+
+Referenced by cudd\-Ga().\index{cuddGenetic.c@{cudd\-Genetic.c}!numvars@{numvars}}
+\index{numvars@{numvars}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{numvars}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_14fc223abdac78a50158a2d66979c75e}
+
+
+
+
+Definition at line 83 of file cudd\-Genetic.c.
+
+Referenced by array\_\-compare(), array\_\-hash(), build\_\-dd(), cudd\-Ga(), dd\-Shuffle(), find\_\-average\_\-fitness(), find\_\-best(), largest(), make\_\-random(), PMX(), roulette(), and zdd\-Shuffle().\index{cuddGenetic.c@{cudd\-Genetic.c}!popsize@{popsize}}
+\index{popsize@{popsize}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{popsize}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_39b91d14c896ad650180ce6a73a63437}
+
+
+
+
+Definition at line 82 of file cudd\-Genetic.c.
+
+Referenced by cudd\-Ga(), find\_\-average\_\-fitness(), find\_\-best(), largest(), make\_\-random(), PMX(), and roulette().\index{cuddGenetic.c@{cudd\-Genetic.c}!repeat@{repeat}}
+\index{repeat@{repeat}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{repeat}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_e004cdfb5ce4533a6cdf8135e80ed4a1}
+
+
+
+
+Definition at line 94 of file cudd\-Genetic.c.
+
+Referenced by cudd\-Ga(), and largest().\index{cuddGenetic.c@{cudd\-Genetic.c}!result@{result}}
+\index{result@{result}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{result}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_8b2e13c78efca330f06b6ddcd7464b41}
+
+
+
+
+Definition at line 97 of file cudd\-Genetic.c.
+
+Referenced by build\_\-dd(), Cudd\_\-add\-Hamming(), Cudd\_\-Apa\-Compare\-Ratios(), Cudd\_\-Apa\-Print\-Decimal(), Cudd\_\-Apa\-Print\-Density(), Cudd\_\-Apa\-Print\-Exponential(), Cudd\_\-Apa\-Print\-Hex(), Cudd\_\-Apa\-Print\-Minterm(), Cudd\_\-Apa\-Print\-Minterm\-Exp(), Cudd\_\-bdd\-Approx\-Disj\-Decomp(), Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-bdd\-Gen\-Disj\-Decomp(), Cudd\_\-bdd\-Iter\-Disj\-Decomp(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Var\-Disj\-Decomp(), Cudd\_\-Cof\-Minterm(), Cudd\_\-Init(), Cudd\_\-Read\-Linear(), Cudd\_\-Reduce\-Heap(), Cudd\_\-Shuffle\-Heap(), Cudd\_\-Split\-Set(), Cudd\_\-zdd\-Reduce\-Heap(), Cudd\_\-zdd\-Shuffle\-Heap(), cudd\-Annealing(), cudd\-Bdd\-Align\-To\-Zdd(), cudd\-Bdd\-Constrain\-Decomp(), cudd\-Exact(), cudd\-Ga(), cudd\-Hash\-Table\-Insert(), cudd\-Hash\-Table\-Insert1(), cudd\-Hash\-Table\-Insert2(), cudd\-Hash\-Table\-Insert3(), cudd\-Linear\-And\-Sifting(), cudd\-Remap\-Under\-Approx(), cudd\-Sifting(), cudd\-Split\-Set\-Recur(), cudd\-Swapping(), cudd\-Symm\-Sifting(), cudd\-Symm\-Sifting\-Conv(), cudd\-Test\-Interact(), cudd\-Tree\-Sifting(), cudd\-Under\-Approx(), cudd\-Zdd\-Align\-To\-Bdd(), cudd\-Zdd\-Linear\-Aux(), cudd\-Zdd\-Linear\-Sifting(), cudd\-Zdd\-Sifting(), cudd\-Zdd\-Sifting\-Aux(), cudd\-Zdd\-Swapping(), cudd\-Zdd\-Symm\-Sifting(), cudd\-Zdd\-Symm\-Sifting\-Aux(), cudd\-Zdd\-Symm\-Sifting\-Conv(), cudd\-Zdd\-Symm\-Sifting\-Conv\-Aux(), cudd\-Zdd\-Tree\-Sifting(), dd\-Exchange(), dd\-Group\-Sifting(), dd\-Group\-Sifting\-Aux(), dd\-Jumping\-Aux(), dd\-Linear\-And\-Sifting\-Aux(), dd\-Pick\-Arbitrary\-Minterms(), dd\-Reorder\-Children(), dd\-Shuffle(), dd\-Sifting\-Aux(), dd\-Symm\-Sifting\-Aux(), dd\-Symm\-Sifting\-Conv\-Aux(), get\-Max\-Binomial(), get\-Soft\-Data\-Limit(), hash\-Insert(), minterms\-From\-Universe(), select\-Minterms\-From\-Universe(), zdd\-Group\-Sifting(), zdd\-Group\-Sifting\-Aux(), zdd\-Reorder\-Children(), and zdd\-Shuffle().\index{cuddGenetic.c@{cudd\-Genetic.c}!storedd@{storedd}}
+\index{storedd@{storedd}!cuddGenetic.c@{cudd\-Genetic.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int$\ast$ \bf{storedd}\hspace{0.3cm}{\tt  [static]}}\label{cuddGenetic_8c_8ed518c7fe7ea969bd6981b71c37ec07}
+
+
+
+
+Definition at line 92 of file cudd\-Genetic.c.
+
+Referenced by cudd\-Ga().

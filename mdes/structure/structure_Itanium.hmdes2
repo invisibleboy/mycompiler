@@ -1,0 +1,159 @@
+/*****************************************************************************\
+ *
+ *		      Illinois Open Source License
+ *                     University of Illinois/NCSA
+ *                         Open Source License
+ *
+ * Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+ * All rights reserved.
+ *
+ * Developed by:             
+ *
+ *		IMPACT Research Group
+ *
+ *		University of Illinois at Urbana-Champaign
+ *
+ *              http://www.crhc.uiuc.edu/IMPACT
+ *              http://www.gelato.org
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal with the Software without
+ * restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimers.
+ *
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimers in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the names of the IMPACT Research Group, the University of
+ * Illinois, nor the names of its contributors may be used to endorse
+ * or promote products derived from this Software without specific
+ * prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+ * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+ * OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+ *
+\*****************************************************************************/
+/*
+ * Preliminary Itanium Hmdes2 structure.
+ * 
+ * Created by Sain-Zee Ueng 8/2003
+ */
+
+/* Include the IMPACT Hmdes2 structure if it has not already been included.
+ */
+$if (!$?{IMPACT_Hmdes2_structure})
+{
+$include "${IMPACT_REL_PATH}/mdes/structure/structure_IMPACT.hmdes2"
+}
+
+/*
+ * Indicate that the Itanium Hmdes2 structure file has been included
+ */
+$def Itanium_Hmdes2_structure
+
+/*
+ * Specify the different syllable types.
+ * num_slots indicate number of slots the syllable takes.
+ * compatible_with field is for multi-syllable types, like A syll in Itanium.
+ */
+CREATE SECTION Syllable_Type
+  REQUIRED num_slots (INT);
+  OPTIONAL compatible_with (LINK(Syllable_Type) LINK(Syllable_Type)*);
+{
+}
+
+/*
+ * Specify the different port types.
+ * Used to indicate function units taken.
+ * Specify in order of schedule priority.
+ */
+CREATE SECTION Port_Type
+  REQUIRED syll (LINK(Syllable_Type));
+{
+}
+
+/*
+ * Specify the restrictions.
+ * Used to indicate how many of each port type can be in an issue.
+ */
+CREATE SECTION Restrictions
+  REQUIRED num (INT);
+  REQUIRED ports (LINK(Port_Type) LINK(Port_Type)*);
+{
+}
+
+/*
+ * Specify the template types.
+ */
+CREATE SECTION Template_Type
+  REQUIRED syll (LINK(Syllable_Type) LINK(Syllable_Type)*);
+  REQUIRED stop (INT INT*);
+{
+}
+
+/*
+ * Group together Template_Types into groups.
+ * To be used later in Issue_Group.
+ */
+CREATE SECTION Template_Group
+  REQUIRED one_of (LINK(Template_Type) LINK(Template_Type)*);
+{
+}
+
+/*
+ * Specify valid combinations for issue groups.
+ * Consists of either Template_Type or groups of template.
+ */
+CREATE SECTION Issue_Group
+  REQUIRED templates (LINK(Template_Type|Template_Group)
+                      LINK(Template_Type|Template_Group)*);
+{
+}
+
+/*
+ * Specify dispersal rules.
+ * Given port and syllable type, determines which resource is used.
+ * subresource is not limiting resource, but needed to make resource
+ * management work.
+ * If slot is specified, only those slots are affected.
+ * Otherwise the dispersal rule applies to all slots.
+ * If a template is specified, only those templates are affected.
+ * Otherwise all templates are affected by the dispersal rule.
+ */
+CREATE SECTION Dispersal_Rule
+  REQUIRED port_type (LINK(Port_Type));
+  REQUIRED syll_type (LINK(Syllable_Type));
+  REQUIRED resource (LINK(Resource) LINK(Resource)*);
+  REQUIRED subresource (LINK(Resource) LINK(Resource)*);
+  OPTIONAL slot (INT INT*);
+  OPTIONAL template (LINK(Template_Type|Template_Group));
+{
+}
+
+/*
+ * Specify producer/consumer latency.
+ * Extra latency required depending on producer/consumer pairs.
+ * prod specifies producing Operation. cons are consuming Operation.
+ * pdest and csrc specify which src and dest are affected.
+ * latency is added to the affected src/dest appropriately.
+ */
+CREATE SECTION Prod_Cons_Latency
+  REQUIRED prod (LINK(Operation) LINK(Operation)*);
+  REQUIRED pdest (INT INT*);
+  REQUIRED cons (LINK(Operation) LINK(Operation)*);
+  REQUIRED csrc (INT INT*);
+  REQUIRED latency (INT);
+{
+}

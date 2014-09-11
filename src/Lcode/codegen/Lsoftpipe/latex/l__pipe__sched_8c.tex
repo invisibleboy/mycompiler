@@ -1,0 +1,227 @@
+\section{l\_\-pipe\_\-sched.c File Reference}
+\label{l__pipe__sched_8c}\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$string.h$>$}\par
+{\tt \#include $<$alloca.h$>$}\par
+{\tt \#include \char`\"{}l\_\-softpipe\_\-int.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-pipe\_\-sched.h\char`\"{}}\par
+{\tt \#include \char`\"{}l\_\-mve.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{LARGE\_\-NUMBER}~1000
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{Lpipe\_\-sort\_\-MRT\_\-rows} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+void \bf{Lpipe\_\-mark\_\-branch\_\-path\_\-opers} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{SM\_\-Oper} $\ast$sm\_\-loop\_\-back\_\-br)
+\item 
+static void \bf{Lpipe\_\-do\_\-compact\_\-branch\_\-path\_\-opers} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{SM\_\-Oper} $\ast$sm\_\-loop\_\-back\_\-br)
+\item 
+static void \bf{Lpipe\_\-optimize\_\-lifetimes} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-Min\-Dist} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-compute\_\-static\_\-priorities} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+static void \bf{Lpipe\_\-compute\_\-ready\_\-time} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, \bf{SM\_\-Oper} $\ast$sm\_\-op, int init\_\-ready\_\-time)
+\item 
+static void \bf{Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict} (\bf{SM\_\-Oper} $\ast$sm\_\-op, int II, int desired\_\-cycle)
+\item 
+static void \bf{Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict} (\bf{SM\_\-Oper} $\ast$sm\_\-op)
+\item 
+static void \bf{Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, int row, int last\_\-slot)
+\item 
+static void \bf{Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, int cycle)
+\item 
+void \bf{Lpipe\_\-sm\_\-terminate} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\item 
+int \bf{Lpipe\_\-sm\_\-schedule} (\bf{SM\_\-Cb} $\ast$sm\_\-cb, int II, \bf{SM\_\-Oper} $\ast$loop\_\-back\_\-br, int budget)
+\item 
+void \bf{Lpipe\_\-sm\_\-commit} (\bf{SM\_\-Cb} $\ast$sm\_\-cb)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{Queue} $\ast$ \bf{Lpipe\_\-ready\_\-queue} = NULL
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!LARGE_NUMBER@{LARGE\_\-NUMBER}}
+\index{LARGE_NUMBER@{LARGE\_\-NUMBER}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define LARGE\_\-NUMBER~1000}\label{l__pipe__sched_8c_72e1d1d4b3243f4e7ec115f199298e34}
+
+
+
+
+Definition at line 76 of file l\_\-pipe\_\-sched.c.
+
+Referenced by Lpipe\_\-sm\_\-schedule().
+
+\subsection{Function Documentation}
+\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_compute_ready_time@{Lpipe\_\-compute\_\-ready\_\-time}}
+\index{Lpipe_compute_ready_time@{Lpipe\_\-compute\_\-ready\_\-time}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-compute\_\-ready\_\-time (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{SM\_\-Oper} $\ast$ {\em sm\_\-op}, int {\em init\_\-ready\_\-time})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_ef9658a964f588c28e39d72654ddfec8}
+
+
+
+
+Definition at line 794 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Reg\_\-Action::first\_\-dep\_\-out, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Cb::II, SM\_\-Oper::lcode\_\-op, Lpipe\_\-backward\_\-sched, SM\_\-Dep::min\_\-delay, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Dep::next\_\-dep\_\-out, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Dep::omega, \_\-Softpipe\_\-Op\_\-Info::ready\_\-time, SM\_\-Oper::sched\_\-cycle, \_\-Softpipe\_\-Op\_\-Info::scheduled, SM\_\-Reg\_\-Action::sm\_\-op, SOFTPIPE\_\-OP\_\-INFO, and SM\_\-Dep::to\_\-action.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_compute_slack_time_using_MinDist@{Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-MinDist}}
+\index{Lpipe_compute_slack_time_using_MinDist@{Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-MinDist}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-Min\-Dist (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_39d57844abbfbc77f2ddfa8f196c3ff1}
+
+
+
+
+Definition at line 643 of file l\_\-pipe\_\-sched.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::estart, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Cb::last\_\-serial\_\-op, SM\_\-Cb::lcode\_\-cb, SM\_\-Oper::lcode\_\-op, loop\_\-dep\_\-height, \_\-Softpipe\_\-Op\_\-Info::lstart, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Cb::op\_\-count, SM\_\-Oper::prev\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::slack, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_compute_static_priorities@{Lpipe\_\-compute\_\-static\_\-priorities}}
+\index{Lpipe_compute_static_priorities@{Lpipe\_\-compute\_\-static\_\-priorities}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-compute\_\-static\_\-priorities (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_3cfd0f1b7275f44a71eed2c6048ad046}
+
+
+
+
+Definition at line 713 of file l\_\-pipe\_\-sched.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::estart, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-backward\_\-sched, \_\-Softpipe\_\-Op\_\-Info::lstart, SM\_\-Oper::next\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::priority, \_\-Softpipe\_\-Op\_\-Info::slack, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_do_compact_branch_path_opers@{Lpipe\_\-do\_\-compact\_\-branch\_\-path\_\-opers}}
+\index{Lpipe_do_compact_branch_path_opers@{Lpipe\_\-do\_\-compact\_\-branch\_\-path\_\-opers}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-do\_\-compact\_\-branch\_\-path\_\-opers (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{SM\_\-Oper} $\ast$ {\em sm\_\-loop\_\-back\_\-br})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_22d3a9898c3e6ce8efa572c7ac22c115}
+
+
+
+
+Definition at line 281 of file l\_\-pipe\_\-sched.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::branch\_\-path\_\-node, SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Cb::II, IMPOSSIBLE\_\-SLACK, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-slot, SM\_\-Oper::lcode\_\-op, Lpipe\_\-debug, SM\_\-Dep::min\_\-delay, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Dep::omega, SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, SM\_\-MAX\_\-CYCLE, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-schedule\_\-oper(), SM\_\-unschedule\_\-oper(), and SOFTPIPE\_\-OP\_\-INFO.\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_eject_earlier_branches_and_last_slot@{Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot}}
+\index{Lpipe_eject_earlier_branches_and_last_slot@{Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em row}, int {\em last\_\-slot})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_ab04f61e01f3019bf9d52500cbf990a0}
+
+
+
+
+Definition at line 1144 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Cb::II, IS\_\-MDES\_\-FLAG\_\-BR, SM\_\-Oper::lcode\_\-op, Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-total\_\-issue\_\-slots, SM\_\-Oper::next\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::priority, SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, \_\-Softpipe\_\-Op\_\-Info::scheduled, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_eject_oper_for_resource_conflict@{Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict}}
+\index{Lpipe_eject_oper_for_resource_conflict@{Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict (\bf{SM\_\-Oper} $\ast$ {\em sm\_\-op})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_001f35671967efcad3bd24f4fd7aeb13}
+
+
+
+
+Definition at line 1112 of file l\_\-pipe\_\-sched.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, SM\_\-Oper::lcode\_\-op, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-backward\_\-sched, Lpipe\_\-debug, Lpipe\_\-ready\_\-queue, \_\-Softpipe\_\-Op\_\-Info::priority, Q\_\-priority\_\-enqueue\_\-decreasing(), Q\_\-priority\_\-enqueue\_\-increasing(), SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, \_\-Softpipe\_\-Op\_\-Info::scheduled, SM\_\-unschedule\_\-oper(), and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot(), and Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_eject_opers_if_dependence_conflict@{Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict}}
+\index{Lpipe_eject_opers_if_dependence_conflict@{Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict (\bf{SM\_\-Oper} $\ast$ {\em sm\_\-op}, int {\em II}, int {\em desired\_\-cycle})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_3958328b214031e4b78c8b9e33cb4a03}
+
+
+
+
+Definition at line 898 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Reg\_\-Action::first\_\-dep\_\-out, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-time, SM\_\-Oper::lcode\_\-op, Lpipe\_\-backward\_\-sched, Lpipe\_\-debug, Lpipe\_\-ready\_\-queue, SM\_\-Dep::min\_\-delay, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Dep::next\_\-dep\_\-out, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Dep::omega, \_\-Softpipe\_\-Op\_\-Info::priority, Q\_\-priority\_\-enqueue\_\-decreasing(), Q\_\-priority\_\-enqueue\_\-increasing(), SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, \_\-Softpipe\_\-Op\_\-Info::scheduled, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-unschedule\_\-oper(), SOFTPIPE\_\-OP\_\-INFO, and SM\_\-Dep::to\_\-action.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_eject_opers_if_resource_conflict@{Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict}}
+\index{Lpipe_eject_opers_if_resource_conflict@{Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em cycle})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_0eaa7e805044e0128ed051caf6039ffb}
+
+
+
+
+Definition at line 1193 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Cb::II, SM\_\-Oper::lcode\_\-op, Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Oper::sched\_\-cycle, \_\-Softpipe\_\-Op\_\-Info::scheduled, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-sm\_\-schedule().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_mark_branch_path_opers@{Lpipe\_\-mark\_\-branch\_\-path\_\-opers}}
+\index{Lpipe_mark_branch_path_opers@{Lpipe\_\-mark\_\-branch\_\-path\_\-opers}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-mark\_\-branch\_\-path\_\-opers (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, \bf{SM\_\-Oper} $\ast$ {\em sm\_\-loop\_\-back\_\-br})}\label{l__pipe__sched_8c_1f114627d53f0fcfd8f9b0b943d8750f}
+
+
+
+
+Definition at line 228 of file l\_\-pipe\_\-sched.c.
+
+References \_\-Softpipe\_\-Op\_\-Info::branch\_\-path\_\-node, SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Dep::flags, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Cb::last\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Dep::omega, SM\_\-Oper::prev\_\-serial\_\-op, SM\_\-FLOW\_\-DEP, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-REG\_\-DEP, and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_optimize_lifetimes@{Lpipe\_\-optimize\_\-lifetimes}}
+\index{Lpipe_optimize_lifetimes@{Lpipe\_\-optimize\_\-lifetimes}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-optimize\_\-lifetimes (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_6ea245db13fd3e44deea65c66ab25a8c}
+
+
+
+
+Definition at line 420 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Reg\_\-Action::first\_\-dep\_\-in, SM\_\-Reg\_\-Action::first\_\-dep\_\-out, SM\_\-Oper::first\_\-op\_\-action, SM\_\-Cb::first\_\-serial\_\-op, SM\_\-Dep::flags, SM\_\-Dep::from\_\-action, SM\_\-Dep::ignore, SM\_\-Cb::II, IMPOSSIBLE\_\-SLACK, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, SM\_\-Cb::last\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-backward\_\-sched, Lpipe\_\-debug, SM\_\-Dep::min\_\-delay, SM\_\-Dep::next\_\-dep\_\-in, SM\_\-Dep::next\_\-dep\_\-out, SM\_\-Reg\_\-Action::next\_\-op\_\-action, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Dep::omega, SM\_\-Oper::prev\_\-serial\_\-op, SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, SM\_\-FLOW\_\-DEP, SM\_\-Reg\_\-Action::sm\_\-op, SM\_\-REG\_\-DEP, SM\_\-schedule\_\-oper(), SM\_\-unschedule\_\-oper(), SOFTPIPE\_\-OP\_\-INFO, and SM\_\-Dep::to\_\-action.\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_sm_commit@{Lpipe\_\-sm\_\-commit}}
+\index{Lpipe_sm_commit@{Lpipe\_\-sm\_\-commit}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-sm\_\-commit (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__sched_8c_9d49fd9203ffb941ebcc7e0d5dca5140}
+
+
+
+
+Definition at line 1877 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Cb::lcode\_\-cb, Lpipe\_\-cb\_\-set\_\-issue\_\-time(), Lpipe\_\-cb\_\-set\_\-iter(), Lpipe\_\-copy\_\-sched\_\-info(), Lpipe\_\-dump\_\-dot, SM\_\-commit\_\-cb(), and SM\_\-print\_\-cb\_\-dot\_\-graph().
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_sm_schedule@{Lpipe\_\-sm\_\-schedule}}
+\index{Lpipe_sm_schedule@{Lpipe\_\-sm\_\-schedule}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Lpipe\_\-sm\_\-schedule (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb}, int {\em II}, \bf{SM\_\-Oper} $\ast$ {\em loop\_\-back\_\-br}, int {\em budget})}\label{l__pipe__sched_8c_01e3114cfbc096dc1fce4b7ee4039a61}
+
+
+
+
+Definition at line 1227 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Cb::first\_\-serial\_\-op, header\_\-cb, \_\-Softpipe\_\-Op\_\-Info::intra\_\-iter\_\-issue\_\-time, \_\-Softpipe\_\-Op\_\-Info::issue\_\-slot, LARGE\_\-NUMBER, SM\_\-Cb::last\_\-serial\_\-op, SM\_\-Oper::lcode\_\-op, Lpipe\_\-backward\_\-sched, Lpipe\_\-compute\_\-ready\_\-time(), Lpipe\_\-compute\_\-slack\_\-time\_\-using\_\-Min\-Dist(), Lpipe\_\-compute\_\-static\_\-priorities(), Lpipe\_\-debug, Lpipe\_\-eject\_\-earlier\_\-branches\_\-and\_\-last\_\-slot(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-resource\_\-conflict(), Lpipe\_\-init\_\-op\_\-info(), Lpipe\_\-ready\_\-queue, Lpipe\_\-total\_\-issue\_\-slots, SM\_\-Oper::next\_\-serial\_\-op, SM\_\-Oper::prev\_\-serial\_\-op, \_\-Softpipe\_\-Op\_\-Info::priority, Q\_\-create\_\-queue(), Q\_\-dequeue(), Q\_\-priority\_\-enqueue\_\-decreasing(), Q\_\-priority\_\-enqueue\_\-increasing(), \_\-Softpipe\_\-Op\_\-Info::ready\_\-time, SM\_\-Oper::sched\_\-slot, \_\-Softpipe\_\-Op\_\-Info::scheduled, SM\_\-Oper::slot\_\-upper\_\-bound, SM\_\-do\_\-template\_\-bundling, SM\_\-MAX\_\-SLOT, SM\_\-print\_\-map(), SM\_\-schedule\_\-oper(), SM\_\-set\_\-cb\_\-II(), SM\_\-unschedule\_\-cb(), and SOFTPIPE\_\-OP\_\-INFO.
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_sm_terminate@{Lpipe\_\-sm\_\-terminate}}
+\index{Lpipe_sm_terminate@{Lpipe\_\-sm\_\-terminate}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lpipe\_\-sm\_\-terminate (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})}\label{l__pipe__sched_8c_dee91af7d1d223f216f3c892e3ec9c0f}
+
+
+
+
+Definition at line 1216 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-unschedule\_\-cb().
+
+Referenced by Lpipe\_\-pipeline\_\-loop().\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_sort_MRT_rows@{Lpipe\_\-sort\_\-MRT\_\-rows}}
+\index{Lpipe_sort_MRT_rows@{Lpipe\_\-sort\_\-MRT\_\-rows}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Lpipe\_\-sort\_\-MRT\_\-rows (\bf{SM\_\-Cb} $\ast$ {\em sm\_\-cb})\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_8959fddf750d749cd097c00736be43c6}
+
+
+
+
+Definition at line 85 of file l\_\-pipe\_\-sched.c.
+
+References SM\_\-Oper\_\-Queue::first\_\-qentry, \_\-Softpipe\_\-Op\_\-Info::home\_\-block, SM\_\-Cb::II, IS\_\-MDES\_\-FLAG\_\-BR, SM\_\-Cb::kernel\_\-queue, SM\_\-Oper::lcode\_\-op, \_\-Softpipe\_\-Op\_\-Info::loop\_\-back\_\-br, Lpipe\_\-debug, Lpipe\_\-fixed\_\-slots\_\-for\_\-branches, Lpipe\_\-reordered\_\-anti\_\-dependent\_\-ops(), SM\_\-Oper\_\-Qentry::next\_\-qentry, SM\_\-Oper::sched\_\-cycle, SM\_\-Oper::sched\_\-slot, SM\_\-dequeue\_\-oper(), SM\_\-enqueue\_\-oper\_\-after(), SM\_\-Oper\_\-Qentry::sm\_\-op, SM\_\-schedule\_\-oper(), SM\_\-unschedule\_\-oper(), and SOFTPIPE\_\-OP\_\-INFO.
+
+\subsection{Variable Documentation}
+\index{l_pipe_sched.c@{l\_\-pipe\_\-sched.c}!Lpipe_ready_queue@{Lpipe\_\-ready\_\-queue}}
+\index{Lpipe_ready_queue@{Lpipe\_\-ready\_\-queue}!l_pipe_sched.c@{l\_\-pipe\_\-sched.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Queue}$\ast$ \bf{Lpipe\_\-ready\_\-queue} = NULL\hspace{0.3cm}{\tt  [static]}}\label{l__pipe__sched_8c_d3571bda1f4af9f3c27d5c33ba538a2c}
+
+
+
+
+Definition at line 74 of file l\_\-pipe\_\-sched.c.
+
+Referenced by Lpipe\_\-eject\_\-oper\_\-for\_\-resource\_\-conflict(), Lpipe\_\-eject\_\-opers\_\-if\_\-dependence\_\-conflict(), and Lpipe\_\-sm\_\-schedule().

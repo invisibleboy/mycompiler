@@ -1,0 +1,964 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+###############################################################################
+#
+#       This script tests the benchmark info (both compile and execution)
+#       for the specified benchmark.
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 10/15/98
+#       Enhanced to use read_platform_info by John Gyllenhaal 2/99
+#
+
+# Assume the environment has been properly set up
+VALID_ENV=1;
+
+# Set up environment with default values
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+COPY_SRC=1;
+CLEAN=1;
+USE_SHARED_LIBRARIES=0;
+USE_USER_SHARED_LIBRARIES=0;
+DEBUG_EXEC=0;
+OPTIMIZE_EXEC=0;  # Overriden by bench_info
+USE_USER_EXEC_MODE=0; 
+INPUT_OPTION="";
+INPUT_ARG="";
+
+OPT_CPP=0;
+
+# Flags for detected problems during test
+LIB_WARNINGS=0;
+CHECK_WARNINGS=0;
+WILDCARD_WARNINGS=0;
+NOT_CLEAN_WARNINGS=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Get fixed argument(s)
+if [ $# -ge 1 ]; then
+    BENCHMARK="$1";
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+# get options after fixed arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        -copy_src)
+            echo '> Will test source fetched via copy_bench_src script (now default)';
+	    COPY_SRC=1;;
+
+        -local_src)
+            echo '> Will use the source in "." (instead of using copy_bench_src)';
+	    COPY_SRC=0;;
+
+
+        -shared_libs|-shared|-test_shared)
+            echo "> Will use shared libraries"
+            USE_SHARED_LIBRARIES=1;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -static_libs|-static)
+            echo "> Will use static libraries"
+            USE_SHARED_LIBRARIES=0;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -optimize|-opti)
+            echo "> Will generate optimized executable";
+            OPTIMIZE_EXEC=1;
+	    USE_USER_EXEC_MODE=1;;
+
+        -debug|-debugable)
+            echo "> Will generate debugable executable";
+            DEBUG_EXEC=1;
+	    USE_USER_EXEC_MODE=1;;
+
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: test_bench_info expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="$READ_PATHS -project $1"
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: test_bench_info expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            # Explicitly specify bench dir
+            READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        -noclean)
+            echo "> Will not clean up temp files and directories (prevents some checks!)"
+            CLEAN=0;;
+
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: test_bench_info does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: test_bench_info expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            shift;;
+
+    -c++)
+      OPT_CPP=1;;
+
+        *)
+            echo "Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+
+# If -local_src specified, make sure *.c returns at least one file in 
+# current directory
+if [ $COPY_SRC -eq 0 -a $VALID_ARGS -eq 1 ]; then
+    C_FILE_LIST="`ls *.c 2>/dev/null`"
+    if [ "$C_FILE_LIST" = "" ]; then
+       echo " "
+       echo "> Error: test_bench_info expects 'ls *.c' to return at least one file in '.'"
+       echo "> "
+       echo "> One solution is to remove the '-local_src' option to fetch copy the source"
+      VALID_ENV=0;
+    fi
+fi
+
+
+
+if [ $VALID_ARGS -eq 0 -o $VALID_ENV -eq 0 ]; then
+    echo ' ';
+    echo '> Usage: test_bench_info benchmark [options]';
+    echo '> ';
+    echo "> This script tests the benchmark's compile_info and exec_info modules,"
+    echo "> and the host's platform info module, using the host compiler (*NOT* IMPACT).";
+    echo "> (If this script fails, IMPACT/Trimaran will *NOT* work with these modules!)"
+    echo '> ';
+    echo '> Uses the read_platform_info, read_compile_info, read_exec_info, '
+    echo '> find_bench_dir, and other supporting scripts from impact/scripts.'
+    echo '> ';
+    echo '> Use the compile_bench script to test compatibility with IMPACT after'
+    echo "> successfully passing this script's tests!";
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo '>   -copy_src          copy of benchmark source via copy_bench_src (default)';
+    echo '>   -local_src         use source in "." (default: uses copy_bench_src)';
+    echo '>   -static            test static-lib exec (default if STATIC_REQUIRED/NONE)';
+    echo '>   -shared            test shared-lib exec (default if SHARED_REQUIRED)';
+    echo '>   -optimize          test optimized version of executable';
+    echo '>   -debug             test debugable version of executable';
+    echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+    echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name(s)"   use the inputs listed in "name(s)" (default: all inputs)';
+    echo '>   -prefix "prefix"   use inputs named "prefix*" (default all inputs, prefix="")';
+    echo '>   -noclean           saves test directories, etc. (prevents some checks!).';
+    exit 1;
+fi;
+
+
+############################################################################
+#       Find the benchmark info
+############################################################################
+
+  # Find the benchmark dir if not user specified
+  if [ $FIND_BENCH_DIR -eq 1 ]; then
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Finding the info for ${BENCHMARK} using find_bench_dir";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo " ";
+    BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+    if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+      echo "> Error message returned by find_bench_dir:"
+      echo "$BENCH_DIR";
+      exit 1;
+    fi
+    # Explicitly specify bench dir
+    READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+  fi
+
+  echo "> Testing the info for ${BENCHMARK} in:"
+  echo ">   $BENCH_DIR"
+
+
+############################################################################
+#       Deterimine inputs to test and make sure valid
+############################################################################
+  # Handle default (all input) case
+  if [ "$INPUT_OPTION" = "" ]; then 
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -all) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+  # Handle -prefix case 
+  elif [ "$INPUT_OPTION" = "-prefix" ]; then 
+    INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+    INPUT_ERROR_CODE="$?";
+
+  elif [ "$INPUT_OPTION" = "-input" ]; then 
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+  else
+    echo " "
+    echo "> Error: test_bench_info unexpectedly doesn't know how to handle '$INPUT_OPTION'"
+    exit 1;
+  fi
+
+  if test "$INPUT_ERROR_CODE" != 0; then
+     echo " "
+     echo "> Exiting test_bench_info, find_bench_inputs returned this error message:"
+     echo "$INPUT_LIST";
+     exit 1;
+   fi
+############################################################################
+#       Create impactbenchsrc directory and copy benchmark source there
+#       unless -local_src specified.
+############################################################################
+  if [ $COPY_SRC -eq 1 ]; then
+    echo " "
+    echo "> Making directory 'impactbenchsrc'";
+    rm -rf impactbenchsrc
+    mkdir impactbenchsrc
+
+    echo " "
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Copying source for ${BENCHMARK} into 'impactbenchsrc' using copy_bench_src";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo " ";
+    copy_bench_src ${BENCHMARK} $READ_PATHS -dest impactbenchsrc
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+    echo "> Changing directory to 'impactbenchsrc'";
+    cd impactbenchsrc
+    # Set path offset for compilation command
+    PATH_OFFSET="../"
+  else
+
+    # Set path offset for compilation command
+    PATH_OFFSET="";
+  fi
+
+############################################################################
+#       Read the compile info
+############################################################################
+  echo " "
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo "> Reading compile_info for ${BENCHMARK} using read_compile_info";
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo " ";
+  read_compile_info ${BENCHMARK} $READ_PATHS -all
+  if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+  # Read in all the variables, don't expect any errors since worked above
+  ANSI_C_SOURCE=`read_compile_info ${BENCHMARK} $READ_PATHS -ansi_c_source`;
+  if test "$?" != 0; then 
+     echo " "
+     echo "> Exiting: Could not read ansi C source using read_compile_info!"
+     echo "> Error message returned by read_compile_info:"
+     echo "$ANSI_C_SOURCE";
+     exit 1;
+  fi
+
+  PREPROCESSING_OPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -preprocessing_options`;
+  if test "$?" != 0; then 
+     echo " "
+     echo "> Exiting: Could not read preprocessing options using read_compile_info!"
+     echo "> Error message returned by read_compile_info:"
+     echo "$PREPROCESSING_OPTIONS";
+     exit 1;
+  fi
+
+  LIB_REQUIREMENTS=`read_compile_info ${BENCHMARK} $READ_PATHS -lib_requirements`;
+  if test "$?" != 0; then 
+     echo " "
+     echo "> Exiting: Could not read lib requirements using read_compile_info!"
+     echo "> Error message returned by read_compile_info:"
+     echo "$LIB_REQUIREMENTS";
+     exit 1;
+  fi
+
+  LINKING_PREOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_preoptions`;
+  if test "$?" != 0; then 
+     echo " "
+     echo "> Exiting: Could not read linking preoptions using read_compile_info!"
+     echo "> Error message returned by read_compile_info:"
+     echo "$LINKING_PREOPTIONS";
+  exit 1;
+  fi
+
+  LINKING_POSTOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_postoptions`;
+  if test "$?" != 0; then 
+     echo " "
+     echo "> Exiting: Could not read linking postoptions using read_compile_info!"
+     echo "> Error message returned by read_compile_info:"
+     echo "$LINKING_POSTOPTIONS";
+     exit 1;
+  fi
+
+  # Read compilation mode from compile info if not set by user 
+  if [ $USE_USER_EXEC_MODE -eq 0 ]; then 
+     OPTIMIZE_EXEC=`read_compile_info ${BENCHMARK} $READ_PATHS -optimize_emul_exec`;
+     if test "$?" != 0; then 
+        echo "Unexpected Exit (OPTIMIZE_EXEC)!: non-zero exit code";
+        echo "$OPTIMIZE_EXEC";
+        exit 1;
+     fi
+  fi
+
+############################################################################
+#       Read the project info (for completeness)
+############################################################################
+  echo " "
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo "> Reading project_info for ${BENCHMARK} using read_project_info";
+  echo "> (This is for completeness only.  This info is not directly used.)";
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo " ";
+  read_project_info ${BENCHMARK} $READ_PATHS -all
+  if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+############################################################################
+#       Read the platform info
+############################################################################
+  echo " "
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo "> Reading platform_info using read_platform_info";
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo " ";
+
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+COMPILER_INVOCATION=`read_platform_info -compiler_invocation`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_INVOCATION";
+   exit 1;
+fi
+
+# Get preprocessor invocation command 
+PREPROCESSOR_INVOCATION=`read_platform_info -preprocessor_invocation`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading preprocessor invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$PREPROCESSOR_INVOCATION";
+   exit 1;
+fi
+
+if [ "$OPT_CPP" != 0 ]; then
+    echo "> CPP MODE";
+    COMPILER_INVOCATION="g++ -g -DIMPACT_FIX";
+    PREPROCESSOR_INVOCATION="g++ -g -E -DIMPACT_FIX";
+fi
+
+INCLUDE_PATH_OPTIONS=`read_platform_info -include_path_options`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading include path options via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$INCLUDE_PATH_OPTIONS";
+   exit 1;
+fi
+
+# Get both Ansi-C and K&R C mode specifier for error checking purposes
+ANSI_C_MODE_SPECIFIER=`read_platform_info -ansi_c_mode_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read Ansi-C mode specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$ANSI_C_MODE_SPECIFIER";
+   exit 1;
+fi
+
+KRC_MODE_SPECIFIER=`read_platform_info -krc_mode_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read K&R-C mode specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$KRC_MODE_SPECIFIER";
+   exit 1;
+fi
+
+# Use debug mode if -debug specified
+if [ $DEBUG_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -debug_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading debug mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Use opti mode if -optimize or compile_info specifies (and not -debug)
+elif [ $OPTIMIZE_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -opti_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading opti mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Otherwise don't optimize or add debug info
+else
+   OPTI_MODE_SPECIFIER="";
+fi
+
+if [ $ANSI_C_SOURCE -eq 1 ]; then
+    C_MODE_SPECIFIER="$ANSI_C_MODE_SPECIFIER"
+else
+    C_MODE_SPECIFIER="$KRC_MODE_SPECIFIER"
+fi
+
+SHARED_LIB_SPECIFIER=`read_platform_info -shared_lib_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read shared lib specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$SHARED_LIB_SPECIFIER";
+   exit 1;
+fi
+
+STATIC_LIB_SPECIFIER=`read_platform_info -static_lib_specifier`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read static lib specifier using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$STATIC_LIB_SPECIFIER";
+   exit 1;
+fi
+
+COMPILER_POSTOPTIONS=`read_platform_info -compiler_postoptions`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_POSTOPTIONS";
+   exit 1;
+fi
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+# If have non-empty C_MODE_SPECIFIER, add to PREPROCESSOR_INVOCATION
+if [ "$C_MODE_SPECIFIER" != "" ]; then
+   PREPROCESSOR_INVOCATION="$PREPROCESSOR_INVOCATION $C_MODE_SPECIFIER";
+fi
+
+# If have non-empty PREPROCESSING_OPTIONS, add to PREPROCESSOR_INVOCATION
+if [ "$PREPROCESSING_OPTIONS" != "" ]; then
+   PREPROCESSOR_INVOCATION="$PREPROCESSOR_INVOCATION $PREPROCESSING_OPTIONS";
+fi
+
+# If have non-empty INCLUDE_PATH_OPTIONS, add to PREPROCESSOR_INVOCATION
+if [ "$INCLUDE_PATH_OPTIONS" != "" ]; then
+   PREPROCESSOR_INVOCATION="$PREPROCESSOR_INVOCATION $INCLUDE_PATH_OPTIONS";
+fi
+
+# If have non-empty C_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$C_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $C_MODE_SPECIFIER";
+fi
+
+# If have non-empty OPTI_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$OPTI_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $OPTI_MODE_SPECIFIER";
+fi
+
+# If have non-empty SHARED_LIB_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$SHARED_LIB_SPECIFIER" != "" ]; then
+   SHARED_COMPILER_INVOCATION="$COMPILER_INVOCATION $SHARED_LIB_SPECIFIER";
+# Otherwise, use COMPILER_INVOCATION directly
+else
+   SHARED_COMPILER_INVOCATION="$COMPILER_INVOCATION";
+fi
+
+# If have non-empty STATIC_LIB_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$STATIC_LIB_SPECIFIER" != "" ]; then
+   STATIC_COMPILER_INVOCATION="$COMPILER_INVOCATION $STATIC_LIB_SPECIFIER";
+# Otherwise, use COMPILER_INVOCATION directly
+else
+   STATIC_COMPILER_INVOCATION="$COMPILER_INVOCATION";
+fi
+
+# If have non-empty COMPILER_POSTOPTIONS, add to LINKING_POSTOPTIONS
+if [ "$COMPILER_POSTOPTIONS" != "" ]; then
+   LINKING_POSTOPTIONS="$LINKING_POSTOPTIONS $COMPILER_POSTOPTIONS";
+fi
+
+echo "> The following platform information will be used:"
+echo ">"
+echo ">               Host Platform: '$HOST_PLATFORM'"
+echo ">               Host Compiler: '$HOST_COMPILER'"
+echo ">        Preprocessor Command: '$PREPROCESSOR_INVOCATION'"
+echo "> Shared-lib Compiler Command: '$SHARED_COMPILER_INVOCATION'"
+echo "> Static-lib Compiler Command: '$STATIC_COMPILER_INVOCATION'"
+echo ">        Compiler Postoptions: '$COMPILER_POSTOPTIONS'"
+echo ">"
+
+
+############################################################################
+#       Compiling source using HOST_COMPILER and the compile info read
+############################################################################
+  echo " "
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo "> Compiling ${BENCHMARK} source using the platform/compile info read";
+  echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+  echo " ";
+
+  echo "> Making impacttestinfo to place preprocessed source and build executable in";
+  echo " "
+  rm -rf impacttestinfo
+  mkdir impacttestinfo
+
+  SOURCES=`read_compile_info $BENCHMARK $READ_PATHS -sources`;
+  Check "$?"
+
+  if [ "$SOURCES" = "" ]; then
+    SOURCES="*.c";
+  fi;
+
+  echo "> Preprocessing each source file using:"
+  FILE_LIST=$SOURCES;
+  for FILE_NAME in $FILE_LIST
+  do
+     BASE_NAME=`echo ${FILE_NAME} | awk -F. '{ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+
+     echo ">   $PREPROCESSOR_INVOCATION $FILE_NAME > impacttestinfo/${BASE_NAME}.i"
+  
+     $PREPROCESSOR_INVOCATION $FILE_NAME > impacttestinfo/${BASE_NAME}.i
+     if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+  done
+
+  # Go to working directory
+  echo " "
+  echo "> Changing directories to 'impacttestinfo' (to build executables)"
+  cd impacttestinfo
+
+  # Determine if should use static or shared libraries unless specified
+  # by user
+  if [ $USE_USER_SHARED_LIBRARIES -eq 0 ]; then
+     if [ "$LIB_REQUIREMENTS" = "SHARED_REQUIRED" ]; then
+        USE_SHARED_LIBRARIES=1;
+     else
+        USE_SHARED_LIBRARIES=0;
+     fi
+  # Otherwise, warn if need to override bench_info
+  else
+     if [ $USE_SHARED_LIBRARIES -eq 1 ]; then
+        if [ "$LIB_REQUIREMENTS" = "STATIC_REQUIRED" ]; then
+           echo "> Warning: Specified shared-libs when LIB_REQUIREMENTS='$LIB_REQUIREMENTS'"
+           LIB_REQUIREMENTS="STATIC_REQUIRED(OVERRIDDEN)";
+           LIB_WARNINGS=1;
+        fi
+     else
+        if [ "$LIB_REQUIREMENTS" = "SHARED_REQUIRED" ]; then
+           echo "> Warning: Specified static-libs when LIB_REQUIREMENTS='$LIB_REQUIREMENTS'"
+           LIB_REQUIREMENTS="SHARED_REQUIRED(OVERRIDDEN)";
+           LIB_WARNINGS=1;
+        fi
+     fi
+  fi
+
+  # Create shared-lib version of executable, if allowed
+  if [ "$LIB_REQUIREMENTS" != "STATIC_REQUIRED" ]; then
+    rm -f *.o
+    rm -f ../${BENCHMARK}.shared
+    echo " "
+    echo "> Creating shared-library version of executable (${BENCHMARK}.shared) using:"
+    echo ">     ${SHARED_COMPILER_INVOCATION} ${LINKING_PREOPTIONS} \\"
+    echo ">         -o ${PATH_OFFSET}../${BENCHMARK}.shared *.i ${LINKING_POSTOPTIONS}"
+    ${SHARED_COMPILER_INVOCATION} ${LINKING_PREOPTIONS} \
+       -o ${PATH_OFFSET}../${BENCHMARK}.shared *.i ${LINKING_POSTOPTIONS}
+    ERROR=$?;
+    if [ $ERROR -ne 0 ]; then
+       echo "> Exiting: compiler returned ${ERROR} creating shared-library "
+       echo ">          version of ${BENCHMARK} executable";
+	echo "> "
+        echo "> Note: If static-library version work, one option is to specify"
+        echo ">       in ${BENCHMARK}'s compile_info module that LIB_REQUIREMENTS"
+        echo ">       is \"STATIC_REQUIRED\" instead of \"NONE\"."
+       exit 0200;
+    fi;
+    echo "> Shared-library version of executable sucessfully created"
+  fi
+
+  # Create static-lib version of executable, if allowed
+  if [ "$LIB_REQUIREMENTS" != "SHARED_REQUIRED" ]; then
+     rm -f *.o
+     rm -f ../${BENCHMARK}.static
+     echo " "
+     echo "> Creating static-library version of executable (${BENCHMARK}.static)"
+     echo ">     ${STATIC_COMPILER_INVOCATION} ${LINKING_PREOPTIONS} \\"
+     echo ">         -o ${PATH_OFFSET}../${BENCHMARK}.static *.i ${LINKING_POSTOPTIONS}"
+     ${STATIC_COMPILER_INVOCATION} ${LINKING_PREOPTIONS} \
+        -o ${PATH_OFFSET}../${BENCHMARK}.static *.i ${LINKING_POSTOPTIONS}
+     ERROR=$?;
+     if [ $ERROR -ne 0 ]; then
+        echo "> Exiting: compiler returned ${ERROR} creating static-library "
+        echo ">          version of ${BENCHMARK} executable";
+	echo "> "
+        echo "> Note: If shared-library version work, one option is to specify"
+        echo ">       in ${BENCHMARK}'s compile_info module that LIB_REQUIREMENTS"
+        echo ">       is \"SHARED_REQUIRED\" instead of \"NONE\"."
+        exit 0200;
+     fi;
+     echo "> Static-library version of executable sucessfully created"
+  fi
+
+  # Return to base directory
+  echo " "
+  echo "> Changing directories to '${PATH_OFFSET}..'"
+  echo " "
+  cd ${PATH_OFFSET}..
+
+
+  if [ $USE_SHARED_LIBRARIES -eq 1 ]; then
+     echo "> Will test benchmark using shared-library version (${BENCHMARK}.shared)"
+     EXEC_NAME="${BENCHMARK}.shared";
+  else
+     echo "> Will test benchmark using static-library version (${BENCHMARK}.static)"
+     EXEC_NAME="${BENCHMARK}.static";
+  fi
+
+  # If copied source, remove impactbenchsrc to clean up
+  if [ $COPY_SRC -eq 1 ]; then
+    if [ $CLEAN -eq 1 ];then
+      echo " "
+      echo "> Removing impactbenchsrc"
+      rm -rf impactbenchsrc
+    fi
+  # Otherwise, remove impacttestinfo to clean up
+  else
+    if [ $CLEAN -eq 1 ];then
+      echo " "
+      echo "> Removing impacttestinfo"
+      rm -rf impacttestinfo
+    fi
+  fi
+  
+
+############################################################################
+#       Running executable using the specified inputs
+############################################################################
+  # Other scripts use CHECK_DESC to identify what is being tested (e.g.,
+  # O_im, S_im, HS_im, etc.)  Use HOST_COMPILER to identify test.
+  CHECK_DESC="$HOST_COMPILER";
+
+  for INPUT in $INPUT_LIST
+  do  
+    RESULT_FILE="${BENCHMARK}_${CHECK_DESC}_${INPUT}.result";
+    STDERR_FILE="${BENCHMARK}_${CHECK_DESC}_${INPUT}.stderr";
+    echo " "
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Reading $INPUT info for ${BENCHMARK} using read_exec_info";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -all
+    if test "$?" != 0; then echo "Exiting: non-zero exit code";exit 1;fi
+
+
+    # Read in all the variables, don't expect any errors since worked above
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$SETUP";exit 1;fi
+
+    PREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -check $RESULT_FILE $STDERR_FILE`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+
+    SKIP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT -skip`;
+    if test "$?" != 0; then echo "Unexpected Exit (SKIP)!: non-zero exit code";echo "$SKIP";exit 1;fi
+
+    echo " "
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo "> Testing $INPUT info for ${BENCHMARK}";
+    echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    echo " "
+
+    EXEC_DIR="impacttest_${INPUT}"
+
+    # Most, but not all, scripts make subdirectory, so make sure this works!
+    echo "> Making directory '$EXEC_DIR' and changing directories into it";
+    rm -rf $EXEC_DIR;
+    mkdir $EXEC_DIR;
+    if test "$?" != 0; then 
+       echo "Exiting: 'mkdir $EXEC_DIR' returned non-zero exit code";
+       exit 1;
+    fi
+     
+    cd $EXEC_DIR;
+
+    ${LN_COMMAND} -f ../$EXEC_NAME .
+
+    # Do we have a setup command?
+    if [ "$SETUP" != "" ]; then
+      # Shell out to do setup so expresssions evaluated properly
+      echo " "    
+      echo "> Setting up execution (via /bin/sh):"
+      echo "> $SETUP"
+      /bin/sh -c "$SETUP"
+    else
+      echo " "
+      echo "> Skipping setup, no SETUP command(s) specified";
+    fi
+
+    echo " "    
+    echo "> Starting Execution (via /bin/sh):"
+    echo ">   ($PREFIX nice ./$EXEC_NAME $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+    /bin/sh -c "($PREFIX nice ./$EXEC_NAME $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+
+    CHECK_FILE="${BENCHMARK}_${CHECK_DESC}_${INPUT}.check";
+    if [ "$CHECK" != "" ]; then
+      TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+    else
+      echo "> Warning: no check specified for $BENCHMARK/$INPUT.  Using 'cat $RESULT_FILE'"
+      TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+      CHECK_WARNINGS=1;
+    fi 
+    echo " "
+    echo "> Checking results (via /bin/sh):"
+    echo ">   ${TRUE_CHECK}"
+    echo ">"
+    echo "> RESULT CHECK BEGIN FOR ${BENCHMARK}/${CHECK_DESC}/${INPUT}";
+    # Shell out to do check so expresssions evaulated properly
+    /bin/sh -c "$TRUE_CHECK"
+
+    # Print warning if CHECK_FILE not empty
+    if [ -s $CHECK_FILE ]; then
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      echo "> Warning: check failed for ${BENCHMARK}/${CHECK_DESC}/${INPUT}"
+      echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+      echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      head -n 30 $CHECK_FILE
+      CHECK_WARNINGS=1;
+      CMESG="(MISMATCH)"
+    else
+      CMESG="(PASSED)"
+    fi
+    echo "> RESULT CHECK END FOR ${BENCHMARK}/${CHECK_DESC}/${INPUT} $CMESG";
+    echo ">"
+
+    # If specified -noclean, leave things in post-run state, 
+    # which prevents many of the checks normally done!
+    if [ $CLEAN -eq 0 ]; then
+      echo "> Warning: -noclean mode prevents normal CLEANUP checks!"
+      echo " "
+      echo "> Changing directories to '..' but keeping '$EXEC_DIR'"
+      cd ..
+
+    # Otherwise, do the normal cleaning and checks
+    else
+      if [ -s $CHECK_FILE ]; then
+        echo "> Moving $CHECK_FILE to '..' for inspection"
+        mv -f $CHECK_FILE ..
+        echo "> Moving $RESULT_FILE to '..' for inspection"
+        mv -f $RESULT_FILE ..
+        echo "> Moving $STDERR_FILE to '..' for inspection"
+        mv -f $STDERR_FILE ..
+      else
+        echo "> Removing $CHECK_FILE";
+        rm -f $CHECK_FILE;   
+        echo "> Removing $RESULT_FILE";
+        rm -f $RESULT_FILE;   
+        echo "> Removing $STDERR_FILE";
+        rm -f $STDERR_FILE;   
+      fi
+
+      echo "> Removing link to $EXEC_NAME"
+      rm -f $EXEC_NAME;
+
+      if [ "$CLEANUP" != "" ]; then
+        echo "> Doing rest of cleanup using (via /bin/sh):"
+        echo ">   $CLEANUP"
+        /bin/sh -c "$CLEANUP";
+      else
+        echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+      fi
+
+      # Make sure they haven't specified a 'rm *.out', etc. in their cleanup, 
+      # since may run cleanup in current directory with files the user would 
+      # like to keep.  To detect, use sed to replace any lines with '*' in
+      # it with '(BAD)'.
+      WILDCARD_TEST="`echo \"$CLEANUP\" | sed 's/^.*\*.*/(BAD)/'`";
+      if [ "$WILDCARD_TEST" = "(BAD)" ]; then
+        echo " "
+        echo "> Warning: '*' in CLEANUP command for ${BENCHMARK}/${CHECK_DESC}/${INPUT}"
+        echo ">          CLEANUP may be run in user's original directory and should not"
+        echo ">          delete files not created by SETUP or running the benchmark!"
+        WILDCARD_WARNINGS=1;
+      fi
+
+
+      # The directory should be empty at this point, if cleanup is properly
+      # specified.  Make sure it is, since may run benchmark in directory
+      # with other important stuff and don't want random files accumulating.
+      REMAINING_FILES="`ls -A`"    
+      if [ "$REMAINING_FILES" != "" ]; then
+        echo " "
+        echo "> Warning: CLEANUP missed files for ${BENCHMARK}/${CHECK_DESC}/${INPUT}"
+        echo ">          The following files were found after CLEANUP executed:"
+        echo "$REMAINING_FILES"
+        NOT_CLEAN_WARNINGS=1;
+      fi
+
+      echo " "
+      echo "> Changing directories to '..' and removing '$EXEC_DIR'"
+      cd ..
+      rm -rf $EXEC_DIR;
+    fi
+
+  done
+
+  # Remove executable unless -noclean specified
+  if [ $CLEAN -eq 1 ]; then
+    echo " "
+    if [ "$LIB_REQUIREMENTS" != "STATIC_REQUIRED" ]; then
+      echo "> Final cleanup, removing ${BENCHMARK}.shared"
+      rm -f ${BENCHMARK}.shared
+    fi
+
+    if [ "$LIB_REQUIREMENTS" != "SHARED_REQUIRED" ]; then
+       echo "> Final cleanup, removing ${BENCHMARK}.static"
+       rm -f ${BENCHMARK}.static
+    fi
+  fi
+  
+  echo " ";
+  WARNINGS_ISSUED=0;
+  if [ $LIB_WARNINGS -eq 1 ]; then
+     echo "> Warning: User overrode bench_info's LIB_REQUIREMENTS for $BENCHMARK"
+     WARNINGS_ISSUED=1;
+  fi
+  if [ $CHECK_WARNINGS -eq 1 ]; then
+     echo "> Warning: One or more output checks failed for $BENCHMARK"
+     WARNINGS_ISSUED=1;
+  fi
+  if [ $WILDCARD_WARNINGS -eq 1 ]; then
+     echo "> Warning: One or more CLEANUP commands contain '*' for $BENCHMARK"
+     WARNINGS_ISSUED=1;
+  fi
+  if [ $NOT_CLEAN_WARNINGS -eq 1 ]; then
+     echo "> Warning: One or more CLEANUP commands missed files for $BENCHMARK"
+     WARNINGS_ISSUED=1;
+  fi
+  
+  if [ $CLEAN -eq 0 ]; then
+    echo "> Warning: -noclean mode prevents normal CLEANUP checks for $BENCHMARK"
+    echo "> Done, test_bench_info '-noclean' mode (see above warnings) for $BENCHMARK"
+  else
+    if [ $WARNINGS_ISSUED -eq 1 ]; then
+      echo "> Done, test_bench_info *failed* (see above warnings) for $BENCHMARK"
+    else
+      echo "> Done, test_bench_info *passed* for $BENCHMARK"
+    fi
+  fi
+

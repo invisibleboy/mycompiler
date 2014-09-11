@@ -1,0 +1,1102 @@
+\section{ml\_\-x86.c File Reference}
+\label{ml__x86_8c}\index{ml_x86.c@{ml\_\-x86.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-spec.h\char`\"{}}\par
+{\tt \#include \char`\"{}m\_\-x86.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-X86\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-DOUBLE}~32
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-X86\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-X86\_\-MAX\_\-FNVAR\_\-REG}~0
+\item 
+\#define \bf{M\_\-X86\_\-SMALL\_\-STRUCT\_\-MAX}~04
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(16 $\ast$ 0)
+\item 
+\#define \bf{M\_\-X86\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-X86\_\-FLT\_\-BASE}~4
+\item 
+\#define \bf{M\_\-X86\_\-RET\_\-I32}~0
+\item 
+\#define \bf{M\_\-X86\_\-RET\_\-I64}~0
+\item 
+\#define \bf{M\_\-X86\_\-RET\_\-ST}~0
+\item 
+\#define \bf{M\_\-X86\_\-RET\_\-F}~1
+\item 
+\#define \bf{M\_\-X86\_\-RET\_\-F2}~1
+\item 
+\#define \bf{M\_\-X86\_\-VAR\_\-PTR}~\char`\"{}\$LV\char`\"{}
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-x86\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-x86\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-x86\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-x86\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-x86\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-x86\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-x86\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-x86\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-x86\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-x86\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-x86\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-x86\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-x86\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-x86\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-x86\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-x86\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-x86\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-x86\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-x86\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-x86\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-x86\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+int \bf{M\_\-x86\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose)
+\item 
+int \bf{M\_\-x86\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int is\_\-st, int purpose)
+\item 
+int \bf{M\_\-x86\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-x86\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-x86\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-x86\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-x86\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-x86\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-x86\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-x86\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-x86\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-x86\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-x86\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+int \bf{M\_\-x86\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-x86} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-x86} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-x86} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-x86} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-x86} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-x86} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-x86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-x86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-x86} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-x86} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+void \bf{M\_\-get\_\-memory\_\-operands\_\-x86} (int $\ast$first, int $\ast$number, int proc\_\-opc)
+\item 
+int \bf{M\_\-memory\_\-access\_\-size\_\-x86} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-get\_\-data\_\-type\_\-x86} (L\_\-Oper $\ast$op)
+\item 
+int \bf{M\_\-num\_\-registers\_\-x86} (int ctype)
+\item 
+int \bf{M\_\-is\_\-implicit\_\-memory\_\-op\_\-x86} (L\_\-Oper $\ast$oper)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static int \bf{have\_\-reversed} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_x86.c@{ml\_\-x86.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__x86_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+\index{ml_x86.c@{ml\_\-x86.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__x86_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+\index{ml_x86.c@{ml\_\-x86.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__x86_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+\index{ml_x86.c@{ml\_\-x86.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__x86_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_BIT@{M\_\-X86\_\-ALIGN\_\-BIT}}
+\index{M_X86_ALIGN_BIT@{M\_\-X86\_\-ALIGN\_\-BIT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-BIT~1}\label{ml__x86_8c_6a3cf9cb641a38f00f496402319a3d0f}
+
+
+
+
+Definition at line 94 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_BLOCK@{M\_\-X86\_\-ALIGN\_\-BLOCK}}
+\index{M_X86_ALIGN_BLOCK@{M\_\-X86\_\-ALIGN\_\-BLOCK}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-BLOCK~-1}\label{ml__x86_8c_3068a03182423cfa8ea6a125777a95b5}
+
+
+
+
+Definition at line 104 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_CHAR@{M\_\-X86\_\-ALIGN\_\-CHAR}}
+\index{M_X86_ALIGN_CHAR@{M\_\-X86\_\-ALIGN\_\-CHAR}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-CHAR~8}\label{ml__x86_8c_11b2ed1f8419865b52dd3bf9e1025a48}
+
+
+
+
+Definition at line 95 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_DOUBLE@{M\_\-X86\_\-ALIGN\_\-DOUBLE}}
+\index{M_X86_ALIGN_DOUBLE@{M\_\-X86\_\-ALIGN\_\-DOUBLE}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-DOUBLE~32}\label{ml__x86_8c_be4ce7a7035eea2dab73cf7afd7d3be9}
+
+
+
+
+Definition at line 100 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_FLOAT@{M\_\-X86\_\-ALIGN\_\-FLOAT}}
+\index{M_X86_ALIGN_FLOAT@{M\_\-X86\_\-ALIGN\_\-FLOAT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-FLOAT~32}\label{ml__x86_8c_37167e2f19b6eacd5fb02de1f49606bc}
+
+
+
+
+Definition at line 99 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_INT@{M\_\-X86\_\-ALIGN\_\-INT}}
+\index{M_X86_ALIGN_INT@{M\_\-X86\_\-ALIGN\_\-INT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-INT~32}\label{ml__x86_8c_579f15194b59a2cf54990855ef1d8cfe}
+
+
+
+
+Definition at line 97 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_LONG@{M\_\-X86\_\-ALIGN\_\-LONG}}
+\index{M_X86_ALIGN_LONG@{M\_\-X86\_\-ALIGN\_\-LONG}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-LONG~32}\label{ml__x86_8c_4cd0e1c406b007a731b5b010a3bccc44}
+
+
+
+
+Definition at line 98 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_MAX@{M\_\-X86\_\-ALIGN\_\-MAX}}
+\index{M_X86_ALIGN_MAX@{M\_\-X86\_\-ALIGN\_\-MAX}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-MAX~64}\label{ml__x86_8c_50903b6aab9fa1b6995d8ad7ae79fa79}
+
+
+
+
+Definition at line 105 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_POINTER@{M\_\-X86\_\-ALIGN\_\-POINTER}}
+\index{M_X86_ALIGN_POINTER@{M\_\-X86\_\-ALIGN\_\-POINTER}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-POINTER~32}\label{ml__x86_8c_e84dc80e138c8fddf36bc9492610ebd5}
+
+
+
+
+Definition at line 101 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_SHORT@{M\_\-X86\_\-ALIGN\_\-SHORT}}
+\index{M_X86_ALIGN_SHORT@{M\_\-X86\_\-ALIGN\_\-SHORT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-SHORT~16}\label{ml__x86_8c_70b46b6869a5e5e6f87771d6c0bba725}
+
+
+
+
+Definition at line 96 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_STRUCT@{M\_\-X86\_\-ALIGN\_\-STRUCT}}
+\index{M_X86_ALIGN_STRUCT@{M\_\-X86\_\-ALIGN\_\-STRUCT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-STRUCT~-1}\label{ml__x86_8c_6e3eb9aa2fea64652019b04a5e82f5b3}
+
+
+
+
+Definition at line 103 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_UNION@{M\_\-X86\_\-ALIGN\_\-UNION}}
+\index{M_X86_ALIGN_UNION@{M\_\-X86\_\-ALIGN\_\-UNION}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-UNION~-1}\label{ml__x86_8c_fefe62d7492d8aa3e26ca4bf1385008b}
+
+
+
+
+Definition at line 102 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_ALIGN_VOID@{M\_\-X86\_\-ALIGN\_\-VOID}}
+\index{M_X86_ALIGN_VOID@{M\_\-X86\_\-ALIGN\_\-VOID}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-ALIGN\_\-VOID~-1}\label{ml__x86_8c_5f71411e8ef673d8493945e281e15f43}
+
+
+
+
+Definition at line 93 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_FLT_BASE@{M\_\-X86\_\-FLT\_\-BASE}}
+\index{M_X86_FLT_BASE@{M\_\-X86\_\-FLT\_\-BASE}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-FLT\_\-BASE~4}\label{ml__x86_8c_c6cd776a13bbd8d39e9c51302791d98e}
+
+
+
+
+Definition at line 115 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-fnvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_INT_BASE@{M\_\-X86\_\-INT\_\-BASE}}
+\index{M_X86_INT_BASE@{M\_\-X86\_\-INT\_\-BASE}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-INT\_\-BASE~0}\label{ml__x86_8c_894b42ac087d4778b69b958c65384a12}
+
+
+
+
+Definition at line 114 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-fnvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_MAX_FNVAR_REG@{M\_\-X86\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_X86_MAX_FNVAR_REG@{M\_\-X86\_\-MAX\_\-FNVAR\_\-REG}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-MAX\_\-FNVAR\_\-REG~0}\label{ml__x86_8c_d2e32239ccacaae56519d5dc882fd5be}
+
+
+
+
+Definition at line 109 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-fnvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_RET_F@{M\_\-X86\_\-RET\_\-F}}
+\index{M_X86_RET_F@{M\_\-X86\_\-RET\_\-F}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-RET\_\-F~1}\label{ml__x86_8c_ce421de89db7404f3e0d2efd0520d463}
+
+
+
+
+Definition at line 120 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-return\_\-register().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_RET_F2@{M\_\-X86\_\-RET\_\-F2}}
+\index{M_X86_RET_F2@{M\_\-X86\_\-RET\_\-F2}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-RET\_\-F2~1}\label{ml__x86_8c_4497cc816e22b00ce41091909ce76667}
+
+
+
+
+Definition at line 121 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_RET_I32@{M\_\-X86\_\-RET\_\-I32}}
+\index{M_X86_RET_I32@{M\_\-X86\_\-RET\_\-I32}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-RET\_\-I32~0}\label{ml__x86_8c_2f14c035b13d8141c836f813fd868a77}
+
+
+
+
+Definition at line 117 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-return\_\-register().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_RET_I64@{M\_\-X86\_\-RET\_\-I64}}
+\index{M_X86_RET_I64@{M\_\-X86\_\-RET\_\-I64}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-RET\_\-I64~0}\label{ml__x86_8c_4d49e594dce01b4a31b680dd47af5913}
+
+
+
+
+Definition at line 118 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_RET_ST@{M\_\-X86\_\-RET\_\-ST}}
+\index{M_X86_RET_ST@{M\_\-X86\_\-RET\_\-ST}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-RET\_\-ST~0}\label{ml__x86_8c_23b348614fe1136a347e44c5cfd5d68b}
+
+
+
+
+Definition at line 119 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-structure\_\-pointer().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_BIT@{M\_\-X86\_\-SIZE\_\-BIT}}
+\index{M_X86_SIZE_BIT@{M\_\-X86\_\-SIZE\_\-BIT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-BIT~1}\label{ml__x86_8c_ccec9c11fef4d459ff0440737aec8dc1}
+
+
+
+
+Definition at line 80 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_BLOCK@{M\_\-X86\_\-SIZE\_\-BLOCK}}
+\index{M_X86_SIZE_BLOCK@{M\_\-X86\_\-SIZE\_\-BLOCK}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-BLOCK~-1}\label{ml__x86_8c_a9139669b79d9b440027d9dabb4be72c}
+
+
+
+
+Definition at line 90 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_CHAR@{M\_\-X86\_\-SIZE\_\-CHAR}}
+\index{M_X86_SIZE_CHAR@{M\_\-X86\_\-SIZE\_\-CHAR}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-CHAR~8}\label{ml__x86_8c_fad43b7d4c2fc975fae1c51bf20fb71b}
+
+
+
+
+Definition at line 81 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_DOUBLE@{M\_\-X86\_\-SIZE\_\-DOUBLE}}
+\index{M_X86_SIZE_DOUBLE@{M\_\-X86\_\-SIZE\_\-DOUBLE}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-DOUBLE~64}\label{ml__x86_8c_408dd8135a7c354d92b8bdf9c79db77d}
+
+
+
+
+Definition at line 86 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_FLOAT@{M\_\-X86\_\-SIZE\_\-FLOAT}}
+\index{M_X86_SIZE_FLOAT@{M\_\-X86\_\-SIZE\_\-FLOAT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-FLOAT~32}\label{ml__x86_8c_b6bd244173e8a184d7ffd00345d104c9}
+
+
+
+
+Definition at line 85 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_INT@{M\_\-X86\_\-SIZE\_\-INT}}
+\index{M_X86_SIZE_INT@{M\_\-X86\_\-SIZE\_\-INT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-INT~32}\label{ml__x86_8c_85eb1a82739558ac934d5f5554a58747}
+
+
+
+
+Definition at line 83 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_LONG@{M\_\-X86\_\-SIZE\_\-LONG}}
+\index{M_X86_SIZE_LONG@{M\_\-X86\_\-SIZE\_\-LONG}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-LONG~32}\label{ml__x86_8c_b83f3a0d0afadfbd6d71d3e6f6b4fdba}
+
+
+
+
+Definition at line 84 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_MAX@{M\_\-X86\_\-SIZE\_\-MAX}}
+\index{M_X86_SIZE_MAX@{M\_\-X86\_\-SIZE\_\-MAX}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-MAX~64}\label{ml__x86_8c_b500e6ea368597c7fc2569c21dafb054}
+
+
+
+
+Definition at line 91 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_POINTER@{M\_\-X86\_\-SIZE\_\-POINTER}}
+\index{M_X86_SIZE_POINTER@{M\_\-X86\_\-SIZE\_\-POINTER}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-POINTER~32}\label{ml__x86_8c_2216e4f8255283b76d5d7956bd6f28df}
+
+
+
+
+Definition at line 87 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_SHORT@{M\_\-X86\_\-SIZE\_\-SHORT}}
+\index{M_X86_SIZE_SHORT@{M\_\-X86\_\-SIZE\_\-SHORT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-SHORT~16}\label{ml__x86_8c_236087d7886c2cd33b0b6822d0f4e990}
+
+
+
+
+Definition at line 82 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_STRUCT@{M\_\-X86\_\-SIZE\_\-STRUCT}}
+\index{M_X86_SIZE_STRUCT@{M\_\-X86\_\-SIZE\_\-STRUCT}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-STRUCT~-1}\label{ml__x86_8c_4a1589682996bbcf51d2a2b8be228560}
+
+
+
+
+Definition at line 89 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_UNION@{M\_\-X86\_\-SIZE\_\-UNION}}
+\index{M_X86_SIZE_UNION@{M\_\-X86\_\-SIZE\_\-UNION}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-UNION~-1}\label{ml__x86_8c_fa580fcd8798f416af2bad5a64447cbb}
+
+
+
+
+Definition at line 88 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SIZE_VOID@{M\_\-X86\_\-SIZE\_\-VOID}}
+\index{M_X86_SIZE_VOID@{M\_\-X86\_\-SIZE\_\-VOID}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SIZE\_\-VOID~0}\label{ml__x86_8c_750790c6b0985e47551e69891dd0109d}
+
+
+
+
+Definition at line 79 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!M_X86_SMALL_STRUCT_MAX@{M\_\-X86\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_X86_SMALL_STRUCT_MAX@{M\_\-X86\_\-SMALL\_\-STRUCT\_\-MAX}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-SMALL\_\-STRUCT\_\-MAX~04}\label{ml__x86_8c_e64bdd94da43c05b74e9eece066c1895}
+
+
+
+
+Definition at line 110 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-fnvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_X86_VAR_PTR@{M\_\-X86\_\-VAR\_\-PTR}}
+\index{M_X86_VAR_PTR@{M\_\-X86\_\-VAR\_\-PTR}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-X86\_\-VAR\_\-PTR~\char`\"{}\$LV\char`\"{}}\label{ml__x86_8c_a4a9e2d634f7d1f36a1723b96fe1ebb3}
+
+
+
+
+Definition at line 122 of file ml\_\-x86.c.
+
+Referenced by M\_\-x86\_\-lvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(16 $\ast$ 0)}\label{ml__x86_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 111 of file ml\_\-x86.c.\index{ml_x86.c@{ml\_\-x86.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__x86_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) ||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+\index{ml_x86.c@{ml\_\-x86.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__x86_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+\index{ml_x86.c@{ml\_\-x86.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__x86_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}(((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                  ((a->src[1]->ctype&0x30)==0x00)) &&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+\subsection{Function Documentation}
+\index{ml_x86.c@{ml\_\-x86.c}!M_conflicting_operands_x86@{M\_\-conflicting\_\-operands\_\-x86}}
+\index{M_conflicting_operands_x86@{M\_\-conflicting\_\-operands\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-x86 (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__x86_8c_0c7d08aa0ec4542131f0971a87ba2876}
+
+
+
+
+Definition at line 1756 of file ml\_\-x86.c.
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_x86.c@{ml\_\-x86.c}!M_define_macros_x86@{M\_\-define\_\-macros\_\-x86}}
+\index{M_define_macros_x86@{M\_\-define\_\-macros\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-x86 (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__x86_8c_1f354096fc2141fa3c80525dffdf5ca5}
+
+
+
+
+Definition at line 1193 of file ml\_\-x86.c.
+
+References LX86\_\-MAC\_\-ALLOC, LX86\_\-MAC\_\-CALLEE\_\-F, LX86\_\-MAC\_\-CALLEE\_\-I, LX86\_\-MAC\_\-EAX, LX86\_\-MAC\_\-EBP, LX86\_\-MAC\_\-EBX, LX86\_\-MAC\_\-ECX, LX86\_\-MAC\_\-EDI, LX86\_\-MAC\_\-EDX, LX86\_\-MAC\_\-ESI, LX86\_\-MAC\_\-ESP, LX86\_\-MAC\_\-FLAGS, LX86\_\-MAC\_\-FPSTACK, LX86\_\-MAC\_\-FZERO, LX86\_\-MAC\_\-LEAF, LX86\_\-MAC\_\-ST0, LX86\_\-MAC\_\-ST1, LX86\_\-MAC\_\-ST2, LX86\_\-MAC\_\-ST3, LX86\_\-MAC\_\-ST4, LX86\_\-MAC\_\-ST5, LX86\_\-MAC\_\-ST6, LX86\_\-MAC\_\-ST7, LX86\_\-MAC\_\-STACK, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros().\index{ml_x86.c@{ml\_\-x86.c}!M_define_opcode_name_x86@{M\_\-define\_\-opcode\_\-name\_\-x86}}
+\index{M_define_opcode_name_x86@{M\_\-define\_\-opcode\_\-name\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-x86 (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__x86_8c_e7257eb4b2496a55ddf175459e8ecda0}
+
+
+
+
+Definition at line 1283 of file ml\_\-x86.c.
+
+References LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CDQ, LX86op\_\-CISC\_\-BRANCH, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DEC, LX86op\_\-DIV\_\-F, LX86op\_\-DIV\_\-F2, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F, LX86op\_\-DIVR\_\-F2, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-FLD1, LX86op\_\-FLD\_\-ST, LX86op\_\-FLDCW, LX86op\_\-FLDZ, LX86op\_\-FLOAT\_\-LOAD, LX86op\_\-FLOAT\_\-STORE, LX86op\_\-FP2INT\_\-BRANCH, LX86op\_\-FPOP\_\-I, LX86op\_\-FPUSH\_\-I, LX86op\_\-FSTCW, LX86op\_\-FSTP, LX86op\_\-FSTSW, LX86op\_\-FXCH, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-INC, LX86op\_\-INT\_\-LOAD, LX86op\_\-INT\_\-STORE, LX86op\_\-INT\_\-SUB\_\-WITH\_\-BORROW, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LEA, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MOVS, LX86op\_\-MOVXL, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-NEGATE, LX86op\_\-POP, LX86op\_\-PUSH, LX86op\_\-SAHF, LX86op\_\-SUB\_\-F, LX86op\_\-SUB\_\-F2, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F, LX86op\_\-SUBR\_\-F2, LX86op\_\-SUBR\_\-F2MEM, LX86op\_\-SUBR\_\-FMEM, LX86op\_\-TEST, LX86op\_\-TRACE\_\-JSR, M\_\-add\_\-symbol, X86opcode\_\-ADD\_\-F2MEM, X86opcode\_\-ADD\_\-FMEM, X86opcode\_\-CDQ, X86opcode\_\-CISC\_\-BRANCH, X86opcode\_\-CISC\_\-TO\_\-MEM, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-DEC, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-INC, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, X86opcode\_\-CISC\_\-TO\_\-REG, X86opcode\_\-CISC\_\-TO\_\-REG\_\-CMP, X86opcode\_\-CISC\_\-TO\_\-REG\_\-TEST, X86opcode\_\-DEC, X86opcode\_\-DIV\_\-F, X86opcode\_\-DIV\_\-F2, X86opcode\_\-DIV\_\-F2MEM, X86opcode\_\-DIV\_\-FMEM, X86opcode\_\-DIVR\_\-F, X86opcode\_\-DIVR\_\-F2, X86opcode\_\-DIVR\_\-F2MEM, X86opcode\_\-DIVR\_\-FMEM, X86opcode\_\-EQ\_\-F2MEM, X86opcode\_\-EQ\_\-FMEM, X86opcode\_\-FLD1, X86opcode\_\-FLD\_\-ST, X86opcode\_\-FLDCW, X86opcode\_\-FLDZ, X86opcode\_\-FLOAT\_\-LOAD, X86opcode\_\-FLOAT\_\-STORE, X86opcode\_\-FP2INT\_\-BRANCH, X86opcode\_\-FPOP\_\-I, X86opcode\_\-FPUSH\_\-I, X86opcode\_\-FSTCW, X86opcode\_\-FSTP, X86opcode\_\-FSTSW, X86opcode\_\-FXCH, X86opcode\_\-GE\_\-F2MEM, X86opcode\_\-GE\_\-FMEM, X86opcode\_\-GT\_\-F2MEM, X86opcode\_\-GT\_\-FMEM, X86opcode\_\-INC, X86opcode\_\-INT\_\-LOAD, X86opcode\_\-INT\_\-STORE, X86opcode\_\-INT\_\-SUB\_\-WITH\_\-BORROW, X86opcode\_\-LE\_\-F2MEM, X86opcode\_\-LE\_\-FMEM, X86opcode\_\-LEA, X86opcode\_\-LT\_\-F2MEM, X86opcode\_\-LT\_\-FMEM, X86opcode\_\-MOVS, X86opcode\_\-MOVXL, X86opcode\_\-MUL\_\-F2MEM, X86opcode\_\-MUL\_\-FMEM, X86opcode\_\-NE\_\-F2MEM, X86opcode\_\-NE\_\-FMEM, X86opcode\_\-NEGATE, X86opcode\_\-POP, X86opcode\_\-PUSH, X86opcode\_\-SAHF, X86opcode\_\-SUB\_\-F, X86opcode\_\-SUB\_\-F2, X86opcode\_\-SUB\_\-F2MEM, X86opcode\_\-SUB\_\-FMEM, X86opcode\_\-SUBR\_\-F, X86opcode\_\-SUBR\_\-F2, X86opcode\_\-SUBR\_\-F2MEM, X86opcode\_\-SUBR\_\-FMEM, X86opcode\_\-TEST, and X86opcode\_\-TRACE\_\-JSR.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_get_data_type_x86@{M\_\-get\_\-data\_\-type\_\-x86}}
+\index{M_get_data_type_x86@{M\_\-get\_\-data\_\-type\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-get\_\-data\_\-type\_\-x86 (L\_\-Oper $\ast$ {\em op})}\label{ml__x86_8c_f898a4e675ba9b4f1609ff4f9ac62415}
+
+
+
+
+Definition at line 1970 of file ml\_\-x86.c.
+
+References I\_\-punt(), LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CISC\_\-BRANCH, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-FLDCW, LX86op\_\-FLOAT\_\-LOAD, LX86op\_\-FLOAT\_\-STORE, LX86op\_\-FPOP\_\-I, LX86op\_\-FPUSH\_\-I, LX86op\_\-FSTCW, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-INT\_\-LOAD, LX86op\_\-INT\_\-STORE, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MOVXL, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-PUSH, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F2MEM, LX86op\_\-SUBR\_\-FMEM, and M\_\-assert().
+
+Referenced by M\_\-get\_\-data\_\-type().\index{ml_x86.c@{ml\_\-x86.c}!M_get_macro_name_x86@{M\_\-get\_\-macro\_\-name\_\-x86}}
+\index{M_get_macro_name_x86@{M\_\-get\_\-macro\_\-name\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-x86 (int {\em id})}\label{ml__x86_8c_29e3c015489d3b9770e2253121536275}
+
+
+
+
+Definition at line 1225 of file ml\_\-x86.c.
+
+References LX86\_\-MAC\_\-ALLOC, LX86\_\-MAC\_\-CALLEE\_\-F, LX86\_\-MAC\_\-CALLEE\_\-I, LX86\_\-MAC\_\-EAX, LX86\_\-MAC\_\-EBP, LX86\_\-MAC\_\-EBX, LX86\_\-MAC\_\-ECX, LX86\_\-MAC\_\-EDI, LX86\_\-MAC\_\-EDX, LX86\_\-MAC\_\-ESI, LX86\_\-MAC\_\-ESP, LX86\_\-MAC\_\-FLAGS, LX86\_\-MAC\_\-FPSTACK, LX86\_\-MAC\_\-LEAF, LX86\_\-MAC\_\-ST0, LX86\_\-MAC\_\-ST1, LX86\_\-MAC\_\-ST2, LX86\_\-MAC\_\-ST3, LX86\_\-MAC\_\-ST4, LX86\_\-MAC\_\-ST5, LX86\_\-MAC\_\-ST6, LX86\_\-MAC\_\-ST7, and LX86\_\-MAC\_\-STACK.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_get_memory_operands_x86@{M\_\-get\_\-memory\_\-operands\_\-x86}}
+\index{M_get_memory_operands_x86@{M\_\-get\_\-memory\_\-operands\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-get\_\-memory\_\-operands\_\-x86 (int $\ast$ {\em first}, int $\ast$ {\em number}, int {\em proc\_\-opc})}\label{ml__x86_8c_4e1b8aa32d43a1062c2ee16273f9f85e}
+
+
+
+
+Definition at line 1796 of file ml\_\-x86.c.
+
+References LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CISC\_\-BRANCH, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-FLDCW, LX86op\_\-FLOAT\_\-LOAD, LX86op\_\-FLOAT\_\-STORE, LX86op\_\-FPOP\_\-I, LX86op\_\-FPUSH\_\-I, LX86op\_\-FSTCW, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-INT\_\-LOAD, LX86op\_\-INT\_\-STORE, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MOVXL, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-POP, LX86op\_\-PUSH, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F2MEM, and LX86op\_\-SUBR\_\-FMEM.
+
+Referenced by M\_\-get\_\-memory\_\-operands().\index{ml_x86.c@{ml\_\-x86.c}!M_get_opcode_name_x86@{M\_\-get\_\-opcode\_\-name\_\-x86}}
+\index{M_get_opcode_name_x86@{M\_\-get\_\-opcode\_\-name\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-x86 (int {\em id})}\label{ml__x86_8c_f32831336bc4aefba4a652dd24697899}
+
+
+
+
+Definition at line 1358 of file ml\_\-x86.c.
+
+References LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CDQ, LX86op\_\-CISC\_\-BRANCH, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DEC, LX86op\_\-DIV\_\-F, LX86op\_\-DIV\_\-F2, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F, LX86op\_\-DIVR\_\-F2, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-FLD1, LX86op\_\-FLD\_\-ST, LX86op\_\-FLDCW, LX86op\_\-FLDZ, LX86op\_\-FLOAT\_\-LOAD, LX86op\_\-FLOAT\_\-STORE, LX86op\_\-FP2INT\_\-BRANCH, LX86op\_\-FPOP\_\-I, LX86op\_\-FPUSH\_\-I, LX86op\_\-FSTCW, LX86op\_\-FSTP, LX86op\_\-FSTSW, LX86op\_\-FXCH, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-INC, LX86op\_\-INT\_\-LOAD, LX86op\_\-INT\_\-STORE, LX86op\_\-INT\_\-SUB\_\-WITH\_\-BORROW, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LEA, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MOVS, LX86op\_\-MOVXL, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-NEGATE, LX86op\_\-POP, LX86op\_\-PUSH, LX86op\_\-SAHF, LX86op\_\-SUB\_\-F, LX86op\_\-SUB\_\-F2, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F, LX86op\_\-SUBR\_\-F2, LX86op\_\-SUBR\_\-F2MEM, LX86op\_\-SUBR\_\-FMEM, LX86op\_\-TEST, LX86op\_\-TRACE\_\-JSR, X86opcode\_\-ADD\_\-F2MEM, X86opcode\_\-ADD\_\-FMEM, X86opcode\_\-CDQ, X86opcode\_\-CISC\_\-BRANCH, X86opcode\_\-CISC\_\-TO\_\-MEM, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-DEC, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-INC, X86opcode\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, X86opcode\_\-CISC\_\-TO\_\-REG, X86opcode\_\-CISC\_\-TO\_\-REG\_\-CMP, X86opcode\_\-CISC\_\-TO\_\-REG\_\-TEST, X86opcode\_\-DEC, X86opcode\_\-DIV\_\-F, X86opcode\_\-DIV\_\-F2, X86opcode\_\-DIV\_\-F2MEM, X86opcode\_\-DIV\_\-FMEM, X86opcode\_\-DIVR\_\-F, X86opcode\_\-DIVR\_\-F2, X86opcode\_\-DIVR\_\-F2MEM, X86opcode\_\-DIVR\_\-FMEM, X86opcode\_\-EQ\_\-F2MEM, X86opcode\_\-EQ\_\-FMEM, X86opcode\_\-FLD1, X86opcode\_\-FLD\_\-ST, X86opcode\_\-FLDCW, X86opcode\_\-FLDZ, X86opcode\_\-FLOAT\_\-LOAD, X86opcode\_\-FLOAT\_\-STORE, X86opcode\_\-FP2INT\_\-BRANCH, X86opcode\_\-FPOP\_\-I, X86opcode\_\-FPUSH\_\-I, X86opcode\_\-FSTCW, X86opcode\_\-FSTP, X86opcode\_\-FSTSW, X86opcode\_\-FXCH, X86opcode\_\-GE\_\-F2MEM, X86opcode\_\-GE\_\-FMEM, X86opcode\_\-GT\_\-F2MEM, X86opcode\_\-GT\_\-FMEM, X86opcode\_\-INC, X86opcode\_\-INT\_\-LOAD, X86opcode\_\-INT\_\-STORE, X86opcode\_\-INT\_\-SUB\_\-WITH\_\-BORROW, X86opcode\_\-LE\_\-F2MEM, X86opcode\_\-LE\_\-FMEM, X86opcode\_\-LEA, X86opcode\_\-LT\_\-F2MEM, X86opcode\_\-LT\_\-FMEM, X86opcode\_\-MOVS, X86opcode\_\-MOVXL, X86opcode\_\-MUL\_\-F2MEM, X86opcode\_\-MUL\_\-FMEM, X86opcode\_\-NE\_\-F2MEM, X86opcode\_\-NE\_\-FMEM, X86opcode\_\-NEGATE, X86opcode\_\-POP, X86opcode\_\-PUSH, X86opcode\_\-SAHF, X86opcode\_\-SUB\_\-F, X86opcode\_\-SUB\_\-F2, X86opcode\_\-SUB\_\-F2MEM, X86opcode\_\-SUB\_\-FMEM, X86opcode\_\-SUBR\_\-F, X86opcode\_\-SUBR\_\-F2, X86opcode\_\-SUBR\_\-F2MEM, X86opcode\_\-SUBR\_\-FMEM, X86opcode\_\-TEST, and X86opcode\_\-TRACE\_\-JSR.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_is_implicit_memory_op_x86@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-x86}}
+\index{M_is_implicit_memory_op_x86@{M\_\-is\_\-implicit\_\-memory\_\-op\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-implicit\_\-memory\_\-op\_\-x86 (L\_\-Oper $\ast$ {\em oper})}\label{ml__x86_8c_8094bced93f8bcf74e45e53f1d914b0e}
+
+
+
+
+Definition at line 2061 of file ml\_\-x86.c.
+
+References LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-POP, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F2MEM, and LX86op\_\-SUBR\_\-FMEM.
+
+Referenced by M\_\-is\_\-implicit\_\-memory\_\-op().\index{ml_x86.c@{ml\_\-x86.c}!M_is_stack_operand_x86@{M\_\-is\_\-stack\_\-operand\_\-x86}}
+\index{M_is_stack_operand_x86@{M\_\-is\_\-stack\_\-operand\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-x86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__x86_8c_e6af9ef9a98871917df4258d42946f5e}
+
+
+
+
+Definition at line 1678 of file ml\_\-x86.c.
+
+References LX86\_\-MAC\_\-ESP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_x86.c@{ml\_\-x86.c}!M_is_unsafe_macro_x86@{M\_\-is\_\-unsafe\_\-macro\_\-x86}}
+\index{M_is_unsafe_macro_x86@{M\_\-is\_\-unsafe\_\-macro\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-x86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__x86_8c_9815a77f31bd8e5ee3ecaa306475f253}
+
+
+
+
+Definition at line 1690 of file ml\_\-x86.c.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_x86.c@{ml\_\-x86.c}!M_memory_access_size_x86@{M\_\-memory\_\-access\_\-size\_\-x86}}
+\index{M_memory_access_size_x86@{M\_\-memory\_\-access\_\-size\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-memory\_\-access\_\-size\_\-x86 (L\_\-Oper $\ast$ {\em op})}\label{ml__x86_8c_cf2c95365ea5d4189a6c38b338142be9}
+
+
+
+
+Definition at line 1877 of file ml\_\-x86.c.
+
+References I\_\-punt(), LX86op\_\-ADD\_\-F2MEM, LX86op\_\-ADD\_\-FMEM, LX86op\_\-CISC\_\-BRANCH, LX86op\_\-CISC\_\-TO\_\-MEM, LX86op\_\-CISC\_\-TO\_\-MEM\_\-DEC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-INC, LX86op\_\-CISC\_\-TO\_\-MEM\_\-NEGATE, LX86op\_\-CISC\_\-TO\_\-REG, LX86op\_\-CISC\_\-TO\_\-REG\_\-CMP, LX86op\_\-CISC\_\-TO\_\-REG\_\-TEST, LX86op\_\-DIV\_\-F2MEM, LX86op\_\-DIV\_\-FMEM, LX86op\_\-DIVR\_\-F2MEM, LX86op\_\-DIVR\_\-FMEM, LX86op\_\-EQ\_\-F2MEM, LX86op\_\-EQ\_\-FMEM, LX86op\_\-FLDCW, LX86op\_\-FLOAT\_\-LOAD, LX86op\_\-FLOAT\_\-STORE, LX86op\_\-FPOP\_\-I, LX86op\_\-FPUSH\_\-I, LX86op\_\-FSTCW, LX86op\_\-GE\_\-F2MEM, LX86op\_\-GE\_\-FMEM, LX86op\_\-GT\_\-F2MEM, LX86op\_\-GT\_\-FMEM, LX86op\_\-INT\_\-LOAD, LX86op\_\-INT\_\-STORE, LX86op\_\-LE\_\-F2MEM, LX86op\_\-LE\_\-FMEM, LX86op\_\-LT\_\-F2MEM, LX86op\_\-LT\_\-FMEM, LX86op\_\-MOVXL, LX86op\_\-MUL\_\-F2MEM, LX86op\_\-MUL\_\-FMEM, LX86op\_\-NE\_\-F2MEM, LX86op\_\-NE\_\-FMEM, LX86op\_\-PUSH, LX86op\_\-SUB\_\-F2MEM, LX86op\_\-SUB\_\-FMEM, LX86op\_\-SUBR\_\-F2MEM, LX86op\_\-SUBR\_\-FMEM, M\_\-assert(), M\_\-SIZE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-SHORT, and M\_\-type\_\-size().
+
+Referenced by M\_\-memory\_\-access\_\-size().\index{ml_x86.c@{ml\_\-x86.c}!M_num_oper_required_for_x86@{M\_\-num\_\-oper\_\-required\_\-for\_\-x86}}
+\index{M_num_oper_required_for_x86@{M\_\-num\_\-oper\_\-required\_\-for\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-x86 (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__x86_8c_750d107a95607390f070d2ad36039bb1}
+
+
+
+
+Definition at line 1548 of file ml\_\-x86.c.
+
+References indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_x86.c@{ml\_\-x86.c}!M_num_registers_x86@{M\_\-num\_\-registers\_\-x86}}
+\index{M_num_registers_x86@{M\_\-num\_\-registers\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-x86 (int {\em ctype})}\label{ml__x86_8c_87cb8eb46758138b05912f0a8cf8d671}
+
+
+
+
+Definition at line 2046 of file ml\_\-x86.c.
+
+Referenced by M\_\-num\_\-registers().\index{ml_x86.c@{ml\_\-x86.c}!M_oper_supported_in_arch_x86@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-x86}}
+\index{M_oper_supported_in_arch_x86@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-x86 (int {\em opc})}\label{ml__x86_8c_4fdc9b50549bb601d2ba3e96a20cdc6a}
+
+
+
+
+Definition at line 1511 of file ml\_\-x86.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_x86.c@{ml\_\-x86.c}!M_operand_type_x86@{M\_\-operand\_\-type\_\-x86}}
+\index{M_operand_type_x86@{M\_\-operand\_\-type\_\-x86}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-x86 (L\_\-Operand $\ast$ {\em operand})}\label{ml__x86_8c_a9876dd91246fda74bd1d64d44d42b91}
+
+
+
+
+Definition at line 1703 of file ml\_\-x86.c.
+
+References LX86\_\-MAC\_\-FLAGS, LX86\_\-MAC\_\-FPSTACK, LX86\_\-MAC\_\-STACK, M\_\-assert(), MDES\_\-OPERAND\_\-flag, MDES\_\-OPERAND\_\-fstk, MDES\_\-OPERAND\_\-istk, MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_array_align@{M\_\-x86\_\-array\_\-align}}
+\index{M_x86_array_align@{M\_\-x86\_\-array\_\-align}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__x86_8c_4783d37d75647a65f606c2330917101a}
+
+
+
+
+Definition at line 380 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_array_layout@{M\_\-x86\_\-array\_\-layout}}
+\index{M_x86_array_layout@{M\_\-x86\_\-array\_\-layout}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__x86_8c_52a40ee0827e72a61aaff2223ea5ff4c}
+
+
+
+
+Definition at line 374 of file ml\_\-x86.c.
+
+Referenced by M\_\-array\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_array_size@{M\_\-x86\_\-array\_\-size}}
+\index{M_x86_array_size@{M\_\-x86\_\-array\_\-size}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__x86_8c_0ea09e63dca52af5779b9fdf0c0dd552}
+
+
+
+
+Definition at line 386 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_bit_char@{M\_\-x86\_\-bit\_\-char}}
+\index{M_x86_bit_char@{M\_\-x86\_\-bit\_\-char}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__x86_8c_d01a3813dde73a5257b799e26f65066a}
+
+
+
+
+Definition at line 176 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-X86\_\-ALIGN\_\-BIT, M\_\-X86\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_bit_int@{M\_\-x86\_\-bit\_\-int}}
+\index{M_x86_bit_int@{M\_\-x86\_\-bit\_\-int}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__x86_8c_bf35d69768d22693fa9279fa7bde3f0b}
+
+
+
+
+Definition at line 152 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-INT, M\_\-X86\_\-ALIGN\_\-BIT, M\_\-X86\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_bit_long@{M\_\-x86\_\-bit\_\-long}}
+\index{M_x86_bit_long@{M\_\-x86\_\-bit\_\-long}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__x86_8c_b8150acbba1ed418ca4270bf08c272e9}
+
+
+
+
+Definition at line 140 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-LONG, M\_\-X86\_\-ALIGN\_\-BIT, M\_\-X86\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_bit_short@{M\_\-x86\_\-bit\_\-short}}
+\index{M_x86_bit_short@{M\_\-x86\_\-bit\_\-short}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__x86_8c_7a8e1bb7913aaa8f58b14629c5821149}
+
+
+
+
+Definition at line 164 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-X86\_\-ALIGN\_\-BIT, M\_\-X86\_\-SIZE\_\-BIT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_call_type@{M\_\-x86\_\-call\_\-type}}
+\index{M_x86_call_type@{M\_\-x86\_\-call\_\-type}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__x86_8c_3f585d5c1788111d3cdb147a17a3fa09}
+
+
+
+
+Definition at line 295 of file ml\_\-x86.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_call_type2@{M\_\-x86\_\-call\_\-type2}}
+\index{M_x86_call_type2@{M\_\-x86\_\-call\_\-type2}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__x86_8c_a2b8eeed98c4e10d36db0cf9955b7a13}
+
+
+
+
+Definition at line 330 of file ml\_\-x86.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_cb_label_name@{M\_\-x86\_\-cb\_\-label\_\-name}}
+\index{M_x86_cb_label_name@{M\_\-x86\_\-cb\_\-label\_\-name}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__x86_8c_c47605e04d84eb266b6b962b0e12ad75}
+
+
+
+
+Definition at line 1043 of file ml\_\-x86.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_double@{M\_\-x86\_\-double}}
+\index{M_x86_double@{M\_\-x86\_\-double}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__x86_8c_44f6300a10cafc1f87c680770660ea27}
+
+
+
+
+Definition at line 198 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-DOUBLE, M\_\-X86\_\-ALIGN\_\-DOUBLE, M\_\-X86\_\-SIZE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_eval_type@{M\_\-x86\_\-eval\_\-type}}
+\index{M_x86_eval_type@{M\_\-x86\_\-eval\_\-type}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__x86_8c_96ea005a9ce63a2a4373bd068b06ebfb}
+
+
+
+
+Definition at line 219 of file ml\_\-x86.c.
+
+References M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_eval_type2@{M\_\-x86\_\-eval\_\-type2}}
+\index{M_x86_eval_type2@{M\_\-x86\_\-eval\_\-type2}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__x86_8c_f197e50e784711edd9f5b48e06b536f5}
+
+
+
+
+Definition at line 253 of file ml\_\-x86.c.
+
+References M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_float@{M\_\-x86\_\-float}}
+\index{M_x86_float@{M\_\-x86\_\-float}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__x86_8c_25fdc6eaf77548799196a9c31ed8e95b}
+
+
+
+
+Definition at line 188 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-FLOAT, M\_\-X86\_\-ALIGN\_\-FLOAT, M\_\-X86\_\-SIZE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_fn_label_name@{M\_\-x86\_\-fn\_\-label\_\-name}}
+\index{M_x86_fn_label_name@{M\_\-x86\_\-fn\_\-label\_\-name}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-x86\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__x86_8c_96ddee6be867fa3306d664e213890a41}
+
+
+
+
+Definition at line 1117 of file ml\_\-x86.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_fn_name_from_label@{M\_\-x86\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_x86_fn_name_from_label@{M\_\-x86\_\-fn\_\-name\_\-from\_\-label}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-x86\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__x86_8c_ae7aef017d8df0e478a8ee19fab633ff}
+
+
+
+
+Definition at line 1132 of file ml\_\-x86.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_fnvar_layout@{M\_\-x86\_\-fnvar\_\-layout}}
+\index{M_x86_fnvar_layout@{M\_\-x86\_\-fnvar\_\-layout}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em is\_\-st}, int {\em purpose})}\label{ml__x86_8c_f19e38bfc5705e30e3dbb4a8ce7c8175}
+
+
+
+
+Definition at line 756 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, have\_\-reversed, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-INDIRECT\_\-THRU\_\-REGISTER, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-X86\_\-ALIGN\_\-INT, M\_\-X86\_\-ALIGN\_\-MAX, M\_\-X86\_\-FLT\_\-BASE, M\_\-X86\_\-INT\_\-BASE, M\_\-X86\_\-MAX\_\-FNVAR\_\-REG, M\_\-X86\_\-SIZE\_\-INT, M\_\-X86\_\-SMALL\_\-STRUCT\_\-MAX, MIN\_\-PARAM\_\-SIZE, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout(), and M\_\-x86\_\-layout\_\-fnvar().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_fragile_macro@{M\_\-x86\_\-fragile\_\-macro}}
+\index{M_x86_fragile_macro@{M\_\-x86\_\-fragile\_\-macro}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__x86_8c_313d98d323e8127cb9628629177253a4}
+
+
+
+
+Definition at line 1144 of file ml\_\-x86.c.
+
+References M\_\-386, M\_\-486, M\_\-assert(), M\_\-KRYPTON, M\_\-model, and M\_\-PENTIUM.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_is_cb_label@{M\_\-x86\_\-is\_\-cb\_\-label}}
+\index{M_x86_is_cb_label@{M\_\-x86\_\-is\_\-cb\_\-label}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__x86_8c_ec6c548016ac4f178bb5abeb4d0b1e1e}
+
+
+
+
+Definition at line 1049 of file ml\_\-x86.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_is_jumptbl_label@{M\_\-x86\_\-is\_\-jumptbl\_\-label}}
+\index{M_x86_is_jumptbl_label@{M\_\-x86\_\-is\_\-jumptbl\_\-label}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__x86_8c_3c8ee62d8ae26c67925595c7442f8109}
+
+
+
+
+Definition at line 1062 of file ml\_\-x86.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_jumptbl_label_name@{M\_\-x86\_\-jumptbl\_\-label\_\-name}}
+\index{M_x86_jumptbl_label_name@{M\_\-x86\_\-jumptbl\_\-label\_\-name}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__x86_8c_4086f964a0c1e87878b6a60ea52c1540}
+
+
+
+
+Definition at line 1055 of file ml\_\-x86.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_layout_fnvar@{M\_\-x86\_\-layout\_\-fnvar}}
+\index{M_x86_layout_fnvar@{M\_\-x86\_\-layout\_\-fnvar}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose})}\label{ml__x86_8c_a4e0ea0d585095df7ec5435f5d640656}
+
+
+
+
+Definition at line 698 of file ml\_\-x86.c.
+
+References List\_\-next(), List\_\-size(), List\_\-start(), M\_\-x86\_\-fnvar\_\-layout(), \_\-struct\_\-M\_\-Param::mode, mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Param::su\_\-ereg, and \_\-struct\_\-M\_\-Param::su\_\-sreg.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_lvar_layout@{M\_\-x86\_\-lvar\_\-layout}}
+\index{M_x86_lvar_layout@{M\_\-x86\_\-lvar\_\-layout}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__x86_8c_cdbd8746178fd2d03ff8fdc78eeee4ad}
+
+
+
+
+Definition at line 995 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-X86\_\-ALIGN\_\-MAX, M\_\-X86\_\-VAR\_\-PTR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_no_short_int@{M\_\-x86\_\-no\_\-short\_\-int}}
+\index{M_x86_no_short_int@{M\_\-x86\_\-no\_\-short\_\-int}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-no\_\-short\_\-int (void)}\label{ml__x86_8c_1b6a39fb220cdc71ba2d2222668ed953}
+
+
+
+
+Definition at line 1037 of file ml\_\-x86.c.
+
+References M\_\-X86\_\-SIZE\_\-INT, and M\_\-X86\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_pointer@{M\_\-x86\_\-pointer}}
+\index{M_x86_pointer@{M\_\-x86\_\-pointer}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__x86_8c_9c529d82b3fd27fe93a9bbf967632659}
+
+
+
+
+Definition at line 208 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-POINTER, M\_\-X86\_\-ALIGN\_\-POINTER, M\_\-X86\_\-SIZE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_return_register@{M\_\-x86\_\-return\_\-register}}
+\index{M_x86_return_register@{M\_\-x86\_\-return\_\-register}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__x86_8c_5c58ab9d70640c1278564a25f5217d65}
+
+
+
+
+Definition at line 1096 of file ml\_\-x86.c.
+
+References M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LONG, M\_\-X86\_\-RET\_\-F, and M\_\-X86\_\-RET\_\-I32.
+
+Referenced by M\_\-return\_\-register().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_struct_align@{M\_\-x86\_\-struct\_\-align}}
+\index{M_x86_struct_align@{M\_\-x86\_\-struct\_\-align}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__x86_8c_7deb558bda1f1ad54bd0b5f7f989f50d}
+
+
+
+
+Definition at line 614 of file ml\_\-x86.c.
+
+References M\_\-X86\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_struct_layout@{M\_\-x86\_\-struct\_\-layout}}
+\index{M_x86_struct_layout@{M\_\-x86\_\-struct\_\-layout}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__x86_8c_d2ed2e7ed8f48f7e74e131c8fb1162f1}
+
+
+
+
+Definition at line 477 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, I\_\-punt(), M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-X86\_\-SIZE\_\-CHAR, M\_\-X86\_\-SIZE\_\-INT, M\_\-X86\_\-SIZE\_\-LONG, M\_\-X86\_\-SIZE\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_struct_size@{M\_\-x86\_\-struct\_\-size}}
+\index{M_x86_struct_size@{M\_\-x86\_\-struct\_\-size}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__x86_8c_63084addfc53362b05cd57c6014f9ee7}
+
+
+
+
+Definition at line 634 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, M\_\-X86\_\-ALIGN\_\-CHAR, and M\_\-X86\_\-SIZE\_\-INT.
+
+Referenced by M\_\-struct\_\-size().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_structure_pointer@{M\_\-x86\_\-structure\_\-pointer}}
+\index{M_x86_structure_pointer@{M\_\-x86\_\-structure\_\-pointer}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-structure\_\-pointer (int {\em purpose})}\label{ml__x86_8c_7789db024e285b66a3e23ec665f0cdee}
+
+
+
+
+Definition at line 1090 of file ml\_\-x86.c.
+
+References M\_\-X86\_\-RET\_\-ST.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_subroutine_call@{M\_\-x86\_\-subroutine\_\-call}}
+\index{M_x86_subroutine_call@{M\_\-x86\_\-subroutine\_\-call}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-subroutine\_\-call (int {\em opc})}\label{ml__x86_8c_c0e5d67004b9e6e46317dd4c96a18f6c}
+
+
+
+
+Definition at line 1174 of file ml\_\-x86.c.
+
+References M\_\-386, M\_\-486, M\_\-assert(), M\_\-KRYPTON, M\_\-model, and M\_\-PENTIUM.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_union_align@{M\_\-x86\_\-union\_\-align}}
+\index{M_x86_union_align@{M\_\-x86\_\-union\_\-align}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__x86_8c_a29fe0df7a6cf4f4740a60b272a2ba69}
+
+
+
+
+Definition at line 412 of file ml\_\-x86.c.
+
+References M\_\-X86\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_union_layout@{M\_\-x86\_\-union\_\-layout}}
+\index{M_x86_union_layout@{M\_\-x86\_\-union\_\-layout}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__x86_8c_6c2824e9db6d21b5d0d69fe70cb0be3e}
+
+
+
+
+Definition at line 401 of file ml\_\-x86.c.
+
+Referenced by M\_\-union\_\-layout().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_union_size@{M\_\-x86\_\-union\_\-size}}
+\index{M_x86_union_size@{M\_\-x86\_\-union\_\-size}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-x86\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__x86_8c_ec220f34827e3091c1624e2c5ac59c31}
+
+
+
+
+Definition at line 432 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-X86\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_x86.c@{ml\_\-x86.c}!M_x86_void@{M\_\-x86\_\-void}}
+\index{M_x86_void@{M\_\-x86\_\-void}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-x86\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__x86_8c_7bdd9e958d231e4f5c4d5be87f5b2364}
+
+
+
+
+Definition at line 130 of file ml\_\-x86.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-TYPE\_\-VOID, M\_\-X86\_\-ALIGN\_\-VOID, M\_\-X86\_\-SIZE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().
+
+\subsection{Variable Documentation}
+\index{ml_x86.c@{ml\_\-x86.c}!have_reversed@{have\_\-reversed}}
+\index{have_reversed@{have\_\-reversed}!ml_x86.c@{ml\_\-x86.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{have\_\-reversed} = 0\hspace{0.3cm}{\tt  [static]}}\label{ml__x86_8c_32dfe108c6378f2e07f27a5203370dee}
+
+
+
+
+Definition at line 752 of file ml\_\-x86.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout(), and M\_\-x86\_\-fnvar\_\-layout().

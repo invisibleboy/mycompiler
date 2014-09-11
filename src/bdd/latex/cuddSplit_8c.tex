@@ -1,0 +1,131 @@
+\section{cudd\-Split.c File Reference}
+\label{cuddSplit_8c}\index{cuddSplit.c@{cuddSplit.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$select\-Minterms\-From\-Universe \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, int $\ast$var\-Seen, double n))
+\item 
+static \bf{Dd\-Node} $\ast$minterms\-From\-Universe \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$$\ast$vars, int num\-Vars, double n, int index))
+\item 
+static double bdd\-Annotate\-Minterm\-Count \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Split\-Set} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$S, \bf{Dd\-Node} $\ast$$\ast$x\-Vars, int n, double m)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Split\-Set\-Recur} (\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$mtable, int $\ast$var\-Seen, \bf{Dd\-Node} $\ast$p, double n, double \bf{max}, int index)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{select\-Minterms\-From\-Universe} (\bf{Dd\-Manager} $\ast$manager, int $\ast$var\-Seen, double n)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{minterms\-From\-Universe} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$$\ast$vars, int num\-Vars, double n, int index)
+\item 
+static double \bf{bdd\-Annotate\-Minterm\-Count} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table)
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddSplit.c@{cudd\-Split.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Annotate\-Minterm\-Count ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, double \bf{max}, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_975f718ae3a2e9b1d52e6ac2c7613296}
+
+
+\index{cuddSplit.c@{cudd\-Split.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ minterms\-From\-Universe ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$$\ast$vars, int num\-Vars, double n, int index))\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_a4f942027f652589dd866774e2ae66bd}
+
+
+\index{cuddSplit.c@{cudd\-Split.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ select\-Minterms\-From\-Universe ARGS ((\bf{Dd\-Manager} $\ast$manager, int $\ast$var\-Seen, double n))\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_918fe1e16db9686e0125e4d990049409}
+
+
+Automatic\-Start \index{cuddSplit.c@{cudd\-Split.c}!bddAnnotateMintermCount@{bddAnnotateMintermCount}}
+\index{bddAnnotateMintermCount@{bddAnnotateMintermCount}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double bdd\-Annotate\-Minterm\-Count (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node}, double {\em max}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_75ec00e090efd41df105e54a8b4729ef}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Annotates every node in the BDD node with its minterm count.]
+
+Description [Annotates every node in the BDD node with its minterm count. In this function, every node and the minterm count represented by it are stored in a hash table.]
+
+Side\-Effects [Fills up 'table' with the pair $<$node,minterm\_\-count$>$.] 
+
+Definition at line 599 of file cudd\-Split.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, CUDD\_\-OUT\_\-OF\_\-MEM, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, DD\_\-ONE, Dd\-Manager::error\-Code, FREE, st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Cudd\_\-Split\-Set().\index{cuddSplit.c@{cudd\-Split.c}!Cudd_SplitSet@{Cudd\_\-SplitSet}}
+\index{Cudd_SplitSet@{Cudd\_\-SplitSet}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Split\-Set (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em S}, \bf{Dd\-Node} $\ast$$\ast$ {\em x\-Vars}, int {\em n}, double {\em m})}\label{cuddSplit_8c_5386715b96f5d263045e0ee11703ee7c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns m minterms from a BDD.]
+
+Description [Returns {\tt m} minterms from a BDD whose support has {\tt n} variables at most. The procedure tries to create as few extra nodes as possible. The function represented by {\tt S} depends on at most {\tt n} of the variables in {\tt x\-Vars}. Returns a BDD with {\tt m} minterms of the on-set of S if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 100 of file cudd\-Split.c.
+
+References ALLOC, bdd\-Annotate\-Minterm\-Count(), CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, cudd\-Deref, cudd\-Ref, cudd\-Split\-Set\-Recur(), cudd\-St\-Countfree(), DD\_\-ONE, Dd\-Manager::error\-Code, FREE, Dd\-Manager::invperm, max, NIL, one, Dd\-Manager::reordered, result, select\-Minterms\-From\-Universe(), Dd\-Manager::size, size, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.\index{cuddSplit.c@{cudd\-Split.c}!cuddSplitSetRecur@{cuddSplitSetRecur}}
+\index{cuddSplitSetRecur@{cuddSplitSetRecur}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Split\-Set\-Recur (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{st\_\-table} $\ast$ {\em mtable}, int $\ast$ {\em var\-Seen}, \bf{Dd\-Node} $\ast$ {\em p}, double {\em n}, double {\em max}, int {\em index})}\label{cuddSplit_8c_f9e9a7811e6b27fd27f3ddda57dffb5a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-Split\-Set.]
+
+Description [Implements the recursive step of Cudd\_\-Split\-Set. The procedure recursively traverses the BDD and checks to see if any node satisfies the minterm requirements as specified by 'n'. At any node X, n is compared to the number of minterms in the onset of X's children. If either of the child nodes have exactly n minterms, then that node is returned; else, if n is greater than the onset of one of the child nodes, that node is retained and the difference in the number of minterms is extracted from the other child. In case n minterms can be extracted from constant 1, the algorithm returns the result with at most log(n) nodes.]
+
+Side\-Effects [The array 'var\-Seen' is updated at every recursive call to set the variables traversed by the procedure.]
+
+See\-Also [] 
+
+Definition at line 215 of file cudd\-Split.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Node::index, Dd\-Manager::invperm, one, result, select\-Minterms\-From\-Universe(), st\_\-lookup(), and zero.
+
+Referenced by Cudd\_\-Split\-Set().\index{cuddSplit.c@{cudd\-Split.c}!mintermsFromUniverse@{mintermsFromUniverse}}
+\index{mintermsFromUniverse@{mintermsFromUniverse}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ minterms\-From\-Universe (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$$\ast$ {\em vars}, int {\em num\-Vars}, double {\em n}, int {\em index})\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_63b184f06bfc153c7442659c665dd5c1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Recursive procedure to extract n mintems from constant 1.]
+
+Description [Recursive procedure to extract n mintems from constant 1.]
+
+Side\-Effects [None] 
+
+Definition at line 529 of file cudd\-Split.c.
+
+References Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-Ref, DD\_\-ONE, max, one, result, and zero.
+
+Referenced by select\-Minterms\-From\-Universe().\index{cuddSplit.c@{cudd\-Split.c}!selectMintermsFromUniverse@{selectMintermsFromUniverse}}
+\index{selectMintermsFromUniverse@{selectMintermsFromUniverse}!cuddSplit.c@{cudd\-Split.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ select\-Minterms\-From\-Universe (\bf{Dd\-Manager} $\ast$ {\em manager}, int $\ast$ {\em var\-Seen}, double {\em n})\hspace{0.3cm}{\tt  [static]}}\label{cuddSplit_8c_4b941856ebf556e24817642ef7d5dee8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [This function prepares an array of variables which have not been encountered so far when traversing the procedure cudd\-Split\-Set\-Recur.]
+
+Description [This function prepares an array of variables which have not been encountered so far when traversing the procedure cudd\-Split\-Set\-Recur. This array is then used to extract the required number of minterms from a constant 1. The algorithm guarantees that the size of BDD will be utmost (n).]
+
+Side\-Effects [None] 
+
+Definition at line 466 of file cudd\-Split.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), cudd\-Ref, cudd\-Unique\-Inter(), DD\_\-ONE, Dd\-Manager::error\-Code, FREE, minterms\-From\-Universe(), one, Dd\-Manager::perm, result, Dd\-Manager::size, size, and zero.
+
+Referenced by Cudd\_\-Split\-Set(), and cudd\-Split\-Set\-Recur().

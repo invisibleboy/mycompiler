@@ -1,0 +1,160 @@
+#!/bin/sh
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+###############################################################################
+ #
+ # Copyright Notices/Identification of Licensor(s) of
+ # Original Software in the File
+ #
+ # Copyright 1999 IMPACT Technologies, Inc; Champaign, Illinois
+ # IMPACT Technologies has donated non-commercial use and
+ # redistribution rights to the University of Illinois.
+ # For commercial license rights, contact: Marketing Office via
+ # electronic mail: marketing@impactinc.com
+ #
+ # All rights reserved by the foregoing, respectively.
+ #
+ # This is licensed software.  The software license agreement with
+ # the University of Illinois specifies the terms and conditions
+ # for use and redistribution.
+ #
+###############################################################################
+###############################################################################
+#
+#       This script prints the default project name to use if the user
+#       does not specify one.  Uses $DEFAULT_USER_PROJECT if set, otherwise
+#       'default'
+#
+#       Run this script with no arguments for usage information.
+#
+#       Script created by John Gyllenhaal, Wen-mei Hwu 6/07/99
+#
+
+# Set up environment with default values
+PRINT_OPTION="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# Must specify at least one option
+if [ $# -le 0 ]; then
+    VALID_ARGS=0;
+fi
+
+# get options 
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	# Allow the contents of a particular variable to be printed
+        -name|-src|-all)
+	    if [ "$PRINT_OPTION" != "" ]; then
+               echo "> Error: print_default_project_info does not expect both '$PRINT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+	    PRINT_OPTION="$OPTION";;
+	   
+        *)
+            echo "> Error: Unknown option '${OPTION}'"
+            VALID_ARGS=0;;
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 -o "$PRINT_OPTION" = "" ]; then
+    echo ' ';
+    echo "> Usage: print_default_project_info [options]";
+    echo '> ';
+    echo '> Prints information about the default project.';
+    echo '> ';
+    echo '> If environment variable DEFAULT_USER_PROJECT is set, then it '
+    echo '> setting will be used as the default project name.  Otherwise'
+    echo "> the the project name 'default' will be used."
+    echo '> ';
+    echo '> Print options (exactly one of the the following must be specified):';
+
+    echo '>   -all                     print all the default project information';
+    echo '>   -name                    prints the default project name';
+    echo '>   -src                     prints source of the default name';
+    exit 1;
+fi
+
+if [ "$DEFAULT_USER_PROJECT" != "" ]; then
+    PROJECT_NAME="$DEFAULT_USER_PROJECT";
+    PROJECT_SRC="From the DEFAULT_USER_PROJECT environment variable"
+else
+    PROJECT_NAME="default";
+    PROJECT_SRC="Hard-coded default, DEFAULT_USER_PROJECT not defined"
+fi
+
+
+# Print out the appropriate output based on PRINT_OPTION's value
+case "$PRINT_OPTION" in
+  ""|-all)
+    # Print the settings read, formatted and with labels
+    echo "   Default Project Name: '$PROJECT_NAME'"
+    echo " Default Project Source: '$PROJECT_SRC'"
+    exit 0;;
+
+  # Print out each individual setting, with no labels
+  -name)
+    echo "$PROJECT_NAME"
+    exit 0;;
+
+  -src)
+    echo "$PROJECT_SRC"
+    exit 0;;
+
+  *)
+     echo "> Error: Unexpected error.  '$PRINT_OPTION' option unhandled";
+     exit 1;;
+esac

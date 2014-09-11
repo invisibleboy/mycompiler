@@ -1,0 +1,150 @@
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+ 
+
+###############################################################################
+# Run 'read_platform_info --help | more' for documentation.
+# 
+# Platform info module for: hp cc
+# 
+# See www.trimaran.org for Trimaran-based testing and porting info.
+#
+# IMPACT-based testing history for platform info:
+#
+#   7/12/99  IMPACT version 2.33
+#            HP-UX B.10.20 A, cc G.10.32.05 HP C Compiler
+#
+#            Benchmark sets tested (all benchmark names in 'list' below):
+#
+#              SPECint92_info_12JUL99.tgz
+#              SPECint95_info_12JUL99.tgz
+#              052.alvinn_info_12JUL99.tgz
+#              IMPACT_tests_12JUL99.tgz
+#              HPL_kernels_12JUL99.tgz
+#              wc_12JUL99.tgz
+#
+#            Regression runs:
+#
+#              1) test_list list >& test.out  
+#               
+#                 All benchmarks PASSED.
+#
+#              2) compile_list list -c2O_im_p -eval_prefix input >& O.out
+#
+#                 All benchmarks PASSED except:
+#
+#                  a) 085.cc1/input12 had MISMATCH but output actually OK.
+#                     Difference due to minor scheduling difference caused
+#                     by rounding differences in priority calculation.
+#                     This will happen randomly for 085.cc1 inputs.
+#
+#                  b) 099.go/input[2-4]: undiagnosed MISMATCHes.
+#                     099.go/input1: PASSED.
+#              
+#
+#              3) compile_list list -O2S_im_p -eval_prefix input >& S.out
+#
+#                 All benchmarks PASSED except:
+#
+#                  a) 085.cc1/input12: same as above.
+#
+#                  b) 099.go/input[2-4]: same as above
+#
+#                  c) 126.gcc/input*: regression not finished in time, but 
+#                     has had undiagnosed Lprofile punt in recent runs.
+#
+#              4) compile_list list -O2HS_im_p -eval_prefix input >& HS.out
+#                 
+#                 All benchmarks PASSED except:
+#
+#                  a) 085.cc1/input12: same as above.
+#      
+#                  b) 099.go/input*: regression not finished in time, but 
+#                     input1 has had undiagnosed coredump during execution.
+#                     input[2-4] have not been tested.
+#
+#                  c) 126.gcc/input*: regression not finished in time, but 
+#                     has had undiagnosed Lprofile punt in recent runs.
+# 
+# Revision history for this file:
+#   1/99  Created by IMPACT Technologies, Inc (John C. Gyllenhaal)
+#   5/99  Updated to match new read_platform_info revision -ITI/JCG
+
+# HP's header files require -D_HPUX_SOURCE to be set
+PREPROCESSOR_INVOCATION="cc -w -E -D_HPUX_SOURCE -DIT64BIT"
+INCLUDE_PATH_OPTIONS="-I${PLATFORM_DIR}/include"
+PREPROCESSED_EXTENSION=".i"
+
+COMPILER_INVOCATION="cc -w -z +DA1.1 +e -Ae"
+COMPILER_INVOCATION_4LAYOUT="cc -w -z +DA1.1 +e -Ae"
+OUTPUT_FILE_SPECIFIER="-o " # Space required after -o!
+EXECUTABLE_EXTENSION="";    # No extra extension required
+OPTI_MODE_SPECIFIER="-O"
+DEBUG_MODE_SPECIFIER="-g"
+ANSI_C_MODE_SPECIFIER="-Aa"
+KRC_MODE_SPECIFIER="-Ac"
+USE_KRC_MODE=1
+SHARED_LIB_SPECIFIER=""
+STATIC_LIB_SPECIFIER="-Wl,-a,archive"
+COMPILER_POSTOPTIONS=""
+COMPILER_VERSION_QUERY="${PLATFORM_DIR}/print_cc_version"
+
+if test -f ${PLATFORM_DIR}/impact_pprof_lib.o ; then
+	PCODE_PROF_LIB="${PLATFORM_DIR}/impact_pprof_lib.o"
+else
+	PCODE_PROF_LIB="${IMPACT_ROOT}/lib/libimpact_pprof.a"
+fi
+
+if test -f ${PLATFORM_DIR}/impact_lemul_lib.o ; then
+	LCODE_EMUL_LIB="${PLATFORM_DIR}/impact_lemul_lib.o"
+else
+	LCODE_EMUL_LIB="${IMPACT_ROOT}/lib/libimpact_lemul.a"
+fi
+
+MAKE_COMMAND="make"
+LN_COMMAND="ln -s"

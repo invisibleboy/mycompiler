@@ -1,0 +1,280 @@
+\section{mtr.h File Reference}
+\label{mtr_8h}\index{mtr.h@{mtr.h}}
+{\tt \#include $<$config.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Mtr\-Node}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{CONST}
+\item 
+\#define \bf{EXTERN}~extern
+\item 
+\#define \bf{ARGS}(protos)~()
+\item 
+\#define \bf{MTR\_\-INLINE}
+\item 
+\#define \bf{MTR\_\-UNUSED}
+\item 
+\#define \bf{MTR\_\-DEFAULT}~0x00000000
+\item 
+\#define \bf{MTR\_\-TERMINAL}~0x00000001
+\item 
+\#define \bf{MTR\_\-SOFT}~0x00000002
+\item 
+\#define \bf{MTR\_\-FIXED}~0x00000004
+\item 
+\#define \bf{MTR\_\-NEWNODE}~0x00000008
+\item 
+\#define \bf{MTR\_\-MAXHIGH}~((\bf{Mtr\-Half\-Word}) $\sim$0)
+\item 
+\#define \bf{MTR\_\-SET}(node, flag)~(node $\rightarrow$ flags $|$= (flag))
+\item 
+\#define \bf{MTR\_\-RESET}(node, flag)~(node $\rightarrow$ flags \&= $\sim$ (flag))
+\item 
+\#define \bf{MTR\_\-TEST}(node, flag)~(node $\rightarrow$ flags \& (flag))
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef unsigned short \bf{Mtr\-Half\-Word}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Alloc\-Node \bf{ARGS} (())
+\item 
+EXTERN void Mtr\_\-Dealloc\-Node \bf{ARGS} ((\bf{Mtr\-Node} $\ast$node))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Copy\-Tree \bf{ARGS} ((\bf{Mtr\-Node} $\ast$node, int expansion))
+\item 
+EXTERN void Mtr\_\-Make\-First\-Child \bf{ARGS} ((\bf{Mtr\-Node} $\ast$parent, \bf{Mtr\-Node} $\ast$child))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Create\-First\-Child \bf{ARGS} ((\bf{Mtr\-Node} $\ast$parent))
+\item 
+EXTERN void Mtr\_\-Make\-Next\-Sibling \bf{ARGS} ((\bf{Mtr\-Node} $\ast$first, \bf{Mtr\-Node} $\ast$second))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Init\-Group\-Tree \bf{ARGS} ((int lower, int \bf{size}))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Make\-Group \bf{ARGS} ((\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int high, unsigned int flags))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Dissolve\-Group \bf{ARGS} ((\bf{Mtr\-Node} $\ast$group))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Find\-Group \bf{ARGS} ((\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int high))
+\item 
+EXTERN void Mtr\_\-Print\-Groups \bf{ARGS} ((\bf{Mtr\-Node} $\ast$root, int silent))
+\item 
+EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Read\-Groups \bf{ARGS} ((FILE $\ast$fp, int nleaves))
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define ARGS(protos)~()}\label{mtr_8h_c567d4fddb379109f084370bc6947492}
+
+
+
+
+Definition at line 73 of file mtr.h.\index{mtr.h@{mtr.h}!CONST@{CONST}}
+\index{CONST@{CONST}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define CONST}\label{mtr_8h_0c33b494a68ce28497e7ce8e5e95feff}
+
+
+CHeader\-File$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{mtr.h}{p.}{mtr_8h}]
+
+Package\-Name [mtr]
+
+Synopsis [Multiway-branch tree manipulation]
+
+Description [This package provides two layers of functions. Functions of the lower level manipulate multiway-branch trees, implemented according to the classical scheme whereby each node points to its first child and its previous and next siblings. These functions are collected in \doxyref{mtr\-Basic.c}{p.}{mtrBasic_8c}.
+
+Functions of the upper layer deal with group trees, that is the trees used by group sifting to represent the grouping of variables. These functions are collected in \doxyref{mtr\-Group.c}{p.}{mtrGroup_8c}.]
+
+See\-Also [The CUDD package documentation; specifically on group sifting.]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.]
+
+Revision [\begin{Desc}
+\item[Id]\doxyref{mtr.h}{p.}{mtr_8h},v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \end{Desc}
+] 
+
+Definition at line 58 of file mtr.h.\index{mtr.h@{mtr.h}!EXTERN@{EXTERN}}
+\index{EXTERN@{EXTERN}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EXTERN~extern}\label{mtr_8h_77366c1bd428629dc898e188bfd182a3}
+
+
+
+
+Definition at line 66 of file mtr.h.\index{mtr.h@{mtr.h}!MTR_DEFAULT@{MTR\_\-DEFAULT}}
+\index{MTR_DEFAULT@{MTR\_\-DEFAULT}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-DEFAULT~0x00000000}\label{mtr_8h_34eda081d6177195019e607490a784d0}
+
+
+
+
+Definition at line 90 of file mtr.h.
+
+Referenced by Cudd\_\-zdd\-Vars\-From\-Bdd\-Vars(), dd\-Group\-Move(), dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), Mtr\_\-Init\-Group\-Tree(), Mtr\_\-Print\-Groups(), Mtr\_\-Read\-Groups(), zdd\-Group\-Move(), zdd\-Group\-Sifting\-Down(), and zdd\-Group\-Sifting\-Up().\index{mtr.h@{mtr.h}!MTR_FIXED@{MTR\_\-FIXED}}
+\index{MTR_FIXED@{MTR\_\-FIXED}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-FIXED~0x00000004}\label{mtr_8h_ce4c447a002e504ec815762d74d1de79}
+
+
+
+
+Definition at line 93 of file mtr.h.
+
+Referenced by dd\-Reorder\-Children(), Mtr\_\-Print\-Groups(), Mtr\_\-Read\-Groups(), and zdd\-Reorder\-Children().\index{mtr.h@{mtr.h}!MTR_INLINE@{MTR\_\-INLINE}}
+\index{MTR_INLINE@{MTR\_\-INLINE}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-INLINE}\label{mtr_8h_c69f8743904be8c18df97172885e0cca}
+
+
+
+
+Definition at line 85 of file mtr.h.\index{mtr.h@{mtr.h}!MTR_MAXHIGH@{MTR\_\-MAXHIGH}}
+\index{MTR_MAXHIGH@{MTR\_\-MAXHIGH}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-MAXHIGH~((\bf{Mtr\-Half\-Word}) $\sim$0)}\label{mtr_8h_dacf8a5c817ea965549c5ac2f510c6eb}
+
+
+
+
+Definition at line 103 of file mtr.h.
+
+Referenced by Cudd\_\-Make\-Tree\-Node(), Cudd\_\-Make\-Zdd\-Tree\-Node(), and mtr\-Shift\-HL().\index{mtr.h@{mtr.h}!MTR_NEWNODE@{MTR\_\-NEWNODE}}
+\index{MTR_NEWNODE@{MTR\_\-NEWNODE}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-NEWNODE~0x00000008}\label{mtr_8h_cf089626f0a2fbc9c115c05cb7f31b4a}
+
+
+
+
+Definition at line 94 of file mtr.h.
+
+Referenced by dd\-Group\-Sifting\-Down(), dd\-Group\-Sifting\-Up(), Mtr\_\-Print\-Groups(), and Mtr\_\-Read\-Groups().\index{mtr.h@{mtr.h}!MTR_RESET@{MTR\_\-RESET}}
+\index{MTR_RESET@{MTR\_\-RESET}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-RESET(node, flag)~(node $\rightarrow$ flags \&= $\sim$ (flag))}\label{mtr_8h_538397031ddd0dc5b08282a91c460c9f}
+
+
+
+
+Definition at line 145 of file mtr.h.\index{mtr.h@{mtr.h}!MTR_SET@{MTR\_\-SET}}
+\index{MTR_SET@{MTR\_\-SET}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-SET(node, flag)~(node $\rightarrow$ flags $|$= (flag))}\label{mtr_8h_0302fd36cbd9738db1645651ce8c01b8}
+
+
+
+
+Definition at line 144 of file mtr.h.\index{mtr.h@{mtr.h}!MTR_SOFT@{MTR\_\-SOFT}}
+\index{MTR_SOFT@{MTR\_\-SOFT}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-SOFT~0x00000002}\label{mtr_8h_ca97a28e9a21da62d005994f914fedf5}
+
+
+
+
+Definition at line 92 of file mtr.h.
+
+Referenced by Mtr\_\-Print\-Groups(), and Mtr\_\-Read\-Groups().\index{mtr.h@{mtr.h}!MTR_TERMINAL@{MTR\_\-TERMINAL}}
+\index{MTR_TERMINAL@{MTR\_\-TERMINAL}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-TERMINAL~0x00000001}\label{mtr_8h_03a1fb2013961faa6be2f0fc043b9974}
+
+
+
+
+Definition at line 91 of file mtr.h.
+
+Referenced by Mtr\_\-Dissolve\-Group(), Mtr\_\-Find\-Group(), Mtr\_\-Free\-Tree(), Mtr\_\-Print\-Groups(), Mtr\_\-Print\-Tree(), Mtr\_\-Read\-Groups(), and mtr\-Shift\-HL().\index{mtr.h@{mtr.h}!MTR_TEST@{MTR\_\-TEST}}
+\index{MTR_TEST@{MTR\_\-TEST}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MTR\_\-TEST(node, flag)~(node $\rightarrow$ flags \& (flag))}\label{mtr_8h_a19cf1765b27d83e4a6a27cdd85fa065}
+
+
+
+
+Definition at line 146 of file mtr.h.
+
+Referenced by Mtr\_\-Dissolve\-Group(), Mtr\_\-Find\-Group(), Mtr\_\-Free\-Tree(), Mtr\_\-Print\-Groups(), Mtr\_\-Print\-Tree(), and mtr\-Shift\-HL().\index{mtr.h@{mtr.h}!MTR_UNUSED@{MTR\_\-UNUSED}}
+\index{MTR_UNUSED@{MTR\_\-UNUSED}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define \bf{MTR\_\-UNUSED}}\label{mtr_8h_30f1e5aa1918fd1edd2902c9f57e7804}
+
+
+
+
+Definition at line 86 of file mtr.h.
+
+\subsection{Typedef Documentation}
+\index{mtr.h@{mtr.h}!MtrHalfWord@{MtrHalfWord}}
+\index{MtrHalfWord@{MtrHalfWord}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef unsigned short \bf{Mtr\-Half\-Word}}\label{mtr_8h_abc0c043957025b1b114d6ce88bb59e9}
+
+
+
+
+Definition at line 119 of file mtr.h.
+
+\subsection{Function Documentation}
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Read\-Groups ARGS ((FILE $\ast$fp, int nleaves))}\label{mtr_8h_1abec8a44ddff77777629a6d3a27e82c}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Mtr\_\-Print\-Groups ARGS ((\bf{Mtr\-Node} $\ast$root, int silent))}\label{mtr_8h_4793c494f440a0790bf70ff46689896b}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Find\-Group ARGS ((\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int high))}\label{mtr_8h_1023ebf8b0e3881189bda3b9a2117e06}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Dissolve\-Group ARGS ((\bf{Mtr\-Node} $\ast$group))}\label{mtr_8h_204decd1c7ce16beb43f5561b15ba9fd}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Make\-Group ARGS ((\bf{Mtr\-Node} $\ast$root, unsigned int low, unsigned int high, unsigned int flags))}\label{mtr_8h_5b56a293245c93ec6e4cc1f617fd8c14}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Init\-Group\-Tree ARGS ((int lower, int \bf{size}))}\label{mtr_8h_afe7def825aac8e0020a5137a8ed3e47}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN int Mtr\_\-Swap\-Groups ARGS ((\bf{Mtr\-Node} $\ast$first, \bf{Mtr\-Node} $\ast$second))}\label{mtr_8h_98f0ccde7cf53885755ae503fb23e0a8}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node} $\ast$Mtr\_\-Create\-Last\-Child ARGS ((\bf{Mtr\-Node} $\ast$parent))}\label{mtr_8h_62975e949f96d40d4b0422ed8297e9ff}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Mtr\_\-Make\-Last\-Child ARGS ((\bf{Mtr\-Node} $\ast$parent, \bf{Mtr\-Node} $\ast$child))}\label{mtr_8h_99433e002a553048668b74e67e9a03f0}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Copy\-Tree ARGS ((\bf{Mtr\-Node} $\ast$node, int expansion))}\label{mtr_8h_5d39088b66cdcc15c8472458314ba542}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN void Mtr\_\-Print\-Tree ARGS ((\bf{Mtr\-Node} $\ast$node))}\label{mtr_8h_760e3997808ad5c10df66c80b0c0e707}
+
+
+\index{mtr.h@{mtr.h}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!mtr.h@{mtr.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}EXTERN \bf{Mtr\-Node}$\ast$ Mtr\_\-Alloc\-Node ARGS (())}\label{mtr_8h_c9df377d6672692da526d2e99f93e5aa}
+
+
+Automatic\-Start 

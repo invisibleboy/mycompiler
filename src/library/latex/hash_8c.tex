@@ -1,0 +1,147 @@
+\section{hash.c File Reference}
+\label{hash_8c}\index{hash.c@{hash.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$malloc.h$>$}\par
+{\tt \#include $<$library/hash.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{\_\-Tbl}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{MAX}~100
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{\_\-Tbl} $\ast$ \bf{Tbl}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{error} (char $\ast$mesg)
+\item 
+static int \bf{Hash} (\bf{Tbl} tbl, int key, int type)
+\item 
+int \bf{New\-Hash\-Tbl} (int max\_\-size)
+\item 
+\bf{Entry} \bf{Add\-Entry} (int tbl\_\-id, int key, int type)
+\item 
+\bf{Entry} \bf{Find\-Entry} (int tbl\_\-id, int key, int type)
+\item 
+void \bf{Clear\-Hash\-Tbl} (int tbl\_\-id)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static \bf{\_\-Tbl} \bf{TBL} [MAX]
+\item 
+static int \bf{next\_\-tbl} = 0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{hash.c@{hash.c}!MAX@{MAX}}
+\index{MAX@{MAX}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX~100}\label{hash_8c_392fb874e547e582e9c66a08a1f23326}
+
+
+
+
+Definition at line 71 of file hash.c.
+
+Referenced by New\-Hash\-Tbl(), New\-Sym\-Tbl(), print\_\-set(), Set\_\-subtract\_\-union(), and Set\_\-union().
+
+\subsection{Typedef Documentation}
+\index{hash.c@{hash.c}!Tbl@{Tbl}}
+\index{Tbl@{Tbl}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{\_\-Tbl} $\ast$ \bf{Tbl}}\label{hash_8c_87343d1392cc52e3265f7ba0e05a2cad}
+
+
+
+
+\subsection{Function Documentation}
+\index{hash.c@{hash.c}!AddEntry@{AddEntry}}
+\index{AddEntry@{AddEntry}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Entry} Add\-Entry (int {\em tbl\_\-id}, int {\em key}, int {\em type})}\label{hash_8c_823e73343ed3cc602ec5a47446d148ef}
+
+
+Add a new entry in the hash table. 
+
+Definition at line 167 of file hash.c.
+
+References \_\-Tbl::array, error(), Hash(), INVALID\_\-ENTRY, \_\-Entry::key, next\_\-tbl, \_\-Entry::ptr, TBL, \_\-Entry::type, and \_\-Entry::value.\index{hash.c@{hash.c}!ClearHashTbl@{ClearHashTbl}}
+\index{ClearHashTbl@{ClearHashTbl}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Clear\-Hash\-Tbl (int {\em tbl\_\-id})}\label{hash_8c_5004e15212d23633bcb473d8167f2ce9}
+
+
+Completely erase a hash table 
+
+Definition at line 208 of file hash.c.
+
+References \_\-Tbl::array, error(), INVALID\_\-ENTRY, \_\-Entry::key, next\_\-tbl, \_\-Entry::ptr, \_\-Tbl::size, TBL, \_\-Entry::type, and \_\-Entry::value.\index{hash.c@{hash.c}!error@{error}}
+\index{error@{error}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void error (char $\ast$ {\em mesg})\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_ee4e896cda242224d1a22f98709fcb89}
+
+
+
+
+Definition at line 85 of file hash.c.
+
+Referenced by Add\-Entry(), Add\-Sym(), Clear\-Free\-Sym\-Tbl(), Clear\-Hash\-Tbl(), Clear\-Sym\-Tbl(), Find\-Entry(), Find\-Sym(), Hash(), New\-Hash\-Tbl(), and New\-Sym\-Tbl().\index{hash.c@{hash.c}!FindEntry@{FindEntry}}
+\index{FindEntry@{FindEntry}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Entry} Find\-Entry (int {\em tbl\_\-id}, int {\em key}, int {\em type})}\label{hash_8c_7f132fbd09fb46c0324910a2241fc647}
+
+
+Find an entry in the hash table. 
+
+Definition at line 189 of file hash.c.
+
+References \_\-Tbl::array, error(), Hash(), INVALID\_\-ENTRY, next\_\-tbl, TBL, and \_\-Entry::type.\index{hash.c@{hash.c}!Hash@{Hash}}
+\index{Hash@{Hash}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int Hash (\bf{Tbl} {\em tbl}, int {\em key}, int {\em type})\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_92bee1c5bc6c75d763b4df7669ddf8dc}
+
+
+
+
+Definition at line 96 of file hash.c.
+
+References \_\-Tbl::array, error(), INVALID\_\-ENTRY, and \_\-Tbl::size.
+
+Referenced by Add\-Entry(), Add\-Sym(), Find\-Entry(), and Find\-Sym().\index{hash.c@{hash.c}!NewHashTbl@{NewHashTbl}}
+\index{NewHashTbl@{NewHashTbl}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int New\-Hash\-Tbl (int {\em max\_\-size})}\label{hash_8c_4ee45a0996e73169eec001797c7d259a}
+
+
+Create a new symbol table. 
+
+get next table 
+
+Definition at line 138 of file hash.c.
+
+References \_\-Tbl::array, error(), INVALID\_\-ENTRY, \_\-Entry::key, MAX, next\_\-tbl, \_\-Entry::ptr, \_\-Tbl::size, TBL, \_\-Entry::type, and \_\-Entry::value.
+
+\subsection{Variable Documentation}
+\index{hash.c@{hash.c}!next_tbl@{next\_\-tbl}}
+\index{next_tbl@{next\_\-tbl}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{next\_\-tbl} = 0\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_8f6d5fcc8b0f003fcb0ac869a190bc2f}
+
+
+
+
+Definition at line 81 of file hash.c.
+
+Referenced by Add\-Entry(), Add\-Sym(), C\_\-open(), Clear\-Free\-Sym\-Tbl(), Clear\-Hash\-Tbl(), Clear\-Sym\-Tbl(), Find\-Entry(), Find\-Sym(), New\-Hash\-Tbl(), and New\-Sym\-Tbl().\index{hash.c@{hash.c}!TBL@{TBL}}
+\index{TBL@{TBL}!hash.c@{hash.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{\_\-Tbl} \bf{TBL}[MAX]\hspace{0.3cm}{\tt  [static]}}\label{hash_8c_09d1102ef824c94746561bd930c87e48}
+
+
+
+
+Definition at line 80 of file hash.c.
+
+Referenced by Add\-Entry(), Add\-Sym(), C\_\-clear(), C\_\-clear\_\-attr(), C\_\-clear\_\-free\_\-all(), C\_\-clear\_\-free\_\-name(), C\_\-delete(), C\_\-delete\_\-tbl(), C\_\-find(), C\_\-find\_\-from\_\-index(), C\_\-find\_\-index(), C\_\-forall(), C\_\-full(), C\_\-open(), C\_\-unique\_\-name(), C\_\-update(), Clear\-Free\-Sym\-Tbl(), Clear\-Hash\-Tbl(), Clear\-Sym\-Tbl(), find\_\-symbol(), Find\-Entry(), Find\-Sym(), New\-Hash\-Tbl(), and New\-Sym\-Tbl().

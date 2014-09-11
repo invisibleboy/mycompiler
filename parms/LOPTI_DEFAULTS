@@ -1,0 +1,221 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lopti default parameters.
+#
+# Created by Scott Mahlke, 11-11-93
+#
+# Revisions: 12-28-94 SAM, lots of new parms
+#
+
+$opti$ = 0;
+
+(Lopti declaration
+
+  # Opti level - highest level of control
+  #     level 0 = no opti, level 1 = local opti, level 2 = local+global opti,
+  #     level 3 = local+global+jump opti, level 4 = local+global+jump+loop
+    opti_level = $opti$;
+
+  # Local optimization switches (Intra basic block optimizations)
+    do_local_opti = yes;		# disable ALL local opti if "no"
+    do_local_constant_prop = yes;	# constant propagation
+    do_local_copy_prop = yes;		# copy propagation
+    do_local_rev_copy_prop = yes;	# reverse copy propagation
+    do_local_common_sub_elim = yes;	# arithmetic common subexpr elimination
+    do_local_mem_copy_prop = yes;	# memory copy propagation
+    do_local_red_load_elim = yes;	# redundant load elimination
+    do_local_red_store_elim = yes;	# redundant store elimination
+    do_local_constant_comb = yes;	# constant combining
+    do_local_constant_fold = yes;	# constant folding
+    do_local_strength_red = yes;	# strength reduction
+    do_local_strength_red_for_signed_div_rem = yes; # strength reduction for a
+					# signed divide and remainder
+    do_local_operation_fold = yes;	# operation folding
+    do_local_branch_fold = yes;		# branch folding
+    do_local_operation_cancel = yes;	# operation cancellation
+    do_local_dead_code_rem = yes;	# dead code removal
+    do_local_code_motion = yes;		# code reordering
+    do_local_remove_sign_ext = yes;	# remove unnec sign extensions
+    do_local_reduce_logic = yes;        # local logic reduction
+    do_local_register_rename = yes;	# register renaming
+    do_local_op_breakdown = yes;	# breakup certain ops that cannot be handled
+					# by the target processor
+    do_local_op_recombine = yes;	# recombine ops that were not opti'd away
+    do_local_branch_val_prop = yes;
+    debug_local_opti = no;		# print out debug info for local opti
+    
+  # Memflow optimization switches 
+    debug_memflow = no;			# print memflow debugging info
+    do_memflow_opti = no;		# perform memflow optis
+    do_memflow_multistore_load = no;	# perform mupliple store to load opti
+    memflow_bypass_load = 1500;		# maximum number of loads for opti  
+    memflow_bypass_store = 1500;        # maximum number of stores for opti
+    memflow_bypass_jsr = 500;          	# maximum number of jsrs for opti
+    memflow_bypass_total = 3000;        # maximum number of memory ops for opti
+  
+  # Global optimization switches (Inter basic block optimizations)
+    do_global_opti = yes;		# disable ALL global opti if "no"
+    do_global_dead_code_rem = yes;	# dead code removal
+    do_global_constant_prop = yes;	# constant propagation
+    do_global_copy_prop = yes;		# copy propagation
+    do_global_common_sub_elim = yes;	# arithmetic common subexpr elimination
+    do_global_mem_copy_prop = yes;	# memory copy propagation
+    do_global_red_load_elim = yes;	# redundant load elimination
+    do_global_red_store_elim = yes;	# redundant store elimination
+    do_global_elim_boolean_ops = yes;	# remove unnecessary boolean operations
+    do_global_branch_val_prop = yes;
+    do_global_dead_if_then_else_rem = no;    # remove two blocks do the same
+					     # ADA 04/28/95
+
+    do_split_branches = yes;            # split multi-def branches to aid HB
+    do_split_unification = no;          # unify up
+    do_merge_unification = no;          # unify down -- BROKEN for stores!
+
+    do_jrg_expansion = no;              # expand likely cases of jump_rg
+
+    debug_global_opti = no;		# print out debug info for global opti
+
+  # Jump optimization switches
+    do_jump_opti = yes;			# disable ALL jump opti if "no"
+    do_jump_dead_block_elim = yes;	# dead (unreachable) block elimination
+    do_jump_br_to_next_block = yes;	# eliminate branch to next sequential block
+    do_jump_br_to_same_target = yes;	# eliminate branches to same target
+    do_jump_br_to_uncond_br = yes;	# retarget branch to uncond branch
+    do_jump_block_merge = yes;		# merge always sequential blocks
+    do_jump_combine_labels = yes;	# remove redundant cb labels
+    do_jump_br_target_expansion = yes;	# branch target expansion
+    do_jump_br_swap = yes;		# swap loop/fallthru branches
+    allow_jump_expansion_of_pcode_loops = yes; # all br target exp of loop bodies
+					# marked from Pcode
+    debug_jump_opti = no;		# print out debug info for jump opti
+
+  # Loop optimization switches
+    do_loop_opti = no;			# disable ALL loop opti if "no"
+    do_loop_br_simp = yes;		# simplify loop back branches
+    do_loop_inv_code_rem = yes;		# invariant code removal
+    do_loop_global_var_mig = yes;	# global variable migration
+    do_loop_ind_var_str_red = yes;	# induction variable strength reduction
+    do_loop_ind_var_reinit = yes;	# induction variable reinitialization
+    do_loop_ind_var_elim = yes;		# induction variable elimination
+    do_dead_loop_rem = no;         	# ADA 4/6/95: dead loop removal
+
+    store_migration_mode = 2;           # 1 = FULL_PRED
+                                        # 2 = NO_PRED
+                                        # 3 = NO_COND
+
+    preserve_loop_var = yes;		# do NOT eliminate the loop variable
+					# with induction var elim
+    do_complex_ind_elim = yes;		# allow complex induction elim (ind vars
+					# with different increments to be elim'd)
+    do_longword_loop_opti = no;		# convert char or short operand based
+					# loop to long based loop.
+    do_remove_decidable_cond_branches = yes;
+
+    debug_loop_opti = no;		# print out debug info for loop opti
+
+  # Partial code elimination switches
+    do_PCE = no; 			# disable ALL PCE optimizations if "no"
+    do_PCE_split_critical_edges = yes;	# currently must be on for PCE optis
+    do_PCE_merge_same_cbs = yes;
+    do_PCE_optimize_memory_ops = yes;
+    do_PCE_conservative_memory_opti = yes;
+
+    do_PRE = no; 	   		# disable ALL PRE optimizations if "no"
+    do_PRE_lazy_code_motion = yes; 	# perfoms original PRE analysis & opti
+    do_PRE_mem_copy_prop = yes;
+    do_PRE_merge_loads_diff_types = no;
+    do_PRE_cutset_metric = yes;
+    do_PRE_optimize_moves_of_numerical_constants = no;
+    do_PRE_optimize_moves = yes;
+    do_PRE_optimize_single_source_ops = yes;
+    do_PRE_speculative_code_motion = no;
+
+    do_global_mem_expression_copy_prop = no; 
+    do_global_dead_store_removal = no;
+    do_dead_local_var_store_removal = yes;
+
+    do_PDE = no;			# disable ALL PDE optimizations if "no"
+    do_PDE_cutset_metric = no;
+    do_PDE_min_cut = no;		# if "no" only performs Knoop PDE
+    do_PDE_predicated = yes;		# if "no" only performs "available" PDE
+    do_PDE_sink_stores = yes;
+    do_PDE_sink_only_stores = no;
+
+
+  # Predicate promotion / optimization
+
+    pred_promotion_level = 3;           # 0 = no predicate promotion
+					# 1 = hierarchical promotion
+					# 2 = full promotion w/o renaming
+                                        # 3 = full promotion w/ renaming
+
+#    do_pred_opti = yes;                 # lightweight predicate optimization:
+                                        #   redundant guard removal
+                                        #   and chain formation
+    remove_red_guards = yes;            # remove redundant guards.  can confuse
+                                        # elcor's predicate analysis. -KF 10/2005
+
+  # Miscellaneous switches
+    only_lvl1_for_zero_weight_fn = no;  # override opti level for zero weight fns
+	# default changed to no for do_post_inc_conv - DMG - Jan 95 
+    do_post_inc_conv = no;		# generate pre/post inc ld/sts
+    do_mark_memory_labels = yes;	# mark address labels in attribute
+    do_mark_incoming_parms= yes;	# mark incoming parameter addr in attribute
+    do_mark_trivial_sef_jsrs = yes;	# mark <E> for jsr (simple analysis only!)
+    do_mark_sync_jsrs = yes;		# mark <Y> flag for jsr
+    do_mark_trivial_safe_ops = yes;	# mark <F> for ld/st (simple analysis only!)
+    do_code_layout = yes;		# do trace selection / code layout
+    do_classify_branches = yes;		# attach info attribute to all branches
+    do_benchmark_specific_opti=no;	# benchmark opti such as eqntott cheat
+    print_opti_count = no;		# print counts of applied optimizations
+    print_opti_breakdown = no;		# print more detailed optimizations
+
+    ignore_sync_arcs_for_red_elim = no;
+    ignore_sync_arcs_for_loop_inv_migration = no;
+end)

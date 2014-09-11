@@ -1,0 +1,242 @@
+#!/bin/sh
+perl -x $0 "$@"
+exit $?
+#!/usr/bin/perl
+
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   Merges the Lcode profiles prior to annotation.
+#
+#   Script written by Erik Nystrom, Matthew Merten, and Wen-mei Hwu  08/01
+
+$file_count = 0;
+
+# BUILD THE FILE HANDLE LIST
+@fh_list = ();
+foreach $param (@ARGV)
+{
+  $file_handle = newopen($param);
+  die "Could not open $param\n" if (!file_handle);
+  push(@fh_list, $file_handle);
+  $file_count++;
+  print STDERR ">> opened $param\n";
+}
+$last_file = $file_count - 1;
+
+$done = 0;
+while(!$done) {
+ for ($j=0; $j < $file_count; $j++) {
+    $file_handle = $fh_list[$j]; 
+    if (!($_ = <$file_handle>))
+      {
+         die "Should end on j=0" if ($j != 0);
+         $done=1;
+         last;
+      }
+
+    if ($j == 0)
+      {
+        $weight = 0;
+        $weight2 = 0;
+        $cbnum = 0;
+        $types = 0;
+      }
+
+    if (/\(count\s+(\d+)/)
+    {
+      $weight = $weight + $1; 
+      printf "(count %d)\n",$weight if ($j == $last_file);
+    }
+    elsif (/\(begin\s+(\w+)\s+(\d+.\d+)/)
+    {
+      $weight = $weight + $2; 
+      printf "(begin $1 %f)\n",$weight if ($j == $last_file);
+    }
+    elsif (/\(end\s+(\w+)/)
+    {
+      print "(end $1)\n" if ($j == $last_file);
+    }
+    elsif (/\(cb\s+(\d+)\s+(\d+.\d+)/)
+    {
+      if ($j == 0)
+       {      
+         $cbnum = $1;
+       }
+      else
+       {
+         die "lcb cb mismatch\n" if ($cbnum != $1);
+       }
+      $weight = $weight + $2; 
+      printf " (cb %d %f)\n",$cbnum,$weight if ($j == $last_file);
+    }
+    elsif (/\(b\s+(\d+)\s+(\d+.\d+)\s+(\d+.\d+)/)
+    {
+      $weight = $weight + $2; 
+      $weight2 = $weight2 + $3; 
+      printf " (b $1 %f %f)\n",$weight,$weight2 if ($j == $last_file);
+    }
+    elsif (/\(pj\s+(\d+)\s+(\d+.\d+)\s+(\d+.\d+)/)
+    {
+      $weight = $weight + $2; 
+      $weight2 = $weight2 + $3; 
+      printf " (pj $1 %f %f)\n",$weight,$weight2 if ($j == $last_file);
+    }
+    elsif (/\(j\s+(\d+)\s+(\d+.\d+)/)
+    {
+      $weight = $weight + $2; 
+      printf " (j $1 %f)\n",$weight if ($j == $last_file);
+    }
+    elsif (/\(lcb\s+(\d+)\s+(\d+.\d+)\s+(\d+)\s+(\d+)/)
+    {
+      $types = $3;
+      if ($j == 0)
+       {      
+         #Clear hash before first use
+         undef %type_hash;
+         $cbnum = $1;
+         $weight = $2;
+         $hmmm = $4;         
+       }
+      else
+       {
+         die "lcb cb mismatch\n" if ($cbnum != $1);
+         $weight += $2;
+       }
+      #Add keys to hash
+      for ($i=0; $i < $types; $i++)
+       {
+          $_ = <$file_handle>;
+          if (/\s*(\d+)\s+(\d+.\d+)/)
+            {
+	       $type_hash{$1} += $2;
+               #print "$1 = $type_hash{$1}\n";
+            }
+          else
+            {
+              die "[$_] unexpected lcd params\n";
+            }
+       }
+       #Dump on last file
+       if ($j == $last_file)
+        {
+          $types = keys %type_hash;
+          print " (lcb $cbnum $weight $types $hmmm\n";
+          @tmplist = keys %type_hash;
+	  @tmplist = sort numerically @tmplist;
+          foreach $key (@tmplist)
+            {
+              printf "   ( $key %f)\n",$type_hash{$key};
+            }
+          print (" )\n");
+        }      
+       $_ = <$file_handle>;
+    }
+    elsif (/\(jrg\s+(\d+)\s+(\d+.\d+)/)
+    {
+      if ($j == 0)
+       {      
+         #Clear hash before first use
+         undef %type_hash;
+         $cbnum = $1;
+         $weight = $2;      
+       }
+      else
+       {
+         die "jr mismatch\n" if ($cbnum != $1);
+         $weight += $2;
+       }
+      #Add keys to hash
+      $jrg_done = 0;
+      while (!($jrg_done))
+	{
+          $_ = <$file_handle>;
+          if (/\s*(\d+)\s+(\d+.\d+)/)
+            {
+	       $type_hash{$1} += $2;
+               #print "$1 = $type_hash{$1}\n";
+            }
+	  elsif(/^\s*\)/)
+	    {
+	      $jrg_done = 1;
+	    }
+          else
+            {
+              die "[$_] unexpected jrg params\n";
+            }
+       }
+       #Dump on last file
+       if ($j == $last_file)
+        {
+          $types = keys %type_hash;
+          print " (jrg $cbnum $weight\n";
+          @tmplist = keys %type_hash;
+	  @tmplist = sort numerically @tmplist;
+          foreach $key (@tmplist)
+            {
+              printf "   ( $key %f)\n",$type_hash{$key};
+            }
+          print (" )\n");
+        }      
+    }
+    else
+    {
+      die "Unknown token: $_";
+    }
+  }
+}
+
+
+sub numerically { $a <=> $b; }
+
+sub newopen {
+  my $path=shift;
+  local *FH;
+  open(FH, $path) || return undef;
+  return *FH;
+}

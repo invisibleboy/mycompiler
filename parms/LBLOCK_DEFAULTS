@@ -1,0 +1,270 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lblock default parameters
+#
+# These defaults are used for superblock and hyperblock formation
+#
+# Created by Kevin Crozier, 4-20-98
+#
+# Adapted from LSUPERBLOCK_DEFAULTS and LHYPER_DEFAULTS 
+#
+#
+
+(Lblock
+    #
+    # General Lblock parameters
+    #
+
+    block_formation_type=hyperblock;
+        # valid types are basicblock, superblock, and hyperblock
+    predicate_formation_type=prp;
+        # valid only for predicated block formers, valid types are prp and frp
+    make_zero_weight_regions=0;
+        # forces the region selector to look at zero weight regions
+        # and then pass them on to the block selector.  When using the
+        # stat selector this is probably good.  When using the path
+        # selector this may slow Lblock down to crawl.
+    verbose_level = 0;          
+        # Not completely implemented at this point -- 4/20/98 KMC
+        # The verbose level determines how much information is printed
+        # during the execution of Lblock.  This value goes from 0 to 10.
+        # Level 0: Print nothing
+        # Level 7: Print almost everything
+        # Level 10: Print everything, including nasty messages.
+
+    #
+    # Superblock formation parameters
+    #
+
+    minimum_superblock_weight=50.0
+        # minimum weight for cb to be included in a superblock
+    maximum_code_growth=5.0
+        # stop forming superblocks when code gets this size
+    min_branch_ratio=0.01
+	# NOTE: Setting min_branch_ratio to 0.5 or smaller will have the
+        #   effect of including all selected blocks in to the superblock.
+        #   I.e. the branch ratio will NOT be a factor in the selection
+        #   of the block for inclusion in the superblock.
+    trace_min_cb_ratio=0.10        
+        # path wt / cb wt must be greater than trace_min_cb_ratio
+	# for inclusion of cb in the superblock trace
+
+    #
+    # Hyperblock formation parameters
+    #
+    
+    issue_width = 8;
+        # assumed issue width of machine, currently the mdes
+        # is not used in many of the hyperblock formation heuristics
+    min_cb_weight = 20.0;
+        # min weight of a basic block to be included in a HB
+
+    pred_all_paths = no;
+        # not currently supported
+    exclude_all_jsrs = no;
+        # exclude jsrs completely from HBs
+    exclude_all_pointer_stores = no;
+        # exclude pointer stores completely from HBs
+
+    # (a) for the path-based selector (l_path.c)
+
+    path_max_op_growth = 1.5;
+    path_max_dep_growth = 4.25;
+        # Max dependence height the hyperblock is allowed to grow to.
+        # Again, the number is with respect to the dependence height of the
+        # highest priority path through the region.
+    path_min_exec_ratio = 0.00075;
+        # Minimum fraction of execution a path must be to be considered
+        # for inclusion in the hyperblock.
+    path_min_main_exec_ratio = 0.05;
+        # Minimum fraction of execution the main trace must be to seed
+        # the growth of a hyperblock.
+    path_min_priority_ratio = 0.10;
+        # Minimum ratio of the priorities of the last path included in
+        # the hyperblock and the current candidate path.
+    path_main_rel_exec_ratio = 0.05;
+
+    max_cb_in_hammock = 64;
+    form_simple_hammocks_only = no;
+
+    # (b) for the block-based selector (l_region_general.c)
+
+    block_min_weight_ratio = 0.005;
+        # Minimum ratio of the candidate block and the HB entry block
+        # in order to consider the block for inclusion.
+    block_min_path_ratio = 0.015;
+        # Minimum probability of reaching the candidate block from the
+        # HB entry block in order to consider the block for inclusion.
+
+    min_ratio_sens_opct = 2;
+	# Minimum number of ops being considered for inclusion in the
+	# hyperblock that will cause the exec and priority ratios to
+	# have an effect.  Causes tiny zero weight blocks to get
+	# included rather than making messy tails.
+
+    # (c) for the block enumeration selector (Crozier)
+
+    use_block_enum_selector = 0; 
+ 	# Use the block enumeration selector from Kevin's thesis
+    tail_dup_growth = 1.5;
+	# Amount of code expansion allowed for tail duplication
+        # tail_dup_growth < 1.0 prohibits it.
+    max_static_tail_dup = 1.1;
+	# Absolute maximum amount of tail duplication allowed for
+  	# regular regions.
+    max_dyn_tail_dup = 1.5;
+	# Absolute maximum amount of tail duplication allowed for
+  	# regular regions.
+
+    # (d) loop peeling
+
+    peel_enable = yes;
+        # Enable loop peeling to occur
+    peel_heuristic = 1;
+	# Select one of two peeling heuristics (0 or 1)
+    peel_partial = yes;
+        # Allow peeling of partial loop bodies according to hyperblock
+        # loop selection heuristics
+    peel_min_util = 0.8;
+
+    peel_max_ops = 36;    
+        # Maximum size that a peeled loop may become.
+    peel_infinity_iter = 6;
+        # Maximum number of peels a peeled loop may become.
+    peel_min_overall_coverage = 0.75;
+        # Minimum fraction of the dynamic invocations of the loop the peeled
+        # loop must contain for all invocations of the loop.
+    peel_min_peelable_coverage = 0.85;
+        # Minimum fraction of the dynamic invocations of the loop the peeled
+        # loop must contain only looking at invocations that iterate
+        # less than or equal to peel_infinity_iter.
+    peel_inc_peelable_coverage = 0.10;
+        # Minimum fraction of the dynamic invocations of the loop that adding
+        # one more peeled iteration must contain only looking at invocations 
+        # that iterate less than or equal to peel_infinity_iter.
+
+    # (e) Loop collapsing
+    #     (JWS) new transformation to collapse trivial, relatively high
+    #     weight outer loops into larger inner loops for improved HB formation
+    #     prior to modulo scheduling, in particular
+    #     Off by default until heuristics are more developed.
+
+    do_loop_collapsing = no;
+
+    # Attempt to merge instructions across predicate paths within hyperblocks
+
+    do_pred_merge = yes;
+
+    # Combine identically-targeted exits from hyperblocks into single
+    # exit branches.
+
+    combine_exits = yes;
+
+    #
+    # Parameters controlling predication format
+    #
+
+    # Split conditional branches into pred define and predicated jump
+
+    branch_split = no;
+
+    #
+    # Parameters for hazard instruction handling for hyperblock formation
+    # 3 types of hazards are currently considered: unsafe jsrs, safe jsrs,
+    # and pointer stores.  These are used for both path and block selectors.
+    #
+
+    unsafe_jsr_hazard_method = exclude_heuristic;
+    safe_jsr_hazard_method = exclude_heuristic;
+    pointer_st_hazard_method = exclude_heuristic;
+       # Possible values for the 3 hazard method parms are:
+       #   1. exclude_all - no hazard allowed in a HB
+       #   2. exclude_non_trace - only hazards on the main trace allowed
+       #   3. exclude_heuristic - use heuristics to include/exclude hazards
+       #                          (the priority penalties below are used)
+       #   4. ignore - ignore hazard, treat it as an arithmetic op
+    unsafe_jsr_priority_penalty = 0.005;
+    safe_jsr_priority_penalty = 0.01;
+    pointer_st_priority_penalty = 1.0;
+       # Priority penalties are used to reduce the priority of paths/blocks,
+       # containing the specific hazard.  They are only used when the method
+       # is set to exclude_heuristic.  Valid values are numbers, 0.0 - 1.0.
+       # Smaller values result in a higher penalty so more hazards are excluded.
+       # Setting the value to 0.0 is equivalent to the method exclude_all.
+       # Setting the value to 1.0 is equivalent to the method ignore.
+
+    #
+    # Space separated list of functions (i.e., main eval ...) that 
+    # hyperblock formation should not be run on.  Allows some level of 
+    # hand-tuning of hyperblock formation at the function-level. -JCG 6/99
+    #
+
+    prevent_block_functions = 
+
+    # If yes, print out message when functions are not hyperblocked due to
+    # above list -JCG 6/99
+
+    verbose_prevent_block = yes;
+
+    # If yes, select regions but perform only ancillary transformations
+    # (i.e. loop peeling).  This option is intended to help debug
+    # flow weight approximation errors, and is only appropriate for
+    # debugging use.  Its functionality has not been verified.
+
+    setup_only = no;
+
+    split_critical = no;
+
+    available_predicates = 1024;
+
+    do_lightweight_pred_opti = yes;
+        # On by default.  But some of the optis can confuse elcor's predicate
+        # analysis, so you can turn them off here.  -KF 8/2007
+
+end)

@@ -1,0 +1,125 @@
+\section{cudd\-Solve.c File Reference}
+\label{cuddSolve_8c}\index{cuddSolve.c@{cuddSolve.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Solve\-Eqn} (\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$Y, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$$\ast$y\-Index, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Verify\-Sol} (\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$y\-Index, int n)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Solve\-Eqn\-Recur} (\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$Y, \bf{Dd\-Node} $\ast$$\ast$G, int n, int $\ast$y\-Index, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Verify\-Sol} (\bf{Dd\-Manager} $\ast$bdd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$$\ast$G, int $\ast$y\-Index, int n)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Solve.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddSolve.c@{cudd\-Solve.c}!Cudd_SolveEqn@{Cudd\_\-SolveEqn}}
+\index{Cudd_SolveEqn@{Cudd\_\-SolveEqn}!cuddSolve.c@{cudd\-Solve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Solve\-Eqn (\bf{Dd\-Manager} $\ast$ {\em bdd}, \bf{Dd\-Node} $\ast$ {\em F}, \bf{Dd\-Node} $\ast$ {\em Y}, \bf{Dd\-Node} $\ast$$\ast$ {\em G}, int $\ast$$\ast$ {\em y\-Index}, int {\em n})}\label{cuddSolve_8c_5e6c21f42d3912604516687f47fd0f12}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the solution of F(x,y) = 0.]
+
+Description [Implements the solution for F(x,y) = 0. The return value is the consistency condition. The y variables are the unknowns and the remaining variables are the parameters. Returns the consistency condition if successful; NULL otherwise. Cudd\_\-Solve\-Eqn allocates an array and fills it with the indices of the unknowns. This array is used by Cudd\_\-Verify\-Sol.]
+
+Side\-Effects [The solution is returned in G; the indices of the y variables are returned in y\-Index.]
+
+See\-Also [Cudd\_\-Verify\-Sol] 
+
+Definition at line 97 of file cudd\-Solve.c.
+
+References ALLOC, CUDD\_\-MEMORY\_\-OUT, cudd\-Solve\-Eqn\-Recur(), Dd\-Manager::error\-Code, and Dd\-Manager::reordered.\index{cuddSolve.c@{cudd\-Solve.c}!Cudd_VerifySol@{Cudd\_\-VerifySol}}
+\index{Cudd_VerifySol@{Cudd\_\-VerifySol}!cuddSolve.c@{cudd\-Solve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Verify\-Sol (\bf{Dd\-Manager} $\ast$ {\em bdd}, \bf{Dd\-Node} $\ast$ {\em F}, \bf{Dd\-Node} $\ast$$\ast$ {\em G}, int $\ast$ {\em y\-Index}, int {\em n})}\label{cuddSolve_8c_232cca2744915ebae9aecedb78a83dd5}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Checks the solution of F(x,y) = 0.]
+
+Description [Checks the solution of F(x,y) = 0. This procedure substitutes the solution components for the unknowns of F and returns the resulting BDD for F.]
+
+Side\-Effects [Frees the memory pointed by y\-Index.]
+
+See\-Also [Cudd\_\-Solve\-Eqn] 
+
+Definition at line 139 of file cudd\-Solve.c.
+
+References cudd\-Verify\-Sol(), FREE, and Dd\-Manager::reordered.\index{cuddSolve.c@{cudd\-Solve.c}!cuddSolveEqnRecur@{cuddSolveEqnRecur}}
+\index{cuddSolveEqnRecur@{cuddSolveEqnRecur}!cuddSolve.c@{cudd\-Solve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Solve\-Eqn\-Recur (\bf{Dd\-Manager} $\ast$ {\em bdd}, \bf{Dd\-Node} $\ast$ {\em F}, \bf{Dd\-Node} $\ast$ {\em Y}, \bf{Dd\-Node} $\ast$$\ast$ {\em G}, int {\em n}, int $\ast$ {\em y\-Index}, int {\em i})}\label{cuddSolve_8c_75ba8e44100699569e08b481b44fe466}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-Solve\-Eqn.]
+
+Description [Implements the recursive step of Cudd\_\-Solve\-Eqn. Returns NULL if the intermediate solution blows up or reordering occurs. The parametric solutions are stored in the array G.]
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Solve\-Eqn, Cudd\_\-Verify\-Sol] 
+
+Definition at line 180 of file cudd\-Solve.c.
+
+References Cudd\_\-Deref(), Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-T, cudd\-Bdd\-Compose\-Recur(), cudd\-Bdd\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Cofactor\-Recur(), cudd\-Ref, DD\_\-ONE, Dd\-Node::index, one, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-Solve\-Eqn().\index{cuddSolve.c@{cudd\-Solve.c}!cuddVerifySol@{cuddVerifySol}}
+\index{cuddVerifySol@{cuddVerifySol}!cuddSolve.c@{cudd\-Solve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Verify\-Sol (\bf{Dd\-Manager} $\ast$ {\em bdd}, \bf{Dd\-Node} $\ast$ {\em F}, \bf{Dd\-Node} $\ast$$\ast$ {\em G}, int $\ast$ {\em y\-Index}, int {\em n})}\label{cuddSolve_8c_d1dde1ebcd9c605ee59146b7d68177c3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Implements the recursive step of Cudd\_\-Verify\-Sol. ]
+
+Description []
+
+Side\-Effects [none]
+
+See\-Also [Cudd\_\-Verify\-Sol] 
+
+Definition at line 312 of file cudd\-Solve.c.
+
+References Cudd\_\-bdd\-Compose(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, and cudd\-Ref.
+
+Referenced by Cudd\_\-Verify\-Sol().
+
+\subsection{Variable Documentation}
+\index{cuddSolve.c@{cudd\-Solve.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSolve.c@{cudd\-Solve.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Solve.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSolve_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Solve.c}{p.}{cuddSolve_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Boolean equation solver and related functions.]
+
+Description [External functions included in this modoule: \begin{itemize}
+\item \doxyref{Cudd\_\-Solve\-Eqn()}{p.}{cuddSolve_8c_5e6c21f42d3912604516687f47fd0f12} \item \doxyref{Cudd\_\-Verify\-Sol()}{p.}{cuddSolve_8c_232cca2744915ebae9aecedb78a83dd5} \end{itemize}
+Internal functions included in this module: \begin{itemize}
+\item \doxyref{cudd\-Solve\-Eqn\-Recur()}{p.}{cuddSolve_8c_75ba8e44100699569e08b481b44fe466} \item \doxyref{cudd\-Verify\-Sol()}{p.}{cuddSolve_8c_d1dde1ebcd9c605ee59146b7d68177c3} \end{itemize}
+]
+
+See\-Also []
+
+Author [Balakrishna Kumthekar]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 56 of file cudd\-Solve.c.

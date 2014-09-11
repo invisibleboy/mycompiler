@@ -1,0 +1,129 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#	Generate machine code for TI
+#
+#	Usage: gen_LTI "directory" "model" "phase" < "list"
+
+if [ $# -eq 3 ]; then
+        PREFIX="$1";
+        MODEL="$2";
+        PHASE="$3";
+        EXTRA_ARGS="";
+
+elif [ $# -eq 4 ]; then
+        PREFIX="$1";
+        MODEL="$2";
+        PHASE="$3";
+        EXTRA_ARGS="$4";
+
+else
+        echo '> Usage gen_LTI "dir" "model" "phase" ["extra_args"] < "list"';
+        echo '>';
+        echo '> "dir" is location of input files';
+        echo '> "model" is target processor model (ie HP-MCODE)'
+        echo '> "phase" is code generation phase (ie. 1,2,3,4,6,or 7(0) )';
+        echo '> "extra_args" are optional additional -P and -F arguments to pass';
+        echo ">              Lopti (Put quote around args, ie '-Fparm1=2 -Fparm2=3')";
+        echo '> "list" is list of Lcode file to process';
+        exit 0200;
+fi;
+
+
+if [ $PHASE -eq 0 ]; then
+    echo "> Performing Lcode to Assembly Code Conversion";
+    SUFFIX="s";
+    PHASE="7";
+elif [ $PHASE -eq 1 ]; then
+    echo "> Performing Lcode to Mcode Conversion";
+    SUFFIX="mc";
+elif [ $PHASE -eq 2 ]; then
+    echo "> Performing Mcode to Optimized Mcode Conversion";
+    SUFFIX="mco";
+elif [ $PHASE -eq 3 ]; then
+    echo "> Performing Lcode to Optimized Mcode Conversion";
+    SUFFIX="mco";
+elif [ $PHASE -eq 4 ]; then
+    echo "> Performing Optimized Mcode to Assembly Code Conversion";
+    SUFFIX="s";
+elif [ $PHASE -eq 6 ]; then
+    echo "> Performing Mcode to Assembly Code Conversion";
+    SUFFIX="s";
+elif [ $PHASE -eq 7 ]; then
+    echo "> Performing Lcode to Assembly Code Conversion";
+    SUFFIX="s";
+else
+    echo "> Invalid Code Generation Phase: ( Try 1,2,3,4,6,or 7(0) )";
+    exit 0200;
+fi;
+
+while read FILE;
+do
+	echo "> processing $PREFIX/$FILE"
+#	FILEOUT=`echo $FILE | awk -F. '{print $1}'`
+	FILEOUT=`echo $FILE | \
+	awk -F. '{if ($(NF) == "p") NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+	Lti \
+		-Parch=ti \
+		-Pmodel=${MODEL} \
+		-Pphase=${PHASE} \
+		${EXTRA_ARGS} \
+		-i ${PREFIX}/${FILE} \
+		-o ${PREFIX}/${FILEOUT}.${SUFFIX}
+
+	ERROR=$?;
+	if [ $ERROR -ne 0 ]; then
+	    echo "> Lti failed on input file: ${FILE}";
+	    echo "> error_code= ${ERROR}";
+	    exit 0200;
+	fi;
+done;
+
+echo "> done";

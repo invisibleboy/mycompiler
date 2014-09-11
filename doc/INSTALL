@@ -1,0 +1,101 @@
+OpenIMPACT uses the GNU Autoconf system to configure and build.  We
+recommend you build in a directory other than the source directory,
+although it should be possible to build in the source tree.
+
+Quick build instructions
+
+Ensure you have unpacked the appropriate front end archive in the same
+directory you used to unpack the source archive.  Unpacking the front
+end archive will create the file
+openimpact-<version>/inhouse/edgcpfe/impact-edgcpfe.
+
+The source directory (containing this file) will be referred to as
+<sourcedir> in these instructions.  
+
+To build in the source tree:
+ cd <sourcedir>
+ ./configure
+ make
+
+To build outside the source tree:
+ mkdir <builddir>
+ cd <builddir>
+ <sourcedir>/configure
+ make
+
+When running make, you may see errors toward the end when processing
+lib.c.  These are typically not fatal, even if they are repeated
+several times.  lib.c consists of stubs that emulate library functions
+for pointer analysis.  Some stubs depend on headers for libraries that
+may not be installed on your system.  You may see errors when these
+files are not generated, but these are non-fatal.  They will only
+cause problems if you run pointer analysis on a program that uses the
+non-existant library.
+
+Make creates an init-impact script in the build directory that you can
+source to set some necessary environment variables and alter your path
+so you can find the OpenIMPACT tools.  Source this file using 'source'
+in csh or '.' in sh.
+
+After building, you can install the tools in a system directory for
+multiple users to use.  Executing
+
+ make install
+
+installs OpenIMPACT under the prefix specified by the --prefix option
+to configure (/usr/local by default).  After running 'make install',
+the init-impact script will be available from
+<prefix>/bin/init-impact.
+
+Using OpenIMPACT - Quick overview
+
+After sourcing init-impact, the OpenIMPACT driver, oicc, will be in
+your path.  oicc works much like a standard C compiler.  Some common
+options are:
+
+-c                       Compile to a .o file; do not link.
+-O0, -O, -O1, -O2, -O3   Set the optimization level.
+-o                       Specify the output file name.
+-D                       Define a preprocessor symbol.
+-I                       Specify a path to search for include files.
+-L                       Specify a path to search for libraries.
+-l                       Specify a library to link into the final
+                         binary.
+--verbose                Print the output of each compilation stage to
+                         standard output.
+
+oicc has many other options.  See 'oicc --help' for the complete list.
+
+For best performance, it is necessary to collect profile information
+on your program.  Profiling with oicc has five steps.
+
+1. Compile your program with --pprof-gen.  This will result in a
+   binary with a .prof extension (a.out.prof by default).
+2. Run this binary on some representative input to generate profile
+   information.
+3. Recompile your program with --pprof-use and --lprof-gen.  This will
+   write a different binary, again with a .prof extension.
+4. Run this new binary on the same input as in step 2.
+5. Recompile your program with --lprof-use.  This will finish
+   compilation and result in a binary with your specified name (a.out
+   by default).
+
+If you have previously used compile_bench to drive IMPACT, there are
+some notable differences between compile_bench and oicc. Many
+optimizations are turned off by default in oicc that are performed by
+default by the old drivers.
+ -Pointer analysis: Off by default.  Specify --do-pointer-analysis to
+  turn this on.
+ -Function inlining: Off by default.  Specify --do-inlining to turn
+  this on.
+ -Profiling: Off by default.  You must set up a profile run as
+  outlined above for your code.
+ 
+The following oicc invocation (plus the profiling runs) is equivalent
+to the old driver scripts:
+oicc -O --do-pointer-analysis --do-inlining
+
+See doc/README.oicc for more information on oicc.
+See doc/README.automake for more information on the build system.
+
+

@@ -1,0 +1,1082 @@
+\section{ml\_\-arm.c File Reference}
+\label{ml__arm_8c}\index{ml_arm.c@{ml\_\-arm.c}}
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$Lcode/l\_\-main.h$>$}\par
+{\tt \#include \char`\"{}m\_\-arm.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-VOID}~0
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-BIT}~1
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-INT}~32
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-LONG}~32
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-LLONG}~64
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-SIZE\_\-MAX}~64
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-VOID}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-BIT}~1
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-CHAR}~8
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-SHORT}~16
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-INT}~32
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-LONG}~32
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-LLONG}~64
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-FLOAT}~32
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-DOUBLE}~64
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-POINTER}~32
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-UNION}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-STRUCT}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-BLOCK}~-1
+\item 
+\#define \bf{M\_\-ARM\_\-ALIGN\_\-MAX}~64
+\item 
+\#define \bf{M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG}~4
+\item 
+\#define \bf{M\_\-ARM\_\-SMALL\_\-STRUCT\_\-MAX}~32
+\item 
+\#define \bf{MIN\_\-PARAM\_\-SIZE}~(M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG $\ast$  M\_\-ARM\_\-SIZE\_\-INT)
+\item 
+\#define \bf{M\_\-ARM\_\-INT\_\-BASE}~0
+\item 
+\#define \bf{M\_\-ARM\_\-FLT\_\-BASE}~5
+\item 
+\#define \bf{M\_\-ARM\_\-DBL\_\-BASE}~9
+\item 
+\#define \bf{M\_\-ARM\_\-RET\_\-F}~15
+\item 
+\#define \bf{M\_\-ARM\_\-RET\_\-I32}~15
+\item 
+\#define \bf{M\_\-ARM\_\-RET\_\-I64}~15
+\item 
+\#define \bf{M\_\-ARM\_\-RET\_\-ST}~15
+\item 
+\#define \bf{has\_\-label\_\-operand}(a)
+\item 
+\#define \bf{indexed\_\-memory\_\-op}(a)
+\item 
+\#define \bf{non\_\-zero\_\-offset}(a)
+\item 
+\#define \bf{short\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-pos\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{long\_\-neg\_\-int\_\-inc}(a, b)
+\item 
+\#define \bf{register\_\-inc}(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+void \bf{M\_\-arm\_\-void} (\bf{M\_\-Type} type)
+\item 
+void \bf{M\_\-arm\_\-bit\_\-long} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-arm\_\-bit\_\-int} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-arm\_\-bit\_\-short} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-arm\_\-bit\_\-char} (\bf{M\_\-Type} type, int n)
+\item 
+void \bf{M\_\-arm\_\-float} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-arm\_\-double} (\bf{M\_\-Type} type, int unsign)
+\item 
+void \bf{M\_\-arm\_\-pointer} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-arm\_\-eval\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-arm\_\-eval\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-arm\_\-call\_\-type} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+int \bf{M\_\-arm\_\-call\_\-type2} (\bf{M\_\-Type} type, \bf{M\_\-Type} ntype)
+\item 
+void \bf{M\_\-arm\_\-array\_\-layout} (\bf{M\_\-Type} type, int $\ast$offset)
+\item 
+int \bf{M\_\-arm\_\-array\_\-align} (\bf{M\_\-Type} type)
+\item 
+int \bf{M\_\-arm\_\-array\_\-size} (\bf{M\_\-Type} type, int dim)
+\item 
+void \bf{M\_\-arm\_\-union\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$offset, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-arm\_\-union\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-arm\_\-union\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+void \bf{M\_\-arm\_\-struct\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, int $\ast$base, int $\ast$bit\_\-offset)
+\item 
+int \bf{M\_\-arm\_\-struct\_\-align} (int n, \bf{\_\-M\_\-Type} $\ast$type)
+\item 
+int \bf{M\_\-arm\_\-struct\_\-size} (int n, \bf{\_\-M\_\-Type} $\ast$type, int struct\_\-align)
+\item 
+static int \bf{M\_\-ARM\_\-align\_\-offset} (int offset, int align\_\-bit)
+\item 
+int \bf{M\_\-arm\_\-layout\_\-fnvar} (\bf{List} param\_\-list, char $\ast$$\ast$base\_\-macro, int $\ast$pcount, int purpose, int needs\_\-st)
+\item 
+int \bf{M\_\-arm\_\-fnvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, int $\ast$\bf{mode}, int $\ast$reg, int $\ast$paddr, char $\ast$$\ast$macro, int $\ast$su\_\-sreg, int $\ast$su\_\-ereg, int $\ast$pcount, int needs\_\-st, int purpose)
+\item 
+int \bf{M\_\-arm\_\-lvar\_\-layout} (int n, \bf{\_\-M\_\-Type} $\ast$type, long int $\ast$offset, char $\ast$$\ast$base\_\-macro)
+\item 
+int \bf{M\_\-arm\_\-no\_\-short\_\-int} (void)
+\item 
+void \bf{M\_\-arm\_\-cb\_\-label\_\-name} (char $\ast$fn, int cb, char $\ast$line, int len)
+\item 
+int \bf{M\_\-arm\_\-is\_\-cb\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$cb)
+\item 
+void \bf{M\_\-arm\_\-jumptbl\_\-label\_\-name} (char $\ast$fn, int tbl\_\-id, char $\ast$line, int len)
+\item 
+int \bf{M\_\-arm\_\-is\_\-jumptbl\_\-label} (char $\ast$label, char $\ast$fn, int $\ast$tbl\_\-id)
+\item 
+int \bf{M\_\-arm\_\-structure\_\-pointer} (int purpose)
+\item 
+int \bf{M\_\-arm\_\-return\_\-register} (int type, int purpose)
+\item 
+char $\ast$ \bf{M\_\-arm\_\-fn\_\-label\_\-name} (char $\ast$label, int($\ast$is\_\-func)(char $\ast$is\_\-func\_\-label))
+\item 
+char $\ast$ \bf{M\_\-arm\_\-fn\_\-name\_\-from\_\-label} (char $\ast$label)
+\item 
+int \bf{M\_\-arm\_\-fragile\_\-macro} (int macro\_\-value)
+\item 
+int \bf{M\_\-arm\_\-subroutine\_\-call} (int opc)
+\item 
+void \bf{M\_\-define\_\-macros\_\-arm} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-macro\_\-name\_\-arm} (int id)
+\item 
+void \bf{M\_\-define\_\-opcode\_\-name\_\-arm} (\bf{STRING\_\-Symbol\_\-Table} $\ast$sym\_\-tbl)
+\item 
+char $\ast$ \bf{M\_\-get\_\-opcode\_\-name\_\-arm} (int id)
+\item 
+int \bf{M\_\-oper\_\-supported\_\-in\_\-arch\_\-arm} (int opc)
+\item 
+int \bf{M\_\-num\_\-oper\_\-required\_\-for\_\-arm} (L\_\-Oper $\ast$oper, char $\ast$\bf{name})
+\item 
+int \bf{M\_\-is\_\-stack\_\-operand\_\-arm} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-is\_\-unsafe\_\-macro\_\-arm} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-operand\_\-type\_\-arm} (L\_\-Operand $\ast$operand)
+\item 
+int \bf{M\_\-conflicting\_\-operands\_\-arm} (L\_\-Operand $\ast$operand, L\_\-Operand $\ast$$\ast$conflict\_\-array, int len, int prepass)
+\item 
+int \bf{M\_\-num\_\-registers\_\-arm} (int ctype)
+\item 
+int \bf{M\_\-arm\_\-layout\_\-retvar} (\bf{M\_\-Param} param, int purpose)
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{ml_arm.c@{ml\_\-arm.c}!has_label_operand@{has\_\-label\_\-operand}}
+\index{has_label_operand@{has\_\-label\_\-operand}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define has\_\-label\_\-operand(a)}\label{ml__arm_8c_6722158fd600077702a9313d413e06aa}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_LABEL)||\
+                                 (a->src[1]->type == L_OPERAND_LABEL))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), and M\_\-num\_\-oper\_\-required\_\-for\_\-wims().\index{ml_arm.c@{ml\_\-arm.c}!indexed_memory_op@{indexed\_\-memory\_\-op}}
+\index{indexed_memory_op@{indexed\_\-memory\_\-op}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define indexed\_\-memory\_\-op(a)}\label{ml__arm_8c_2658d53722706cb64a5bd496aac4921a}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[0]->type == L_OPERAND_REGISTER)&&\
+                                 (a->src[1]->type == L_OPERAND_REGISTER))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().\index{ml_arm.c@{ml\_\-arm.c}!long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}}
+\index{long_neg_int_inc@{long\_\-neg\_\-int\_\-inc}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-neg\_\-int\_\-inc(a, b)}\label{ml__arm_8c_d2c320a72e472bde367958a0e14c00bc}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x2000) && \
+                                 (a->src[b]->value.i < 0))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().\index{ml_arm.c@{ml\_\-arm.c}!long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}}
+\index{long_pos_int_inc@{long\_\-pos\_\-int\_\-inc}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define long\_\-pos\_\-int\_\-inc(a, b)}\label{ml__arm_8c_686ce721d793dfad41d2f06f1d9bd1df}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i > 0) && \
+                                 (a->src[b]->value.i < 0x2000))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_BIT@{M\_\-ARM\_\-ALIGN\_\-BIT}}
+\index{M_ARM_ALIGN_BIT@{M\_\-ARM\_\-ALIGN\_\-BIT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-BIT~1}\label{ml__arm_8c_9b3e2ccf45f71615e5b0565812824c32}
+
+
+
+
+Definition at line 166 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_BLOCK@{M\_\-ARM\_\-ALIGN\_\-BLOCK}}
+\index{M_ARM_ALIGN_BLOCK@{M\_\-ARM\_\-ALIGN\_\-BLOCK}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-BLOCK~-1}\label{ml__arm_8c_eb5884427974e87c1a567da66f146d95}
+
+
+
+
+Definition at line 177 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_CHAR@{M\_\-ARM\_\-ALIGN\_\-CHAR}}
+\index{M_ARM_ALIGN_CHAR@{M\_\-ARM\_\-ALIGN\_\-CHAR}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-CHAR~8}\label{ml__arm_8c_400b5639a5f26bba9414552639cdd30a}
+
+
+
+
+Definition at line 167 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_DOUBLE@{M\_\-ARM\_\-ALIGN\_\-DOUBLE}}
+\index{M_ARM_ALIGN_DOUBLE@{M\_\-ARM\_\-ALIGN\_\-DOUBLE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-DOUBLE~64}\label{ml__arm_8c_5c721a25a89ad5eb2302f90f8733c945}
+
+
+
+
+Definition at line 173 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_FLOAT@{M\_\-ARM\_\-ALIGN\_\-FLOAT}}
+\index{M_ARM_ALIGN_FLOAT@{M\_\-ARM\_\-ALIGN\_\-FLOAT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-FLOAT~32}\label{ml__arm_8c_2830f0802c159709c87d9f6a28341402}
+
+
+
+
+Definition at line 172 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_INT@{M\_\-ARM\_\-ALIGN\_\-INT}}
+\index{M_ARM_ALIGN_INT@{M\_\-ARM\_\-ALIGN\_\-INT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-INT~32}\label{ml__arm_8c_1f7820e35604eb245b840d2ddde8d72b}
+
+
+
+
+Definition at line 169 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_LLONG@{M\_\-ARM\_\-ALIGN\_\-LLONG}}
+\index{M_ARM_ALIGN_LLONG@{M\_\-ARM\_\-ALIGN\_\-LLONG}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-LLONG~64}\label{ml__arm_8c_5934bfaef80b0ec1874ff22c638754e1}
+
+
+
+
+Definition at line 171 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_LONG@{M\_\-ARM\_\-ALIGN\_\-LONG}}
+\index{M_ARM_ALIGN_LONG@{M\_\-ARM\_\-ALIGN\_\-LONG}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-LONG~32}\label{ml__arm_8c_08694e5b82820b7636cd7794d482dba3}
+
+
+
+
+Definition at line 170 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_MAX@{M\_\-ARM\_\-ALIGN\_\-MAX}}
+\index{M_ARM_ALIGN_MAX@{M\_\-ARM\_\-ALIGN\_\-MAX}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-MAX~64}\label{ml__arm_8c_ad3fe00f7e378162143b82dce60a4ffd}
+
+
+
+
+Definition at line 178 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_POINTER@{M\_\-ARM\_\-ALIGN\_\-POINTER}}
+\index{M_ARM_ALIGN_POINTER@{M\_\-ARM\_\-ALIGN\_\-POINTER}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-POINTER~32}\label{ml__arm_8c_87acac46f1547b8b362405566709a1e0}
+
+
+
+
+Definition at line 174 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_SHORT@{M\_\-ARM\_\-ALIGN\_\-SHORT}}
+\index{M_ARM_ALIGN_SHORT@{M\_\-ARM\_\-ALIGN\_\-SHORT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-SHORT~16}\label{ml__arm_8c_f3c2fb1b019127d36c431e137f38aa74}
+
+
+
+
+Definition at line 168 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_STRUCT@{M\_\-ARM\_\-ALIGN\_\-STRUCT}}
+\index{M_ARM_ALIGN_STRUCT@{M\_\-ARM\_\-ALIGN\_\-STRUCT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-STRUCT~-1}\label{ml__arm_8c_0eb683d02d62a3784f442e32d7ddb510}
+
+
+
+
+Definition at line 176 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_UNION@{M\_\-ARM\_\-ALIGN\_\-UNION}}
+\index{M_ARM_ALIGN_UNION@{M\_\-ARM\_\-ALIGN\_\-UNION}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-UNION~-1}\label{ml__arm_8c_7e85450a6e47cbcec7478dfc9d0de550}
+
+
+
+
+Definition at line 175 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_ALIGN_VOID@{M\_\-ARM\_\-ALIGN\_\-VOID}}
+\index{M_ARM_ALIGN_VOID@{M\_\-ARM\_\-ALIGN\_\-VOID}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-ALIGN\_\-VOID~-1}\label{ml__arm_8c_c8257c08c4d04def62e79d8e48d2f789}
+
+
+
+
+Definition at line 165 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_DBL_BASE@{M\_\-ARM\_\-DBL\_\-BASE}}
+\index{M_ARM_DBL_BASE@{M\_\-ARM\_\-DBL\_\-BASE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-DBL\_\-BASE~9}\label{ml__arm_8c_3586dbbaf419bd64e8530a397a5fcc72}
+
+
+
+
+Definition at line 188 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-fnvar\_\-layout(), and M\_\-arm\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_FLT_BASE@{M\_\-ARM\_\-FLT\_\-BASE}}
+\index{M_ARM_FLT_BASE@{M\_\-ARM\_\-FLT\_\-BASE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-FLT\_\-BASE~5}\label{ml__arm_8c_872d58440b88c3bb5c11b3441989177f}
+
+
+
+
+Definition at line 187 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-fnvar\_\-layout(), and M\_\-arm\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_INT_BASE@{M\_\-ARM\_\-INT\_\-BASE}}
+\index{M_ARM_INT_BASE@{M\_\-ARM\_\-INT\_\-BASE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-INT\_\-BASE~0}\label{ml__arm_8c_6c461d5f9c6aaeada90caaec8ca1e559}
+
+
+
+
+Definition at line 186 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-fnvar\_\-layout(), and M\_\-arm\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_MAX_FNVAR_REG@{M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG}}
+\index{M_ARM_MAX_FNVAR_REG@{M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG~4}\label{ml__arm_8c_62356d20ccb81cc5cd59dcc8a5b04744}
+
+
+
+
+Definition at line 181 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-fnvar\_\-layout(), and M\_\-arm\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_RET_F@{M\_\-ARM\_\-RET\_\-F}}
+\index{M_ARM_RET_F@{M\_\-ARM\_\-RET\_\-F}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-RET\_\-F~15}\label{ml__arm_8c_965008278b4d19816cf20643cc1f080d}
+
+
+
+
+Definition at line 190 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-return\_\-register().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_RET_I32@{M\_\-ARM\_\-RET\_\-I32}}
+\index{M_ARM_RET_I32@{M\_\-ARM\_\-RET\_\-I32}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-RET\_\-I32~15}\label{ml__arm_8c_723ff374e312029b380a078650acd8a7}
+
+
+
+
+Definition at line 192 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-return\_\-register().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_RET_I64@{M\_\-ARM\_\-RET\_\-I64}}
+\index{M_ARM_RET_I64@{M\_\-ARM\_\-RET\_\-I64}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-RET\_\-I64~15}\label{ml__arm_8c_102c10a5688612a30c94f20dbb18b2ec}
+
+
+
+
+Definition at line 193 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-return\_\-register().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_RET_ST@{M\_\-ARM\_\-RET\_\-ST}}
+\index{M_ARM_RET_ST@{M\_\-ARM\_\-RET\_\-ST}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-RET\_\-ST~15}\label{ml__arm_8c_5dfcb16ae3cb5f709a99ecb3b48e9733}
+
+
+
+
+Definition at line 194 of file ml\_\-arm.c.
+
+Referenced by M\_\-arm\_\-structure\_\-pointer().\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_BIT@{M\_\-ARM\_\-SIZE\_\-BIT}}
+\index{M_ARM_SIZE_BIT@{M\_\-ARM\_\-SIZE\_\-BIT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-BIT~1}\label{ml__arm_8c_f6b3e0b04abc8086bb9185e4c265e35c}
+
+
+
+
+Definition at line 151 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_BLOCK@{M\_\-ARM\_\-SIZE\_\-BLOCK}}
+\index{M_ARM_SIZE_BLOCK@{M\_\-ARM\_\-SIZE\_\-BLOCK}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-BLOCK~-1}\label{ml__arm_8c_ff72691295353470fa386a37a660ea08}
+
+
+
+
+Definition at line 162 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_CHAR@{M\_\-ARM\_\-SIZE\_\-CHAR}}
+\index{M_ARM_SIZE_CHAR@{M\_\-ARM\_\-SIZE\_\-CHAR}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-CHAR~8}\label{ml__arm_8c_4f09e0e331c1bdafc1104c846ecceae6}
+
+
+
+
+Definition at line 152 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_DOUBLE@{M\_\-ARM\_\-SIZE\_\-DOUBLE}}
+\index{M_ARM_SIZE_DOUBLE@{M\_\-ARM\_\-SIZE\_\-DOUBLE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-DOUBLE~64}\label{ml__arm_8c_28f72e3ba146b889bf639c4197dd6f86}
+
+
+
+
+Definition at line 158 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_FLOAT@{M\_\-ARM\_\-SIZE\_\-FLOAT}}
+\index{M_ARM_SIZE_FLOAT@{M\_\-ARM\_\-SIZE\_\-FLOAT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-FLOAT~32}\label{ml__arm_8c_8315f0d2c5f95743dd63e362566c4cea}
+
+
+
+
+Definition at line 157 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_INT@{M\_\-ARM\_\-SIZE\_\-INT}}
+\index{M_ARM_SIZE_INT@{M\_\-ARM\_\-SIZE\_\-INT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-INT~32}\label{ml__arm_8c_5e93cafac4413f16a5c855f0f265e83e}
+
+
+
+
+Definition at line 154 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_LLONG@{M\_\-ARM\_\-SIZE\_\-LLONG}}
+\index{M_ARM_SIZE_LLONG@{M\_\-ARM\_\-SIZE\_\-LLONG}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-LLONG~64}\label{ml__arm_8c_9d5adf297f89b68a90e131f96264f09d}
+
+
+
+
+Definition at line 156 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_LONG@{M\_\-ARM\_\-SIZE\_\-LONG}}
+\index{M_ARM_SIZE_LONG@{M\_\-ARM\_\-SIZE\_\-LONG}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-LONG~32}\label{ml__arm_8c_69b5207b10b60b821721b4d1c5eb05d9}
+
+
+
+
+Definition at line 155 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_MAX@{M\_\-ARM\_\-SIZE\_\-MAX}}
+\index{M_ARM_SIZE_MAX@{M\_\-ARM\_\-SIZE\_\-MAX}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-MAX~64}\label{ml__arm_8c_3c74d41e6e727c7f5c061f3f377dc2ca}
+
+
+
+
+Definition at line 163 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_POINTER@{M\_\-ARM\_\-SIZE\_\-POINTER}}
+\index{M_ARM_SIZE_POINTER@{M\_\-ARM\_\-SIZE\_\-POINTER}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-POINTER~32}\label{ml__arm_8c_45bafeedf707ede81e7b8ee2aefcc517}
+
+
+
+
+Definition at line 159 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_SHORT@{M\_\-ARM\_\-SIZE\_\-SHORT}}
+\index{M_ARM_SIZE_SHORT@{M\_\-ARM\_\-SIZE\_\-SHORT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-SHORT~16}\label{ml__arm_8c_8f3d6f6a8227131aec865ac6452a828e}
+
+
+
+
+Definition at line 153 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_STRUCT@{M\_\-ARM\_\-SIZE\_\-STRUCT}}
+\index{M_ARM_SIZE_STRUCT@{M\_\-ARM\_\-SIZE\_\-STRUCT}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-STRUCT~-1}\label{ml__arm_8c_2108411f0f67db73ed58628d20c8b8c7}
+
+
+
+
+Definition at line 161 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_UNION@{M\_\-ARM\_\-SIZE\_\-UNION}}
+\index{M_ARM_SIZE_UNION@{M\_\-ARM\_\-SIZE\_\-UNION}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-UNION~-1}\label{ml__arm_8c_7078bb38c1b561b03958cafa198c8cb2}
+
+
+
+
+Definition at line 160 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SIZE_VOID@{M\_\-ARM\_\-SIZE\_\-VOID}}
+\index{M_ARM_SIZE_VOID@{M\_\-ARM\_\-SIZE\_\-VOID}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SIZE\_\-VOID~0}\label{ml__arm_8c_ccd34ecb496e3bcdb0eded0f5f9505bf}
+
+
+
+
+Definition at line 150 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_SMALL_STRUCT_MAX@{M\_\-ARM\_\-SMALL\_\-STRUCT\_\-MAX}}
+\index{M_ARM_SMALL_STRUCT_MAX@{M\_\-ARM\_\-SMALL\_\-STRUCT\_\-MAX}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define M\_\-ARM\_\-SMALL\_\-STRUCT\_\-MAX~32}\label{ml__arm_8c_af4fbb55e81a96f50d6d743b7873467c}
+
+
+
+
+Definition at line 182 of file ml\_\-arm.c.\index{ml_arm.c@{ml\_\-arm.c}!MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}}
+\index{MIN_PARAM_SIZE@{MIN\_\-PARAM\_\-SIZE}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-PARAM\_\-SIZE~(M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG $\ast$  M\_\-ARM\_\-SIZE\_\-INT)}\label{ml__arm_8c_48f1f5d33d6770a468f7767465e07abb}
+
+
+
+
+Definition at line 183 of file ml\_\-arm.c.
+
+Referenced by M\_\-bx86\_\-fnvar\_\-layout(), M\_\-hppa\_\-fnvar\_\-layout(), M\_\-impact\_\-fnvar\_\-layout(), M\_\-impact\_\-layout\_\-fnvar(), M\_\-playdoh\_\-fnvar\_\-layout(), M\_\-playdoh\_\-layout\_\-fnvar(), M\_\-sparc\_\-fnvar\_\-layout(), M\_\-ti\_\-fnvar\_\-layout(), M\_\-wims\_\-fnvar\_\-layout(), M\_\-wims\_\-layout\_\-fnvar(), and M\_\-x86\_\-fnvar\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!non_zero_offset@{non\_\-zero\_\-offset}}
+\index{non_zero_offset@{non\_\-zero\_\-offset}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define non\_\-zero\_\-offset(a)}\label{ml__arm_8c_1a7d03fa0a676d3b09e555d8c8176f1b}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((!((a->src[1]->type==L_OPERAND_IMMED)&&\
+                                   ((a->src[1]->ctype&0x30)==0x00)))||\
+                                 (a->src[1]->value.i != 0))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().\index{ml_arm.c@{ml\_\-arm.c}!register_inc@{register\_\-inc}}
+\index{register_inc@{register\_\-inc}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define register\_\-inc(a, b)~(a $\rightarrow$ src[b] $\rightarrow$ type == L\_\-OPERAND\_\-REGISTER)}\label{ml__arm_8c_1e7b7d7ff33cab42b74ae66e888b1124}
+
+
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().\index{ml_arm.c@{ml\_\-arm.c}!short_int_inc@{short\_\-int\_\-inc}}
+\index{short_int_inc@{short\_\-int\_\-inc}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define short\_\-int\_\-inc(a, b)}\label{ml__arm_8c_beca719e984ec0dc73106055269cd986}
+
+
+\textbf{Value:}
+
+\begin{Code}\begin{verbatim}((a->src[b]->type==L_OPERAND_IMMED)&&\
+                                 ((a->src[b]->ctype&0x30)==0x00)&&\
+                                 (a->src[b]->value.i >= -0x10) &&\
+                                 (a->src[b]->value.i < 0x10))
+\end{verbatim}\end{Code}
+
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for\_\-arm(), M\_\-num\_\-oper\_\-required\_\-for\_\-bx86(), M\_\-num\_\-oper\_\-required\_\-for\_\-hppa(), M\_\-num\_\-oper\_\-required\_\-for\_\-impact(), M\_\-num\_\-oper\_\-required\_\-for\_\-playdoh(), M\_\-num\_\-oper\_\-required\_\-for\_\-ti(), M\_\-num\_\-oper\_\-required\_\-for\_\-wims(), and M\_\-num\_\-oper\_\-required\_\-for\_\-x86().
+
+\subsection{Function Documentation}
+\index{ml_arm.c@{ml\_\-arm.c}!M_ARM_align_offset@{M\_\-ARM\_\-align\_\-offset}}
+\index{M_ARM_align_offset@{M\_\-ARM\_\-align\_\-offset}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int M\_\-ARM\_\-align\_\-offset (int {\em offset}, int {\em align\_\-bit})\hspace{0.3cm}{\tt  [static]}}\label{ml__arm_8c_7552ce5f16999937ba9924b41b8b8be9}
+
+
+
+
+Definition at line 675 of file ml\_\-arm.c.
+
+References I\_\-punt().
+
+Referenced by M\_\-arm\_\-fnvar\_\-layout(), and M\_\-arm\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_array_align@{M\_\-arm\_\-array\_\-align}}
+\index{M_arm_array_align@{M\_\-arm\_\-array\_\-align}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-array\_\-align (\bf{M\_\-Type} {\em type})}\label{ml__arm_8c_4e8f6b62ddef8e5d52ef23d7e70c649a}
+
+
+
+
+Definition at line 438 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align.
+
+Referenced by M\_\-array\_\-align().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_array_layout@{M\_\-arm\_\-array\_\-layout}}
+\index{M_arm_array_layout@{M\_\-arm\_\-array\_\-layout}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-array\_\-layout (\bf{M\_\-Type} {\em type}, int $\ast$ {\em offset})}\label{ml__arm_8c_af6e70a2ab899b8b7ee98e42197f6930}
+
+
+
+
+Definition at line 433 of file ml\_\-arm.c.
+
+Referenced by M\_\-array\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_array_size@{M\_\-arm\_\-array\_\-size}}
+\index{M_arm_array_size@{M\_\-arm\_\-array\_\-size}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-array\_\-size (\bf{M\_\-Type} {\em type}, int {\em dim})}\label{ml__arm_8c_c0d585bf88b2f02e7dcf5f7dba236a0f}
+
+
+
+
+Definition at line 443 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-array\_\-size().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_bit_char@{M\_\-arm\_\-bit\_\-char}}
+\index{M_arm_bit_char@{M\_\-arm\_\-bit\_\-char}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-bit\_\-char (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__arm_8c_dae20b3632fbb5d3b9b4ead23adf8fd5}
+
+
+
+
+Definition at line 241 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-BIT, M\_\-ARM\_\-SIZE\_\-BIT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-char().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_bit_int@{M\_\-arm\_\-bit\_\-int}}
+\index{M_arm_bit_int@{M\_\-arm\_\-bit\_\-int}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-bit\_\-int (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__arm_8c_59b2f811f2897305c9fda06e3b30c9a7}
+
+
+
+
+Definition at line 221 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-BIT, M\_\-ARM\_\-SIZE\_\-BIT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-INT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-int().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_bit_long@{M\_\-arm\_\-bit\_\-long}}
+\index{M_arm_bit_long@{M\_\-arm\_\-bit\_\-long}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-bit\_\-long (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__arm_8c_777a9ef47b52fc1c01340408ddc629cb}
+
+
+
+
+Definition at line 211 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-BIT, M\_\-ARM\_\-SIZE\_\-BIT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-LONG, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-long().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_bit_short@{M\_\-arm\_\-bit\_\-short}}
+\index{M_arm_bit_short@{M\_\-arm\_\-bit\_\-short}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-bit\_\-short (\bf{M\_\-Type} {\em type}, int {\em n})}\label{ml__arm_8c_18a47ead648da366e30fe84268a9b624}
+
+
+
+
+Definition at line 231 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-BIT, M\_\-ARM\_\-SIZE\_\-BIT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-SHORT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-bit\_\-short().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_call_type@{M\_\-arm\_\-call\_\-type}}
+\index{M_arm_call_type@{M\_\-arm\_\-call\_\-type}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-call\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__arm_8c_470a962d166d8fd454e315f3ca9ad5c1}
+
+
+
+
+Definition at line 358 of file ml\_\-arm.c.
+
+References M\_\-arm\_\-llong(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_call_type2@{M\_\-arm\_\-call\_\-type2}}
+\index{M_arm_call_type2@{M\_\-arm\_\-call\_\-type2}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-call\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__arm_8c_76009f8346aed501aff6fce15d6e1b67}
+
+
+
+
+Definition at line 394 of file ml\_\-arm.c.
+
+References M\_\-arm\_\-llong(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-pointer(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-call\_\-type2().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_cb_label_name@{M\_\-arm\_\-cb\_\-label\_\-name}}
+\index{M_arm_cb_label_name@{M\_\-arm\_\-cb\_\-label\_\-name}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-cb\_\-label\_\-name (char $\ast$ {\em fn}, int {\em cb}, char $\ast$ {\em line}, int {\em len})}\label{ml__arm_8c_0d6995ab2feb69e01e4ad53c3f798997}
+
+
+
+
+Definition at line 1191 of file ml\_\-arm.c.
+
+Referenced by M\_\-cb\_\-label\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_double@{M\_\-arm\_\-double}}
+\index{M_arm_double@{M\_\-arm\_\-double}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-double (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__arm_8c_a2d09b63a067761cd3179cdc3cb0dadf}
+
+
+
+
+Definition at line 260 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-DOUBLE, M\_\-ARM\_\-SIZE\_\-DOUBLE, M\_\-TYPE\_\-DOUBLE, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-double().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_eval_type@{M\_\-arm\_\-eval\_\-type}}
+\index{M_arm_eval_type@{M\_\-arm\_\-eval\_\-type}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-eval\_\-type (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__arm_8c_89cf94615c88cfe735177b54c0e35983}
+
+
+
+
+Definition at line 279 of file ml\_\-arm.c.
+
+References M\_\-arm\_\-llong(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_eval_type2@{M\_\-arm\_\-eval\_\-type2}}
+\index{M_arm_eval_type2@{M\_\-arm\_\-eval\_\-type2}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-eval\_\-type2 (\bf{M\_\-Type} {\em type}, \bf{M\_\-Type} {\em ntype})}\label{ml__arm_8c_8b5e168794dd25817f2606b4816ef3f7}
+
+
+
+
+Definition at line 314 of file ml\_\-arm.c.
+
+References M\_\-arm\_\-llong(), M\_\-char(), M\_\-double(), M\_\-float(), M\_\-int(), M\_\-long(), M\_\-pointer(), M\_\-short(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LLONG, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BLOCK, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, M\_\-TYPE\_\-VOID, M\_\-void(), \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-eval\_\-type2().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_float@{M\_\-arm\_\-float}}
+\index{M_arm_float@{M\_\-arm\_\-float}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-float (\bf{M\_\-Type} {\em type}, int {\em unsign})}\label{ml__arm_8c_44bd6fdd6aa344860f27f70f1893a2b6}
+
+
+
+
+Definition at line 251 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-FLOAT, M\_\-ARM\_\-SIZE\_\-FLOAT, M\_\-TYPE\_\-FLOAT, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-float().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_fn_label_name@{M\_\-arm\_\-fn\_\-label\_\-name}}
+\index{M_arm_fn_label_name@{M\_\-arm\_\-fn\_\-label\_\-name}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-arm\_\-fn\_\-label\_\-name (char $\ast$ {\em label}, int($\ast$)(char $\ast$is\_\-func\_\-label) {\em is\_\-func})}\label{ml__arm_8c_ec976c50611bfcf2982cd6e04abca3a7}
+
+
+
+
+Definition at line 1259 of file ml\_\-arm.c.
+
+Referenced by M\_\-fn\_\-label\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_fn_name_from_label@{M\_\-arm\_\-fn\_\-name\_\-from\_\-label}}
+\index{M_arm_fn_name_from_label@{M\_\-arm\_\-fn\_\-name\_\-from\_\-label}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-arm\_\-fn\_\-name\_\-from\_\-label (char $\ast$ {\em label})}\label{ml__arm_8c_1f1ec2f67c6cc20fca9edc19e6d280ad}
+
+
+
+
+Definition at line 1271 of file ml\_\-arm.c.
+
+Referenced by M\_\-fn\_\-name\_\-from\_\-label().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_fnvar_layout@{M\_\-arm\_\-fnvar\_\-layout}}
+\index{M_arm_fnvar_layout@{M\_\-arm\_\-fnvar\_\-layout}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-fnvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, int $\ast$ {\em mode}, int $\ast$ {\em reg}, int $\ast$ {\em paddr}, char $\ast$$\ast$ {\em macro}, int $\ast$ {\em su\_\-sreg}, int $\ast$ {\em su\_\-ereg}, int $\ast$ {\em pcount}, int {\em needs\_\-st}, int {\em purpose})}\label{ml__arm_8c_efbaf07f0b2622562e96d18a8ab6a38e}
+
+
+
+
+Definition at line 923 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-align\_\-offset(), M\_\-ARM\_\-DBL\_\-BASE, M\_\-ARM\_\-FLT\_\-BASE, M\_\-ARM\_\-INT\_\-BASE, M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG, M\_\-ARM\_\-SIZE\_\-DOUBLE, M\_\-ARM\_\-SIZE\_\-FLOAT, M\_\-ARM\_\-SIZE\_\-INT, M\_\-ARM\_\-SIZE\_\-LLONG, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-fnvar\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_fragile_macro@{M\_\-arm\_\-fragile\_\-macro}}
+\index{M_arm_fragile_macro@{M\_\-arm\_\-fragile\_\-macro}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-fragile\_\-macro (int {\em macro\_\-value})}\label{ml__arm_8c_c68d55e338b499ec3e1f125d4d6de3b7}
+
+
+
+
+Definition at line 1280 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-1\_\-01, M\_\-assert(), and M\_\-model.
+
+Referenced by M\_\-fragile\_\-macro().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_is_cb_label@{M\_\-arm\_\-is\_\-cb\_\-label}}
+\index{M_arm_is_cb_label@{M\_\-arm\_\-is\_\-cb\_\-label}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-is\_\-cb\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em cb})}\label{ml__arm_8c_2ae88ec8de70409b26b551cb6878b9e4}
+
+
+
+
+Definition at line 1196 of file ml\_\-arm.c.
+
+Referenced by M\_\-is\_\-cb\_\-label().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_is_jumptbl_label@{M\_\-arm\_\-is\_\-jumptbl\_\-label}}
+\index{M_arm_is_jumptbl_label@{M\_\-arm\_\-is\_\-jumptbl\_\-label}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-is\_\-jumptbl\_\-label (char $\ast$ {\em label}, char $\ast$ {\em fn}, int $\ast$ {\em tbl\_\-id})}\label{ml__arm_8c_a213a4eb3dbb08b56bf8cb926c2f93fc}
+
+
+
+
+Definition at line 1207 of file ml\_\-arm.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-is\_\-jumptbl\_\-label().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_jumptbl_label_name@{M\_\-arm\_\-jumptbl\_\-label\_\-name}}
+\index{M_arm_jumptbl_label_name@{M\_\-arm\_\-jumptbl\_\-label\_\-name}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-jumptbl\_\-label\_\-name (char $\ast$ {\em fn}, int {\em tbl\_\-id}, char $\ast$ {\em line}, int {\em len})}\label{ml__arm_8c_206b1021c25cf86a8cbf9b601b07b270}
+
+
+
+
+Definition at line 1201 of file ml\_\-arm.c.
+
+References M\_\-JUMPTBL\_\-BASE\_\-NAME.
+
+Referenced by M\_\-jumptbl\_\-label\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_layout_fnvar@{M\_\-arm\_\-layout\_\-fnvar}}
+\index{M_arm_layout_fnvar@{M\_\-arm\_\-layout\_\-fnvar}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-layout\_\-fnvar (\bf{List} {\em param\_\-list}, char $\ast$$\ast$ {\em base\_\-macro}, int $\ast$ {\em pcount}, int {\em purpose}, int {\em needs\_\-st})}\label{ml__arm_8c_3bae55a86ac37cf02fb79eb56919719e}
+
+
+
+
+Definition at line 692 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, List\_\-next(), List\_\-start(), M\_\-ARM\_\-align\_\-offset(), M\_\-ARM\_\-DBL\_\-BASE, M\_\-ARM\_\-FLT\_\-BASE, M\_\-ARM\_\-INT\_\-BASE, M\_\-ARM\_\-MAX\_\-FNVAR\_\-REG, M\_\-ARM\_\-SIZE\_\-DOUBLE, M\_\-ARM\_\-SIZE\_\-FLOAT, M\_\-ARM\_\-SIZE\_\-INT, M\_\-ARM\_\-SIZE\_\-LLONG, M\_\-assert(), M\_\-DONT\_\-CARE\_\-FNVAR, M\_\-GET\_\-FNVAR, M\_\-PUT\_\-FNVAR, M\_\-THRU\_\-MEMORY, M\_\-THRU\_\-REGISTER, M\_\-TYPE\_\-CHAR, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, M\_\-TYPE\_\-LONG, M\_\-TYPE\_\-POINTER, M\_\-TYPE\_\-SHORT, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, \_\-struct\_\-M\_\-Param::offset, \_\-struct\_\-M\_\-Param::paddr, \_\-struct\_\-M\_\-Param::reg, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Param::su\_\-ereg, \_\-struct\_\-M\_\-Param::su\_\-sreg, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-fnvar().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_layout_retvar@{M\_\-arm\_\-layout\_\-retvar}}
+\index{M_arm_layout_retvar@{M\_\-arm\_\-layout\_\-retvar}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-layout\_\-retvar (\bf{M\_\-Param} {\em param}, int {\em purpose})}\label{ml__arm_8c_15a45e6c2ddf64c320663238c96a5a6d}
+
+
+
+
+Definition at line 1710 of file ml\_\-arm.c.
+
+References M\_\-INDIRECT\_\-THRU\_\-MEMORY, M\_\-THRU\_\-MEMORY, M\_\-TYPE\_\-STRUCT, M\_\-TYPE\_\-UNION, \_\-struct\_\-M\_\-Param::mode, \_\-struct\_\-M\_\-Param::mtype, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-layout\_\-retvar().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_lvar_layout@{M\_\-arm\_\-lvar\_\-layout}}
+\index{M_arm_lvar_layout@{M\_\-arm\_\-lvar\_\-layout}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-lvar\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, long int $\ast$ {\em offset}, char $\ast$$\ast$ {\em base\_\-macro})}\label{ml__arm_8c_5bb3eaa54605e6a6b1446a2ee3a21e7b}
+
+
+
+
+Definition at line 1147 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-MAX, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-lvar\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_no_short_int@{M\_\-arm\_\-no\_\-short\_\-int}}
+\index{M_arm_no_short_int@{M\_\-arm\_\-no\_\-short\_\-int}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-no\_\-short\_\-int (void)}\label{ml__arm_8c_3efeafb5f31e16dfb464876bcfbf3706}
+
+
+
+
+Definition at line 1187 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-SIZE\_\-INT, and M\_\-ARM\_\-SIZE\_\-SHORT.
+
+Referenced by M\_\-no\_\-short\_\-int().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_pointer@{M\_\-arm\_\-pointer}}
+\index{M_arm_pointer@{M\_\-arm\_\-pointer}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-pointer (\bf{M\_\-Type} {\em type})}\label{ml__arm_8c_b05f019c8111b776ba8cd6557bf1395c}
+
+
+
+
+Definition at line 269 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-POINTER, M\_\-ARM\_\-SIZE\_\-POINTER, M\_\-TYPE\_\-POINTER, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-pointer().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_return_register@{M\_\-arm\_\-return\_\-register}}
+\index{M_arm_return_register@{M\_\-arm\_\-return\_\-register}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-return\_\-register (int {\em type}, int {\em purpose})}\label{ml__arm_8c_009ce0a5e4f3153ee2e3acaf637886ea}
+
+
+
+
+Definition at line 1244 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-RET\_\-F, M\_\-ARM\_\-RET\_\-I32, M\_\-ARM\_\-RET\_\-I64, M\_\-TYPE\_\-DOUBLE, M\_\-TYPE\_\-FLOAT, M\_\-TYPE\_\-INT, M\_\-TYPE\_\-LLONG, and M\_\-TYPE\_\-LONG.
+
+Referenced by M\_\-return\_\-register().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_struct_align@{M\_\-arm\_\-struct\_\-align}}
+\index{M_arm_struct_align@{M\_\-arm\_\-struct\_\-align}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-struct\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__arm_8c_d23e2433a208747d34bed1c2f7f72520}
+
+
+
+
+Definition at line 603 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-struct\_\-align().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_struct_layout@{M\_\-arm\_\-struct\_\-layout}}
+\index{M_arm_struct_layout@{M\_\-arm\_\-struct\_\-layout}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-struct\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em base}, int $\ast$ {\em bit\_\-offset})}\label{ml__arm_8c_6f9b01f2d38f36a80bae22807f26911c}
+
+
+
+
+Definition at line 516 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-SIZE\_\-CHAR, M\_\-ARM\_\-SIZE\_\-INT, M\_\-ARM\_\-SIZE\_\-LONG, M\_\-ARM\_\-SIZE\_\-SHORT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, M\_\-TYPE\_\-BIT\_\-SHORT, and \_\-struct\_\-M\_\-Type::type.
+
+Referenced by M\_\-struct\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_struct_size@{M\_\-arm\_\-struct\_\-size}}
+\index{M_arm_struct_size@{M\_\-arm\_\-struct\_\-size}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-struct\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int {\em struct\_\-align})}\label{ml__arm_8c_67a83835eaa776865b9cc6f8d6a7e50d}
+
+
+
+
+Definition at line 619 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-CHAR, M\_\-ARM\_\-ALIGN\_\-LONG, M\_\-ARM\_\-ALIGN\_\-SHORT, M\_\-ARM\_\-SIZE\_\-INT, M\_\-assert(), M\_\-TYPE\_\-BIT\_\-CHAR, M\_\-TYPE\_\-BIT\_\-LONG, and M\_\-TYPE\_\-BIT\_\-SHORT.
+
+Referenced by M\_\-struct\_\-size().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_structure_pointer@{M\_\-arm\_\-structure\_\-pointer}}
+\index{M_arm_structure_pointer@{M\_\-arm\_\-structure\_\-pointer}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-structure\_\-pointer (int {\em purpose})}\label{ml__arm_8c_ac9b817a16a69fab6d0708dd058e7dbb}
+
+
+
+
+Definition at line 1239 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-RET\_\-ST.
+
+Referenced by M\_\-structure\_\-pointer().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_subroutine_call@{M\_\-arm\_\-subroutine\_\-call}}
+\index{M_arm_subroutine_call@{M\_\-arm\_\-subroutine\_\-call}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-subroutine\_\-call (int {\em opc})}\label{ml__arm_8c_92afdb8ce1293bd6e10f69c5aa219a75}
+
+
+
+
+Definition at line 1303 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-1\_\-01, M\_\-assert(), and M\_\-model.
+
+Referenced by M\_\-subroutine\_\-call().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_union_align@{M\_\-arm\_\-union\_\-align}}
+\index{M_arm_union_align@{M\_\-arm\_\-union\_\-align}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-union\_\-align (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__arm_8c_00da9ddedee1773556a8a236e31c9620}
+
+
+
+
+Definition at line 466 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-ALIGN\_\-CHAR.
+
+Referenced by M\_\-union\_\-align().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_union_layout@{M\_\-arm\_\-union\_\-layout}}
+\index{M_arm_union_layout@{M\_\-arm\_\-union\_\-layout}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-union\_\-layout (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type}, int $\ast$ {\em offset}, int $\ast$ {\em bit\_\-offset})}\label{ml__arm_8c_e1c7e436386eba93c9d41d69562e1828}
+
+
+
+
+Definition at line 457 of file ml\_\-arm.c.
+
+Referenced by M\_\-union\_\-layout().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_union_size@{M\_\-arm\_\-union\_\-size}}
+\index{M_arm_union_size@{M\_\-arm\_\-union\_\-size}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-arm\_\-union\_\-size (int {\em n}, \bf{\_\-M\_\-Type} $\ast$ {\em type})}\label{ml__arm_8c_428f2f5865a805d129bc91c6c5d1ad27}
+
+
+
+
+Definition at line 484 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-CHAR, and \_\-struct\_\-M\_\-Type::size.
+
+Referenced by M\_\-union\_\-size().\index{ml_arm.c@{ml\_\-arm.c}!M_arm_void@{M\_\-arm\_\-void}}
+\index{M_arm_void@{M\_\-arm\_\-void}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-arm\_\-void (\bf{M\_\-Type} {\em type})}\label{ml__arm_8c_0a6e8bf43f36e7f55266ccfd35f44129}
+
+
+
+
+Definition at line 202 of file ml\_\-arm.c.
+
+References \_\-struct\_\-M\_\-Type::align, M\_\-ARM\_\-ALIGN\_\-VOID, M\_\-ARM\_\-SIZE\_\-VOID, M\_\-TYPE\_\-VOID, \_\-struct\_\-M\_\-Type::nbits, \_\-struct\_\-M\_\-Type::size, \_\-struct\_\-M\_\-Type::type, and \_\-struct\_\-M\_\-Type::unsign.
+
+Referenced by M\_\-void().\index{ml_arm.c@{ml\_\-arm.c}!M_conflicting_operands_arm@{M\_\-conflicting\_\-operands\_\-arm}}
+\index{M_conflicting_operands_arm@{M\_\-conflicting\_\-operands\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-conflicting\_\-operands\_\-arm (L\_\-Operand $\ast$ {\em operand}, L\_\-Operand $\ast$$\ast$ {\em conflict\_\-array}, int {\em len}, int {\em prepass})}\label{ml__arm_8c_3860d76738ffb1104d4576589a861549}
+
+
+
+
+Definition at line 1626 of file ml\_\-arm.c.
+
+References ARM\_\-MAC\_\-TRUE\_\-SP, and M\_\-assert().
+
+Referenced by M\_\-dep\_\-conflicting\_\-operands().\index{ml_arm.c@{ml\_\-arm.c}!M_define_macros_arm@{M\_\-define\_\-macros\_\-arm}}
+\index{M_define_macros_arm@{M\_\-define\_\-macros\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-macros\_\-arm (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__arm_8c_a68abfe8777c96a9794a7226c8469c05}
+
+
+
+
+Definition at line 1319 of file ml\_\-arm.c.
+
+References ARM\_\-MAC\_\-ALLOC, ARM\_\-MAC\_\-CALLEE\_\-I, ARM\_\-MAC\_\-FONE, ARM\_\-MAC\_\-FZERO, ARM\_\-MAC\_\-LEAF, ARM\_\-MAC\_\-RETADDR, ARM\_\-MAC\_\-TRUE\_\-SP, and M\_\-add\_\-symbol.
+
+Referenced by M\_\-define\_\-macros().\index{ml_arm.c@{ml\_\-arm.c}!M_define_opcode_name_arm@{M\_\-define\_\-opcode\_\-name\_\-arm}}
+\index{M_define_opcode_name_arm@{M\_\-define\_\-opcode\_\-name\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void M\_\-define\_\-opcode\_\-name\_\-arm (\bf{STRING\_\-Symbol\_\-Table} $\ast$ {\em sym\_\-tbl})}\label{ml__arm_8c_f770720b2bce403c4540ced8471204bd}
+
+
+
+
+Definition at line 1349 of file ml\_\-arm.c.
+
+Referenced by M\_\-define\_\-opcode\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_get_macro_name_arm@{M\_\-get\_\-macro\_\-name\_\-arm}}
+\index{M_get_macro_name_arm@{M\_\-get\_\-macro\_\-name\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-macro\_\-name\_\-arm (int {\em id})}\label{ml__arm_8c_1ccd24554d6d2b03ca45a0859999f4b8}
+
+
+
+
+Definition at line 1333 of file ml\_\-arm.c.
+
+References ARM\_\-MAC\_\-ALLOC, ARM\_\-MAC\_\-CALLEE\_\-I, ARM\_\-MAC\_\-FONE, ARM\_\-MAC\_\-FZERO, ARM\_\-MAC\_\-LEAF, ARM\_\-MAC\_\-RETADDR, and ARM\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-get\_\-macro\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_get_opcode_name_arm@{M\_\-get\_\-opcode\_\-name\_\-arm}}
+\index{M_get_opcode_name_arm@{M\_\-get\_\-opcode\_\-name\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char$\ast$ M\_\-get\_\-opcode\_\-name\_\-arm (int {\em id})}\label{ml__arm_8c_1e4a4dc60acbb2a8c03f10f0f7ed72fd}
+
+
+
+
+Definition at line 1353 of file ml\_\-arm.c.
+
+Referenced by M\_\-get\_\-opcode\_\-name().\index{ml_arm.c@{ml\_\-arm.c}!M_is_stack_operand_arm@{M\_\-is\_\-stack\_\-operand\_\-arm}}
+\index{M_is_stack_operand_arm@{M\_\-is\_\-stack\_\-operand\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-stack\_\-operand\_\-arm (L\_\-Operand $\ast$ {\em operand})}\label{ml__arm_8c_904277c499831273a69c6082decbf484}
+
+
+
+
+Definition at line 1549 of file ml\_\-arm.c.
+
+References ARM\_\-MAC\_\-TRUE\_\-SP.
+
+Referenced by M\_\-is\_\-stack\_\-operand().\index{ml_arm.c@{ml\_\-arm.c}!M_is_unsafe_macro_arm@{M\_\-is\_\-unsafe\_\-macro\_\-arm}}
+\index{M_is_unsafe_macro_arm@{M\_\-is\_\-unsafe\_\-macro\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-is\_\-unsafe\_\-macro\_\-arm (L\_\-Operand $\ast$ {\em operand})}\label{ml__arm_8c_c7f01812e4981b5a5c367e89aa8bbb44}
+
+
+
+
+Definition at line 1566 of file ml\_\-arm.c.
+
+Referenced by M\_\-is\_\-unsafe\_\-macro().\index{ml_arm.c@{ml\_\-arm.c}!M_num_oper_required_for_arm@{M\_\-num\_\-oper\_\-required\_\-for\_\-arm}}
+\index{M_num_oper_required_for_arm@{M\_\-num\_\-oper\_\-required\_\-for\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-oper\_\-required\_\-for\_\-arm (L\_\-Oper $\ast$ {\em oper}, char $\ast$ {\em name})}\label{ml__arm_8c_a4af2338b49e95ac3d2f46e4fef25d17}
+
+
+
+
+Definition at line 1405 of file ml\_\-arm.c.
+
+References has\_\-label\_\-operand, indexed\_\-memory\_\-op, long\_\-neg\_\-int\_\-inc, long\_\-pos\_\-int\_\-inc, non\_\-zero\_\-offset, register\_\-inc, and short\_\-int\_\-inc.
+
+Referenced by M\_\-num\_\-oper\_\-required\_\-for().\index{ml_arm.c@{ml\_\-arm.c}!M_num_registers_arm@{M\_\-num\_\-registers\_\-arm}}
+\index{M_num_registers_arm@{M\_\-num\_\-registers\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-num\_\-registers\_\-arm (int {\em ctype})}\label{ml__arm_8c_46f8873c38af373c04bf4ee93a988f21}
+
+
+
+
+Definition at line 1686 of file ml\_\-arm.c.
+
+References M\_\-ARM\_\-1\_\-01, M\_\-assert(), and M\_\-model.
+
+Referenced by M\_\-num\_\-registers().\index{ml_arm.c@{ml\_\-arm.c}!M_oper_supported_in_arch_arm@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-arm}}
+\index{M_oper_supported_in_arch_arm@{M\_\-oper\_\-supported\_\-in\_\-arch\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-oper\_\-supported\_\-in\_\-arch\_\-arm (int {\em opc})}\label{ml__arm_8c_26978e7f9d7c87c011af90627774611d}
+
+
+
+
+Definition at line 1365 of file ml\_\-arm.c.
+
+Referenced by M\_\-oper\_\-supported\_\-in\_\-arch().\index{ml_arm.c@{ml\_\-arm.c}!M_operand_type_arm@{M\_\-operand\_\-type\_\-arm}}
+\index{M_operand_type_arm@{M\_\-operand\_\-type\_\-arm}!ml_arm.c@{ml\_\-arm.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int M\_\-operand\_\-type\_\-arm (L\_\-Operand $\ast$ {\em operand})}\label{ml__arm_8c_4ec85c5a7f35c3b9a3cf6075702bd71a}
+
+
+
+
+Definition at line 1592 of file ml\_\-arm.c.
+
+References FIELD\_\-11, FIELD\_\-14, FIELD\_\-5, M\_\-assert(), MDES\_\-OPERAND\_\-Label, MDES\_\-OPERAND\_\-Lit11, MDES\_\-OPERAND\_\-Lit14, MDES\_\-OPERAND\_\-Lit21, MDES\_\-OPERAND\_\-Lit5, MDES\_\-OPERAND\_\-NULL, MDES\_\-OPERAND\_\-REG, and NULL.
+
+Referenced by M\_\-mdes\_\-operand\_\-type().

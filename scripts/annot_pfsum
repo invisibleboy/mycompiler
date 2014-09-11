@@ -1,0 +1,216 @@
+#!/bin/sh
+
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+# This script generates the inputs and runs the annot_pfsum.pl perl script
+# to back-annotate L-code.
+#
+# Need to fix: Currently limited
+#              Need to implement input read through read_platform info 
+#              Automatically annotates ALL {EXT} files: need to be careful
+
+# set up environment with default values:
+READ_PATHS="";
+DIR=".";
+EXT="";
+EXT_DESC="";
+STAT_DESC="_p";
+INPUT_LIST="";
+INPUT="input1";
+CLEAN=1;
+BENCHMARK="NONE";
+CLEANUP="";
+DOCHECK=1;  # Check even "NONE" benchmark
+LOCAL=0;
+FILE_LIST="";
+LIST_FILE="list_file.tmp"
+TEMP_FILE="lcode.tmp"
+PFSUM_TYPES="";
+TYPE="";
+PFSUM_FILES="";
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 2 ]; then
+    BENCHMARK="$1";
+    EXT="$2";
+    shift 3;
+else 
+    VALID_ARGS=0;
+fi
+
+STAT_DESC=".${EXT}_s_p";
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: annot_pfsum expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="$READ_PATHS -project $1"
+            shift;;
+
+	# Specify input type
+	-input)
+	    if [ $# -eq 0]; then
+		echo "Error: annot_pfsum expects a name after -input"
+		exit 1;
+	    fi
+	    INPUT = "$1"
+	    shift;;
+
+        # Silently ignore empty arguments
+	"")
+	    IGNORED_ARG=1;;  
+
+	-noclean)
+	    echo "> Will not clean up temp files."
+	    CLEAN=0;;
+
+	-ipc)
+	    PFSUM_TYPES="${PFSUM_TYPES} ipc";;
+
+	-clocks)
+	    PFSUM_TYPES="${PFSUM_TYPES} clocks";;
+
+	-flushes)
+	    PFSUM_TYPES="${PFSUM_TYPES} flushes";;
+
+	-whammos)
+	    PFSUM_TYPES="${PFSUM_TYPES} whammos";;
+
+	-ieu)
+	    PFSUM_TYPES="${PFSUM_TYPES} ieu";;
+
+	-dtlb)
+	    PFSUM_TYPES="${PFSUM_TYPES} dtlb";;
+
+	-mispredicts)
+	    PFSUM_TYPES="${PFSUM_TYPES} mispredicts";;
+
+	-waymp)
+	    PFSUM_TYPES="${PFSUM_TYPES} waymp";;
+
+	-memory)
+	    PFSUM_TYPES="${PFSUM_TYPES} memory";;
+
+	-l3)
+	    PFSUM_TYPES="${PFSUM_TYPES} l3";;
+
+	-misald)
+	    PFSUM_TYPES="${PFSUM_TYPES} misald";;
+
+	-misast)
+	    PFSUM_TYPES="${PFSUM_TYPES} misast";;
+
+	-backend)
+	    PFSUM_TYPES="${PFSUM_TYPES} backend";;
+
+	*)
+	    echo "Error: Invalid flag specified.";;
+
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: annot_pfsum benchmark ext [options] < list";
+    echo '> ';
+    echo '> Back-annotates lcode files using the pfsum data';
+    echo '> Input "input1" is default';
+    echo '> ';
+    echo '> Zero or more of the following options may be specified';
+    echo '> ';
+    echo '> General Options (source ext, prof mode, bench_info settings, etc):';
+    echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name(s)"   run with "name(s)" instead of project'\''s EVAL_INPUTS';
+    echo '>   -noclean           prevents clean up of temp files';
+    echo '>   -<pfsam_type>      include <pfsam_type> data for back-annotation';
+    echo '> ';
+
+    exit 0200;
+fi;
+
+cd ${DIR};
+
+# Make file list
+ls *.${EXT} > ${LIST_FILE};
+
+# Assemble string of filenames to gather annotation data from
+for TYPE in $PFSUM_TYPES
+do
+    PFSUM_FILES="${PFSUM_FILES} ${BENCHMARK}${STAT_DESC}.${INPUT}.${TYPE}.pfsum";
+done
+
+# Run perl script
+annot_pfsum.pl ${LIST_FILE} ${PFSUM_FILES};
+
+# Clean up unless using -noclean option
+if test $CLEAN = 1; then
+    echo "> Removing temporary files and cleaning up."
+    echo ">"
+    rm -f ${LIST_FILE};
+    rm -f ${TEMP_FILE};
+fi
+
+echo "> Done, annot_pfsum completed for ${BENCHMARK}.";
+

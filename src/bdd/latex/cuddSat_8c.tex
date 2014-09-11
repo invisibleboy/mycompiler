@@ -1,0 +1,387 @@
+\section{cudd\-Sat.c File Reference}
+\label{cuddSat_8c}\index{cuddSat.c@{cuddSat.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{cudd\-Path\-Pair}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DD\_\-BIGGY}~1000000
+\item 
+\#define \bf{WEIGHT}(weight, col)~((weight) == NULL ? 1 : weight[col])
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static enum \bf{st\_\-retval} free\_\-path\_\-pair \bf{ARGS} ((char $\ast$key, char $\ast$value, char $\ast$arg))
+\item 
+static \bf{cudd\-Path\-Pair} get\_\-shortest \bf{ARGS} ((\bf{Dd\-Node} $\ast$root, int $\ast$cost, int $\ast$support, \bf{st\_\-table} $\ast$visited))
+\item 
+static \bf{Dd\-Node} $\ast$get\_\-path \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int cost))
+\item 
+static \bf{cudd\-Path\-Pair} get\_\-largest \bf{ARGS} ((\bf{Dd\-Node} $\ast$root, \bf{st\_\-table} $\ast$visited))
+\item 
+static \bf{Dd\-Node} $\ast$get\_\-cube \bf{ARGS} ((\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int cost))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Eval} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int $\ast$inputs)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Shortest\-Path} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int $\ast$support, int $\ast$length)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Largest\-Cube} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$length)
+\item 
+int \bf{Cudd\_\-Shortest\-Length} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$f, int $\ast$weight)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Decreasing} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int i)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Increasing} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int i)
+\item 
+int \bf{Cudd\_\-Equiv\-DC} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$F, \bf{Dd\-Node} $\ast$G, \bf{Dd\-Node} $\ast$D)
+\item 
+int \bf{Cudd\_\-Equal\-Sup\-Norm} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$g, CUDD\_\-VALUE\_\-TYPE tolerance, int pr)
+\item 
+static enum \bf{st\_\-retval} \bf{free\_\-path\_\-pair} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\item 
+static \bf{cudd\-Path\-Pair} \bf{get\_\-shortest} (\bf{Dd\-Node} $\ast$root, int $\ast$cost, int $\ast$support, \bf{st\_\-table} $\ast$visited)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{get\_\-path} (\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int cost)
+\item 
+static \bf{cudd\-Path\-Pair} \bf{get\_\-largest} (\bf{Dd\-Node} $\ast$root, \bf{st\_\-table} $\ast$visited)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{get\_\-cube} (\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int cost)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Sat.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{one}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddSat.c@{cudd\-Sat.c}!DD_BIGGY@{DD\_\-BIGGY}}
+\index{DD_BIGGY@{DD\_\-BIGGY}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DD\_\-BIGGY~1000000}\label{cuddSat_8c_6994699d7a2a82b8f838e9d8d408095a}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Sat.c}{p.}{cuddSat_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Functions for the solution of satisfiability related problems.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-Eval()}{p.}{cuddSat_8c_0f11262fedecf0c0f4376432b478e6e8} \item \doxyref{Cudd\_\-Shortest\-Path()}{p.}{cuddSat_8c_78e2d36d1fdfa3d917ad345867bd4596} \item \doxyref{Cudd\_\-Largest\-Cube()}{p.}{cuddSat_8c_5722a5bf76d99cd30783ad87ba03bf96} \item \doxyref{Cudd\_\-Shortest\-Length()}{p.}{cuddSat_8c_ddfc0e508dfd1d0bd0c74104a3dd15e8} \item \doxyref{Cudd\_\-Decreasing()}{p.}{cuddSat_8c_66a70b011fca8b95fbc3953e8b1be1fe} \item \doxyref{Cudd\_\-Increasing()}{p.}{cuddSat_8c_4f87b23df844d48727ee53f75d868be6} \item \doxyref{Cudd\_\-Equiv\-DC()}{p.}{cuddSat_8c_3e078600dd9087c623e1bdfea00d599d} \item \doxyref{Cudd\_\-Equal\-Sup\-Norm()}{p.}{cuddSat_8c_be0be57ead326db49e00a51d7acf75f9} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{free\_\-path\_\-pair()}{p.}{cuddSat_8c_55b09f18c2cd5d12258a0d9b16700ee6} \item \doxyref{get\_\-shortest()}{p.}{cuddSat_8c_cff9698f01685cfc2a661018639485e9} \item \doxyref{get\_\-path()}{p.}{cuddSat_8c_e08cc7493e8351ed1a8a7fe7cfa9b811} \item \doxyref{get\_\-largest()}{p.}{cuddSat_8c_0a432215d566ed6b648dbbca7f01dfc3} \item \doxyref{get\_\-cube()}{p.}{cuddSat_8c_9f216e6fdad86917bd5a4b4f134de1a6} \end{itemize}
+]
+
+Author [Seh-Woong Jeong, Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 49 of file cudd\-Sat.c.
+
+Referenced by Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), get\_\-largest(), and get\_\-shortest().\index{cuddSat.c@{cudd\-Sat.c}!WEIGHT@{WEIGHT}}
+\index{WEIGHT@{WEIGHT}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define WEIGHT(weight, col)~((weight) == NULL ? 1 : weight[col])}\label{cuddSat_8c_a0c21b2677d4dc06dfd0dd175bb1a718}
+
+
+
+
+Definition at line 78 of file cudd\-Sat.c.
+
+Referenced by get\_\-path(), and get\_\-shortest().
+
+\subsection{Function Documentation}
+\index{cuddSat.c@{cudd\-Sat.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ get\_\-cube ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int cost))\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_def0240d96d2fec8a04be7f3ad2ed5d6}
+
+
+\index{cuddSat.c@{cudd\-Sat.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{cudd\-Path\-Pair} get\_\-largest ARGS ((\bf{Dd\-Node} $\ast$root, \bf{st\_\-table} $\ast$visited))\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_3009bb073b45b6bca9c8128b225390f4}
+
+
+\index{cuddSat.c@{cudd\-Sat.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ get\_\-path ARGS ((\bf{Dd\-Manager} $\ast$manager, \bf{st\_\-table} $\ast$visited, \bf{Dd\-Node} $\ast$f, int $\ast$weight, int cost))\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_55f70f4808f6691e9cd966030773e3c8}
+
+
+\index{cuddSat.c@{cudd\-Sat.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{cudd\-Path\-Pair} get\_\-shortest ARGS ((\bf{Dd\-Node} $\ast$root, int $\ast$cost, int $\ast$support, \bf{st\_\-table} $\ast$visited))\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_9f6fd92f103849abb4133d2625edeef7}
+
+
+\index{cuddSat.c@{cudd\-Sat.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} free\_\-path\_\-pair ARGS ((char $\ast$key, char $\ast$value, char $\ast$arg))\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_83159aca2e890dcc47fe9cc5ee72eef5}
+
+
+Automatic\-Start \index{cuddSat.c@{cudd\-Sat.c}!Cudd_Decreasing@{Cudd\_\-Decreasing}}
+\index{Cudd_Decreasing@{Cudd\_\-Decreasing}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Decreasing (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em i})}\label{cuddSat_8c_66a70b011fca8b95fbc3953e8b1be1fe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Determines whether a BDD is negative unate in a variable.]
+
+Description [Determines whether the function represented by BDD f is negative unate (monotonic decreasing) in variable i. Returns the constant one is f is unate and the (logical) constant zero if it is not. This function does not generate any new nodes.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Increasing] 
+
+Definition at line 369 of file cudd\-Sat.c.
+
+References assert, Cudd\_\-bdd\-Leq(), Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-E, cudd\-I, cudd\-T, DD\_\-ONE, Dd\-Node::index, Dd\-Manager::perm, size, and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-Increasing().\index{cuddSat.c@{cudd\-Sat.c}!Cudd_EqualSupNorm@{Cudd\_\-EqualSupNorm}}
+\index{Cudd_EqualSupNorm@{Cudd\_\-EqualSupNorm}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Equal\-Sup\-Norm (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em g}, CUDD\_\-VALUE\_\-TYPE {\em tolerance}, int {\em pr})}\label{cuddSat_8c_be0be57ead326db49e00a51d7acf75f9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Compares two ADDs for equality within tolerance.]
+
+Description [Compares two ADDs for equality within tolerance. Two ADDs are reported to be equal if the maximum difference between them (the sup norm of their difference) is less than or equal to the tolerance parameter. Returns 1 if the two ADDs are equal (within tolerance); 0 otherwise. If parameter {\tt pr} is positive the first failure is reported to the standard output.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 580 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Constant, cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-E, cudd\-I, cudd\-T, cudd\-V, DD\_\-ONE, dd\-Equal\-Val, and Dd\-Node::index.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_EquivDC@{Cudd\_\-EquivDC}}
+\index{Cudd_EquivDC@{Cudd\_\-EquivDC}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Equiv\-DC (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em F}, \bf{Dd\-Node} $\ast$ {\em G}, \bf{Dd\-Node} $\ast$ {\em D})}\label{cuddSat_8c_3e078600dd9087c623e1bdfea00d599d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Tells whether F and G are identical wherever D is 0.]
+
+Description [Tells whether F and G are identical wherever D is 0. F and G are either two ADDs or two BDDs. D is either a 0-1 ADD or a BDD. The function returns 1 if F and G are equivalent, and 0 otherwise. No new nodes are created.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 473 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, cudd\-Cache\-Insert(), cudd\-Cache\-Lookup(), cudd\-E, cudd\-I, cudd\-T, DD\_\-ONE, DD\_\-ZERO, dd\-Min, Dd\-Node::index, one, and Dd\-Manager::perm.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_Eval@{Cudd\_\-Eval}}
+\index{Cudd_Eval@{Cudd\_\-Eval}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Eval (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em inputs})}\label{cuddSat_8c_0f11262fedecf0c0f4376432b478e6e8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Returns the value of a DD for a given variable assignment.]
+
+Description [Finds the value of a DD for a given variable assignment. The variable assignment is passed in an array of int's, that should specify a zero or a one for each variable in the support of the function. Returns a pointer to a constant node. No new nodes are produced.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Leq Cudd\_\-add\-Eval\-Const] 
+
+Definition at line 116 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not\-Cond, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, and Dd\-Node::index.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_Increasing@{Cudd\_\-Increasing}}
+\index{Cudd_Increasing@{Cudd\_\-Increasing}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Increasing (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em i})}\label{cuddSat_8c_4f87b23df844d48727ee53f75d868be6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Determines whether a BDD is positive unate in a variable.]
+
+Description [Determines whether the function represented by BDD f is positive unate (monotonic decreasing) in variable i. It is based on Cudd\_\-Decreasing and the fact that f is monotonic increasing in i if and only if its complement is monotonic decreasing in i.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Decreasing] 
+
+Definition at line 448 of file cudd\-Sat.c.
+
+References Cudd\_\-Decreasing(), and Cudd\_\-Not.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_LargestCube@{Cudd\_\-LargestCube}}
+\index{Cudd_LargestCube@{Cudd\_\-LargestCube}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Largest\-Cube (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em length})}\label{cuddSat_8c_5722a5bf76d99cd30783ad87ba03bf96}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds a largest cube in a DD.]
+
+Description [Finds a largest cube in a DD. f is the DD we want to get the largest cube for. The problem is translated into the one of finding a shortest path in f, when both THEN and ELSE arcs are assumed to have unit length. This yields a largest cube in the disjoint cover corresponding to the DD. Therefore, it is not necessarily the largest implicant of f. Returns the largest cube as a BDD.]
+
+Side\-Effects [The number of literals of the cube is returned in length.]
+
+See\-Also [Cudd\_\-Shortest\-Path] 
+
+Definition at line 240 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, DD\_\-BIGGY, DD\_\-ONE, DD\_\-ZERO, free\_\-path\_\-pair(), get\_\-cube(), get\_\-largest(), one, Dd\-Manager::reordered, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-lookup(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_ShortestLength@{Cudd\_\-ShortestLength}}
+\index{Cudd_ShortestLength@{Cudd\_\-ShortestLength}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Shortest\-Length (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em weight})}\label{cuddSat_8c_ddfc0e508dfd1d0bd0c74104a3dd15e8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Find the length of the shortest path(s) in a DD.]
+
+Description [Find the length of the shortest path(s) in a DD. f is the DD we want to get the shortest path for; weight$\backslash$[i$\backslash$] is the weight of the THEN edge coming from the node whose index is i. All ELSE edges have 0 weight. Returns the length of the shortest path(s) if successful; CUDD\_\-OUT\_\-OF\_\-MEM otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Shortest\-Path] 
+
+Definition at line 309 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, DD\_\-BIGGY, DD\_\-ONE, DD\_\-ZERO, free\_\-path\_\-pair(), get\_\-shortest(), one, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-lookup(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.\index{cuddSat.c@{cudd\-Sat.c}!Cudd_ShortestPath@{Cudd\_\-ShortestPath}}
+\index{Cudd_ShortestPath@{Cudd\_\-ShortestPath}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Shortest\-Path (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em weight}, int $\ast$ {\em support}, int $\ast$ {\em length})}\label{cuddSat_8c_78e2d36d1fdfa3d917ad345867bd4596}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds a shortest path in a DD.]
+
+Description [Finds a shortest path in a DD. f is the DD we want to get the shortest path for; weight$\backslash$[i$\backslash$] is the weight of the THEN arc coming from the node whose index is i. If weight is NULL, then unit weights are assumed for all THEN arcs. All ELSE arcs have 0 weight. If non-NULL, both weight and support should point to arrays with at least as many entries as there are variables in the manager. Returns the shortest path as the BDD of a cube.]
+
+Side\-Effects [support contains on return the true support of f. If support is NULL on entry, then Cudd\_\-Shortest\-Path does not compute the true support info. length contains the length of the path.]
+
+See\-Also [Cudd\_\-Shortest\-Length Cudd\_\-Largest\-Cube] 
+
+Definition at line 160 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Regular, DD\_\-BIGGY, DD\_\-ONE, DD\_\-ZERO, free\_\-path\_\-pair(), get\_\-path(), get\_\-shortest(), one, Dd\-Manager::reordered, Dd\-Manager::size, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-lookup(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.\index{cuddSat.c@{cudd\-Sat.c}!free_path_pair@{free\_\-path\_\-pair}}
+\index{free_path_pair@{free\_\-path\_\-pair}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} free\_\-path\_\-pair (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_55b09f18c2cd5d12258a0d9b16700ee6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the entries of the visited symbol table.]
+
+Description [Frees the entries of the visited symbol table. Returns ST\_\-CONTINUE.]
+
+Side\-Effects [None] 
+
+Definition at line 658 of file cudd\-Sat.c.
+
+References FREE, and ST\_\-CONTINUE.
+
+Referenced by Cudd\_\-Largest\-Cube(), Cudd\_\-Shortest\-Length(), and Cudd\_\-Shortest\-Path().\index{cuddSat.c@{cudd\-Sat.c}!get_cube@{get\_\-cube}}
+\index{get_cube@{get\_\-cube}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ get\_\-cube (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{st\_\-table} $\ast$ {\em visited}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em cost})\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_9f216e6fdad86917bd5a4b4f134de1a6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Build a BDD for a largest cube of f.]
+
+Description [Build a BDD for a largest cube of f. Given the minimum length from the root, and the minimum lengths for each node (in visited), apply triangulation at each node. Of the two children of each node on a shortest path, at least one is on a shortest path. In case of ties the procedure chooses the THEN children. Returns a pointer to the cube BDD representing the path if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 956 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, Dd\-Node::index, one, st\_\-lookup(), and Dd\-Manager::vars.
+
+Referenced by Cudd\_\-Largest\-Cube().\index{cuddSat.c@{cudd\-Sat.c}!get_largest@{get\_\-largest}}
+\index{get_largest@{get\_\-largest}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{cudd\-Path\-Pair} get\_\-largest (\bf{Dd\-Node} $\ast$ {\em root}, \bf{st\_\-table} $\ast$ {\em visited})\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_0a432215d566ed6b648dbbca7f01dfc3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the size of the largest cube(s) in a DD.]
+
+Description [Finds the size of the largest cube(s) in a DD. This problem is translated into finding the shortest paths from a node when both THEN and ELSE arcs have unit lengths. Uses a local symbol table to store the lengths for each node. Only the lengths for the regular nodes are entered in the table, because those for the complement nodes are simply obtained by swapping the two lenghts. Returns a pair of lengths: the length of the shortest path to 1; and the length of the shortest path to 0. This is done so as to take complement arcs into account.]
+
+Side\-Effects [none]
+
+See\-Also [] 
+
+Definition at line 874 of file cudd\-Sat.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, DD\_\-BIGGY, dd\-Min, cudd\-Path\-Pair::neg, cudd\-Path\-Pair::pos, st\_\-insert(), st\_\-lookup(), and zero.
+
+Referenced by Cudd\_\-Largest\-Cube().\index{cuddSat.c@{cudd\-Sat.c}!get_path@{get\_\-path}}
+\index{get_path@{get\_\-path}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ get\_\-path (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{st\_\-table} $\ast$ {\em visited}, \bf{Dd\-Node} $\ast$ {\em f}, int $\ast$ {\em weight}, int {\em cost})\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_e08cc7493e8351ed1a8a7fe7cfa9b811}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Build a BDD for a shortest path of f.]
+
+Description [Build a BDD for a shortest path of f. Given the minimum length from the root, and the minimum lengths for each node (in visited), apply triangulation at each node. Of the two children of each node on a shortest path, at least one is on a shortest path. In case of ties the procedure chooses the THEN children. Returns a pointer to the cube BDD representing the path if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 782 of file cudd\-Sat.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Bdd\-And\-Recur(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, Dd\-Node::index, one, st\_\-lookup(), Dd\-Manager::vars, and WEIGHT.
+
+Referenced by Cudd\_\-Shortest\-Path().\index{cuddSat.c@{cudd\-Sat.c}!get_shortest@{get\_\-shortest}}
+\index{get_shortest@{get\_\-shortest}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{cudd\-Path\-Pair} get\_\-shortest (\bf{Dd\-Node} $\ast$ {\em root}, int $\ast$ {\em cost}, int $\ast$ {\em support}, \bf{st\_\-table} $\ast$ {\em visited})\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_cff9698f01685cfc2a661018639485e9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the length of the shortest path(s) in a DD.]
+
+Description [Finds the length of the shortest path(s) in a DD. Uses a local symbol table to store the lengths for each node. Only the lengths for the regular nodes are entered in the table, because those for the complement nodes are simply obtained by swapping the two lenghts. Returns a pair of lengths: the length of the shortest path to 1; and the length of the shortest path to 0. This is done so as to take complement arcs into account.]
+
+Side\-Effects [Accumulates the support of the DD in support.]
+
+See\-Also [] 
+
+Definition at line 691 of file cudd\-Sat.c.
+
+References ALLOC, Cudd\_\-Is\-Complement, Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, DD\_\-BIGGY, dd\-Min, cudd\-Path\-Pair::neg, cudd\-Path\-Pair::pos, st\_\-insert(), st\_\-lookup(), WEIGHT, and zero.
+
+Referenced by Cudd\_\-Shortest\-Length(), and Cudd\_\-Shortest\-Path().
+
+\subsection{Variable Documentation}
+\index{cuddSat.c@{cudd\-Sat.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Sat.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 69 of file cudd\-Sat.c.\index{cuddSat.c@{cudd\-Sat.c}!one@{one}}
+\index{one@{one}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{one}\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_49e3c7508be54a84ae83273ed240e31c}
+
+
+
+
+Definition at line 72 of file cudd\-Sat.c.\index{cuddSat.c@{cudd\-Sat.c}!zero@{zero}}
+\index{zero@{zero}!cuddSat.c@{cudd\-Sat.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddSat_8c_559a95c469bb341bde49e5950629e726}
+
+
+
+
+Definition at line 72 of file cudd\-Sat.c.

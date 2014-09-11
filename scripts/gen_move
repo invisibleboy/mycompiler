@@ -1,0 +1,87 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+#	Moves the files to the specified directory with the given extension
+#       instead of it's current extension.
+#
+#	Usage: gen_move "from_directory" "to_directory" "extension" < "list"
+#
+#    Daniel M. Lavery
+
+if [ $# -eq 3 ]; then
+	FROM_DIRECTORY="$1";
+	TO_DIRECTORY="$2";
+	EXTENSION="$3";
+else
+	echo '> Usage: gen_move "from_directory" "to_directory" "extension" < "list"'
+	echo '> '
+	echo '>   Moves files in list from from_directory to to_directory with'
+	echo '>   extension specified instead of its current extension.'
+	echo '>   Do not include . in the extension.'
+	echo '> '
+	exit 0200;
+fi;
+
+while read FILE;
+do
+#	FILEOUT=`echo $FILE | awk -F. '{print $1}'`
+	FILEOUT=`echo $FILE | \
+	awk -F. '{if ($(NF) == "p") NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+	mv ${FROM_DIRECTORY}/${FILE} ${TO_DIRECTORY}/${FILEOUT}.${EXTENSION};
+
+        ERROR=$?;
+        if [ $ERROR -ne 0 ]; then
+            echo "> mv failed on input file: ${FILE}";
+            echo "> error_code= ${ERROR}";
+            exit $ERROR;
+        fi;
+done;
+
+echo "> done";

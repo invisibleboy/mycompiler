@@ -1,0 +1,477 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lsim default parameters.
+#
+# Created by John Gyllenhaal, 10-30-93
+#
+
+$punt_on_unknown_parm$ = yes; 		# To catch misspellings
+
+$use_file_mode$ = no;
+$base$ = wc;
+$exec_args$ = cccp.c; 
+$issue_width$ = 8;
+$branches$ = 8;
+$sample$ = 200000;
+$skip$ = 0;
+$stats_ext$ = sim;
+$stats_file$ = $base$.$stats_ext$
+$print_sample_stats$ = yes;
+$command_prefix$ = ;
+$trace_file$ = $base$.trace;
+$result_file$ = result.out;
+$error_file$ = result.out;
+$debug_output_file$ = stdout;
+$read_dests_of_pred_op$ = yes;
+$exec_name$ = $base$.probed;
+$annot_name$ = $base$.annot;
+$trace_command$ = $command_prefix$ $exec_name$ $exec_args$ 1> $result_file$ 2>$error_file$;
+$misprediction_penalty$ = 9;
+
+# For changing the actual latencies from what the code was scheduled for
+$overall_scale_factor$=1;
+$overall_delta_factor$=0;
+
+
+$BTB_model$ = counter;
+$icache_model$ = split-block;
+$dcache_model$ = blocking;
+$scache_model$ = blocking;
+
+(Lsim
+	punt_on_unknown_parm = $punt_on_unknown_parm$;
+
+        parm_warn_file_name = stderr;
+        warn_parm_not_defined = yes;
+        warn_parm_defined_twice = yes;
+        warn_parm_not_used = yes;
+
+        dump_parms = no;
+        parm_dump_file_name = $base$.sim_parms;
+
+        bypass_alloc_routines = no;
+	nice_value = 10;
+
+#	Mode of operation -> Simulator, profiler or x86_trace_generator
+	mode = Simulator;
+
+	# Enable the simulator to capture profile information
+	simulation_with_profile_information = no; 
+
+        processor_model = Superscalar;  # Superscalar, VLIW, EPIC, NYFO_VLIW 
+					# or PLAYDOH_VLIW
+        processor_type = static;        # static, dynamic (in future)
+
+ 	vliw_support_interlocking = no; # If yes, uses scoreboarding	
+        vliw_stall_model = on-use;	# on-use or on-issue
+	vliw_fixed_length_instructions = yes;  # If yes, use size below
+	vliw_instruction_size = $issue_width$ * 4; # in bytes
+	vliw_debug_sched_errors = no;
+
+	playdoh_vliw_load_interlocking = yes; # If yes, loads stall on-use
+	playdoh_vliw_stall_model = on-issue;    # on-use or on-issue
+	playdoh_vliw_fixed_length_instructions = yes;  # If yes, use size below
+	playdoh_vliw_instruction_size = $issue_width$ * 4; # in bytes
+	playdoh_vliw_debug_sched_errors = no;
+	playdoh_vliw_conflict_stall_cycles = 1; # Number of cycles to stall exec
+                                                # stage on a conflict
+
+	source_file = $base$.encoded;
+	trace_file = $trace_file$;
+	addr_file = $base$.addr_list;
+	use_file_mode = $use_file_mode$;
+	read_addr_file = no;
+	exec_name = $exec_name$;
+	annot_name = $annot_name$;
+	profile_stats_file = $base$.profiler;
+	trace_command = $trace_command$;
+	timeout_delay = 30;	# timeout (in secs) on trace command start
+	stats_file = $stats_file$;
+	debug_output_file = $debug_output_file$;
+	mdes_file = $IMPACT_ROOT$/mdes/Lhppa/PA_7100.lmdes;
+        program_start_addr = 1024; # in bytes
+
+
+	# This file indicates the type, latency and memory access size of
+        # each opcode.
+        opc_info_file = $IMPACT_REL_PATH$/src/Lcode/performance/Lsim/LSIM_OPC_INFO;
+	# If yes, prints to stats_file the opc info table (for debugging)
+	print_opc_info = no;
+
+	# These scaling and delta factors change the latencies for the
+	# different classes of instructions from what is indicated in the
+	# opc_info file (and presumably from that they were scheduled for)
+	# The formula used is:
+        # real_latency = (opc_info_latency * scale_factor) + delta_factor;
+
+        memory_latency_scale_factor = $overall_scale_factor$;
+        memory_latency_delta_factor = $overall_delta_factor$;
+        move_latency_scale_factor = $overall_scale_factor$;
+        move_latency_delta_factor = $overall_delta_factor$;
+        ialu_latency_scale_factor = $overall_scale_factor$;
+        ialu_latency_delta_factor = $overall_delta_factor$;
+        falu_latency_scale_factor = $overall_scale_factor$;
+        falu_latency_delta_factor = $overall_delta_factor$;
+        default_latency_scale_factor = $overall_scale_factor$;
+        default_latency_delta_factor = $overall_delta_factor$;
+
+
+
+	
+
+	# If yes, outputs an full instruction trace for an x86 instead
+	# of doing a simulation.
+	x86_trace_desc = $base$;
+	x86_use_pipe = no;
+        x86_trace_binmap_file = $base$.binmap;
+        x86_trace_output_file = $base$.x86_trace;
+
+	sample_model = Uniform; # Uniform and Random-skip
+	use_random_seed = yes;	# If yes, use current time, else use 'seed'
+        seed = 100;		# used if 'use_random_seed' set to no
+
+	sample_size = $sample$;
+	skip_size = $skip$;
+	print_sample_stats = $print_sample_stats$;
+	max_sample_count = 1000000000;	   # Limits number of samples
+
+ 	# Skips over the initial number of samples
+	initialization_skip_size = 0;
+
+	# Setting stop_sim_trip_count to a non-zero value and inserting
+	# "stop_sim" attrs into the l/mcode, will cause the simulation
+	# to stop after encountering stop_sim_trip_count opers with
+	# that attribute.  Useful for simulating/tracing only a few
+	# iterations of a loop.
+	stop_sim_trip_count = 0;	
+
+	# Used for debugging stop_sim and force_sim attributes (markers)
+	debug_stop_sim_markers = no;
+	debug_force_sim_markers = no;
+
+	# If "yes", off-path memory ops use the last address for that op.
+	# If "no", they use the last simulated address for that op 
+	# Setting to "no" greatly speeds up instruction skipping.
+	use_skipped_memory_addresses = no; 
+
+	# "yes" conservatively causes a pipeflush at every untraced jsr
+        # "no" treats untraced jsr's as a no-op
+        flush_pipe_on_untraced_jsr = yes;
+
+#       Misprediction penalty is now a macro modifying the number
+#	of fetch stages the processor has.  
+        fetch_stages = $misprediction_penalty$ - 1;
+
+	fetch_model = aggressive;	   # aggressive or conservative 
+	fetch_width = $issue_width$;	   # in number of instructions
+	fetch_buf_size = 3 * $issue_width$;# in number of instructions
+        # Fetch mark at 2*width  found to give better performance -JCG 10/17/96
+	fetch_mark = 2 * $issue_width$;    # will fetch at <= this mark
+	issue_width = $issue_width$;
+	branches_per_cycle = $branches$;
+	ialu_ops_per_cycle = $issue_width$;
+	falu_ops_per_cycle = $issue_width$;
+	loads_per_cycle = $issue_width$;
+	stores_per_cycle = $issue_width$;
+	cache_directives_per_cycle = $issue_width$;
+
+	dcache_ports = $issue_width$;
+	retire_width = $issue_width$;
+
+#	If squash_off_path_dcache_requests is set to no (the previous 
+#       behavior), off-path loads (due to branch misprediction) will be sent 
+#       to the dcache.  If set to yes, it is assumed that the processor 
+#       squashes off-path loads before they hit the dcache.  This may
+#       produce less noisy dcache results. -JCG 2/20/98
+        squash_off_path_dcache_requests = no;
+
+#       If delay_stores_until_retirement is set ot yes (the previous 
+#       behavior), stores will not be sent to the dcache until the 
+#       store retires out of the reorder buffer (and store forwarding
+#       will be performed to loads after the store, where appropriate).
+#       This cacuse load and store accesses to be reordered and some
+#       loads will not be sent to the dcache due to store forwarding.
+#       If set to no, all loads and stores will be sent to the dcache
+#       in program order (off-path stores will be squashed before hitting
+#       the dcache).  Setting to no may produce less noisy and more
+#       predictable dcache results. -JCG 2/20/98
+        delay_stores_until_retirement = yes;
+
+	# if yes, dests of predicated ops are implicit sources.
+	read_dests_of_pred_op = $read_dests_of_pred_op$ ;
+
+	memory_page_size = 4 * 1024;	   # in bytes/page
+	memory_latency=4;  		   # cycles until first word comes back
+	bus_model=single; 		   # single or split transaction
+	bus_bandwidth=8;    		   # in bytes/cycle
+        debug_bus = no;
+
+	L2_bus_model=split;                # single or split transaction
+	L2_bus_bandwidth=8;                # in bytes/cycle
+	debug_L2_bus = no;
+	L2_streaming_support=no;
+
+	# the number of invalid pages that can be mapped in until
+	# the sim's page table overflows (most benchmarks use < 10)
+        # Must be a power of 2 (1024 entries -> 16k of sim memory).
+	page_buffer_size = 4 * 1024;	   # in pages
+
+
+	# streaming_support causes missed load to return when first word
+        # comes back to the dcache from memory, dcache still blocked
+        # until the whole line comes back.
+	streaming_support=yes;		
+
+
+	icache_model = $icache_model$;	   # split-block or perfect
+	icache_size = 16 * 1024;           # in bytes
+	icache_block_size = 32; 	   # in bytes
+	icache_assoc = 1;
+
+	dcache_model = $dcache_model$;	   # blocking, non-blocking or perfect
+	dcache_size =32 * 1024;		   # in bytes
+	dcache_block_size = 32;	   	   # in bytes
+	dcache_assoc = 4;
+	dcache_write_buf_size = 8;	    
+	# combines multiple store misses to same address, if turned off, can 
+	# cause performance degradation in benchmarks with tight loops and more
+	# than 1 store/cycle (ie cmp, alvinn) since write buf fills up and 
+	# blocks cache.
+	dcache_combining_write_buf = yes;  
+        dcache_miss_bypass_limit = 0;
+        dcache_prefetch_buf_size = 8;
+        dcache_write_allocate = no;
+        dcache_debug_prefetch = no;
+        dcache_ignore_prefetch_bit = no;
+        dcache_ignore_prefetches = no;
+	dcache_debug_misses = no;	   # prints out miss addresses
+        dcache_debug_mem_copy = no;        # prints out mem_copy arguments
+	mem_copy_version = 1;		   # version of mem_copy to simulate
+
+        # If set to yes, lowers mem_copy request priority to below write miss
+        dcache_lower_mem_copy_priority = no; 
+
+        # If set to yes, lowers prefetch request priority to below write miss
+        dcache_higher_store_priority = no;
+
+        dcache_TLB1_size = 32;  # First level TLB, in entries
+        dcache_TLB1_assoc = 0;  # 0 is full-assoc
+        dcache_TLB2_size = 256; # Second level TLB, in entries
+        dcache_TLB2_assoc = 0;  # 0 is full-assoc
+	dcache_page_table_size = 4096;	# Max number of pages able to track
+	print_TLB_contents = no; # If yes, dumps TLB2 to debug_output_file
+
+	dcache_measure_conflict_stats = no;
+	scache_measure_conflict_stats = no;
+
+	# Optionally can have a prefetch cache that is
+	# accessed in parallel with primary dcache
+	prefetch_cache = no;          # Use prefetching cache
+	pcache_size = 256 * 32;            # in bytes
+	pcache_block_size = 256;           # in bytes
+	pcache_assoc = 0;       # should always be fully-assoc
+
+	# Optionally can have an L1 victim cache
+	victim_cache = no;              # Use victim cache
+	vcache_size = 64*16;            # in bytes
+	vcache_block_size = 64;           # in bytes
+
+	# Optionally can have a secondary cache
+	secondary_cache = yes;             # Use secondary cache
+	scache_latency = 6;
+	scache_model = $scache_model$;     # blocking, non-blocking or perfect
+	scache_size = 1024 * 1024;         # in bytes
+	scache_block_size = 256;           # in bytes
+	scache_assoc = 1;
+	scache_debug_misses = no;          # prints out miss addresses
+	scache_combining_write_buf = yes;
+	scache_write_allocate = no;
+	scache_miss_bypass_limit = 50;
+	scache_prefetch_buf_size = 8;
+	scache_debug_prefetch = no;
+	scache_ignore_prefetch_bit = no;
+	scache_ignore_prefetches = no;
+	scache_write_buf_size = 8;
+
+	# Optionally can have an L2 victim cache
+	L2_victim_cache = no;           # Use victim cache
+	L2_vcache_size = 256*32;            # in bytes
+	L2_vcache_block_size = 256;           # in bytes
+
+
+	BTB_model = $BTB_model$;   	   # perfect, always-wrong, counter, 
+					   # two-level, static, or BTC
+	BTB_size = 64;                     # in entries (bytes for BTC)
+	BTB_block_size = 1;		   # for BTC, in bytes
+	BTB_assoc = 1;	
+
+	BTB_track_addresses = no;	# yes, keeps track of branch addresses
+					# yes = slow simulation
+
+	# Changes to BTB simulations DAC 10-17-95
+
+	# Counter types supported: last-taken, Automaton_A3, or
+	# Automaton_A2 (same as up-down) staturating 2-bit counter
+	# Automaton_A3 slight variation on Automaton_A2
+	# last-taken  1 bit for last branch direction
+	BTB_counter_type = Automaton_A3;
+
+	# Return stack types: none, perfect, real
+	BTB_return_stack_type = real;
+	BTB_return_stack_size = 8;   # specify stack size for real 
+
+	# The following parameters were added for the 2-level BTB
+
+	# Two level adaptive BTB presented by Yeh&Patt has 9 models
+	# GAp, GAs, GAg : global history register, variable history tables
+	# PAp, PAs, PAg : per branch history register, variable history tables
+	# SAp, SAs, SAg : per set history register, variable history tables
+	BTB_history_size=12;	     # average history size
+	BTB_number_history_sets=16;   # Default is 16 sets
+	BTB_index_set_at_bit = 4;    # Start index at a particular address bit
+
+	# The following parameters fully define the 9 Yeh&Patt models
+	# The BHT (Branch History Table) holds histories of sets of branches
+	# for the GA* and SA* models.
+	BTB_number_BHT_sets=16;   # Default is 16 sets
+	BTB_BHT_index_set_at_bit=4;   # Start index at a particular address bit
+
+	# The following parameter is used for the gselect and gshare models
+	# For gshare, address_bits_used should be the same as history_size
+	BTB_address_bits_used=6;  # number of bits taken from address
+
+	# The following paramter is used for both Yeh&Patt's 9 models, and
+	# the gshare and gselect models.  If set to 1 (true) branch histories
+	# will update only on conditional branches.  If set to 0 (false) then
+	# all types of branches update the history.
+	BTB_CBR_only=1;
+
+	# Predicate based branch prediction
+	BTB_predicate_prediction_type = POP;
+	use_predicate_predictor_pred1 = no;
+	
+	# For efficiency reasons, if not simulating MCB code, use no-MCB model
+        MCB_model = no-MCB;		   # no-MCB, perfect, always-conflict,
+					   # simple-hash, reg-hash, or 
+					   # knuth-hash
+        MCB_size = 64;          	   # In entries
+        MCB_assoc = 8;
+        MCB_checksum_width = 0;            # In bits
+	MCB_all_loads_preloads = no;	
+        MCB_debug_load_load_conflicts=no;  # prints load-load signals
+        MCB_debug_load_store_conflicts=no; # prints load-store signals
+
+    	ALAT_model = no-ALAT;
+    	ALAT_size = 64;
+    	ALAT_all_loads_preloads = no;
+    	ALAT_debug_load_load_conflicts = no;
+    	ALAT_debug_load_store_conflicts = no;
+
+	# Prints statistics about various marked regions in the code.
+	# Added 7/1/94 JCG
+	#print_region_stats=no;		   # renamed to region_stats
+	region_stats=no;
+	
+
+	# Branch histograms are now supported.  If turned on, 
+        # an additional histogram file (specified below) will be
+	# produced.
+	print_branch_histograms = no;
+	histogram_file=$base$.hist;
+
+	# Profiler parameters
+	trace_promoted_predicates=no; # Needed for promoted predicate profiling.
+				      # Must set to 1 when probing also!
+	
+	profile_cycle_counts = no;    # counts cycles in marked regions
+        profile_memory_accesses = no; # dcache miss ratios
+        profile_branches = no;	      # BTB miss counts
+        profile_predicates = no;      # Predicate squash counts (PS)
+        profile_pred_defs = no;       # Pred_def dest set to 1 counts(PD0, PD1)
+        profile_promoted_predicates=no; # Promoted pred squash count (PPS)
+        profile_issue_weight = no;    # Annotates Issue/Instruction weight (IW)
+	profile_icache_misses = no;   # Annotates icache misses (IM)
+        mem_dep_profiling = no;	      # Do memory dependence profiling
+	
+	mdp_clear_addrs_on_overflow = no; # When the memory address table
+					# overflows do we clear old
+					# entries or reuse them (more
+					# conservative)?
+
+        find_access_distribution=no;  # Find the distribution of mem accesses
+        distr_base_addr=1024*1024*1024; # starting address of distribution
+        distr_entry_size=128;   # bucket size for addresses
+        distr_entries=512;      # number of address buckets
+        distr_time_delta=1;             # in cycles
+        distr_time_start=3500000;       # in cycles
+        distr_time_end=3600000;         # in cycles
+        distr_file_name=$base$.distr;
+
+	# Memory dependence profiling 
+	# Default model is 
+	mem_dep_guide_file_name = guide;
+	mem_dep_profile_file_name = $base$.pdc;
+  	mem_dep_model_name = unguided;
+	mem_dep_guide_model_name = local;
+
+	# Memory reuse profiling 
+#	mem_reuse_profiling = no;
+#	mem_reuse_stat_file_name = $base$.mem_reuse_profile;
+
+	# Debug flag that dumps the code image loaded by the simulator
+	dump_code_image = no;
+
+	# Trace load speculation effectiveness
+	# (Expect SPECID's on speculative loads, matching CHECK's)
+        gen_sload_data = no;
+        sload_data_file = ;
+        max_specid = 0;
+
+        trace_objects = no; 
+end)

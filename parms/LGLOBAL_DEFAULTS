@@ -1,0 +1,256 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# global default parameters.
+#
+# Created by Scott Mahlke, 11-11-93
+#
+# Revisions:
+#
+
+$check$ = 0;
+$check_data_struct_alloc$ = yes;
+$diff_data_types_indep$ = no;
+$label_and_reg_access_indep$ = no;
+$incoming_param_indep$ = no;
+
+$bypass_alloc_routines$=no;
+
+(Lglobal
+
+# Parameter file parameters
+# libimpact flags (These parameters set library global flags)
+    parm_warn_file_name = stderr;
+    warn_parm_not_defined = yes;
+#   warn_dev_parm_not_defined = no; 
+    warn_parm_defined_twice = yes;
+    warn_parm_not_used = yes;
+
+    dump_parms = no;
+    parm_dump_file_name = STD_PARMS_DUMP;
+
+    output_binary_format = no		# control whether Lcode is emitted as
+					# ascii or binary.  There is no corresponding
+					# format for input, since the Lcode module
+					# dynamically determines the type of the
+					# input file.
+
+    output_obsolete_ctype_format = no  # control whether Lcode is emitted
+					# in old or new ctype I/O format
+
+    funtime_message = no;
+    nice_value = 10;			# Value to auto renice impact to.
+    output_generation_info = yes;	# Print extra info at top of output file
+
+# For callgraph -- used to print a Davinci graph file for viewing with daVinci
+#                  grapher
+     print_davinci_callgraph = no;
+     davinci_callgraph_file = callgraph;
+
+#   Lcode structure configuration parameters
+    max_dest_operand = 4;		# max no. dest operands
+    max_src_operand = 6;		# max no. src operands
+    max_pred_operand = 2;		# max no. pred operands
+    oper_hash_tbl_size = 4096;		# number of entries in the oper hash tbl
+    expression_hash_tbl_size = 2048;	# number of entries in the expression 
+                                        # hash tbl
+    cb_hash_tbl_size = 128;		# number of entries in cb hash tbl
+
+#   Predicate define structure
+    max_pred_masks = 2;
+    max_preds_per_mask = 1;
+    max_pred_srcs = 1;
+
+#   Lcode structure checking parameters
+    check = $check$;			# check structure after reading
+    verbose_check = off;		# print out warning messages during check
+
+#   Lcode fs branch parameters
+    min_fs_weight = 50;			# min weight for fs branch
+
+#   Lcode speculation model parameters
+    speculation_model = general;        # general, srb, sentinel, wbs, ....
+					# see l_speculate.h for all options
+
+#   Lcode exception model paramters
+    non_excepting_ops = no;		# assume have non-excepting versions
+					# of all instructions.
+    mask_potential_exceptions = yes;	# do not flag instrs which are assumed
+					# to use a non-excepting version
+
+#   memory disambiguation parameters
+    use_attr_label = no;		# basically safe, use original labels associated with
+					# memory operations (off for now)
+    use_loop_iter = yes;		# safe, if DOALL loops marked, mem ops in
+                                        # different iterations are independent
+    incoming_param_indep = $incoming_param_indep$;
+		# moderately safe, incoming params contain non-overlapping data
+    diff_data_types_indep = $diff_data_types_indep$;
+		# moderately safe, access to data of different types always indep
+    label_and_reg_access_indep = $label_and_reg_access_indep$;
+		# unsafe, access off label and register always assumed independent
+    sp_and_reg_access_indep = no;	# unsafe, access off sp/fp and register
+
+    ambig_mem_always_indep = no;	# unsafe, for test only
+    load_store_always_indep = no;	# unsafe, for test only
+    mem_never_indep = no;		# unsafe, for test only
+
+    use_sync_arcs = no;
+    debug_sync_arcs = no;
+    eliminate_sync_arcs = no;
+    punt_on_sync_arcs_failure = no;
+
+    debug_memory_disamb = off;		# print out success/failure for mem deps
+
+#   loop detection parameters
+    static_loop_iter_count = 10;	# static weight associated with each level
+					# of loop nesting
+    debug_loop = off;			# print debugging info for loop analysis
+    debug_inner_loop = off;		# print debugging info for inner loop an
+    debug_static_weight = off;		# print debugging info for static weight
+
+#   hash table repair parameters
+    debug_hash_table_repair = off;	# print debugging info hash tbl repair
+
+#   control flow function parameters
+    debug_color_cb = off;		# print debugging info for L_color_cb
+
+#   Lcode structure allocation parameters
+    # check whether your alloc = your free
+    check_data_struct_alloc = $check_data_struct_alloc$;
+    debug_data_struct_alloc = off;	# print out data struct usage after each
+
+#   region parameters
+    region_hash_tbl_size=128;
+    region_hash_table_management=0	# =1 only when called by the region manager 
+
+#
+#   Function Appendix Parameters 
+#
+    use_appendix_for_sync_arcs=no;	# place all synce arcs in appendix 
+    use_appendix_for_attr=no;		# place attributes in appendix
+
+    #
+    # These parameters are a string of attribute names
+    # to be placed in the code or the appendix.
+    # DO NOT PUT QUOTES AROUND THIS STRING!
+    #
+    # Ex. oper_code_attr_list=isc pext;
+    #     oper_appendix_attr_list=l* ret;
+    oper_code_attr_list=;
+    oper_appendix_attr_list=;
+    
+    # Any attr that doesn't match the above strings
+    # will remain on the oper unless this is set to yes. 
+    oper_default_to_appendix=no;
+
+    # Analogous parameters for cbs.
+    cb_code_attr_list=;
+    cb_appendix_attr_list=;
+    cb_default_to_appendix=no;
+#
+#   End Appendix Parameters.
+#
+
+#   libimpact flags (These parameters set library global flags)
+    # Causes malloc() to be called every time L_alloc() is called and
+    # free() to be called every time L_free() is called. 
+    # Setting this to yes allows efficient use of the debug malloc routines.
+    # Should be set before any L_alloc_pools are created (this is 
+    # true in Lcode)
+    bypass_alloc_routines = $bypass_alloc_routines$;
+
+#   dataflow analysis parameters
+
+    debug_df_cb_construction = no;	# print out df cb boundaries
+    debug_df_live_in_out = no;		# print out live in/out
+    debug_df_reaching_defs = no;	# print out reaching defs
+    debug_df_available_defs = no;	# print out available defs
+
+    debug_df_mem_reaching_defs = 0;     # reaching def debug verbose 
+				        # level (6 is useful)
+    debug_df_mem_available_defs = 0;    # available debug verbose 
+					# level (6 is useful) 
+
+    debug_df_dead_code = no;		# print dead code as consumed
+
+#   JLB - 05-05-97 Added parameter to toggle on/off whether PtoL
+#   propagates sign and size information from Pcode to the restructured
+#   ctype Lcode.
+
+    propagate_sign_size_ctype_info = yes;
+
+    # This parameter sets how aggressive predicate analysis will be
+    # 0   use basic block conservative analysis for predicated code
+    # 1   use predicate analysis in most conservative manner which 
+    #     should give same results as 0.
+    # X   use predicate analysis up to X predicate flow paths
+    # -1  most aggressive possible analysis
+    df_max_pred_paths = 0;
+
+	
+    # This parameter sets how agressive the paritial dead code eliminator
+    # will be 
+    # -1 most aggressive using maximal graph builder 
+    #  0 use original dataflow graph builder (see df_max_pred_paths settings)
+    #  X use maximal graph builder up to X predicate flow paths
+    df_use_max_graph_builder = 60;
+
+    ignore_sync_arcs_for_opti = 0;
+
+    ia64_extensions = no;
+    generate_spec_checks = no;	
+    determine_cpu_time = yes;
+
+    versioned_acc_specs = yes;
+
+    # If yes, L_punt will trigger a segfault instead of exiting with a
+    # non-zero status
+    dump_core_on_punt = no;
+end)
+

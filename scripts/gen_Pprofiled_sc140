@@ -1,0 +1,1028 @@
+#!/bin/sh
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+#   gen_Pprofiled_sc140
+#
+#   Flattens and profiles pcode, checks results, and merges the profile 
+#   information back into the pcode.
+#
+#   Run this script with no arguments for usage information.
+#
+#   gen_profiled_hppa rewritten by John Gyllenhaal, Wen-mei Hwu 12/94
+#   Script modified from gen_profiled_hppa by Dan Lavery 3/95
+#   Script modified from gen_profiled_hppa by Le-Chun Wu 12/95
+#   Error checking enhanced by John Gyllenhaal 4/98
+#   Enhanced to use new bench_info framework by John Gyllenhaal 1/99
+#   Ported to platform_info framework by IMPACT Technologies Inc (JCG) 1/99
+
+# 11/07/02 REK If IMPACT_ROOT isn't defined, set it to be the same as
+#              IMPACT_REL_PATH.  This will allow the script to still work if
+#              someone doesn't have IMPACT_ROOT set and allow the script
+#              to work with the new autoconf split source/build directories.
+if [ "x${IMPACT_ROOT}" = "x" ]; then
+    export IMPACT_ROOT = ${IMPACT_REL_PATH};
+fi
+
+# set up environment with default values:
+COUNTER=0;
+ANSI_C_SOURCE=1;       # Overriden by bench_info
+DEBUG_EXEC=0;
+OPTIMIZE_EXEC=0;  # Overriden by bench_info
+USE_USER_EXEC_MODE=0; 
+USE_USER_ANSI_C_SOURCE=0;
+USE_SHARED_LIBRARIES=0;
+USE_USER_SHARED_LIBRARIES=0;
+FIND_BENCH_DIR=1;
+READ_PATHS="";
+BEGIN_SETX="";
+END_SETX="";
+EXT="";
+EXT_DESC="";
+CHECK_DESC="";
+INPUT_OPTION="";
+INPUT_ARG="";
+INPUT_LIST="user_specified";
+SHOW=0;
+CLEAN=1;
+TEST_ONLY=0;
+VERBOSE=0;
+BENCHMARK="NONE";
+DESCRIPTION="(user specified)"
+CPREFIX="";
+ARGS="";
+CHECK="";
+CLEANUP="";
+DOCHECK=1;  # Do check even for "NONE" benchmark
+LOCAL=0;
+FILE_LIST="";
+F2C_LIBS="";
+STD_PARMS="${IMPACT_REL_PATH}/parms/STD_PARMS.SC140";
+LIBPROF="";
+LIB_DIR="";
+ADD_LIBS="";
+LINKING_PREOPTIONS="";
+LINKING_POSTOPTIONS="";
+FLATTEN=1;
+USE_USER_SETUP=0;
+USE_USER_CPREFIX=0;
+USE_USER_ARGS=0;
+USE_USER_CHECK=0;
+USE_USER_CLEANUP=0;
+
+# Assume arguments valid
+VALID_ARGS=1;
+
+# get fixed arguments 
+if [ $# -ge 1 ]; then
+    DIR="$1";
+
+    # skip the 1 set argument
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+
+        # Allow different projects to be used
+	-project)
+	    if [ $# -eq 0 ]; then
+               echo "Error: gen_Pprofiled_sc140 expects a name after -project"
+               exit 1;
+            fi
+	    READ_PATHS="$READ_PATHS -project $1"
+            shift;;
+
+        # Allow an benchmark dir be specified
+        -bench_dir|-path)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_Pprofiled_sc140 expects a name after -bench_dir"
+               exit 1;
+            fi
+            BENCH_DIR="$1";
+            # Make sure specified path exists
+            if [ ! -d $BENCH_DIR ]; then
+               echo "Error: Invalid directory specified with -bench_dir option:"
+               echo "       '${BENCH_DIR}'"
+               exit 1;
+            fi
+            # Explicitly specify bench dir
+            READ_PATHS="-bench_dir ${BENCH_DIR} $READ_PATHS";
+            FIND_BENCH_DIR=0;
+            shift;;
+
+        # Support multiple input specifying options
+        -input|-prefix)
+            if [ "$INPUT_OPTION" != "" ]; then
+               echo "Error: gen_Pprofiled_sc140 does not expect both '$INPUT_OPTION' and '$OPTION'"
+               exit 1;
+            fi
+            INPUT_OPTION="$OPTION"
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_Pprofiled_sc140 expects a argument after $OPTION"
+               exit 1;
+            fi
+            INPUT_ARG="$1";
+            shift;;
+
+	# CWL test P2C
+	-test_only|-test_p2c)
+	    echo "> Will only test to see if pcode executes properly";
+	    TEST_ONLY=1;;
+
+        -bench)
+            if [ $# -eq 0 ]; then
+               echo "Error: gen_Pprofiled_sc140 expects an argument after $OPTION"
+               exit 1;
+            fi
+            BENCHMARK="$1";
+            echo "> Using settings for '${BENCHMARK}'";
+            shift;;
+
+	-setup)
+	    SETUP="$1";
+	    shift;
+	    USE_USER_SETUP=1;
+	    echo "> Setup text set to '${SETUP}'";;
+	
+	-cprefix)
+	    CPREFIX="$1";
+	    shift;
+	    USE_USER_CPREFIX=1;
+	    echo "> Prefixing '${CPREFIX}' to profile exec command";;
+
+	-args)
+	    ARGS="$1";
+	    shift;
+	    USE_USER_ARGS=1;
+	    echo "> Args set to '${ARGS}'";;
+	
+	-check)
+	    CHECK="$1";
+	    shift;
+	    DOCHECK=1;
+	    USE_USER_CHECK=1;
+	    echo "> Check text set to '${CHECK}'";;
+
+	-cleanup)
+	    CLEANUP="$1";
+	    shift;
+	    USE_USER_CLEANUP=1;
+	    echo "> Cleanup text set to '${CLEANUP}'";;
+
+        # Silently ignore empty arguments (compile_bench generates them)
+        "")
+            IGNORED_ARG=1;;
+
+        -setx|-show)
+            echo '> Will show commands exactly via "set -x"';
+            BEGIN_SETX="set -x";
+            END_SETX="set +x"
+	    SHOW=1;;
+
+	-noclean)
+	    echo "> Will not clean up temp files"
+	    CLEAN=0;;
+
+	-noflatten)
+	    echo "> Will not flatten input pcode"
+	    FLATTEN=0;;
+
+	-verbose)
+	    echo "> Verbose mode on"
+	    VERBOSE=1;;
+
+	-f2c)
+	    echo "> Linking in f2c libraries.  DONT USE!  COMPILE IN F2C SOURCE INSTEAD!"
+	    echo "> NON-STANDARD VERSION OF IMPACT REQUIRED FOR THIS TO WORK!"
+            F2C_LIBS="-L${IMPACT_ROOT}/lib -lhpF77 -lhpI77";;
+
+        -ext)
+            EXT="$1";
+	    EXT_DESC="/$EXT";
+	    CHECK_DESC=".${EXT}_p";
+            shift;
+            echo "> Will use files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+        -krc)
+            echo "> Will use K&R-C compatible compilation mode";
+            ANSI_C_SOURCE=0;
+	    USE_USER_ANSI_C_SOURCE=1;;
+
+        -ansi)
+            echo "> Will use Ansi-C compatible compilation mode";
+            ANSI_C_SOURCE=1;
+	    USE_USER_ANSI_C_SOURCE=1;;
+
+        -shared_libs|-shared)
+            echo "> Will use shared libraries"
+            USE_SHARED_LIBRARIES=1;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -static_libs|-static)
+            echo "> Will use static libraries"
+            USE_SHARED_LIBRARIES=0;
+            USE_USER_SHARED_LIBRARIES=1;;
+
+        -optimize|-opti)
+            echo "> Will generate optimized executable";
+            OPTIMIZE_EXEC=1;
+	    USE_USER_EXEC_MODE=1;;
+
+        -debug|-debugable)
+            echo "> Will generate debugable executable";
+            DEBUG_EXEC=1;
+	    USE_USER_EXEC_MODE=1;;
+
+        -lib_dir)
+            NEW_LIB="$1";
+            LIB_DIR="${LIB_DIR} -L${NEW_LIB}";
+            shift;
+            echo "> Add ${NEW_LIB} to library directories";;
+
+        -L*)
+            echo "> Adding '${OPTION}' to the link command";
+            LIB_DIR="${LIB_DIR} ${OPTION}";;
+
+        -add_lib)
+            NEW_LIB="$1";
+            ADD_LIBS="${ADD_LIBS} -l${NEW_LIB}";
+            shift;
+            echo "> Add ${NEW_LIB} to libraries";;
+
+        -l*)
+            echo "> Adding '${OPTION}' to the link command";
+            ADD_LIBS="${ADD_LIBS} ${OPTION}";;
+
+	*)
+	    echo "Error: Unknown option '${OPTION}'"	
+	    VALID_ARGS=0;;
+    esac
+done
+
+# Don't bother with finding benchmark info if already in an error state
+if [ $VALID_ARGS -eq 1 ]; then
+    #
+    #       Find the benchmark info
+    #
+    # Find the benchmark dir if not user specified
+    if [ $FIND_BENCH_DIR -eq 1 ]; then
+      BENCH_DIR=`find_bench_dir ${BENCHMARK}`
+      if test "$?" != 0; then
+        echo " "
+        echo "> Exiting: Could not find '${BENCHMARK}' using find_bench_dir!"
+        echo "> Error message returned by find_bench_dir:"
+        echo "$BENCH_DIR";
+        exit 1;
+      fi
+    fi
+    echo " ";
+    echo "> Will use the compilation and execution info for ${BENCHMARK} in:"
+    echo ">   $BENCH_DIR"
+
+    echo " "
+
+    # Get and verify benchmark inputs
+    INPUT_ERROR_CODE=0;
+
+    # Handle -prefix
+    if [ "$INPUT_OPTION" = "-prefix" ]; then
+      echo "> Using prefix '$INPUT_ARG' to find inputs for Pcode profiling"
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -prefix \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle -input
+    elif [ "$INPUT_OPTION" = "-input" ]; then
+      echo "> Verifying specified input list for Pcode profiling"
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -input \"$INPUT_ARG\") 2>&1`";
+      INPUT_ERROR_CODE="$?";
+
+    # Handle default cause, using train inputs
+    elif [ "$INPUT_OPTION" = "" ]; then
+      echo "> Using default train input(s) for Pcode profiling"
+      INPUT_LIST="`(find_bench_inputs ${BENCHMARK} $READ_PATHS -train_inputs) 2>&1`";
+      INPUT_ERROR_CODE="$?";
+    fi
+
+    if test "$INPUT_ERROR_CODE" != 0; then
+      echo " "
+      echo "> Exiting gen_Pprofiled_sc140, find_bench_inputs returned this error message:"
+      echo "$INPUT_LIST";
+      exit 1;
+    fi
+
+    echo " "
+    echo "> The following input(s) will be used for Pcode profiling:"
+    echo ">   $INPUT_LIST"
+    echo " "
+
+    LIB_REQUIREMENTS=`read_compile_info ${BENCHMARK} $READ_PATHS -lib_requirements`;
+    if test "$?" != 0; then 
+       echo " "
+       echo "> Exiting: Could not read lib requirements using read_compile_info!"
+       echo "> Error message returned by read_compile_info:"
+       echo "$LIB_REQUIREMENTS";
+       exit 1;
+    fi
+
+    # Read in linking options
+    LINKING_PREOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_preoptions`;
+    if test "$?" != 0; then echo "Unexpected Exit (LINKING_PREOPTIONS)!: non-zero exit code";echo "$LINKING_PREOPTIONS";exit 1;fi
+
+    LINKING_POSTOPTIONS=`read_compile_info ${BENCHMARK} $READ_PATHS -linking_postoptions`;
+    if test "$?" != 0; then echo "Unexpected Exit (LINKING_POSTOPTIONS)!: non-zero exit code";echo "$LINKING_POSTOPTIONS";exit 1;fi
+
+    # Read compilation mode from compile info if not set by user 
+    if [ $USE_USER_ANSI_C_SOURCE -eq 0 ]; then
+       ANSI_C_SOURCE=`read_compile_info ${BENCHMARK} $READ_PATHS -ansi_c_source`;
+       if test "$?" != 0; then echo "Unexpected Exit (ANSI_C_SOURCE)!: non-zero exit code";echo "$ANSI_C_SOURCE";exit 1;fi
+
+       if [ $ANSI_C_SOURCE -eq 1 ]; then
+          echo "> Compilation info indicates this should be linked in Ansi-C mode";
+	  echo " ";
+       else
+          echo "> Compilation info indicates this should be linked in K&R-C mode";
+	  echo " ";
+       fi
+    fi
+
+    # Read compilation mode from compile info if not set by user 
+    if [ $USE_USER_EXEC_MODE -eq 0 ]; then 
+       OPTIMIZE_EXEC=`read_compile_info ${BENCHMARK} $READ_PATHS -optimize_emul_exec`;
+       if test "$?" != 0; then 
+          echo "Unexpected Exit (OPTIMIZE_EXEC)!: non-zero exit code";
+          echo "$OPTIMIZE_EXEC";
+          exit 1;
+       fi
+    fi
+fi
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: gen_Pprofiled_sc140 dir [options] < list";
+    echo '> ';
+    echo '> Profiles pcode using the settings specified in the options';
+    echo '> Defaults to simple linking and execution with no command line arguments'; 
+    echo '> ';
+    echo '> Zero or more of the following options may be specified';
+    echo '> ';
+    echo '> General Options (source ext, prof mode, bench_info settings, etc):';
+    echo ">   -bench 'name'      uses settings for 'name' instead simple defaults";
+    echo '>   -bench_dir "dir"   read info in "dir" (default: find_bench_dir used)';
+    echo '>   -project "project" project info to use (default: $DEFAULT_PROJECT used)';
+    echo '>   -input "name(s)"   run with "name(s)" instead of project'\''s TRAIN_INPUTS';
+    echo '>   -prefix "prefix"   run with "prefix*" instead of project'\''s TRAIN_INPUTS';
+    echo ">   -ext 'ext'         uses files in dir with .ext, instead of file list";
+    echo '>   -test_only         only tests if pcode works properly (no profiling)';
+    echo '>   -noclean           prevents clean up of temp files';
+    echo '>   -verbose           prints message at every step';
+    echo '>   -show              show commands exactly via "set -x"';
+    echo '>   -noflatten         prevents flattening of input pcode';
+
+    echo '> ';
+    echo "> Options for overriding the benchmark's compile_info portion of bench_info:";
+    echo '>   -krc               uses K&R C compatible compilation mode';
+    echo '>   -f2c               links in f2c libs (Dont use! Compile in f2c lib source.)';
+    echo '>   -static            use static libraries (default if STATIC_REQUIRED/NONE)';
+    echo '>   -shared            use shared libraries (default if SHARED_REQUIRED)';
+    echo '>   -optimize          generate optimized executable';
+    echo '>   -debug             generate debugable executable';
+    echo ">   -lib_dir 'dir'     also search 'dir' for libs";
+    echo ">   -Ldir              also search 'dir' for libs (cc-like version of -lib_dir)";
+    echo ">   -add_lib 'lib'     also link in 'lib'";
+    echo ">   -llibrary          also link in 'library' (cc-like version of -add_lib)";
+
+    echo '> ';
+    echo "> Options for overriding the benchmark's exec_info portion of bench_info:";
+    echo ">   -setup   'text'    runs 'text' to setup profile run";
+    echo ">   -cprefix 'text'    prefixes 'text' to profile_exec_command";
+    echo ">   -args    'text'    sets profile execution arguments to 'text'";
+    echo ">   -check   'text'    runs 'text' to check output";
+    echo ">   -cleanup 'text'    runs 'text' to cleanup after profile run";
+
+    exit 0200;
+fi;
+
+LN_COMMAND=`read_platform_info -ln_command`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$LN_COMMAND";
+   exit 1;
+fi
+
+# Make sure valid platform info specified
+HOST_PLATFORM=`read_platform_info -host_platform`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host platform name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_PLATFORM";
+   exit 1;
+fi
+
+HOST_COMPILER=`read_platform_info -host_compiler`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Could not read host compiler name using read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$HOST_COMPILER";
+   exit 1;
+fi
+
+COMPILER_INVOCATION=`read_platform_info -compiler_invocation`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler invocation command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_INVOCATION";
+   exit 1;
+fi
+
+# Use debug mode if -debug specified
+if [ $DEBUG_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -debug_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading debug mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Use opti mode if -optimize or compile_info specifies (and not -debug)
+elif [ $OPTIMIZE_EXEC -eq 1 ]; then
+   OPTI_MODE_SPECIFIER=`read_platform_info -opti_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Error reading opti mode specifer via read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$COMPILE_MODE_SPECIFIER";
+      exit 1;
+   fi
+# Otherwise don't optimize or add debug info
+else
+   OPTI_MODE_SPECIFIER="";
+fi
+
+if [ $ANSI_C_SOURCE -eq 1 ]; then
+   C_MODE_SPECIFIER=`read_platform_info -ansi_c_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read Ansi-C mode specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$C_MODE_SPECIFIER";
+      exit 1;
+   fi
+else
+   C_MODE_SPECIFIER=`read_platform_info -krc_mode_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read K&R-C mode specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$C_MODE_SPECIFIER";
+      exit 1;
+   fi
+fi
+
+# Determine if should use static or shared libraries unless specified
+# by user
+if [ $USE_USER_SHARED_LIBRARIES -eq 0 ]; then
+   if [ "$LIB_REQUIREMENTS" = "SHARED_REQUIRED" ]; then
+      USE_SHARED_LIBRARIES=1;
+   else
+      USE_SHARED_LIBRARIES=0;
+   fi
+fi
+
+if [ $USE_SHARED_LIBRARIES -eq 1 ]; then
+   LINK_MODE_SPECIFIER=`read_platform_info -shared_lib_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read shared lib specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$LINK_MODE_SPECIFIER";
+      exit 1;
+   fi
+else
+   LINK_MODE_SPECIFIER=`read_platform_info -static_lib_specifier`
+   if test "$?" != 0; then
+      echo " "
+      echo "> Exiting: Could not read static lib specifier using read_platform_info!"
+      echo "> Error message returned by read_platform_info:"
+      echo "$LINK_MODE_SPECIFIER";
+      exit 1;
+   fi
+fi
+
+COMPILER_POSTOPTIONS=`read_platform_info -compiler_postoptions`
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading compiler postoptions command via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$COMPILER_POSTOPTIONS";
+   exit 1;
+fi
+
+PPROF_LIB_FILE=/home/hwuligans/cshannon/impact/platform/x86lin_sc140_gcc/impact_pprof_lib.eln
+if test "$?" != 0; then
+   echo " "
+   echo "> Exiting: Error reading pcode profile library name via read_platform_info!"
+   echo "> Error message returned by read_platform_info:"
+   echo "$PPROF_LIB_FILE";
+   exit 1;
+fi
+
+
+# If have non-empty C_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$C_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $C_MODE_SPECIFIER";
+fi
+
+# CWL 
+# If have non-empty OPTI_MODE_SPECIFIER, add to COMPILER_INVOCATION
+# if [ "$OPTI_MODE_SPECIFIER" != "" ]; then
+#   COMPILER_INVOCATION="$COMPILER_INVOCATION $OPTI_MODE_SPECIFIER";
+# fi
+
+# If have non-empty LINK_MODE_SPECIFIER, add to COMPILER_INVOCATION
+if [ "$LINK_MODE_SPECIFIER" != "" ]; then
+   COMPILER_INVOCATION="$COMPILER_INVOCATION $LINK_MODE_SPECIFIER";
+fi
+
+echo "> The following platform information will be used:"
+echo ">"
+echo ">         Host Platform: '$HOST_PLATFORM'"
+echo ">         Host Compiler: '$HOST_COMPILER'"
+echo "> Base Compiler Command: '$COMPILER_INVOCATION'"
+echo ">  Compiler Postoptions: '$COMPILER_POSTOPTIONS'"
+echo ">"
+
+
+# Update LINKING_POSTOPTIONS with user's additional libraries (if non-empty)
+if [ "$ADD_LIBS" != "" ]; then
+   LINKING_POSTOPTIONS="$LINKING_POSTOPTIONS $ADD_LIBS";
+fi
+
+# If have non-empty COMPILER_POSTOPTIONS, add to LINKING_POSTOPTIONS
+if [ "$COMPILER_POSTOPTIONS" != "" ]; then
+   LINKING_POSTOPTIONS="$LINKING_POSTOPTIONS $COMPILER_POSTOPTIONS";
+fi
+
+echo " "
+echo "> The following linking options will be used for Pcode profiling:"
+echo ">    Linking Preoptions: '$LINKING_PREOPTIONS'"
+echo ">    Pcode Prof Library: '$PPROF_LIB_FILE'"
+echo ">   Linking Postoptions: '$LINKING_POSTOPTIONS'"
+echo " "
+
+if test $SHOW = 1; then
+  set -x
+fi
+	
+# Make sure directory specified exists
+if [ ! -d ${DIR} ]; then
+        echo "> ERROR: Directory '${DIR}' doesn't exist"
+        exit 0200;
+fi
+
+cd ${DIR}
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+
+    # Put extension in temp directory name
+    TEMP_DIR="impactpprof_${EXT}";
+else
+    echo ""
+    echo "> Reading file names to process from stdin"
+    echo "> *** If script stops here, probably missing '-ext ext' or '< list'! ***"
+    while read FILE;
+    do
+        FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+    echo "> File names sucessfully read from stdin"
+
+    # Use generic temp directory name
+    TEMP_DIR="impactpprof";
+fi
+
+# Make temp profile directory
+if test $VERBOSE = 1; then
+  echo "> **************************************************************";
+  echo "> Creating '${TEMP_DIR}' for use as temp diretory"
+  echo "> **************************************************************";
+  echo ">"
+fi
+rm -rf ${TEMP_DIR}
+mkdir ${TEMP_DIR}
+
+if test $VERBOSE = 1; then
+echo "> **************************************************************";
+echo "> Linking files into '${TEMP_DIR}'"
+echo "> **************************************************************";
+echo ">"
+fi
+
+# read files from list, and put in list in ${TEMP_DIR}
+for FILE in $FILE_LIST
+do
+    # Make sure file exists
+    if [ ! -f ${FILE} ]; then
+         echo "> ERROR: '${FILE}' does not exist in '${DIR}'";
+	 exit 0200;
+    fi
+
+    # Make link to file in ${TEMP_DIR}
+    # This command sequence must work for either symbolic or hard links
+    cd ${TEMP_DIR}
+    ${LN_COMMAND} -f ../${FILE} .;
+    cd ..
+
+    # Add file name to source list
+    echo ${FILE} >> ${TEMP_DIR}/srclist;
+done
+
+# Make sure host_layout_info.md is present
+if [ ! -f host_layout_info.md ]; then
+   echo "Error: Expect host_layout_info.md to be in '.'";
+   exit 1;
+fi
+# also link in host_layout_info.md
+# This command sequence must work for either symbolic or hard links
+cd ${TEMP_DIR}
+${LN_COMMAND} -f ../host_layout_info.md .;
+cd ..
+
+# also link struct.pch
+if [ -f struct.pch ]; then
+    # Make link to struct.pch in ${TEMP_DIR}
+    cd ${TEMP_DIR};
+    ${LN_COMMAND} ../struct.pch .;
+# CWL
+#    Pcode -p ${STD_PARMS} -Fformat=Hcode -i struct.pch -o struct.hch;
+    PtoC -p ${STD_PARMS} -i struct.pch -o struct.hch.h;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+#    Hcode -p ${STD_PARMS} -Foutput_form=C -i struct.hch -o struct.hch.h ;
+#    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    cd ..
+fi
+
+# also link extern.pch
+if [ -f extern.pch ]; then
+    # Make link to extern.pch in ${TEMP_DIR}
+    cd ${TEMP_DIR};
+    ${LN_COMMAND} ../extern.pch .;
+#    Pcode -p ${STD_PARMS} -Fformat=Hcode -i extern.pch -o extern.hch;
+    PtoC -p ${STD_PARMS} -i extern.pch -o extern.hch.h;
+    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+#    Hcode -p ${STD_PARMS} -Foutput_form=C -i extern.hch -o extern.hch.h ;
+#    if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+    cd ..
+fi
+
+cd ${TEMP_DIR};
+
+# flatten input pcode
+if test $FLATTEN = 1; then
+   echo "> Flattening input Pcode";
+   gen_PtoP-flatten . < srclist;
+   if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+   rm -f srclist;
+   ls *.pcf > srclist;
+fi
+
+# Generated probed executable for profiling
+if test $VERBOSE = 1; then
+  if test $TEST_ONLY = 0; then
+    echo "> **************************************************************";
+    echo "> Insert profiling probes into Pcode and reverse translate to C";
+    echo "> **************************************************************";
+  else
+    echo "> **************************************************************";
+    echo "> Generating C from Pcode for testing";
+    echo "> **************************************************************";
+
+  fi
+fi 
+echo ">"
+
+
+
+if test $TEST_ONLY = 0; then
+#  gen_PtoC_probed . "-p ${STD_PARMS}" < srclist;
+# CWL
+  gen_PtoC_probed . "-p ${STD_PARMS}" < srclist;
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+  echo "> ";
+  echo "> Compiling ${BENCHMARK} in directory '${DIR}'";
+
+  cp ${PPROF_LIB_FILE} .;
+
+  hack.pl *_rev.c;
+
+  echo "> scc -w ${TEMP_DIR}/*_rev.c ${TEMP_DIR}/impact_pprof_lib.eln -o ${TEMP_DIR}/${BENCHMARK}.PROF";
+  read $junk_var;
+
+  # Make link to file in ${TEMP_DIR}
+  # This command sequence must work for either symbolic or hard links
+  cd ..
+  ${LN_COMMAND} -f ${TEMP_DIR}/impact_probe.status .
+  ${LN_COMMAND} -f ${TEMP_DIR}/impact_probe.tmp .
+  ${LN_COMMAND} -f ${TEMP_DIR}/impact_loop_id.tmp .
+  cd ${TEMP_DIR}
+else
+#  gen_PtoC . "-p ${STD_PARMS}" < srclist;
+  gen_PtoC . "-p ${STD_PARMS}" < srclist;
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+  echo "> ";
+  echo "> Compiling ${BENCHMARK} in directory '${DIR}'";
+
+  cp ${PPROF_LIB_FILE} .;
+
+  echo "> scc -w ${TEMP_DIR}/*_rev.c ${TEMP_DIR}/impact_pprof_lib.c -o ${TEMP_DIR}/${BENCHMARK}.PROF";
+  read junk_var;
+
+fi
+
+# Flags for detecting check problems
+CHECK_WARNINGS=0;
+
+# Do all the testing/running in current directory (not ${TEMP_DIR})
+# This allows -args, -check, etc. to reference files in the current directory
+cd ..
+
+echo "> Removing any old profile information";
+rm -f profile.dat
+rm -f profile_dat.*
+rm -f profile.iter
+rm -f profile_iter.*
+COUNTER=0;
+
+for INPUT_NAME in $INPUT_LIST
+do
+  # Generate the profile for each input
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+  fi
+  echo "> "
+  if test $TEST_ONLY = 0; then
+    echo "> Profiling ${BENCHMARK} in directory '${DIR}'";
+  else
+    echo "> Testing ${BENCHMARK} in directory '${DIR}'";
+  fi
+
+  # Generate RESULT_FILE from input name
+  RESULT_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.result"
+  # Generate STDERR_FILE from input name
+  STDERR_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.stderr"
+
+  # Read in all the variables, don't expect any errors since worked above
+  # Read in each setting *ONLY* if user has not overriden them
+  if [ $USE_USER_SETUP -eq 0 ]; then
+    SETUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -setup`;
+    if test "$?" != 0; then echo "Unexpected Exit (SETUP)!: non-zero exit code";echo "$SETUP";exit 1;fi
+  fi
+
+  if [ $USE_USER_CPREFIX -eq 0 ]; then
+    CPREFIX=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -prefix`;
+    if test "$?" != 0; then echo "Unexpected Exit (PREFIX)!: non-zero exit code";echo "$PREFIX";exit 1;fi
+  fi
+
+  if [ $USE_USER_ARGS -eq 0 ]; then
+    ARGS=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -args`;
+    if test "$?" != 0; then echo "Unexpected Exit (ARGS)!: non-zero exit code";echo "$ARGS";exit 1;fi
+    DESCRIPTION=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -description`;
+    if test "$?" != 0; then echo "Unexpected Exit (DESCRIPTION)!: non-zero exit code";echo "$DESCRIPTION";exit 1;fi
+  fi
+
+  if [ $USE_USER_CHECK -eq 0 ]; then
+    CHECK=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -check ${RESULT_FILE} ${STDERR_FILE}`;
+    if test "$?" != 0; then echo "Unexpected Exit (CHECK)!: non-zero exit code";echo "$CHECK";exit 1;fi
+    DOCHECK=1;
+  fi
+
+  if [ $USE_USER_CLEANUP -eq 0 ]; then
+    CLEANUP=`read_exec_info ${BENCHMARK} $READ_PATHS -input $INPUT_NAME -cleanup`;
+    if test "$?" != 0; then echo "Unexpected Exit (CLEANUP)!: non-zero exit code";echo "$CLEANUP";exit 1;fi
+  fi
+
+  echo "> "
+  echo ">  Input name: '${INPUT_NAME}'"
+  echo "> Description: '${DESCRIPTION}'"
+  echo ">       Setup: '${SETUP}'"
+  echo ">     Cprefix: '${CPREFIX}'"
+  echo ">   Prof Args: '${ARGS}'"
+  echo ">       Check: '${CHECK}'"
+  echo ">     Cleanup: '${CLEANUP}'"
+  echo "> Link PreOpt: '${LINK_PREOPTIONS}'"
+  echo ">Link PostOpt: '${LINK_POSTOPTIONS}'"
+  echo ">    Lib_dirs: '${LIB_DIR}'"
+  echo "> "
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+  fi
+  # Do we have a setup command?
+  if [ "$SETUP" != "" ]; then
+    # Shell out to do setup so expresssions evaluated properly
+    echo " "
+    echo "> Setting up execution (via /bin/sh):"
+    echo "> $SETUP"
+    /bin/sh -c "$SETUP";
+  else
+    echo " "
+    echo "> Skipping setup, no SETUP command(s) specified";
+  fi
+
+  # Changed from csh to sh, added './' to executable path -JCG 8/15/98 
+  echo " "
+  echo "> Starting Execution:"
+  echo ">   (sc100-sim -quiet -- -exec ${TEMP_DIR}/${BENCHMARK}.PROF $ARGS) > $RESULT_FILE 2> $STDERR_FILE"
+  read $junk_var;
+
+  mv profile_dat profile_dat.$COUNTER;
+  mv profile_iter profile_iter.$COUNTER;
+  COUNTER=$COUNTER + 1;
+ 
+  # This error checking doesn't work for benchmarks that don't return 0 on 
+  # success.  Although the extra error checking is nice, it causes more 
+  # problems than it is worth -JCG 7/8/98
+  # if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+   
+  # Check the results, if check specified
+  if test $DOCHECK = 1; then
+    CHECK_FILE="${BENCHMARK}${CHECK_DESC}.${INPUT_NAME}.check";
+    if [ "$CHECK" != "" ]; then
+      TRUE_CHECK="($CHECK) > $CHECK_FILE 2>&1"
+    else
+      echo "> Warning: no check specified for $BENCHMARK/$INPUT_NAME.  Using 'cat $RESULT_FILE'"
+      TRUE_CHECK="(cat $RESULT_FILE) > $CHECK_FILE 2>&1"
+      CHECK_WARNINGS=1;
+    fi
+    echo " "
+    echo "> Checking results (via /bin/sh):"
+    echo ">   ${TRUE_CHECK}"
+    echo ">"
+    echo "> RESULT CHECK BEGIN FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC}";
+    # Shell out to do check so expresssions evaulated properly
+    /bin/sh -c "$TRUE_CHECK"
+
+    # Print warning if CHECK_FILE not empty
+    if [ -s $CHECK_FILE ]; then
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      echo "> Warning: check failed for ${BENCHMARK}/${INPUT_NAME}"
+      echo "> Check output size (via wc): '`wc $CHECK_FILE`'"
+      echo "> Output shown below via 'head -n 30 $CHECK_FILE'"
+      echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      head -n 30 $CHECK_FILE
+      CHECK_WARNINGS=1;
+      CMESG="(MISMATCH)"
+    else
+      CMESG="(PASSED)"
+    fi
+    echo "> RESULT CHECK END FOR ${BENCHMARK}/${INPUT_NAME}${EXT_DESC} $CMESG";
+    echo ">"
+  fi
+
+  # Clean up unless using -noclean option
+  if test $CLEAN = 1; then
+    if [ -s $CHECK_FILE ]; then
+      echo "> Leaving $CHECK_FILE around for inspection"
+      echo "> Leaving $RESULT_FILE around for inspection"
+      echo "> Leaving $STDERR_FILE around for inspection"
+    else
+      echo "> Removing $CHECK_FILE";
+      rm -f $CHECK_FILE;
+      echo "> Removing $RESULT_FILE";
+      rm -f $RESULT_FILE;
+      echo "> Removing $STDERR_FILE";
+      rm -f $STDERR_FILE;
+    fi
+
+    if [ "$CLEANUP" != "" ]; then
+      echo "> Doing rest of cleanup using (via /bin/sh):"
+      echo ">   $CLEANUP"
+      /bin/sh -c "$CLEANUP";
+    else
+      echo "> Skipping rest of cleanup, no CLEANUP command(s) specified";
+    fi
+  fi
+
+done
+
+# Profiling results only exist if not doing -test_only
+if test $TEST_ONLY = 0; then
+  # Merge the profile data files and generate profile.dat
+  echo " ";
+  echo "> Running Pmerge_prof and Pmerge_iter (averaging profiles, if multiple inputs)";
+  Pmerge_prof profile_dat.*;
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+
+  Pmerge_iter profile_iter.*;
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Moving flattened pcode out of temporary directory
+if test $FLATTEN = 1; then
+   mv ${TEMP_DIR}/*.pcf .
+fi
+
+if test $TEST_ONLY = 0; then
+  # Merge profile info into files
+  if test $VERBOSE = 1; then
+    echo "> **************************************************************";
+    echo "> Merging profile info into files ";
+    echo "> **************************************************************";
+    echo ">"
+  fi
+
+  gen_PtoPannotate_internal . "-p ${STD_PARMS}" < ${TEMP_DIR}/srclist;
+  if test "$?" != 0; then echo "Exiting: non-zero exit code"; exit 1;fi
+fi
+
+# Clean up unless using -noclean option
+if test $CLEAN = 1; then
+   if test $VERBOSE = 1; then
+     echo "> **************************************************************";
+     echo "> Removing '${TEMP_DIR}' temp directory and cleaning up"
+     echo "> **************************************************************";
+     echo ">"
+   fi
+
+   rm -rf ${TEMP_DIR}
+   rm -f impact_probe.status impact_probe.tmp impact_loop_id.tmp
+   rm -f profile.dat profile.iter
+   rm -f profile_dat.*
+   rm -f profile_iter.*
+fi
+
+echo " ";
+WARNINGS_ISSUED=0;
+if [ $CHECK_WARNINGS -eq 1 ]; then
+   echo "> Warning: One or more output checks failed for $BENCHMARK"
+   WARNINGS_ISSUED=1;
+fi
+
+if [ $WARNINGS_ISSUED -eq 1 ]; then
+   echo "> Done, gen_Pprofiled_sc140 may have failed (see above warnings) for $BENCHMARK"
+else
+   echo "> Done, gen_Pprofiled_sc140 succeeded for $BENCHMARK"
+fi

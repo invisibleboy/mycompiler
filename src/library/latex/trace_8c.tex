@@ -1,0 +1,352 @@
+\section{trace.c File Reference}
+\label{trace_8c}\index{trace.c@{trace.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$stdio.h$>$}\par
+{\tt \#include $<$stdlib.h$>$}\par
+{\tt \#include $<$library/trace.h$>$}\par
+{\tt \#include $<$library/select\_\-sort.h$>$}\par
+{\tt \#include $<$library/set.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Ext}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{SCALE}~5
+\item 
+\#define \bf{FAVOR\_\-FORWARD}~2
+\item 
+\#define \bf{SECOND\_\-LEVEL\_\-SELECT}
+\item 
+\#define \bf{MAX\_\-SIZE}~(MAX\_\-GRAPH\_\-SIZE$\ast$2)
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void \bf{Punt} (char $\ast$mesg)
+\item 
+static void \bf{Free\-Extension\-Fields} (void)
+\item 
+static void \bf{Add\-Extension\-Fields} (\bf{FGraph} \bf{graph})
+\item 
+static double \bf{successor\_\-node\_\-weight} (\bf{Node} src, \bf{Node} dest)
+\item 
+static double \bf{predecessor\_\-node\_\-weight} (\bf{Node} src, \bf{Node} dest)
+\item 
+static double \bf{successor\_\-arc\_\-weight} (\bf{Arc} arc)
+\item 
+static double \bf{predecessor\_\-arc\_\-weight} (\bf{Arc} arc)
+\item 
+static \bf{Arc} \bf{best\_\-successor\_\-1} (\bf{Node} \bf{node})
+\item 
+static \bf{Arc} \bf{best\_\-predecessor\_\-1} (\bf{Node} \bf{node})
+\item 
+static \bf{Arc} \bf{best\_\-successor\_\-2} (\bf{Node} \bf{node})
+\item 
+static \bf{Arc} \bf{best\_\-predecessor\_\-2} (\bf{Node} \bf{node})
+\item 
+static \bf{Arc} \bf{best\_\-successor\_\-3} (\bf{Node} \bf{node})
+\item 
+static \bf{Arc} \bf{best\_\-predecessor\_\-3} (\bf{Node} \bf{node})
+\item 
+static void \bf{Select\-Traces} (\bf{FGraph} \bf{graph})
+\item 
+void \bf{Select\-By\-Sort\-Arc} (\bf{FGraph} \bf{graph})
+\item 
+static void \bf{Place\-Traces} (\bf{FGraph} \bf{graph})
+\item 
+void \bf{Trace\-Selection} (\bf{FGraph} \bf{graph}, int method, double min\_\-prob)
+\item 
+void \bf{Report\-Selection\-Result} (\bf{FGraph} \bf{graph}, double $\ast$matrix)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static struct \bf{Ext} \bf{others} [MAX\_\-GRAPH\_\-SIZE]
+\item 
+static int \bf{n\_\-others} = 0
+\item 
+static \bf{Arc}($\ast$) \bf{best\_\-successor\_\-of} (\bf{Node})
+\item 
+static \bf{Arc}($\ast$) \bf{best\_\-predecessor\_\-of} (\bf{Node})
+\item 
+static double \bf{min\_\-prob\_\-requirement} = 0.0
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{trace.c@{trace.c}!FAVOR_FORWARD@{FAVOR\_\-FORWARD}}
+\index{FAVOR_FORWARD@{FAVOR\_\-FORWARD}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define FAVOR\_\-FORWARD~2}\label{trace_8c_099f546dcb68fe36218bb8567d2fef2d}
+
+
+
+
+Definition at line 72 of file trace.c.
+
+Referenced by successor\_\-arc\_\-weight(), and successor\_\-node\_\-weight().\index{trace.c@{trace.c}!MAX_SIZE@{MAX\_\-SIZE}}
+\index{MAX_SIZE@{MAX\_\-SIZE}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-SIZE~(MAX\_\-GRAPH\_\-SIZE$\ast$2)}\label{trace_8c_0592dba56693fad79136250c11e5a7fe}
+
+
+
+
+Referenced by Select\-By\-Sort\-Arc().\index{trace.c@{trace.c}!SCALE@{SCALE}}
+\index{SCALE@{SCALE}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SCALE~5}\label{trace_8c_0cbea62f1ce2043dd08108e65ed8de1d}
+
+
+
+
+Definition at line 71 of file trace.c.
+
+Referenced by predecessor\_\-arc\_\-weight(), predecessor\_\-node\_\-weight(), successor\_\-arc\_\-weight(), and successor\_\-node\_\-weight().\index{trace.c@{trace.c}!SECOND_LEVEL_SELECT@{SECOND\_\-LEVEL\_\-SELECT}}
+\index{SECOND_LEVEL_SELECT@{SECOND\_\-LEVEL\_\-SELECT}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define SECOND\_\-LEVEL\_\-SELECT}\label{trace_8c_dd3c59314c3e62ab67401dbf83b5b5ec}
+
+
+
+
+Definition at line 87 of file trace.c.
+
+\subsection{Function Documentation}
+\index{trace.c@{trace.c}!AddExtensionFields@{AddExtensionFields}}
+\index{AddExtensionFields@{AddExtensionFields}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Add\-Extension\-Fields (\bf{FGraph} {\em graph})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_e54b8f72a50ece35d3c3bd3b9f068f96}
+
+
+
+
+Definition at line 121 of file trace.c.
+
+References Ext::dominator, Free\-Extension\-Fields(), graph, \_\-Node::id, Ext::level, n\_\-others, \_\-Arc::next, next\-Arc, next\-Node, node\-Ext, \_\-FGraph::nodes, Ext::order, others, Punt(), \_\-FGraph::root, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect(), Set\_\-same(), Set\_\-union(), source\-Arcs, and source\-Node.
+
+Referenced by Select\-Traces().\index{trace.c@{trace.c}!best_predecessor_1@{best\_\-predecessor\_\-1}}
+\index{best_predecessor_1@{best\_\-predecessor\_\-1}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-predecessor\_\-1 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_9bbe3b38c09e52fc92e83c453ffa0a12}
+
+
+
+
+Definition at line 384 of file trace.c.
+
+References new\_\-node(), next\-Arc, node, node\-Status, node\-Weight, predecessor\_\-node\_\-weight(), source\-Arcs, source\-Node, and VISITED.
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!best_predecessor_2@{best\_\-predecessor\_\-2}}
+\index{best_predecessor_2@{best\_\-predecessor\_\-2}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-predecessor\_\-2 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_10beb265b5c6bd740e276917214972dd}
+
+
+
+
+Definition at line 468 of file trace.c.
+
+References arc\-Weight, next\-Arc, node, node\-Status, predecessor\_\-arc\_\-weight(), source\-Arcs, source\-Node, and VISITED.
+
+Referenced by Place\-Traces(), and Trace\-Selection().\index{trace.c@{trace.c}!best_predecessor_3@{best\_\-predecessor\_\-3}}
+\index{best_predecessor_3@{best\_\-predecessor\_\-3}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-predecessor\_\-3 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_482586ed98c0223423b0f4f8f099f6ff}
+
+
+
+
+Definition at line 555 of file trace.c.
+
+References arc\-Weight, min\_\-prob\_\-requirement, next\-Arc, node, node\-Status, node\-Weight, predecessor\_\-arc\_\-weight(), source\-Arcs, source\-Node, and VISITED.
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!best_successor_1@{best\_\-successor\_\-1}}
+\index{best_successor_1@{best\_\-successor\_\-1}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-successor\_\-1 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_24cd028f1137f6ecee616c1541106638}
+
+
+
+
+Definition at line 341 of file trace.c.
+
+References destination\-Arcs, destination\-Node, new\_\-node(), next\-Arc, node, node\-Status, node\-Weight, successor\_\-node\_\-weight(), and VISITED.
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!best_successor_2@{best\_\-successor\_\-2}}
+\index{best_successor_2@{best\_\-successor\_\-2}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-successor\_\-2 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_9ddbe7abcba1d1fe581dd6439ab8eff8}
+
+
+
+
+Definition at line 430 of file trace.c.
+
+References arc\-Weight, destination\-Arcs, destination\-Node, next\-Arc, node, node\-Status, successor\_\-arc\_\-weight(), and VISITED.
+
+Referenced by Place\-Traces(), and Trace\-Selection().\index{trace.c@{trace.c}!best_successor_3@{best\_\-successor\_\-3}}
+\index{best_successor_3@{best\_\-successor\_\-3}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Arc} best\_\-successor\_\-3 (\bf{Node} {\em node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_c3b8afe599f523fd658113ef81f447a0}
+
+
+
+
+Definition at line 510 of file trace.c.
+
+References arc\-Weight, destination\-Arcs, destination\-Node, min\_\-prob\_\-requirement, next\-Arc, node, node\-Status, node\-Weight, successor\_\-arc\_\-weight(), and VISITED.
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!FreeExtensionFields@{FreeExtensionFields}}
+\index{FreeExtensionFields@{FreeExtensionFields}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Free\-Extension\-Fields (void)\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_cf563a4a3ec5d6b767e758aae7fe0c4a}
+
+
+
+
+Definition at line 110 of file trace.c.
+
+References Ext::dominator, dominator(), n\_\-others, others, and Set\_\-dispose().
+
+Referenced by Add\-Extension\-Fields().\index{trace.c@{trace.c}!PlaceTraces@{PlaceTraces}}
+\index{PlaceTraces@{PlaceTraces}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Place\-Traces (\bf{FGraph} {\em graph})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_97aad3984dbf4e78963e3c8928068366}
+
+
+
+
+Definition at line 1213 of file trace.c.
+
+References Add\-Node(), arc\-Type, arc\-Weight, best\_\-predecessor\_\-2(), best\_\-predecessor\_\-of, best\_\-successor\_\-2(), best\_\-successor\_\-of, Connect\-Nodes(), destination\-Arcs, destination\-Node, Find\-Dest\-Arc(), Find\-Node(), Find\-Src\-Arc(), Free\-Graph(), graph, MAX\_\-GRAPH\_\-SIZE, New\-Graph(), New\-Node(), next\-Arc, next\-Node, node, node\-Id, \_\-FGraph::nodes, node\-Status, node\-Type, node\-Weight, Punt(), \_\-FGraph::root, Select\-Traces(), source\-Arcs, TRACE\_\-HEAD, TRACE\_\-TAIL, VISITED, and Write\-Graph().
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!predecessor_arc_weight@{predecessor\_\-arc\_\-weight}}
+\index{predecessor_arc_weight@{predecessor\_\-arc\_\-weight}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double predecessor\_\-arc\_\-weight (\bf{Arc} {\em arc})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_e68dfdfe3eae73e6436aa193b4a204ac}
+
+
+
+
+Definition at line 312 of file trace.c.
+
+References arc\-Weight, destination\-Node, Ext::level, node\-Ext, SCALE, and source\-Node.
+
+Referenced by best\_\-predecessor\_\-2(), and best\_\-predecessor\_\-3().\index{trace.c@{trace.c}!predecessor_node_weight@{predecessor\_\-node\_\-weight}}
+\index{predecessor_node_weight@{predecessor\_\-node\_\-weight}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double predecessor\_\-node\_\-weight (\bf{Node} {\em src}, \bf{Node} {\em dest})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_bcc377d07297befb3d8731bcc51fc341}
+
+
+
+
+Definition at line 269 of file trace.c.
+
+References Ext::level, node\-Ext, node\-Weight, and SCALE.
+
+Referenced by best\_\-predecessor\_\-1().\index{trace.c@{trace.c}!Punt@{Punt}}
+\index{Punt@{Punt}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Punt (char $\ast$ {\em mesg})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_5e4a7703cc8669ffef811a7f4a99562f}
+
+
+
+
+Definition at line 91 of file trace.c.\index{trace.c@{trace.c}!ReportSelectionResult@{ReportSelectionResult}}
+\index{ReportSelectionResult@{ReportSelectionResult}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Report\-Selection\-Result (\bf{FGraph} {\em graph}, double $\ast$ {\em matrix})}\label{trace_8c_e4fae04de077835aca2c8f6c383f0404}
+
+
+
+
+Definition at line 1545 of file trace.c.
+
+References arc\-Type, arc\-Weight, destination\-Arcs, destination\-Node, graph, L\_\-LOOP, L\_\-TRACE, LOOP\_\-HEAD, N\_\-ARCS, N\_\-LEAF, N\_\-LOOP, N\_\-NODES, N\_\-ROOT, N\_\-TRACE, next\-Arc, next\-Node, node, \_\-FGraph::nodes, node\-Status, node\-Type, node\-Weight, Punt(), source\-Arcs, source\-Node, TRACE\_\-HEAD, TRACE\_\-TAIL, VISITED, W\_\-A, W\_\-ARCS, W\_\-B, W\_\-BACK\_\-EDGE, W\_\-C, W\_\-D, W\_\-E, W\_\-NODES, W\_\-SEQUENTIAL, and Write\-Graph().\index{trace.c@{trace.c}!SelectBySortArc@{SelectBySortArc}}
+\index{SelectBySortArc@{SelectBySortArc}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Select\-By\-Sort\-Arc (\bf{FGraph} {\em graph})}\label{trace_8c_f69473c3584deec2bb73993e0842584d}
+
+
+
+
+Definition at line 1015 of file trace.c.
+
+References arc\-Type, arc\-Weight, destination\-Arcs, destination\-Node, graph, LOOP\_\-HEAD, MAX\_\-GRAPH\_\-SIZE, MAX\_\-SIZE, max\_\-sort(), next\-Arc, next\-Node, \_\-FGraph::nodes, node\-Status, node\-Type, NOT\_\-VISITED, ST\_\-Entry::ptr, Punt(), \_\-FGraph::root, source\-Arcs, source\-Node, TRACE\_\-HEAD, TRACE\_\-TAIL, and VISITED.
+
+Referenced by Trace\-Selection().\index{trace.c@{trace.c}!SelectTraces@{SelectTraces}}
+\index{SelectTraces@{SelectTraces}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Select\-Traces (\bf{FGraph} {\em graph})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_efd694cb38ab97437fb6f6f1e2f1c45e}
+
+
+
+
+Definition at line 600 of file trace.c.
+
+References Add\-Extension\-Fields(), arc\-Type, best\_\-predecessor\_\-of, best\_\-successor\_\-of, destination\-Arcs, destination\-Node, Ext::dominator, Find\-Dest\-Arc(), Find\-Src\-Arc(), graph, ST\_\-Entry::index, LOOP\_\-HEAD, MAX\_\-GRAPH\_\-SIZE, max\_\-sort(), next\-Arc, next\-Node, node\-Ext, \_\-FGraph::nodes, node\-Status, node\-Type, node\-Weight, NOT\_\-VISITED, Ext::order, ST\_\-Entry::ptr, Punt(), \_\-FGraph::root, Set\_\-in(), source\-Arcs, source\-Node, successor\_\-node\_\-weight(), TRACE\_\-HEAD, TRACE\_\-TAIL, VISITED, and ST\_\-Entry::weight.
+
+Referenced by Place\-Traces(), and Trace\-Selection().\index{trace.c@{trace.c}!successor_arc_weight@{successor\_\-arc\_\-weight}}
+\index{successor_arc_weight@{successor\_\-arc\_\-weight}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double successor\_\-arc\_\-weight (\bf{Arc} {\em arc})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_b00c47a7608fdfec30e9a769b5955030}
+
+
+
+
+Definition at line 288 of file trace.c.
+
+References arc\-Weight, destination\-Node, FAVOR\_\-FORWARD, Ext::level, node\-Ext, SCALE, and source\-Node.
+
+Referenced by best\_\-successor\_\-2(), and best\_\-successor\_\-3().\index{trace.c@{trace.c}!successor_node_weight@{successor\_\-node\_\-weight}}
+\index{successor_node_weight@{successor\_\-node\_\-weight}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static double successor\_\-node\_\-weight (\bf{Node} {\em src}, \bf{Node} {\em dest})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_a60d7e5ce632ed8682843883ab4c8bd7}
+
+
+
+
+Definition at line 245 of file trace.c.
+
+References FAVOR\_\-FORWARD, Ext::level, node\-Ext, node\-Weight, and SCALE.
+
+Referenced by best\_\-successor\_\-1(), and Select\-Traces().\index{trace.c@{trace.c}!TraceSelection@{TraceSelection}}
+\index{TraceSelection@{TraceSelection}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Trace\-Selection (\bf{FGraph} {\em graph}, int {\em method}, double {\em min\_\-prob})}\label{trace_8c_951defdcd9a7214e202ca16f3eb98b94}
+
+
+
+
+Definition at line 1492 of file trace.c.
+
+References best\_\-predecessor\_\-1(), best\_\-predecessor\_\-2(), best\_\-predecessor\_\-3(), best\_\-predecessor\_\-of, best\_\-successor\_\-1(), best\_\-successor\_\-2(), best\_\-successor\_\-3(), best\_\-successor\_\-of, graph, min\_\-prob\_\-requirement, Place\-Traces(), Punt(), SELECT\_\-BY\_\-ARC\_\-WEIGHT, SELECT\_\-BY\_\-MAX\_\-ARC, SELECT\_\-BY\_\-MIN\_\-PROB, SELECT\_\-BY\_\-NODE\_\-WEIGHT, Select\-By\-Sort\-Arc(), Select\-Traces(), and Write\-Graph().
+
+\subsection{Variable Documentation}
+\index{trace.c@{trace.c}!best_predecessor_of@{best\_\-predecessor\_\-of}}
+\index{best_predecessor_of@{best\_\-predecessor\_\-of}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc}($\ast$) \bf{best\_\-predecessor\_\-of}(\bf{Node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_8374072ee89821082ae2dba5d987d0b5}
+
+
+
+
+Definition at line 335 of file trace.c.
+
+Referenced by Place\-Traces(), Select\-Traces(), and Trace\-Selection().\index{trace.c@{trace.c}!best_successor_of@{best\_\-successor\_\-of}}
+\index{best_successor_of@{best\_\-successor\_\-of}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Arc}($\ast$) \bf{best\_\-successor\_\-of}(\bf{Node})\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_bffc23ab48988d7dc27705079e652705}
+
+
+
+
+Definition at line 334 of file trace.c.
+
+Referenced by Place\-Traces(), Select\-Traces(), and Trace\-Selection().\index{trace.c@{trace.c}!min_prob_requirement@{min\_\-prob\_\-requirement}}
+\index{min_prob_requirement@{min\_\-prob\_\-requirement}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double \bf{min\_\-prob\_\-requirement} = 0.0\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_06a8a0cdd51ec843aa04ed331c8cca8e}
+
+
+
+
+Definition at line 336 of file trace.c.
+
+Referenced by best\_\-predecessor\_\-3(), best\_\-successor\_\-3(), and Trace\-Selection().\index{trace.c@{trace.c}!n_others@{n\_\-others}}
+\index{n_others@{n\_\-others}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{n\_\-others} = 0\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_345739fa850c0585c546cf18d1321dfd}
+
+
+
+
+Definition at line 107 of file trace.c.
+
+Referenced by Add\-Extension\-Fields(), and Free\-Extension\-Fields().\index{trace.c@{trace.c}!others@{others}}
+\index{others@{others}!trace.c@{trace.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}struct \bf{Ext}
+ \bf{others}[MAX\_\-GRAPH\_\-SIZE]\hspace{0.3cm}{\tt  [static]}}\label{trace_8c_de1810b61a32429d7cb869c7a00257a3}
+
+
+
+
+Referenced by Add\-Extension\-Fields(), and Free\-Extension\-Fields().

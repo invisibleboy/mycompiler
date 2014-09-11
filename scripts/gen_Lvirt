@@ -1,0 +1,265 @@
+#!/bin/sh
+
+###############################################################################
+##
+##                    Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:
+##
+##              IMPACT Research Group
+##
+##              University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+                                                                                
+
+###############################################################################
+ #
+ # Copyright Notices/Identification of Licensor(s) of
+ # Original Software in the File
+ #
+ # Copyright 1999 IMPACT Technologies, Inc; Champaign, Illinois
+ # IMPACT Technologies has donated non-commercial use and
+ # redistribution rights to the University of Illinois.
+ # For commercial license rights, contact: Marketing Office via
+ # electronic mail: marketing@impactinc.com
+ #
+ # All rights reserved by the foregoing, respectively.
+ #
+ # This is licensed software.  The software license agreement with
+ # the University of Illinois specifies the terms and conditions
+ # for use and redistribution.
+ #
+###############################################################################
+#   Lvirt:  performs Lcode "Virtualization" of tahoe machine code
+#
+#   Usage : gen_Lvirt "phase" ["extra args"] < "list"
+#
+#   Ron Barnes and Matthew Merten
+#
+
+# set up environment with default values:
+VALID_ARGS=1;
+PREFIX=".";
+ASM_LEVEL=0;
+LOCAL=0;
+EXT="";
+PHASE=0;
+SHOW=0;
+VERBOSE=0;
+CONTINUE=1;
+
+# get fixed arguments 
+
+if [ $# -ge 1 ]; then
+    PHASE="$1";
+    
+    # skip the 1 set arguments
+    shift 1;
+else
+    VALID_ARGS=0;
+fi
+
+ARGUMENTS="$@";
+
+# get options after set arguments
+while [ $# -gt 0 -a $VALID_ARGS -eq 1 ]
+do
+
+# get the next option specified
+    OPTION="$1"
+    shift
+
+    case $OPTION in
+	-dir)
+	    PREFIX="$1";
+	    shift;
+	    echo "> Running in directory ${PREFIX}";;
+	    
+        -ext)
+            EXT="$1";
+            shift;
+            echo "> Will use input files with .${EXT} instead of file list";
+            LOCAL=1;;
+
+        -args)
+	    EXTRA_ARGS="$1";
+	    shift;
+            echo "> Will run ${MODULE} with the following args: ${EXTRA_ARGS}";;
+
+        -show)
+            echo "> Show commands mode on (commands prefixed with +)"
+            SHOW=1;;
+
+        -verbose)
+            echo "> Verbose mode on"
+            VERBOSE=1;;
+
+	-continue)
+	    echo "> Continue mode on"
+	    CONTINUE=1;;
+
+    esac
+done
+
+if [ $VALID_ARGS -eq 0 ]; then
+
+    echo ' ';
+    echo "> Usage: gen_Lvirt "phase{1-7}" [options] < list";
+    echo '> ';
+    echo '> Runs the Lvirt module with the given options';
+    echo '> ';
+    echo '> Options (zero or more of the the following may be specified):';
+    echo ">   -dir 'dir'    directory to run in (the default is .)";
+    echo ">   -ext 'ext'    uses files in dir with .ext, instead of file list";
+    echo ">   -args 'args'  extra args to pass to the module being run";
+    echo '>                      i.e. -Ffoo=bar or "-Ffoo=bar -Fparm=yes"';
+    echo '>   -show         shows script commands (uses set -x)';
+    echo ">   -verbose      prints message at every step";
+    echo ">   -continue     continue to next phase with correct correct files";
+    echo ">                      (default is to error off)";
+
+    exit 0200;
+fi;
+
+# Turn on debugging if -show used
+if test $SHOW = 1; then
+  set -x
+fi
+	    
+if [ $PHASE -eq 1 ]; then
+    echo "> Performing Mcode to Lcode conversion";
+    SUFFIX="vlc";
+elif [ $PHASE -eq 2 ]; then
+    echo "> Performing Optimized Mcode to Mcode conversion";
+    SUFFIX="vmc";
+elif [ $PHASE -eq 3 ]; then
+    echo "> Performing Optimized Mcode to Lcode conversion";
+    SUFFIX="vlc";
+elif [ $PHASE -eq 4 ]; then
+    echo "> Performing assembly level code to Optimized Mcode conversion";
+    SUFFIX="vmco";
+    PHASE=0;
+    ASM_LEVEL=1;
+elif [ $PHASE -eq 6 ]; then
+    echo "> Performing assembly level code to Mcode conversion";
+    SUFFIX="vmc";
+    PHASE=2;
+    ASM_LEVEL=1;
+elif [ $PHASE -eq 7 ]; then
+    echo "> Performing assembly level code to Lcode conversion";
+    SUFFIX="vlc";
+    PHASE=3;
+    ASM_LEVEL=1;
+else
+    echo "> Invalid Reverse Code Generation Phase (Try 1,2,3,4,6 or 7)";
+    exit 0200;
+fi;
+
+echo "> Prefixing files with ${PREFIX}/";
+echo "> Compiling for : arch = TAHOE / model = ITANIUM";
+echo "> Extra Lvirt arguments : ${EXTRA_ARGS}";
+
+# Construct the list of input files
+if test $LOCAL = 1; then
+    FILE_LIST="`\ls *.${EXT}`";
+else
+    while read FILE;
+    do
+	FILE_LIST="${FILE_LIST} ${FILE}";
+    done;
+fi
+
+for FILE in $FILE_LIST
+do
+    # Make sure file exists
+    if [ ! -f ${FILE} ]; then
+         echo "> ERROR: '${FILE}' does not exist in '${DIR}'";
+         exit 0200;
+    fi
+done
+
+if [ $ASM_LEVEL -eq 1 ]; then
+
+  for FILE in $FILE_LIST
+  do
+          echo "> processing $PREFIX/$FILE"
+          FILEBASE=`echo $FILE | \
+          awk -F. '{if (($(NF) == "p")||($(NF) == "m")||($(NF) == "v")) NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+          Lvirt \
+                  -Farch=TAHOE \
+                  -Fmodel=ITANIUM \
+                  -Fphase=4 \
+                  ${EXTRA_ARGS} \
+                  -i ${PREFIX}/${FILE} \
+                  -o ${PREFIX}/${FILEBASE}.vmco
+	  ERROR=$?;
+          if [ $ERROR != 0 ]; then
+	    echo "> Lvirt failed on input file: file_list";
+	    echo "> error_code= ${ERROR}";
+	    exit 0200;
+	  fi;
+  done
+ 
+  FILE_LIST="`\ls *.vmco`";
+fi
+
+if [ $PHASE -ne 0 ]; then
+
+  for FILE in $FILE_LIST
+  do
+          echo "> processing $PREFIX/$FILE"
+          FILEBASE=`echo $FILE | \
+          awk -F. '{if (($(NF) == "p")||($(NF) == "m")||($(NF) == "v")) NF=NF-1; ORS="."; for (i=1; i<NF-1; i++) print $i; ORS=""; print $(NF-1)}'`
+          Lvirt \
+                  -Farch=TAHOE \
+                  -Fmodel=ITANIUM \
+                  -Fphase=${PHASE} \
+                  ${EXTRA_ARGS} \
+                  -i ${PREFIX}/${FILE} \
+                  -o ${PREFIX}/${FILEBASE}.${SUFFIX}
+	  ERROR=$?;
+          if [ $ERROR != 0 ]; then
+	    echo "> Lvirt failed on input file: file_list";
+	    echo "> error_code= ${ERROR}";
+	    exit 0200;
+	  fi;
+  done
+fi
+

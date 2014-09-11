@@ -1,0 +1,265 @@
+\section{r\_\-region\_\-ext.c File Reference}
+\label{r__region__ext_8c}\index{r_region_ext.c@{r\_\-region\_\-ext.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}r\_\-regalloc.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+L\_\-Oper $\ast$ \bf{O\_\-jump\_\-oper} (int opc, L\_\-Cb $\ast$target\_\-cb)
+\item 
+void \bf{R\_\-init\_\-flow\_\-hash\_\-tbl} (L\_\-Func $\ast$fn)
+\item 
+void \bf{R\_\-determine\_\-region\_\-flybys} (L\_\-Region $\ast$\bf{region})
+\item 
+int \bf{R\_\-find\_\-base\_\-from\_\-phys\_\-reg} (int phys\_\-reg, int type, int rclass)
+\item 
+void \bf{R\_\-unmap\_\-physical\_\-registers} (L\_\-Region $\ast$\bf{region})
+\item 
+void \bf{R\_\-determine\_\-allocation\_\-constraints} (L\_\-Region $\ast$\bf{region})
+\item 
+double \bf{R\_\-determine\_\-reconcile\_\-cost} (L\_\-Region $\ast$\bf{region}, \bf{R\_\-Reg} $\ast$vreg, double $\ast$store\_\-cost, double $\ast$load\_\-cost)
+\item 
+static \bf{RCB} $\ast$ \bf{new\-RCB} ()
+\item 
+static void \bf{free\-RCB} (\bf{RCB} $\ast$rcb)
+\item 
+static \bf{RCB} $\ast$ \bf{find\-RCB} (L\_\-Cb $\ast$from\-Cb, L\_\-Cb $\ast$to\-Cb)
+\item 
+void \bf{R\_\-add\_\-store} (L\_\-Region $\ast$\bf{region}, L\_\-Cb $\ast$from\-Cb, L\_\-Cb $\ast$to\-Cb, \bf{R\_\-Reg} $\ast$vreg, L\_\-Region\_\-Regmap $\ast$regmap)
+\item 
+void \bf{R\_\-add\_\-load} (L\_\-Region $\ast$\bf{region}, L\_\-Cb $\ast$from\-Cb, L\_\-Cb $\ast$to\-Cb, \bf{R\_\-Reg} $\ast$vreg, L\_\-Region\_\-Regmap $\ast$regmap)
+\item 
+void \bf{R\_\-insert\_\-reconciliation\_\-code} (L\_\-Func $\ast$fn, L\_\-Region $\ast$\bf{region})
+\item 
+void \bf{R\_\-reconcile\_\-allocated\_\-region} (L\_\-Region $\ast$\bf{region})
+\item 
+void \bf{R\_\-update\_\-alloc\_\-state} (L\_\-Region $\ast$\bf{region})
+\item 
+int \bf{R\_\-init\_\-spill\_\-stack} (L\_\-Region $\ast$\bf{region}, int $\ast$\bf{int\_\-spill\_\-stack}, int $\ast$\bf{fp\_\-spill\_\-stack}, int $\ast$\bf{pred\_\-spill\_\-stack})
+\item 
+void \bf{R\_\-update\_\-region\_\-spill\_\-stack} (L\_\-Region $\ast$\bf{region})
+\item 
+L\_\-Region $\ast$ \bf{R\_\-assemble\_\-region} (L\_\-Func $\ast$fn)
+\item 
+void \bf{R\_\-disassemble\_\-regions} (L\_\-Func $\ast$fn)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{RCB} $\ast$ \bf{rcb\-List} = \bf{NULL}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{r_region_ext.c@{r\_\-region\_\-ext.c}!findRCB@{findRCB}}
+\index{findRCB@{findRCB}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{RCB}$\ast$ find\-RCB (L\_\-Cb $\ast$ {\em from\-Cb}, L\_\-Cb $\ast$ {\em to\-Cb})\hspace{0.3cm}{\tt  [static]}}\label{r__region__ext_8c_e285686783cd71af8add5875ff3a7b35}
+
+
+
+
+Definition at line 636 of file r\_\-region\_\-ext.c.
+
+References \_\-reconcile\_\-block::from\-Cb, \_\-reconcile\_\-block::next\-RCB, NULL, rcb\-List, and \_\-reconcile\_\-block::to\-Cb.
+
+Referenced by R\_\-add\_\-load(), and R\_\-add\_\-store().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!freeRCB@{freeRCB}}
+\index{freeRCB@{freeRCB}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void free\-RCB (\bf{RCB} $\ast$ {\em rcb})\hspace{0.3cm}{\tt  [static]}}\label{r__region__ext_8c_8e2fdc4cef054fb85afbb6bb559a447e}
+
+
+
+
+Definition at line 627 of file r\_\-region\_\-ext.c.
+
+References \_\-reconcile\_\-block::load\_\-loc, Set\_\-dispose(), and \_\-reconcile\_\-block::store\_\-loc.
+
+Referenced by R\_\-insert\_\-reconciliation\_\-code().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!newRCB@{newRCB}}
+\index{newRCB@{newRCB}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{RCB}$\ast$ new\-RCB ()\hspace{0.3cm}{\tt  [static]}}\label{r__region__ext_8c_c40182d709062dead8fbedb703e540a1}
+
+
+
+
+Definition at line 608 of file r\_\-region\_\-ext.c.
+
+References \_\-reconcile\_\-block::branch, \_\-reconcile\_\-block::flow, \_\-reconcile\_\-block::from\-Cb, \_\-reconcile\_\-block::load\_\-loc, \_\-reconcile\_\-block::loads, \_\-reconcile\_\-block::location, \_\-reconcile\_\-block::next\-RCB, NULL, \_\-reconcile\_\-block::store\_\-loc, \_\-reconcile\_\-block::stores, and \_\-reconcile\_\-block::to\-Cb.
+
+Referenced by R\_\-add\_\-load(), and R\_\-add\_\-store().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!O_jump_oper@{O\_\-jump\_\-oper}}
+\index{O_jump_oper@{O\_\-jump\_\-oper}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ O\_\-jump\_\-oper (int {\em opc}, L\_\-Cb $\ast$ {\em target\_\-cb})}\label{r__region__ext_8c_7242989af20a9cec7626f6030b0a6583}
+
+
+
+
+Definition at line 93 of file r\_\-stub.c.\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_add_load@{R\_\-add\_\-load}}
+\index{R_add_load@{R\_\-add\_\-load}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-add\_\-load (L\_\-Region $\ast$ {\em region}, L\_\-Cb $\ast$ {\em from\-Cb}, L\_\-Cb $\ast$ {\em to\-Cb}, \bf{R\_\-Reg} $\ast$ {\em vreg}, L\_\-Region\_\-Regmap $\ast$ {\em regmap})}\label{r__region__ext_8c_d77e410507946cbea3e5146883f47c28}
+
+
+
+
+Definition at line 723 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::base\_\-index, \_\-reconcile\_\-block::branch, find\-RCB(), \_\-reconcile\_\-block::flow, \_\-reconcile\_\-block::from\-Cb, R\_\-Reg::index, \_\-reconcile\_\-block::load\_\-loc, \_\-reconcile\_\-block::loads, \_\-reconcile\_\-block::location, new\-RCB(), \_\-reconcile\_\-block::next\-RCB, NULL, O\_\-fill\_\-reg(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-SPILL\_\-CODE, rcb\-List, R\_\-Reg::rclass, Set\_\-add(), Set\_\-in(), R\_\-Reg::spill\_\-loc, \_\-reconcile\_\-block::to\-Cb, and R\_\-Reg::type.
+
+Referenced by R\_\-reconcile\_\-allocated\_\-region().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_add_store@{R\_\-add\_\-store}}
+\index{R_add_store@{R\_\-add\_\-store}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-add\_\-store (L\_\-Region $\ast$ {\em region}, L\_\-Cb $\ast$ {\em from\-Cb}, L\_\-Cb $\ast$ {\em to\-Cb}, \bf{R\_\-Reg} $\ast$ {\em vreg}, L\_\-Region\_\-Regmap $\ast$ {\em regmap})}\label{r__region__ext_8c_5176d106600ba33ed2174d2392857c5c}
+
+
+
+
+Definition at line 651 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::base\_\-index, \_\-reconcile\_\-block::branch, find\-RCB(), \_\-reconcile\_\-block::flow, \_\-reconcile\_\-block::from\-Cb, R\_\-Reg::index, \_\-reconcile\_\-block::location, new\-RCB(), \_\-reconcile\_\-block::next\-RCB, NULL, O\_\-spill\_\-reg(), R\_\-conv\_\-rclass\_\-to\_\-Lclass(), R\_\-conv\_\-type\_\-to\_\-Ltype(), R\_\-SPILL\_\-CODE, rcb\-List, R\_\-Reg::rclass, Set\_\-add(), Set\_\-in(), R\_\-Reg::spill\_\-loc, \_\-reconcile\_\-block::store\_\-loc, \_\-reconcile\_\-block::stores, \_\-reconcile\_\-block::to\-Cb, and R\_\-Reg::type.
+
+Referenced by R\_\-reconcile\_\-allocated\_\-region().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_assemble_region@{R\_\-assemble\_\-region}}
+\index{R_assemble_region@{R\_\-assemble\_\-region}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Region$\ast$ R\_\-assemble\_\-region (L\_\-Func $\ast$ {\em fn})}\label{r__region__ext_8c_d200cb12c11b8a014597a62f2d5c42fc}
+
+
+
+
+Definition at line 1390 of file r\_\-region\_\-ext.c.
+
+References NULL, and R\_\-Region\_\-Based\_\-Allocation.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_determine_allocation_constraints@{R\_\-determine\_\-allocation\_\-constraints}}
+\index{R_determine_allocation_constraints@{R\_\-determine\_\-allocation\_\-constraints}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-determine\_\-allocation\_\-constraints (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_ec5de6779afaf6c23006d8a5363992dc}
+
+
+
+
+Definition at line 278 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::constraints, R\_\-Reg::flags, R\_\-Reg::index, NULL, R\_\-buf, R\_\-PREALLOCATED\_\-FLYBY, R\_\-PREALLOCATED\_\-MACRO, R\_\-REGION\_\-CONSTRAINED, Set\_\-2array(), Set\_\-add(), Set\_\-dispose(), Set\_\-print(), Set\_\-union\_\-acc(), and VREG.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_determine_reconcile_cost@{R\_\-determine\_\-reconcile\_\-cost}}
+\index{R_determine_reconcile_cost@{R\_\-determine\_\-reconcile\_\-cost}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}double R\_\-determine\_\-reconcile\_\-cost (L\_\-Region $\ast$ {\em region}, \bf{R\_\-Reg} $\ast$ {\em vreg}, double $\ast$ {\em store\_\-cost}, double $\ast$ {\em load\_\-cost})}\label{r__region__ext_8c_f172397e4692dd5aaf09176d9b494c47}
+
+
+
+
+Definition at line 455 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::flags, \_\-reconcile\_\-block::flow, R\_\-Reg::index, NULL, R\_\-LIVE\_\-OUTSIDE\_\-REGION, and Set\_\-in().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_determine_region_flybys@{R\_\-determine\_\-region\_\-flybys}}
+\index{R_determine_region_flybys@{R\_\-determine\_\-region\_\-flybys}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-determine\_\-region\_\-flybys (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_7d403e367bc00ac823a0a624fe83c60b}
+
+
+
+
+Definition at line 102 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::flags, NULL, R\_\-add\_\-register(), R\_\-buf, R\_\-PREALLOCATED\_\-FLYBY, R\_\-Region, Set\_\-2array(), R\_\-Reg::spill\_\-loc, and VREG.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_disassemble_regions@{R\_\-disassemble\_\-regions}}
+\index{R_disassemble_regions@{R\_\-disassemble\_\-regions}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-disassemble\_\-regions (L\_\-Func $\ast$ {\em fn})}\label{r__region__ext_8c_5e2fdcfcf633ffd0a09a99d2a001f2e5}
+
+
+
+
+Definition at line 1433 of file r\_\-region\_\-ext.c.
+
+References NULL.\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_find_base_from_phys_reg@{R\_\-find\_\-base\_\-from\_\-phys\_\-reg}}
+\index{R_find_base_from_phys_reg@{R\_\-find\_\-base\_\-from\_\-phys\_\-reg}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-find\_\-base\_\-from\_\-phys\_\-reg (int {\em phys\_\-reg}, int {\em type}, int {\em rclass})}\label{r__region__ext_8c_d5319db9254920f1201b01c6012b4e77}
+
+
+
+
+Definition at line 144 of file r\_\-region\_\-ext.c.
+
+References R\_\-Physical\_\-Bank::base\_\-index, R\_\-Physical\_\-Bank::defined, R\_\-Physical\_\-Bank::num\_\-reg, R\_\-bank, R\_\-map, and R\_\-Physical\_\-Bank::reg\_\-size.
+
+Referenced by R\_\-unmap\_\-physical\_\-registers().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_init_flow_hash_tbl@{R\_\-init\_\-flow\_\-hash\_\-tbl}}
+\index{R_init_flow_hash_tbl@{R\_\-init\_\-flow\_\-hash\_\-tbl}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-init\_\-flow\_\-hash\_\-tbl (L\_\-Func $\ast$ {\em fn})}\label{r__region__ext_8c_015241c492147f1b6ce5934ea1e1256f}
+
+
+
+
+Definition at line 81 of file r\_\-region\_\-ext.c.
+
+References \_\-reconcile\_\-block::flow, flow\-Hash\-Tbl, Hash\-Table\_\-insert(), and NULL.\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_init_spill_stack@{R\_\-init\_\-spill\_\-stack}}
+\index{R_init_spill_stack@{R\_\-init\_\-spill\_\-stack}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int R\_\-init\_\-spill\_\-stack (L\_\-Region $\ast$ {\em region}, int $\ast$ {\em int\_\-spill\_\-stack}, int $\ast$ {\em fp\_\-spill\_\-stack}, int $\ast$ {\em pred\_\-spill\_\-stack})}\label{r__region__ext_8c_a4880df10f8f65157e8e51cd932fd886}
+
+
+
+
+Definition at line 1320 of file r\_\-region\_\-ext.c.
+
+References NULL, and R\_\-Region\_\-Based\_\-Allocation.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_insert_reconciliation_code@{R\_\-insert\_\-reconciliation\_\-code}}
+\index{R_insert_reconciliation_code@{R\_\-insert\_\-reconciliation\_\-code}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-insert\_\-reconciliation\_\-code (L\_\-Func $\ast$ {\em fn}, L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_4a556d724e13a9ce25cb9421e5ef1cf7}
+
+
+
+
+Definition at line 794 of file r\_\-region\_\-ext.c.
+
+References \_\-reconcile\_\-block::flow, free\-RCB(), \_\-reconcile\_\-block::from\-Cb, \_\-reconcile\_\-block::loads, M\_\-arch, M\_\-HPPA, \_\-reconcile\_\-block::next\-RCB, NULL, O\_\-jump\_\-oper(), rcb\-List, \_\-reconcile\_\-block::stores, \_\-reconcile\_\-block::to\-Cb, and total\_\-region\_\-spill\_\-weight.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_reconcile_allocated_region@{R\_\-reconcile\_\-allocated\_\-region}}
+\index{R_reconcile_allocated_region@{R\_\-reconcile\_\-allocated\_\-region}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-reconcile\_\-allocated\_\-region (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_1154fdec77ea05ee168b3ae6d7f7b843}
+
+
+
+
+Definition at line 934 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::base\_\-index, R\_\-Reg::flags, R\_\-Reg::index, NULL, R\_\-add\_\-load(), R\_\-add\_\-store(), R\_\-buf, R\_\-PREALLOCATED\_\-MACRO, R\_\-SPILLED, rcb\-List, Set\_\-2array(), and VREG.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_unmap_physical_registers@{R\_\-unmap\_\-physical\_\-registers}}
+\index{R_unmap_physical_registers@{R\_\-unmap\_\-physical\_\-registers}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-unmap\_\-physical\_\-registers (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_f2ff9af6d93487431a3e31b787ac33ac}
+
+
+
+
+Definition at line 174 of file r\_\-region\_\-ext.c.
+
+References INT\_\-Symbol::data, INT\_\-Symbol::next\_\-symbol, NULL, R\_\-buf, R\_\-CALLEE, R\_\-CALLER, R\_\-find\_\-base\_\-from\_\-phys\_\-reg(), R\_\-Ltype\_\-to\_\-Rtype(), R\_\-MACRO\_\-CALLEE, R\_\-MACRO\_\-CALLER, Set\_\-2array(), Set\_\-add(), and Set\_\-dispose().
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_update_alloc_state@{R\_\-update\_\-alloc\_\-state}}
+\index{R_update_alloc_state@{R\_\-update\_\-alloc\_\-state}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-update\_\-alloc\_\-state (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_6a0ee77089a5232a8042520d0c5955f5}
+
+
+
+
+Definition at line 1178 of file r\_\-region\_\-ext.c.
+
+References R\_\-Reg::flags, R\_\-Reg::next\-Reg, NULL, R\_\-buf, R\_\-PREALLOCATED\_\-FLYBY, R\_\-PREALLOCATED\_\-MACRO, R\_\-SPILLED, and R\_\-vreg.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().\index{r_region_ext.c@{r\_\-region\_\-ext.c}!R_update_region_spill_stack@{R\_\-update\_\-region\_\-spill\_\-stack}}
+\index{R_update_region_spill_stack@{R\_\-update\_\-region\_\-spill\_\-stack}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void R\_\-update\_\-region\_\-spill\_\-stack (L\_\-Region $\ast$ {\em region})}\label{r__region__ext_8c_376c0fc08f9541f468b4c94694481c9d}
+
+
+
+
+Definition at line 1369 of file r\_\-region\_\-ext.c.
+
+References fp\_\-spill\_\-stack, int\_\-spill\_\-stack, NULL, and R\_\-Region\_\-Based\_\-Allocation.
+
+Referenced by R\_\-register\_\-allocation\_\-sep().
+
+\subsection{Variable Documentation}
+\index{r_region_ext.c@{r\_\-region\_\-ext.c}!rcbList@{rcbList}}
+\index{rcbList@{rcbList}!r_region_ext.c@{r\_\-region\_\-ext.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{RCB}$\ast$ \bf{rcb\-List} = \bf{NULL}}\label{r__region__ext_8c_8db251b5223b8276392a6005929047b5}
+
+
+
+
+Definition at line 605 of file r\_\-region\_\-ext.c.
+
+Referenced by find\-RCB(), R\_\-add\_\-load(), R\_\-add\_\-store(), R\_\-insert\_\-reconciliation\_\-code(), and R\_\-reconcile\_\-allocated\_\-region().

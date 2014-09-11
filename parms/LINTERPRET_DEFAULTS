@@ -1,0 +1,227 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# linterpret default parameters.
+#
+# Created by Matthew C. Merten, 10-23-2000
+#
+# Revisions:
+#
+
+(Linterpret
+	###################################################
+	# Stat files defaults
+	stats_file = Linterpret.istat
+	debug_file = Linterpret.idebug
+        op_file = Linterpret.iop
+        hotspot_file = Linterpret.ihotspot
+        remap_file = Linterpret.iremap
+        inls_name = INLS_O_im_p
+        create_load_histogram=yes
+        load_hist_file=Linterpret.iloadhist
+	
+	###################################################
+	# XWindows defaults
+	xwindow_on_startup = no;
+
+	###################################################
+	# Debugging defaults
+	check_profile_weights = no;
+	print_traces = yes;
+	pipe_debug_src = no;
+	abort_with_core = yes;
+	max_frag=1000000;
+	min_frag=0;
+	debug_link_min=0;
+	debug_link_max=1000000;
+
+	###################################################
+	# Architectural Defaults
+	num_stages = 7;
+	issue_width = 8;
+	pipelined = yes;
+	use_pipe_model = 1;
+	EPIC = yes;
+	monitor_deactivate = no;       # Deactivate instead of Invalidate 
+                                       # during monitoring
+	monitor_deactivate_all_before_prof = no; # Deactive all hs just prior
+				       # to profiling for a new hs
+	scan_mode_patching = no;       # Start traces on side exists
+
+	do_remapping = no;             # Enable trace extraction 
+	                               #  (remapping) phase
+        schedule_traces = no;          # Enable rescheduling and 
+	                               #  reoptimzation phase -
+				       # Requires trace extraction 
+                                       #  (remapping) phase!
+
+  	library_path = /home/scratch3/nystrom/bench/lint/glibc_N/;
+  	use_library_lcode = yes;
+	require_ss = no;	       # Require store sets
+	max_ss = 15;		       # Maximum store set value; 
+	                               # By convention, max_ss = spill/fill ss
+	require_vararg_annot = yes;    # Require spills of vararg params
+	require_adjusted_memstack = yes; # Require real stack model	
+
+	use_rallocation = yes;
+	rallocation_size = 268435456;
+
+        allow_stfwd = yes;
+        reduce_stfwd_flush = yes;
+
+	###################################################
+	# Hardware scheduler parameters
+	# Use the issue_width from the main section
+	num_alu = 5;
+	num_mem = 3;
+	num_fp  = 3;
+	num_br  = 3; 
+	num_commit_per_inst = 4;       # Must be between 2 and 4
+
+	enable_sched = yes;	       # Enable sched within the 
+	                               #  rescheduling and reoptimzation phase
+	enable_opti = no;	       # Enable opti within the rescheduling 
+	                               #  and reoptimzation phase
+	forward_copy_prop = yes;
+        constant_folding = yes;
+	redundant_branch_elim = yes;
+	redundant_load_elim = yes;
+	redundant_op_elim = yes;
+	add_prop = yes;
+	load_padding = 0;
+	enable_renaming = yes;
+	max_renaming=100000000;
+	split_path = yes;
+	debug_scheduler = no;
+
+	sched_nospec = yes;	      # Disable Speculation
+	sched_noexcep = yes;	      # Disable Excepting Instr
+
+	###################################################
+	# BTB parameters
+	BTB_model = gshare;
+	BTB_model_subtype = ;
+	BTB_size = 1024;               # Num BHT entries
+	BTB_history_size = 10;         # Num br in history 
+	                               # (size = 2^history_size)
+	BTB_counter_type = Automaton_A3;    # Automaton A3
+	BTB_index_BHT_at_bit = 0;      # Bit offset to get address bits from, 
+                                       #  to index BHT
+	BTB_index_PHT_at_bit = 2;      # Bit offset to get address bits from, 
+	                               #  to select a PHT (in per-addr forms)
+	BTB_address_bits_used = 4;     # Num of addr bits to use for PHT 
+	                               #  selection, and also number
+				       # of addr bits used in GSelect
+	BTB_return_stack_type = real;
+	BTB_return_stack_size = 32;
+	BTB_track_addresses = yes;
+        use_inverted_history = yes; 
+ 
+        ###################################################
+        # Instruction fetch parameters
+        perfect_ifetch = no;
+	fetch_mark = 64;
+
+        ###################################################
+        # Instruction cache parameters
+	L1I_size = 16384;
+	L1I_block_size = 64;
+        L1I_associativity = 4;
+        L1I_hit_latency = 0;
+        L1I_miss_latency = 3;
+	L1I_split_block = yes;	
+
+        ###################################################
+        # Dcache
+
+        simulate_dcache = yes;
+        L1D_size = 16384;
+        L1D_block_size = 64;
+        L1D_associativity = 4;
+        L1D_write_back = 0;
+        L1D_write_alloc = 0;
+        L1D_hit_latency = 0;
+        L1D_miss_latency = 3;
+
+	###################################################
+        # Level 2 cache parameters
+
+	unified_L2 = yes;
+        L2_size = 131072;
+        L2_block_size = 64;
+        L2_associativity = 4;
+	L2_hit_latency = 3;
+	L2_miss_latency = 14;
+	L2_split_block = no;
+
+	###################################################
+        # Level 3 cache parameters
+
+	unified_L3 = yes;
+        L3_size = 1572864;
+        L3_block_size = 128;
+        L3_associativity = 6;
+	L3_hit_latency = 12;
+	L3_miss_latency = 128;
+	L3_split_block = no;	
+
+	###################################################
+	# Hot spot management parameters
+	hs_management_mode = 1;        # 0 = Infinite (no expulsion)
+                                       # 1 = LRU
+        hs_management_num = 16;        # Max active hot spots
+
+
+        copy_and_poison = yes;
+
+	ab_queue_len = 64;
+	mmu_lsb_size = 16;
+	mmu_ldq_size = 32;
+	mmu_stq_size = 32;
+end)
+

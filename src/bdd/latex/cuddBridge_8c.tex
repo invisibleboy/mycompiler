@@ -1,0 +1,395 @@
+\section{cudd\-Bridge.c File Reference}
+\label{cuddBridge_8c}\index{cuddBridge.c@{cuddBridge.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Node} $\ast$add\-Bdd\-Do\-Threshold \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$val))
+\item 
+static \bf{Dd\-Node} $\ast$add\-Bdd\-Do\-Interval \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))
+\item 
+static \bf{Dd\-Node} $\ast$add\-Bdd\-Do\-Ith\-Bit \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$index))
+\item 
+static \bf{Dd\-Node} $\ast$dd\-Bdd\-To\-Add\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B))
+\item 
+static \bf{Dd\-Node} $\ast$add\-Bdd\-Do\-Pattern \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f))
+\item 
+static \bf{Dd\-Node} $\ast$cudd\-Bdd\-Transfer\-Recur \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd\-S, \bf{Dd\-Manager} $\ast$dd\-D, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$table))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Bdd\-Threshold} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE value)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Bdd\-Strict\-Threshold} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE value)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Bdd\-Interval} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, CUDD\_\-VALUE\_\-TYPE lower, CUDD\_\-VALUE\_\-TYPE upper)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Bdd\-Ith\-Bit} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int bit)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Bdd\-To\-Add} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-add\-Bdd\-Pattern} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-bdd\-Transfer} (\bf{Dd\-Manager} $\ast$dd\-Source, \bf{Dd\-Manager} $\ast$dd\-Destination, \bf{Dd\-Node} $\ast$f)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Transfer} (\bf{Dd\-Manager} $\ast$dd\-S, \bf{Dd\-Manager} $\ast$dd\-D, \bf{Dd\-Node} $\ast$f)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Bdd\-Do\-Threshold} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$val)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Bdd\-Do\-Strict\-Threshold} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$val)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Bdd\-Do\-Interval} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Bdd\-Do\-Ith\-Bit} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$index)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{dd\-Bdd\-To\-Add\-Recur} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{add\-Bdd\-Do\-Pattern} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{cudd\-Bdd\-Transfer\-Recur} (\bf{Dd\-Manager} $\ast$dd\-S, \bf{Dd\-Manager} $\ast$dd\-D, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$table)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bridge.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddBridge.c@{cudd\-Bridge.c}!addBddDoInterval@{addBddDoInterval}}
+\index{addBddDoInterval@{addBddDoInterval}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Interval (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em l}, \bf{Dd\-Node} $\ast$ {\em u})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_ed1e90a7828afd3afa048f5490e09c3d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-add\-Bdd\-Interval.]
+
+Description [Performs the recursive step for Cudd\_\-add\-Bdd\-Interval. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [add\-Bdd\-Do\-Threshold add\-Bdd\-Do\-Strict\-Threshold] 
+
+Definition at line 606 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert(), cudd\-Cache\-Lookup(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), cudd\-V, DD\_\-ONE, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Bdd\-Interval().\index{cuddBridge.c@{cudd\-Bridge.c}!addBddDoIthBit@{addBddDoIthBit}}
+\index{addBddDoIthBit@{addBddDoIthBit}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Ith\-Bit (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em index})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_f5b2df2405003ec5050e8be8ea0bffcb}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-add\-Bdd\-Ith\-Bit.]
+
+Description [Performs the recursive step for Cudd\_\-add\-Bdd\-Ith\-Bit. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 679 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), cudd\-V, DD\_\-ONE, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Bdd\-Ith\-Bit().\index{cuddBridge.c@{cudd\-Bridge.c}!addBddDoPattern@{addBddDoPattern}}
+\index{addBddDoPattern@{addBddDoPattern}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Pattern (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_f6ff1003348b4b4d4522fb9566720503}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-add\-Bdd\-Pattern.]
+
+Description [Performs the recursive step for Cudd\_\-add\-Bdd\-Pattern. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 840 of file cudd\-Bridge.c.
+
+References Cudd\_\-add\-Bdd\-Pattern(), Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert1(), cudd\-Cache\-Lookup1(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Bdd\-Pattern().\index{cuddBridge.c@{cudd\-Bridge.c}!addBddDoStrictThreshold@{addBddDoStrictThreshold}}
+\index{addBddDoStrictThreshold@{addBddDoStrictThreshold}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Strict\-Threshold (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em val})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_06b08a0cde9396bd6a2ad53502a53307}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-add\-Bdd\-Strict\-Threshold.]
+
+Description [Performs the recursive step for Cudd\_\-add\-Bdd\-Strict\-Threshold. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [add\-Bdd\-Do\-Threshold] 
+
+Definition at line 534 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), cudd\-V, DD\_\-ONE, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Bdd\-Strict\-Threshold().\index{cuddBridge.c@{cudd\-Bridge.c}!addBddDoThreshold@{addBddDoThreshold}}
+\index{addBddDoThreshold@{addBddDoThreshold}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Threshold (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{Dd\-Node} $\ast$ {\em val})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_770b181854734f3a79941210aa4d41d8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-add\-Bdd\-Threshold.]
+
+Description [Performs the recursive step for Cudd\_\-add\-Bdd\-Threshold. Returns a pointer to the BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [add\-Bdd\-Do\-Strict\-Threshold] 
+
+Definition at line 462 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Cache\-Insert2(), cudd\-Cache\-Lookup2(), cudd\-Deref, cudd\-E, cudd\-Is\-Constant, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), cudd\-V, DD\_\-ONE, and Dd\-Node::index.
+
+Referenced by Cudd\_\-add\-Bdd\-Threshold().\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Transfer\-Recur ARGS ((\bf{Dd\-Manager} $\ast$dd\-S, \bf{Dd\-Manager} $\ast$dd\-D, \bf{Dd\-Node} $\ast$f, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_217ff2d11e3027453408811319c2ede5}
+
+
+\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Pattern ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_9af2bc856665be1ee27f6d0d8bf6f34e}
+
+
+\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ dd\-Bdd\-To\-Add\-Recur ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$B))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_2af9649601b79836bf234e558e6860d9}
+
+
+\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Ith\-Bit ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$index))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_77c2a62433a2e31cfe0eacf14e4b46fd}
+
+
+\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ add\-Bdd\-Do\-Interval ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$l, \bf{Dd\-Node} $\ast$u))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_1036972ca08144b730bf13108695b7fe}
+
+
+\index{cuddBridge.c@{cudd\-Bridge.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node} $\ast$add\-Bdd\-Do\-Strict\-Threshold ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, \bf{Dd\-Node} $\ast$val))\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_5eea542fd76898d7c525f3e6c91e839b}
+
+
+Automatic\-Start \index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_addBddInterval@{Cudd\_\-addBddInterval}}
+\index{Cudd_addBddInterval@{Cudd\_\-addBddInterval}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Interval (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, CUDD\_\-VALUE\_\-TYPE {\em lower}, CUDD\_\-VALUE\_\-TYPE {\em upper})}\label{cuddBridge_8c_dfa95504dec573eada577783098b26b6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts an ADD to a BDD.]
+
+Description [Converts an ADD to a BDD by replacing all discriminants greater than or equal to lower and less than or equal to upper with 1, and all other discriminants with 0. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Bdd\-Threshold Cudd\_\-add\-Bdd\-Strict\-Threshold Cudd\_\-add\-Bdd\-Pattern Cudd\_\-Bdd\-To\-Add] 
+
+Definition at line 209 of file cudd\-Bridge.c.
+
+References add\-Bdd\-Do\-Interval(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), and Dd\-Manager::reordered.\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_addBddIthBit@{Cudd\_\-addBddIthBit}}
+\index{Cudd_addBddIthBit@{Cudd\_\-addBddIthBit}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Ith\-Bit (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em bit})}\label{cuddBridge_8c_a8255c2649b61e0f28521792eea4065f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts an ADD to a BDD by extracting the i-th bit from the leaves.]
+
+Description [Converts an ADD to a BDD by replacing all discriminants whose i-th bit is equal to 1 with 1, and all other discriminants with 0. The i-th bit refers to the integer representation of the leaf value. If the value is has a fractional part, it is ignored. Repeated calls to this procedure allow one to transform an integer-valued ADD into an array of BDDs, one for each bit of the leaf values. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Bdd\-Interval Cudd\_\-add\-Bdd\-Pattern Cudd\_\-Bdd\-To\-Add] 
+
+Definition at line 271 of file cudd\-Bridge.c.
+
+References add\-Bdd\-Do\-Ith\-Bit(), Cudd\_\-Recursive\-Deref(), CUDD\_\-VALUE\_\-TYPE, cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), and Dd\-Manager::reordered.\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_addBddPattern@{Cudd\_\-addBddPattern}}
+\index{Cudd_addBddPattern@{Cudd\_\-addBddPattern}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Pattern (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddBridge_8c_6a80d92ddf13c5d54e61974f1855c22b}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts an ADD to a BDD.]
+
+Description [Converts an ADD to a BDD by replacing all discriminants different from 0 with 1. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Bdd\-To\-Add Cudd\_\-add\-Bdd\-Threshold Cudd\_\-add\-Bdd\-Interval Cudd\_\-add\-Bdd\-Strict\-Threshold] 
+
+Definition at line 344 of file cudd\-Bridge.c.
+
+References add\-Bdd\-Do\-Pattern(), and Dd\-Manager::reordered.
+
+Referenced by add\-Bdd\-Do\-Pattern().\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_addBddStrictThreshold@{Cudd\_\-addBddStrictThreshold}}
+\index{Cudd_addBddStrictThreshold@{Cudd\_\-addBddStrictThreshold}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Strict\-Threshold (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, CUDD\_\-VALUE\_\-TYPE {\em value})}\label{cuddBridge_8c_17a7d31fbafb86bd3b335b2a5523444c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts an ADD to a BDD.]
+
+Description [Converts an ADD to a BDD by replacing all discriminants STRICTLY greater than value with 1, and all other discriminants with 0. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Bdd\-Interval Cudd\_\-add\-Bdd\-Pattern Cudd\_\-Bdd\-To\-Add Cudd\_\-add\-Bdd\-Threshold] 
+
+Definition at line 164 of file cudd\-Bridge.c.
+
+References add\-Bdd\-Do\-Strict\-Threshold(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), and Dd\-Manager::reordered.\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_addBddThreshold@{Cudd\_\-addBddThreshold}}
+\index{Cudd_addBddThreshold@{Cudd\_\-addBddThreshold}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-add\-Bdd\-Threshold (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, CUDD\_\-VALUE\_\-TYPE {\em value})}\label{cuddBridge_8c_df94a0491ea6d3464e488b667a0b42bd}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts an ADD to a BDD.]
+
+Description [Converts an ADD to a BDD by replacing all discriminants greater than or equal to value with 1, and all other discriminants with 0. Returns a pointer to the resulting BDD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Bdd\-Interval Cudd\_\-add\-Bdd\-Pattern Cudd\_\-Bdd\-To\-Add Cudd\_\-add\-Bdd\-Strict\-Threshold] 
+
+Definition at line 119 of file cudd\-Bridge.c.
+
+References add\-Bdd\-Do\-Threshold(), Cudd\_\-Recursive\-Deref(), cudd\-Deref, cudd\-Ref, cudd\-Unique\-Const(), and Dd\-Manager::reordered.\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_BddToAdd@{Cudd\_\-BddToAdd}}
+\index{Cudd_BddToAdd@{Cudd\_\-BddToAdd}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Bdd\-To\-Add (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em B})}\label{cuddBridge_8c_2a0f570e1bbe987fdecc4786ac808e08}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Converts a BDD to a 0-1 ADD.]
+
+Description [Converts a BDD to a 0-1 ADD. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-add\-Bdd\-Pattern Cudd\_\-add\-Bdd\-Threshold Cudd\_\-add\-Bdd\-Interval Cudd\_\-add\-Bdd\-Strict\-Threshold] 
+
+Definition at line 314 of file cudd\-Bridge.c.
+
+References dd\-Bdd\-To\-Add\-Recur(), and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-add\-Hamming().\index{cuddBridge.c@{cudd\-Bridge.c}!Cudd_bddTransfer@{Cudd\_\-bddTransfer}}
+\index{Cudd_bddTransfer@{Cudd\_\-bddTransfer}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-bdd\-Transfer (\bf{Dd\-Manager} $\ast$ {\em dd\-Source}, \bf{Dd\-Manager} $\ast$ {\em dd\-Destination}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddBridge_8c_5744cfcff87a1a83b2cbaab2aba51494}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Convert a BDD from a manager to another one.]
+
+Description [Convert a BDD from a manager to another one. Returns a pointer to the BDD in the destination manager if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 373 of file cudd\-Bridge.c.
+
+References cudd\-Bdd\-Transfer(), and Dd\-Manager::reordered.\index{cuddBridge.c@{cudd\-Bridge.c}!cuddBddTransfer@{cuddBddTransfer}}
+\index{cuddBddTransfer@{cuddBddTransfer}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Bdd\-Transfer (\bf{Dd\-Manager} $\ast$ {\em dd\-S}, \bf{Dd\-Manager} $\ast$ {\em dd\-D}, \bf{Dd\-Node} $\ast$ {\em f})}\label{cuddBridge_8c_c30223534bffbe302ce4f92d4bb6b093}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Convert a BDD from a manager to another one.]
+
+Description [Convert a BDD from a manager to another one. Returns a pointer to the BDD in the destination manager if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-bdd\-Transfer] 
+
+Definition at line 407 of file cudd\-Bridge.c.
+
+References Cudd\_\-Recursive\-Deref(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Deref, cudd\-Ref, st\_\-free\_\-gen(), st\_\-free\_\-table(), st\_\-gen(), st\_\-init\_\-gen(), st\_\-init\_\-table(), st\_\-ptrcmp(), and st\_\-ptrhash().
+
+Referenced by Cudd\_\-bdd\-Transfer().\index{cuddBridge.c@{cudd\-Bridge.c}!cuddBddTransferRecur@{cuddBddTransferRecur}}
+\index{cuddBddTransferRecur@{cuddBddTransferRecur}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ cudd\-Bdd\-Transfer\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd\-S}, \bf{Dd\-Manager} $\ast$ {\em dd\-D}, \bf{Dd\-Node} $\ast$ {\em f}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_96c40ad5c4d06283e1b0628023a25af7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-bdd\-Transfer.]
+
+Description [Performs the recursive step of Cudd\_\-bdd\-Transfer. Returns a pointer to the result if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [cudd\-Bdd\-Transfer] 
+
+Definition at line 911 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Recursive\-Deref(), cudd\-Bdd\-Ite\-Recur(), cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, one, st\_\-add\_\-direct(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by cudd\-Bdd\-Transfer().\index{cuddBridge.c@{cudd\-Bridge.c}!ddBddToAddRecur@{ddBddToAddRecur}}
+\index{ddBddToAddRecur@{ddBddToAddRecur}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ dd\-Bdd\-To\-Add\-Recur (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em B})\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_48f573aca26076c73a32cf3c01ea58f6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step for Cudd\_\-Bdd\-To\-Add.]
+
+Description [Performs the recursive step for Cudd\_\-Bdd\-To\-Add. Returns a pointer to the resulting ADD if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 754 of file cudd\-Bridge.c.
+
+References Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, cudd\-Add\-Cmpl\-Recur(), cudd\-Cache\-Insert1(), cudd\-Cache\-Lookup1(), cudd\-Deref, cudd\-E, cudd\-Ref, cudd\-T, cudd\-Unique\-Inter(), DD\_\-ONE, DD\_\-ZERO, and one.
+
+Referenced by Cudd\_\-Bdd\-To\-Add().
+
+\subsection{Variable Documentation}
+\index{cuddBridge.c@{cudd\-Bridge.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddBridge.c@{cudd\-Bridge.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Bridge.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddBridge_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Bridge.c}{p.}{cuddBridge_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Translation from BDD to ADD and vice versa and transfer between different managers.]
+
+Description [External procedures included in this file: \begin{itemize}
+\item \doxyref{Cudd\_\-add\-Bdd\-Threshold()}{p.}{cuddBridge_8c_df94a0491ea6d3464e488b667a0b42bd} \item \doxyref{Cudd\_\-add\-Bdd\-Strict\-Threshold()}{p.}{cuddBridge_8c_17a7d31fbafb86bd3b335b2a5523444c} \item \doxyref{Cudd\_\-add\-Bdd\-Interval()}{p.}{cuddBridge_8c_dfa95504dec573eada577783098b26b6} \item \doxyref{Cudd\_\-add\-Bdd\-Ith\-Bit()}{p.}{cuddBridge_8c_a8255c2649b61e0f28521792eea4065f} \item \doxyref{Cudd\_\-Bdd\-To\-Add()}{p.}{cuddBridge_8c_2a0f570e1bbe987fdecc4786ac808e08} \item \doxyref{Cudd\_\-add\-Bdd\-Pattern()}{p.}{cuddBridge_8c_6a80d92ddf13c5d54e61974f1855c22b} \item Cudd\_\-bdd\-TRnasfer() \end{itemize}
+Internal procedures included in this file: \begin{itemize}
+\item \doxyref{cudd\-Bdd\-Transfer()}{p.}{cuddBridge_8c_c30223534bffbe302ce4f92d4bb6b093} \end{itemize}
+Static procedures included in this file: \begin{itemize}
+\item \doxyref{add\-Bdd\-Do\-Threshold()}{p.}{cuddBridge_8c_770b181854734f3a79941210aa4d41d8} \item \doxyref{add\-Bdd\-Do\-Strict\-Threshold()}{p.}{cuddBridge_8c_06b08a0cde9396bd6a2ad53502a53307} \item \doxyref{add\-Bdd\-Do\-Interval()}{p.}{cuddBridge_8c_ed1e90a7828afd3afa048f5490e09c3d} \item \doxyref{add\-Bdd\-Do\-Ith\-Bit()}{p.}{cuddBridge_8c_f5b2df2405003ec5050e8be8ea0bffcb} \item \doxyref{dd\-Bdd\-To\-Add\-Recur()}{p.}{cuddBridge_8c_48f573aca26076c73a32cf3c01ea58f6} \item \doxyref{add\-Bdd\-Do\-Pattern()}{p.}{cuddBridge_8c_f6ff1003348b4b4d4522fb9566720503} \item \doxyref{cudd\-Bdd\-Transfer\-Recur()}{p.}{cuddBridge_8c_96c40ad5c4d06283e1b0628023a25af7} \end{itemize}
+]
+
+See\-Also []
+
+Author [Fabio Somenzi]
+
+Copyright [ This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 73 of file cudd\-Bridge.c.

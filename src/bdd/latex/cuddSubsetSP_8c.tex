@@ -1,0 +1,547 @@
+\section{cudd\-Subset\-SP.c File Reference}
+\label{cuddSubsetSP_8c}\index{cuddSubsetSP.c@{cuddSubsetSP.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{Node\-Dist}
+\item 
+struct \bf{Assorted\-Info}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{DEFAULT\_\-PAGE\_\-SIZE}~2048
+\item 
+\#define \bf{DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE}~2048
+\item 
+\#define \bf{MAXSHORTINT}~((\bf{Dd\-Half\-Word}) $\sim$0)
+\item 
+\#define \bf{INITIAL\_\-PAGES}~128
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{Node\-Dist} \bf{Node\-Dist\_\-t}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static void Resize\-Node\-Dist\-Pages \bf{ARGS} (())
+\item 
+static void Create\-Top\-Dist \bf{ARGS} ((\bf{st\_\-table} $\ast$path\-Table, int parent\-Page, int parent\-Queue\-Index, int top\-Len, \bf{Dd\-Node} $\ast$$\ast$child\-Page, int child\-Queue\-Index, int num\-Parents))
+\item 
+static void Create\-Bot\-Dist \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$path\-Table, unsigned int $\ast$path\-Length\-Array))
+\item 
+static \bf{st\_\-table} $\ast$Create\-Path\-Table \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, unsigned int $\ast$path\-Length\-Array))
+\item 
+static unsigned int Assess\-Path\-Length \bf{ARGS} ((unsigned int $\ast$path\-Length\-Array, int threshold, int num\-Vars, unsigned int $\ast$excess))
+\item 
+static \bf{Dd\-Node} $\ast$Build\-Subset\-Bdd \bf{ARGS} ((\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$path\-Table, \bf{Dd\-Node} $\ast$node, struct \bf{Assorted\-Info} $\ast$info, \bf{st\_\-table} $\ast$subset\-Node\-Table))
+\item 
+static enum \bf{st\_\-retval} st\-Path\-Table\-Dd\-Free \bf{ARGS} ((char $\ast$key, char $\ast$value, char $\ast$arg))
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Subset\-Short\-Paths} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int hardlimit)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{Cudd\_\-Superset\-Short\-Paths} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int hardlimit)
+\item 
+\bf{Dd\-Node} $\ast$ \bf{cudd\-Subset\-Short\-Paths} (\bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$f, int num\-Vars, int threshold, int hardlimit)
+\item 
+static void \bf{Resize\-Node\-Dist\-Pages} ()
+\item 
+static void \bf{Resize\-Queue\-Pages} ()
+\item 
+static void \bf{Create\-Top\-Dist} (\bf{st\_\-table} $\ast$path\-Table, int parent\-Page, int parent\-Queue\-Index, int top\-Len, \bf{Dd\-Node} $\ast$$\ast$child\-Page, int child\-Queue\-Index, int num\-Parents)
+\item 
+static void \bf{Create\-Bot\-Dist} (\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$path\-Table, unsigned int $\ast$path\-Length\-Array)
+\item 
+static \bf{st\_\-table} $\ast$ \bf{Create\-Path\-Table} (\bf{Dd\-Node} $\ast$node, unsigned int $\ast$path\-Length\-Array)
+\item 
+static unsigned int \bf{Assess\-Path\-Length} (unsigned int $\ast$path\-Length\-Array, int threshold, int num\-Vars, unsigned int $\ast$excess)
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{Build\-Subset\-Bdd} (\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$path\-Table, \bf{Dd\-Node} $\ast$node, struct \bf{Assorted\-Info} $\ast$info, \bf{st\_\-table} $\ast$subset\-Node\-Table)
+\item 
+static enum \bf{st\_\-retval} \bf{st\-Path\-Table\-Dd\-Free} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Subset\-SP.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static int \bf{mem\-Out}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{one}
+\item 
+static \bf{Node\-Dist\_\-t} $\ast$$\ast$ \bf{node\-Dist\-Pages}
+\item 
+static int \bf{node\-Dist\-Page\-Index}
+\item 
+static int \bf{node\-Dist\-Page}
+\item 
+static int \bf{node\-Dist\-Page\-Size} = DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE
+\item 
+static int \bf{max\-Node\-Dist\-Pages}
+\item 
+static \bf{Node\-Dist\_\-t} $\ast$ \bf{current\-Node\-Dist\-Page}
+\item 
+static \bf{Dd\-Node} $\ast$$\ast$$\ast$ \bf{queue\-Pages}
+\item 
+static int \bf{queue\-Page\-Index}
+\item 
+static int \bf{queue\-Page}
+\item 
+static int \bf{queue\-Page\-Size} = DEFAULT\_\-PAGE\_\-SIZE
+\item 
+static int \bf{max\-Queue\-Pages}
+\item 
+static \bf{Dd\-Node} $\ast$$\ast$ \bf{current\-Queue\-Page}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!DEFAULT_NODE_DIST_PAGE_SIZE@{DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE}}
+\index{DEFAULT_NODE_DIST_PAGE_SIZE@{DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE~2048}\label{cuddSubsetSP_8c_21c3d69cf4c43f869f443e4d7e8400e0}
+
+
+
+
+Definition at line 55 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!DEFAULT_PAGE_SIZE@{DEFAULT\_\-PAGE\_\-SIZE}}
+\index{DEFAULT_PAGE_SIZE@{DEFAULT\_\-PAGE\_\-SIZE}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DEFAULT\_\-PAGE\_\-SIZE~2048}\label{cuddSubsetSP_8c_a2f776dcebe2f31589b20e618ebe94fd}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Subset\-SP.c}{p.}{cuddSubsetSP_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Procedure to subset the given BDD choosing the shortest paths (largest cubes) in the BDD.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \doxyref{Cudd\_\-Subset\-Short\-Paths()}{p.}{cuddSubsetSP_8c_890a2da46a4d6cec913e2ae57a9ab626} \item \doxyref{Cudd\_\-Superset\-Short\-Paths()}{p.}{cuddSubsetSP_8c_64d8ed34596ee3ef413bc804f08de8f7} \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item \doxyref{cudd\-Subset\-Short\-Paths()}{p.}{cuddSubsetSP_8c_d1a6b03ccc8a73f27a6191af3f33d4a6} \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item \doxyref{Build\-Subset\-Bdd()}{p.}{cuddSubsetHB_8c_7483b3b5d83e9472a0cf3a133efddcd9} \item \doxyref{Create\-Path\-Table()}{p.}{cuddSubsetSP_8c_62610ce09e9a07aa68d1188f93c17cac} \item \doxyref{Assess\-Path\-Length()}{p.}{cuddSubsetSP_8c_458b567fad19d63dc1d5cdf687c39054} \item \doxyref{Create\-Top\-Dist()}{p.}{cuddSubsetSP_8c_f6c13e892c605c90e3a0d5b71ee27b20} \item \doxyref{Create\-Bot\-Dist()}{p.}{cuddDecomp_8c_677a13bad737b71a8cbbf3791f0a6f9b} \item \doxyref{Resize\-Node\-Dist\-Pages()}{p.}{cuddSubsetSP_8c_4d64068fb379b48eb5b95b942e549fab} \item \doxyref{Resize\-Queue\-Pages()}{p.}{cuddSubsetSP_8c_75dade13ca844c50a6381134d75abcf3} \item \doxyref{st\-Path\-Table\-Dd\-Free()}{p.}{cuddSubsetSP_8c_51d0711d1ad3ea42e2f9b48499b64611} \end{itemize}
+]
+
+See\-Also [\doxyref{cudd\-Subset\-HB.c}{p.}{cuddSubsetHB_8c}]
+
+Author [Kavita Ravi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 54 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!INITIAL_PAGES@{INITIAL\_\-PAGES}}
+\index{INITIAL_PAGES@{INITIAL\_\-PAGES}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define INITIAL\_\-PAGES~128}\label{cuddSubsetSP_8c_720b383515a395e68179923b81add86e}
+
+
+
+
+Definition at line 61 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!MAXSHORTINT@{MAXSHORTINT}}
+\index{MAXSHORTINT@{MAXSHORTINT}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAXSHORTINT~((\bf{Dd\-Half\-Word}) $\sim$0)}\label{cuddSubsetSP_8c_672282f303169e59ddbdc66c39ac1523}
+
+
+
+
+Definition at line 56 of file cudd\-Subset\-SP.c.
+
+Referenced by Build\-Subset\-Bdd(), Create\-Bot\-Dist(), Create\-Path\-Table(), Create\-Top\-Dist(), and cudd\-Subset\-Short\-Paths().
+
+\subsection{Typedef Documentation}
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!NodeDist_t@{NodeDist\_\-t}}
+\index{NodeDist_t@{NodeDist\_\-t}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{Node\-Dist} \bf{Node\-Dist\_\-t}}\label{cuddSubsetSP_8c_ae6b273978e879da0dcc8f391555cb8d}
+
+
+
+
+Definition at line 94 of file cudd\-Subset\-SP.c.
+
+\subsection{Function Documentation}
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} st\-Path\-Table\-Dd\-Free ARGS ((char $\ast$key, char $\ast$value, char $\ast$arg))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_fa4a974eab44f2777dd15f17180d0aeb}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ Build\-Subset\-Bdd ARGS ((\bf{Dd\-Manager} $\ast$dd, \bf{st\_\-table} $\ast$path\-Table, \bf{Dd\-Node} $\ast$node, struct \bf{Assorted\-Info} $\ast$info, \bf{st\_\-table} $\ast$subset\-Node\-Table))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_e158b7b91afa8077bd847f934e230781}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static unsigned int Assess\-Path\-Length ARGS ((unsigned int $\ast$path\-Length\-Array, int threshold, int num\-Vars, unsigned int $\ast$excess))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_4c3a0c506b31404508d395bcbc517f4d}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{st\_\-table}$\ast$ Create\-Path\-Table ARGS ((\bf{Dd\-Node} $\ast$node, unsigned int $\ast$path\-Length\-Array))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_1d9be35db451123ae23f53d40ff20bf6}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Create\-Bot\-Dist ARGS ((\bf{Dd\-Node} $\ast$node, \bf{st\_\-table} $\ast$path\-Table, unsigned int $\ast$path\-Length\-Array))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_feba0f555bbfc26f05a377f857eb2198}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Create\-Top\-Dist ARGS ((\bf{st\_\-table} $\ast$path\-Table, int parent\-Page, int parent\-Queue\-Index, int top\-Len, \bf{Dd\-Node} $\ast$$\ast$child\-Page, int child\-Queue\-Index, int num\-Parents))\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_dfac78772a9beaa2b92c09aba56eae2e}
+
+
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Node\-Dist\-Pages ARGS (())\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_dc06d6edde7e09dc9a9f10d911ee6fed}
+
+
+Automatic\-Start \index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!AssessPathLength@{AssessPathLength}}
+\index{AssessPathLength@{AssessPathLength}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static unsigned int Assess\-Path\-Length (unsigned int $\ast$ {\em path\-Length\-Array}, int {\em threshold}, int {\em num\-Vars}, unsigned int $\ast$ {\em excess})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_458b567fad19d63dc1d5cdf687c39054}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Chooses the maximum allowable path length os nodes under the threshold]
+
+Description [Chooses the maximum allowable path length under each node. The corner cases are when the threshold is larger than the number of nodes in the bdd iself, in which case 'num\-Vars + 1' is returned. If all nodes of a particular path length are needed, then the maxpath returned is the next one with excess nodes = 0;]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1129 of file cudd\-Subset\-SP.c.
+
+References Assorted\-Info::maxpath.
+
+Referenced by cudd\-Subset\-Short\-Paths().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!BuildSubsetBdd@{BuildSubsetBdd}}
+\index{BuildSubsetBdd@{BuildSubsetBdd}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Node}$\ast$ Build\-Subset\-Bdd (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{st\_\-table} $\ast$ {\em path\-Table}, \bf{Dd\-Node} $\ast$ {\em node}, struct \bf{Assorted\-Info} $\ast$ {\em info}, \bf{st\_\-table} $\ast$ {\em subset\-Node\-Table})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_bdff738131a286787d4756d35b106e8e}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Builds the BDD with nodes labeled with path length less than or equal to maxpath]
+
+Description [Builds the BDD with nodes labeled with path length under maxpath and as many nodes labeled maxpath as determined by the threshold. The procedure uses the path table to determine which nodes in the original bdd need to be retained. This procedure picks a shortest path (tie break decided by taking the child with the shortest distance to the constant) and recurs down the path till it reaches the constant. the procedure then starts building the subset upward from the constant. All nodes labeled by path lengths less than the given maxpath are used to build the subset. However, in the case of nodes that have label equal to maxpath, as many are chosen as required by the threshold. This number is stored in the info structure in the field threshold\-Reached. This field is decremented whenever a node labeled maxpath is encountered and the nodes labeled maxpath are aggregated in a maxpath table. As soon as the threshold\-Reached count goes to 0, the shortest path from this node to the constant is found. The extraction of nodes with the above labeling is based on the fact that each node, labeled with a path length, P, has at least one child labeled P or less. So extracting all nodes labeled a given path length P ensures complete paths between the root and the constant. Extraction of a partial number of nodes with a given path length may result in incomplete paths and hence the additional number of nodes are grabbed to complete the path. Since the Bdd is built bottom-up, other nodes labeled maxpath do lie on complete paths. The procedure may cause the subset to have a larger or smaller number of nodes than the specified threshold. The increase in the number of nodes is caused by the building of a subset and the reduction by recombination. However in most cases, the recombination overshadows the increase and the procedure returns a result with lower number of nodes than specified. The subset\-Node\-Table is NIL when there is no hard limit on the number of nodes. Further efforts towards keeping the subset closer to the threshold number were abandoned in favour of keeping the procedure simple and fast.]
+
+Side\-Effects [Subset\-Node\-Table is changed if it is not NIL.]
+
+See\-Also [] 
+
+Definition at line 1211 of file cudd\-Subset\-SP.c.
+
+References Build\-Subset\-Bdd(), Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Node\-Read\-Index(), Cudd\_\-Not, Cudd\_\-Not\-Cond, Cudd\_\-Read\-Vars(), Cudd\_\-Recursive\-Deref(), Cudd\_\-Regular, Cudd\_\-T, cudd\-Bdd\-Ite\-Recur(), cudd\-Deref, cudd\-Ref, DD\_\-ONE, entry, exit(), Assorted\-Info::find\-Shortest\-Path, Assorted\-Info::maxpath, Assorted\-Info::maxpath\-Table, MAXSHORTINT, mem\-Out, NIL, st\_\-count, st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, Assorted\-Info::threshold, Assorted\-Info::threshold\-Reached, and zero.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!CreateBotDist@{CreateBotDist}}
+\index{CreateBotDist@{CreateBotDist}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Create\-Bot\-Dist (\bf{Dd\-Node} $\ast$ {\em node}, \bf{st\_\-table} $\ast$ {\em path\-Table}, unsigned int $\ast$ {\em path\-Length\-Array})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_2b0a3bbf7d40b9cd7dc4ce07062a10aa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [ Labels each node with the shortest distance from the constant.]
+
+Description [Labels each node with the shortest distance from the constant. This is done in a DFS search of the BDD. Each node has an odd and even parity distance from the sink (since there exists paths to both zero and one) which is less than MAXSHORTINT. At each node these distances are updated using the minimum distance of its children from the constant. SInce now both the length from the root and child is known, the minimum path length(length of the shortest path between the root and the constant that this node lies on) of this node can be calculated and used to update the path\-Length\-Array]
+
+Side\-Effects [Updates Path Table and path length array]
+
+See\-Also [Create\-Path\-Table Create\-Top\-Dist Assess\-Path\-Length] 
+
+Definition at line 796 of file cudd\-Subset\-SP.c.
+
+References Create\-Bot\-Dist(), Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not\-Cond, Cudd\_\-Regular, Cudd\_\-T, exit(), MAXSHORTINT, and st\_\-lookup().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!CreatePathTable@{CreatePathTable}}
+\index{CreatePathTable@{CreatePathTable}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{st\_\-table}$\ast$ Create\-Path\-Table (\bf{Dd\-Node} $\ast$ {\em node}, unsigned int $\ast$ {\em path\-Length\-Array})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_62610ce09e9a07aa68d1188f93c17cac}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [ The outer procedure to label each node with its shortest distance from the root and constant]
+
+Description [ The outer procedure to label each node with its shortest distance from the root and constant. Calls Create\-Top\-Dist and Create\-Bot\-Dist. The basis for computing the distance between root and constant is that the distance may be the sum of even distances from the node to the root and constant or the sum of odd distances from the node to the root and constant. Both Create\-Top\-Dist and Create\-Bot\-Dist create the odd and even parity distances from the root and constant respectively.]
+
+Side\-Effects [None]
+
+See\-Also [Create\-Top\-Dist Create\-Bot\-Dist] 
+
+Definition at line 979 of file cudd\-Subset\-SP.c.
+
+References ALLOC, Node\-Dist::comp\-Result, Create\-Bot\-Dist(), Create\-Top\-Dist(), Cudd\_\-Is\-Complement, Cudd\_\-Regular, current\-Node\-Dist\-Page, current\-Queue\-Page, Node\-Dist::even\-Bot\-Dist, Node\-Dist::even\-Top\-Dist, exit(), FREE, INITIAL\_\-PAGES, max\-Node\-Dist\-Pages, max\-Queue\-Pages, MAXSHORTINT, mem\-Out, node\-Dist\-Page, node\-Dist\-Page\-Index, node\-Dist\-Pages, node\-Dist\-Page\-Size, Node\-Dist::odd\-Bot\-Dist, Node\-Dist::odd\-Top\-Dist, queue\-Page, queue\-Page\-Index, queue\-Pages, queue\-Page\-Size, Node\-Dist::reg\-Result, Resize\-Node\-Dist\-Pages(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-insert(), ST\_\-OUT\_\-OF\_\-MEM, st\_\-ptrcmp(), and st\_\-ptrhash().
+
+Referenced by cudd\-Subset\-Short\-Paths().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!CreateTopDist@{CreateTopDist}}
+\index{CreateTopDist@{CreateTopDist}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Create\-Top\-Dist (\bf{st\_\-table} $\ast$ {\em path\-Table}, int {\em parent\-Page}, int {\em parent\-Queue\-Index}, int {\em top\-Len}, \bf{Dd\-Node} $\ast$$\ast$ {\em child\-Page}, int {\em child\-Queue\-Index}, int {\em num\-Parents})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_f6c13e892c605c90e3a0d5b71ee27b20}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [ Labels each node with its shortest distance from the root]
+
+Description [ Labels each node with its shortest distance from the root. This is done in a BFS search of the BDD. The nodes are processed in a queue implemented as pages(array) to reduce memory fragmentation. An entry is created for each node visited. The distance from the root to the node with the corresponding parity is updated. The procedure is called recursively each recusion level handling nodes at a given level from the root.]
+
+Side\-Effects [Creates entries in the path\-Table]
+
+See\-Also [Create\-Path\-Table Create\-Bot\-Dist] 
+
+Definition at line 596 of file cudd\-Subset\-SP.c.
+
+References assert, Cudd\_\-E, Cudd\_\-Is\-Complement, Cudd\_\-Is\-Constant, Cudd\_\-Not\-Cond, Cudd\_\-Regular, Cudd\_\-T, current\-Node\-Dist\-Page, current\-Queue\-Page, FREE, MAXSHORTINT, mem\-Out, node\-Dist\-Page, node\-Dist\-Page\-Index, node\-Dist\-Pages, node\-Dist\-Page\-Size, queue\-Page, queue\-Page\-Index, queue\-Pages, queue\-Page\-Size, Resize\-Node\-Dist\-Pages(), Resize\-Queue\-Pages(), st\_\-free\_\-table(), st\_\-insert(), st\_\-lookup(), and ST\_\-OUT\_\-OF\_\-MEM.
+
+Referenced by Create\-Path\-Table().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!Cudd_SubsetShortPaths@{Cudd\_\-SubsetShortPaths}}
+\index{Cudd_SubsetShortPaths@{Cudd\_\-SubsetShortPaths}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Subset\-Short\-Paths (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em hardlimit})}\label{cuddSubsetSP_8c_890a2da46a4d6cec913e2ae57a9ab626}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense subset from a BDD with the shortest paths heuristic.]
+
+Description [Extracts a dense subset from a BDD. This procedure tries to preserve the shortest paths of the input BDD, because they give many minterms and contribute few nodes. This procedure may increase the number of nodes in trying to create the subset or reduce the number of nodes due to recombination as compared to the original BDD. Hence the threshold may not be strictly adhered to. In practice, recombination overshadows the increase in the number of nodes and results in small BDDs as compared to the threshold. The hardlimit specifies whether threshold needs to be strictly adhered to. If it is set to 1, the procedure ensures that result is never larger than the specified limit but may be considerably less than the threshold. Returns a pointer to the BDD for the subset if successful; NULL otherwise. The value for num\-Vars should be as close as possible to the size of the support of f for better efficiency. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Vars. If 0 is passed, then the value returned by Cudd\_\-Read\-Size is used.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Superset\-Short\-Paths Cudd\_\-Subset\-Heavy\-Branch Cudd\_\-Read\-Size] 
+
+Definition at line 185 of file cudd\-Subset\-SP.c.
+
+References cudd\-Subset\-Short\-Paths(), mem\-Out, and Dd\-Manager::reordered.
+
+Referenced by Cudd\_\-Subset\-Compress().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!Cudd_SupersetShortPaths@{Cudd\_\-SupersetShortPaths}}
+\index{Cudd_SupersetShortPaths@{Cudd\_\-SupersetShortPaths}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ Cudd\_\-Superset\-Short\-Paths (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em hardlimit})}\label{cuddSubsetSP_8c_64d8ed34596ee3ef413bc804f08de8f7}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Extracts a dense superset from a BDD with the shortest paths heuristic.]
+
+Description [Extracts a dense superset from a BDD. The procedure is identical to the subset procedure except for the fact that it receives the complement of the given function. Extracting the subset of the complement function is equivalent to extracting the superset of the function. This procedure tries to preserve the shortest paths of the complement BDD, because they give many minterms and contribute few nodes. This procedure may increase the number of nodes in trying to create the superset or reduce the number of nodes due to recombination as compared to the original BDD. Hence the threshold may not be strictly adhered to. In practice, recombination overshadows the increase in the number of nodes and results in small BDDs as compared to the threshold. The hardlimit specifies whether threshold needs to be strictly adhered to. If it is set to 1, the procedure ensures that result is never larger than the specified limit but may be considerably less than the threshold. Returns a pointer to the BDD for the superset if successful; NULL otherwise. The value for num\-Vars should be as close as possible to the size of the support of f for better efficiency. However, it is safe to pass the value returned by Cudd\_\-Read\-Size for num\-Var. If 0 is passed, then the value returned by Cudd\_\-Read\-Size is used.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Short\-Paths Cudd\_\-Superset\-Heavy\-Branch Cudd\_\-Read\-Size] 
+
+Definition at line 237 of file cudd\-Subset\-SP.c.
+
+References Cudd\_\-Not, Cudd\_\-Not\-Cond, cudd\-Subset\-Short\-Paths(), mem\-Out, and Dd\-Manager::reordered.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!cuddSubsetShortPaths@{cuddSubsetShortPaths}}
+\index{cuddSubsetShortPaths@{cuddSubsetShortPaths}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ cudd\-Subset\-Short\-Paths (\bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em f}, int {\em num\-Vars}, int {\em threshold}, int {\em hardlimit})}\label{cuddSubsetSP_8c_d1a6b03ccc8a73f27a6191af3f33d4a6}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [The outermost procedure to return a subset of the given BDD with the shortest path lengths.]
+
+Description [The outermost procedure to return a subset of the given BDD with the largest cubes. The path lengths are calculated, the maximum allowable path length is determined and the number of nodes of this path length that can be used to build a subset. If the threshold is larger than the size of the original BDD, the original BDD is returned. ]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Subset\-Short\-Paths] 
+
+Definition at line 281 of file cudd\-Subset\-SP.c.
+
+References ALLOC, Assess\-Path\-Length(), Build\-Subset\-Bdd(), Create\-Path\-Table(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-Is\-Constant, Cudd\_\-Not, Cudd\_\-Read\-Size(), Cudd\_\-Regular, cudd\-Deref, cudd\-Ref, DD\_\-ONE, exit(), Assorted\-Info::find\-Shortest\-Path, FREE, Assorted\-Info::maxpath, Assorted\-Info::maxpath\-Table, MAXSHORTINT, mem\-Out, NIL, node\-Dist\-Page, node\-Dist\-Pages, one, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-lookup(), st\_\-ptrcmp(), st\_\-ptrhash(), st\-Path\-Table\-Dd\-Free(), Assorted\-Info::threshold, Assorted\-Info::threshold\-Reached, and zero.
+
+Referenced by Cudd\_\-Subset\-Short\-Paths(), and Cudd\_\-Superset\-Short\-Paths().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ResizeNodeDistPages@{ResizeNodeDistPages}}
+\index{ResizeNodeDistPages@{ResizeNodeDistPages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Node\-Dist\-Pages ()\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_4d64068fb379b48eb5b95b942e549fab}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resize the number of pages allocated to store the distances related to each node.]
+
+Description [Resize the number of pages allocated to store the distances related to each node. The procedure moves the counter to the next page when the end of the page is reached and allocates new pages when necessary. ]
+
+Side\-Effects [Changes the size of pages, page, page index, maximum number of pages freeing stuff in case of memory out. ]
+
+See\-Also [] 
+
+Definition at line 471 of file cudd\-Subset\-SP.c.
+
+References ALLOC, current\-Node\-Dist\-Page, FREE, INITIAL\_\-PAGES, max\-Node\-Dist\-Pages, mem\-Out, node\-Dist\-Page, node\-Dist\-Page\-Index, node\-Dist\-Pages, and node\-Dist\-Page\-Size.
+
+Referenced by Create\-Path\-Table(), and Create\-Top\-Dist().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!ResizeQueuePages@{ResizeQueuePages}}
+\index{ResizeQueuePages@{ResizeQueuePages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void Resize\-Queue\-Pages ()\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_75dade13ca844c50a6381134d75abcf3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Resize the number of pages allocated to store nodes in the BFS traversal of the Bdd .]
+
+Description [Resize the number of pages allocated to store nodes in the BFS traversal of the Bdd. The procedure moves the counter to the next page when the end of the page is reached and allocates new pages when necessary.]
+
+Side\-Effects [Changes the size of pages, page, page index, maximum number of pages freeing stuff in case of memory out. ]
+
+See\-Also [] 
+
+Definition at line 534 of file cudd\-Subset\-SP.c.
+
+References ALLOC, current\-Queue\-Page, FREE, INITIAL\_\-PAGES, max\-Queue\-Pages, mem\-Out, queue\-Page, queue\-Page\-Index, queue\-Pages, and queue\-Page\-Size.
+
+Referenced by Create\-Top\-Dist().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!stPathTableDdFree@{stPathTableDdFree}}
+\index{stPathTableDdFree@{stPathTableDdFree}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} st\-Path\-Table\-Dd\-Free (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_51d0711d1ad3ea42e2f9b48499b64611}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Procedure to free te result dds stored in the \doxyref{Node\-Dist}{p.}{structNodeDist} pages.]
+
+Description [None]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 1603 of file cudd\-Subset\-SP.c.
+
+References Node\-Dist::comp\-Result, Cudd\_\-Recursive\-Deref(), Node\-Dist::reg\-Result, and ST\_\-CONTINUE.
+
+Referenced by cudd\-Subset\-Short\-Paths().
+
+\subsection{Variable Documentation}
+\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!currentNodeDistPage@{currentNodeDistPage}}
+\index{currentNodeDistPage@{currentNodeDistPage}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node\-Dist\_\-t}$\ast$ \bf{current\-Node\-Dist\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_e1dd713bac4228682066e2b62a36da7e}
+
+
+
+
+Definition at line 119 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!currentQueuePage@{currentQueuePage}}
+\index{currentQueuePage@{currentQueuePage}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$$\ast$ \bf{current\-Queue\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_61ad3cfc4e86012331b6a45d9fd5bd11}
+
+
+
+
+Definition at line 126 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Subset\-SP.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+
+
+Definition at line 101 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!maxNodeDistPages@{maxNodeDistPages}}
+\index{maxNodeDistPages@{maxNodeDistPages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{max\-Node\-Dist\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_1dd6931103bf99a4448fd1847fdc633a}
+
+
+
+
+Definition at line 118 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!maxQueuePages@{maxQueuePages}}
+\index{maxQueuePages@{maxQueuePages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{max\-Queue\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_02057eb6b22419b5215df56b2f85d8ea}
+
+
+
+
+Definition at line 125 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!memOut@{memOut}}
+\index{memOut@{memOut}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{mem\-Out}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_9a7d0759bd21567c811c1be4f0eed131}
+
+
+
+
+Definition at line 111 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!nodeDistPage@{nodeDistPage}}
+\index{nodeDistPage@{nodeDistPage}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Dist\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_2b419874f2c2de1f7fc82ba3b303540b}
+
+
+
+
+Definition at line 116 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), cudd\-Subset\-Short\-Paths(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!nodeDistPageIndex@{nodeDistPageIndex}}
+\index{nodeDistPageIndex@{nodeDistPageIndex}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Dist\-Page\-Index}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_c5568f7a825425149235f6eb9277823c}
+
+
+
+
+Definition at line 115 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!nodeDistPages@{nodeDistPages}}
+\index{nodeDistPages@{nodeDistPages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Node\-Dist\_\-t}$\ast$$\ast$ \bf{node\-Dist\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_d955ea83d3620d81cf558b2261dca116}
+
+
+
+
+Definition at line 114 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), cudd\-Subset\-Short\-Paths(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!nodeDistPageSize@{nodeDistPageSize}}
+\index{nodeDistPageSize@{nodeDistPageSize}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{node\-Dist\-Page\-Size} = DEFAULT\_\-NODE\_\-DIST\_\-PAGE\_\-SIZE\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_be97296b8b535ea2aebb201e5a7d88e3}
+
+
+
+
+Definition at line 117 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Node\-Dist\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!one@{one}}
+\index{one@{one}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{one}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_96c768055484e4df6e4a62f438fbf219}
+
+
+
+
+Definition at line 112 of file cudd\-Subset\-SP.c.\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!queuePage@{queuePage}}
+\index{queuePage@{queuePage}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{queue\-Page}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_c7476b7b40f74f93d79322463f2713e5}
+
+
+
+
+Definition at line 123 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!queuePageIndex@{queuePageIndex}}
+\index{queuePageIndex@{queuePageIndex}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{queue\-Page\-Index}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_f81d1727fec63f8c753d5912d7c61f65}
+
+
+
+
+Definition at line 122 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!queuePages@{queuePages}}
+\index{queuePages@{queuePages}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$$\ast$$\ast$ \bf{queue\-Pages}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_2294affc7bfc26a11f9e2e06f1204cbd}
+
+
+
+
+Definition at line 121 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!queuePageSize@{queuePageSize}}
+\index{queuePageSize@{queuePageSize}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{queue\-Page\-Size} = DEFAULT\_\-PAGE\_\-SIZE\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_2c07ea6472e34b38244600e5320afbb7}
+
+
+
+
+Definition at line 124 of file cudd\-Subset\-SP.c.
+
+Referenced by Create\-Path\-Table(), Create\-Top\-Dist(), and Resize\-Queue\-Pages().\index{cuddSubsetSP.c@{cudd\-Subset\-SP.c}!zero@{zero}}
+\index{zero@{zero}!cuddSubsetSP.c@{cudd\-Subset\-SP.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddSubsetSP_8c_9abc0d9e19b938006511a811e90606a1}
+
+
+
+
+Definition at line 112 of file cudd\-Subset\-SP.c.

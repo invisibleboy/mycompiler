@@ -1,0 +1,1085 @@
+\section{i\_\-graph.h File Reference}
+\label{i__graph_8h}\index{i_graph.h@{i\_\-graph.h}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$library/i\_\-global.h$>$}\par
+{\tt \#include $<$library/l\_\-alloc\_\-new.h$>$}\par
+{\tt \#include $<$library/i\_\-list.h$>$}\par
+{\tt \#include $<$library/set.h$>$}\par
+{\tt \#include $<$library/i\_\-hash.h$>$}\par
+{\tt \#include $<$library/i\_\-error.h$>$}\par
+{\tt \#include $<$library/i\_\-io.h$>$}\par
+\subsection*{Data Structures}
+\begin{CompactItemize}
+\item 
+struct \bf{graph\_\-equiv\_\-cd}
+\item 
+struct \bf{graph\_\-node}
+\item 
+struct \bf{graph\_\-arc}
+\item 
+struct \bf{graph}
+\end{CompactItemize}
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{Graph\-Contents}(g)~(g $\rightarrow$ ptr)
+\item 
+\#define \bf{Graph\-Root\-Node}(g)~(g $\rightarrow$ root)
+\item 
+\#define \bf{Graph\-Node\-Contents}(n)~(n $\rightarrow$ ptr)
+\item 
+\#define \bf{Graph\-Arc\-Contents}(a)~(a $\rightarrow$ ptr)
+\item 
+\#define \bf{Graph\-Arc\-Dest}(a)~(a $\rightarrow$ succ)
+\item 
+\#define \bf{Graph\-Arc\-Src}(a)~(a $\rightarrow$ pred)
+\item 
+\#define \bf{Graph\-Topo\-List}(g)~(g $\rightarrow$ topo\_\-list)
+\item 
+\#define \bf{Graph\-Rev\-Topo\-List}(g)~(g $\rightarrow$ rev\_\-topo\_\-list)
+\item 
+\#define \bf{Graph\-Equiv\-CDContents}(e)~(e $\rightarrow$ ptr)
+\item 
+\#define \bf{GRAPHMODIFIED}~0x00000000
+\item 
+\#define \bf{GRAPHTOPOSORT}~0x00000001
+\item 
+\#define \bf{GRAPHDOM}~0x00000002
+\item 
+\#define \bf{GRAPHEQUIVCD}~0x00000004
+\item 
+\#define \bf{GRAPHCONTROL}~0x00000008
+\item 
+\#define \bf{GRAPHPOSTDOM}~0x00000010
+\item 
+\#define \bf{GRAPHIMMPOSTDOM}~0x00000020
+\item 
+\#define \bf{GRAPHIMMDOM}~0x00000040
+\item 
+\#define \bf{GRAPHCOUNTPATH}~0x00000080
+\item 
+\#define \bf{GRAPHREVTOPOSORT}~0x00000100
+\item 
+\#define \bf{GRAPHDFSPRESORT}~0x00000200
+\item 
+\#define \bf{GRAPH\_\-ARC\_\-VISITED}~0x00000001
+\item 
+\#define \bf{GRAPH\_\-ARC\_\-BACKEDGE}~0x00000002
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-START}~0x00000001
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-STOP}~0x00000002
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-HEADER}~0x00000004
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-DEFER}~0x00000008
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-VISIT\_\-WHITE}~0x00000000
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-VISIT\_\-GREY}~0x00000001
+\item 
+\#define \bf{GRAPH\_\-NODE\_\-VISIT\_\-BLACK}~0x00000002
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF1}~0x00400000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF2}~0x00800000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF3}~0x01000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF4}~0x02000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF5}~0x04000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF6}~0x08000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF7}~0x10000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF8}~0x20000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF9}~0x40000000
+\item 
+\#define \bf{GRAPH\_\-USER\_\-DEF10}~0x80000000
+\item 
+\#define \bf{DAV\_\-ALL\_\-REQUIRED\_\-PROPERTIES}~0x00000003
+\item 
+\#define \bf{DAV\_\-TYPE}~0x00000001
+\item 
+\#define \bf{DAV\_\-ID}~0x00000002
+\item 
+\#define \bf{DAV\_\-ALL\_\-NODE\_\-PROPERTIES}~0x00000FF0
+\item 
+\#define \bf{DAV\_\-OBJECT}~0x00000010
+\item 
+\#define \bf{DAV\_\-FONTFAMILY}~0x00000020
+\item 
+\#define \bf{DAV\_\-FONTSTYLE}~0x00000040
+\item 
+\#define \bf{DAV\_\-COLOR}~0x00000080
+\item 
+\#define \bf{DAV\_\-GO}~0x00000100
+\item 
+\#define \bf{DAV\_\-ICONFILE}~0x00000200
+\item 
+\#define \bf{DAV\_\-HIDDEN}~0x00000400
+\item 
+\#define \bf{DAV\_\-BORDER}~0x00000800
+\item 
+\#define \bf{DAV\_\-ALL\_\-EDGE\_\-PROPERTIES}~0x00007000
+\item 
+\#define \bf{DAV\_\-EDGECOLOR}~0x00001000
+\item 
+\#define \bf{DAV\_\-EDGEPATTERN}~0x00002000
+\item 
+\#define \bf{DAV\_\-EDGEDIR}~0x00004000
+\item 
+\#define \bf{EXTRACT\_\-BIT\_\-VAL}(flag, val)~(((flag) \& (val))==0 ? 0 : 1)
+\end{CompactItemize}
+\subsection*{Typedefs}
+\begin{CompactItemize}
+\item 
+typedef \bf{graph\_\-equiv\_\-cd} $\ast$ \bf{Graph\-Equiv\-CD}
+\item 
+typedef \bf{graph\_\-equiv\_\-cd} \bf{\_\-Graph\-Equiv\-CD}
+\item 
+typedef \bf{graph\_\-node} $\ast$ \bf{Graph\-Node}
+\item 
+typedef \bf{graph\_\-node} \bf{\_\-Graph\-Node}
+\item 
+typedef \bf{graph\_\-arc} $\ast$ \bf{Graph\-Arc}
+\item 
+typedef \bf{graph\_\-arc} \bf{\_\-Graph\-Arc}
+\item 
+typedef \bf{graph} $\ast$ \bf{Graph}
+\item 
+typedef \bf{graph} \bf{\_\-Graph}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+\bf{Graph} \bf{Graph\_\-create\_\-graph} ()
+\item 
+\bf{Graph} \bf{Graph\_\-free\_\-graph} (\bf{Graph} \bf{graph})
+\item 
+\bf{Graph\-Node} \bf{Graph\_\-create\_\-graph\_\-node} (\bf{Graph} \bf{graph})
+\item 
+\bf{Graph\-Node} \bf{Graph\_\-create\_\-graph\_\-node\_\-given\_\-id} (\bf{Graph} \bf{graph}, int new\_\-id)
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-create\_\-graph\_\-arc} (\bf{Graph} \bf{graph})
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id} (\bf{Graph} \bf{graph}, int new\_\-id)
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-connect\_\-nodes} (\bf{Graph} \bf{graph}, \bf{Graph\-Node} src\_\-node, \bf{Graph\-Node} dest\_\-node)
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-connect\_\-nodes\_\-with\_\-weight} (\bf{Graph} \bf{graph}, \bf{Graph\-Node} src\_\-node, \bf{Graph\-Node} dest\_\-node, int wcet\_\-weight)
+\item 
+\bf{Graph\-Node} \bf{Graph\_\-node\_\-from\_\-id} (\bf{Graph} \bf{graph}, int id)
+\item 
+\bf{Graph\-Node} \bf{Graph\_\-node\_\-from\_\-id\_\-or\_\-null} (\bf{Graph} \bf{graph}, int id)
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-arc\_\-from\_\-id} (\bf{Graph} \bf{graph}, int id)
+\item 
+\bf{Graph\-Arc} \bf{Graph\_\-arc\_\-from\_\-id\_\-or\_\-null} (\bf{Graph} \bf{graph}, int id)
+\item 
+\bf{Graph\-Equiv\-CD} \bf{Graph\_\-equiv\_\-cd\_\-from\_\-id} (\bf{Graph} \bf{graph}, int id)
+\item 
+int \bf{Graph\_\-size} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-da\-Vinci} (\bf{Graph} \bf{graph}, char $\ast$filename, void($\ast$print\_\-ptr\_\-func)(FILE $\ast$, \bf{Graph\-Node}))
+\item 
+void \bf{Graph\_\-da\-Vinci2} (\bf{Graph} \bf{graph}, void($\ast$output\_\-str\_\-fn)(char $\ast$), void($\ast$print\_\-node\_\-fn)(\bf{Graph\-Node}, char $\ast$, int), void($\ast$print\_\-arc\_\-fn)(\bf{Graph\-Arc}, char $\ast$, int), int)
+\item 
+void \bf{Graph\_\-da\-Vinci2\_\-multi\_\-root} (\bf{Graph} \bf{graph}, void($\ast$output\_\-str\_\-fn)(char $\ast$), void($\ast$print\_\-node\_\-fn)(\bf{Graph\-Node}, char $\ast$, int), void($\ast$print\_\-arc\_\-fn)(\bf{Graph\-Arc}, char $\ast$, int), int)
+\item 
+void \bf{Graph\_\-count\_\-paths} (\bf{Graph} \bf{graph})
+\item 
+int \bf{Graph\_\-num\_\-paths} (\bf{Graph} \bf{graph}, \bf{Graph\-Node} \bf{node})
+\item 
+void \bf{Graph\_\-dominator} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-imm\_\-dominator} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-post\_\-dominator} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-imm\_\-post\_\-dominator} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-control\_\-dependence} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-equiv\_\-cd} (\bf{Graph} \bf{graph})
+\item 
+int \bf{Graph\_\-topological\_\-sort} (\bf{Graph} \bf{graph})
+\item 
+int \bf{Graph\_\-bfs\_\-topo\_\-sort} (\bf{Graph} \bf{graph})
+\item 
+int \bf{Graph\_\-dfs\_\-topo\_\-sort} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-rev\_\-topological\_\-sort} (\bf{Graph} \bf{graph})
+\item 
+void \bf{Graph\_\-preorder\_\-dfs\_\-sort} (\bf{Graph} \bf{graph}, int directed)
+\item 
+int \bf{Graph\_\-delete\_\-unreachable} (\bf{Graph} \bf{graph}, void($\ast$node\_\-ptr\_\-del)(void $\ast$), void($\ast$arc\_\-ptr\_\-del)(void $\ast$))
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Graph\-Pool}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Graph\-Node\-Pool}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Graph\-Arc\-Pool}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Graph\-Equiv\-CDPool}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{i_graph.h@{i\_\-graph.h}!DAV_ALL_EDGE_PROPERTIES@{DAV\_\-ALL\_\-EDGE\_\-PROPERTIES}}
+\index{DAV_ALL_EDGE_PROPERTIES@{DAV\_\-ALL\_\-EDGE\_\-PROPERTIES}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-ALL\_\-EDGE\_\-PROPERTIES~0x00007000}\label{i__graph_8h_04a973b3d2217a0cc7cc2e7b6add20fa}
+
+
+
+
+Definition at line 145 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_ALL_NODE_PROPERTIES@{DAV\_\-ALL\_\-NODE\_\-PROPERTIES}}
+\index{DAV_ALL_NODE_PROPERTIES@{DAV\_\-ALL\_\-NODE\_\-PROPERTIES}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-ALL\_\-NODE\_\-PROPERTIES~0x00000FF0}\label{i__graph_8h_a47663082f4661773754eaaa3a5f56fc}
+
+
+
+
+Definition at line 134 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_ALL_REQUIRED_PROPERTIES@{DAV\_\-ALL\_\-REQUIRED\_\-PROPERTIES}}
+\index{DAV_ALL_REQUIRED_PROPERTIES@{DAV\_\-ALL\_\-REQUIRED\_\-PROPERTIES}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-ALL\_\-REQUIRED\_\-PROPERTIES~0x00000003}\label{i__graph_8h_4e60103c92883e59540f6e5f4b288b74}
+
+
+
+
+Definition at line 130 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!DAV_BORDER@{DAV\_\-BORDER}}
+\index{DAV_BORDER@{DAV\_\-BORDER}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-BORDER~0x00000800}\label{i__graph_8h_641317dc7ac1263253a93c1e4261bb3b}
+
+
+
+
+Definition at line 142 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_COLOR@{DAV\_\-COLOR}}
+\index{DAV_COLOR@{DAV\_\-COLOR}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-COLOR~0x00000080}\label{i__graph_8h_881281546c52091356597727b50383ca}
+
+
+
+
+Definition at line 138 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_EDGECOLOR@{DAV\_\-EDGECOLOR}}
+\index{DAV_EDGECOLOR@{DAV\_\-EDGECOLOR}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-EDGECOLOR~0x00001000}\label{i__graph_8h_8d3eb2d642a7c4a16850a3ca68273bdc}
+
+
+
+
+Definition at line 146 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_EDGEDIR@{DAV\_\-EDGEDIR}}
+\index{DAV_EDGEDIR@{DAV\_\-EDGEDIR}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-EDGEDIR~0x00004000}\label{i__graph_8h_a1b8467d8d7520bf4dbc061c4631c622}
+
+
+
+
+Definition at line 148 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_EDGEPATTERN@{DAV\_\-EDGEPATTERN}}
+\index{DAV_EDGEPATTERN@{DAV\_\-EDGEPATTERN}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-EDGEPATTERN~0x00002000}\label{i__graph_8h_b49a54e36a115522f97d9f829f79bbed}
+
+
+
+
+Definition at line 147 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_FONTFAMILY@{DAV\_\-FONTFAMILY}}
+\index{DAV_FONTFAMILY@{DAV\_\-FONTFAMILY}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-FONTFAMILY~0x00000020}\label{i__graph_8h_d03f033576b358b53244765e70a2e856}
+
+
+
+
+Definition at line 136 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_FONTSTYLE@{DAV\_\-FONTSTYLE}}
+\index{DAV_FONTSTYLE@{DAV\_\-FONTSTYLE}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-FONTSTYLE~0x00000040}\label{i__graph_8h_aae7a2afab0bfb1efa3f5ec7240d237a}
+
+
+
+
+Definition at line 137 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_GO@{DAV\_\-GO}}
+\index{DAV_GO@{DAV\_\-GO}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-GO~0x00000100}\label{i__graph_8h_a68dc6b15691483aad22a7991918c09f}
+
+
+
+
+Definition at line 139 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_HIDDEN@{DAV\_\-HIDDEN}}
+\index{DAV_HIDDEN@{DAV\_\-HIDDEN}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-HIDDEN~0x00000400}\label{i__graph_8h_494fd5fcceecd992a3fbf241ed95fc51}
+
+
+
+
+Definition at line 141 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_ICONFILE@{DAV\_\-ICONFILE}}
+\index{DAV_ICONFILE@{DAV\_\-ICONFILE}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-ICONFILE~0x00000200}\label{i__graph_8h_371d815fce249a6c280a8c738f4778d2}
+
+
+
+
+Definition at line 140 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!DAV_ID@{DAV\_\-ID}}
+\index{DAV_ID@{DAV\_\-ID}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-ID~0x00000002}\label{i__graph_8h_bc71151592c0d0f03b4c81a6c9d45fa1}
+
+
+
+
+Definition at line 132 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_OBJECT@{DAV\_\-OBJECT}}
+\index{DAV_OBJECT@{DAV\_\-OBJECT}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-OBJECT~0x00000010}\label{i__graph_8h_6ce5d0beb93802b0cdf56e6b8b379c17}
+
+
+
+
+Definition at line 135 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!DAV_TYPE@{DAV\_\-TYPE}}
+\index{DAV_TYPE@{DAV\_\-TYPE}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define DAV\_\-TYPE~0x00000001}\label{i__graph_8h_fce4bc2be1dd151edf1f35b381889da9}
+
+
+
+
+Definition at line 131 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!EXTRACT_BIT_VAL@{EXTRACT\_\-BIT\_\-VAL}}
+\index{EXTRACT_BIT_VAL@{EXTRACT\_\-BIT\_\-VAL}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define EXTRACT\_\-BIT\_\-VAL(flag, val)~(((flag) \& (val))==0 ? 0 : 1)}\label{i__graph_8h_21a3ca7a8afa2ba98db7e08bc9c81b0c}
+
+
+
+
+Definition at line 150 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci\_\-visit2().\index{i_graph.h@{i\_\-graph.h}!GRAPH_ARC_BACKEDGE@{GRAPH\_\-ARC\_\-BACKEDGE}}
+\index{GRAPH_ARC_BACKEDGE@{GRAPH\_\-ARC\_\-BACKEDGE}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-ARC\_\-BACKEDGE~0x00000002}\label{i__graph_8h_4e4ed4624f135053d23c355272f6ac7e}
+
+
+
+
+Definition at line 102 of file i\_\-graph.h.
+
+Referenced by Graph\_\-preorder\_\-dfs\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GRAPH_ARC_VISITED@{GRAPH\_\-ARC\_\-VISITED}}
+\index{GRAPH_ARC_VISITED@{GRAPH\_\-ARC\_\-VISITED}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-ARC\_\-VISITED~0x00000001}\label{i__graph_8h_4b5f1283d1bc84b285771b986302b89a}
+
+
+
+
+Definition at line 101 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_DEFER@{GRAPH\_\-NODE\_\-DEFER}}
+\index{GRAPH_NODE_DEFER@{GRAPH\_\-NODE\_\-DEFER}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-DEFER~0x00000008}\label{i__graph_8h_be54fe58c2747d2adb7ea8dd794974ac}
+
+
+
+
+Definition at line 109 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-accept\_\-node().\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_HEADER@{GRAPH\_\-NODE\_\-HEADER}}
+\index{GRAPH_NODE_HEADER@{GRAPH\_\-NODE\_\-HEADER}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-HEADER~0x00000004}\label{i__graph_8h_b18bfa8a5452a205633f67676210d768}
+
+
+
+
+Definition at line 108 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-topo\_\-sort().\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_START@{GRAPH\_\-NODE\_\-START}}
+\index{GRAPH_NODE_START@{GRAPH\_\-NODE\_\-START}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-START~0x00000001}\label{i__graph_8h_1dda49ee97f471f8f30de4801bbfa37f}
+
+
+
+
+Definition at line 106 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_STOP@{GRAPH\_\-NODE\_\-STOP}}
+\index{GRAPH_NODE_STOP@{GRAPH\_\-NODE\_\-STOP}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-STOP~0x00000002}\label{i__graph_8h_386515ef9385708a9a8c30e2c94e95dc}
+
+
+
+
+Definition at line 107 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_VISIT_BLACK@{GRAPH\_\-NODE\_\-VISIT\_\-BLACK}}
+\index{GRAPH_NODE_VISIT_BLACK@{GRAPH\_\-NODE\_\-VISIT\_\-BLACK}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-VISIT\_\-BLACK~0x00000002}\label{i__graph_8h_1a3cbdc80e03fd20e077095f803b3c7e}
+
+
+
+
+Definition at line 115 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-accept\_\-node(), Graph\_\-bfs\_\-topo\_\-sort(), Graph\_\-da\-Vinci\_\-visit(), Graph\_\-da\-Vinci\_\-visit2(), and Graph\_\-preorder\_\-dfs\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_VISIT_GREY@{GRAPH\_\-NODE\_\-VISIT\_\-GREY}}
+\index{GRAPH_NODE_VISIT_GREY@{GRAPH\_\-NODE\_\-VISIT\_\-GREY}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-VISIT\_\-GREY~0x00000001}\label{i__graph_8h_a8db2a94115da3c7f6c9b7a1d151cdcb}
+
+
+
+
+Definition at line 114 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-accept\_\-node(), and Graph\_\-preorder\_\-dfs\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GRAPH_NODE_VISIT_WHITE@{GRAPH\_\-NODE\_\-VISIT\_\-WHITE}}
+\index{GRAPH_NODE_VISIT_WHITE@{GRAPH\_\-NODE\_\-VISIT\_\-WHITE}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-NODE\_\-VISIT\_\-WHITE~0x00000000}\label{i__graph_8h_3ce296182cb7b395f7d71823024fdc7f}
+
+
+
+
+Definition at line 113 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-accept\_\-node(), Graph\_\-bfs\_\-topo\_\-sort(), Graph\_\-da\-Vinci(), Graph\_\-da\-Vinci2(), Graph\_\-da\-Vinci2\_\-multi\_\-root(), Graph\_\-preorder\_\-dfs\_\-sort(), and Graph\_\-preorder\_\-dfs\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF1@{GRAPH\_\-USER\_\-DEF1}}
+\index{GRAPH_USER_DEF1@{GRAPH\_\-USER\_\-DEF1}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF1~0x00400000}\label{i__graph_8h_d16dcfff39a2100d78afd749a6fd438e}
+
+
+
+
+Definition at line 118 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF10@{GRAPH\_\-USER\_\-DEF10}}
+\index{GRAPH_USER_DEF10@{GRAPH\_\-USER\_\-DEF10}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF10~0x80000000}\label{i__graph_8h_da2f2779cb5752ff9227e2e11afe173a}
+
+
+
+
+Definition at line 127 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF2@{GRAPH\_\-USER\_\-DEF2}}
+\index{GRAPH_USER_DEF2@{GRAPH\_\-USER\_\-DEF2}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF2~0x00800000}\label{i__graph_8h_6b182555964bcba86e323bffa58e1d21}
+
+
+
+
+Definition at line 119 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF3@{GRAPH\_\-USER\_\-DEF3}}
+\index{GRAPH_USER_DEF3@{GRAPH\_\-USER\_\-DEF3}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF3~0x01000000}\label{i__graph_8h_3267f41056ceb5e64b760ca134856a3a}
+
+
+
+
+Definition at line 120 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF4@{GRAPH\_\-USER\_\-DEF4}}
+\index{GRAPH_USER_DEF4@{GRAPH\_\-USER\_\-DEF4}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF4~0x02000000}\label{i__graph_8h_64b61460db9b774eb4623638dd0efe2b}
+
+
+
+
+Definition at line 121 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF5@{GRAPH\_\-USER\_\-DEF5}}
+\index{GRAPH_USER_DEF5@{GRAPH\_\-USER\_\-DEF5}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF5~0x04000000}\label{i__graph_8h_223f99b8aa6b954bceaabdfcbe67ad0d}
+
+
+
+
+Definition at line 122 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF6@{GRAPH\_\-USER\_\-DEF6}}
+\index{GRAPH_USER_DEF6@{GRAPH\_\-USER\_\-DEF6}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF6~0x08000000}\label{i__graph_8h_1d9b3683dded3b03daa992bf13c3e8a9}
+
+
+
+
+Definition at line 123 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF7@{GRAPH\_\-USER\_\-DEF7}}
+\index{GRAPH_USER_DEF7@{GRAPH\_\-USER\_\-DEF7}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF7~0x10000000}\label{i__graph_8h_7cb90b3ac0a2ad56d5dfa6763ab1c17b}
+
+
+
+
+Definition at line 124 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF8@{GRAPH\_\-USER\_\-DEF8}}
+\index{GRAPH_USER_DEF8@{GRAPH\_\-USER\_\-DEF8}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF8~0x20000000}\label{i__graph_8h_508e79ed33bdedba88903f5d7f2a8672}
+
+
+
+
+Definition at line 125 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPH_USER_DEF9@{GRAPH\_\-USER\_\-DEF9}}
+\index{GRAPH_USER_DEF9@{GRAPH\_\-USER\_\-DEF9}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPH\_\-USER\_\-DEF9~0x40000000}\label{i__graph_8h_100285cf4daadb6d18a45bec8a44e061}
+
+
+
+
+Definition at line 126 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GraphArcContents@{GraphArcContents}}
+\index{GraphArcContents@{GraphArcContents}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Arc\-Contents(a)~(a $\rightarrow$ ptr)}\label{i__graph_8h_82666d3eef0971eba3e87a02c02eed6b}
+
+
+
+
+Definition at line 79 of file i\_\-graph.h.
+
+Referenced by Graph\_\-delete\_\-unreachable().\index{i_graph.h@{i\_\-graph.h}!GraphArcDest@{GraphArcDest}}
+\index{GraphArcDest@{GraphArcDest}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Arc\-Dest(a)~(a $\rightarrow$ succ)}\label{i__graph_8h_a5902dc718aecaefed9dd8625dc22469}
+
+
+
+
+Definition at line 80 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-accept\_\-node(), Graph\_\-control\_\-dependence(), Graph\_\-dfs\_\-topo\_\-visit(), and Graph\_\-preorder\_\-dfs\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GraphArcSrc@{GraphArcSrc}}
+\index{GraphArcSrc@{GraphArcSrc}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Arc\-Src(a)~(a $\rightarrow$ pred)}\label{i__graph_8h_fafba580d7d37ccd27e8e5c80444d11a}
+
+
+
+
+Definition at line 81 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-topo\_\-sort(), Graph\_\-preorder\_\-dfs\_\-visit(), and Graph\_\-rev\_\-topological\_\-visit().\index{i_graph.h@{i\_\-graph.h}!GraphContents@{GraphContents}}
+\index{GraphContents@{GraphContents}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Contents(g)~(g $\rightarrow$ ptr)}\label{i__graph_8h_435b6f14ab2a3c78b27b9a612bbe2fc3}
+
+
+
+
+Definition at line 76 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPHCONTROL@{GRAPHCONTROL}}
+\index{GRAPHCONTROL@{GRAPHCONTROL}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHCONTROL~0x00000008}\label{i__graph_8h_ee8ab7f8f13f5716067e2ec7d15b9f06}
+
+
+
+
+Definition at line 93 of file i\_\-graph.h.
+
+Referenced by Graph\_\-control\_\-dependence(), and Graph\_\-equiv\_\-cd().\index{i_graph.h@{i\_\-graph.h}!GRAPHCOUNTPATH@{GRAPHCOUNTPATH}}
+\index{GRAPHCOUNTPATH@{GRAPHCOUNTPATH}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHCOUNTPATH~0x00000080}\label{i__graph_8h_80aa73fd7b3a6cdd3173f57dff133bc3}
+
+
+
+
+Definition at line 97 of file i\_\-graph.h.
+
+Referenced by Graph\_\-count\_\-paths().\index{i_graph.h@{i\_\-graph.h}!GRAPHDFSPRESORT@{GRAPHDFSPRESORT}}
+\index{GRAPHDFSPRESORT@{GRAPHDFSPRESORT}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHDFSPRESORT~0x00000200}\label{i__graph_8h_8920db6a27d0a737f1288fcfb7ecbd02}
+
+
+
+
+Definition at line 99 of file i\_\-graph.h.
+
+Referenced by Graph\_\-preorder\_\-dfs\_\-sort().\index{i_graph.h@{i\_\-graph.h}!GRAPHDOM@{GRAPHDOM}}
+\index{GRAPHDOM@{GRAPHDOM}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHDOM~0x00000002}\label{i__graph_8h_51f8de27d991704089096823bcee7782}
+
+
+
+
+Definition at line 91 of file i\_\-graph.h.
+
+Referenced by Graph\_\-count\_\-paths(), Graph\_\-da\-Vinci(), Graph\_\-da\-Vinci2(), Graph\_\-da\-Vinci2\_\-multi\_\-root(), Graph\_\-dominator(), Graph\_\-imm\_\-dominator(), Graph\_\-preorder\_\-dfs\_\-sort(), and Graph\_\-rev\_\-topological\_\-sort().\index{i_graph.h@{i\_\-graph.h}!GRAPHEQUIVCD@{GRAPHEQUIVCD}}
+\index{GRAPHEQUIVCD@{GRAPHEQUIVCD}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHEQUIVCD~0x00000004}\label{i__graph_8h_9374104fc4a9f17fc2ce62471b3ded05}
+
+
+
+
+Definition at line 92 of file i\_\-graph.h.
+
+Referenced by Graph\_\-equiv\_\-cd().\index{i_graph.h@{i\_\-graph.h}!GraphEquivCDContents@{GraphEquivCDContents}}
+\index{GraphEquivCDContents@{GraphEquivCDContents}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Equiv\-CDContents(e)~(e $\rightarrow$ ptr)}\label{i__graph_8h_5429a182f6b93066d3dd8d090dcc04b8}
+
+
+
+
+Definition at line 84 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPHIMMDOM@{GRAPHIMMDOM}}
+\index{GRAPHIMMDOM@{GRAPHIMMDOM}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHIMMDOM~0x00000040}\label{i__graph_8h_2ed8c169b4e4035268822374d63426de}
+
+
+
+
+Definition at line 96 of file i\_\-graph.h.
+
+Referenced by Graph\_\-imm\_\-dominator().\index{i_graph.h@{i\_\-graph.h}!GRAPHIMMPOSTDOM@{GRAPHIMMPOSTDOM}}
+\index{GRAPHIMMPOSTDOM@{GRAPHIMMPOSTDOM}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHIMMPOSTDOM~0x00000020}\label{i__graph_8h_c238412b5313ff357d52ba5c3f0bb0a0}
+
+
+
+
+Definition at line 95 of file i\_\-graph.h.
+
+Referenced by Graph\_\-control\_\-dependence(), and Graph\_\-imm\_\-post\_\-dominator().\index{i_graph.h@{i\_\-graph.h}!GRAPHMODIFIED@{GRAPHMODIFIED}}
+\index{GRAPHMODIFIED@{GRAPHMODIFIED}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHMODIFIED~0x00000000}\label{i__graph_8h_8c37d945015a688401c785ff51a9c7a1}
+
+
+
+
+Definition at line 89 of file i\_\-graph.h.
+
+Referenced by Graph\_\-create\_\-graph(), Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), and Graph\_\-create\_\-graph\_\-node\_\-given\_\-id().\index{i_graph.h@{i\_\-graph.h}!GraphNodeContents@{GraphNodeContents}}
+\index{GraphNodeContents@{GraphNodeContents}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Node\-Contents(n)~(n $\rightarrow$ ptr)}\label{i__graph_8h_2b3afa4cd5671d50a609b6bf1b92ee9b}
+
+
+
+
+Definition at line 78 of file i\_\-graph.h.
+
+Referenced by Graph\_\-delete\_\-unreachable().\index{i_graph.h@{i\_\-graph.h}!GRAPHPOSTDOM@{GRAPHPOSTDOM}}
+\index{GRAPHPOSTDOM@{GRAPHPOSTDOM}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHPOSTDOM~0x00000010}\label{i__graph_8h_4797b64a98893fa77b6fd9ff871f2647}
+
+
+
+
+Definition at line 94 of file i\_\-graph.h.
+
+Referenced by Graph\_\-imm\_\-post\_\-dominator(), and Graph\_\-post\_\-dominator().\index{i_graph.h@{i\_\-graph.h}!GraphRevTopoList@{GraphRevTopoList}}
+\index{GraphRevTopoList@{GraphRevTopoList}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Rev\-Topo\-List(g)~(g $\rightarrow$ rev\_\-topo\_\-list)}\label{i__graph_8h_c4e59e6cc5d690cc1e22c9719efbd480}
+
+
+
+
+Definition at line 83 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPHREVTOPOSORT@{GRAPHREVTOPOSORT}}
+\index{GRAPHREVTOPOSORT@{GRAPHREVTOPOSORT}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHREVTOPOSORT~0x00000100}\label{i__graph_8h_40c07b90a51f846dbf1499dae629acd0}
+
+
+
+
+Definition at line 98 of file i\_\-graph.h.
+
+Referenced by Graph\_\-rev\_\-topological\_\-sort().\index{i_graph.h@{i\_\-graph.h}!GraphRootNode@{GraphRootNode}}
+\index{GraphRootNode@{GraphRootNode}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Root\-Node(g)~(g $\rightarrow$ root)}\label{i__graph_8h_906932868ab48ef427ded7ae38c7ada9}
+
+
+
+
+Definition at line 77 of file i\_\-graph.h.
+
+Referenced by Graph\_\-da\-Vinci2(), and Graph\_\-da\-Vinci2\_\-multi\_\-root().\index{i_graph.h@{i\_\-graph.h}!GraphTopoList@{GraphTopoList}}
+\index{GraphTopoList@{GraphTopoList}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define Graph\-Topo\-List(g)~(g $\rightarrow$ topo\_\-list)}\label{i__graph_8h_72f3b185e03fa398053fefa392d57ed0}
+
+
+
+
+Definition at line 82 of file i\_\-graph.h.\index{i_graph.h@{i\_\-graph.h}!GRAPHTOPOSORT@{GRAPHTOPOSORT}}
+\index{GRAPHTOPOSORT@{GRAPHTOPOSORT}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define GRAPHTOPOSORT~0x00000001}\label{i__graph_8h_ad31c1d6a4bbd82015be5aea56878645}
+
+
+
+
+Definition at line 90 of file i\_\-graph.h.
+
+Referenced by Graph\_\-bfs\_\-topo\_\-sort(), Graph\_\-delete\_\-unreachable(), and Graph\_\-dfs\_\-topo\_\-sort().
+
+\subsection{Typedef Documentation}
+\index{i_graph.h@{i\_\-graph.h}!_Graph@{\_\-Graph}}
+\index{_Graph@{\_\-Graph}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph}  \bf{\_\-Graph}}\label{i__graph_8h_644c6dd9f80e1d0853b37c5b5fdcb077}
+
+
+\index{i_graph.h@{i\_\-graph.h}!_GraphArc@{\_\-GraphArc}}
+\index{_GraphArc@{\_\-GraphArc}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-arc}  \bf{\_\-Graph\-Arc}}\label{i__graph_8h_c71ac0eae679b7a53ffaadd18e5bd377}
+
+
+\index{i_graph.h@{i\_\-graph.h}!_GraphEquivCD@{\_\-GraphEquivCD}}
+\index{_GraphEquivCD@{\_\-GraphEquivCD}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-equiv\_\-cd}  \bf{\_\-Graph\-Equiv\-CD}}\label{i__graph_8h_50c7a7dd6996bb9ddd1cf1a19c1bebf9}
+
+
+\index{i_graph.h@{i\_\-graph.h}!_GraphNode@{\_\-GraphNode}}
+\index{_GraphNode@{\_\-GraphNode}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-node}  \bf{\_\-Graph\-Node}}\label{i__graph_8h_f6dd6eda6c6f36fb38880528820d0404}
+
+
+\index{i_graph.h@{i\_\-graph.h}!Graph@{Graph}}
+\index{Graph@{Graph}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph} $\ast$ \bf{Graph}}\label{i__graph_8h_f16489e0ee6c8984146d474ebd7a4c45}
+
+
+\index{i_graph.h@{i\_\-graph.h}!GraphArc@{GraphArc}}
+\index{GraphArc@{GraphArc}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-arc} $\ast$ \bf{Graph\-Arc}}\label{i__graph_8h_bcc4f9324a93a5544b26c54d700b19a8}
+
+
+\index{i_graph.h@{i\_\-graph.h}!GraphEquivCD@{GraphEquivCD}}
+\index{GraphEquivCD@{GraphEquivCD}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-equiv\_\-cd} $\ast$ \bf{Graph\-Equiv\-CD}}\label{i__graph_8h_fd328e48aa3a8836ab34ef900eb099a9}
+
+
+\index{i_graph.h@{i\_\-graph.h}!GraphNode@{GraphNode}}
+\index{GraphNode@{GraphNode}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}typedef struct \bf{graph\_\-node} $\ast$ \bf{Graph\-Node}}\label{i__graph_8h_62e0a273ee3f3f3f009b9989b2df6446}
+
+
+
+
+\subsection{Function Documentation}
+\index{i_graph.h@{i\_\-graph.h}!Graph_arc_from_id@{Graph\_\-arc\_\-from\_\-id}}
+\index{Graph_arc_from_id@{Graph\_\-arc\_\-from\_\-id}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-arc\_\-from\_\-id (\bf{Graph} {\em graph}, int {\em id})}\label{i__graph_8h_675eba5d8d8324e5bb6ac0e81d1a342a}
+
+
+
+
+Definition at line 278 of file i\_\-graph.c.
+
+References graph, and Hash\-Table\_\-find().
+
+Referenced by Graph\_\-equiv\_\-cd().\index{i_graph.h@{i\_\-graph.h}!Graph_arc_from_id_or_null@{Graph\_\-arc\_\-from\_\-id\_\-or\_\-null}}
+\index{Graph_arc_from_id_or_null@{Graph\_\-arc\_\-from\_\-id\_\-or\_\-null}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-arc\_\-from\_\-id\_\-or\_\-null (\bf{Graph} {\em graph}, int {\em id})}\label{i__graph_8h_5d51d011de35944a8cae6e67a0fcad20}
+
+
+
+
+Definition at line 282 of file i\_\-graph.c.
+
+References graph, and Hash\-Table\_\-find\_\-or\_\-null().
+
+Referenced by Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id().\index{i_graph.h@{i\_\-graph.h}!Graph_bfs_topo_sort@{Graph\_\-bfs\_\-topo\_\-sort}}
+\index{Graph_bfs_topo_sort@{Graph\_\-bfs\_\-topo\_\-sort}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-bfs\_\-topo\_\-sort (\bf{Graph} {\em graph})}\label{i__graph_8h_5aca2dfc1246d509c7eea0a205e02a43}
+
+
+
+
+Definition at line 1145 of file i\_\-graph.c.
+
+References graph\_\-node::flags, graph::flags, Graph\_\-bfs\_\-accept\_\-node(), Graph\_\-dfs\_\-topo\_\-sort(), GRAPH\_\-NODE\_\-HEADER, GRAPH\_\-NODE\_\-VISIT\_\-BLACK, GRAPH\_\-NODE\_\-VISIT\_\-WHITE, Graph\-Arc\-Src, GRAPHTOPOSORT, I\_\-warn(), List\_\-delete\_\-current(), List\_\-insert\_\-last(), List\_\-next(), List\_\-reset(), List\_\-size(), List\_\-start(), graph::nodes, NULL, graph\_\-node::pred, graph::root, graph\_\-node::tflags, and graph::topo\_\-list.\index{i_graph.h@{i\_\-graph.h}!Graph_connect_nodes@{Graph\_\-connect\_\-nodes}}
+\index{Graph_connect_nodes@{Graph\_\-connect\_\-nodes}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-connect\_\-nodes (\bf{Graph} {\em graph}, \bf{Graph\-Node} {\em src\_\-node}, \bf{Graph\-Node} {\em dest\_\-node})}\label{i__graph_8h_3850703f4565c65fa3b4fc1d80f76b69}
+
+
+
+
+Definition at line 313 of file i\_\-graph.c.
+
+References graph, Graph\_\-create\_\-graph\_\-arc(), List\_\-insert\_\-last(), graph\_\-node::pred, graph\_\-arc::pred, graph\_\-node::succ, and graph\_\-arc::succ.\index{i_graph.h@{i\_\-graph.h}!Graph_connect_nodes_with_weight@{Graph\_\-connect\_\-nodes\_\-with\_\-weight}}
+\index{Graph_connect_nodes_with_weight@{Graph\_\-connect\_\-nodes\_\-with\_\-weight}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-connect\_\-nodes\_\-with\_\-weight (\bf{Graph} {\em graph}, \bf{Graph\-Node} {\em src\_\-node}, \bf{Graph\-Node} {\em dest\_\-node}, int {\em wcet\_\-weight})}\label{i__graph_8h_17c05e9d6088587f89bed7df00e64d85}
+
+
+
+
+Definition at line 297 of file i\_\-graph.c.
+
+References graph, Graph\_\-create\_\-graph\_\-arc(), List\_\-insert\_\-last(), graph\_\-node::pred, graph\_\-arc::pred, graph\_\-node::succ, graph\_\-arc::succ, and graph\_\-arc::wcet\_\-weight.\index{i_graph.h@{i\_\-graph.h}!Graph_control_dependence@{Graph\_\-control\_\-dependence}}
+\index{Graph_control_dependence@{Graph\_\-control\_\-dependence}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-control\_\-dependence (\bf{Graph} {\em graph})}\label{i__graph_8h_da63051f5b0a209dae89861afba3a5f8}
+
+
+
+
+Definition at line 934 of file i\_\-graph.c.
+
+References graph\_\-node::contr\_\-dep, I\_\-Node::dom, graph\_\-node::flags, graph, Graph\_\-imm\_\-post\_\-dominator(), Graph\_\-topological\_\-sort(), Graph\-Arc\-Dest, GRAPHCONTROL, GRAPHIMMPOSTDOM, graph\_\-arc::id, I\_\-Node::id, graph\_\-node::id, graph\_\-node::imm\_\-post\_\-dom, List\_\-last(), List\_\-next(), List\_\-start(), node, NULL, graph\_\-node::post\_\-dom, Set\_\-add(), and Set\_\-in().
+
+Referenced by Graph\_\-equiv\_\-cd().\index{i_graph.h@{i\_\-graph.h}!Graph_count_paths@{Graph\_\-count\_\-paths}}
+\index{Graph_count_paths@{Graph\_\-count\_\-paths}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-count\_\-paths (\bf{Graph} {\em graph})}\label{i__graph_8h_e1d55ff27eba3393de356891cc9f8561}
+
+
+
+
+Definition at line 1047 of file i\_\-graph.c.
+
+References graph, Graph\_\-count\_\-paths\_\-visit(), Graph\_\-dominator(), GRAPHCOUNTPATH, GRAPHDOM, List\_\-next(), List\_\-size(), List\_\-start(), and node.\index{i_graph.h@{i\_\-graph.h}!Graph_create_graph@{Graph\_\-create\_\-graph}}
+\index{Graph_create_graph@{Graph\_\-create\_\-graph}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph} Graph\_\-create\_\-graph ()}\label{i__graph_8h_a846a24de5258a3c8f2b6e4f343a4fe4}
+
+
+
+
+Definition at line 198 of file i\_\-graph.c.
+
+References graph::arc\_\-id, graph::arcs, graph::dfs\_\-list, graph::equiv\_\-cds, graph::flags, GRAPHMODIFIED, Graph\-Pool, graph::hash\_\-id\_\-arc, graph::hash\_\-id\_\-equiv\_\-cd, graph::hash\_\-id\_\-node, Hash\-Table\_\-create(), L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), graph::node\_\-id, graph::nodes, NULL, graph::rev\_\-topo\_\-list, graph::root, and graph::topo\_\-list.\index{i_graph.h@{i\_\-graph.h}!Graph_create_graph_arc@{Graph\_\-create\_\-graph\_\-arc}}
+\index{Graph_create_graph_arc@{Graph\_\-create\_\-graph\_\-arc}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-create\_\-graph\_\-arc (\bf{Graph} {\em graph})}\label{i__graph_8h_5f89323adca2a48c1f98f54cdfd2ac3c}
+
+
+
+
+Definition at line 150 of file i\_\-graph.c.
+
+References graph, and Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id().
+
+Referenced by Graph\_\-connect\_\-nodes(), and Graph\_\-connect\_\-nodes\_\-with\_\-weight().\index{i_graph.h@{i\_\-graph.h}!Graph_create_graph_arc_given_id@{Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id}}
+\index{Graph_create_graph_arc_given_id@{Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Arc} Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id (\bf{Graph} {\em graph}, int {\em new\_\-id})}\label{i__graph_8h_c8565f77e3e329b5e006cc410ae0967c}
+
+
+
+
+Definition at line 126 of file i\_\-graph.c.
+
+References graph\_\-arc::flags, graph, Graph\_\-arc\_\-from\_\-id\_\-or\_\-null(), Graph\-Arc\-Pool, GRAPHMODIFIED, Hash\-Table\_\-insert(), I\_\-punt(), graph\_\-arc::id, graph\_\-arc::info, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), List\_\-insert\_\-last(), NULL, graph\_\-arc::pred, graph\_\-arc::ptr, and graph\_\-arc::succ.
+
+Referenced by Graph\_\-create\_\-graph\_\-arc().\index{i_graph.h@{i\_\-graph.h}!Graph_create_graph_node@{Graph\_\-create\_\-graph\_\-node}}
+\index{Graph_create_graph_node@{Graph\_\-create\_\-graph\_\-node}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Node} Graph\_\-create\_\-graph\_\-node (\bf{Graph} {\em graph})}\label{i__graph_8h_23fe203e14349c2875bb285f0727cc2d}
+
+
+
+
+Definition at line 104 of file i\_\-graph.c.
+
+References graph, and Graph\_\-create\_\-graph\_\-node\_\-given\_\-id().\index{i_graph.h@{i\_\-graph.h}!Graph_create_graph_node_given_id@{Graph\_\-create\_\-graph\_\-node\_\-given\_\-id}}
+\index{Graph_create_graph_node_given_id@{Graph\_\-create\_\-graph\_\-node\_\-given\_\-id}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Node} Graph\_\-create\_\-graph\_\-node\_\-given\_\-id (\bf{Graph} {\em graph}, int {\em new\_\-id})}\label{i__graph_8h_3ec162de5f8931740e3497fa03eb8d17}
+
+
+
+
+Definition at line 72 of file i\_\-graph.c.
+
+References graph\_\-node::contr\_\-dep, graph\_\-node::dom, graph\_\-node::equiv\_\-cd, graph\_\-node::flags, graph, Graph\_\-node\_\-from\_\-id\_\-or\_\-null(), GRAPHMODIFIED, Graph\-Node\-Pool, Hash\-Table\_\-insert(), I\_\-punt(), graph\_\-node::id, graph\_\-node::imm\_\-dom, graph\_\-node::imm\_\-post\_\-dom, graph\_\-node::info, L\_\-alloc(), L\_\-create\_\-alloc\_\-pool(), List\_\-insert\_\-last(), \_\-FGraph::nodes, NULL, graph\_\-node::post\_\-dom, graph\_\-node::pred, graph\_\-node::ptr, graph\_\-node::succ, and graph\_\-node::tflags.
+
+Referenced by Graph\_\-create\_\-graph\_\-node().\index{i_graph.h@{i\_\-graph.h}!Graph_daVinci@{Graph\_\-daVinci}}
+\index{Graph_daVinci@{Graph\_\-daVinci}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-da\-Vinci (\bf{Graph} {\em graph}, char $\ast$ {\em filename}, void($\ast$)(FILE $\ast$, \bf{Graph\-Node}) {\em print\_\-ptr\_\-func})}\label{i__graph_8h_277dd7e82e82f10d773e9443f2ddb02b}
+
+
+
+
+Definition at line 420 of file i\_\-graph.c.
+
+References graph, Graph\_\-da\-Vinci\_\-visit(), Graph\_\-dominator(), GRAPH\_\-NODE\_\-VISIT\_\-WHITE, GRAPHDOM, I\_\-close\_\-output\_\-file(), I\_\-open\_\-output\_\-file(), List\_\-next(), List\_\-start(), node, and NULL.\index{i_graph.h@{i\_\-graph.h}!Graph_daVinci2@{Graph\_\-daVinci2}}
+\index{Graph_daVinci2@{Graph\_\-daVinci2}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-da\-Vinci2 (\bf{Graph} {\em graph}, void($\ast$)(char $\ast$) {\em output\_\-str\_\-fn}, void($\ast$)(\bf{Graph\-Node}, char $\ast$, int) {\em print\_\-node\_\-fn}, void($\ast$)(\bf{Graph\-Arc}, char $\ast$, int) {\em print\_\-arc\_\-fn}, int)}\label{i__graph_8h_a994b61866e6affecb5a86c8aac7aac8}
+
+
+
+
+Definition at line 660 of file i\_\-graph.c.
+
+References graph, Graph\_\-da\-Vinci\_\-visit2(), Graph\_\-dominator(), GRAPH\_\-NODE\_\-VISIT\_\-WHITE, GRAPHDOM, Graph\-Root\-Node, List\_\-next(), List\_\-start(), and node.\index{i_graph.h@{i\_\-graph.h}!Graph_daVinci2_multi_root@{Graph\_\-daVinci2\_\-multi\_\-root}}
+\index{Graph_daVinci2_multi_root@{Graph\_\-daVinci2\_\-multi\_\-root}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-da\-Vinci2\_\-multi\_\-root (\bf{Graph} {\em graph}, void($\ast$)(char $\ast$) {\em output\_\-str\_\-fn}, void($\ast$)(\bf{Graph\-Node}, char $\ast$, int) {\em print\_\-node\_\-fn}, void($\ast$)(\bf{Graph\-Arc}, char $\ast$, int) {\em print\_\-arc\_\-fn}, int)}\label{i__graph_8h_f4fd5f915a35ec3f4aad832193d78b2b}
+
+
+
+
+Definition at line 693 of file i\_\-graph.c.
+
+References graph, Graph\_\-da\-Vinci\_\-visit2(), Graph\_\-dominator(), GRAPH\_\-NODE\_\-VISIT\_\-WHITE, GRAPHDOM, Graph\-Root\-Node, List\_\-first(), List\_\-next(), List\_\-start(), node, NULL, and graph\_\-arc::succ.\index{i_graph.h@{i\_\-graph.h}!Graph_delete_unreachable@{Graph\_\-delete\_\-unreachable}}
+\index{Graph_delete_unreachable@{Graph\_\-delete\_\-unreachable}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-delete\_\-unreachable (\bf{Graph} {\em graph}, void($\ast$)(void $\ast$) {\em node\_\-ptr\_\-del}, void($\ast$)(void $\ast$) {\em arc\_\-ptr\_\-del})}\label{i__graph_8h_cf09090933cd4d8c8dc7dbc024663472}
+
+
+
+
+Definition at line 326 of file i\_\-graph.c.
+
+References graph, Graph\_\-free\_\-graph\_\-arc(), Graph\_\-free\_\-graph\_\-node(), Graph\_\-topological\_\-sort(), Graph\-Arc\-Contents, Graph\-Node\-Contents, GRAPHTOPOSORT, List\_\-delete\_\-current(), List\_\-next(), List\_\-remove(), List\_\-reset(), List\_\-start(), node, \_\-FGraph::nodes, graph\_\-node::pred, and graph\_\-arc::succ.\index{i_graph.h@{i\_\-graph.h}!Graph_dfs_topo_sort@{Graph\_\-dfs\_\-topo\_\-sort}}
+\index{Graph_dfs_topo_sort@{Graph\_\-dfs\_\-topo\_\-sort}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-dfs\_\-topo\_\-sort (\bf{Graph} {\em graph})}\label{i__graph_8h_73b154de6c14de1fcd726763e52a686d}
+
+
+
+
+Definition at line 1087 of file i\_\-graph.c.
+
+References graph, Graph\_\-dfs\_\-topo\_\-visit(), GRAPHTOPOSORT, List\_\-next(), List\_\-reset(), List\_\-size(), List\_\-start(), node, \_\-FGraph::nodes, and \_\-FGraph::root.
+
+Referenced by Graph\_\-bfs\_\-topo\_\-sort(), and Graph\_\-topological\_\-sort().\index{i_graph.h@{i\_\-graph.h}!Graph_dominator@{Graph\_\-dominator}}
+\index{Graph_dominator@{Graph\_\-dominator}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-dominator (\bf{Graph} {\em graph})}\label{i__graph_8h_85f44f6412a01ba0b41de6e8ef6d1773}
+
+
+
+
+Definition at line 761 of file i\_\-graph.c.
+
+References graph\_\-node::dom, I\_\-Node::dom, graph, GRAPHDOM, I\_\-Node::id, List\_\-next(), List\_\-size(), List\_\-start(), node, \_\-FGraph::nodes, NULL, graph\_\-arc::pred, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect\_\-acc(), Set\_\-same(), and Set\_\-union().
+
+Referenced by Graph\_\-count\_\-paths(), Graph\_\-da\-Vinci(), Graph\_\-da\-Vinci2(), Graph\_\-da\-Vinci2\_\-multi\_\-root(), Graph\_\-imm\_\-dominator(), Graph\_\-preorder\_\-dfs\_\-sort(), and Graph\_\-rev\_\-topological\_\-sort().\index{i_graph.h@{i\_\-graph.h}!Graph_equiv_cd@{Graph\_\-equiv\_\-cd}}
+\index{Graph_equiv_cd@{Graph\_\-equiv\_\-cd}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-equiv\_\-cd (\bf{Graph} {\em graph})}\label{i__graph_8h_c40cd2fea6900c05dc6b2177d1a834a3}
+
+
+
+
+Definition at line 981 of file i\_\-graph.c.
+
+References graph\_\-equiv\_\-cd::arcs, Bool, graph\_\-equiv\_\-cd::contr\_\-dep, FALSE, graph, Graph\_\-arc\_\-from\_\-id(), Graph\_\-control\_\-dependence(), Graph\_\-create\_\-graph\_\-equiv\_\-cd(), GRAPHCONTROL, GRAPHEQUIVCD, List\_\-insert\_\-last(), List\_\-next(), List\_\-start(), node, graph\_\-equiv\_\-cd::nodes, NULL, Set\_\-2array(), Set\_\-same(), Set\_\-size(), Set\_\-union(), and TRUE.\index{i_graph.h@{i\_\-graph.h}!Graph_equiv_cd_from_id@{Graph\_\-equiv\_\-cd\_\-from\_\-id}}
+\index{Graph_equiv_cd_from_id@{Graph\_\-equiv\_\-cd\_\-from\_\-id}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Equiv\-CD} Graph\_\-equiv\_\-cd\_\-from\_\-id (\bf{Graph} {\em graph}, int {\em id})}\label{i__graph_8h_5751d9f08022b1979b8bf187f0095313}
+
+
+
+
+Definition at line 286 of file i\_\-graph.c.
+
+References graph, and Hash\-Table\_\-find().\index{i_graph.h@{i\_\-graph.h}!Graph_free_graph@{Graph\_\-free\_\-graph}}
+\index{Graph_free_graph@{Graph\_\-free\_\-graph}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph} Graph\_\-free\_\-graph (\bf{Graph} {\em graph})}\label{i__graph_8h_535bfb62fad6a432f61745f6e7ce591b}
+
+
+
+
+Definition at line 226 of file i\_\-graph.c.
+
+References graph, Graph\_\-free\_\-graph\_\-arc(), Graph\_\-free\_\-graph\_\-equiv\_\-cd(), Graph\_\-free\_\-graph\_\-node(), Graph\-Arc\-Pool, Graph\-Equiv\-CDPool, Graph\-Node\-Pool, Graph\-Pool, Hash\-Table\_\-free(), L\_\-free(), L\_\-print\_\-alloc\_\-info(), List\_\-next(), List\_\-reset(), List\_\-start(), node, \_\-FGraph::nodes, and NULL.\index{i_graph.h@{i\_\-graph.h}!Graph_imm_dominator@{Graph\_\-imm\_\-dominator}}
+\index{Graph_imm_dominator@{Graph\_\-imm\_\-dominator}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-imm\_\-dominator (\bf{Graph} {\em graph})}\label{i__graph_8h_5b524304b2f42cecc80184a412c861cf}
+
+
+
+
+Definition at line 734 of file i\_\-graph.c.
+
+References I\_\-Node::dom, graph\_\-node::flags, graph, Graph\_\-dominator(), GRAPHDOM, GRAPHIMMDOM, graph\_\-node::id, List\_\-next(), List\_\-start(), node, NULL, and Set\_\-in().\index{i_graph.h@{i\_\-graph.h}!Graph_imm_post_dominator@{Graph\_\-imm\_\-post\_\-dominator}}
+\index{Graph_imm_post_dominator@{Graph\_\-imm\_\-post\_\-dominator}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-imm\_\-post\_\-dominator (\bf{Graph} {\em graph})}\label{i__graph_8h_61c52032649a28da1dacf08a943c9b83}
+
+
+
+
+Definition at line 841 of file i\_\-graph.c.
+
+References graph\_\-node::flags, graph, Graph\_\-post\_\-dominator(), GRAPHIMMPOSTDOM, GRAPHPOSTDOM, graph\_\-node::id, List\_\-next(), List\_\-prev(), List\_\-start(), node, NULL, I\_\-Node::post\_\-dom, and Set\_\-in().
+
+Referenced by Graph\_\-control\_\-dependence().\index{i_graph.h@{i\_\-graph.h}!Graph_node_from_id@{Graph\_\-node\_\-from\_\-id}}
+\index{Graph_node_from_id@{Graph\_\-node\_\-from\_\-id}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Node} Graph\_\-node\_\-from\_\-id (\bf{Graph} {\em graph}, int {\em id})}\label{i__graph_8h_fc757313a2a3d53b14f8254e8c85b374}
+
+
+
+
+Definition at line 270 of file i\_\-graph.c.
+
+References graph, and Hash\-Table\_\-find().\index{i_graph.h@{i\_\-graph.h}!Graph_node_from_id_or_null@{Graph\_\-node\_\-from\_\-id\_\-or\_\-null}}
+\index{Graph_node_from_id_or_null@{Graph\_\-node\_\-from\_\-id\_\-or\_\-null}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Graph\-Node} Graph\_\-node\_\-from\_\-id\_\-or\_\-null (\bf{Graph} {\em graph}, int {\em id})}\label{i__graph_8h_4f7f8f49f25f26c840bf196158ddb599}
+
+
+
+
+Definition at line 274 of file i\_\-graph.c.
+
+References graph, and Hash\-Table\_\-find\_\-or\_\-null().
+
+Referenced by Graph\_\-create\_\-graph\_\-node\_\-given\_\-id().\index{i_graph.h@{i\_\-graph.h}!Graph_num_paths@{Graph\_\-num\_\-paths}}
+\index{Graph_num_paths@{Graph\_\-num\_\-paths}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-num\_\-paths (\bf{Graph} {\em graph}, \bf{Graph\-Node} {\em node})}\label{i__graph_8h_a20b61b3ec892bc520b1fd02aaddff17}
+
+
+\index{i_graph.h@{i\_\-graph.h}!Graph_post_dominator@{Graph\_\-post\_\-dominator}}
+\index{Graph_post_dominator@{Graph\_\-post\_\-dominator}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-post\_\-dominator (\bf{Graph} {\em graph})}\label{i__graph_8h_8018f1ee1dd398d17963b191c5ec420a}
+
+
+
+
+Definition at line 865 of file i\_\-graph.c.
+
+References graph, GRAPHPOSTDOM, I\_\-Node::id, List\_\-next(), List\_\-size(), List\_\-start(), node, \_\-FGraph::nodes, NULL, graph\_\-node::post\_\-dom, I\_\-Node::post\_\-dom, Set\_\-add(), Set\_\-dispose(), Set\_\-intersect\_\-acc(), Set\_\-same(), Set\_\-union(), and graph\_\-arc::succ.
+
+Referenced by Graph\_\-imm\_\-post\_\-dominator().\index{i_graph.h@{i\_\-graph.h}!Graph_preorder_dfs_sort@{Graph\_\-preorder\_\-dfs\_\-sort}}
+\index{Graph_preorder_dfs_sort@{Graph\_\-preorder\_\-dfs\_\-sort}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-preorder\_\-dfs\_\-sort (\bf{Graph} {\em graph}, int {\em directed})}\label{i__graph_8h_2670a236e7c0c5380ffd7db989c4a05f}
+
+
+
+
+Definition at line 1311 of file i\_\-graph.c.
+
+References graph, Graph\_\-dominator(), GRAPH\_\-NODE\_\-VISIT\_\-WHITE, Graph\_\-preorder\_\-dfs\_\-visit(), GRAPHDFSPRESORT, GRAPHDOM, List\_\-next(), List\_\-reset(), List\_\-start(), and node.\index{i_graph.h@{i\_\-graph.h}!Graph_rev_topological_sort@{Graph\_\-rev\_\-topological\_\-sort}}
+\index{Graph_rev_topological_sort@{Graph\_\-rev\_\-topological\_\-sort}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Graph\_\-rev\_\-topological\_\-sort (\bf{Graph} {\em graph})}\label{i__graph_8h_d952ed4c6047fd4d0cade5772979e3b9}
+
+
+
+
+Definition at line 1244 of file i\_\-graph.c.
+
+References graph, Graph\_\-dominator(), Graph\_\-rev\_\-topological\_\-visit(), GRAPHDOM, GRAPHREVTOPOSORT, I\_\-punt(), List\_\-next(), List\_\-reset(), List\_\-start(), node, and NULL.\index{i_graph.h@{i\_\-graph.h}!Graph_size@{Graph\_\-size}}
+\index{Graph_size@{Graph\_\-size}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-size (\bf{Graph} {\em graph})}\label{i__graph_8h_a55d48bf0497adaa4d35c6eb40d0f756}
+
+
+
+
+Definition at line 290 of file i\_\-graph.c.
+
+References graph, I\_\-punt(), List\_\-size(), and \_\-FGraph::nodes.\index{i_graph.h@{i\_\-graph.h}!Graph_topological_sort@{Graph\_\-topological\_\-sort}}
+\index{Graph_topological_sort@{Graph\_\-topological\_\-sort}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Graph\_\-topological\_\-sort (\bf{Graph} {\em graph})}\label{i__graph_8h_d230ba246ef889997e1199eeb092da21}
+
+
+
+
+Definition at line 1221 of file i\_\-graph.c.
+
+References graph, and Graph\_\-dfs\_\-topo\_\-sort().
+
+Referenced by Graph\_\-control\_\-dependence(), and Graph\_\-delete\_\-unreachable().
+
+\subsection{Variable Documentation}
+\index{i_graph.h@{i\_\-graph.h}!GraphArcPool@{GraphArcPool}}
+\index{GraphArcPool@{GraphArcPool}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Graph\-Arc\-Pool}}\label{i__graph_8h_a02c4c93772cf46fa6707a1dca1d7445}
+
+
+
+
+Definition at line 69 of file i\_\-graph.c.
+
+Referenced by Graph\_\-create\_\-graph\_\-arc\_\-given\_\-id(), Graph\_\-free\_\-graph(), and Graph\_\-free\_\-graph\_\-arc().\index{i_graph.h@{i\_\-graph.h}!GraphEquivCDPool@{GraphEquivCDPool}}
+\index{GraphEquivCDPool@{GraphEquivCDPool}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Graph\-Equiv\-CDPool}}\label{i__graph_8h_d4f2e18fd5ae06bb31f7a0afde51f904}
+
+
+
+
+Definition at line 70 of file i\_\-graph.c.
+
+Referenced by Graph\_\-free\_\-graph(), Graph\_\-free\_\-graph\_\-equiv\_\-cd(), and Graph\_\-new\_\-graph\_\-equiv\_\-cd().\index{i_graph.h@{i\_\-graph.h}!GraphNodePool@{GraphNodePool}}
+\index{GraphNodePool@{GraphNodePool}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Graph\-Node\-Pool}}\label{i__graph_8h_558eb3b24249c2d9a5abb043b3955ee4}
+
+
+
+
+Definition at line 68 of file i\_\-graph.c.
+
+Referenced by Graph\_\-create\_\-graph\_\-node\_\-given\_\-id(), Graph\_\-free\_\-graph(), and Graph\_\-free\_\-graph\_\-node().\index{i_graph.h@{i\_\-graph.h}!GraphPool@{GraphPool}}
+\index{GraphPool@{GraphPool}!i_graph.h@{i\_\-graph.h}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Graph\-Pool}}\label{i__graph_8h_76c884200585b70dd51bbbe5016d1722}
+
+
+
+
+Definition at line 67 of file i\_\-graph.c.
+
+Referenced by Graph\_\-create\_\-graph(), and Graph\_\-free\_\-graph().

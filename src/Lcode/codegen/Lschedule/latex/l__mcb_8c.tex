@@ -1,0 +1,481 @@
+\section{l\_\-mcb.c File Reference}
+\label{l__mcb_8c}\index{l_mcb.c@{l\_\-mcb.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include \char`\"{}l\_\-mcb.h\char`\"{}}\par
+\subsection*{Defines}
+\begin{CompactItemize}
+\item 
+\#define \bf{L\_\-MAX\_\-COPY\_\-OPER}~1000
+\item 
+\#define \bf{L\_\-MAX\_\-CB\_\-LOADS}~1000
+\item 
+\#define \bf{L\_\-MAX\_\-CB\_\-STORES}~1000
+\item 
+\#define \bf{MIN\_\-MCB\_\-SPEEDUP}~0.00
+\item 
+\#define \bf{MAX\_\-STORES\_\-BYPASSED}~9
+\item 
+\#define \bf{MCB\_\-MIN\_\-CB\_\-WEIGHT}~1000.0
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+L\_\-Oper $\ast$ \bf{L\_\-find\_\-next\_\-branch} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper)
+\item 
+static L\_\-Oper $\ast$ \bf{L\_\-get\_\-regs\_\-load\_\-def} (L\_\-Oper $\ast$oper, L\_\-Operand $\ast$reg)
+\item 
+static int \bf{L\_\-are\_\-same\_\-pointer\_\-regs} (L\_\-Oper $\ast$op1, L\_\-Operand $\ast$reg1, L\_\-Oper $\ast$op2, L\_\-Operand $\ast$reg2)
+\item 
+static int \bf{L\_\-check\_\-equivalent\_\-regs} (L\_\-Oper $\ast$op1, L\_\-Operand $\ast$reg1, L\_\-Oper $\ast$op2, L\_\-Operand $\ast$reg2)
+\item 
+static void \bf{L\_\-check\_\-flow\_\-op} (int dest\_\-reg, L\_\-Oper $\ast$begin\_\-op, L\_\-Oper $\ast$end\_\-op)
+\item 
+static int \bf{L\_\-get\_\-reg\_\-num} (L\_\-Operand $\ast$operand)
+\item 
+static void \bf{L\_\-rename\_\-src\_\-reg} (L\_\-Cb $\ast$cb, int operand\_\-num, L\_\-Oper $\ast$oper, L\_\-Oper $\ast$end\_\-op)
+\item 
+static void \bf{L\_\-change\_\-ext\_\-operand} (L\_\-Oper $\ast$oper, int operand\_\-num, L\_\-Operand $\ast$new\_\-operand)
+\item 
+static void \bf{L\_\-mcb\_\-add\_\-store\_\-to\_\-load\_\-list} (L\_\-Oper $\ast$store, L\_\-Oper $\ast$load)
+\item 
+static void \bf{L\_\-add\_\-check\_\-ptr\_\-to\_\-oper} (L\_\-Oper $\ast$check, L\_\-Oper $\ast$load)
+\item 
+static int \bf{L\_\-is\_\-mem\_\-or\_\-flow\_\-dep} (\bf{L\_\-Dep} $\ast$depend)
+\item 
+static L\_\-Oper $\ast$ \bf{L\_\-mcb\_\-insert\_\-check} (L\_\-Oper $\ast$oper)
+\item 
+static void \bf{L\_\-add\_\-check\_\-to\_\-check\_\-dep} (L\_\-Oper $\ast$prev\_\-check, L\_\-Oper $\ast$check)
+\item 
+static int \bf{L\_\-is\_\-corr\_\-cb} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{L\_\-insert\_\-correction\_\-code} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{L\_\-insert\_\-fall\_\-thru\_\-code} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{L\_\-free\_\-sched\_\-info} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{L\_\-mcb\_\-delete\_\-check} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$check, int \bf{current\_\-time})
+\item 
+void \bf{L\_\-change\_\-beq\_\-mcb} (L\_\-Cb $\ast$cb)
+\item 
+int \bf{L\_\-dependent\_\-memory\_\-ops} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$op1, L\_\-Oper $\ast$op2)
+\item 
+L\_\-Cb $\ast$ \bf{L\_\-copy\_\-all\_\-oper\_\-in\_\-cb} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb)
+\item 
+void \bf{L\_\-remove\_\-sched\_\-cb} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb)
+\item 
+void \bf{L\_\-mcb\_\-init} ()
+\item 
+static void \bf{L\_\-free\_\-oper\_\-list\_\-cb} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences} (L\_\-Cb $\ast$cb)
+\item 
+static void \bf{L\_\-mcb\_\-convert\_\-sched\_\-info} (L\_\-Oper $\ast$new\_\-oper, L\_\-Oper $\ast$old\_\-oper)
+\item 
+static void \bf{L\_\-mcb\_\-convert\_\-to\_\-parent} (L\_\-Cb $\ast$cb)
+\item 
+void \bf{Lsched\_\-mcb\_\-schedule\_\-block} (L\_\-Func $\ast$fn, L\_\-Cb $\ast$cb, L\_\-Cb $\ast$nomcb\_\-cb)
+\item 
+void \bf{L\_\-mcb\_\-remove\_\-check} (L\_\-Cb $\ast$cb, L\_\-Oper $\ast$oper, int ready\_\-time)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+\bf{L\_\-Alloc\_\-Pool} $\ast$ \bf{Lmcb\_\-list\_\-pool} = \bf{NULL}
+\item 
+int \bf{Lsched\_\-num\_\-opers}
+\item 
+int \bf{Lmcb\_\-keep\_\-checks}
+\end{CompactItemize}
+
+
+\subsection{Define Documentation}
+\index{l_mcb.c@{l\_\-mcb.c}!L_MAX_CB_LOADS@{L\_\-MAX\_\-CB\_\-LOADS}}
+\index{L_MAX_CB_LOADS@{L\_\-MAX\_\-CB\_\-LOADS}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-MAX\_\-CB\_\-LOADS~1000}\label{l__mcb_8c_43574b2d835a9e874738e64e23e4a348}
+
+
+
+
+Definition at line 72 of file l\_\-mcb.c.\index{l_mcb.c@{l\_\-mcb.c}!L_MAX_CB_STORES@{L\_\-MAX\_\-CB\_\-STORES}}
+\index{L_MAX_CB_STORES@{L\_\-MAX\_\-CB\_\-STORES}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-MAX\_\-CB\_\-STORES~1000}\label{l__mcb_8c_d3eeddc721ff56909542221baf589402}
+
+
+
+
+Definition at line 73 of file l\_\-mcb.c.\index{l_mcb.c@{l\_\-mcb.c}!L_MAX_COPY_OPER@{L\_\-MAX\_\-COPY\_\-OPER}}
+\index{L_MAX_COPY_OPER@{L\_\-MAX\_\-COPY\_\-OPER}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define L\_\-MAX\_\-COPY\_\-OPER~1000}\label{l__mcb_8c_f0a77018e61cc8d0607e3b5fef379a5a}
+
+
+
+
+Definition at line 71 of file l\_\-mcb.c.\index{l_mcb.c@{l\_\-mcb.c}!MAX_STORES_BYPASSED@{MAX\_\-STORES\_\-BYPASSED}}
+\index{MAX_STORES_BYPASSED@{MAX\_\-STORES\_\-BYPASSED}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MAX\_\-STORES\_\-BYPASSED~9}\label{l__mcb_8c_5262663f922a4f37193962ebd54db357}
+
+
+
+
+Definition at line 75 of file l\_\-mcb.c.
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!MCB_MIN_CB_WEIGHT@{MCB\_\-MIN\_\-CB\_\-WEIGHT}}
+\index{MCB_MIN_CB_WEIGHT@{MCB\_\-MIN\_\-CB\_\-WEIGHT}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MCB\_\-MIN\_\-CB\_\-WEIGHT~1000.0}\label{l__mcb_8c_d51acee83fd019040304d18c7ffd63fa}
+
+
+
+
+Definition at line 1337 of file l\_\-mcb.c.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!MIN_MCB_SPEEDUP@{MIN\_\-MCB\_\-SPEEDUP}}
+\index{MIN_MCB_SPEEDUP@{MIN\_\-MCB\_\-SPEEDUP}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\#define MIN\_\-MCB\_\-SPEEDUP~0.00}\label{l__mcb_8c_2afef09fe0afc9994a8e4736a9413a56}
+
+
+
+
+Definition at line 74 of file l\_\-mcb.c.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().
+
+\subsection{Function Documentation}
+\index{l_mcb.c@{l\_\-mcb.c}!L_add_check_ptr_to_oper@{L\_\-add\_\-check\_\-ptr\_\-to\_\-oper}}
+\index{L_add_check_ptr_to_oper@{L\_\-add\_\-check\_\-ptr\_\-to\_\-oper}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-add\_\-check\_\-ptr\_\-to\_\-oper (L\_\-Oper $\ast$ {\em check}, L\_\-Oper $\ast$ {\em load})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_45fa3b90dfc4e7f439ac3da0d95588d1}
+
+
+
+
+Definition at line 488 of file l\_\-mcb.c.
+
+References SCHED\_\-INFO.
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!L_add_check_to_check_dep@{L\_\-add\_\-check\_\-to\_\-check\_\-dep}}
+\index{L_add_check_to_check_dep@{L\_\-add\_\-check\_\-to\_\-check\_\-dep}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-add\_\-check\_\-to\_\-check\_\-dep (L\_\-Oper $\ast$ {\em prev\_\-check}, L\_\-Oper $\ast$ {\em check})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_0737f2797f1808792164e73445bcd227}
+
+
+
+
+Definition at line 609 of file l\_\-mcb.c.
+
+References DEP\_\-CNT\_\-OPERAND, L\_\-add\_\-dep(), L\_\-DEP\_\-CNT, NULL, and SCHED\_\-INFO.
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!L_are_same_pointer_regs@{L\_\-are\_\-same\_\-pointer\_\-regs}}
+\index{L_are_same_pointer_regs@{L\_\-are\_\-same\_\-pointer\_\-regs}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-are\_\-same\_\-pointer\_\-regs (L\_\-Oper $\ast$ {\em op1}, L\_\-Operand $\ast$ {\em reg1}, L\_\-Oper $\ast$ {\em op2}, L\_\-Operand $\ast$ {\em reg2})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_ac402c12aca7290c76d4eec6758f5480}
+
+
+
+
+Definition at line 192 of file l\_\-mcb.c.
+
+References L\_\-get\_\-regs\_\-load\_\-def(), and NULL.
+
+Referenced by L\_\-check\_\-equivalent\_\-regs().\index{l_mcb.c@{l\_\-mcb.c}!L_change_beq_mcb@{L\_\-change\_\-beq\_\-mcb}}
+\index{L_change_beq_mcb@{L\_\-change\_\-beq\_\-mcb}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-change\_\-beq\_\-mcb (L\_\-Cb $\ast$ {\em cb})}\label{l__mcb_8c_a9aa874499a28b5d29c17cdd1084e064}
+
+
+
+
+Definition at line 131 of file l\_\-mcb.c.
+
+References NULL, and Dep\_\-Info::oper.\index{l_mcb.c@{l\_\-mcb.c}!L_change_ext_operand@{L\_\-change\_\-ext\_\-operand}}
+\index{L_change_ext_operand@{L\_\-change\_\-ext\_\-operand}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-change\_\-ext\_\-operand (L\_\-Oper $\ast$ {\em oper}, int {\em operand\_\-num}, L\_\-Operand $\ast$ {\em new\_\-operand})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_b1d13da98f43d492e0a01955f1906d58}
+
+
+
+
+Definition at line 1257 of file l\_\-mcb.c.
+
+References NULL.
+
+Referenced by L\_\-rename\_\-src\_\-reg().\index{l_mcb.c@{l\_\-mcb.c}!L_check_equivalent_regs@{L\_\-check\_\-equivalent\_\-regs}}
+\index{L_check_equivalent_regs@{L\_\-check\_\-equivalent\_\-regs}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-check\_\-equivalent\_\-regs (L\_\-Oper $\ast$ {\em op1}, L\_\-Operand $\ast$ {\em reg1}, L\_\-Oper $\ast$ {\em op2}, L\_\-Operand $\ast$ {\em reg2})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_7298a80fd887066c0a903aca94cd52d9}
+
+
+
+
+Definition at line 225 of file l\_\-mcb.c.
+
+References L\_\-are\_\-same\_\-pointer\_\-regs().
+
+Referenced by L\_\-dependent\_\-memory\_\-ops().\index{l_mcb.c@{l\_\-mcb.c}!L_check_flow_op@{L\_\-check\_\-flow\_\-op}}
+\index{L_check_flow_op@{L\_\-check\_\-flow\_\-op}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-check\_\-flow\_\-op (int {\em dest\_\-reg}, L\_\-Oper $\ast$ {\em begin\_\-op}, L\_\-Oper $\ast$ {\em end\_\-op})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_4320cbf6282b78d2ac158ce94fd10227}
+
+
+
+
+Definition at line 1103 of file l\_\-mcb.c.
+
+References L\_\-get\_\-reg\_\-num(), and NULL.
+
+Referenced by L\_\-insert\_\-correction\_\-code().\index{l_mcb.c@{l\_\-mcb.c}!L_copy_all_oper_in_cb@{L\_\-copy\_\-all\_\-oper\_\-in\_\-cb}}
+\index{L_copy_all_oper_in_cb@{L\_\-copy\_\-all\_\-oper\_\-in\_\-cb}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Cb$\ast$ L\_\-copy\_\-all\_\-oper\_\-in\_\-cb (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb})}\label{l__mcb_8c_d7ea649eb15d34bb940fea7fc01f55cf}
+
+
+
+
+Definition at line 364 of file l\_\-mcb.c.
+
+References NULL, and Dep\_\-Info::oper.\index{l_mcb.c@{l\_\-mcb.c}!L_dependent_memory_ops@{L\_\-dependent\_\-memory\_\-ops}}
+\index{L_dependent_memory_ops@{L\_\-dependent\_\-memory\_\-ops}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int L\_\-dependent\_\-memory\_\-ops (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em op1}, L\_\-Oper $\ast$ {\em op2})}\label{l__mcb_8c_87c9795d2b98de45ce888950080a3f9f}
+
+
+
+
+Definition at line 235 of file l\_\-mcb.c.
+
+References L\_\-check\_\-equivalent\_\-regs(), and M\_\-is\_\-stack\_\-operand().
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!L_find_next_branch@{L\_\-find\_\-next\_\-branch}}
+\index{L_find_next_branch@{L\_\-find\_\-next\_\-branch}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}L\_\-Oper$\ast$ L\_\-find\_\-next\_\-branch (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper})}\label{l__mcb_8c_6d691d5261d79228e4e680680a58f405}
+
+
+
+
+Definition at line 1374 of file l\_\-schedule.c.
+
+References Lsched\_\-is\_\-branch(), and NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), and Lsched\_\-postpass\_\-code\_\-scheduling().\index{l_mcb.c@{l\_\-mcb.c}!L_free_oper_list_cb@{L\_\-free\_\-oper\_\-list\_\-cb}}
+\index{L_free_oper_list_cb@{L\_\-free\_\-oper\_\-list\_\-cb}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-free\_\-oper\_\-list\_\-cb (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_0e603faf6b2763b633839759cf999737}
+
+
+
+
+Definition at line 455 of file l\_\-mcb.c.
+
+References NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_free_sched_info@{L\_\-free\_\-sched\_\-info}}
+\index{L_free_sched_info@{L\_\-free\_\-sched\_\-info}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-free\_\-sched\_\-info (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_28e578244421a4ccae1bb527ae6aa4d1}
+
+
+
+
+Definition at line 1278 of file l\_\-mcb.c.
+
+References Sched\_\-Info::branch\_\-kill\_\-set, Sched\_\-Info::check\_\-op, Sched\_\-Info::delay\_\-sinfo, Sched\_\-Info::dep\_\-info, Sched\_\-Info::entry\_\-list, Sched\_\-Info::extend\_\-lr\_\-down, L\_\-delete\_\-ru\_\-info\_\-oper(), L\_\-free(), Sched\_\-Info::mdes\_\-info, NULL, Sched\_\-Info::oper, Operand\_\-ready\_\-pool, Sched\_\-Info::post\_\-br, Sched\_\-Info::prev\_\-br, Sched\_\-Info::ru\_\-info, SCHED\_\-INFO, Sched\_\-Info\_\-pool, and Sched\_\-Info::store\_\-list.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_get_reg_num@{L\_\-get\_\-reg\_\-num}}
+\index{L_get_reg_num@{L\_\-get\_\-reg\_\-num}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-get\_\-reg\_\-num (L\_\-Operand $\ast$ {\em operand})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_f533fffdb1bb0ae17afefa3264600bb9}
+
+
+
+
+Definition at line 1158 of file l\_\-mcb.c.
+
+Referenced by L\_\-check\_\-flow\_\-op(), L\_\-insert\_\-correction\_\-code(), and L\_\-rename\_\-src\_\-reg().\index{l_mcb.c@{l\_\-mcb.c}!L_get_regs_load_def@{L\_\-get\_\-regs\_\-load\_\-def}}
+\index{L_get_regs_load_def@{L\_\-get\_\-regs\_\-load\_\-def}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper $\ast$ L\_\-get\_\-regs\_\-load\_\-def (L\_\-Oper $\ast$ {\em oper}, L\_\-Operand $\ast$ {\em reg})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_e5566e98d51ae8efeae62c1587353c0d}
+
+
+
+
+Definition at line 173 of file l\_\-mcb.c.
+
+References NULL.
+
+Referenced by L\_\-are\_\-same\_\-pointer\_\-regs().\index{l_mcb.c@{l\_\-mcb.c}!L_insert_correction_code@{L\_\-insert\_\-correction\_\-code}}
+\index{L_insert_correction_code@{L\_\-insert\_\-correction\_\-code}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-insert\_\-correction\_\-code (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_9f582a6c0544dd2f38ec762ac7130a99}
+
+
+
+
+Definition at line 808 of file l\_\-mcb.c.
+
+References L\_\-check\_\-flow\_\-op(), L\_\-get\_\-reg\_\-num(), L\_\-is\_\-corr\_\-cb(), L\_\-mcb\_\-convert\_\-sched\_\-info(), L\_\-rename\_\-src\_\-reg(), NULL, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_insert_fall_thru_code@{L\_\-insert\_\-fall\_\-thru\_\-code}}
+\index{L_insert_fall_thru_code@{L\_\-insert\_\-fall\_\-thru\_\-code}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-insert\_\-fall\_\-thru\_\-code (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_9343a80881ff36a7d4172fc3781befb3}
+
+
+
+
+Definition at line 994 of file l\_\-mcb.c.
+
+References NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_is_corr_cb@{L\_\-is\_\-corr\_\-cb}}
+\index{L_is_corr_cb@{L\_\-is\_\-corr\_\-cb}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-is\_\-corr\_\-cb (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_f0220a0f5980572aa3150ec3bb07617d}
+
+
+
+
+Definition at line 798 of file l\_\-mcb.c.
+
+References NULL.
+
+Referenced by L\_\-insert\_\-correction\_\-code().\index{l_mcb.c@{l\_\-mcb.c}!L_is_mem_or_flow_dep@{L\_\-is\_\-mem\_\-or\_\-flow\_\-dep}}
+\index{L_is_mem_or_flow_dep@{L\_\-is\_\-mem\_\-or\_\-flow\_\-dep}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static int L\_\-is\_\-mem\_\-or\_\-flow\_\-dep (\bf{L\_\-Dep} $\ast$ {\em depend})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_0f8879fc8c3ff1ca855016ae4251a8d4}
+
+
+
+
+Definition at line 495 of file l\_\-mcb.c.
+
+References L\_\-DEP\_\-CNT, L\_\-DEP\_\-MEM\_\-ANTI, L\_\-DEP\_\-MEM\_\-FLOW, L\_\-DEP\_\-MEM\_\-OUTPUT, and L\_\-Dep::type.
+
+Referenced by L\_\-mcb\_\-insert\_\-check().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_add_store_to_load_list@{L\_\-mcb\_\-add\_\-store\_\-to\_\-load\_\-list}}
+\index{L_mcb_add_store_to_load_list@{L\_\-mcb\_\-add\_\-store\_\-to\_\-load\_\-list}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-mcb\_\-add\_\-store\_\-to\_\-load\_\-list (L\_\-Oper $\ast$ {\em store}, L\_\-Oper $\ast$ {\em load})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_1ca14cb238c2d86325a87cdf70d088ec}
+
+
+
+
+Definition at line 474 of file l\_\-mcb.c.
+
+References L\_\-new\_\-oper\_\-list(), and SCHED\_\-INFO.
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_convert_sched_info@{L\_\-mcb\_\-convert\_\-sched\_\-info}}
+\index{L_mcb_convert_sched_info@{L\_\-mcb\_\-convert\_\-sched\_\-info}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-mcb\_\-convert\_\-sched\_\-info (L\_\-Oper $\ast$ {\em new\_\-oper}, L\_\-Oper $\ast$ {\em old\_\-oper})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_075622f23f1acb22f6a1c3db0a589a8b}
+
+
+
+
+Definition at line 782 of file l\_\-mcb.c.
+
+References Sched\_\-Info::dep\_\-info, Sched\_\-Info::id, Sched\_\-Info::mdes\_\-info, Sched\_\-Info::oper, and Sched\_\-Info::proc\_\-opc.
+
+Referenced by L\_\-insert\_\-correction\_\-code().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_convert_to_parent@{L\_\-mcb\_\-convert\_\-to\_\-parent}}
+\index{L_mcb_convert_to_parent@{L\_\-mcb\_\-convert\_\-to\_\-parent}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-mcb\_\-convert\_\-to\_\-parent (L\_\-Cb $\ast$ {\em cb})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_0f7dc4af57eefd0c374df42f684ca73b}
+
+
+
+
+Definition at line 1319 of file l\_\-mcb.c.
+
+References NULL.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_delete_check@{L\_\-mcb\_\-delete\_\-check}}
+\index{L_mcb_delete_check@{L\_\-mcb\_\-delete\_\-check}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-mcb\_\-delete\_\-check (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em check}, int {\em current\_\-time})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_707fbd6c45fa76a337bac75eda82282e}
+
+
+
+
+Definition at line 1482 of file l\_\-mcb.c.
+
+References DEP\_\-INFO, L\_\-Dep::distance, L\_\-Dep::from\_\-index, L\_\-Dep::from\_\-oper, Dep\_\-Info::input\_\-dep, Sched\_\-Info::issue\_\-slot, L\_\-delete\_\-dependence\_\-info(), L\_\-delete\_\-sched\_\-info(), L\_\-dequeue\_\-from\_\-all(), L\_\-in\_\-queue(), L\_\-remove\_\-dep(), Lsched\_\-debug\_\-messages, Lsched\_\-make\_\-ready(), Dep\_\-Info::n\_\-input\_\-dep, Dep\_\-Info::n\_\-output\_\-dep, NULL, Sched\_\-Info::num\_\-depend, Dep\_\-Info::output\_\-dep, SCHED\_\-INFO, scheduled\_\-queue, L\_\-Dep::to\_\-index, L\_\-Dep::to\_\-oper, and L\_\-Dep::type.
+
+Referenced by L\_\-mcb\_\-remove\_\-check().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_init@{L\_\-mcb\_\-init}}
+\index{L_mcb_init@{L\_\-mcb\_\-init}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-mcb\_\-init ()}\label{l__mcb_8c_072c41f7e97e34203efbc40f1714b2a7}
+
+
+
+
+Definition at line 414 of file l\_\-mcb.c.
+
+References L\_\-create\_\-alloc\_\-pool(), and Lmcb\_\-list\_\-pool.
+
+Referenced by Lsched\_\-init().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_insert_check@{L\_\-mcb\_\-insert\_\-check}}
+\index{L_mcb_insert_check@{L\_\-mcb\_\-insert\_\-check}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static L\_\-Oper $\ast$ L\_\-mcb\_\-insert\_\-check (L\_\-Oper $\ast$ {\em oper})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_f411e7eb7027b50b7b7b6a3400d6b69f}
+
+
+
+
+Definition at line 512 of file l\_\-mcb.c.
+
+References DEP\_\-CNT\_\-OPERAND, DEP\_\-INFO, input, Dep\_\-Info::input\_\-dep, L\_\-add\_\-dep(), L\_\-create\_\-sched\_\-info(), L\_\-DEP\_\-CNT, L\_\-DEP\_\-REG\_\-FLOW, L\_\-is\_\-mem\_\-or\_\-flow\_\-dep(), L\_\-new\_\-dep\_\-info(), Dep\_\-Info::n\_\-input\_\-dep, NULL, output, Dep\_\-Info::output\_\-dep, and SCHED\_\-INFO.
+
+Referenced by L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_insert_check_and_rem_dependences@{L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences}}
+\index{L_mcb_insert_check_and_rem_dependences@{L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences (L\_\-Cb $\ast$ {\em cb})}\label{l__mcb_8c_b74980959bae37f721bec075fe9171ba}
+
+
+
+
+Definition at line 629 of file l\_\-mcb.c.
+
+References DEP\_\-INFO, Dep\_\-Info::input\_\-dep, L\_\-add\_\-check\_\-ptr\_\-to\_\-oper(), L\_\-add\_\-check\_\-to\_\-check\_\-dep(), L\_\-DEP\_\-MEM\_\-FLOW, L\_\-dependent\_\-memory\_\-ops(), L\_\-mcb\_\-add\_\-store\_\-to\_\-load\_\-list(), L\_\-mcb\_\-insert\_\-check(), L\_\-remove\_\-dep(), MAX\_\-STORES\_\-BYPASSED, Dep\_\-Info::n\_\-input\_\-dep, Dep\_\-Info::n\_\-output\_\-dep, NULL, Dep\_\-Info::output\_\-dep, and SCHED\_\-INFO.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block().\index{l_mcb.c@{l\_\-mcb.c}!L_mcb_remove_check@{L\_\-mcb\_\-remove\_\-check}}
+\index{L_mcb_remove_check@{L\_\-mcb\_\-remove\_\-check}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-mcb\_\-remove\_\-check (L\_\-Cb $\ast$ {\em cb}, L\_\-Oper $\ast$ {\em oper}, int {\em ready\_\-time})}\label{l__mcb_8c_86fbe77057384630ecf6336d91ed3fc5}
+
+
+
+
+Definition at line 1573 of file l\_\-mcb.c.
+
+References L\_\-in\_\-queue(), L\_\-mcb\_\-delete\_\-check(), Lmcb\_\-keep\_\-checks, NULL, SCHED\_\-INFO, and scheduled\_\-queue.\index{l_mcb.c@{l\_\-mcb.c}!L_remove_sched_cb@{L\_\-remove\_\-sched\_\-cb}}
+\index{L_remove_sched_cb@{L\_\-remove\_\-sched\_\-cb}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void L\_\-remove\_\-sched\_\-cb (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb})}\label{l__mcb_8c_ec6ec3dd6c6b7e836560d4ae0ef698b1}
+
+
+
+
+Definition at line 385 of file l\_\-mcb.c.
+
+References L\_\-delete\_\-ru\_\-info\_\-oper(), L\_\-free(), Lmcb\_\-list\_\-pool, NULL, Dep\_\-Info::oper, Operand\_\-ready\_\-pool, SCHED\_\-INFO, and Sched\_\-Info\_\-pool.\index{l_mcb.c@{l\_\-mcb.c}!L_rename_src_reg@{L\_\-rename\_\-src\_\-reg}}
+\index{L_rename_src_reg@{L\_\-rename\_\-src\_\-reg}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void L\_\-rename\_\-src\_\-reg (L\_\-Cb $\ast$ {\em cb}, int {\em operand\_\-num}, L\_\-Oper $\ast$ {\em oper}, L\_\-Oper $\ast$ {\em end\_\-op})\hspace{0.3cm}{\tt  [static]}}\label{l__mcb_8c_50bea1902b546b8d39ad9ce49e97db0a}
+
+
+
+
+Definition at line 1177 of file l\_\-mcb.c.
+
+References L\_\-change\_\-ext\_\-operand(), L\_\-get\_\-reg\_\-num(), and NULL.
+
+Referenced by L\_\-insert\_\-correction\_\-code().\index{l_mcb.c@{l\_\-mcb.c}!Lsched_mcb_schedule_block@{Lsched\_\-mcb\_\-schedule\_\-block}}
+\index{Lsched_mcb_schedule_block@{Lsched\_\-mcb\_\-schedule\_\-block}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Lsched\_\-mcb\_\-schedule\_\-block (L\_\-Func $\ast$ {\em fn}, L\_\-Cb $\ast$ {\em cb}, L\_\-Cb $\ast$ {\em nomcb\_\-cb})}\label{l__mcb_8c_87c4a42bf87228adc317fe08e2aa57d1}
+
+
+
+
+Definition at line 1340 of file l\_\-mcb.c.
+
+References IS\_\-IGNORE, IS\_\-UCOND\_\-BRANCH, L\_\-approx\_\-cb\_\-time(), L\_\-build\_\-dependence\_\-graph(), L\_\-create\_\-sched\_\-info(), L\_\-delete\_\-dependence\_\-graph(), L\_\-find\_\-next\_\-branch(), L\_\-free(), L\_\-free\_\-oper\_\-list\_\-cb(), L\_\-free\_\-sched\_\-info(), L\_\-insert\_\-correction\_\-code(), L\_\-insert\_\-fall\_\-thru\_\-code(), L\_\-mcb\_\-convert\_\-to\_\-parent(), L\_\-mcb\_\-insert\_\-check\_\-and\_\-rem\_\-dependences(), LDEP\_\-MODE\_\-ACYCLIC, LDEP\_\-PREPASS, Lsched\_\-debug\_\-messages, Lsched\_\-is\_\-branch(), Lsched\_\-latest\_\-br, Lsched\_\-num\_\-opers, Lsched\_\-schedule\_\-block(), MCB\_\-MIN\_\-CB\_\-WEIGHT, MIN\_\-MCB\_\-SPEEDUP, NULL, and SCHED\_\-INFO.
+
+\subsection{Variable Documentation}
+\index{l_mcb.c@{l\_\-mcb.c}!Lmcb_keep_checks@{Lmcb\_\-keep\_\-checks}}
+\index{Lmcb_keep_checks@{Lmcb\_\-keep\_\-checks}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lmcb\_\-keep\_\-checks}}\label{l__mcb_8c_7fa8b9ab156b1588456d5055d2d2633f}
+
+
+
+
+Definition at line 124 of file l\_\-schedule.c.
+
+Referenced by L\_\-mcb\_\-remove\_\-check().\index{l_mcb.c@{l\_\-mcb.c}!Lmcb_list_pool@{Lmcb\_\-list\_\-pool}}
+\index{Lmcb_list_pool@{Lmcb\_\-list\_\-pool}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{L\_\-Alloc\_\-Pool}$\ast$ \bf{Lmcb\_\-list\_\-pool} = \bf{NULL}}\label{l__mcb_8c_f14f50cac6624f247009281f9fa796ab}
+
+
+
+
+Definition at line 81 of file l\_\-mcb.c.
+
+Referenced by L\_\-mcb\_\-init(), and L\_\-remove\_\-sched\_\-cb().\index{l_mcb.c@{l\_\-mcb.c}!Lsched_num_opers@{Lsched\_\-num\_\-opers}}
+\index{Lsched_num_opers@{Lsched\_\-num\_\-opers}!l_mcb.c@{l\_\-mcb.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int \bf{Lsched\_\-num\_\-opers}}\label{l__mcb_8c_81a1b68006a09b691fdbe6e8d1fb354d}
+
+
+
+
+Definition at line 101 of file l\_\-schedule.c.
+
+Referenced by Lsched\_\-mcb\_\-schedule\_\-block(), Lsched\_\-postpass\_\-code\_\-scheduling(), and Lsched\_\-schedule\_\-block().

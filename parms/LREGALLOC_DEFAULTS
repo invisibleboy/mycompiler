@@ -1,0 +1,180 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+#
+# Lregalloc default parameters.
+#
+# Created by Rick Hank, 11-11-93
+#
+# Revisions:
+#	05-02-96 Cleanup and major comments added...
+#
+
+# This parameter section was named 'Regalloc' until 5/26/98 -JCG
+(Lregalloc 
+    #
+    #  By default, the register allocator spills and fills all registers
+    #  arounds jsrs.  This can cause bloat in jsr-heavy code, such as C++.
+    #  If minimize_spill_fill is set, the register allocator will only fill
+    #  and spill those registers that are actually needed between jsrs.
+    #  All registers will be spilled before the first jsr and filled after
+    #  the last.  They will only be restored between jsrs if necessary.
+    #
+    #  (REK 11/29/04)
+    #
+    minimize_spill_fill=yes;
+
+    #
+    #  By default the register allocator attempts to assign
+    #  all virtual registers to a physical register, setting
+    #  this parameter to "yes" will cause all virtual registers
+    #  to be spilled to the stack.
+    #
+    spill_everything=no;
+
+    #
+    #  Setting this parameter to "yes" allows the register allocator
+    #  to make use of parameter passing and other registers with
+    #  a special function, when they are not being used for that
+    #  purpose.
+    #
+    macro_allocation=no;
+
+    # 
+    #  When the register allocator is being provided a region rather
+    #  a function, this parameter must be set to "yes".
+    #
+    region_based_allocation=no;
+
+    #
+    #  Causes the register allocator to iterate over the interference
+    #  graph prior to coloring and remove any virtual register that
+    #  has fewer interferences than the number of available registers.
+    #  This implies that the register is guaranteed to be colorable.
+    prune_interference_graph=no;
+
+    #
+    #  The register allocator will use profile information if
+    #  available within the function/region being allocated.  If
+    #  set to "no", static estimates based upon loop nesting level
+    #  are used.
+    utilize_profile_info = yes;
+
+    #
+    #  As the name implies, turning this on will prevent the
+    #  register allocator from spilling the target register of
+    #  of MCB preload operations.
+    prevent_MCB_preload_spills = off; # JCG 3/1/94
+
+    #
+    #  The global register allocation can vary wildly with minor
+    #  changes in the instruction ordering.  By setting this to
+    #  "yes", the register allocator will attempt to generate
+    #  an allocation that will not vary as operations within 
+    #  a cb are reordered.  This will help detect scheduling bugs.
+    schedule_invariant_allocation=no;
+
+    #
+    # Register allocation debugging parameters
+    #
+       # Emit parameter settings
+       print_parm_configuration=no;
+
+       # Causes the register allocator to emit the register banks
+       # that are available to it.
+       print_bank_configuration=no;	
+
+       # Causes the register allocator to emit the set of operations
+       # contained in the live range of each virtual register.  
+       # Remember, these will be "Mcode" id numbers and may not
+       # correspond to the "Lcode" id numbers.
+       print_live_ranges=no;
+
+       # Causes the register allocator to emit the interference
+       # graph.
+       print_interference_graph=no;
+
+       # The register allocator iterates numerous times over the
+       # interference graph.  This will cause the allocator to
+       # emit the virtual registers not allocated during each pass.
+       # If register allocation appears to be in an infinite loop
+       # turn this on a see what's happening.
+       print_coloring_stats=no;
+
+       # Causes the register allocator to emit the decisions made
+       # with regard to caller/callee-saved register selection.
+       print_class_selection=no;
+
+       # During allocation, macro registers are assigned virtual
+       # register numbers.  This causes the register allocator to
+       # emit that mapping.  This mapping may be helpful in
+       # interpreting the results of print_allocation_stats
+       print_macroregisters=no;
+
+       # Prints a table of the allocation results.
+       print_allocation=no;
+    
+       # Prints the total weight of the function and the
+       # weight of all spill code required.
+       print_allocation_stats=no;
+    
+       # In order to obtain a correct allocation, the register 
+       # allocator must remove some dead operations.  If you
+       # have operations disappearing mysteriously turn this
+       # on and the register allocator will tell you which 
+       # operations are removed by the register allocator.
+       print_dead_code_results=no;
+       # Turn off register allocator dead code elimination
+       allow_dead_code_elimination=yes;
+    
+       # In order to view a function with virtual register usage,
+       # print the function to filename "Virtual_func"
+       print_virtual_register_function=no;
+
+       same_cycle_anti_dep_interference=yes;
+
+end)

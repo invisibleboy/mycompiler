@@ -1,0 +1,503 @@
+\section{cudd\-Apa.c File Reference}
+\label{cuddApa_8c}\index{cuddApa.c@{cuddApa.c}}
+{\tt \#include $<$config.h$>$}\par
+{\tt \#include $<$bdd/util.h$>$}\par
+{\tt \#include $<$bdd/st.h$>$}\par
+{\tt \#include $<$bdd/cudd\-Int.h$>$}\par
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+static \bf{Dd\-Apa\-Number} cudd\-Apa\-Count\-Minterm\-Aux \bf{ARGS} ((\bf{Dd\-Node} $\ast$node, int digits, \bf{Dd\-Apa\-Number} \bf{max}, \bf{Dd\-Apa\-Number} min, \bf{st\_\-table} $\ast$table))
+\item 
+static enum \bf{st\_\-retval} cudd\-Apa\-St\-Countfree \bf{ARGS} ((char $\ast$key, char $\ast$value, char $\ast$arg))
+\item 
+int \bf{Cudd\_\-Apa\-Number\-Of\-Digits} (int binary\-Digits)
+\item 
+\bf{Dd\-Apa\-Number} \bf{Cudd\_\-New\-Apa\-Number} (int digits)
+\item 
+void \bf{Cudd\_\-Apa\-Copy} (int digits, \bf{Dd\-Apa\-Number} source, \bf{Dd\-Apa\-Number} dest)
+\item 
+\bf{Dd\-Apa\-Digit} \bf{Cudd\_\-Apa\-Add} (int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} sum)
+\item 
+\bf{Dd\-Apa\-Digit} \bf{Cudd\_\-Apa\-Subtract} (int digits, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b, \bf{Dd\-Apa\-Number} diff)
+\item 
+\bf{Dd\-Apa\-Digit} \bf{Cudd\_\-Apa\-Short\-Division} (int digits, \bf{Dd\-Apa\-Number} dividend, \bf{Dd\-Apa\-Digit} divisor, \bf{Dd\-Apa\-Number} quotient)
+\item 
+unsigned int \bf{Cudd\_\-Apa\-Int\-Division} (int digits, \bf{Dd\-Apa\-Number} dividend, unsigned int divisor, \bf{Dd\-Apa\-Number} quotient)
+\item 
+void \bf{Cudd\_\-Apa\-Shift\-Right} (int digits, \bf{Dd\-Apa\-Digit} in, \bf{Dd\-Apa\-Number} a, \bf{Dd\-Apa\-Number} b)
+\item 
+void \bf{Cudd\_\-Apa\-Set\-To\-Literal} (int digits, \bf{Dd\-Apa\-Number} number, \bf{Dd\-Apa\-Digit} literal)
+\item 
+void \bf{Cudd\_\-Apa\-Power\-Of\-Two} (int digits, \bf{Dd\-Apa\-Number} number, int power)
+\item 
+int \bf{Cudd\_\-Apa\-Compare} (int digits\-First, \bf{Dd\-Apa\-Number} first, int digits\-Second, \bf{Dd\-Apa\-Number} second)
+\item 
+int \bf{Cudd\_\-Apa\-Compare\-Ratios} (int digits\-First, \bf{Dd\-Apa\-Number} first\-Num, unsigned int first\-Den, int digits\-Second, \bf{Dd\-Apa\-Number} second\-Num, unsigned int second\-Den)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Hex} (FILE $\ast$fp, int digits, \bf{Dd\-Apa\-Number} number)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Decimal} (FILE $\ast$fp, int digits, \bf{Dd\-Apa\-Number} number)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Exponential} (FILE $\ast$fp, int digits, \bf{Dd\-Apa\-Number} number, int precision)
+\item 
+\bf{Dd\-Apa\-Number} \bf{Cudd\_\-Apa\-Count\-Minterm} (\bf{Dd\-Manager} $\ast$manager, \bf{Dd\-Node} $\ast$node, int nvars, int $\ast$digits)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Minterm} (FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Minterm\-Exp} (FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars, int precision)
+\item 
+int \bf{Cudd\_\-Apa\-Print\-Density} (FILE $\ast$fp, \bf{Dd\-Manager} $\ast$dd, \bf{Dd\-Node} $\ast$node, int nvars)
+\item 
+static \bf{Dd\-Apa\-Number} \bf{cudd\-Apa\-Count\-Minterm\-Aux} (\bf{Dd\-Node} $\ast$node, int digits, \bf{Dd\-Apa\-Number} \bf{max}, \bf{Dd\-Apa\-Number} min, \bf{st\_\-table} $\ast$table)
+\item 
+static enum \bf{st\_\-retval} \bf{cudd\-Apa\-St\-Countfree} (char $\ast$key, char $\ast$value, char $\ast$arg)
+\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+static char rcsid[$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Apa.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{background}
+\item 
+static \bf{Dd\-Node} $\ast$ \bf{zero}
+\end{CompactItemize}
+
+
+\subsection{Function Documentation}
+\index{cuddApa.c@{cudd\-Apa.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} cudd\-Apa\-St\-Countfree ARGS ((char $\ast$key, char $\ast$value, char $\ast$arg))\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_0c41f0b3d0be66956d58ec3c26cd0ff7}
+
+
+\index{cuddApa.c@{cudd\-Apa.c}!ARGS@{ARGS}}
+\index{ARGS@{ARGS}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Apa\-Number} cudd\-Apa\-Count\-Minterm\-Aux ARGS ((\bf{Dd\-Node} $\ast$node, int digits, \bf{Dd\-Apa\-Number} \bf{max}, \bf{Dd\-Apa\-Number} min, \bf{st\_\-table} $\ast$table))\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_d9185d067b2db4ecb49b678e3cc7fc06}
+
+
+Automatic\-Start \index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaAdd@{Cudd\_\-ApaAdd}}
+\index{Cudd_ApaAdd@{Cudd\_\-ApaAdd}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Add (int {\em digits}, \bf{Dd\-Apa\-Number} {\em a}, \bf{Dd\-Apa\-Number} {\em b}, \bf{Dd\-Apa\-Number} {\em sum})}\label{cuddApa_8c_3f1d608883a2d8868826fa1c5cdf8fd4}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Adds two arbitrary precision integers.]
+
+Description [Adds two arbitrary precision integers. Returns the carry out of the most significant digit.]
+
+Side\-Effects [The result of the sum is stored in parameter {\tt sum}.]
+
+See\-Also [] 
+
+Definition at line 171 of file cudd\-Apa.c.
+
+References DD\_\-LSDIGIT, and DD\_\-MSDIGIT.
+
+Referenced by cudd\-Apa\-Count\-Minterm\-Aux().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaCompare@{Cudd\_\-ApaCompare}}
+\index{Cudd_ApaCompare@{Cudd\_\-ApaCompare}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Compare (int {\em digits\-First}, \bf{Dd\-Apa\-Number} {\em first}, int {\em digits\-Second}, \bf{Dd\-Apa\-Number} {\em second})}\label{cuddApa_8c_0265eabf3dc9d1d902df51d2a210351c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Compares two arbitrary precision integers.]
+
+Description [Compares two arbitrary precision integers. Returns 1 if the first number is larger; 0 if they are equal; -1 if the second number is larger.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 399 of file cudd\-Apa.c.
+
+Referenced by Cudd\_\-Apa\-Compare\-Ratios().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaCompareRatios@{Cudd\_\-ApaCompareRatios}}
+\index{Cudd_ApaCompareRatios@{Cudd\_\-ApaCompareRatios}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Compare\-Ratios (int {\em digits\-First}, \bf{Dd\-Apa\-Number} {\em first\-Num}, unsigned int {\em first\-Den}, int {\em digits\-Second}, \bf{Dd\-Apa\-Number} {\em second\-Num}, unsigned int {\em second\-Den})}\label{cuddApa_8c_a9444798cca40e8862715b69b71b6227}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Compares the ratios of two arbitrary precision integers to two unsigned ints.]
+
+Description [Compares the ratios of two arbitrary precision integers to two unsigned ints. Returns 1 if the first number is larger; 0 if they are equal; -1 if the second number is larger.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 439 of file cudd\-Apa.c.
+
+References Cudd\_\-Apa\-Compare(), Cudd\_\-Apa\-Int\-Division(), Cudd\_\-New\-Apa\-Number(), and result.\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaCopy@{Cudd\_\-ApaCopy}}
+\index{Cudd_ApaCopy@{Cudd\_\-ApaCopy}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Apa\-Copy (int {\em digits}, \bf{Dd\-Apa\-Number} {\em source}, \bf{Dd\-Apa\-Number} {\em dest})}\label{cuddApa_8c_1e8ff12e13e192a28fa331e5b7173338}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Makes a copy of an arbitrary precision integer.]
+
+Description [Makes a copy of an arbitrary precision integer.]
+
+Side\-Effects [Changes parameter {\tt dest}.]
+
+See\-Also [] 
+
+Definition at line 144 of file cudd\-Apa.c.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Apa\-Print\-Decimal(), and Cudd\_\-Apa\-Print\-Exponential().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaCountMinterm@{Cudd\_\-ApaCountMinterm}}
+\index{Cudd_ApaCountMinterm@{Cudd\_\-ApaCountMinterm}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Apa\-Number} Cudd\_\-Apa\-Count\-Minterm (\bf{Dd\-Manager} $\ast$ {\em manager}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars}, int $\ast$ {\em digits})}\label{cuddApa_8c_ad839ff172f4ddfbace284c5d67bc981}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Counts the number of minterms of a DD.]
+
+Description [Counts the number of minterms of a DD. The function is assumed to depend on nvars variables. The minterm count is represented as an arbitrary precision unsigned integer, to allow for any number of variables CUDD supports. Returns a pointer to the array representing the number of minterms of the function rooted at node if successful; NULL otherwise.]
+
+Side\-Effects [The number of digits of the result is returned in parameter {\tt digits}.]
+
+See\-Also [Cudd\_\-Count\-Minterm] 
+
+Definition at line 632 of file cudd\-Apa.c.
+
+References Dd\-Manager::background, background, Cudd\_\-Apa\-Copy(), Cudd\_\-Apa\-Number\-Of\-Digits(), Cudd\_\-Apa\-Power\-Of\-Two(), Cudd\_\-Apa\-Set\-To\-Literal(), Cudd\_\-Apa\-Subtract(), Cudd\_\-Is\-Complement, Cudd\_\-New\-Apa\-Number(), Cudd\_\-Not, Cudd\_\-Regular, cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Apa\-St\-Countfree(), FREE, Dd\-Gen::manager, max, Dd\-Gen::node, Dd\-Manager::one, st\_\-foreach(), st\_\-free\_\-table(), st\_\-init\_\-table(), st\_\-ptrcmp(), st\_\-ptrhash(), and zero.
+
+Referenced by Cudd\_\-Apa\-Print\-Density(), Cudd\_\-Apa\-Print\-Minterm(), and Cudd\_\-Apa\-Print\-Minterm\-Exp().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaIntDivision@{Cudd\_\-ApaIntDivision}}
+\index{Cudd_ApaIntDivision@{Cudd\_\-ApaIntDivision}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}unsigned int Cudd\_\-Apa\-Int\-Division (int {\em digits}, \bf{Dd\-Apa\-Number} {\em dividend}, unsigned int {\em divisor}, \bf{Dd\-Apa\-Number} {\em quotient})}\label{cuddApa_8c_9ec16a5a56ff09d526878179d606ae5c}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Divides an arbitrary precision integer by an integer.]
+
+Description [Divides an arbitrary precision integer by a 32-bit unsigned integer. Returns the remainder of the division. This procedure relies on the assumption that the number of bits of a Dd\-Apa\-Digit plus the number of bits of an unsigned int is less the number of bits of the mantissa of a double. This guarantees that the product of a Dd\-Apa\-Digit and an unsigned int can be represented without loss of precision by a double. On machines where this assumption is not satisfied, this procedure will malfunction.]
+
+Side\-Effects [The quotient is returned in parameter {\tt quotient}.]
+
+See\-Also [Cudd\_\-Apa\-Short\-Division] 
+
+Definition at line 274 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BASE.
+
+Referenced by Cudd\_\-Apa\-Compare\-Ratios(), and Cudd\_\-Apa\-Print\-Density().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaNumberOfDigits@{Cudd\_\-ApaNumberOfDigits}}
+\index{Cudd_ApaNumberOfDigits@{Cudd\_\-ApaNumberOfDigits}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Number\-Of\-Digits (int {\em binary\-Digits})}\label{cuddApa_8c_39cbcb6561b572e19065a374ad420c89}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Finds the number of digits for an arbitrary precision integer.]
+
+Description [Finds the number of digits for an arbitrary precision integer given the maximum number of binary digits. The number of binary digits should be positive. Returns the number of digits if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 97 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BITS.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPowerOfTwo@{Cudd\_\-ApaPowerOfTwo}}
+\index{Cudd_ApaPowerOfTwo@{Cudd\_\-ApaPowerOfTwo}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Apa\-Power\-Of\-Two (int {\em digits}, \bf{Dd\-Apa\-Number} {\em number}, int {\em power})}\label{cuddApa_8c_69e0a5e5523b73c0f2ce2a3e9c45b3c8}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets an arbitrary precision integer to a power of two.]
+
+Description [Sets an arbitrary precision integer to a power of two. If the power of two is too large to be represented, the number is set to 0.]
+
+Side\-Effects [The result is returned in parameter {\tt number}.]
+
+See\-Also [] 
+
+Definition at line 367 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BITS.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintDecimal@{Cudd\_\-ApaPrintDecimal}}
+\index{Cudd_ApaPrintDecimal@{Cudd\_\-ApaPrintDecimal}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Decimal (FILE $\ast$ {\em fp}, int {\em digits}, \bf{Dd\-Apa\-Number} {\em number})}\label{cuddApa_8c_39c4c65ad15d3f95235c74820a29eefe}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints an arbitrary precision integer in decimal format.]
+
+Description [Prints an arbitrary precision integer in decimal format. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Apa\-Print\-Hex Cudd\_\-Apa\-Print\-Exponential] 
+
+Definition at line 510 of file cudd\-Apa.c.
+
+References ALLOC, Cudd\_\-Apa\-Copy(), Cudd\_\-Apa\-Short\-Division(), Cudd\_\-New\-Apa\-Number(), DD\_\-APA\_\-BASE, FREE, and result.
+
+Referenced by Cudd\_\-Apa\-Print\-Density(), and Cudd\_\-Apa\-Print\-Minterm().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintDensity@{Cudd\_\-ApaPrintDensity}}
+\index{Cudd_ApaPrintDensity@{Cudd\_\-ApaPrintDensity}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Density (FILE $\ast$ {\em fp}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars})}\label{cuddApa_8c_fc488ccdcafa9150ee2c76196f891faa}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the density of a BDD or ADD using arbitrary precision arithmetic.]
+
+Description [Prints the density of a BDD or ADD using arbitrary precision arithmetic. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 786 of file cudd\-Apa.c.
+
+References Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Apa\-Int\-Division(), Cudd\_\-Apa\-Print\-Decimal(), Cudd\_\-Dag\-Size(), Cudd\_\-New\-Apa\-Number(), FREE, Dd\-Gen::node, result, and size.\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintExponential@{Cudd\_\-ApaPrintExponential}}
+\index{Cudd_ApaPrintExponential@{Cudd\_\-ApaPrintExponential}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Exponential (FILE $\ast$ {\em fp}, int {\em digits}, \bf{Dd\-Apa\-Number} {\em number}, int {\em precision})}\label{cuddApa_8c_f154d1eb64d1e109647c879025b0c47d}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints an arbitrary precision integer in exponential format.]
+
+Description [Prints an arbitrary precision integer in exponential format. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Apa\-Print\-Hex Cudd\_\-Apa\-Print\-Decimal] 
+
+Definition at line 567 of file cudd\-Apa.c.
+
+References ALLOC, Cudd\_\-Apa\-Copy(), Cudd\_\-Apa\-Short\-Division(), Cudd\_\-New\-Apa\-Number(), DD\_\-APA\_\-BASE, dd\-Min, FREE, and result.
+
+Referenced by Cudd\_\-Apa\-Print\-Minterm\-Exp().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintHex@{Cudd\_\-ApaPrintHex}}
+\index{Cudd_ApaPrintHex@{Cudd\_\-ApaPrintHex}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Hex (FILE $\ast$ {\em fp}, int {\em digits}, \bf{Dd\-Apa\-Number} {\em number})}\label{cuddApa_8c_7d55e5d56164cbdea89da55c263d2cde}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints an arbitrary precision integer in hexadecimal format.]
+
+Description [Prints an arbitrary precision integer in hexadecimal format. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Apa\-Print\-Decimal Cudd\_\-Apa\-Print\-Exponential] 
+
+Definition at line 480 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-HEXPRINT, and result.\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintMinterm@{Cudd\_\-ApaPrintMinterm}}
+\index{Cudd_ApaPrintMinterm@{Cudd\_\-ApaPrintMinterm}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Minterm (FILE $\ast$ {\em fp}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars})}\label{cuddApa_8c_26d8a025bc0be36e201e9a973bf1abd1}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the number of minterms of a BDD or ADD using arbitrary precision arithmetic.]
+
+Description [Prints the number of minterms of a BDD or ADD using arbitrary precision arithmetic. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Apa\-Print\-Minterm\-Exp] 
+
+Definition at line 709 of file cudd\-Apa.c.
+
+References Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Apa\-Print\-Decimal(), FREE, Dd\-Gen::node, and result.\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaPrintMintermExp@{Cudd\_\-ApaPrintMintermExp}}
+\index{Cudd_ApaPrintMintermExp@{Cudd\_\-ApaPrintMintermExp}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Cudd\_\-Apa\-Print\-Minterm\-Exp (FILE $\ast$ {\em fp}, \bf{Dd\-Manager} $\ast$ {\em dd}, \bf{Dd\-Node} $\ast$ {\em node}, int {\em nvars}, int {\em precision})}\label{cuddApa_8c_3736117d1eb0e5f119d365e958d39c94}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Prints the number of minterms of a BDD or ADD in exponential format using arbitrary precision arithmetic.]
+
+Description [Prints the number of minterms of a BDD or ADD in exponential format using arbitrary precision arithmetic. Parameter precision controls the number of signficant digits printed. Returns 1 if successful; 0 otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [Cudd\_\-Apa\-Print\-Minterm] 
+
+Definition at line 748 of file cudd\-Apa.c.
+
+References Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Apa\-Print\-Exponential(), FREE, Dd\-Gen::node, and result.\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaSetToLiteral@{Cudd\_\-ApaSetToLiteral}}
+\index{Cudd_ApaSetToLiteral@{Cudd\_\-ApaSetToLiteral}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Apa\-Set\-To\-Literal (int {\em digits}, \bf{Dd\-Apa\-Number} {\em number}, \bf{Dd\-Apa\-Digit} {\em literal})}\label{cuddApa_8c_b982f99886e7bf960d43ce880caac189}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Sets an arbitrary precision integer to a one-digit literal.]
+
+Description [Sets an arbitrary precision integer to a one-digit literal.]
+
+Side\-Effects [The result is returned in parameter {\tt number}.]
+
+See\-Also [] 
+
+Definition at line 339 of file cudd\-Apa.c.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaShiftRight@{Cudd\_\-ApaShiftRight}}
+\index{Cudd_ApaShiftRight@{Cudd\_\-ApaShiftRight}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void Cudd\_\-Apa\-Shift\-Right (int {\em digits}, \bf{Dd\-Apa\-Digit} {\em in}, \bf{Dd\-Apa\-Number} {\em a}, \bf{Dd\-Apa\-Number} {\em b})}\label{cuddApa_8c_a22b98704d698ffc6b54d193dfb3ba1a}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Shifts right an arbitrary precision integer by one binary place.]
+
+Description [Shifts right an arbitrary precision integer by one binary place. The most significant binary digit of the result is taken from parameter {\tt in}.]
+
+Side\-Effects [The result is returned in parameter {\tt b}.]
+
+See\-Also [] 
+
+Definition at line 311 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BITS.
+
+Referenced by cudd\-Apa\-Count\-Minterm\-Aux().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaShortDivision@{Cudd\_\-ApaShortDivision}}
+\index{Cudd_ApaShortDivision@{Cudd\_\-ApaShortDivision}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Short\-Division (int {\em digits}, \bf{Dd\-Apa\-Number} {\em dividend}, \bf{Dd\-Apa\-Digit} {\em divisor}, \bf{Dd\-Apa\-Number} {\em quotient})}\label{cuddApa_8c_fb6cd03a013b0e057ad8bd7cbe056ae3}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Divides an arbitrary precision integer by a digit.]
+
+Description [Divides an arbitrary precision integer by a digit.]
+
+Side\-Effects [The quotient is returned in parameter {\tt quotient}.]
+
+See\-Also [] 
+
+Definition at line 233 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BASE.
+
+Referenced by Cudd\_\-Apa\-Print\-Decimal(), and Cudd\_\-Apa\-Print\-Exponential().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_ApaSubtract@{Cudd\_\-ApaSubtract}}
+\index{Cudd_ApaSubtract@{Cudd\_\-ApaSubtract}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Apa\-Digit} Cudd\_\-Apa\-Subtract (int {\em digits}, \bf{Dd\-Apa\-Number} {\em a}, \bf{Dd\-Apa\-Number} {\em b}, \bf{Dd\-Apa\-Number} {\em diff})}\label{cuddApa_8c_13bd5628d02d07b2a50fd2a58eb5adc9}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Subtracts two arbitrary precision integers.]
+
+Description [Subtracts two arbitrary precision integers. Returns the borrow out of the most significant digit.]
+
+Side\-Effects [The result of the subtraction is stored in parameter {\tt diff}.]
+
+See\-Also [] 
+
+Definition at line 203 of file cudd\-Apa.c.
+
+References DD\_\-APA\_\-BASE, DD\_\-APA\_\-MASK, DD\_\-LSDIGIT, and DD\_\-MSDIGIT.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm(), and cudd\-Apa\-Count\-Minterm\-Aux().\index{cuddApa.c@{cudd\-Apa.c}!Cudd_NewApaNumber@{Cudd\_\-NewApaNumber}}
+\index{Cudd_NewApaNumber@{Cudd\_\-NewApaNumber}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Apa\-Number} Cudd\_\-New\-Apa\-Number (int {\em digits})}\label{cuddApa_8c_c45962862c26d56dc134d2e76062ec96}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Allocates memory for an arbitrary precision integer.]
+
+Description [Allocates memory for an arbitrary precision integer. Returns a pointer to the allocated memory if successful; NULL otherwise.]
+
+Side\-Effects [None]
+
+See\-Also [] 
+
+Definition at line 124 of file cudd\-Apa.c.
+
+References ALLOC.
+
+Referenced by Cudd\_\-Apa\-Compare\-Ratios(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Apa\-Print\-Decimal(), Cudd\_\-Apa\-Print\-Density(), Cudd\_\-Apa\-Print\-Exponential(), and cudd\-Apa\-Count\-Minterm\-Aux().\index{cuddApa.c@{cudd\-Apa.c}!cuddApaCountMintermAux@{cuddApaCountMintermAux}}
+\index{cuddApaCountMintermAux@{cuddApaCountMintermAux}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static \bf{Dd\-Apa\-Number} cudd\-Apa\-Count\-Minterm\-Aux (\bf{Dd\-Node} $\ast$ {\em node}, int {\em digits}, \bf{Dd\-Apa\-Number} {\em max}, \bf{Dd\-Apa\-Number} {\em min}, \bf{st\_\-table} $\ast$ {\em table})\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_13ff36b1646220587cc7f2ba7620dd0f}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Performs the recursive step of Cudd\_\-Apa\-Count\-Minterm.]
+
+Description [Performs the recursive step of Cudd\_\-Apa\-Count\-Minterm. It is based on the following identity. Let $|$f$|$ be the number of minterms of f. Then: $<$xmp$>$ $|$f$|$ = ($|$f0$|$+$|$f1$|$)/2 $<$/xmp$>$ where f0 and f1 are the two cofactors of f. Uses the identity {\tt $|$f'$|$ = max - $|$f$|$}. Returns the number of minterms of the function rooted at node.]
+
+Side\-Effects [None] 
+
+Definition at line 843 of file cudd\-Apa.c.
+
+References background, Cudd\_\-Apa\-Add(), Cudd\_\-Apa\-Shift\-Right(), Cudd\_\-Apa\-Subtract(), Cudd\_\-Is\-Complement, Cudd\_\-New\-Apa\-Number(), Cudd\_\-Regular, cudd\-E, cudd\-Is\-Constant, cudd\-T, FREE, Dd\-Gen::node, Dd\-Node::ref, st\_\-insert(), st\_\-lookup(), ST\_\-OUT\_\-OF\_\-MEM, and zero.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm().\index{cuddApa.c@{cudd\-Apa.c}!cuddApaStCountfree@{cuddApaStCountfree}}
+\index{cuddApaStCountfree@{cuddApaStCountfree}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static enum \bf{st\_\-retval} cudd\-Apa\-St\-Countfree (char $\ast$ {\em key}, char $\ast$ {\em value}, char $\ast$ {\em arg})\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_76d6859ce3c08d3692995e2478e0ffec}
+
+
+Function$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+Synopsis [Frees the memory used to store the minterm counts recorded in the visited table.]
+
+Description [Frees the memory used to store the minterm counts recorded in the visited table. Returns ST\_\-CONTINUE.]
+
+Side\-Effects [None] 
+
+Definition at line 908 of file cudd\-Apa.c.
+
+References FREE, and ST\_\-CONTINUE.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm().
+
+\subsection{Variable Documentation}
+\index{cuddApa.c@{cudd\-Apa.c}!background@{background}}
+\index{background@{background}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node}$\ast$ \bf{background}\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_af93dea94cfd93476e9c11d890891aff}
+
+
+
+
+Definition at line 57 of file cudd\-Apa.c.
+
+Referenced by Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-Count\-Minterm(), Cudd\_\-Print\-Minterm(), cudd\-Apa\-Count\-Minterm\-Aux(), dd\-Count\-Minterm\-Aux(), and dd\-Print\-Minterm\-Aux().\index{cuddApa.c@{cudd\-Apa.c}!DD_UNUSED@{DD\_\-UNUSED}}
+\index{DD_UNUSED@{DD\_\-UNUSED}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}char rcsid [$\,$] \bf{DD\_\-UNUSED} = \char`\"{}\$Id: cudd\-Apa.c,v 1.1.1.1 2005/04/18 17:40:17 mchu Exp \$\char`\"{}\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_15755406c65f1ac3ea34ce661b57b54e}
+
+
+CFile$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$
+
+File\-Name [\doxyref{cudd\-Apa.c}{p.}{cuddApa_8c}]
+
+Package\-Name [cudd]
+
+Synopsis [Arbitrary precision arithmetic functions.]
+
+Description [External procedures included in this module: \begin{itemize}
+\item \end{itemize}
+Internal procedures included in this module: \begin{itemize}
+\item () \end{itemize}
+Static procedures included in this module: \begin{itemize}
+\item () \end{itemize}
+]
+
+Author [Fabio Somenzi]
+
+Copyright [This file was created at the University of Colorado at Boulder. The University of Colorado at Boulder makes no warranty about the suitability of this software for any purpose. It is presented on an AS IS basis.] 
+
+Definition at line 54 of file cudd\-Apa.c.\index{cuddApa.c@{cudd\-Apa.c}!zero@{zero}}
+\index{zero@{zero}!cuddApa.c@{cudd\-Apa.c}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}\bf{Dd\-Node} $\ast$ \bf{zero}\hspace{0.3cm}{\tt  [static]}}\label{cuddApa_8c_559a95c469bb341bde49e5950629e726}
+
+
+
+
+Definition at line 57 of file cudd\-Apa.c.
+
+Referenced by add\-MMRecur(), add\-Var\-To\-Const(), Build\-Conjuncts(), Build\-Subset\-Bdd(), Count\-Minterms(), Cudd\_\-add\-Compute\-Cube(), Cudd\_\-add\-Eval\-Const(), Cudd\_\-add\-Harwell(), Cudd\_\-add\-Ite\-Constant(), Cudd\_\-add\-Read(), Cudd\_\-add\-Xeqy(), Cudd\_\-Apa\-Count\-Minterm(), Cudd\_\-bdd\-Gen\-Conj\-Decomp(), Cudd\_\-bdd\-Is\-Var\-Essential(), Cudd\_\-bdd\-Ite\-Constant(), Cudd\_\-bdd\-Leq(), Cudd\_\-bdd\-Pick\-Arbitrary\-Minterms(), Cudd\_\-bdd\-Pick\-One\-Minterm(), Cudd\_\-bdd\-Read(), Cudd\_\-bdd\-Var\-Is\-Dependent(), Cudd\_\-Cofactor(), Cudd\_\-Count\-Minterm(), Cudd\_\-Dxygtdxz(), Cudd\_\-Dxygtdyz(), Cudd\_\-Init(), Cudd\_\-Largest\-Cube(), Cudd\_\-Print\-Minterm(), Cudd\_\-Shortest\-Length(), Cudd\_\-Shortest\-Path(), Cudd\_\-Split\-Set(), cudd\-Add\-Cmpl\-Recur(), cudd\-Add\-Constrain\-Recur(), cudd\-Add\-Exist\-Abstract\-Recur(), cudd\-Add\-Ite\-Recur(), cudd\-Add\-Restrict\-Recur(), cudd\-Add\-Univ\-Abstract\-Recur(), cudd\-Apa\-Count\-Minterm\-Aux(), cudd\-Bdd\-And\-Abstract\-Recur(), cudd\-Bdd\-And\-Recur(), cudd\-Bdd\-Char\-To\-Vect(), cudd\-Bdd\-Clip\-And\-Abs\-Recur(), cudd\-Bdd\-Clipping\-And\-Recur(), cudd\-Bdd\-Constrain\-Recur(), cudd\-Bdd\-Intersect\-Recur(), cudd\-Bdd\-Isop(), cudd\-Bdd\-Ite\-Recur(), cudd\-Bdd\-LICBuild\-Result(), cudd\-Bdd\-LICMark\-Edges(), cudd\-Bdd\-LICompaction(), cudd\-Bdd\-Literal\-Set\-Intersection\-Recur(), cudd\-Bdd\-Restrict\-Recur(), cudd\-Bdd\-Squeeze(), cudd\-Bdd\-Transfer\-Recur(), cudd\-Bdd\-Xor\-Exist\-Abstract\-Recur(), cudd\-Bdd\-Xor\-Recur(), cudd\-Check\-Cube(), cudd\-Cofactor\-Recur(), cudd\-Insert\-Subtables(), cudd\-Resize\-Table\-Zdd(), cudd\-Split\-Set\-Recur(), cudd\-Subset\-Heavy\-Branch(), cudd\-Subset\-Short\-Paths(), cudd\-Zdd\-Divide(), cudd\-Zdd\-Divide\-F(), cudd\-Zdd\-Get\-Cofactors3(), cudd\-Zdd\-Isop(), cudd\-Zdd\-Product(), cudd\-Zdd\-Unate\-Product(), cudd\-Zdd\-Weak\-Div(), cudd\-Zdd\-Weak\-Div\-F(), dd\-Count\-Minterm\-Aux(), dd\-Print\-Minterm\-Aux(), dd\-Resize\-Table(), get\_\-largest(), get\_\-shortest(), minterms\-From\-Universe(), select\-Minterms\-From\-Universe(), Subset\-Count\-Minterm\-Aux(), Subset\-Count\-Nodes\-Aux(), zdd\-Port\-To\-Bdd\-Step(), and Zero\-Case().

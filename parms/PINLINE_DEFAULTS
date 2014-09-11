@@ -1,0 +1,143 @@
+###############################################################################
+##
+##		      Illinois Open Source License
+##                     University of Illinois/NCSA
+##                         Open Source License
+##
+## Copyright (c) 2004, The University of Illinois at Urbana-Champaign.
+## All rights reserved.
+##
+## Developed by:             
+##
+##		IMPACT Research Group
+##
+##		University of Illinois at Urbana-Champaign
+##
+##              http://www.crhc.uiuc.edu/IMPACT
+##              http://www.gelato.org
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal with the Software without
+## restriction, including without limitation the rights to use, copy,
+## modify, merge, publish, distribute, sublicense, and/or sell copies
+## of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
+##
+## Redistributions of source code must retain the above copyright
+## notice, this list of conditions and the following disclaimers.
+##
+## Redistributions in binary form must reproduce the above copyright
+## notice, this list of conditions and the following disclaimers in
+## the documentation and/or other materials provided with the
+## distribution.
+##
+## Neither the names of the IMPACT Research Group, the University of
+## Illinois, nor the names of its contributors may be used to endorse
+## or promote products derived from this Software without specific
+## prior written permission.  THE SOFTWARE IS PROVIDED "AS IS",
+## WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+## LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+## PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+## CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+## OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+## OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+##
+###############################################################################
+
+(Pinline
+   # Parameters controlling the Pcode inliner
+
+   # Overall expansion limit.  Do not allow inlining to increase codesize
+   # beyond a certain ratio.
+
+   max_expansion_ratio = 1.35;
+   body_size_metric = touched;
+   # total, touched, executed 
+   inline_key_cost = sqrt_callee_size;
+   # sqrt_callee_size, callee_size, mc_callee_size
+   exclude_small_from_ratio_limit = yes;
+   inline_ebody_floor = 6000;
+
+   # Do not inline functions whose stack frames are larger than
+   # max_sf_size_limit.  The function FuncStackSize() in Pcode/cast.c is 
+   # used to measure this.
+   max_sf_size_limit = 8192;
+
+   # Upper bound on the size that one function can reach.  The size is based
+   # on the number of operations contained in the function. The original size
+   # is measured by FuncBodySize() in Pcode/cast.c.
+   max_function_size = 4096;
+
+   # Do not inline a call site that is executed less than
+   # min_expansion_weight.  If this is set 0, this criterion for not
+   # inlining an arc will be ignored.
+   min_expansion_weight = 10.0;
+
+   min_arc_ratio = 0.01;
+
+   # Do not inline a call site whose priority value is less than this
+   # minimum value.
+   min_expansion_key = 0.001;
+
+   # Inline function pointers.
+   inline_function_pointers =yes;
+   inline_indir_by_profile = yes;
+   indir_thresh = 0.15;
+
+   inline_inlined_body = yes;
+
+   adjust_func_weight = no;
+
+   # Regroup split files back to their original file, inlining is performed
+   regroup = yes;
+
+   # Regroup split files back to their original files, no inlining is performed
+   regroup_only = no;
+
+   size_only = no;
+
+   favor_small_functions = yes;
+   small_function_thresh = 3;
+
+   # Control inlining of self-recursive arcs
+   inline_self_recursion = no;
+
+   # Prevent inlining across source files (emulate more limited inliners)
+   prevent_cross_file_inlining = no;	
+
+   # Prevent the inlining of specified functions (space-separated, no quotes)
+   prevent_inline_functions = init_random reset ;
+
+   # Print inlining statistics to __impact_inlining_stats
+   print_inline_stats = yes;
+
+   # Print dotty callgraph before and after inlining, plus one
+   # for each function
+   print_inline_graphs = yes;
+
+   # Inline all functions of a program. This option will not inline 
+   # recursive functions.
+   inline_all_functions = yes;
+
+   # Print detailed inlining traces (debugging) to the named file (or stdout)
+   print_inline_trace = no;
+   print_heap_trace = no;
+   il_log_name = stdout;
+
+   # DEPRECATED IN Pinline_new
+   # ----------------------------------------------------------------------
+   use_new_regroup_algorithm = yes;
+
+   # File mapping file. This is used to tell Pinline that which function is
+   # in which file after splitting. Also, the mapping file also contains mask
+   # information to Pinline.
+   sp_output_spec = impact_mapping;
+
+   # Output directory for Pinline. The input directory is recorded in 
+   # sp_output_spec. Usually the output directory is the same as the input
+   # one, which is pcode.
+   il_dir = .;
+
+end)
